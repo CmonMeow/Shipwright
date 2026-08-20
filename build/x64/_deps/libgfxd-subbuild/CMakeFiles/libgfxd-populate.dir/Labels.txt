@@ -1,0 +1,14 @@
+# Target labels
+ libgfxd-populate
+# Source files and their labels
+C:/Users/CmonMeow/Desktop/Shipwright/build/x64/_deps/libgfxd-subbuild/CMakeFiles/libgfxd-populate
+C:/Users/CmonMeow/Desktop/Shipwright/build/x64/_deps/libgfxd-subbuild/CMakeFiles/ef0f9e63f5bf2fda256f96e30fea3489/libgfxd-populate.rule
+C:/Users/CmonMeow/Desktop/Shipwright/build/x64/_deps/libgfxd-subbuild/CMakeFiles/e769426748b11a55d9c0fd6c930b477e/libgfxd-populate-complete.rule
+C:/Users/CmonMeow/Desktop/Shipwright/build/x64/_deps/libgfxd-subbuild/CMakeFiles/6395b124e2696ae8d848fb4ade213ae2/libgfxd-populate-build.rule
+C:/Users/CmonMeow/Desktop/Shipwright/build/x64/_deps/libgfxd-subbuild/CMakeFiles/6395b124e2696ae8d848fb4ade213ae2/libgfxd-populate-configure.rule
+C:/Users/CmonMeow/Desktop/Shipwright/build/x64/_deps/libgfxd-subbuild/CMakeFiles/6395b124e2696ae8d848fb4ade213ae2/libgfxd-populate-download.rule
+C:/Users/CmonMeow/Desktop/Shipwright/build/x64/_deps/libgfxd-subbuild/CMakeFiles/6395b124e2696ae8d848fb4ade213ae2/libgfxd-populate-install.rule
+C:/Users/CmonMeow/Desktop/Shipwright/build/x64/_deps/libgfxd-subbuild/CMakeFiles/6395b124e2696ae8d848fb4ade213ae2/libgfxd-populate-mkdir.rule
+C:/Users/CmonMeow/Desktop/Shipwright/build/x64/_deps/libgfxd-subbuild/CMakeFiles/6395b124e2696ae8d848fb4ade213ae2/libgfxd-populate-patch.rule
+C:/Users/CmonMeow/Desktop/Shipwright/build/x64/_deps/libgfxd-subbuild/CMakeFiles/6395b124e2696ae8d848fb4ade213ae2/libgfxd-populate-test.rule
+C:/Users/CmonMeow/Desktop/Shipwright/build/x64/_deps/libgfxd-subbuild/CMakeFiles/6395b124e2696ae8d848fb4ade213ae2/libgfxd-populate-update.rule

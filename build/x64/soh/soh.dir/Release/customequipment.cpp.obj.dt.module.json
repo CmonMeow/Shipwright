@@ -1,0 +1,14 @@
+{
+    "version": 1,
+    "revision": 0,
+    "rules": [
+        {
+            "primary-output": "soh.dir\\Release\\customequipment.obj",
+            "outputs": [
+                "soh.dir\\Release\\customequipment.cpp.obj.dt.module.json",
+                "soh.dir\\Release\\customequipment.cpp.obj.dt.d.json"
+            ],
+            "requires": []
+        }
+    ]
+}

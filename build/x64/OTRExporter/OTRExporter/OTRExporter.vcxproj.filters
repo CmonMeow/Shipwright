@@ -1,0 +1,186 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="18.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\OTRExporter\OTRExporter\AnimationExporter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\OTRExporter\OTRExporter\ArrayExporter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\OTRExporter\OTRExporter\AudioExporter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\OTRExporter\OTRExporter\BackgroundExporter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\OTRExporter\OTRExporter\BlobExporter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\OTRExporter\OTRExporter\CollisionExporter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\OTRExporter\OTRExporter\CKeyFrameExporter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\OTRExporter\OTRExporter\CutsceneExporter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\OTRExporter\OTRExporter\DisplayListExporter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\OTRExporter\OTRExporter\Exporter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\OTRExporter\OTRExporter\ExporterArchive.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\OTRExporter\OTRExporter\ExporterArchiveO2R.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\OTRExporter\OTRExporter\ExporterArchiveOTR.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\OTRExporter\OTRExporter\Main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\OTRExporter\OTRExporter\MtxExporter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\OTRExporter\OTRExporter\PathExporter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\OTRExporter\OTRExporter\PlayerAnimationExporter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\OTRExporter\OTRExporter\RoomExporter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\OTRExporter\OTRExporter\SkeletonExporter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\OTRExporter\OTRExporter\SkeletonLimbExporter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\OTRExporter\OTRExporter\TextExporter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\OTRExporter\OTRExporter\TextMMExporter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\OTRExporter\OTRExporter\TextureExporter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\OTRExporter\OTRExporter\TextureAnimationExporter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\OTRExporter\OTRExporter\VersionInfo.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\OTRExporter\OTRExporter\VtxExporter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\OTRExporter\OTRExporter\AnimationExporter.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\OTRExporter\OTRExporter\ArrayExporter.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\OTRExporter\OTRExporter\AudioExporter.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\OTRExporter\OTRExporter\BackgroundExporter.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\OTRExporter\OTRExporter\BlobExporter.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\OTRExporter\OTRExporter\CKeyFrameExporter.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\OTRExporter\OTRExporter\CollisionExporter.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\OTRExporter\OTRExporter\command_macros_base.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\OTRExporter\OTRExporter\CutsceneExporter.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\OTRExporter\OTRExporter\DisplayListExporter.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\OTRExporter\OTRExporter\Exporter.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\OTRExporter\OTRExporter\ExporterArchive.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\OTRExporter\OTRExporter\ExporterArchiveO2R.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\OTRExporter\OTRExporter\ExporterArchiveOTR.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\OTRExporter\OTRExporter\Main.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\OTRExporter\OTRExporter\MtxExporter.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\OTRExporter\OTRExporter\PathExporter.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\OTRExporter\OTRExporter\PlayerAnimationExporter.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\OTRExporter\OTRExporter\RoomExporter.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\OTRExporter\OTRExporter\SkeletonExporter.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\OTRExporter\OTRExporter\SkeletonLimbExporter.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\OTRExporter\OTRExporter\TextExporter.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\OTRExporter\OTRExporter\TextMMExporter.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\OTRExporter\OTRExporter\TextureExporter.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\OTRExporter\OTRExporter\TextureAnimationExporter.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\OTRExporter\OTRExporter\VersionInfo.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\OTRExporter\OTRExporter\VtxExporter.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\OTRExporter\OTRExporter\z64cutscene.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\OTRExporter\OTRExporter\z64cutscene_commands.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\CmonMeow\Desktop\Shipwright\OTRExporter\OTRExporter\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Natvis Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\vcpkg\installed\x64-windows-static\share\nlohmann_json\nlohmann_json.natvis" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{B8AEE8DF-645E-357A-83CA-AA95C17E8E4A}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{FBBA4402-F9B9-396F-A5B0-D4EE37A28A02}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

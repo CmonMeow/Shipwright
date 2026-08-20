@@ -1,0 +1,46 @@
+{
+	"sources" : 
+	[
+		{
+			"file" : "C:/Users/CmonMeow/Desktop/Shipwright/build/x64/_deps/monocypher-subbuild/CMakeFiles/monocypher-populate"
+		},
+		{
+			"file" : "C:/Users/CmonMeow/Desktop/Shipwright/build/x64/_deps/monocypher-subbuild/CMakeFiles/b5ef52913f8459d03dffbfac8f688118/monocypher-populate.rule"
+		},
+		{
+			"file" : "C:/Users/CmonMeow/Desktop/Shipwright/build/x64/_deps/monocypher-subbuild/CMakeFiles/341defc9144802e174ec6a7715ef742a/monocypher-populate-complete.rule"
+		},
+		{
+			"file" : "C:/Users/CmonMeow/Desktop/Shipwright/build/x64/_deps/monocypher-subbuild/CMakeFiles/e4da0763463f7e55e8a26830f06d740b/monocypher-populate-build.rule"
+		},
+		{
+			"file" : "C:/Users/CmonMeow/Desktop/Shipwright/build/x64/_deps/monocypher-subbuild/CMakeFiles/e4da0763463f7e55e8a26830f06d740b/monocypher-populate-configure.rule"
+		},
+		{
+			"file" : "C:/Users/CmonMeow/Desktop/Shipwright/build/x64/_deps/monocypher-subbuild/CMakeFiles/e4da0763463f7e55e8a26830f06d740b/monocypher-populate-download.rule"
+		},
+		{
+			"file" : "C:/Users/CmonMeow/Desktop/Shipwright/build/x64/_deps/monocypher-subbuild/CMakeFiles/e4da0763463f7e55e8a26830f06d740b/monocypher-populate-install.rule"
+		},
+		{
+			"file" : "C:/Users/CmonMeow/Desktop/Shipwright/build/x64/_deps/monocypher-subbuild/CMakeFiles/e4da0763463f7e55e8a26830f06d740b/monocypher-populate-mkdir.rule"
+		},
+		{
+			"file" : "C:/Users/CmonMeow/Desktop/Shipwright/build/x64/_deps/monocypher-subbuild/CMakeFiles/e4da0763463f7e55e8a26830f06d740b/monocypher-populate-patch.rule"
+		},
+		{
+			"file" : "C:/Users/CmonMeow/Desktop/Shipwright/build/x64/_deps/monocypher-subbuild/CMakeFiles/e4da0763463f7e55e8a26830f06d740b/monocypher-populate-test.rule"
+		},
+		{
+			"file" : "C:/Users/CmonMeow/Desktop/Shipwright/build/x64/_deps/monocypher-subbuild/CMakeFiles/e4da0763463f7e55e8a26830f06d740b/monocypher-populate-update.rule"
+		}
+	],
+	"target" : 
+	{
+		"labels" : 
+		[
+			"monocypher-populate"
+		],
+		"name" : "monocypher-populate"
+	}
+}

@@ -1,0 +1,46 @@
+{
+	"sources" : 
+	[
+		{
+			"file" : "C:/Users/CmonMeow/Desktop/Shipwright/build/x64/_deps/stormlib-subbuild/CMakeFiles/stormlib-populate"
+		},
+		{
+			"file" : "C:/Users/CmonMeow/Desktop/Shipwright/build/x64/_deps/stormlib-subbuild/CMakeFiles/b500f7344761e65f6c790047ef19ee2c/stormlib-populate.rule"
+		},
+		{
+			"file" : "C:/Users/CmonMeow/Desktop/Shipwright/build/x64/_deps/stormlib-subbuild/CMakeFiles/caa5f0acce1e18b028ba24cdc6544cb9/stormlib-populate-complete.rule"
+		},
+		{
+			"file" : "C:/Users/CmonMeow/Desktop/Shipwright/build/x64/_deps/stormlib-subbuild/CMakeFiles/f619f73cadbdc375ae5d616c7de72ba4/stormlib-populate-build.rule"
+		},
+		{
+			"file" : "C:/Users/CmonMeow/Desktop/Shipwright/build/x64/_deps/stormlib-subbuild/CMakeFiles/f619f73cadbdc375ae5d616c7de72ba4/stormlib-populate-configure.rule"
+		},
+		{
+			"file" : "C:/Users/CmonMeow/Desktop/Shipwright/build/x64/_deps/stormlib-subbuild/CMakeFiles/f619f73cadbdc375ae5d616c7de72ba4/stormlib-populate-download.rule"
+		},
+		{
+			"file" : "C:/Users/CmonMeow/Desktop/Shipwright/build/x64/_deps/stormlib-subbuild/CMakeFiles/f619f73cadbdc375ae5d616c7de72ba4/stormlib-populate-install.rule"
+		},
+		{
+			"file" : "C:/Users/CmonMeow/Desktop/Shipwright/build/x64/_deps/stormlib-subbuild/CMakeFiles/f619f73cadbdc375ae5d616c7de72ba4/stormlib-populate-mkdir.rule"
+		},
+		{
+			"file" : "C:/Users/CmonMeow/Desktop/Shipwright/build/x64/_deps/stormlib-subbuild/CMakeFiles/f619f73cadbdc375ae5d616c7de72ba4/stormlib-populate-patch.rule"
+		},
+		{
+			"file" : "C:/Users/CmonMeow/Desktop/Shipwright/build/x64/_deps/stormlib-subbuild/CMakeFiles/f619f73cadbdc375ae5d616c7de72ba4/stormlib-populate-test.rule"
+		},
+		{
+			"file" : "C:/Users/CmonMeow/Desktop/Shipwright/build/x64/_deps/stormlib-subbuild/CMakeFiles/f619f73cadbdc375ae5d616c7de72ba4/stormlib-populate-update.rule"
+		}
+	],
+	"target" : 
+	{
+		"labels" : 
+		[
+			"stormlib-populate"
+		],
+		"name" : "stormlib-populate"
+	}
+}

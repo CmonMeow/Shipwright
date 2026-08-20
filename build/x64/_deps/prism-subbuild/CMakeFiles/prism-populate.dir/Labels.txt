@@ -1,0 +1,14 @@
+# Target labels
+ prism-populate
+# Source files and their labels
+C:/Users/CmonMeow/Desktop/Shipwright/build/x64/_deps/prism-subbuild/CMakeFiles/prism-populate
+C:/Users/CmonMeow/Desktop/Shipwright/build/x64/_deps/prism-subbuild/CMakeFiles/7953c4962ccac02ade86b3fe8ee8aa9c/prism-populate.rule
+C:/Users/CmonMeow/Desktop/Shipwright/build/x64/_deps/prism-subbuild/CMakeFiles/d7f752c5cc3c5c434b1671333fad4c8c/prism-populate-complete.rule
+C:/Users/CmonMeow/Desktop/Shipwright/build/x64/_deps/prism-subbuild/CMakeFiles/8088709973c27ae42ca90f85ff731d40/prism-populate-build.rule
+C:/Users/CmonMeow/Desktop/Shipwright/build/x64/_deps/prism-subbuild/CMakeFiles/8088709973c27ae42ca90f85ff731d40/prism-populate-configure.rule
+C:/Users/CmonMeow/Desktop/Shipwright/build/x64/_deps/prism-subbuild/CMakeFiles/8088709973c27ae42ca90f85ff731d40/prism-populate-download.rule
+C:/Users/CmonMeow/Desktop/Shipwright/build/x64/_deps/prism-subbuild/CMakeFiles/8088709973c27ae42ca90f85ff731d40/prism-populate-install.rule
+C:/Users/CmonMeow/Desktop/Shipwright/build/x64/_deps/prism-subbuild/CMakeFiles/8088709973c27ae42ca90f85ff731d40/prism-populate-mkdir.rule
+C:/Users/CmonMeow/Desktop/Shipwright/build/x64/_deps/prism-subbuild/CMakeFiles/8088709973c27ae42ca90f85ff731d40/prism-populate-patch.rule
+C:/Users/CmonMeow/Desktop/Shipwright/build/x64/_deps/prism-subbuild/CMakeFiles/8088709973c27ae42ca90f85ff731d40/prism-populate-test.rule
+C:/Users/CmonMeow/Desktop/Shipwright/build/x64/_deps/prism-subbuild/CMakeFiles/8088709973c27ae42ca90f85ff731d40/prism-populate-update.rule

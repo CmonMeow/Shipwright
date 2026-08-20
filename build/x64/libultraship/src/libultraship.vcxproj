@@ -1,0 +1,368 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="18.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <PreferredToolArchitecture>x64</PreferredToolArchitecture>
+  </PropertyGroup>
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{06CC8D88-1A4D-3E2C-94F1-180FC8B912DB}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <VcpkgEnabled>false</VcpkgEnabled>
+    <WindowsTargetPlatformVersion>10.0.26100.0</WindowsTargetPlatformVersion>
+    <Platform>x64</Platform>
+    <ProjectName>libultraship</ProjectName>
+    <VCProjectUpgraderObjectName>NoUpgrade</VCProjectUpgraderObjectName>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <Import Project="C:/Program Files/Microsoft Visual Studio/18/Community/VC/Auxiliary/Build/14.51/Microsoft.VCToolsVersion.14.51.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v145</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v145</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets">
+    <Import Project="do_not_import_user.props" Condition="exists('do_not_import_user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.20506.1</_ProjectFileVersion>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:\Users\CmonMeow\Desktop\Shipwright\x64\Debug\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">libultraship.dir\Debug\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">libultraship</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">.lib</TargetExt>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:\Users\CmonMeow\Desktop\Shipwright\x64\Release\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">libultraship.dir\Release\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">libultraship</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.lib</TargetExt>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>C:\Users\CmonMeow\Desktop\Shipwright\build\x64\libultraship\src;C:\Users\CmonMeow\Desktop\Shipwright\libultraship\src;C:\Users\CmonMeow\Desktop\Shipwright\libultraship\src\..\include;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\imgui-src;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\imgui-src\backends;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stb;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\threadpool-src\include;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\libgfxd-src;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\prism-src;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\prism-src\lib;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\prism-src\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalOptions>%(AdditionalOptions) /external:I "C:/Users/CmonMeow/Desktop/Shipwright/build/x64/vcpkg/installed/x64-windows-static/include" /external:I "C:/Users/CmonMeow/Desktop/Shipwright/build/x64/vcpkg/installed/x64-windows-static/include/SDL2" /utf-8 /Oi- /w</AdditionalOptions>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <BufferSecurityCheck></BufferSecurityCheck>
+      <CallingConvention></CallingConvention>
+      <ConformanceMode>true</ConformanceMode>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <ExternalWarningLevel>TurnOffAllWarnings</ExternalWarningLevel>
+      <FloatingPointModel></FloatingPointModel>
+      <ForceConformanceInForLoopScope></ForceConformanceInForLoopScope>
+      <InlineFunctionExpansion>Disabled</InlineFunctionExpansion>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <LanguageStandard_C>stdc11</LanguageStandard_C>
+      <MinimalRebuild></MinimalRebuild>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <Optimization>Disabled</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RemoveUnreferencedCodeData></RemoveUnreferencedCodeData>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <SDLCheck>true</SDLCheck>
+      <SupportJustMyCode></SupportJustMyCode>
+      <TreatWChar_tAsBuiltInType></TreatWChar_tAsBuiltInType>
+      <UseFullPaths>false</UseFullPaths>
+      <UseStandardPreprocessor>true</UseStandardPreprocessor>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;F3DEX_GBI_2;_CONSOLE;_CRT_SECURE_NO_WARNINGS;ENABLE_OPENGL;NOMINMAX;_DEBUG;SPDLOG_ACTIVE_LEVEL=SPDLOG_LEVEL_TRACE;GFX_DEBUG_DISASSEMBLER;INCLUDE_MPQ_SUPPORT;CVAR_PREFIX_RANDOMIZER_ENHANCEMENT="gRandoEnhancements";CVAR_PREFIX_RANDOMIZER_SETTING="gRandoSettings";CVAR_PREFIX_COSMETIC="gCosmetics";CVAR_PREFIX_AUDIO="gAudioEditor";CVAR_PREFIX_CHEAT="gCheats";CVAR_PREFIX_ENHANCEMENT="gEnhancements";CVAR_PREFIX_SETTING="gSettings";CVAR_PREFIX_WINDOW="gOpenWindows";CVAR_PREFIX_TRACKER="gTrackers";CVAR_PREFIX_DEVELOPER_TOOLS="gDeveloperTools";CVAR_PREFIX_GENERAL="gGeneral";CVAR_PREFIX_REMOTE="gRemote";CVAR_PREFIX_GAMEPLAY_STATS="gGameplayStats";CVAR_PREFIX_TIME_DISPLAY="gTimeDisplay";CVAR_VSYNC_ENABLED="gSettings.VsyncEnabled";CVAR_Z_FIGHTING_MODE="gSettings.ZFightingMode";CVAR_INTERNAL_RESOLUTION="gSettings.InternalResolution";CVAR_MSAA_VALUE="gSettings.MSAAValue";CVAR_SDL_WINDOWED_FULLSCREEN="gSettings.SdlWindowedFullscreen";CVAR_TEXTURE_FILTER="gSettings.TextureFilter";CVAR_IMGUI_CONTROLLER_NAV="gSettings.ControlNav";CVAR_CONSOLE_WINDOW_OPEN="gOpenWindows.Console";CVAR_CONTROLLER_CONFIGURATION_WINDOW_OPEN="gControllerConfigurationEnabled";CVAR_CONTROLLER_DISCONNECTED_WINDOW_OPEN="gOpenWindows.ControllerDisconnected";CVAR_CONTROLLER_REORDERING_WINDOW_OPEN="gOpenWindows.ControllerReordering";CVAR_GFX_DEBUGGER_WINDOW_OPEN="gOpenWindows.GfxDebugger";CVAR_STATS_WINDOW_OPEN="gOpenWindows.Stats";CVAR_ENABLE_MULTI_VIEWPORTS="gSettings.EnableMultiViewports";CVAR_LOW_RES_MODE="gSettings.LowResMode";CVAR_SIMULATED_INPUT_LAG="gSettings.SimulatedInputLag";CVAR_GAME_OVERLAY_FONT="gSettings.OverlayFont";CVAR_MENU_BAR_OPEN="gSettings.OpenMenuBar";CVAR_PREFIX_CONTROLLERS="gSettings.Controllers";CVAR_PREFIX_ADVANCED_RESOLUTION="gSettings.AdvancedResolution";CVAR_AUDIO_CHANNELS_SETTING="gAudioChannelsSetting";CVAR_ALLOW_BACKGROUND_INPUTS="gAllowBackgroundInputs";CONTROLLERBUTTONS_T=uint32_t;STORMLIB_NO_AUTO_LINK;GLEW_STATIC;TINYXML2_DEBUG;_FILE_OFFSET_BITS=64;SPDLOG_COMPILED_LIB;SPDLOG_FMT_EXTERNAL;CMAKE_INTDIR="Debug"</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <ScanSourceForModuleDependencies>false</ScanSourceForModuleDependencies>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_DEBUG;_WINDOWS;F3DEX_GBI_2;_CONSOLE;_CRT_SECURE_NO_WARNINGS;ENABLE_OPENGL;NOMINMAX;SPDLOG_ACTIVE_LEVEL=SPDLOG_LEVEL_TRACE;GFX_DEBUG_DISASSEMBLER;INCLUDE_MPQ_SUPPORT;CVAR_PREFIX_RANDOMIZER_ENHANCEMENT=\"gRandoEnhancements\";CVAR_PREFIX_RANDOMIZER_SETTING=\"gRandoSettings\";CVAR_PREFIX_COSMETIC=\"gCosmetics\";CVAR_PREFIX_AUDIO=\"gAudioEditor\";CVAR_PREFIX_CHEAT=\"gCheats\";CVAR_PREFIX_ENHANCEMENT=\"gEnhancements\";CVAR_PREFIX_SETTING=\"gSettings\";CVAR_PREFIX_WINDOW=\"gOpenWindows\";CVAR_PREFIX_TRACKER=\"gTrackers\";CVAR_PREFIX_DEVELOPER_TOOLS=\"gDeveloperTools\";CVAR_PREFIX_GENERAL=\"gGeneral\";CVAR_PREFIX_REMOTE=\"gRemote\";CVAR_PREFIX_GAMEPLAY_STATS=\"gGameplayStats\";CVAR_PREFIX_TIME_DISPLAY=\"gTimeDisplay\";CVAR_VSYNC_ENABLED=\"gSettings.VsyncEnabled\";CVAR_Z_FIGHTING_MODE=\"gSettings.ZFightingMode\";CVAR_INTERNAL_RESOLUTION=\"gSettings.InternalResolution\";CVAR_MSAA_VALUE=\"gSettings.MSAAValue\";CVAR_SDL_WINDOWED_FULLSCREEN=\"gSettings.SdlWindowedFullscreen\";CVAR_TEXTURE_FILTER=\"gSettings.TextureFilter\";CVAR_IMGUI_CONTROLLER_NAV=\"gSettings.ControlNav\";CVAR_CONSOLE_WINDOW_OPEN=\"gOpenWindows.Console\";CVAR_CONTROLLER_CONFIGURATION_WINDOW_OPEN=\"gControllerConfigurationEnabled\";CVAR_CONTROLLER_DISCONNECTED_WINDOW_OPEN=\"gOpenWindows.ControllerDisconnected\";CVAR_CONTROLLER_REORDERING_WINDOW_OPEN=\"gOpenWindows.ControllerReordering\";CVAR_GFX_DEBUGGER_WINDOW_OPEN=\"gOpenWindows.GfxDebugger\";CVAR_STATS_WINDOW_OPEN=\"gOpenWindows.Stats\";CVAR_ENABLE_MULTI_VIEWPORTS=\"gSettings.EnableMultiViewports\";CVAR_LOW_RES_MODE=\"gSettings.LowResMode\";CVAR_SIMULATED_INPUT_LAG=\"gSettings.SimulatedInputLag\";CVAR_GAME_OVERLAY_FONT=\"gSettings.OverlayFont\";CVAR_MENU_BAR_OPEN=\"gSettings.OpenMenuBar\";CVAR_PREFIX_CONTROLLERS=\"gSettings.Controllers\";CVAR_PREFIX_ADVANCED_RESOLUTION=\"gSettings.AdvancedResolution\";CVAR_AUDIO_CHANNELS_SETTING=\"gAudioChannelsSetting\";CVAR_ALLOW_BACKGROUND_INPUTS=\"gAllowBackgroundInputs\";CONTROLLERBUTTONS_T=uint32_t;STORMLIB_NO_AUTO_LINK;GLEW_STATIC;TINYXML2_DEBUG;_FILE_OFFSET_BITS=64;SPDLOG_COMPILED_LIB;SPDLOG_FMT_EXTERNAL;CMAKE_INTDIR=\"Debug\"</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>C:\Users\CmonMeow\Desktop\Shipwright\build\x64\libultraship\src;C:\Users\CmonMeow\Desktop\Shipwright\libultraship\src;C:\Users\CmonMeow\Desktop\Shipwright\libultraship\src\..\include;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\imgui-src;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\imgui-src\backends;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stb;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\threadpool-src\include;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\libgfxd-src;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\prism-src;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\prism-src\lib;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\prism-src\src;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\vcpkg\installed\x64-windows-static\include;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\vcpkg\installed\x64-windows-static\include\SDL2;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>C:\Users\CmonMeow\Desktop\Shipwright\build\x64\libultraship\src;C:\Users\CmonMeow\Desktop\Shipwright\libultraship\src;C:\Users\CmonMeow\Desktop\Shipwright\libultraship\src\..\include;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\imgui-src;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\imgui-src\backends;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stb;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\threadpool-src\include;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\libgfxd-src;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\prism-src;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\prism-src\lib;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\prism-src\src;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\vcpkg\installed\x64-windows-static\include;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\vcpkg\installed\x64-windows-static\include\SDL2;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <Lib>
+      <AdditionalOptions>%(AdditionalOptions) /machine:x64</AdditionalOptions>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>C:\Users\CmonMeow\Desktop\Shipwright\build\x64\libultraship\src;C:\Users\CmonMeow\Desktop\Shipwright\libultraship\src;C:\Users\CmonMeow\Desktop\Shipwright\libultraship\src\..\include;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\imgui-src;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\imgui-src\backends;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stb;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\threadpool-src\include;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\libgfxd-src;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\prism-src;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\prism-src\lib;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\prism-src\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalOptions>%(AdditionalOptions) /external:I "C:/Users/CmonMeow/Desktop/Shipwright/build/x64/vcpkg/installed/x64-windows-static/include" /external:I "C:/Users/CmonMeow/Desktop/Shipwright/build/x64/vcpkg/installed/x64-windows-static/include/SDL2" /utf-8 /w</AdditionalOptions>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+      <BufferSecurityCheck></BufferSecurityCheck>
+      <CallingConvention></CallingConvention>
+      <ConformanceMode>true</ConformanceMode>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <ExternalWarningLevel>TurnOffAllWarnings</ExternalWarningLevel>
+      <FloatingPointModel></FloatingPointModel>
+      <ForceConformanceInForLoopScope></ForceConformanceInForLoopScope>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <LanguageStandard_C>stdc11</LanguageStandard_C>
+      <MinimalRebuild></MinimalRebuild>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <Optimization>MaxSpeed</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RemoveUnreferencedCodeData></RemoveUnreferencedCodeData>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <SDLCheck>true</SDLCheck>
+      <SupportJustMyCode></SupportJustMyCode>
+      <TreatWChar_tAsBuiltInType></TreatWChar_tAsBuiltInType>
+      <UseFullPaths>false</UseFullPaths>
+      <UseStandardPreprocessor>true</UseStandardPreprocessor>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;F3DEX_GBI_2;_CONSOLE;_CRT_SECURE_NO_WARNINGS;ENABLE_OPENGL;NOMINMAX;SPDLOG_ACTIVE_LEVEL=SPDLOG_LEVEL_TRACE;GFX_DEBUG_DISASSEMBLER;INCLUDE_MPQ_SUPPORT;CVAR_PREFIX_RANDOMIZER_ENHANCEMENT="gRandoEnhancements";CVAR_PREFIX_RANDOMIZER_SETTING="gRandoSettings";CVAR_PREFIX_COSMETIC="gCosmetics";CVAR_PREFIX_AUDIO="gAudioEditor";CVAR_PREFIX_CHEAT="gCheats";CVAR_PREFIX_ENHANCEMENT="gEnhancements";CVAR_PREFIX_SETTING="gSettings";CVAR_PREFIX_WINDOW="gOpenWindows";CVAR_PREFIX_TRACKER="gTrackers";CVAR_PREFIX_DEVELOPER_TOOLS="gDeveloperTools";CVAR_PREFIX_GENERAL="gGeneral";CVAR_PREFIX_REMOTE="gRemote";CVAR_PREFIX_GAMEPLAY_STATS="gGameplayStats";CVAR_PREFIX_TIME_DISPLAY="gTimeDisplay";CVAR_VSYNC_ENABLED="gSettings.VsyncEnabled";CVAR_Z_FIGHTING_MODE="gSettings.ZFightingMode";CVAR_INTERNAL_RESOLUTION="gSettings.InternalResolution";CVAR_MSAA_VALUE="gSettings.MSAAValue";CVAR_SDL_WINDOWED_FULLSCREEN="gSettings.SdlWindowedFullscreen";CVAR_TEXTURE_FILTER="gSettings.TextureFilter";CVAR_IMGUI_CONTROLLER_NAV="gSettings.ControlNav";CVAR_CONSOLE_WINDOW_OPEN="gOpenWindows.Console";CVAR_CONTROLLER_CONFIGURATION_WINDOW_OPEN="gControllerConfigurationEnabled";CVAR_CONTROLLER_DISCONNECTED_WINDOW_OPEN="gOpenWindows.ControllerDisconnected";CVAR_CONTROLLER_REORDERING_WINDOW_OPEN="gOpenWindows.ControllerReordering";CVAR_GFX_DEBUGGER_WINDOW_OPEN="gOpenWindows.GfxDebugger";CVAR_STATS_WINDOW_OPEN="gOpenWindows.Stats";CVAR_ENABLE_MULTI_VIEWPORTS="gSettings.EnableMultiViewports";CVAR_LOW_RES_MODE="gSettings.LowResMode";CVAR_SIMULATED_INPUT_LAG="gSettings.SimulatedInputLag";CVAR_GAME_OVERLAY_FONT="gSettings.OverlayFont";CVAR_MENU_BAR_OPEN="gSettings.OpenMenuBar";CVAR_PREFIX_CONTROLLERS="gSettings.Controllers";CVAR_PREFIX_ADVANCED_RESOLUTION="gSettings.AdvancedResolution";CVAR_AUDIO_CHANNELS_SETTING="gAudioChannelsSetting";CVAR_ALLOW_BACKGROUND_INPUTS="gAllowBackgroundInputs";CONTROLLERBUTTONS_T=uint32_t;STORMLIB_NO_AUTO_LINK;GLEW_STATIC;_FILE_OFFSET_BITS=64;SPDLOG_COMPILED_LIB;SPDLOG_FMT_EXTERNAL;CMAKE_INTDIR="Release"</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <ScanSourceForModuleDependencies>false</ScanSourceForModuleDependencies>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;F3DEX_GBI_2;_CONSOLE;_CRT_SECURE_NO_WARNINGS;ENABLE_OPENGL;NOMINMAX;SPDLOG_ACTIVE_LEVEL=SPDLOG_LEVEL_TRACE;GFX_DEBUG_DISASSEMBLER;INCLUDE_MPQ_SUPPORT;CVAR_PREFIX_RANDOMIZER_ENHANCEMENT=\"gRandoEnhancements\";CVAR_PREFIX_RANDOMIZER_SETTING=\"gRandoSettings\";CVAR_PREFIX_COSMETIC=\"gCosmetics\";CVAR_PREFIX_AUDIO=\"gAudioEditor\";CVAR_PREFIX_CHEAT=\"gCheats\";CVAR_PREFIX_ENHANCEMENT=\"gEnhancements\";CVAR_PREFIX_SETTING=\"gSettings\";CVAR_PREFIX_WINDOW=\"gOpenWindows\";CVAR_PREFIX_TRACKER=\"gTrackers\";CVAR_PREFIX_DEVELOPER_TOOLS=\"gDeveloperTools\";CVAR_PREFIX_GENERAL=\"gGeneral\";CVAR_PREFIX_REMOTE=\"gRemote\";CVAR_PREFIX_GAMEPLAY_STATS=\"gGameplayStats\";CVAR_PREFIX_TIME_DISPLAY=\"gTimeDisplay\";CVAR_VSYNC_ENABLED=\"gSettings.VsyncEnabled\";CVAR_Z_FIGHTING_MODE=\"gSettings.ZFightingMode\";CVAR_INTERNAL_RESOLUTION=\"gSettings.InternalResolution\";CVAR_MSAA_VALUE=\"gSettings.MSAAValue\";CVAR_SDL_WINDOWED_FULLSCREEN=\"gSettings.SdlWindowedFullscreen\";CVAR_TEXTURE_FILTER=\"gSettings.TextureFilter\";CVAR_IMGUI_CONTROLLER_NAV=\"gSettings.ControlNav\";CVAR_CONSOLE_WINDOW_OPEN=\"gOpenWindows.Console\";CVAR_CONTROLLER_CONFIGURATION_WINDOW_OPEN=\"gControllerConfigurationEnabled\";CVAR_CONTROLLER_DISCONNECTED_WINDOW_OPEN=\"gOpenWindows.ControllerDisconnected\";CVAR_CONTROLLER_REORDERING_WINDOW_OPEN=\"gOpenWindows.ControllerReordering\";CVAR_GFX_DEBUGGER_WINDOW_OPEN=\"gOpenWindows.GfxDebugger\";CVAR_STATS_WINDOW_OPEN=\"gOpenWindows.Stats\";CVAR_ENABLE_MULTI_VIEWPORTS=\"gSettings.EnableMultiViewports\";CVAR_LOW_RES_MODE=\"gSettings.LowResMode\";CVAR_SIMULATED_INPUT_LAG=\"gSettings.SimulatedInputLag\";CVAR_GAME_OVERLAY_FONT=\"gSettings.OverlayFont\";CVAR_MENU_BAR_OPEN=\"gSettings.OpenMenuBar\";CVAR_PREFIX_CONTROLLERS=\"gSettings.Controllers\";CVAR_PREFIX_ADVANCED_RESOLUTION=\"gSettings.AdvancedResolution\";CVAR_AUDIO_CHANNELS_SETTING=\"gAudioChannelsSetting\";CVAR_ALLOW_BACKGROUND_INPUTS=\"gAllowBackgroundInputs\";CONTROLLERBUTTONS_T=uint32_t;STORMLIB_NO_AUTO_LINK;GLEW_STATIC;_FILE_OFFSET_BITS=64;SPDLOG_COMPILED_LIB;SPDLOG_FMT_EXTERNAL;CMAKE_INTDIR=\"Release\"</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>C:\Users\CmonMeow\Desktop\Shipwright\build\x64\libultraship\src;C:\Users\CmonMeow\Desktop\Shipwright\libultraship\src;C:\Users\CmonMeow\Desktop\Shipwright\libultraship\src\..\include;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\imgui-src;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\imgui-src\backends;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stb;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\threadpool-src\include;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\libgfxd-src;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\prism-src;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\prism-src\lib;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\prism-src\src;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\vcpkg\installed\x64-windows-static\include;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\vcpkg\installed\x64-windows-static\include\SDL2;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>C:\Users\CmonMeow\Desktop\Shipwright\build\x64\libultraship\src;C:\Users\CmonMeow\Desktop\Shipwright\libultraship\src;C:\Users\CmonMeow\Desktop\Shipwright\libultraship\src\..\include;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\imgui-src;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\imgui-src\backends;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stb;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\threadpool-src\include;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\libgfxd-src;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\prism-src;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\prism-src\lib;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\prism-src\src;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\vcpkg\installed\x64-windows-static\include;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\vcpkg\installed\x64-windows-static\include\SDL2;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <Lib>
+      <AdditionalOptions>%(AdditionalOptions) /machine:x64</AdditionalOptions>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\CmonMeow\Desktop\Shipwright\libultraship\src\CMakeLists.txt">
+      <UseUtf8Encoding>Always</UseUtf8Encoding>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Building Custom Rule C:/Users/CmonMeow/Desktop/Shipwright/libultraship/src/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">setlocal
+"C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" -SC:/Users/CmonMeow/Desktop/Shipwright -BC:/Users/CmonMeow/Desktop/Shipwright/build/x64 --check-stamp-file C:/Users/CmonMeow/Desktop/Shipwright/build/x64/libultraship/src/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-4.3\Modules\CMakeFindDependencyMacro.cmake;C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-4.3\Modules\CMakePushCheckState.cmake;C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-4.3\Modules\CheckCSourceCompiles.cmake;C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-4.3\Modules\CheckIncludeFile.cmake;C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-4.3\Modules\CheckLibraryExists.cmake;C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-4.3\Modules\CheckSymbolExists.cmake;C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-4.3\Modules\FindBZip2.cmake;C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-4.3\Modules\FindPackageHandleStandardArgs.cmake;C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-4.3\Modules\FindPackageMessage.cmake;C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-4.3\Modules\FindThreads.cmake;C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-4.3\Modules\FindZLIB.cmake;C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-4.3\Modules\SelectLibraryConfigurations.cmake;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\vcpkg\installed\x64-windows-static\share\fmt\fmt-config-version.cmake;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\vcpkg\installed\x64-windows-static\share\fmt\fmt-config.cmake;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\vcpkg\installed\x64-windows-static\share\fmt\fmt-targets-debug.cmake;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\vcpkg\installed\x64-windows-static\share\fmt\fmt-targets-release.cmake;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\vcpkg\installed\x64-windows-static\share\fmt\fmt-targets.cmake;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\vcpkg\installed\x64-windows-static\share\libzip\libzip-config-version.cmake;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\vcpkg\installed\x64-windows-static\share\libzip\libzip-config.cmake;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\vcpkg\installed\x64-windows-static\share\libzip\libzip-targets-debug.cmake;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\vcpkg\installed\x64-windows-static\share\libzip\libzip-targets-release.cmake;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\vcpkg\installed\x64-windows-static\share\libzip\libzip-targets.cmake;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\vcpkg\installed\x64-windows-static\share\nlohmann_json\nlohmann_jsonConfig.cmake;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\vcpkg\installed\x64-windows-static\share\nlohmann_json\nlohmann_jsonConfigVersion.cmake;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\vcpkg\installed\x64-windows-static\share\nlohmann_json\nlohmann_jsonTargets.cmake;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\vcpkg\installed\x64-windows-static\share\spdlog\spdlogConfig.cmake;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\vcpkg\installed\x64-windows-static\share\spdlog\spdlogConfigTargets-debug.cmake;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\vcpkg\installed\x64-windows-static\share\spdlog\spdlogConfigTargets-release.cmake;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\vcpkg\installed\x64-windows-static\share\spdlog\spdlogConfigTargets.cmake;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\vcpkg\installed\x64-windows-static\share\spdlog\spdlogConfigVersion.cmake;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\vcpkg\installed\x64-windows-static\share\tinyxml2\tinyxml2-config-version.cmake;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\vcpkg\installed\x64-windows-static\share\tinyxml2\tinyxml2-config.cmake;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\vcpkg\installed\x64-windows-static\share\tinyxml2\tinyxml2-static-targets-debug.cmake;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\vcpkg\installed\x64-windows-static\share\tinyxml2\tinyxml2-static-targets-release.cmake;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\vcpkg\installed\x64-windows-static\share\tinyxml2\tinyxml2-static-targets.cmake;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\vcpkg\installed\x64-windows-static\share\zlib\vcpkg-cmake-wrapper.cmake;C:\Users\CmonMeow\Desktop\Shipwright\libultraship\cmake\Default.cmake;C:\Users\CmonMeow\Desktop\Shipwright\libultraship\cmake\DefaultCXX.cmake;C:\Users\CmonMeow\Desktop\Shipwright\libultraship\cmake\cvars.cmake;C:\Users\CmonMeow\Desktop\Shipwright\libultraship\src\ship\install_config.h.in;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:\Users\CmonMeow\Desktop\Shipwright\build\x64\libultraship\src\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</LinkObjects>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Building Custom Rule C:/Users/CmonMeow/Desktop/Shipwright/libultraship/src/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">setlocal
+"C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" -SC:/Users/CmonMeow/Desktop/Shipwright -BC:/Users/CmonMeow/Desktop/Shipwright/build/x64 --check-stamp-file C:/Users/CmonMeow/Desktop/Shipwright/build/x64/libultraship/src/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-4.3\Modules\CMakeFindDependencyMacro.cmake;C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-4.3\Modules\CMakePushCheckState.cmake;C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-4.3\Modules\CheckCSourceCompiles.cmake;C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-4.3\Modules\CheckIncludeFile.cmake;C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-4.3\Modules\CheckLibraryExists.cmake;C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-4.3\Modules\CheckSymbolExists.cmake;C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-4.3\Modules\FindBZip2.cmake;C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-4.3\Modules\FindPackageHandleStandardArgs.cmake;C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-4.3\Modules\FindPackageMessage.cmake;C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-4.3\Modules\FindThreads.cmake;C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-4.3\Modules\FindZLIB.cmake;C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-4.3\Modules\SelectLibraryConfigurations.cmake;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\vcpkg\installed\x64-windows-static\share\fmt\fmt-config-version.cmake;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\vcpkg\installed\x64-windows-static\share\fmt\fmt-config.cmake;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\vcpkg\installed\x64-windows-static\share\fmt\fmt-targets-debug.cmake;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\vcpkg\installed\x64-windows-static\share\fmt\fmt-targets-release.cmake;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\vcpkg\installed\x64-windows-static\share\fmt\fmt-targets.cmake;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\vcpkg\installed\x64-windows-static\share\libzip\libzip-config-version.cmake;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\vcpkg\installed\x64-windows-static\share\libzip\libzip-config.cmake;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\vcpkg\installed\x64-windows-static\share\libzip\libzip-targets-debug.cmake;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\vcpkg\installed\x64-windows-static\share\libzip\libzip-targets-release.cmake;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\vcpkg\installed\x64-windows-static\share\libzip\libzip-targets.cmake;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\vcpkg\installed\x64-windows-static\share\nlohmann_json\nlohmann_jsonConfig.cmake;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\vcpkg\installed\x64-windows-static\share\nlohmann_json\nlohmann_jsonConfigVersion.cmake;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\vcpkg\installed\x64-windows-static\share\nlohmann_json\nlohmann_jsonTargets.cmake;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\vcpkg\installed\x64-windows-static\share\spdlog\spdlogConfig.cmake;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\vcpkg\installed\x64-windows-static\share\spdlog\spdlogConfigTargets-debug.cmake;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\vcpkg\installed\x64-windows-static\share\spdlog\spdlogConfigTargets-release.cmake;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\vcpkg\installed\x64-windows-static\share\spdlog\spdlogConfigTargets.cmake;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\vcpkg\installed\x64-windows-static\share\spdlog\spdlogConfigVersion.cmake;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\vcpkg\installed\x64-windows-static\share\tinyxml2\tinyxml2-config-version.cmake;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\vcpkg\installed\x64-windows-static\share\tinyxml2\tinyxml2-config.cmake;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\vcpkg\installed\x64-windows-static\share\tinyxml2\tinyxml2-static-targets-debug.cmake;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\vcpkg\installed\x64-windows-static\share\tinyxml2\tinyxml2-static-targets-release.cmake;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\vcpkg\installed\x64-windows-static\share\tinyxml2\tinyxml2-static-targets.cmake;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\vcpkg\installed\x64-windows-static\share\zlib\vcpkg-cmake-wrapper.cmake;C:\Users\CmonMeow\Desktop\Shipwright\libultraship\cmake\Default.cmake;C:\Users\CmonMeow\Desktop\Shipwright\libultraship\cmake\DefaultCXX.cmake;C:\Users\CmonMeow\Desktop\Shipwright\libultraship\cmake\cvars.cmake;C:\Users\CmonMeow\Desktop\Shipwright\libultraship\src\ship\install_config.h.in;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:\Users\CmonMeow\Desktop\Shipwright\build\x64\libultraship\src\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</LinkObjects>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\libultraship\src\fast\Fast3dWindow.cpp" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\libultraship\src\fast\interpreter.cpp" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\libultraship\src\fast\debug\GfxDebugger.cpp" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\libultraship\src\fast\resource\type\DisplayList.cpp" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\libultraship\src\fast\resource\type\Light.cpp" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\libultraship\src\fast\resource\type\Matrix.cpp" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\libultraship\src\fast\resource\type\Texture.cpp" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\libultraship\src\fast\resource\type\Vertex.cpp" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\libultraship\src\fast\resource\factory\DisplayListFactory.cpp" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\libultraship\src\fast\resource\factory\LightFactory.cpp" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\libultraship\src\fast\resource\factory\MatrixFactory.cpp" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\libultraship\src\fast\resource\factory\TextureFactory.cpp" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\libultraship\src\fast\resource\factory\VertexFactory.cpp" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\libultraship\src\fast\backends\gfx_direct3d11.cpp" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\libultraship\src\fast\backends\gfx_direct3d_common.cpp" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\libultraship\src\fast\backends\gfx_dxgi.cpp" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\libultraship\src\fast\backends\gfx_metal.cpp" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\libultraship\src\fast\backends\gfx_metal_shader.cpp" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\libultraship\src\fast\backends\gfx_opengl.cpp" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\libultraship\src\fast\backends\gfx_sdl2.cpp" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\libultraship\src\libultraship\controller\controldeck\ControlDeck.cpp">
+      <ObjectFileName>$(IntDir)libultraship/controller/controldeck/ControlDeck.cpp.obj</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\libultraship\src\libultraship\controller\controldevice\controller\Controller.cpp">
+      <ObjectFileName>$(IntDir)libultraship/controller/controldevice/controller/Controller.cpp.obj</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\libultraship\src\libultraship\controller\controldevice\controller\mapping\ControllerDefaultMappings.cpp">
+      <ObjectFileName>$(IntDir)libultraship/controller/controldevice/controller/mapping/ControllerDefaultMappings.cpp.obj</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\libultraship\src\libultraship\bridge\audiobridge.cpp" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\libultraship\src\libultraship\bridge\consolevariablebridge.cpp" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\libultraship\src\libultraship\bridge\controllerbridge.cpp" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\libultraship\src\libultraship\bridge\crashhandlerbridge.cpp" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\libultraship\src\libultraship\bridge\gfxbridge.cpp" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\libultraship\src\libultraship\bridge\gfxdebuggerbridge.cpp" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\libultraship\src\libultraship\bridge\resourcebridge.cpp" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\libultraship\src\libultraship\bridge\windowbridge.cpp" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\libultraship\src\libultraship\libultra\os.cpp" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\libultraship\src\libultraship\libultra\os_cache.cpp" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\libultraship\src\libultraship\libultra\os_eeprom.cpp" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\libultraship\src\libultraship\libultra\os_mesg.cpp" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\libultraship\src\libultraship\libultra\os_pi.cpp" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\libultraship\src\libultraship\libultra\os_time.cpp" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\libultraship\src\libultraship\libultra\os_vi.cpp" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\libultraship\src\libultraship\libultra\os_vm.cpp" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\libultraship\src\libultraship\log\luslog.cpp" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\libultraship\src\libultraship\window\gui\GfxDebuggerWindow.cpp" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\libultraship\src\ship\Context.cpp" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\libultraship\src\ship\audio\Audio.cpp" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\libultraship\src\ship\audio\AudioPlayer.cpp" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\libultraship\src\ship\audio\NullAudioPlayer.cpp" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\libultraship\src\ship\audio\SDLAudioPlayer.cpp" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\libultraship\src\ship\audio\SoundMatrixDecoder.cpp" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\libultraship\src\ship\audio\WasapiAudioPlayer.cpp" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\libultraship\src\ship\controller\controldeck\ControlDeck.cpp">
+      <ObjectFileName>$(IntDir)ship/controller/controldeck/ControlDeck.cpp.obj</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\libultraship\src\ship\controller\controldeck\ControlPort.cpp" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\libultraship\src\ship\controller\controldevice\ControlDevice.cpp" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\libultraship\src\ship\controller\controldevice\controller\Controller.cpp">
+      <ObjectFileName>$(IntDir)ship/controller/controldevice/controller/Controller.cpp.obj</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\libultraship\src\ship\controller\controldevice\controller\ControllerButton.cpp" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\libultraship\src\ship\controller\controldevice\controller\ControllerGyro.cpp" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\libultraship\src\ship\controller\controldevice\controller\ControllerLED.cpp" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\libultraship\src\ship\controller\controldevice\controller\ControllerRumble.cpp" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\libultraship\src\ship\controller\controldevice\controller\ControllerStick.cpp" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\libultraship\src\ship\controller\controldevice\controller\mapping\ControllerAxisDirectionMapping.cpp" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\libultraship\src\ship\controller\controldevice\controller\mapping\ControllerButtonMapping.cpp" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\libultraship\src\ship\controller\controldevice\controller\mapping\ControllerDefaultMappings.cpp">
+      <ObjectFileName>$(IntDir)ship/controller/controldevice/controller/mapping/ControllerDefaultMappings.cpp.obj</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\libultraship\src\ship\controller\controldevice\controller\mapping\ControllerGyroMapping.cpp" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\libultraship\src\ship\controller\controldevice\controller\mapping\ControllerInputMapping.cpp" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\libultraship\src\ship\controller\controldevice\controller\mapping\ControllerLEDMapping.cpp" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\libultraship\src\ship\controller\controldevice\controller\mapping\ControllerMapping.cpp" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\libultraship\src\ship\controller\controldevice\controller\mapping\ControllerRumbleMapping.cpp" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\libultraship\src\ship\controller\controldevice\controller\mapping\factories\AxisDirectionMappingFactory.cpp" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\libultraship\src\ship\controller\controldevice\controller\mapping\factories\ButtonMappingFactory.cpp" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\libultraship\src\ship\controller\controldevice\controller\mapping\factories\GyroMappingFactory.cpp" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\libultraship\src\ship\controller\controldevice\controller\mapping\factories\LEDMappingFactory.cpp" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\libultraship\src\ship\controller\controldevice\controller\mapping\factories\RumbleMappingFactory.cpp" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\libultraship\src\ship\controller\controldevice\controller\mapping\keyboard\KeyboardKeyToAnyMapping.cpp" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\libultraship\src\ship\controller\controldevice\controller\mapping\keyboard\KeyboardKeyToAxisDirectionMapping.cpp" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\libultraship\src\ship\controller\controldevice\controller\mapping\keyboard\KeyboardKeyToButtonMapping.cpp" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\libultraship\src\ship\controller\controldevice\controller\mapping\mouse\MouseButtonToAnyMapping.cpp" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\libultraship\src\ship\controller\controldevice\controller\mapping\mouse\MouseButtonToAxisDirectionMapping.cpp" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\libultraship\src\ship\controller\controldevice\controller\mapping\mouse\MouseButtonToButtonMapping.cpp" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\libultraship\src\ship\controller\controldevice\controller\mapping\mouse\MouseWheelToAnyMapping.cpp" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\libultraship\src\ship\controller\controldevice\controller\mapping\mouse\MouseWheelToAxisDirectionMapping.cpp" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\libultraship\src\ship\controller\controldevice\controller\mapping\mouse\MouseWheelToButtonMapping.cpp" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\libultraship\src\ship\controller\controldevice\controller\mapping\mouse\WheelHandler.cpp" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\libultraship\src\ship\controller\controldevice\controller\mapping\sdl\SDLAxisDirectionToAnyMapping.cpp" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\libultraship\src\ship\controller\controldevice\controller\mapping\sdl\SDLAxisDirectionToAxisDirectionMapping.cpp" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\libultraship\src\ship\controller\controldevice\controller\mapping\sdl\SDLAxisDirectionToButtonMapping.cpp" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\libultraship\src\ship\controller\controldevice\controller\mapping\sdl\SDLButtonToAnyMapping.cpp" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\libultraship\src\ship\controller\controldevice\controller\mapping\sdl\SDLButtonToAxisDirectionMapping.cpp" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\libultraship\src\ship\controller\controldevice\controller\mapping\sdl\SDLButtonToButtonMapping.cpp" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\libultraship\src\ship\controller\controldevice\controller\mapping\sdl\SDLGyroMapping.cpp" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\libultraship\src\ship\controller\controldevice\controller\mapping\sdl\SDLLEDMapping.cpp" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\libultraship\src\ship\controller\controldevice\controller\mapping\sdl\SDLRumbleMapping.cpp" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\libultraship\src\ship\controller\physicaldevice\ConnectedPhysicalDeviceManager.cpp" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\libultraship\src\ship\controller\physicaldevice\GlobalSDLDeviceSettings.cpp" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\libultraship\src\ship\controller\physicaldevice\SDLAddRemoveDeviceEventHandler.cpp" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\libultraship\src\ship\config\Config.cpp" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\libultraship\src\ship\config\ConsoleVariable.cpp" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\libultraship\src\ship\debug\Console.cpp" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\libultraship\src\ship\debug\CrashHandler.cpp" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\libultraship\src\ship\window\FileDropMgr.cpp" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\libultraship\src\ship\window\Window.cpp" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\libultraship\src\ship\window\gui\ConsoleWindow.cpp" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\libultraship\src\ship\window\gui\GameOverlay.cpp" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\libultraship\src\ship\window\gui\Gui.cpp" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\libultraship\src\ship\window\gui\GuiElement.cpp" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\libultraship\src\ship\window\gui\GuiMenuBar.cpp" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\libultraship\src\ship\window\gui\GuiWindow.cpp" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\libultraship\src\ship\window\gui\InputEditorWindow.cpp" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\libultraship\src\ship\window\gui\StatsWindow.cpp" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\libultraship\src\ship\window\gui\resource\Font.cpp" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\libultraship\src\ship\window\gui\resource\FontFactory.cpp" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\libultraship\src\ship\window\gui\resource\GuiTexture.cpp" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\libultraship\src\ship\window\gui\resource\GuiTextureFactory.cpp" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\libultraship\src\ship\utils\StrHash64.cpp" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\libultraship\src\ship\utils\StringHelper.cpp" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\libultraship\src\ship\utils\Utils.cpp" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\libultraship\src\ship\utils\binarytools\BinaryReader.cpp" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\libultraship\src\ship\utils\binarytools\BinaryWriter.cpp" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\libultraship\src\ship\utils\binarytools\MemoryStream.cpp" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\libultraship\src\ship\utils\binarytools\Stream.cpp" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\libultraship\src\ship\utils\glob.c" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\libultraship\src\ship\utils\stox.cpp" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\libultraship\src\ship\resource\Resource.cpp" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\libultraship\src\ship\resource\ResourceFactoryBinary.cpp" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\libultraship\src\ship\resource\ResourceFactoryXML.cpp" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\libultraship\src\ship\resource\ResourceLoader.cpp" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\libultraship\src\ship\resource\ResourceManager.cpp" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\libultraship\src\ship\resource\type\Blob.cpp" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\libultraship\src\ship\resource\type\Json.cpp" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\libultraship\src\ship\resource\type\Shader.cpp" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\libultraship\src\ship\resource\factory\BlobFactory.cpp" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\libultraship\src\ship\resource\factory\JsonFactory.cpp" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\libultraship\src\ship\resource\factory\ShaderFactory.cpp" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\libultraship\src\ship\resource\archive\Archive.cpp" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\libultraship\src\ship\resource\archive\ArchiveManager.cpp" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\libultraship\src\ship\resource\archive\FolderArchive.cpp" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\libultraship\src\ship\resource\archive\O2rArchive.cpp" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\libultraship\src\ship\resource\archive\OtrArchive.cpp" />
+    <Natvis Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\vcpkg\installed\x64-windows-static\share\nlohmann_json\nlohmann_json.natvis">
+    </Natvis>
+  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\ZERO_CHECK.vcxproj">
+      <Project>{D741AB23-4C40-3F72-98FF-D787876C4574}</Project>
+      <Name>ZERO_CHECK</Name>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </ProjectReference>
+    <ProjectReference Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\libultraship\ImGui.vcxproj">
+      <Project>{58698712-2511-33C9-96E7-7DD1725DB59B}</Project>
+      <Name>ImGui</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\libultraship\libgfxd.vcxproj">
+      <Project>{E336F0A6-2313-316A-A6DB-31A934F64874}</Project>
+      <Name>libgfxd</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\prism-build\prism.vcxproj">
+      <Project>{48948160-6BFA-30FB-9401-08B164880F69}</Project>
+      <Name>prism</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\libultraship\stb.vcxproj">
+      <Project>{4BB74363-7DDE-3032-8F43-878476B15A43}</Project>
+      <Name>stb</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-build\storm.vcxproj">
+      <Project>{74DBBCDD-1D2E-3C44-A3B9-1E3A05C2EFD9}</Project>
+      <Name>storm</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

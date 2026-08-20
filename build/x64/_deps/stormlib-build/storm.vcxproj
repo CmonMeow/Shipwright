@@ -1,0 +1,415 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="18.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <PreferredToolArchitecture>x64</PreferredToolArchitecture>
+  </PropertyGroup>
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{74DBBCDD-1D2E-3C44-A3B9-1E3A05C2EFD9}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <VcpkgEnabled>false</VcpkgEnabled>
+    <WindowsTargetPlatformVersion>10.0.26100.0</WindowsTargetPlatformVersion>
+    <Platform>x64</Platform>
+    <ProjectName>storm</ProjectName>
+    <VCProjectUpgraderObjectName>NoUpgrade</VCProjectUpgraderObjectName>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <Import Project="C:/Program Files/Microsoft Visual Studio/18/Community/VC/Auxiliary/Build/14.51/Microsoft.VCToolsVersion.14.51.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v145</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v145</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets">
+    <Import Project="do_not_import_user.props" Condition="exists('do_not_import_user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.20506.1</_ProjectFileVersion>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-build\Debug\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">storm.dir\Debug\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">StormLib</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">.lib</TargetExt>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-build\Release\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">storm.dir\Release\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">StormLib</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.lib</TargetExt>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalOptions>%(AdditionalOptions) /external:I "C:/Users/CmonMeow/Desktop/Shipwright/build/x64/vcpkg/installed/x64-windows-static/include" /utf-8</AdditionalOptions>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <BufferSecurityCheck></BufferSecurityCheck>
+      <CallingConvention></CallingConvention>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <ExternalWarningLevel>TurnOffAllWarnings</ExternalWarningLevel>
+      <FloatingPointModel></FloatingPointModel>
+      <ForceConformanceInForLoopScope></ForceConformanceInForLoopScope>
+      <InlineFunctionExpansion>Disabled</InlineFunctionExpansion>
+      <LanguageStandard_C>stdclatest</LanguageStandard_C>
+      <MinimalRebuild></MinimalRebuild>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <Optimization>Disabled</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RemoveUnreferencedCodeData></RemoveUnreferencedCodeData>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <SupportJustMyCode></SupportJustMyCode>
+      <TreatWChar_tAsBuiltInType></TreatWChar_tAsBuiltInType>
+      <UseFullPaths>false</UseFullPaths>
+      <UseStandardPreprocessor>true</UseStandardPreprocessor>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;CVAR_PREFIX_RANDOMIZER_ENHANCEMENT="gRandoEnhancements";CVAR_PREFIX_RANDOMIZER_SETTING="gRandoSettings";CVAR_PREFIX_COSMETIC="gCosmetics";CVAR_PREFIX_AUDIO="gAudioEditor";CVAR_PREFIX_CHEAT="gCheats";CVAR_PREFIX_ENHANCEMENT="gEnhancements";CVAR_PREFIX_SETTING="gSettings";CVAR_PREFIX_WINDOW="gOpenWindows";CVAR_PREFIX_TRACKER="gTrackers";CVAR_PREFIX_DEVELOPER_TOOLS="gDeveloperTools";CVAR_PREFIX_GENERAL="gGeneral";CVAR_PREFIX_REMOTE="gRemote";CVAR_PREFIX_GAMEPLAY_STATS="gGameplayStats";CVAR_PREFIX_TIME_DISPLAY="gTimeDisplay";CVAR_VSYNC_ENABLED="gSettings.VsyncEnabled";CVAR_Z_FIGHTING_MODE="gSettings.ZFightingMode";CVAR_INTERNAL_RESOLUTION="gSettings.InternalResolution";CVAR_MSAA_VALUE="gSettings.MSAAValue";CVAR_SDL_WINDOWED_FULLSCREEN="gSettings.SdlWindowedFullscreen";CVAR_TEXTURE_FILTER="gSettings.TextureFilter";CVAR_IMGUI_CONTROLLER_NAV="gSettings.ControlNav";CVAR_CONSOLE_WINDOW_OPEN="gOpenWindows.Console";CVAR_CONTROLLER_CONFIGURATION_WINDOW_OPEN="gControllerConfigurationEnabled";CVAR_CONTROLLER_DISCONNECTED_WINDOW_OPEN="gOpenWindows.ControllerDisconnected";CVAR_CONTROLLER_REORDERING_WINDOW_OPEN="gOpenWindows.ControllerReordering";CVAR_GFX_DEBUGGER_WINDOW_OPEN="gOpenWindows.GfxDebugger";CVAR_STATS_WINDOW_OPEN="gOpenWindows.Stats";CVAR_ENABLE_MULTI_VIEWPORTS="gSettings.EnableMultiViewports";CVAR_LOW_RES_MODE="gSettings.LowResMode";CVAR_SIMULATED_INPUT_LAG="gSettings.SimulatedInputLag";CVAR_GAME_OVERLAY_FONT="gSettings.OverlayFont";CVAR_MENU_BAR_OPEN="gSettings.OpenMenuBar";CVAR_PREFIX_CONTROLLERS="gSettings.Controllers";CVAR_PREFIX_ADVANCED_RESOLUTION="gSettings.AdvancedResolution";CVAR_AUDIO_CHANNELS_SETTING="gAudioChannelsSetting";CVAR_ALLOW_BACKGROUND_INPUTS="gAllowBackgroundInputs";CONTROLLERBUTTONS_T=uint32_t;_7ZIP_ST;BZ_STRICT_ANSI;__SYS_ZLIB;__SYS_BZLIB;CMAKE_INTDIR="Debug"</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <ScanSourceForModuleDependencies>false</ScanSourceForModuleDependencies>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_DEBUG;_WINDOWS;CVAR_PREFIX_RANDOMIZER_ENHANCEMENT=\"gRandoEnhancements\";CVAR_PREFIX_RANDOMIZER_SETTING=\"gRandoSettings\";CVAR_PREFIX_COSMETIC=\"gCosmetics\";CVAR_PREFIX_AUDIO=\"gAudioEditor\";CVAR_PREFIX_CHEAT=\"gCheats\";CVAR_PREFIX_ENHANCEMENT=\"gEnhancements\";CVAR_PREFIX_SETTING=\"gSettings\";CVAR_PREFIX_WINDOW=\"gOpenWindows\";CVAR_PREFIX_TRACKER=\"gTrackers\";CVAR_PREFIX_DEVELOPER_TOOLS=\"gDeveloperTools\";CVAR_PREFIX_GENERAL=\"gGeneral\";CVAR_PREFIX_REMOTE=\"gRemote\";CVAR_PREFIX_GAMEPLAY_STATS=\"gGameplayStats\";CVAR_PREFIX_TIME_DISPLAY=\"gTimeDisplay\";CVAR_VSYNC_ENABLED=\"gSettings.VsyncEnabled\";CVAR_Z_FIGHTING_MODE=\"gSettings.ZFightingMode\";CVAR_INTERNAL_RESOLUTION=\"gSettings.InternalResolution\";CVAR_MSAA_VALUE=\"gSettings.MSAAValue\";CVAR_SDL_WINDOWED_FULLSCREEN=\"gSettings.SdlWindowedFullscreen\";CVAR_TEXTURE_FILTER=\"gSettings.TextureFilter\";CVAR_IMGUI_CONTROLLER_NAV=\"gSettings.ControlNav\";CVAR_CONSOLE_WINDOW_OPEN=\"gOpenWindows.Console\";CVAR_CONTROLLER_CONFIGURATION_WINDOW_OPEN=\"gControllerConfigurationEnabled\";CVAR_CONTROLLER_DISCONNECTED_WINDOW_OPEN=\"gOpenWindows.ControllerDisconnected\";CVAR_CONTROLLER_REORDERING_WINDOW_OPEN=\"gOpenWindows.ControllerReordering\";CVAR_GFX_DEBUGGER_WINDOW_OPEN=\"gOpenWindows.GfxDebugger\";CVAR_STATS_WINDOW_OPEN=\"gOpenWindows.Stats\";CVAR_ENABLE_MULTI_VIEWPORTS=\"gSettings.EnableMultiViewports\";CVAR_LOW_RES_MODE=\"gSettings.LowResMode\";CVAR_SIMULATED_INPUT_LAG=\"gSettings.SimulatedInputLag\";CVAR_GAME_OVERLAY_FONT=\"gSettings.OverlayFont\";CVAR_MENU_BAR_OPEN=\"gSettings.OpenMenuBar\";CVAR_PREFIX_CONTROLLERS=\"gSettings.Controllers\";CVAR_PREFIX_ADVANCED_RESOLUTION=\"gSettings.AdvancedResolution\";CVAR_AUDIO_CHANNELS_SETTING=\"gAudioChannelsSetting\";CVAR_ALLOW_BACKGROUND_INPUTS=\"gAllowBackgroundInputs\";CONTROLLERBUTTONS_T=uint32_t;_7ZIP_ST;BZ_STRICT_ANSI;__SYS_ZLIB;__SYS_BZLIB;CMAKE_INTDIR=\"Debug\"</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\vcpkg\installed\x64-windows-static\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\vcpkg\installed\x64-windows-static\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <Lib>
+      <AdditionalOptions>%(AdditionalOptions) /machine:x64</AdditionalOptions>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalOptions>%(AdditionalOptions) /external:I "C:/Users/CmonMeow/Desktop/Shipwright/build/x64/vcpkg/installed/x64-windows-static/include" /utf-8</AdditionalOptions>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+      <BufferSecurityCheck></BufferSecurityCheck>
+      <CallingConvention></CallingConvention>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <ExternalWarningLevel>TurnOffAllWarnings</ExternalWarningLevel>
+      <FloatingPointModel></FloatingPointModel>
+      <ForceConformanceInForLoopScope></ForceConformanceInForLoopScope>
+      <LanguageStandard_C>stdclatest</LanguageStandard_C>
+      <MinimalRebuild></MinimalRebuild>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <Optimization>MaxSpeed</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RemoveUnreferencedCodeData></RemoveUnreferencedCodeData>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <SupportJustMyCode></SupportJustMyCode>
+      <TreatWChar_tAsBuiltInType></TreatWChar_tAsBuiltInType>
+      <UseFullPaths>false</UseFullPaths>
+      <UseStandardPreprocessor>true</UseStandardPreprocessor>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;CVAR_PREFIX_RANDOMIZER_ENHANCEMENT="gRandoEnhancements";CVAR_PREFIX_RANDOMIZER_SETTING="gRandoSettings";CVAR_PREFIX_COSMETIC="gCosmetics";CVAR_PREFIX_AUDIO="gAudioEditor";CVAR_PREFIX_CHEAT="gCheats";CVAR_PREFIX_ENHANCEMENT="gEnhancements";CVAR_PREFIX_SETTING="gSettings";CVAR_PREFIX_WINDOW="gOpenWindows";CVAR_PREFIX_TRACKER="gTrackers";CVAR_PREFIX_DEVELOPER_TOOLS="gDeveloperTools";CVAR_PREFIX_GENERAL="gGeneral";CVAR_PREFIX_REMOTE="gRemote";CVAR_PREFIX_GAMEPLAY_STATS="gGameplayStats";CVAR_PREFIX_TIME_DISPLAY="gTimeDisplay";CVAR_VSYNC_ENABLED="gSettings.VsyncEnabled";CVAR_Z_FIGHTING_MODE="gSettings.ZFightingMode";CVAR_INTERNAL_RESOLUTION="gSettings.InternalResolution";CVAR_MSAA_VALUE="gSettings.MSAAValue";CVAR_SDL_WINDOWED_FULLSCREEN="gSettings.SdlWindowedFullscreen";CVAR_TEXTURE_FILTER="gSettings.TextureFilter";CVAR_IMGUI_CONTROLLER_NAV="gSettings.ControlNav";CVAR_CONSOLE_WINDOW_OPEN="gOpenWindows.Console";CVAR_CONTROLLER_CONFIGURATION_WINDOW_OPEN="gControllerConfigurationEnabled";CVAR_CONTROLLER_DISCONNECTED_WINDOW_OPEN="gOpenWindows.ControllerDisconnected";CVAR_CONTROLLER_REORDERING_WINDOW_OPEN="gOpenWindows.ControllerReordering";CVAR_GFX_DEBUGGER_WINDOW_OPEN="gOpenWindows.GfxDebugger";CVAR_STATS_WINDOW_OPEN="gOpenWindows.Stats";CVAR_ENABLE_MULTI_VIEWPORTS="gSettings.EnableMultiViewports";CVAR_LOW_RES_MODE="gSettings.LowResMode";CVAR_SIMULATED_INPUT_LAG="gSettings.SimulatedInputLag";CVAR_GAME_OVERLAY_FONT="gSettings.OverlayFont";CVAR_MENU_BAR_OPEN="gSettings.OpenMenuBar";CVAR_PREFIX_CONTROLLERS="gSettings.Controllers";CVAR_PREFIX_ADVANCED_RESOLUTION="gSettings.AdvancedResolution";CVAR_AUDIO_CHANNELS_SETTING="gAudioChannelsSetting";CVAR_ALLOW_BACKGROUND_INPUTS="gAllowBackgroundInputs";CONTROLLERBUTTONS_T=uint32_t;_7ZIP_ST;BZ_STRICT_ANSI;__SYS_ZLIB;__SYS_BZLIB;CMAKE_INTDIR="Release"</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <DebugInformationFormat>
+      </DebugInformationFormat>
+      <ScanSourceForModuleDependencies>false</ScanSourceForModuleDependencies>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;CVAR_PREFIX_RANDOMIZER_ENHANCEMENT=\"gRandoEnhancements\";CVAR_PREFIX_RANDOMIZER_SETTING=\"gRandoSettings\";CVAR_PREFIX_COSMETIC=\"gCosmetics\";CVAR_PREFIX_AUDIO=\"gAudioEditor\";CVAR_PREFIX_CHEAT=\"gCheats\";CVAR_PREFIX_ENHANCEMENT=\"gEnhancements\";CVAR_PREFIX_SETTING=\"gSettings\";CVAR_PREFIX_WINDOW=\"gOpenWindows\";CVAR_PREFIX_TRACKER=\"gTrackers\";CVAR_PREFIX_DEVELOPER_TOOLS=\"gDeveloperTools\";CVAR_PREFIX_GENERAL=\"gGeneral\";CVAR_PREFIX_REMOTE=\"gRemote\";CVAR_PREFIX_GAMEPLAY_STATS=\"gGameplayStats\";CVAR_PREFIX_TIME_DISPLAY=\"gTimeDisplay\";CVAR_VSYNC_ENABLED=\"gSettings.VsyncEnabled\";CVAR_Z_FIGHTING_MODE=\"gSettings.ZFightingMode\";CVAR_INTERNAL_RESOLUTION=\"gSettings.InternalResolution\";CVAR_MSAA_VALUE=\"gSettings.MSAAValue\";CVAR_SDL_WINDOWED_FULLSCREEN=\"gSettings.SdlWindowedFullscreen\";CVAR_TEXTURE_FILTER=\"gSettings.TextureFilter\";CVAR_IMGUI_CONTROLLER_NAV=\"gSettings.ControlNav\";CVAR_CONSOLE_WINDOW_OPEN=\"gOpenWindows.Console\";CVAR_CONTROLLER_CONFIGURATION_WINDOW_OPEN=\"gControllerConfigurationEnabled\";CVAR_CONTROLLER_DISCONNECTED_WINDOW_OPEN=\"gOpenWindows.ControllerDisconnected\";CVAR_CONTROLLER_REORDERING_WINDOW_OPEN=\"gOpenWindows.ControllerReordering\";CVAR_GFX_DEBUGGER_WINDOW_OPEN=\"gOpenWindows.GfxDebugger\";CVAR_STATS_WINDOW_OPEN=\"gOpenWindows.Stats\";CVAR_ENABLE_MULTI_VIEWPORTS=\"gSettings.EnableMultiViewports\";CVAR_LOW_RES_MODE=\"gSettings.LowResMode\";CVAR_SIMULATED_INPUT_LAG=\"gSettings.SimulatedInputLag\";CVAR_GAME_OVERLAY_FONT=\"gSettings.OverlayFont\";CVAR_MENU_BAR_OPEN=\"gSettings.OpenMenuBar\";CVAR_PREFIX_CONTROLLERS=\"gSettings.Controllers\";CVAR_PREFIX_ADVANCED_RESOLUTION=\"gSettings.AdvancedResolution\";CVAR_AUDIO_CHANNELS_SETTING=\"gAudioChannelsSetting\";CVAR_ALLOW_BACKGROUND_INPUTS=\"gAllowBackgroundInputs\";CONTROLLERBUTTONS_T=uint32_t;_7ZIP_ST;BZ_STRICT_ANSI;__SYS_ZLIB;__SYS_BZLIB;CMAKE_INTDIR=\"Release\"</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\vcpkg\installed\x64-windows-static\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\vcpkg\installed\x64-windows-static\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <Lib>
+      <AdditionalOptions>%(AdditionalOptions) /machine:x64</AdditionalOptions>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\CMakeLists.txt">
+      <UseUtf8Encoding>Always</UseUtf8Encoding>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Building Custom Rule C:/Users/CmonMeow/Desktop/Shipwright/build/x64/_deps/stormlib-src/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">setlocal
+"C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" -SC:/Users/CmonMeow/Desktop/Shipwright -BC:/Users/CmonMeow/Desktop/Shipwright/build/x64 --check-stamp-file C:/Users/CmonMeow/Desktop/Shipwright/build/x64/_deps/stormlib-build/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-4.3\Modules\CMakeDependentOption.cmake;C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-4.3\Modules\CMakePushCheckState.cmake;C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-4.3\Modules\CPack.cmake;C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-4.3\Modules\CPackComponent.cmake;C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-4.3\Modules\CheckSymbolExists.cmake;C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-4.3\Modules\FindBZip2.cmake;C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-4.3\Modules\FindPackageHandleStandardArgs.cmake;C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-4.3\Modules\FindPackageMessage.cmake;C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-4.3\Modules\FindZLIB.cmake;C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-4.3\Modules\SelectLibraryConfigurations.cmake;C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-4.3\Templates\CPackConfig.cmake.in;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\vcpkg\installed\x64-windows-static\share\zlib\vcpkg-cmake-wrapper.cmake;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-build\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</LinkObjects>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Building Custom Rule C:/Users/CmonMeow/Desktop/Shipwright/build/x64/_deps/stormlib-src/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">setlocal
+"C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" -SC:/Users/CmonMeow/Desktop/Shipwright -BC:/Users/CmonMeow/Desktop/Shipwright/build/x64 --check-stamp-file C:/Users/CmonMeow/Desktop/Shipwright/build/x64/_deps/stormlib-build/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-4.3\Modules\CMakeDependentOption.cmake;C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-4.3\Modules\CMakePushCheckState.cmake;C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-4.3\Modules\CPack.cmake;C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-4.3\Modules\CPackComponent.cmake;C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-4.3\Modules\CheckSymbolExists.cmake;C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-4.3\Modules\FindBZip2.cmake;C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-4.3\Modules\FindPackageHandleStandardArgs.cmake;C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-4.3\Modules\FindPackageMessage.cmake;C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-4.3\Modules\FindZLIB.cmake;C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-4.3\Modules\SelectLibraryConfigurations.cmake;C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-4.3\Templates\CPackConfig.cmake.in;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\vcpkg\installed\x64-windows-static\share\zlib\vcpkg-cmake-wrapper.cmake;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-build\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</LinkObjects>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src\adpcm\adpcm.cpp" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src\huffman\huff.cpp" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src\jenkins\lookup3.c" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src\lzma\C\LzFind.c" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src\lzma\C\LzmaDec.c" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src\lzma\C\LzmaEnc.c" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src\pklib\explode.c" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src\pklib\implode.c" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src\sparse\sparse.cpp" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src\FileStream.cpp" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src\SBaseCommon.cpp" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src\SBaseDumpData.cpp" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src\SBaseFileTable.cpp" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src\SBaseSubTypes.cpp" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src\SCompression.cpp" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src\SFileAddFile.cpp" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src\SFileAttributes.cpp" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src\SFileCompactArchive.cpp" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src\SFileCreateArchive.cpp" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src\SFileExtractFile.cpp" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src\SFileFindFile.cpp" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src\SFileGetFileInfo.cpp" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src\SFileListFile.cpp" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src\SFileOpenArchive.cpp" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src\SFileOpenFileEx.cpp" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src\SFilePatchArchives.cpp" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src\SFileReadFile.cpp" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src\SFileVerify.cpp" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src\libtomcrypt\src\pk\rsa\rsa_verify_simple.c" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src\libtomcrypt\src\misc\crypt_libc.c" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src\libtomcrypt\src\hashes\hash_memory.c" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src\libtomcrypt\src\hashes\md5.c" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src\libtomcrypt\src\hashes\sha1.c" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src\libtomcrypt\src\math\ltm_desc.c" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src\libtomcrypt\src\math\multi.c" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src\libtomcrypt\src\math\rand_prime.c" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src\libtomcrypt\src\misc\base64_decode.c" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src\libtomcrypt\src\misc\crypt_argchk.c" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src\libtomcrypt\src\misc\crypt_find_hash.c" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src\libtomcrypt\src\misc\crypt_find_prng.c" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src\libtomcrypt\src\misc\crypt_hash_descriptor.c" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src\libtomcrypt\src\misc\crypt_hash_is_valid.c" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src\libtomcrypt\src\misc\crypt_ltc_mp_descriptor.c" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src\libtomcrypt\src\misc\crypt_prng_descriptor.c" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src\libtomcrypt\src\misc\crypt_prng_is_valid.c" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src\libtomcrypt\src\misc\crypt_register_hash.c" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src\libtomcrypt\src\misc\crypt_register_prng.c" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src\libtomcrypt\src\misc\zeromem.c" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src\libtomcrypt\src\pk\asn1\der_decode_bit_string.c" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src\libtomcrypt\src\pk\asn1\der_decode_boolean.c" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src\libtomcrypt\src\pk\asn1\der_decode_choice.c" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src\libtomcrypt\src\pk\asn1\der_decode_ia5_string.c" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src\libtomcrypt\src\pk\asn1\der_decode_integer.c" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src\libtomcrypt\src\pk\asn1\der_decode_object_identifier.c" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src\libtomcrypt\src\pk\asn1\der_decode_octet_string.c" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src\libtomcrypt\src\pk\asn1\der_decode_printable_string.c" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src\libtomcrypt\src\pk\asn1\der_decode_sequence_ex.c" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src\libtomcrypt\src\pk\asn1\der_decode_sequence_flexi.c" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src\libtomcrypt\src\pk\asn1\der_decode_sequence_multi.c" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src\libtomcrypt\src\pk\asn1\der_decode_short_integer.c" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src\libtomcrypt\src\pk\asn1\der_decode_utctime.c" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src\libtomcrypt\src\pk\asn1\der_decode_utf8_string.c" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src\libtomcrypt\src\pk\asn1\der_encode_bit_string.c" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src\libtomcrypt\src\pk\asn1\der_encode_boolean.c" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src\libtomcrypt\src\pk\asn1\der_encode_ia5_string.c" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src\libtomcrypt\src\pk\asn1\der_encode_integer.c" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src\libtomcrypt\src\pk\asn1\der_encode_object_identifier.c" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src\libtomcrypt\src\pk\asn1\der_encode_octet_string.c" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src\libtomcrypt\src\pk\asn1\der_encode_printable_string.c" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src\libtomcrypt\src\pk\asn1\der_encode_sequence_ex.c" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src\libtomcrypt\src\pk\asn1\der_encode_sequence_multi.c" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src\libtomcrypt\src\pk\asn1\der_encode_set.c" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src\libtomcrypt\src\pk\asn1\der_encode_setof.c" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src\libtomcrypt\src\pk\asn1\der_encode_short_integer.c" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src\libtomcrypt\src\pk\asn1\der_encode_utctime.c" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src\libtomcrypt\src\pk\asn1\der_encode_utf8_string.c" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src\libtomcrypt\src\pk\asn1\der_length_bit_string.c" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src\libtomcrypt\src\pk\asn1\der_length_boolean.c" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src\libtomcrypt\src\pk\asn1\der_length_ia5_string.c" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src\libtomcrypt\src\pk\asn1\der_length_integer.c" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src\libtomcrypt\src\pk\asn1\der_length_object_identifier.c" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src\libtomcrypt\src\pk\asn1\der_length_octet_string.c" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src\libtomcrypt\src\pk\asn1\der_length_printable_string.c" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src\libtomcrypt\src\pk\asn1\der_length_sequence.c" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src\libtomcrypt\src\pk\asn1\der_length_utctime.c" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src\libtomcrypt\src\pk\asn1\der_sequence_free.c" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src\libtomcrypt\src\pk\asn1\der_length_utf8_string.c" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src\libtomcrypt\src\pk\asn1\der_length_short_integer.c" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src\libtomcrypt\src\pk\ecc\ltc_ecc_map.c" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src\libtomcrypt\src\pk\ecc\ltc_ecc_mul2add.c" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src\libtomcrypt\src\pk\ecc\ltc_ecc_mulmod.c" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src\libtomcrypt\src\pk\ecc\ltc_ecc_points.c" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src\libtomcrypt\src\pk\ecc\ltc_ecc_projective_add_point.c" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src\libtomcrypt\src\pk\ecc\ltc_ecc_projective_dbl_point.c" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src\libtomcrypt\src\pk\pkcs1\pkcs_1_mgf1.c" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src\libtomcrypt\src\pk\pkcs1\pkcs_1_oaep_decode.c" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src\libtomcrypt\src\pk\pkcs1\pkcs_1_pss_decode.c" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src\libtomcrypt\src\pk\pkcs1\pkcs_1_pss_encode.c" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src\libtomcrypt\src\pk\pkcs1\pkcs_1_v1_5_decode.c" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src\libtomcrypt\src\pk\pkcs1\pkcs_1_v1_5_encode.c" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src\libtomcrypt\src\pk\rsa\rsa_exptmod.c" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src\libtomcrypt\src\pk\rsa\rsa_free.c" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src\libtomcrypt\src\pk\rsa\rsa_import.c" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src\libtomcrypt\src\pk\rsa\rsa_make_key.c" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src\libtomcrypt\src\pk\rsa\rsa_sign_hash.c" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src\libtomcrypt\src\pk\rsa\rsa_verify_hash.c" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src\libtommath\bncore.c" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src\libtommath\bn_fast_mp_invmod.c" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src\libtommath\bn_fast_mp_montgomery_reduce.c" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src\libtommath\bn_fast_s_mp_mul_digs.c" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src\libtommath\bn_fast_s_mp_mul_high_digs.c" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src\libtommath\bn_fast_s_mp_sqr.c" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src\libtommath\bn_mp_2expt.c" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src\libtommath\bn_mp_abs.c" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src\libtommath\bn_mp_add.c" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src\libtommath\bn_mp_addmod.c" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src\libtommath\bn_mp_add_d.c" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src\libtommath\bn_mp_and.c" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src\libtommath\bn_mp_clamp.c" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src\libtommath\bn_mp_clear.c" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src\libtommath\bn_mp_clear_multi.c" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src\libtommath\bn_mp_cmp.c" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src\libtommath\bn_mp_cmp_d.c" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src\libtommath\bn_mp_cmp_mag.c" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src\libtommath\bn_mp_cnt_lsb.c" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src\libtommath\bn_mp_copy.c" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src\libtommath\bn_mp_count_bits.c" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src\libtommath\bn_mp_div.c" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src\libtommath\bn_mp_div_2.c" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src\libtommath\bn_mp_div_2d.c" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src\libtommath\bn_mp_div_3.c" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src\libtommath\bn_mp_div_d.c" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src\libtommath\bn_mp_dr_is_modulus.c" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src\libtommath\bn_mp_dr_reduce.c" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src\libtommath\bn_mp_dr_setup.c" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src\libtommath\bn_mp_exch.c" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src\libtommath\bn_mp_exptmod.c" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src\libtommath\bn_mp_exptmod_fast.c" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src\libtommath\bn_mp_expt_d.c" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src\libtommath\bn_mp_exteuclid.c" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src\libtommath\bn_mp_fread.c" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src\libtommath\bn_mp_fwrite.c" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src\libtommath\bn_mp_gcd.c" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src\libtommath\bn_mp_get_int.c" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src\libtommath\bn_mp_grow.c" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src\libtommath\bn_mp_init.c" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src\libtommath\bn_mp_init_copy.c" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src\libtommath\bn_mp_init_multi.c" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src\libtommath\bn_mp_init_set.c" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src\libtommath\bn_mp_init_set_int.c" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src\libtommath\bn_mp_init_size.c" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src\libtommath\bn_mp_invmod.c" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src\libtommath\bn_mp_invmod_slow.c" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src\libtommath\bn_mp_is_square.c" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src\libtommath\bn_mp_jacobi.c" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src\libtommath\bn_mp_karatsuba_mul.c" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src\libtommath\bn_mp_karatsuba_sqr.c" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src\libtommath\bn_mp_lcm.c" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src\libtommath\bn_mp_lshd.c" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src\libtommath\bn_mp_mod.c" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src\libtommath\bn_mp_mod_2d.c" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src\libtommath\bn_mp_mod_d.c" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src\libtommath\bn_mp_montgomery_calc_normalization.c" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src\libtommath\bn_mp_montgomery_reduce.c" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src\libtommath\bn_mp_montgomery_setup.c" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src\libtommath\bn_mp_mul.c" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src\libtommath\bn_mp_mulmod.c" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src\libtommath\bn_mp_mul_2.c" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src\libtommath\bn_mp_mul_2d.c" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src\libtommath\bn_mp_mul_d.c" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src\libtommath\bn_mp_neg.c" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src\libtommath\bn_mp_n_root.c" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src\libtommath\bn_mp_or.c" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src\libtommath\bn_mp_prime_fermat.c" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src\libtommath\bn_mp_prime_is_divisible.c" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src\libtommath\bn_mp_prime_is_prime.c" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src\libtommath\bn_mp_prime_miller_rabin.c" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src\libtommath\bn_mp_prime_next_prime.c" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src\libtommath\bn_mp_prime_rabin_miller_trials.c" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src\libtommath\bn_mp_prime_random_ex.c" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src\libtommath\bn_mp_radix_size.c" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src\libtommath\bn_mp_radix_smap.c" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src\libtommath\bn_mp_rand.c" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src\libtommath\bn_mp_read_radix.c" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src\libtommath\bn_mp_read_signed_bin.c" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src\libtommath\bn_mp_read_unsigned_bin.c" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src\libtommath\bn_mp_reduce.c" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src\libtommath\bn_mp_reduce_2k.c" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src\libtommath\bn_mp_reduce_2k_l.c" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src\libtommath\bn_mp_reduce_2k_setup.c" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src\libtommath\bn_mp_reduce_2k_setup_l.c" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src\libtommath\bn_mp_reduce_is_2k.c" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src\libtommath\bn_mp_reduce_is_2k_l.c" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src\libtommath\bn_mp_reduce_setup.c" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src\libtommath\bn_mp_rshd.c" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src\libtommath\bn_mp_set.c" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src\libtommath\bn_mp_set_int.c" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src\libtommath\bn_mp_shrink.c" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src\libtommath\bn_mp_signed_bin_size.c" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src\libtommath\bn_mp_sqr.c" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src\libtommath\bn_mp_sqrmod.c" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src\libtommath\bn_mp_sqrt.c" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src\libtommath\bn_mp_sub.c" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src\libtommath\bn_mp_submod.c" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src\libtommath\bn_mp_sub_d.c" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src\libtommath\bn_mp_toom_mul.c" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src\libtommath\bn_mp_toom_sqr.c" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src\libtommath\bn_mp_toradix.c" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src\libtommath\bn_mp_toradix_n.c" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src\libtommath\bn_mp_to_signed_bin.c" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src\libtommath\bn_mp_to_signed_bin_n.c" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src\libtommath\bn_mp_to_unsigned_bin.c" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src\libtommath\bn_mp_to_unsigned_bin_n.c" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src\libtommath\bn_mp_unsigned_bin_size.c" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src\libtommath\bn_mp_xor.c" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src\libtommath\bn_mp_zero.c" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src\libtommath\bn_prime_tab.c" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src\libtommath\bn_reverse.c" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src\libtommath\bn_s_mp_add.c" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src\libtommath\bn_s_mp_exptmod.c" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src\libtommath\bn_s_mp_mul_digs.c" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src\libtommath\bn_s_mp_mul_high_digs.c" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src\libtommath\bn_s_mp_sqr.c" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src\libtommath\bn_s_mp_sub.c" />
+    <None Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src\DllMain.def" />
+  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\ZERO_CHECK.vcxproj">
+      <Project>{D741AB23-4C40-3F72-98FF-D787876C4574}</Project>
+      <Name>ZERO_CHECK</Name>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

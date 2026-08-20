@@ -1,0 +1,199 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="18.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <PreferredToolArchitecture>x64</PreferredToolArchitecture>
+  </PropertyGroup>
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{58698712-2511-33C9-96E7-7DD1725DB59B}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <VcpkgEnabled>false</VcpkgEnabled>
+    <WindowsTargetPlatformVersion>10.0.26100.0</WindowsTargetPlatformVersion>
+    <Platform>x64</Platform>
+    <ProjectName>ImGui</ProjectName>
+    <VCProjectUpgraderObjectName>NoUpgrade</VCProjectUpgraderObjectName>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <Import Project="C:/Program Files/Microsoft Visual Studio/18/Community/VC/Auxiliary/Build/14.51/Microsoft.VCToolsVersion.14.51.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v145</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v145</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets">
+    <Import Project="do_not_import_user.props" Condition="exists('do_not_import_user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.20506.1</_ProjectFileVersion>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:\Users\CmonMeow\Desktop\Shipwright\build\x64\libultraship\Debug\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">ImGui.dir\Debug\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">ImGui</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">.lib</TargetExt>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:\Users\CmonMeow\Desktop\Shipwright\build\x64\libultraship\Release\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">ImGui.dir\Release\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">ImGui</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.lib</TargetExt>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\imgui-src;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\imgui-src\backends;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalOptions>%(AdditionalOptions) /external:I "C:/Users/CmonMeow/Desktop/Shipwright/build/x64/vcpkg/installed/x64-windows-static/include" /external:I "C:/Users/CmonMeow/Desktop/Shipwright/build/x64/vcpkg/installed/x64-windows-static/include/SDL2" /utf-8</AdditionalOptions>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <BufferSecurityCheck></BufferSecurityCheck>
+      <CallingConvention></CallingConvention>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <ExternalWarningLevel>TurnOffAllWarnings</ExternalWarningLevel>
+      <FloatingPointModel></FloatingPointModel>
+      <ForceConformanceInForLoopScope></ForceConformanceInForLoopScope>
+      <InlineFunctionExpansion>Disabled</InlineFunctionExpansion>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <MinimalRebuild></MinimalRebuild>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <Optimization>Disabled</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RemoveUnreferencedCodeData></RemoveUnreferencedCodeData>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <SupportJustMyCode></SupportJustMyCode>
+      <TreatWChar_tAsBuiltInType></TreatWChar_tAsBuiltInType>
+      <UseFullPaths>false</UseFullPaths>
+      <UseStandardPreprocessor>true</UseStandardPreprocessor>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;CVAR_PREFIX_RANDOMIZER_ENHANCEMENT="gRandoEnhancements";CVAR_PREFIX_RANDOMIZER_SETTING="gRandoSettings";CVAR_PREFIX_COSMETIC="gCosmetics";CVAR_PREFIX_AUDIO="gAudioEditor";CVAR_PREFIX_CHEAT="gCheats";CVAR_PREFIX_ENHANCEMENT="gEnhancements";CVAR_PREFIX_SETTING="gSettings";CVAR_PREFIX_WINDOW="gOpenWindows";CVAR_PREFIX_TRACKER="gTrackers";CVAR_PREFIX_DEVELOPER_TOOLS="gDeveloperTools";CVAR_PREFIX_GENERAL="gGeneral";CVAR_PREFIX_REMOTE="gRemote";CVAR_PREFIX_GAMEPLAY_STATS="gGameplayStats";CVAR_PREFIX_TIME_DISPLAY="gTimeDisplay";CVAR_VSYNC_ENABLED="gSettings.VsyncEnabled";CVAR_Z_FIGHTING_MODE="gSettings.ZFightingMode";CVAR_INTERNAL_RESOLUTION="gSettings.InternalResolution";CVAR_MSAA_VALUE="gSettings.MSAAValue";CVAR_SDL_WINDOWED_FULLSCREEN="gSettings.SdlWindowedFullscreen";CVAR_TEXTURE_FILTER="gSettings.TextureFilter";CVAR_IMGUI_CONTROLLER_NAV="gSettings.ControlNav";CVAR_CONSOLE_WINDOW_OPEN="gOpenWindows.Console";CVAR_CONTROLLER_CONFIGURATION_WINDOW_OPEN="gControllerConfigurationEnabled";CVAR_CONTROLLER_DISCONNECTED_WINDOW_OPEN="gOpenWindows.ControllerDisconnected";CVAR_CONTROLLER_REORDERING_WINDOW_OPEN="gOpenWindows.ControllerReordering";CVAR_GFX_DEBUGGER_WINDOW_OPEN="gOpenWindows.GfxDebugger";CVAR_STATS_WINDOW_OPEN="gOpenWindows.Stats";CVAR_ENABLE_MULTI_VIEWPORTS="gSettings.EnableMultiViewports";CVAR_LOW_RES_MODE="gSettings.LowResMode";CVAR_SIMULATED_INPUT_LAG="gSettings.SimulatedInputLag";CVAR_GAME_OVERLAY_FONT="gSettings.OverlayFont";CVAR_MENU_BAR_OPEN="gSettings.OpenMenuBar";CVAR_PREFIX_CONTROLLERS="gSettings.Controllers";CVAR_PREFIX_ADVANCED_RESOLUTION="gSettings.AdvancedResolution";CVAR_AUDIO_CHANNELS_SETTING="gAudioChannelsSetting";CVAR_ALLOW_BACKGROUND_INPUTS="gAllowBackgroundInputs";CONTROLLERBUTTONS_T=uint32_t;GLEW_STATIC;CMAKE_INTDIR="Debug"</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <ScanSourceForModuleDependencies>false</ScanSourceForModuleDependencies>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_DEBUG;_WINDOWS;CVAR_PREFIX_RANDOMIZER_ENHANCEMENT=\"gRandoEnhancements\";CVAR_PREFIX_RANDOMIZER_SETTING=\"gRandoSettings\";CVAR_PREFIX_COSMETIC=\"gCosmetics\";CVAR_PREFIX_AUDIO=\"gAudioEditor\";CVAR_PREFIX_CHEAT=\"gCheats\";CVAR_PREFIX_ENHANCEMENT=\"gEnhancements\";CVAR_PREFIX_SETTING=\"gSettings\";CVAR_PREFIX_WINDOW=\"gOpenWindows\";CVAR_PREFIX_TRACKER=\"gTrackers\";CVAR_PREFIX_DEVELOPER_TOOLS=\"gDeveloperTools\";CVAR_PREFIX_GENERAL=\"gGeneral\";CVAR_PREFIX_REMOTE=\"gRemote\";CVAR_PREFIX_GAMEPLAY_STATS=\"gGameplayStats\";CVAR_PREFIX_TIME_DISPLAY=\"gTimeDisplay\";CVAR_VSYNC_ENABLED=\"gSettings.VsyncEnabled\";CVAR_Z_FIGHTING_MODE=\"gSettings.ZFightingMode\";CVAR_INTERNAL_RESOLUTION=\"gSettings.InternalResolution\";CVAR_MSAA_VALUE=\"gSettings.MSAAValue\";CVAR_SDL_WINDOWED_FULLSCREEN=\"gSettings.SdlWindowedFullscreen\";CVAR_TEXTURE_FILTER=\"gSettings.TextureFilter\";CVAR_IMGUI_CONTROLLER_NAV=\"gSettings.ControlNav\";CVAR_CONSOLE_WINDOW_OPEN=\"gOpenWindows.Console\";CVAR_CONTROLLER_CONFIGURATION_WINDOW_OPEN=\"gControllerConfigurationEnabled\";CVAR_CONTROLLER_DISCONNECTED_WINDOW_OPEN=\"gOpenWindows.ControllerDisconnected\";CVAR_CONTROLLER_REORDERING_WINDOW_OPEN=\"gOpenWindows.ControllerReordering\";CVAR_GFX_DEBUGGER_WINDOW_OPEN=\"gOpenWindows.GfxDebugger\";CVAR_STATS_WINDOW_OPEN=\"gOpenWindows.Stats\";CVAR_ENABLE_MULTI_VIEWPORTS=\"gSettings.EnableMultiViewports\";CVAR_LOW_RES_MODE=\"gSettings.LowResMode\";CVAR_SIMULATED_INPUT_LAG=\"gSettings.SimulatedInputLag\";CVAR_GAME_OVERLAY_FONT=\"gSettings.OverlayFont\";CVAR_MENU_BAR_OPEN=\"gSettings.OpenMenuBar\";CVAR_PREFIX_CONTROLLERS=\"gSettings.Controllers\";CVAR_PREFIX_ADVANCED_RESOLUTION=\"gSettings.AdvancedResolution\";CVAR_AUDIO_CHANNELS_SETTING=\"gAudioChannelsSetting\";CVAR_ALLOW_BACKGROUND_INPUTS=\"gAllowBackgroundInputs\";CONTROLLERBUTTONS_T=uint32_t;GLEW_STATIC;CMAKE_INTDIR=\"Debug\"</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\imgui-src;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\imgui-src\backends;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\vcpkg\installed\x64-windows-static\include;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\vcpkg\installed\x64-windows-static\include\SDL2;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\imgui-src;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\imgui-src\backends;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\vcpkg\installed\x64-windows-static\include;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\vcpkg\installed\x64-windows-static\include\SDL2;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <Lib>
+      <AdditionalOptions>%(AdditionalOptions) /machine:x64</AdditionalOptions>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\imgui-src;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\imgui-src\backends;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalOptions>%(AdditionalOptions) /external:I "C:/Users/CmonMeow/Desktop/Shipwright/build/x64/vcpkg/installed/x64-windows-static/include" /external:I "C:/Users/CmonMeow/Desktop/Shipwright/build/x64/vcpkg/installed/x64-windows-static/include/SDL2" /utf-8</AdditionalOptions>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+      <BufferSecurityCheck></BufferSecurityCheck>
+      <CallingConvention></CallingConvention>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <ExternalWarningLevel>TurnOffAllWarnings</ExternalWarningLevel>
+      <FloatingPointModel></FloatingPointModel>
+      <ForceConformanceInForLoopScope></ForceConformanceInForLoopScope>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <MinimalRebuild></MinimalRebuild>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <Optimization>MaxSpeed</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RemoveUnreferencedCodeData></RemoveUnreferencedCodeData>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <SupportJustMyCode></SupportJustMyCode>
+      <TreatWChar_tAsBuiltInType></TreatWChar_tAsBuiltInType>
+      <UseFullPaths>false</UseFullPaths>
+      <UseStandardPreprocessor>true</UseStandardPreprocessor>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;CVAR_PREFIX_RANDOMIZER_ENHANCEMENT="gRandoEnhancements";CVAR_PREFIX_RANDOMIZER_SETTING="gRandoSettings";CVAR_PREFIX_COSMETIC="gCosmetics";CVAR_PREFIX_AUDIO="gAudioEditor";CVAR_PREFIX_CHEAT="gCheats";CVAR_PREFIX_ENHANCEMENT="gEnhancements";CVAR_PREFIX_SETTING="gSettings";CVAR_PREFIX_WINDOW="gOpenWindows";CVAR_PREFIX_TRACKER="gTrackers";CVAR_PREFIX_DEVELOPER_TOOLS="gDeveloperTools";CVAR_PREFIX_GENERAL="gGeneral";CVAR_PREFIX_REMOTE="gRemote";CVAR_PREFIX_GAMEPLAY_STATS="gGameplayStats";CVAR_PREFIX_TIME_DISPLAY="gTimeDisplay";CVAR_VSYNC_ENABLED="gSettings.VsyncEnabled";CVAR_Z_FIGHTING_MODE="gSettings.ZFightingMode";CVAR_INTERNAL_RESOLUTION="gSettings.InternalResolution";CVAR_MSAA_VALUE="gSettings.MSAAValue";CVAR_SDL_WINDOWED_FULLSCREEN="gSettings.SdlWindowedFullscreen";CVAR_TEXTURE_FILTER="gSettings.TextureFilter";CVAR_IMGUI_CONTROLLER_NAV="gSettings.ControlNav";CVAR_CONSOLE_WINDOW_OPEN="gOpenWindows.Console";CVAR_CONTROLLER_CONFIGURATION_WINDOW_OPEN="gControllerConfigurationEnabled";CVAR_CONTROLLER_DISCONNECTED_WINDOW_OPEN="gOpenWindows.ControllerDisconnected";CVAR_CONTROLLER_REORDERING_WINDOW_OPEN="gOpenWindows.ControllerReordering";CVAR_GFX_DEBUGGER_WINDOW_OPEN="gOpenWindows.GfxDebugger";CVAR_STATS_WINDOW_OPEN="gOpenWindows.Stats";CVAR_ENABLE_MULTI_VIEWPORTS="gSettings.EnableMultiViewports";CVAR_LOW_RES_MODE="gSettings.LowResMode";CVAR_SIMULATED_INPUT_LAG="gSettings.SimulatedInputLag";CVAR_GAME_OVERLAY_FONT="gSettings.OverlayFont";CVAR_MENU_BAR_OPEN="gSettings.OpenMenuBar";CVAR_PREFIX_CONTROLLERS="gSettings.Controllers";CVAR_PREFIX_ADVANCED_RESOLUTION="gSettings.AdvancedResolution";CVAR_AUDIO_CHANNELS_SETTING="gAudioChannelsSetting";CVAR_ALLOW_BACKGROUND_INPUTS="gAllowBackgroundInputs";CONTROLLERBUTTONS_T=uint32_t;GLEW_STATIC;CMAKE_INTDIR="Release"</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <DebugInformationFormat>
+      </DebugInformationFormat>
+      <ScanSourceForModuleDependencies>false</ScanSourceForModuleDependencies>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;CVAR_PREFIX_RANDOMIZER_ENHANCEMENT=\"gRandoEnhancements\";CVAR_PREFIX_RANDOMIZER_SETTING=\"gRandoSettings\";CVAR_PREFIX_COSMETIC=\"gCosmetics\";CVAR_PREFIX_AUDIO=\"gAudioEditor\";CVAR_PREFIX_CHEAT=\"gCheats\";CVAR_PREFIX_ENHANCEMENT=\"gEnhancements\";CVAR_PREFIX_SETTING=\"gSettings\";CVAR_PREFIX_WINDOW=\"gOpenWindows\";CVAR_PREFIX_TRACKER=\"gTrackers\";CVAR_PREFIX_DEVELOPER_TOOLS=\"gDeveloperTools\";CVAR_PREFIX_GENERAL=\"gGeneral\";CVAR_PREFIX_REMOTE=\"gRemote\";CVAR_PREFIX_GAMEPLAY_STATS=\"gGameplayStats\";CVAR_PREFIX_TIME_DISPLAY=\"gTimeDisplay\";CVAR_VSYNC_ENABLED=\"gSettings.VsyncEnabled\";CVAR_Z_FIGHTING_MODE=\"gSettings.ZFightingMode\";CVAR_INTERNAL_RESOLUTION=\"gSettings.InternalResolution\";CVAR_MSAA_VALUE=\"gSettings.MSAAValue\";CVAR_SDL_WINDOWED_FULLSCREEN=\"gSettings.SdlWindowedFullscreen\";CVAR_TEXTURE_FILTER=\"gSettings.TextureFilter\";CVAR_IMGUI_CONTROLLER_NAV=\"gSettings.ControlNav\";CVAR_CONSOLE_WINDOW_OPEN=\"gOpenWindows.Console\";CVAR_CONTROLLER_CONFIGURATION_WINDOW_OPEN=\"gControllerConfigurationEnabled\";CVAR_CONTROLLER_DISCONNECTED_WINDOW_OPEN=\"gOpenWindows.ControllerDisconnected\";CVAR_CONTROLLER_REORDERING_WINDOW_OPEN=\"gOpenWindows.ControllerReordering\";CVAR_GFX_DEBUGGER_WINDOW_OPEN=\"gOpenWindows.GfxDebugger\";CVAR_STATS_WINDOW_OPEN=\"gOpenWindows.Stats\";CVAR_ENABLE_MULTI_VIEWPORTS=\"gSettings.EnableMultiViewports\";CVAR_LOW_RES_MODE=\"gSettings.LowResMode\";CVAR_SIMULATED_INPUT_LAG=\"gSettings.SimulatedInputLag\";CVAR_GAME_OVERLAY_FONT=\"gSettings.OverlayFont\";CVAR_MENU_BAR_OPEN=\"gSettings.OpenMenuBar\";CVAR_PREFIX_CONTROLLERS=\"gSettings.Controllers\";CVAR_PREFIX_ADVANCED_RESOLUTION=\"gSettings.AdvancedResolution\";CVAR_AUDIO_CHANNELS_SETTING=\"gAudioChannelsSetting\";CVAR_ALLOW_BACKGROUND_INPUTS=\"gAllowBackgroundInputs\";CONTROLLERBUTTONS_T=uint32_t;GLEW_STATIC;CMAKE_INTDIR=\"Release\"</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\imgui-src;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\imgui-src\backends;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\vcpkg\installed\x64-windows-static\include;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\vcpkg\installed\x64-windows-static\include\SDL2;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\imgui-src;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\imgui-src\backends;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\vcpkg\installed\x64-windows-static\include;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\vcpkg\installed\x64-windows-static\include\SDL2;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <Lib>
+      <AdditionalOptions>%(AdditionalOptions) /machine:x64</AdditionalOptions>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\CmonMeow\Desktop\Shipwright\libultraship\CMakeLists.txt">
+      <UseUtf8Encoding>Always</UseUtf8Encoding>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Building Custom Rule C:/Users/CmonMeow/Desktop/Shipwright/libultraship/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">setlocal
+"C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" -SC:/Users/CmonMeow/Desktop/Shipwright -BC:/Users/CmonMeow/Desktop/Shipwright/build/x64 --check-stamp-file C:/Users/CmonMeow/Desktop/Shipwright/build/x64/libultraship/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-4.3\Modules\ExternalProject\shared_internal_commands.cmake;C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-4.3\Modules\FeatureSummary.cmake;C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-4.3\Modules\FetchContent.cmake;C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-4.3\Modules\FetchContent\CMakeLists.cmake.in;C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-4.3\Modules\FindGit.cmake;C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-4.3\Modules\FindOpenGL.cmake;C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-4.3\Modules\FindPackageHandleStandardArgs.cmake;C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-4.3\Modules\FindPackageMessage.cmake;C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-4.3\Modules\SelectLibraryConfigurations.cmake;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\vcpkg\installed\x64-windows-static\share\glew\CopyImportedTargetProperties.cmake;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\vcpkg\installed\x64-windows-static\share\glew\glew-config.cmake;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\vcpkg\installed\x64-windows-static\share\glew\glew-targets-debug.cmake;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\vcpkg\installed\x64-windows-static\share\glew\glew-targets-release.cmake;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\vcpkg\installed\x64-windows-static\share\glew\glew-targets.cmake;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\vcpkg\installed\x64-windows-static\share\glew\vcpkg-cmake-wrapper.cmake;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\vcpkg\installed\x64-windows-static\share\sdl2\SDL2Config.cmake;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\vcpkg\installed\x64-windows-static\share\sdl2\SDL2ConfigVersion.cmake;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\vcpkg\installed\x64-windows-static\share\sdl2\SDL2mainTargets-debug.cmake;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\vcpkg\installed\x64-windows-static\share\sdl2\SDL2mainTargets-release.cmake;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\vcpkg\installed\x64-windows-static\share\sdl2\SDL2mainTargets.cmake;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\vcpkg\installed\x64-windows-static\share\sdl2\SDL2staticTargets-debug.cmake;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\vcpkg\installed\x64-windows-static\share\sdl2\SDL2staticTargets-release.cmake;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\vcpkg\installed\x64-windows-static\share\sdl2\SDL2staticTargets.cmake;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\vcpkg\installed\x64-windows-static\share\sdl2\sdlfind.cmake;C:\Users\CmonMeow\Desktop\Shipwright\libultraship\cmake\Utils.cmake;C:\Users\CmonMeow\Desktop\Shipwright\libultraship\cmake\dependencies\common.cmake;C:\Users\CmonMeow\Desktop\Shipwright\libultraship\cmake\dependencies\windows-vcpkg.cmake;C:\Users\CmonMeow\Desktop\Shipwright\libultraship\cmake\dependencies\windows.cmake;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:\Users\CmonMeow\Desktop\Shipwright\build\x64\libultraship\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</LinkObjects>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Building Custom Rule C:/Users/CmonMeow/Desktop/Shipwright/libultraship/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">setlocal
+"C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" -SC:/Users/CmonMeow/Desktop/Shipwright -BC:/Users/CmonMeow/Desktop/Shipwright/build/x64 --check-stamp-file C:/Users/CmonMeow/Desktop/Shipwright/build/x64/libultraship/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-4.3\Modules\ExternalProject\shared_internal_commands.cmake;C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-4.3\Modules\FeatureSummary.cmake;C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-4.3\Modules\FetchContent.cmake;C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-4.3\Modules\FetchContent\CMakeLists.cmake.in;C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-4.3\Modules\FindGit.cmake;C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-4.3\Modules\FindOpenGL.cmake;C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-4.3\Modules\FindPackageHandleStandardArgs.cmake;C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-4.3\Modules\FindPackageMessage.cmake;C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-4.3\Modules\SelectLibraryConfigurations.cmake;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\vcpkg\installed\x64-windows-static\share\glew\CopyImportedTargetProperties.cmake;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\vcpkg\installed\x64-windows-static\share\glew\glew-config.cmake;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\vcpkg\installed\x64-windows-static\share\glew\glew-targets-debug.cmake;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\vcpkg\installed\x64-windows-static\share\glew\glew-targets-release.cmake;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\vcpkg\installed\x64-windows-static\share\glew\glew-targets.cmake;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\vcpkg\installed\x64-windows-static\share\glew\vcpkg-cmake-wrapper.cmake;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\vcpkg\installed\x64-windows-static\share\sdl2\SDL2Config.cmake;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\vcpkg\installed\x64-windows-static\share\sdl2\SDL2ConfigVersion.cmake;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\vcpkg\installed\x64-windows-static\share\sdl2\SDL2mainTargets-debug.cmake;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\vcpkg\installed\x64-windows-static\share\sdl2\SDL2mainTargets-release.cmake;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\vcpkg\installed\x64-windows-static\share\sdl2\SDL2mainTargets.cmake;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\vcpkg\installed\x64-windows-static\share\sdl2\SDL2staticTargets-debug.cmake;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\vcpkg\installed\x64-windows-static\share\sdl2\SDL2staticTargets-release.cmake;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\vcpkg\installed\x64-windows-static\share\sdl2\SDL2staticTargets.cmake;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\vcpkg\installed\x64-windows-static\share\sdl2\sdlfind.cmake;C:\Users\CmonMeow\Desktop\Shipwright\libultraship\cmake\Utils.cmake;C:\Users\CmonMeow\Desktop\Shipwright\libultraship\cmake\dependencies\common.cmake;C:\Users\CmonMeow\Desktop\Shipwright\libultraship\cmake\dependencies\windows-vcpkg.cmake;C:\Users\CmonMeow\Desktop\Shipwright\libultraship\cmake\dependencies\windows.cmake;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:\Users\CmonMeow\Desktop\Shipwright\build\x64\libultraship\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</LinkObjects>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\imgui-src\imgui_demo.cpp" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\imgui-src\imgui_draw.cpp" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\imgui-src\imgui_tables.cpp" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\imgui-src\imgui_widgets.cpp" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\imgui-src\imgui.cpp" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\imgui-src\backends\imgui_impl_opengl3.cpp" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\imgui-src\backends\imgui_impl_sdl2.cpp" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\imgui-src\backends\imgui_impl_dx11.cpp" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\imgui-src\backends\imgui_impl_win32.cpp" />
+  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\ZERO_CHECK.vcxproj">
+      <Project>{D741AB23-4C40-3F72-98FF-D787876C4574}</Project>
+      <Name>ZERO_CHECK</Name>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

@@ -1,0 +1,14 @@
+{
+    "version": 1,
+    "revision": 0,
+    "rules": [
+        {
+            "primary-output": "soh.dir\\Release\\mq_asset_hacks.obj",
+            "outputs": [
+                "soh.dir\\Release\\mq_asset_hacks.h.obj.dt.module.json",
+                "soh.dir\\Release\\mq_asset_hacks.h.obj.dt.d.json"
+            ],
+            "requires": []
+        }
+    ]
+}

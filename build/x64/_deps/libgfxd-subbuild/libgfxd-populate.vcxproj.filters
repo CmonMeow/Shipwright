@@ -1,0 +1,44 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="18.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\libgfxd-subbuild\CMakeFiles\6395b124e2696ae8d848fb4ade213ae2\libgfxd-populate-mkdir.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\libgfxd-subbuild\CMakeFiles\6395b124e2696ae8d848fb4ade213ae2\libgfxd-populate-download.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\libgfxd-subbuild\CMakeFiles\6395b124e2696ae8d848fb4ade213ae2\libgfxd-populate-update.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\libgfxd-subbuild\CMakeFiles\6395b124e2696ae8d848fb4ade213ae2\libgfxd-populate-patch.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\libgfxd-subbuild\CMakeFiles\6395b124e2696ae8d848fb4ade213ae2\libgfxd-populate-configure.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\libgfxd-subbuild\CMakeFiles\6395b124e2696ae8d848fb4ade213ae2\libgfxd-populate-build.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\libgfxd-subbuild\CMakeFiles\6395b124e2696ae8d848fb4ade213ae2\libgfxd-populate-install.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\libgfxd-subbuild\CMakeFiles\6395b124e2696ae8d848fb4ade213ae2\libgfxd-populate-test.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\libgfxd-subbuild\CMakeFiles\e769426748b11a55d9c0fd6c930b477e\libgfxd-populate-complete.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\libgfxd-subbuild\CMakeFiles\ef0f9e63f5bf2fda256f96e30fea3489\libgfxd-populate.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\libgfxd-subbuild\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\libgfxd-subbuild\CMakeFiles\libgfxd-populate" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="CMake Rules">
+      <UniqueIdentifier>{2D00B320-37E8-322A-8865-4DD62EF39194}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

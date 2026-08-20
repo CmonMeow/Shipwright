@@ -1,0 +1,44 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="18.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\prism-subbuild\CMakeFiles\8088709973c27ae42ca90f85ff731d40\prism-populate-mkdir.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\prism-subbuild\CMakeFiles\8088709973c27ae42ca90f85ff731d40\prism-populate-download.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\prism-subbuild\CMakeFiles\8088709973c27ae42ca90f85ff731d40\prism-populate-update.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\prism-subbuild\CMakeFiles\8088709973c27ae42ca90f85ff731d40\prism-populate-patch.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\prism-subbuild\CMakeFiles\8088709973c27ae42ca90f85ff731d40\prism-populate-configure.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\prism-subbuild\CMakeFiles\8088709973c27ae42ca90f85ff731d40\prism-populate-build.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\prism-subbuild\CMakeFiles\8088709973c27ae42ca90f85ff731d40\prism-populate-install.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\prism-subbuild\CMakeFiles\8088709973c27ae42ca90f85ff731d40\prism-populate-test.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\prism-subbuild\CMakeFiles\d7f752c5cc3c5c434b1671333fad4c8c\prism-populate-complete.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\prism-subbuild\CMakeFiles\7953c4962ccac02ade86b3fe8ee8aa9c\prism-populate.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\prism-subbuild\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\prism-subbuild\CMakeFiles\prism-populate" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="CMake Rules">
+      <UniqueIdentifier>{046CE035-FAD5-3624-BAC5-C01EBE7D84FE}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

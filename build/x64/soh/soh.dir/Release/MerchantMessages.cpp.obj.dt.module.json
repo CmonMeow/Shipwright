@@ -1,0 +1,14 @@
+{
+    "version": 1,
+    "revision": 0,
+    "rules": [
+        {
+            "primary-output": "soh.dir\\Release\\MerchantMessages.obj",
+            "outputs": [
+                "soh.dir\\Release\\MerchantMessages.cpp.obj.dt.module.json",
+                "soh.dir\\Release\\MerchantMessages.cpp.obj.dt.d.json"
+            ],
+            "requires": []
+        }
+    ]
+}

@@ -1,0 +1,46 @@
+{
+	"sources" : 
+	[
+		{
+			"file" : "C:/Users/CmonMeow/Desktop/Shipwright/build/x64/_deps/dr_libs-subbuild/CMakeFiles/dr_libs-populate"
+		},
+		{
+			"file" : "C:/Users/CmonMeow/Desktop/Shipwright/build/x64/_deps/dr_libs-subbuild/CMakeFiles/4491f75e3c54486c84d191ef287881f8/dr_libs-populate.rule"
+		},
+		{
+			"file" : "C:/Users/CmonMeow/Desktop/Shipwright/build/x64/_deps/dr_libs-subbuild/CMakeFiles/0af8eb054b920216474ed45225ef1ac6/dr_libs-populate-complete.rule"
+		},
+		{
+			"file" : "C:/Users/CmonMeow/Desktop/Shipwright/build/x64/_deps/dr_libs-subbuild/CMakeFiles/4c4acd0f74e3f0c70c392e41a002e396/dr_libs-populate-build.rule"
+		},
+		{
+			"file" : "C:/Users/CmonMeow/Desktop/Shipwright/build/x64/_deps/dr_libs-subbuild/CMakeFiles/4c4acd0f74e3f0c70c392e41a002e396/dr_libs-populate-configure.rule"
+		},
+		{
+			"file" : "C:/Users/CmonMeow/Desktop/Shipwright/build/x64/_deps/dr_libs-subbuild/CMakeFiles/4c4acd0f74e3f0c70c392e41a002e396/dr_libs-populate-download.rule"
+		},
+		{
+			"file" : "C:/Users/CmonMeow/Desktop/Shipwright/build/x64/_deps/dr_libs-subbuild/CMakeFiles/4c4acd0f74e3f0c70c392e41a002e396/dr_libs-populate-install.rule"
+		},
+		{
+			"file" : "C:/Users/CmonMeow/Desktop/Shipwright/build/x64/_deps/dr_libs-subbuild/CMakeFiles/4c4acd0f74e3f0c70c392e41a002e396/dr_libs-populate-mkdir.rule"
+		},
+		{
+			"file" : "C:/Users/CmonMeow/Desktop/Shipwright/build/x64/_deps/dr_libs-subbuild/CMakeFiles/4c4acd0f74e3f0c70c392e41a002e396/dr_libs-populate-patch.rule"
+		},
+		{
+			"file" : "C:/Users/CmonMeow/Desktop/Shipwright/build/x64/_deps/dr_libs-subbuild/CMakeFiles/4c4acd0f74e3f0c70c392e41a002e396/dr_libs-populate-test.rule"
+		},
+		{
+			"file" : "C:/Users/CmonMeow/Desktop/Shipwright/build/x64/_deps/dr_libs-subbuild/CMakeFiles/4c4acd0f74e3f0c70c392e41a002e396/dr_libs-populate-update.rule"
+		}
+	],
+	"target" : 
+	{
+		"labels" : 
+		[
+			"dr_libs-populate"
+		],
+		"name" : "dr_libs-populate"
+	}
+}

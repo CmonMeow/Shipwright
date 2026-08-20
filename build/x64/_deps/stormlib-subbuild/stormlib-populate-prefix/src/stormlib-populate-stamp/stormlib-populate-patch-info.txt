@@ -1,0 +1,6 @@
+# This is a generated file and its contents are an internal implementation detail.
+# The update step will be re-executed if anything in this file changes.
+# No other meaning or use of this file is supported.
+
+command=C:/Program Files/Microsoft Visual Studio/18/Community/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/bin/cmake.exe;-Dpatch_file=C:/Users/CmonMeow/Desktop/Shipwright/libultraship/cmake/dependencies/patches/stormlib-optimizations.patch;-Dwith_reset=TRUE;-P;C:/Users/CmonMeow/Desktop/Shipwright/libultraship/cmake/dependencies/git-patch.cmake
+work_dir=C:/Users/CmonMeow/Desktop/Shipwright/build/x64/_deps/stormlib-src

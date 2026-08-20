@@ -1,0 +1,44 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="18.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\dr_libs-subbuild\CMakeFiles\4c4acd0f74e3f0c70c392e41a002e396\dr_libs-populate-mkdir.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\dr_libs-subbuild\CMakeFiles\4c4acd0f74e3f0c70c392e41a002e396\dr_libs-populate-download.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\dr_libs-subbuild\CMakeFiles\4c4acd0f74e3f0c70c392e41a002e396\dr_libs-populate-update.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\dr_libs-subbuild\CMakeFiles\4c4acd0f74e3f0c70c392e41a002e396\dr_libs-populate-patch.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\dr_libs-subbuild\CMakeFiles\4c4acd0f74e3f0c70c392e41a002e396\dr_libs-populate-configure.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\dr_libs-subbuild\CMakeFiles\4c4acd0f74e3f0c70c392e41a002e396\dr_libs-populate-build.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\dr_libs-subbuild\CMakeFiles\4c4acd0f74e3f0c70c392e41a002e396\dr_libs-populate-install.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\dr_libs-subbuild\CMakeFiles\4c4acd0f74e3f0c70c392e41a002e396\dr_libs-populate-test.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\dr_libs-subbuild\CMakeFiles\0af8eb054b920216474ed45225ef1ac6\dr_libs-populate-complete.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\dr_libs-subbuild\CMakeFiles\4491f75e3c54486c84d191ef287881f8\dr_libs-populate.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\dr_libs-subbuild\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\dr_libs-subbuild\CMakeFiles\dr_libs-populate" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="CMake Rules">
+      <UniqueIdentifier>{43681C57-90DA-3257-A983-A611D31805B3}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

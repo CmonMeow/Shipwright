@@ -1,0 +1,3 @@
+C:/Users/CmonMeow/Desktop/Shipwright/build/x64/_deps/libgfxd-subbuild/CMakeFiles/libgfxd-populate.dir
+C:/Users/CmonMeow/Desktop/Shipwright/build/x64/_deps/libgfxd-subbuild/CMakeFiles/ALL_BUILD.dir
+C:/Users/CmonMeow/Desktop/Shipwright/build/x64/_deps/libgfxd-subbuild/CMakeFiles/ZERO_CHECK.dir

@@ -1,0 +1,202 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="18.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <PreferredToolArchitecture>x64</PreferredToolArchitecture>
+  </PropertyGroup>
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{48948160-6BFA-30FB-9401-08B164880F69}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <VcpkgEnabled>false</VcpkgEnabled>
+    <WindowsTargetPlatformVersion>10.0.26100.0</WindowsTargetPlatformVersion>
+    <Platform>x64</Platform>
+    <ProjectName>prism</ProjectName>
+    <VCProjectUpgraderObjectName>NoUpgrade</VCProjectUpgraderObjectName>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <Import Project="C:/Program Files/Microsoft Visual Studio/18/Community/VC/Auxiliary/Build/14.51/Microsoft.VCToolsVersion.14.51.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v145</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v145</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets">
+    <Import Project="do_not_import_user.props" Condition="exists('do_not_import_user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.20506.1</_ProjectFileVersion>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\prism-build\Debug\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">prism.dir\Debug\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">prism</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">.lib</TargetExt>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\prism-build\Release\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">prism.dir\Release\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">prism</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.lib</TargetExt>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\prism-src;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\prism-src\lib;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\prism-src\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalOptions>%(AdditionalOptions) /external:I "C:/Users/CmonMeow/Desktop/Shipwright/build/x64/vcpkg/installed/x64-windows-static/include" /utf-8 /w /bigobj</AdditionalOptions>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <BufferSecurityCheck></BufferSecurityCheck>
+      <CallingConvention></CallingConvention>
+      <ConformanceMode>true</ConformanceMode>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <ExternalWarningLevel>TurnOffAllWarnings</ExternalWarningLevel>
+      <FloatingPointModel></FloatingPointModel>
+      <ForceConformanceInForLoopScope></ForceConformanceInForLoopScope>
+      <InlineFunctionExpansion>Disabled</InlineFunctionExpansion>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <LanguageStandard_C>stdc11</LanguageStandard_C>
+      <MinimalRebuild></MinimalRebuild>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <Optimization>Disabled</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RemoveUnreferencedCodeData></RemoveUnreferencedCodeData>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <SupportJustMyCode></SupportJustMyCode>
+      <TreatWChar_tAsBuiltInType></TreatWChar_tAsBuiltInType>
+      <UseFullPaths>false</UseFullPaths>
+      <UseStandardPreprocessor>true</UseStandardPreprocessor>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;CVAR_PREFIX_RANDOMIZER_ENHANCEMENT="gRandoEnhancements";CVAR_PREFIX_RANDOMIZER_SETTING="gRandoSettings";CVAR_PREFIX_COSMETIC="gCosmetics";CVAR_PREFIX_AUDIO="gAudioEditor";CVAR_PREFIX_CHEAT="gCheats";CVAR_PREFIX_ENHANCEMENT="gEnhancements";CVAR_PREFIX_SETTING="gSettings";CVAR_PREFIX_WINDOW="gOpenWindows";CVAR_PREFIX_TRACKER="gTrackers";CVAR_PREFIX_DEVELOPER_TOOLS="gDeveloperTools";CVAR_PREFIX_GENERAL="gGeneral";CVAR_PREFIX_REMOTE="gRemote";CVAR_PREFIX_GAMEPLAY_STATS="gGameplayStats";CVAR_PREFIX_TIME_DISPLAY="gTimeDisplay";CVAR_VSYNC_ENABLED="gSettings.VsyncEnabled";CVAR_Z_FIGHTING_MODE="gSettings.ZFightingMode";CVAR_INTERNAL_RESOLUTION="gSettings.InternalResolution";CVAR_MSAA_VALUE="gSettings.MSAAValue";CVAR_SDL_WINDOWED_FULLSCREEN="gSettings.SdlWindowedFullscreen";CVAR_TEXTURE_FILTER="gSettings.TextureFilter";CVAR_IMGUI_CONTROLLER_NAV="gSettings.ControlNav";CVAR_CONSOLE_WINDOW_OPEN="gOpenWindows.Console";CVAR_CONTROLLER_CONFIGURATION_WINDOW_OPEN="gControllerConfigurationEnabled";CVAR_CONTROLLER_DISCONNECTED_WINDOW_OPEN="gOpenWindows.ControllerDisconnected";CVAR_CONTROLLER_REORDERING_WINDOW_OPEN="gOpenWindows.ControllerReordering";CVAR_GFX_DEBUGGER_WINDOW_OPEN="gOpenWindows.GfxDebugger";CVAR_STATS_WINDOW_OPEN="gOpenWindows.Stats";CVAR_ENABLE_MULTI_VIEWPORTS="gSettings.EnableMultiViewports";CVAR_LOW_RES_MODE="gSettings.LowResMode";CVAR_SIMULATED_INPUT_LAG="gSettings.SimulatedInputLag";CVAR_GAME_OVERLAY_FONT="gSettings.OverlayFont";CVAR_MENU_BAR_OPEN="gSettings.OpenMenuBar";CVAR_PREFIX_CONTROLLERS="gSettings.Controllers";CVAR_PREFIX_ADVANCED_RESOLUTION="gSettings.AdvancedResolution";CVAR_AUDIO_CHANNELS_SETTING="gAudioChannelsSetting";CVAR_ALLOW_BACKGROUND_INPUTS="gAllowBackgroundInputs";CONTROLLERBUTTONS_T=uint32_t;SPDLOG_COMPILED_LIB;SPDLOG_FMT_EXTERNAL;CMAKE_INTDIR="Debug"</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <ScanSourceForModuleDependencies>false</ScanSourceForModuleDependencies>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_DEBUG;_WINDOWS;CVAR_PREFIX_RANDOMIZER_ENHANCEMENT=\"gRandoEnhancements\";CVAR_PREFIX_RANDOMIZER_SETTING=\"gRandoSettings\";CVAR_PREFIX_COSMETIC=\"gCosmetics\";CVAR_PREFIX_AUDIO=\"gAudioEditor\";CVAR_PREFIX_CHEAT=\"gCheats\";CVAR_PREFIX_ENHANCEMENT=\"gEnhancements\";CVAR_PREFIX_SETTING=\"gSettings\";CVAR_PREFIX_WINDOW=\"gOpenWindows\";CVAR_PREFIX_TRACKER=\"gTrackers\";CVAR_PREFIX_DEVELOPER_TOOLS=\"gDeveloperTools\";CVAR_PREFIX_GENERAL=\"gGeneral\";CVAR_PREFIX_REMOTE=\"gRemote\";CVAR_PREFIX_GAMEPLAY_STATS=\"gGameplayStats\";CVAR_PREFIX_TIME_DISPLAY=\"gTimeDisplay\";CVAR_VSYNC_ENABLED=\"gSettings.VsyncEnabled\";CVAR_Z_FIGHTING_MODE=\"gSettings.ZFightingMode\";CVAR_INTERNAL_RESOLUTION=\"gSettings.InternalResolution\";CVAR_MSAA_VALUE=\"gSettings.MSAAValue\";CVAR_SDL_WINDOWED_FULLSCREEN=\"gSettings.SdlWindowedFullscreen\";CVAR_TEXTURE_FILTER=\"gSettings.TextureFilter\";CVAR_IMGUI_CONTROLLER_NAV=\"gSettings.ControlNav\";CVAR_CONSOLE_WINDOW_OPEN=\"gOpenWindows.Console\";CVAR_CONTROLLER_CONFIGURATION_WINDOW_OPEN=\"gControllerConfigurationEnabled\";CVAR_CONTROLLER_DISCONNECTED_WINDOW_OPEN=\"gOpenWindows.ControllerDisconnected\";CVAR_CONTROLLER_REORDERING_WINDOW_OPEN=\"gOpenWindows.ControllerReordering\";CVAR_GFX_DEBUGGER_WINDOW_OPEN=\"gOpenWindows.GfxDebugger\";CVAR_STATS_WINDOW_OPEN=\"gOpenWindows.Stats\";CVAR_ENABLE_MULTI_VIEWPORTS=\"gSettings.EnableMultiViewports\";CVAR_LOW_RES_MODE=\"gSettings.LowResMode\";CVAR_SIMULATED_INPUT_LAG=\"gSettings.SimulatedInputLag\";CVAR_GAME_OVERLAY_FONT=\"gSettings.OverlayFont\";CVAR_MENU_BAR_OPEN=\"gSettings.OpenMenuBar\";CVAR_PREFIX_CONTROLLERS=\"gSettings.Controllers\";CVAR_PREFIX_ADVANCED_RESOLUTION=\"gSettings.AdvancedResolution\";CVAR_AUDIO_CHANNELS_SETTING=\"gAudioChannelsSetting\";CVAR_ALLOW_BACKGROUND_INPUTS=\"gAllowBackgroundInputs\";CONTROLLERBUTTONS_T=uint32_t;SPDLOG_COMPILED_LIB;SPDLOG_FMT_EXTERNAL;CMAKE_INTDIR=\"Debug\"</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\prism-src;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\prism-src\lib;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\prism-src\src;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\vcpkg\installed\x64-windows-static\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\prism-src;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\prism-src\lib;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\prism-src\src;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\vcpkg\installed\x64-windows-static\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <Lib>
+      <AdditionalOptions>%(AdditionalOptions) /machine:x64</AdditionalOptions>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\prism-src;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\prism-src\lib;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\prism-src\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalOptions>%(AdditionalOptions) /external:I "C:/Users/CmonMeow/Desktop/Shipwright/build/x64/vcpkg/installed/x64-windows-static/include" /utf-8 /O3 /bigobj</AdditionalOptions>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+      <BufferSecurityCheck></BufferSecurityCheck>
+      <CallingConvention></CallingConvention>
+      <ConformanceMode>true</ConformanceMode>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <ExternalWarningLevel>TurnOffAllWarnings</ExternalWarningLevel>
+      <FloatingPointModel></FloatingPointModel>
+      <ForceConformanceInForLoopScope></ForceConformanceInForLoopScope>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <LanguageStandard_C>stdc11</LanguageStandard_C>
+      <MinimalRebuild></MinimalRebuild>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <Optimization>MaxSpeed</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RemoveUnreferencedCodeData></RemoveUnreferencedCodeData>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <SupportJustMyCode></SupportJustMyCode>
+      <TreatWChar_tAsBuiltInType></TreatWChar_tAsBuiltInType>
+      <UseFullPaths>false</UseFullPaths>
+      <UseStandardPreprocessor>true</UseStandardPreprocessor>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;CVAR_PREFIX_RANDOMIZER_ENHANCEMENT="gRandoEnhancements";CVAR_PREFIX_RANDOMIZER_SETTING="gRandoSettings";CVAR_PREFIX_COSMETIC="gCosmetics";CVAR_PREFIX_AUDIO="gAudioEditor";CVAR_PREFIX_CHEAT="gCheats";CVAR_PREFIX_ENHANCEMENT="gEnhancements";CVAR_PREFIX_SETTING="gSettings";CVAR_PREFIX_WINDOW="gOpenWindows";CVAR_PREFIX_TRACKER="gTrackers";CVAR_PREFIX_DEVELOPER_TOOLS="gDeveloperTools";CVAR_PREFIX_GENERAL="gGeneral";CVAR_PREFIX_REMOTE="gRemote";CVAR_PREFIX_GAMEPLAY_STATS="gGameplayStats";CVAR_PREFIX_TIME_DISPLAY="gTimeDisplay";CVAR_VSYNC_ENABLED="gSettings.VsyncEnabled";CVAR_Z_FIGHTING_MODE="gSettings.ZFightingMode";CVAR_INTERNAL_RESOLUTION="gSettings.InternalResolution";CVAR_MSAA_VALUE="gSettings.MSAAValue";CVAR_SDL_WINDOWED_FULLSCREEN="gSettings.SdlWindowedFullscreen";CVAR_TEXTURE_FILTER="gSettings.TextureFilter";CVAR_IMGUI_CONTROLLER_NAV="gSettings.ControlNav";CVAR_CONSOLE_WINDOW_OPEN="gOpenWindows.Console";CVAR_CONTROLLER_CONFIGURATION_WINDOW_OPEN="gControllerConfigurationEnabled";CVAR_CONTROLLER_DISCONNECTED_WINDOW_OPEN="gOpenWindows.ControllerDisconnected";CVAR_CONTROLLER_REORDERING_WINDOW_OPEN="gOpenWindows.ControllerReordering";CVAR_GFX_DEBUGGER_WINDOW_OPEN="gOpenWindows.GfxDebugger";CVAR_STATS_WINDOW_OPEN="gOpenWindows.Stats";CVAR_ENABLE_MULTI_VIEWPORTS="gSettings.EnableMultiViewports";CVAR_LOW_RES_MODE="gSettings.LowResMode";CVAR_SIMULATED_INPUT_LAG="gSettings.SimulatedInputLag";CVAR_GAME_OVERLAY_FONT="gSettings.OverlayFont";CVAR_MENU_BAR_OPEN="gSettings.OpenMenuBar";CVAR_PREFIX_CONTROLLERS="gSettings.Controllers";CVAR_PREFIX_ADVANCED_RESOLUTION="gSettings.AdvancedResolution";CVAR_AUDIO_CHANNELS_SETTING="gAudioChannelsSetting";CVAR_ALLOW_BACKGROUND_INPUTS="gAllowBackgroundInputs";CONTROLLERBUTTONS_T=uint32_t;SPDLOG_COMPILED_LIB;SPDLOG_FMT_EXTERNAL;CMAKE_INTDIR="Release"</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <DebugInformationFormat>
+      </DebugInformationFormat>
+      <ScanSourceForModuleDependencies>false</ScanSourceForModuleDependencies>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;CVAR_PREFIX_RANDOMIZER_ENHANCEMENT=\"gRandoEnhancements\";CVAR_PREFIX_RANDOMIZER_SETTING=\"gRandoSettings\";CVAR_PREFIX_COSMETIC=\"gCosmetics\";CVAR_PREFIX_AUDIO=\"gAudioEditor\";CVAR_PREFIX_CHEAT=\"gCheats\";CVAR_PREFIX_ENHANCEMENT=\"gEnhancements\";CVAR_PREFIX_SETTING=\"gSettings\";CVAR_PREFIX_WINDOW=\"gOpenWindows\";CVAR_PREFIX_TRACKER=\"gTrackers\";CVAR_PREFIX_DEVELOPER_TOOLS=\"gDeveloperTools\";CVAR_PREFIX_GENERAL=\"gGeneral\";CVAR_PREFIX_REMOTE=\"gRemote\";CVAR_PREFIX_GAMEPLAY_STATS=\"gGameplayStats\";CVAR_PREFIX_TIME_DISPLAY=\"gTimeDisplay\";CVAR_VSYNC_ENABLED=\"gSettings.VsyncEnabled\";CVAR_Z_FIGHTING_MODE=\"gSettings.ZFightingMode\";CVAR_INTERNAL_RESOLUTION=\"gSettings.InternalResolution\";CVAR_MSAA_VALUE=\"gSettings.MSAAValue\";CVAR_SDL_WINDOWED_FULLSCREEN=\"gSettings.SdlWindowedFullscreen\";CVAR_TEXTURE_FILTER=\"gSettings.TextureFilter\";CVAR_IMGUI_CONTROLLER_NAV=\"gSettings.ControlNav\";CVAR_CONSOLE_WINDOW_OPEN=\"gOpenWindows.Console\";CVAR_CONTROLLER_CONFIGURATION_WINDOW_OPEN=\"gControllerConfigurationEnabled\";CVAR_CONTROLLER_DISCONNECTED_WINDOW_OPEN=\"gOpenWindows.ControllerDisconnected\";CVAR_CONTROLLER_REORDERING_WINDOW_OPEN=\"gOpenWindows.ControllerReordering\";CVAR_GFX_DEBUGGER_WINDOW_OPEN=\"gOpenWindows.GfxDebugger\";CVAR_STATS_WINDOW_OPEN=\"gOpenWindows.Stats\";CVAR_ENABLE_MULTI_VIEWPORTS=\"gSettings.EnableMultiViewports\";CVAR_LOW_RES_MODE=\"gSettings.LowResMode\";CVAR_SIMULATED_INPUT_LAG=\"gSettings.SimulatedInputLag\";CVAR_GAME_OVERLAY_FONT=\"gSettings.OverlayFont\";CVAR_MENU_BAR_OPEN=\"gSettings.OpenMenuBar\";CVAR_PREFIX_CONTROLLERS=\"gSettings.Controllers\";CVAR_PREFIX_ADVANCED_RESOLUTION=\"gSettings.AdvancedResolution\";CVAR_AUDIO_CHANNELS_SETTING=\"gAudioChannelsSetting\";CVAR_ALLOW_BACKGROUND_INPUTS=\"gAllowBackgroundInputs\";CONTROLLERBUTTONS_T=uint32_t;SPDLOG_COMPILED_LIB;SPDLOG_FMT_EXTERNAL;CMAKE_INTDIR=\"Release\"</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\prism-src;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\prism-src\lib;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\prism-src\src;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\vcpkg\installed\x64-windows-static\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\prism-src;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\prism-src\lib;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\prism-src\src;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\vcpkg\installed\x64-windows-static\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <Lib>
+      <AdditionalOptions>%(AdditionalOptions) /machine:x64</AdditionalOptions>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\prism-src\CMakeLists.txt">
+      <UseUtf8Encoding>Always</UseUtf8Encoding>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Building Custom Rule C:/Users/CmonMeow/Desktop/Shipwright/build/x64/_deps/prism-src/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">setlocal
+"C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" -SC:/Users/CmonMeow/Desktop/Shipwright -BC:/Users/CmonMeow/Desktop/Shipwright/build/x64 --check-stamp-file C:/Users/CmonMeow/Desktop/Shipwright/build/x64/_deps/prism-build/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-4.3\Modules\CMakeFindDependencyMacro.cmake;C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-4.3\Modules\CheckCSourceCompiles.cmake;C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-4.3\Modules\CheckIncludeFile.cmake;C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-4.3\Modules\CheckLibraryExists.cmake;C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-4.3\Modules\ExternalProject\shared_internal_commands.cmake;C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-4.3\Modules\FetchContent.cmake;C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-4.3\Modules\FindPackageHandleStandardArgs.cmake;C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-4.3\Modules\FindPackageMessage.cmake;C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-4.3\Modules\FindThreads.cmake;C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-4.3\Modules\Internal\CheckSourceCompiles.cmake;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\vcpkg\installed\x64-windows-static\share\fmt\fmt-config-version.cmake;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\vcpkg\installed\x64-windows-static\share\fmt\fmt-config.cmake;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\vcpkg\installed\x64-windows-static\share\fmt\fmt-targets-debug.cmake;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\vcpkg\installed\x64-windows-static\share\fmt\fmt-targets-release.cmake;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\vcpkg\installed\x64-windows-static\share\fmt\fmt-targets.cmake;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\vcpkg\installed\x64-windows-static\share\spdlog\spdlogConfig.cmake;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\vcpkg\installed\x64-windows-static\share\spdlog\spdlogConfigTargets-debug.cmake;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\vcpkg\installed\x64-windows-static\share\spdlog\spdlogConfigTargets-release.cmake;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\vcpkg\installed\x64-windows-static\share\spdlog\spdlogConfigTargets.cmake;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\vcpkg\installed\x64-windows-static\share\spdlog\spdlogConfigVersion.cmake;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\prism-build\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</LinkObjects>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Building Custom Rule C:/Users/CmonMeow/Desktop/Shipwright/build/x64/_deps/prism-src/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">setlocal
+"C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" -SC:/Users/CmonMeow/Desktop/Shipwright -BC:/Users/CmonMeow/Desktop/Shipwright/build/x64 --check-stamp-file C:/Users/CmonMeow/Desktop/Shipwright/build/x64/_deps/prism-build/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-4.3\Modules\CMakeFindDependencyMacro.cmake;C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-4.3\Modules\CheckCSourceCompiles.cmake;C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-4.3\Modules\CheckIncludeFile.cmake;C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-4.3\Modules\CheckLibraryExists.cmake;C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-4.3\Modules\ExternalProject\shared_internal_commands.cmake;C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-4.3\Modules\FetchContent.cmake;C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-4.3\Modules\FindPackageHandleStandardArgs.cmake;C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-4.3\Modules\FindPackageMessage.cmake;C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-4.3\Modules\FindThreads.cmake;C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-4.3\Modules\Internal\CheckSourceCompiles.cmake;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\vcpkg\installed\x64-windows-static\share\fmt\fmt-config-version.cmake;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\vcpkg\installed\x64-windows-static\share\fmt\fmt-config.cmake;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\vcpkg\installed\x64-windows-static\share\fmt\fmt-targets-debug.cmake;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\vcpkg\installed\x64-windows-static\share\fmt\fmt-targets-release.cmake;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\vcpkg\installed\x64-windows-static\share\fmt\fmt-targets.cmake;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\vcpkg\installed\x64-windows-static\share\spdlog\spdlogConfig.cmake;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\vcpkg\installed\x64-windows-static\share\spdlog\spdlogConfigTargets-debug.cmake;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\vcpkg\installed\x64-windows-static\share\spdlog\spdlogConfigTargets-release.cmake;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\vcpkg\installed\x64-windows-static\share\spdlog\spdlogConfigTargets.cmake;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\vcpkg\installed\x64-windows-static\share\spdlog\spdlogConfigVersion.cmake;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\prism-build\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</LinkObjects>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\prism-src\src\main.cpp" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\prism-src\src\prism\ast.cpp" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\prism-src\src\prism\lexer.cpp" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\prism-src\src\prism\processor.cpp" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\prism-src\src\prism\utils\gv.cpp" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\prism-src\src\prism\utils\invoke.c" />
+  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\ZERO_CHECK.vcxproj">
+      <Project>{D741AB23-4C40-3F72-98FF-D787876C4574}</Project>
+      <Name>ZERO_CHECK</Name>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

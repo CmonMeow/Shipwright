@@ -1,0 +1,12 @@
+{
+    "Version": "1.2",
+    "Data": {
+        "Source": "c:\\users\\cmonmeow\\desktop\\shipwright\\soh\\soh\\mq_asset_hacks.h",
+        "ProvidedModule": "",
+        "Includes": [
+            "c:\\users\\cmonmeow\\desktop\\shipwright\\soh\\include\\align_asset_macro.h"
+        ],
+        "ImportedModules": [],
+        "ImportedHeaderUnits": []
+    }
+}

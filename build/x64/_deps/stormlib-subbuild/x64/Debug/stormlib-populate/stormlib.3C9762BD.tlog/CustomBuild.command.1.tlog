@@ -1,0 +1,154 @@
+^C:\USERS\CMONMEOW\DESKTOP\SHIPWRIGHT\BUILD\X64\_DEPS\STORMLIB-SUBBUILD\CMAKEFILES\F619F73CADBDC375AE5D616C7DE72BA4\STORMLIB-POPULATE-MKDIR.RULE
+setlocal
+"C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" -Dcfgdir=/Debug -P C:/Users/CmonMeow/Desktop/Shipwright/build/x64/_deps/stormlib-subbuild/stormlib-populate-prefix/tmp/stormlib-populate-mkdirs.cmake
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" -E touch C:/Users/CmonMeow/Desktop/Shipwright/build/x64/_deps/stormlib-subbuild/stormlib-populate-prefix/src/stormlib-populate-stamp/Debug/stormlib-populate-mkdir
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+^C:\USERS\CMONMEOW\DESKTOP\SHIPWRIGHT\BUILD\X64\_DEPS\STORMLIB-SUBBUILD\CMAKEFILES\F619F73CADBDC375AE5D616C7DE72BA4\STORMLIB-POPULATE-DOWNLOAD.RULE
+setlocal
+cd C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps
+if %errorlevel% neq 0 goto :cmEnd
+C:
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" -DCMAKE_MESSAGE_LOG_LEVEL=VERBOSE -P C:/Users/CmonMeow/Desktop/Shipwright/build/x64/_deps/stormlib-subbuild/stormlib-populate-prefix/tmp/stormlib-populate-gitclone.cmake
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" -E touch C:/Users/CmonMeow/Desktop/Shipwright/build/x64/_deps/stormlib-subbuild/stormlib-populate-prefix/src/stormlib-populate-stamp/Debug/stormlib-populate-download
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+^C:\USERS\CMONMEOW\DESKTOP\SHIPWRIGHT\BUILD\X64\_DEPS\STORMLIB-SUBBUILD\CMAKEFILES\F619F73CADBDC375AE5D616C7DE72BA4\STORMLIB-POPULATE-UPDATE.RULE
+setlocal
+cd C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src
+if %errorlevel% neq 0 goto :cmEnd
+C:
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" -Dcan_fetch=YES -DCMAKE_MESSAGE_LOG_LEVEL=VERBOSE -P C:/Users/CmonMeow/Desktop/Shipwright/build/x64/_deps/stormlib-subbuild/stormlib-populate-prefix/tmp/stormlib-populate-gitupdate.cmake
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+^C:\USERS\CMONMEOW\DESKTOP\SHIPWRIGHT\BUILD\X64\_DEPS\STORMLIB-SUBBUILD\CMAKEFILES\F619F73CADBDC375AE5D616C7DE72BA4\STORMLIB-POPULATE-PATCH.RULE
+setlocal
+cd C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src
+if %errorlevel% neq 0 goto :cmEnd
+C:
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" -Dpatch_file=C:/Users/CmonMeow/Desktop/Shipwright/libultraship/cmake/dependencies/patches/stormlib-optimizations.patch -Dwith_reset=TRUE -P C:/Users/CmonMeow/Desktop/Shipwright/libultraship/cmake/dependencies/git-patch.cmake
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" -E touch C:/Users/CmonMeow/Desktop/Shipwright/build/x64/_deps/stormlib-subbuild/stormlib-populate-prefix/src/stormlib-populate-stamp/Debug/stormlib-populate-patch
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+^C:\USERS\CMONMEOW\DESKTOP\SHIPWRIGHT\BUILD\X64\_DEPS\STORMLIB-SUBBUILD\CMAKEFILES\F619F73CADBDC375AE5D616C7DE72BA4\STORMLIB-POPULATE-CONFIGURE.RULE
+setlocal
+cd C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-build
+if %errorlevel% neq 0 goto :cmEnd
+C:
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" -E echo_append
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" -E touch C:/Users/CmonMeow/Desktop/Shipwright/build/x64/_deps/stormlib-subbuild/stormlib-populate-prefix/src/stormlib-populate-stamp/Debug/stormlib-populate-configure
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+^C:\USERS\CMONMEOW\DESKTOP\SHIPWRIGHT\BUILD\X64\_DEPS\STORMLIB-SUBBUILD\CMAKEFILES\F619F73CADBDC375AE5D616C7DE72BA4\STORMLIB-POPULATE-BUILD.RULE
+setlocal
+cd C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-build
+if %errorlevel% neq 0 goto :cmEnd
+C:
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" -E echo_append
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" -E touch C:/Users/CmonMeow/Desktop/Shipwright/build/x64/_deps/stormlib-subbuild/stormlib-populate-prefix/src/stormlib-populate-stamp/Debug/stormlib-populate-build
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+^C:\USERS\CMONMEOW\DESKTOP\SHIPWRIGHT\BUILD\X64\_DEPS\STORMLIB-SUBBUILD\CMAKEFILES\F619F73CADBDC375AE5D616C7DE72BA4\STORMLIB-POPULATE-INSTALL.RULE
+setlocal
+cd C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-build
+if %errorlevel% neq 0 goto :cmEnd
+C:
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" -E echo_append
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" -E touch C:/Users/CmonMeow/Desktop/Shipwright/build/x64/_deps/stormlib-subbuild/stormlib-populate-prefix/src/stormlib-populate-stamp/Debug/stormlib-populate-install
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+^C:\USERS\CMONMEOW\DESKTOP\SHIPWRIGHT\BUILD\X64\_DEPS\STORMLIB-SUBBUILD\CMAKEFILES\F619F73CADBDC375AE5D616C7DE72BA4\STORMLIB-POPULATE-TEST.RULE
+setlocal
+cd C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-build
+if %errorlevel% neq 0 goto :cmEnd
+C:
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" -E echo_append
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" -E touch C:/Users/CmonMeow/Desktop/Shipwright/build/x64/_deps/stormlib-subbuild/stormlib-populate-prefix/src/stormlib-populate-stamp/Debug/stormlib-populate-test
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+^C:\USERS\CMONMEOW\DESKTOP\SHIPWRIGHT\BUILD\X64\_DEPS\STORMLIB-SUBBUILD\CMAKEFILES\CAA5F0ACCE1E18B028BA24CDC6544CB9\STORMLIB-POPULATE-COMPLETE.RULE
+setlocal
+"C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" -E make_directory C:/Users/CmonMeow/Desktop/Shipwright/build/x64/_deps/stormlib-subbuild/CMakeFiles/Debug
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" -E touch C:/Users/CmonMeow/Desktop/Shipwright/build/x64/_deps/stormlib-subbuild/CMakeFiles/Debug/stormlib-populate-complete
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" -E touch C:/Users/CmonMeow/Desktop/Shipwright/build/x64/_deps/stormlib-subbuild/stormlib-populate-prefix/src/stormlib-populate-stamp/Debug/stormlib-populate-done
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+^C:\USERS\CMONMEOW\DESKTOP\SHIPWRIGHT\BUILD\X64\_DEPS\STORMLIB-SUBBUILD\CMAKEFILES\B500F7344761E65F6C790047EF19EE2C\STORMLIB-POPULATE.RULE
+setlocal
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+^C:\USERS\CMONMEOW\DESKTOP\SHIPWRIGHT\BUILD\X64\_DEPS\STORMLIB-SUBBUILD\CMAKELISTS.TXT
+setlocal
+"C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" -SC:/Users/CmonMeow/Desktop/Shipwright/build/x64/_deps/stormlib-subbuild -BC:/Users/CmonMeow/Desktop/Shipwright/build/x64/_deps/stormlib-subbuild --check-stamp-file C:/Users/CmonMeow/Desktop/Shipwright/build/x64/_deps/stormlib-subbuild/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
