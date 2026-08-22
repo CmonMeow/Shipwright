@@ -274,11 +274,8 @@ void ObjMure_InitialAction(ObjMure* this, PlayState* play) {
 }
 
 void ObjMure_CulledState(ObjMure* this, PlayState* play) {
-    // #region SOH [Enhancements] Extended draw distance
-    s32 distanceMultiplier = CVarGetInteger(CVAR_ENHANCEMENT("DisableDrawDistance"), 1);
-    distanceMultiplier = MAX(distanceMultiplier, 1);
-
-    if (fabsf(this->actor.projectedPos.z) < sZClip[this->type] * distanceMultiplier) {
+    
+    if (fabsf(this->actor.projectedPos.z) < sZClip[this->type] * 5) {
         // #endregion
         this->actionFunc = ObjMure_ActiveState;
         this->actor.flags |= ACTOR_FLAG_UPDATE_CULLING_DISABLED;
@@ -403,11 +400,7 @@ static ObjMureActionFunc sTypeGroupBehaviorFunc[] = {
 void ObjMure_ActiveState(ObjMure* this, PlayState* play) {
     ObjMure_CheckChildren(this, play);
 
-    // #region SOH [Enhancements] Extended draw distance
-    s32 distanceMultiplier = CVarGetInteger(CVAR_ENHANCEMENT("DisableDrawDistance"), 1);
-    distanceMultiplier = MAX(distanceMultiplier, 1);
-
-    if ((sZClip[this->type] + 40.0f) * distanceMultiplier <= fabsf(this->actor.projectedPos.z)) {
+    if ((sZClip[this->type] + 40.0f) * 5 <= fabsf(this->actor.projectedPos.z)) {
         // #endregion
         this->actionFunc = ObjMure_CulledState;
         this->actor.flags &= ~ACTOR_FLAG_UPDATE_CULLING_DISABLED;

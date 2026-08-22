@@ -1238,16 +1238,8 @@ void BossGanon_ShatterWindows(u8 windowShatterState) {
 }
 
 void BossGanon_DeathAndTowerCutscene(BossGanon* this, PlayState* play) {
-    static Color_RGBA8 bloodPrimColor = { 0, 120, 0, 255 };
-    static Color_RGBA8 bloodEnvColor = { 0, 120, 0, 255 };
-
-    if (CVarGetInteger(CVAR_ENHANCEMENT("RedGanonBlood"), 0)) {
-        bloodPrimColor.r = 120;
-        bloodPrimColor.g = 0;
-
-        bloodEnvColor.r = 120;
-        bloodEnvColor.g = 0;
-    }
+    static Color_RGBA8 bloodPrimColor = { 120, 0, 0, 255 };
+    static Color_RGBA8 bloodEnvColor = { 120, 0, 0, 255 };
 
     s16 i;
     u8 moveCam = false;

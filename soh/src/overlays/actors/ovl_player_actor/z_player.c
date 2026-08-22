@@ -3439,12 +3439,9 @@ void Player_UseItem(PlayState* play, Player* this, s32 item) {
             if ((play->bombchuBowlingStatus == 0) &&
                 (((itemAction == PLAYER_IA_DEKU_STICK) && (AMMO(ITEM_STICK) == 0)) ||
                  ((itemAction == PLAYER_IA_MAGIC_BEAN) && (AMMO(ITEM_BEAN) == 0)) ||
-                 (temp = Player_ActionToExplosive(this, itemAction),
-                  ((temp >= 0) && ((AMMO(sExplosiveInfos[temp].itemId) == 0) ||
-                                   (play->actorCtx.actorLists[ACTORCAT_EXPLOSIVE].length >= 3 &&
-                                    !CVarGetInteger(CVAR_ENHANCEMENT("RemoveExplosiveLimit"), 0))))))) {
+                  (temp = Player_ActionToExplosive(this, itemAction),
+                  ((temp >= 0) && (AMMO(sExplosiveInfos[temp].itemId) == 0))))) {
                 // Prevent some items from being used if player is out of ammo.
-                // Also prevent explosives from being used if there are 3 or more active (outside of bombchu bowling)
                 Sfx_PlaySfxCentered(NA_SE_SY_ERROR);
             } else if (itemAction == PLAYER_IA_LENS_OF_TRUTH) {
                 // Handle Lens of Truth
@@ -12493,18 +12490,6 @@ void Player_Draw(Actor* thisx, PlayState* play2) {
 
     if (!(this->stateFlags2 & PLAYER_STATE2_DISABLE_DRAW)) {
         OverrideLimbDrawOpa overrideLimbDraw = Player_OverrideLimbDrawGameplayDefault;
-        s32 lod;
-        s32 pad;
-
-        if ((this->csAction != 0) || (Player_CheckHostileLockOn(this) && 0) || (this->actor.projectedPos.z < 160.0f)) {
-            lod = 0;
-        } else {
-            lod = 1;
-        }
-
-        if (CVarGetInteger(CVAR_ENHANCEMENT("DisableLOD"), 0)) {
-            lod = 0;
-        }
 
         func_80093C80(play);
         Gfx_SetupDL_25Xlu(play->state.gfxCtx);
@@ -12548,7 +12533,7 @@ void Player_Draw(Actor* thisx, PlayState* play2) {
             Matrix_Scale(1.1f, 0.95f, 1.05f, MTXMODE_APPLY);
             Matrix_RotateY(-sp74, MTXMODE_APPLY);
             Matrix_RotateX(-sp78, MTXMODE_APPLY);
-            Player_DrawGameplay(play, this, lod, gCullFrontDList, overrideLimbDraw);
+            Player_DrawGameplay(play, this, 0, gCullFrontDList, overrideLimbDraw);
             this->actor.scale.y = -this->actor.scale.y;
             Matrix_Pop();
         }
@@ -12556,7 +12541,7 @@ void Player_Draw(Actor* thisx, PlayState* play2) {
         gSPClearGeometryMode(POLY_OPA_DISP++, G_CULL_BOTH);
         gSPClearGeometryMode(POLY_XLU_DISP++, G_CULL_BOTH);
 
-        Player_DrawGameplay(play, this, lod, gCullBackDList, overrideLimbDraw);
+        Player_DrawGameplay(play, this, 0, gCullBackDList, overrideLimbDraw);
 
         if (this->invincibilityTimer > 0) {
             POLY_OPA_DISP = Play_SetFog(play, POLY_OPA_DISP);
@@ -16448,10 +16433,7 @@ void func_80852C50(PlayState* play, Player* this, CsCmdActorCue* cue) {
     sp24 = sCueToCsActionMap[this->cueId];
     func_80852B4C(play, this, linkCsAction, &D_80854E50[ABS(sp24)]);
 
-    if (CVarGetInteger(CVAR_ENHANCEMENT("FixEyesOpenWhileSleeping"), 0) &&
-        (play->csCtx.linkAction->action == 28 || play->csCtx.linkAction->action == 29)) {
-        this->skelAnime.jointTable[22].x = 8;
-    }
+    if (play->csCtx.linkAction->action == 28 || play->csCtx.linkAction->action == 29) this->skelAnime.jointTable[22].x = 8;//close eyes while sleeping
 }
 
 void Player_Action_CsAction(Player* this, PlayState* play) {

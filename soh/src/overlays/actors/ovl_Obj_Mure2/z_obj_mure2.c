@@ -221,19 +221,12 @@ void ObjMure2_Update(Actor* thisx, PlayState* play) {
         this->unk_184 = 4.0f;
     }
 
-    // SOH [Enhancements] Extended draw distance
-    s32 distanceMultiplier = CVarGetInteger(CVAR_ENHANCEMENT("DisableDrawDistance"), 1);
-    if (CVarGetInteger(CVAR_ENHANCEMENT("WidescreenActorCulling"), 0) || distanceMultiplier > 1) {
-        f32 originalAspectRatio = 4.0f / 3.0f;
-        f32 currentAspectRatio = OTRGetAspectRatio();
-        // Adjust ratio difference based on field of view testing
-        f32 ratioAdjusted = 1.0f + (MAX(currentAspectRatio / originalAspectRatio, 1.0f) / 1.5f);
-        // Distance multiplier is squared due to the checks above for squared distances
-        distanceMultiplier = SQ(MAX(distanceMultiplier, 1));
-
-        // Prefer the largest of the three values
-        this->unk_184 = MAX(MAX((f32)distanceMultiplier, ratioAdjusted), this->unk_184);
-    }
+    // PC port uses maximum actor draw distance and widescreen culling.
+    f32 originalAspectRatio = 4.0f / 3.0f;
+    f32 currentAspectRatio = OTRGetAspectRatio();
+    f32 ratioAdjusted = 1.0f + (MAX(currentAspectRatio / originalAspectRatio, 1.0f) / 1.5f);
+    s32 distanceMultiplier = SQ(5);
+    this->unk_184 = MAX(MAX((f32)distanceMultiplier, ratioAdjusted), this->unk_184);
 
     this->actionFunc(this, play);
 }

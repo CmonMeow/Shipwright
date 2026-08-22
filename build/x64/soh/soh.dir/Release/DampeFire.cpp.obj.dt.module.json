@@ -1,0 +1,14 @@
+{
+    "version": 1,
+    "revision": 0,
+    "rules": [
+        {
+            "primary-output": "soh.dir\\Release\\DampeFire.obj",
+            "outputs": [
+                "soh.dir\\Release\\DampeFire.cpp.obj.dt.module.json",
+                "soh.dir\\Release\\DampeFire.cpp.obj.dt.d.json"
+            ],
+            "requires": []
+        }
+    ]
+}

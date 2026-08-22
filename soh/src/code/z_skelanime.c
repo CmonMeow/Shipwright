@@ -80,9 +80,7 @@ void SkelAnime_DrawLod(PlayState* play, void** skeleton, Vec3s* jointTable, Over
     Vec3f pos;
     Vec3s rot;
 
-    if (CVarGetInteger(CVAR_ENHANCEMENT("DisableLOD"), 0)) {
-        lod = 0;
-    }
+    lod = 0;
 
     if (skeleton == NULL) {
         osSyncPrintf(VT_FGCOL(RED));
@@ -198,9 +196,7 @@ void SkelAnime_DrawFlexLod(PlayState* play, void** skeleton, Vec3s* jointTable, 
     Vec3s rot;
     Mtx* mtx = Graph_Alloc(play->state.gfxCtx, dListCount * sizeof(Mtx));
 
-    if (CVarGetInteger(CVAR_ENHANCEMENT("DisableLOD"), 0)) {
-        lod = 0;
-    }
+    lod = 0;
 
     if (skeleton == NULL) {
         osSyncPrintf(VT_FGCOL(RED));

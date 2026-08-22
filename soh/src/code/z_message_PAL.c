@@ -1148,12 +1148,10 @@ void Message_DrawTextJPN(PlayState* play, Gfx** gfxP) {
                     msgCtx->choiceTextId = msgCtx->textId;
                     msgCtx->stateTimer = 4;
                     msgCtx->choiceIndex = 0;
-                    if (CVarGetInteger(CVAR_ENHANCEMENT("BetterOwl"), 0)) {
                         if ((msgCtx->textId == 0x2066 || msgCtx->textId == 0x607B || msgCtx->textId == 0x10C2 ||
                              msgCtx->textId == 0x10C6 || msgCtx->textId == 0x206A)) {
                             msgCtx->choiceIndex = 1;
                         }
-                    }
                     Font_LoadMessageBoxIcon(font, TEXTBOX_ICON_ARROW);
                 }
                 break;
@@ -1521,12 +1519,10 @@ void Message_DrawText(PlayState* play, Gfx** gfxP) {
                     msgCtx->choiceTextId = msgCtx->textId;
                     msgCtx->stateTimer = 4;
                     msgCtx->choiceIndex = 0;
-                    if (CVarGetInteger(CVAR_ENHANCEMENT("BetterOwl"), 0)) {
                         if ((msgCtx->textId == 0x2066 || msgCtx->textId == 0x607B || msgCtx->textId == 0x10C2 ||
                              msgCtx->textId == 0x10C6 || msgCtx->textId == 0x206A)) {
                             msgCtx->choiceIndex = 1;
                         }
-                    }
                     Font_LoadMessageBoxIcon(font, TEXTBOX_ICON_ARROW);
                 }
                 break;

@@ -1,0 +1,14 @@
+{
+    "version": 1,
+    "revision": 0,
+    "rules": [
+        {
+            "primary-output": "soh.dir\\Release\\CosmeticsEditor.obj",
+            "outputs": [
+                "soh.dir\\Release\\CosmeticsEditor.cpp.obj.dt.module.json",
+                "soh.dir\\Release\\CosmeticsEditor.cpp.obj.dt.d.json"
+            ],
+            "requires": []
+        }
+    ]
+}

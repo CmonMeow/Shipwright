@@ -1481,16 +1481,8 @@ void func_80901020(BossGanon2* this, PlayState* play) {
 void func_8090109C(BossGanon2* this, PlayState* play) {
     u8 i;
 
-    static Color_RGBA8 sPrimColor = { 0, 120, 0, 255 };
-    static Color_RGBA8 sEnvColor = { 0, 120, 0, 255 };
-
-    if (CVarGetInteger(CVAR_ENHANCEMENT("RedGanonBlood"), 0)) {
-        sPrimColor.r = 120;
-        sPrimColor.g = 0;
-
-        sEnvColor.r = 120;
-        sEnvColor.g = 0;
-    }
+    static Color_RGBA8 sPrimColor = { 120, 0, 0, 255 };
+    static Color_RGBA8 sEnvColor = { 120, 0, 0, 255 };
 
     for (i = 0; i < 70; i++) {
         Vec3f velocity;

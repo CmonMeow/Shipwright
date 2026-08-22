@@ -1,27 +1,27 @@
 ﻿  Building Custom Rule C:/Users/CmonMeow/Desktop/Shipwright/libultraship/src/CMakeLists.txt
 cl : command line  warning D9025: overriding '/W3' with '/w'
 cl : command line  warning D9025: overriding '/W3' with '/w'
+cl : command line  warning D9025: overriding '/W3' with '/w'
+cl : command line  warning D9025: overriding '/W3' with '/w'
   Fast3dWindow.cpp
-cl : command line  warning D9025: overriding '/W3' with '/w'
-cl : command line  warning D9025: overriding '/W3' with '/w'
   gfx_opengl.cpp
   gfx_sdl2.cpp
 cl : command line  warning D9025: overriding '/W3' with '/w'
 cl : command line  warning D9025: overriding '/W3' with '/w'
+cl : command line  warning D9025: overriding '/W3' with '/w'
+cl : command line  warning D9025: overriding '/W3' with '/w'
+cl : command line  warning D9025: overriding '/W3' with '/w'
+cl : command line  warning D9025: overriding '/W3' with '/w'
+cl : command line  warning D9025: overriding '/W3' with '/w'
   interpreter.cpp
   controllerbridge.cpp
-cl : command line  warning D9025: overriding '/W3' with '/w'
-cl : command line  warning D9025: overriding '/W3' with '/w'
-cl : command line  warning D9025: overriding '/W3' with '/w'
-cl : command line  warning D9025: overriding '/W3' with '/w'
   gfxbridge.cpp
   resourcebridge.cpp
   windowbridge.cpp
   os.cpp
-cl : command line  warning D9025: overriding '/W3' with '/w'
-cl : command line  warning D9025: overriding '/W3' with '/w'
-cl : command line  warning D9025: overriding '/W3' with '/w'
   os_cache.cpp
+cl : command line  warning D9025: overriding '/W3' with '/w'
+cl : command line  warning D9025: overriding '/W3' with '/w'
   os_eeprom.cpp
   os_mesg.cpp
   os_pi.cpp

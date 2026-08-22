@@ -1,0 +1,14 @@
+{
+    "version": 1,
+    "revision": 0,
+    "rules": [
+        {
+            "primary-output": "libultraship.dir\\Release\\ConsoleVariable.obj",
+            "outputs": [
+                "libultraship.dir\\Release\\ConsoleVariable.cpp.obj.dt.module.json",
+                "libultraship.dir\\Release\\ConsoleVariable.cpp.obj.dt.d.json"
+            ],
+            "requires": []
+        }
+    ]
+}

@@ -97,24 +97,16 @@ static ColliderCylinderInit sIceArrowCylinderInit = {
     { 0, 0, 0, { 0, 0, 0 } },
 };
 
-bool blueFireArrowsEnabledOnRedIceLoad = false;
-
 void func_80890740(BgIceShelter* this, PlayState* play) {
     static s16 cylinderRadii[] = { 47, 33, 44, 41, 100 };
     static s16 cylinderHeights[] = { 80, 54, 90, 60, 200 };
     s32 pad;
     s32 type = (this->dyna.actor.params >> 8) & 7;
 
-    // Initialize this with the red ice, so it can't be affected by toggling while the actor is loaded
-    blueFireArrowsEnabledOnRedIceLoad = CVarGetInteger(CVAR_ENHANCEMENT("BlueFireArrows"), 0);
-
     Collider_InitCylinder(play, &this->cylinder1);
-    // If "Blue Fire Arrows" is enabled, set up a collider on the red ice that responds to them
-    if (blueFireArrowsEnabledOnRedIceLoad) {
-        Collider_SetCylinder(play, &this->cylinder1, &this->dyna.actor, &sIceArrowCylinderInit);
-    } else {
-        Collider_SetCylinder(play, &this->cylinder1, &this->dyna.actor, &sCylinder1Init);
-    }
+    
+    Collider_SetCylinder(play, &this->cylinder1, &this->dyna.actor, &sIceArrowCylinderInit);
+    
     Collider_UpdateCylinder(&this->dyna.actor, &this->cylinder1);
 
     this->cylinder1.dim.radius = cylinderRadii[type];
@@ -327,11 +319,10 @@ void func_8089107C(BgIceShelter* this, PlayState* play) {
             this->dyna.actor.parent->freezeTimer = 10000;
         }
     }
-    // If we have "Blue Fire Arrows" enabled, check both cylinders for a hit
-    if (blueFireArrowsEnabledOnRedIceLoad) {
+    
         MeltOnIceArrowHit(this, this->cylinder1, type, play);
         MeltOnIceArrowHit(this, this->cylinder2, type, play);
-    }
+    
     // Default blue fire check
     if (this->cylinder1.base.acFlags & AC_HIT) {
         this->cylinder1.base.acFlags &= ~AC_HIT;

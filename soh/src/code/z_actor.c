@@ -2977,8 +2977,7 @@ s32 Ship_CalcShouldDrawAndUpdate(PlayState* play, Actor* actor, Vec3f* projected
         return false;
     }
 
-    s32 multiplier = CVarGetInteger(CVAR_ENHANCEMENT("DisableDrawDistance"), 1);
-    multiplier = MAX(multiplier, 1);
+    s32 multiplier = 5;
 
     // Some actors have a really short forward value, so we need to add to it before the multiplier to increase the
     // final strength of the forward culling
@@ -2990,11 +2989,9 @@ s32 Ship_CalcShouldDrawAndUpdate(PlayState* play, Actor* actor, Vec3f* projected
 
         f32 ratioAdjusted = 1.0f;
 
-        if (CVarGetInteger(CVAR_ENHANCEMENT("WidescreenActorCulling"), 0)) {
-            f32 originalAspectRatio = 4.0f / 3.0f;
-            f32 currentAspectRatio = OTRGetAspectRatio();
-            ratioAdjusted = MAX(currentAspectRatio / originalAspectRatio, 1.0f);
-        }
+        f32 originalAspectRatio = 4.0f / 3.0f;
+        f32 currentAspectRatio = OTRGetAspectRatio();
+        ratioAdjusted = MAX(currentAspectRatio / originalAspectRatio, 1.0f);
 
         if ((((fabsf(projectedPos->x) - actor->uncullZoneScale) * (clampedProjectedW / ratioAdjusted)) < 1.0f) &&
             (((projectedPos->y + actor->uncullZoneDownward) * clampedProjectedW) > -1.0f) &&
@@ -3072,22 +3069,13 @@ void func_800315AC(PlayState* play, ActorContext* actorCtx) {
             bool shipShouldDraw = false;
             bool shipShouldUpdate = false;
             if ((HREG(64) != 1) || ((HREG(65) != -1) && (HREG(65) != HREG(66))) || (HREG(70) == 0)) {
-                if (CVarGetInteger(CVAR_ENHANCEMENT("DisableDrawDistance"), 1) > 1 ||
-                    CVarGetInteger(CVAR_ENHANCEMENT("WidescreenActorCulling"), 0)) {
-                    Ship_CalcShouldDrawAndUpdate(play, actor, &actor->projectedPos, actor->projectedW, &shipShouldDraw,
-                                                 &shipShouldUpdate);
+                Ship_CalcShouldDrawAndUpdate(play, actor, &actor->projectedPos, actor->projectedW, &shipShouldDraw,
+                                             &shipShouldUpdate);
 
-                    if (shipShouldUpdate) {
-                        actor->flags |= ACTOR_FLAG_INSIDE_CULLING_VOLUME;
-                    } else {
-                        actor->flags &= ~ACTOR_FLAG_INSIDE_CULLING_VOLUME;
-                    }
+                if (shipShouldUpdate) {
+                    actor->flags |= ACTOR_FLAG_INSIDE_CULLING_VOLUME;
                 } else {
-                    if (func_800314B0(play, actor)) {
-                        actor->flags |= ACTOR_FLAG_INSIDE_CULLING_VOLUME;
-                    } else {
-                        actor->flags &= ~ACTOR_FLAG_INSIDE_CULLING_VOLUME;
-                    }
+                    actor->flags &= ~ACTOR_FLAG_INSIDE_CULLING_VOLUME;
                 }
             }
 

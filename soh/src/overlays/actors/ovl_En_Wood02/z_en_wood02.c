@@ -100,30 +100,12 @@ static f32 sSpawnCos;
 static f32 sSpawnSin;
 
 s32 EnWood02_SpawnZoneCheck(EnWood02* this, PlayState* play, Vec3f* pos) {
-    f32 phi_f12;
-
     SkinMatrix_Vec3fMtxFMultXYZW(&play->viewProjectionMtxF, pos, &this->actor.projectedPos, &this->actor.projectedW);
 
-    // #region SOH [Enhancement] Use the extended culling calculation
-    if (CVarGetInteger(CVAR_ENHANCEMENT("DisableDrawDistance"), 1) > 1 ||
-        CVarGetInteger(CVAR_ENHANCEMENT("WidescreenActorCulling"), 0)) {
-        bool shipShouldDraw = false;
-        bool shipShouldUpdate = false;
-        return Ship_CalcShouldDrawAndUpdate(play, &this->actor, &this->actor.projectedPos, this->actor.projectedW,
-                                            &shipShouldDraw, &shipShouldUpdate);
-    }
-    // #endregion
-
-    phi_f12 = ((this->actor.projectedW == 0.0f) ? 1000.0f : fabsf(1.0f / this->actor.projectedW));
-
-    if ((-this->actor.uncullZoneScale < this->actor.projectedPos.z) &&
-        (this->actor.projectedPos.z < (this->actor.uncullZoneForward + this->actor.uncullZoneScale)) &&
-        (((fabsf(this->actor.projectedPos.x) - this->actor.uncullZoneScale) * phi_f12) < 1.0f) &&
-        (((this->actor.projectedPos.y + this->actor.uncullZoneDownward) * phi_f12) > -1.0f) &&
-        (((this->actor.projectedPos.y - this->actor.uncullZoneScale) * phi_f12) < 1.0f)) {
-        return true;
-    }
-    return false;
+    bool shipShouldDraw = false;
+    bool shipShouldUpdate = false;
+    return Ship_CalcShouldDrawAndUpdate(play, &this->actor, &this->actor.projectedPos, this->actor.projectedW,
+                                        &shipShouldDraw, &shipShouldUpdate);
 }
 
 /** Spawns similar-looking trees or bushes only when the player is sufficiently close. Presumably done this way to keep

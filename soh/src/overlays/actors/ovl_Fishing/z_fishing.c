@@ -2937,9 +2937,7 @@ bool getFishNeverEscape() {
 }
 
 bool getShouldSpawnLoaches() {
-    return (CVarGetInteger(CVAR_ENHANCEMENT("CustomizeFishing"), 0) &&
-            CVarGetInteger(CVAR_ENHANCEMENT("LoachesAlwaysAppear"), 0)) ||
-           ((KREG(1) == 1) || ((sFishGameNumber & 3) == 3));
+    return true;
 }
 
 bool getShouldConfirmKeep() {
