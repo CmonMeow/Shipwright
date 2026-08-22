@@ -1,5 +1,4 @@
 #include "soh/Enhancements/game-interactor/GameInteractor.h"
-#include "soh/Enhancements/randomizer/SeedContext.h"
 #include "soh/ShipInit.hpp"
 
 extern "C" {
@@ -17,12 +16,11 @@ extern SaveContext gSaveContext;
  */
 void RegisterMoveMidoInKokiriForest() {
     COND_VB_SHOULD(
-        VB_MOVE_MIDO_IN_KOKIRI_FOREST, CVarGetInteger(CVAR_ENHANCEMENT("TimeSavers.SkipMiscInteractions"), IS_RANDO), {
+        VB_MOVE_MIDO_IN_KOKIRI_FOREST, CVarGetInteger(CVAR_ENHANCEMENT("TimeSavers.SkipMiscInteractions"), 0), {
             if (!Flags_GetEventChkInf(EVENTCHKINF_SHOWED_MIDO_SWORD_SHIELD) &&
                 (CUR_EQUIP_VALUE(EQUIP_TYPE_SHIELD) == EQUIP_VALUE_SHIELD_DEKU) &&
                 (CUR_EQUIP_VALUE(EQUIP_TYPE_SWORD) == EQUIP_VALUE_SWORD_KOKIRI) && gSaveContext.cutsceneIndex == 0 &&
-                !(IS_RANDO && RAND_GET_OPTION(RSK_SHUFFLE_SPEAK) &&
-                  !Flags_GetRandomizerInf(RAND_INF_CAN_SPEAK_KOKIRI))) {
+                true) {
                 Flags_SetEventChkInf(EVENTCHKINF_SHOWED_MIDO_SWORD_SHIELD);
                 *should = true;
             }
@@ -30,4 +28,4 @@ void RegisterMoveMidoInKokiriForest() {
 }
 
 static RegisterShipInitFunc initFunc(RegisterMoveMidoInKokiriForest,
-                                     { CVAR_ENHANCEMENT("TimeSavers.SkipMiscInteractions"), "IS_RANDO" });
+                                     { CVAR_ENHANCEMENT("TimeSavers.SkipMiscInteractions") });

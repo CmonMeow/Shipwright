@@ -1,5 +1,6 @@
 #include "Anchor.h"
 #include "soh/OTRGlobals.h"
+#include "soh/util.h"
 
 extern "C" {
 #include "variables.h"
@@ -110,7 +111,7 @@ void AnchorRoomWindow::DrawElement() {
                     ImGui::EndTooltip();
                 }
             }
-            uint32_t seed = IS_RANDO ? Rando::Context::GetInstance()->GetSeed() : 0;
+            uint32_t seed = 0;
             if (client.isSaveLoaded && Anchor::Instance->IsSaveLoaded() && client.seed != seed && client.online &&
                 !client.self) {
                 ImGui::SameLine();

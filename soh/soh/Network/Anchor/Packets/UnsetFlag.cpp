@@ -6,7 +6,6 @@
 
 extern "C" {
 #include "functions.h"
-#include "soh/Enhancements/randomizer/ShuffleTradeItems.h"
 extern PlayState* gPlayState;
 }
 
@@ -47,47 +46,6 @@ void Anchor::HandlePacket_UnsetFlag(nlohmann::json payload) {
         effect->parameters[1] = flag;
         effect->Apply();
 
-        // Special case: If an adult trade item flag is unset, replace the item if the player has it equipped
-        if (flagType == FLAG_RANDOMIZER_INF &&
-            (flag >= RAND_INF_ADULT_TRADES_HAS_POCKET_EGG && flag <= RAND_INF_ADULT_TRADES_HAS_CLAIM_CHECK)) {
-            u16 itemToReplace = ITEM_POCKET_EGG;
-            switch (flag) {
-                case RAND_INF_ADULT_TRADES_HAS_POCKET_EGG:
-                    itemToReplace = ITEM_POCKET_EGG;
-                    break;
-                case RAND_INF_ADULT_TRADES_HAS_POCKET_CUCCO:
-                    itemToReplace = ITEM_POCKET_CUCCO;
-                    break;
-                case RAND_INF_ADULT_TRADES_HAS_COJIRO:
-                    itemToReplace = ITEM_COJIRO;
-                    break;
-                case RAND_INF_ADULT_TRADES_HAS_ODD_MUSHROOM:
-                    itemToReplace = ITEM_ODD_MUSHROOM;
-                    break;
-                case RAND_INF_ADULT_TRADES_HAS_ODD_POTION:
-                    itemToReplace = ITEM_ODD_POTION;
-                    break;
-                case RAND_INF_ADULT_TRADES_HAS_SAW:
-                    itemToReplace = ITEM_SAW;
-                    break;
-                case RAND_INF_ADULT_TRADES_HAS_SWORD_BROKEN:
-                    itemToReplace = ITEM_SWORD_BROKEN;
-                    break;
-                case RAND_INF_ADULT_TRADES_HAS_PRESCRIPTION:
-                    itemToReplace = ITEM_PRESCRIPTION;
-                    break;
-                case RAND_INF_ADULT_TRADES_HAS_FROG:
-                    itemToReplace = ITEM_FROG;
-                    break;
-                case RAND_INF_ADULT_TRADES_HAS_EYEDROPS:
-                    itemToReplace = ITEM_EYEDROPS;
-                    break;
-                case RAND_INF_ADULT_TRADES_HAS_CLAIM_CHECK:
-                    itemToReplace = ITEM_CLAIM_CHECK;
-                    break;
-            }
-            Inventory_ReplaceItem(gPlayState, itemToReplace, Randomizer_GetNextAdultTradeItem());
-        }
     } else {
         // Special case: Ignore water temple water level flags, stored at 0x1C, 0x1D, 0x1E.
         if (sceneNum == SCENE_WATER_TEMPLE && flagType == FLAG_SCENE_SWITCH &&

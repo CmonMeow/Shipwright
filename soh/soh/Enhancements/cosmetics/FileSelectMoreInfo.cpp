@@ -5,7 +5,6 @@
 #include "textures/parameter_static/parameter_static.h"
 #include "textures/nes_font_static/nes_font_static.h"
 #include "soh_assets.h"
-#include "soh/Enhancements/randomizer/randomizerTypes.h"
 #include "soh/SaveManager.h"
 #include "soh/frame_interpolation.h"
 #include "ship/utils/color.h"
@@ -16,6 +15,15 @@
 #include "soh/Enhancements/game-interactor/GameInteractor_Hooks.h"
 #include "soh/ShipInit.hpp"
 #include "assets/textures/title_static/title_static.h"
+
+typedef struct Sprite {
+    char tex[512];
+    uint16_t width;
+    uint16_t height;
+    uint8_t im_fmt;
+    uint8_t im_siz;
+    uint8_t id;
+} Sprite;
 
 /*
  * TODO:
@@ -105,8 +113,6 @@ typedef struct ItemData {
     { 0x29 + ICON_SIZE * i, 0x31 }
 #define OCARINA_BUTTON_ICON_POS(i) \
     { 0xA8 + ICON_SIZE * i, 0x00 }
-#define RANDO_ONLY_ITEM_ICON_POS(i) \
-    { 0xA8 + ICON_SIZE * i, 0x2A }
 // clang-format on
 
 static ItemData itemData[] = {
@@ -221,8 +227,6 @@ static ItemData itemData[] = {
     { CREATE_SPRITE_OCARINA_BUTTON(dgMsgCharA8ButtonCRightTex, 119), 0xB4, OCARINA_BUTTON_ICON_POS(4), SIZE_NORMAL },
     */
 
-    { CREATE_SPRITE_RUPEE(0xC8, 0xFF, 0x64), ITEM_RUPEE_GREEN, RANDO_ONLY_ITEM_ICON_POS(0), SIZE_NORMAL },
-    { CREATE_SPRITE_32(dgItemIconFishingPoleTex, 120), ITEM_FISHING_POLE, RANDO_ONLY_ITEM_ICON_POS(1), SIZE_NORMAL },
 };
 
 static u8 ColorProduct(u8 c1, u8 c2) {
@@ -472,11 +476,6 @@ static bool ShouldRenderItem(s16 fileIndex, u8 item) {
 
     if (item == ITEM_DOUBLE_DEFENSE && !Save_GetSaveMetaInfo(fileIndex)->isDoubleDefenseAcquired) {
         return false;
-    }
-
-    // greg
-    if (item == ITEM_RUPEE_GREEN) {
-        return Save_GetSaveMetaInfo(fileIndex)->randoSave;
     }
 
     if (item == ITEM_FISHING_POLE) {

@@ -351,7 +351,6 @@ void EnItem00_Init(Actor* thisx, PlayState* play) {
     f32 yOffset = 980.0f;
     f32 shadowScale = 6.0f;
     s32 getItemId = GI_NONE;
-    this->randoCheck = (RandomizerCheck)RC_UNKNOWN_CHECK;
     this->itemEntry = (GetItemEntry)GET_ITEM_NONE;
     s16 spawnParam8000 = this->actor.params & 0x8000;
     s32 pad1;
@@ -1219,63 +1218,6 @@ void EnItem00_CustomItemsParticles(Actor* Parent, PlayState* play, GetItemEntry 
                     return;
             }
             break;
-        case MOD_RANDOMIZER:
-            switch (giEntry.drawItemId) {
-                case RG_MINUET_OF_FOREST:
-                case RG_MAGIC_SINGLE:
-                case RG_MAGIC_DOUBLE:
-                case RG_MAGIC_BEAN_PACK:
-                case RG_BOTTLE_WITH_GREEN_POTION:
-                case RG_BOTTLE_WITH_BUGS:
-                case RG_GREG_RUPEE:
-                    colorIndex = PARTICLE_BRIGHT_GREEN;
-                    break;
-                case RG_BOLERO_OF_FIRE:
-                    colorIndex = PARTICLE_RED;
-                    break;
-                case RG_SERENADE_OF_WATER:
-                case RG_BOTTLE_WITH_FISH:
-                    colorIndex = PARTICLE_CYAN;
-                    break;
-                case RG_REQUIEM_OF_SPIRIT:
-                    colorIndex = PARTICLE_ORANGE;
-                    break;
-                case RG_NOCTURNE_OF_SHADOW:
-                case RG_BOTTLE_WITH_POE:
-                    colorIndex = PARTICLE_VIOLET;
-                    break;
-                case RG_PRELUDE_OF_LIGHT:
-                case RG_BOTTLE_WITH_BIG_POE:
-                    colorIndex = PARTICLE_YELLOW;
-                    break;
-                case RG_DEKU_STICK_BAG:
-                case RG_STICK_UPGRADE_INF:
-                    colorIndex = PARTICLE_GREEN;
-                    break;
-                case RG_DEKU_NUT_BAG:
-                case RG_NUT_UPGRADE_INF:
-                    colorIndex = PARTICLE_GOLD;
-                    break;
-                case RG_DOUBLE_DEFENSE:
-                    colorIndex = PARTICLE_WHITE;
-                    break;
-                case RG_PROGRESSIVE_BOMBCHU_BAG:
-                    colorIndex = PARTICLE_DARK_BLUE;
-                    break;
-                case RG_BOTTLE_WITH_FAIRY:
-                    colorIndex = PARTICLE_PINK;
-                    break;
-                case RG_BOTTLE_WITH_RED_POTION:
-                    colorIndex = PARTICLE_BRIGHT_RED;
-                    break;
-                case RG_BOTTLE_WITH_BLUE_FIRE:
-                case RG_BOTTLE_WITH_BLUE_POTION:
-                    colorIndex = PARTICLE_BLUE;
-                    break;
-                default:
-                    return;
-            }
-            break;
         default:
             return;
     }
@@ -1545,14 +1487,11 @@ s16 func_8001F404(s16 dropId) {
         }
     }
 
-    // #region [Randomizer] [Enchancment]
-    if ((CVarGetInteger(CVAR_ENHANCEMENT("EnableBombchuDrops"), 0) ||
-         (IS_RANDO && Randomizer_GetSettingValue(RSK_ENABLE_BOMBCHU_DROPS) == 1)) &&
+    if (CVarGetInteger(CVAR_ENHANCEMENT("EnableBombchuDrops"), 0) &&
         (dropId == ITEM00_BOMBS_A || dropId == ITEM00_BOMBS_B || dropId == ITEM00_BOMBS_SPECIAL) &&
-        (!IS_RANDO || Randomizer_GetSettingValue(RSK_BOMBCHU_BAG) || INV_CONTENT(ITEM_BOMB) != ITEM_NONE)) {
+        (INV_CONTENT(ITEM_BOMB) != ITEM_NONE)) {
         dropId = EnItem00_ConvertBombDropToBombchu(dropId);
     }
-    // #endregion
 
     // This is convoluted but it seems like it must be a single condition to match
     // clang-format off

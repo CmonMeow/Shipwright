@@ -1,6 +1,5 @@
 #include "z_door_warp1.h"
 #include "objects/object_warp1/object_warp1.h"
-#include "soh/Enhancements/randomizer/randomizer_entrance.h"
 #include "soh/Enhancements/game-interactor/GameInteractor_Hooks.h"
 
 #define FLAGS 0
@@ -807,9 +806,7 @@ void DoorWarp1_AdultWarpOut(DoorWarp1* this, PlayState* play) {
                 gSaveContext.nextCutsceneIndex = 0;
             }
         } else if (play->sceneNum == SCENE_SPIRIT_TEMPLE_BOSS) {
-            if (GameInteractor_Should(VB_PLAY_BLUE_WARP_CS, !CHECK_QUEST_ITEM(QUEST_MEDALLION_SPIRIT),
-                                      RAND_INF_DUNGEONS_DONE_SPIRIT_TEMPLE)) {
-                Flags_SetRandomizerInf(RAND_INF_DUNGEONS_DONE_SPIRIT_TEMPLE);
+            if (GameInteractor_Should(VB_PLAY_BLUE_WARP_CS, !CHECK_QUEST_ITEM(QUEST_MEDALLION_SPIRIT))) {
                 if (GameInteractor_Should(VB_GIVE_ITEM_FROM_BLUE_WARP, true, ITEM_MEDALLION_SPIRIT)) {
                     Item_Give(play, ITEM_MEDALLION_SPIRIT);
                 }
@@ -825,9 +822,7 @@ void DoorWarp1_AdultWarpOut(DoorWarp1* this, PlayState* play) {
                 gSaveContext.nextCutsceneIndex = 0;
             }
         } else if (play->sceneNum == SCENE_SHADOW_TEMPLE_BOSS) {
-            if (GameInteractor_Should(VB_PLAY_BLUE_WARP_CS, !CHECK_QUEST_ITEM(QUEST_MEDALLION_SHADOW),
-                                      RAND_INF_DUNGEONS_DONE_SHADOW_TEMPLE)) {
-                Flags_SetRandomizerInf(RAND_INF_DUNGEONS_DONE_SHADOW_TEMPLE);
+            if (GameInteractor_Should(VB_PLAY_BLUE_WARP_CS, !CHECK_QUEST_ITEM(QUEST_MEDALLION_SHADOW))) {
                 if (GameInteractor_Should(VB_GIVE_ITEM_FROM_BLUE_WARP, true, ITEM_MEDALLION_SHADOW)) {
                     Item_Give(play, ITEM_MEDALLION_SHADOW);
                 }

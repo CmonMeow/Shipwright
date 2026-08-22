@@ -55,7 +55,6 @@ void ResourceMgr_PatchGfxByName(const char* path, const char* patchName, int ind
 void ResourceMgr_PatchGfxCopyCommandByName(const char* path, const char* patchName, int destinationIndex,
                                            int sourceIndex);
 void ResourceMgr_UnpatchGfxByName(const char* path, const char* patchName);
-u8 Randomizer_GetSettingValue(RandomizerSettingKey randoSettingKey);
 }
 
 static WidgetInfo goronNeck;
@@ -1307,18 +1306,6 @@ void ApplyOrResetCustomGfxPatches(bool manualChange) {
         PATCH_GFX(gGiGreenRupeeOuterColorDL, "Consumable_GreenRupee4", consumableGreenRupee.changedCvar, 4,
                   gsDPSetEnvColor(color.r * 0.75f, color.g * 0.75f, color.b * 0.75f, 255));
 
-        // Greg Bridge
-        if (Randomizer_GetSettingValue(RSK_RAINBOW_BRIDGE) == RO_BRIDGE_GREG) {
-            ResourceMgr_PatchGfxByName(gRainbowBridgeDL, "RainbowBridge_StartGrayscale", 2, gsSPGrayscale(true));
-            ResourceMgr_PatchGfxByName(gRainbowBridgeDL, "RainbowBridge_MakeGreen", 10,
-                                       gsDPSetGrayscaleColor(color.r, color.g, color.b, color.a));
-            ResourceMgr_PatchGfxByName(gRainbowBridgeDL, "RainbowBridge_EndGrayscaleAndEndDlist", 79,
-                                       gsSPBranchListOTRFilePath(gEndGrayscaleAndEndDlistDL));
-        } else {
-            ResourceMgr_UnpatchGfxByName(gRainbowBridgeDL, "RainbowBridge_StartGrayscale");
-            ResourceMgr_UnpatchGfxByName(gRainbowBridgeDL, "RainbowBridge_MakeGreen");
-            ResourceMgr_UnpatchGfxByName(gRainbowBridgeDL, "RainbowBridge_EndGrayscaleAndEndDlist");
-        }
     }
     static CosmeticOption& consumableBlueRupee = cosmeticOptions.at("Consumable.BlueRupee");
     if (manualChange || CVarGetInteger(consumableBlueRupee.rainbowCvar, 0)) {
@@ -2116,8 +2103,7 @@ void RandomizeColor(CosmeticOption& cosmeticOption, bool manual = true) {
 
             uint32_t finalSeed = cosmeticOption.defaultColor.r + cosmeticOption.defaultColor.g +
                                  cosmeticOption.defaultColor.b + cosmeticOption.defaultColor.a +
-                                 (IS_RANDO ? Rando::Context::GetInstance()->GetSeed()
-                                           : static_cast<uint32_t>(gSaveContext.ship.stats.fileCreatedAt));
+                                 static_cast<uint32_t>(gSaveContext.ship.stats.fileCreatedAt);
 
             randomState = &local_seed_state;
             ShipUtils::RandInit(finalSeed, randomState);

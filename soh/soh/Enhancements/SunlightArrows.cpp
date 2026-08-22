@@ -1,5 +1,4 @@
 #include "soh/Enhancements/game-interactor/GameInteractor_Hooks.h"
-#include "soh/Enhancements/randomizer/SeedContext.h"
 #include "soh/ShipInit.hpp"
 #include "soh/ObjectExtension/ObjectExtension.h"
 
@@ -40,8 +39,7 @@ struct SunlightArrowData {
 static ObjectExtension::Register<SunlightArrowData> SunlightArrowDataRegister;
 
 void RegisterSunlightArrowsHooks() {
-    bool shouldRegister =
-        CVarGetInteger(CVAR_ENHANCEMENT("SunlightArrows"), 0) || (IS_RANDO && RAND_GET_OPTION(RSK_SUNLIGHT_ARROWS));
+    bool shouldRegister = CVarGetInteger(CVAR_ENHANCEMENT("SunlightArrows"), 0);
 
     COND_ID_HOOK(OnActorInit, ACTOR_OBJ_LIGHTSWITCH, shouldRegister, [](void* actor) {
         auto* thisx = (ObjLightswitch*)actor;
@@ -94,4 +92,4 @@ void RegisterSunlightArrowsHooks() {
     });
 }
 
-static RegisterShipInitFunc initFunc(RegisterSunlightArrowsHooks, { "IS_RANDO", CVAR_ENHANCEMENT("SunlightArrows") });
+static RegisterShipInitFunc initFunc(RegisterSunlightArrowsHooks, { CVAR_ENHANCEMENT("SunlightArrows") });

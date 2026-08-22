@@ -1576,7 +1576,7 @@ typedef enum {
     // !CHECK_QUEST_ITEM(QUEST_MEDALLION_SHADOW)
     // ```
     // #### `args`
-    // - `int32_t` (EVENTCHKINF / RAND_INF_DUNGEONS_DONE)
+    // - `int32_t` (EVENTCHKINF)
     VB_PLAY_BLUE_WARP_CS,
 
     // #### `result`

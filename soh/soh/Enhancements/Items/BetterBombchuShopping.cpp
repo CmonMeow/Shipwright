@@ -1,4 +1,8 @@
 #include <soh/OTRGlobals.h>
+#include "soh/Enhancements/custom-message/CustomMessageManager.h"
+#include "soh/Enhancements/custom-message/CustomMessageTypes.h"
+#include "soh/Enhancements/game-interactor/GameInteractor_Hooks.h"
+#include "soh/ShipInit.hpp"
 
 extern "C" {
 #include <variables.h>
@@ -30,10 +34,9 @@ void BuildShopPromptMessage(uint16_t* textId, bool* loadFromMessageTable) {
 
 void BetterBombchuShopping_Register() {
     COND_ID_HOOK(OnOpenText, TEXT_BUY_BOMBCHUS_10_DESC,
-                 IS_RANDO || CVarGetInteger(CVAR_ENHANCEMENT("BetterBombchuShopping"), 0), BuildShopDescMessage);
+                 CVarGetInteger(CVAR_ENHANCEMENT("BetterBombchuShopping"), 0), BuildShopDescMessage);
     COND_ID_HOOK(OnOpenText, TEXT_BUY_BOMBCHUS_10_PROMPT,
-                 IS_RANDO || CVarGetInteger(CVAR_ENHANCEMENT("BetterBombchuShopping"), 0), BuildShopPromptMessage);
+                 CVarGetInteger(CVAR_ENHANCEMENT("BetterBombchuShopping"), 0), BuildShopPromptMessage);
 }
 
-static RegisterShipInitFunc initFunc(BetterBombchuShopping_Register,
-                                     { "IS_RANDO", CVAR_ENHANCEMENT("BetterBombchuShopping") });
+static RegisterShipInitFunc initFunc(BetterBombchuShopping_Register, { CVAR_ENHANCEMENT("BetterBombchuShopping") });

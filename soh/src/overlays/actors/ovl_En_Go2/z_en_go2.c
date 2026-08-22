@@ -600,7 +600,6 @@ s16 EnGo2_UpdateTalkStateGoronDmtBiggoron(PlayState* play, EnGo2* this) {
         case TEXT_STATE_DONE:
             if (this->actor.textId == 0x305E) {
                 if (!GameInteractor_Should(VB_BIGGORON_CONSIDER_SWORD_COLLECTED, gSaveContext.bgsFlag)) {
-                    Flags_SetRandomizerInf(RAND_INF_ADULT_TRADES_DMT_TRADE_CLAIM_CHECK);
                     EnGo2_GetItem(this, play, GI_SWORD_BGS);
                     this->actionFunc = EnGo2_SetupGetItem;
                     return NPC_TALK_STATE_ACTION;
@@ -631,7 +630,6 @@ s16 EnGo2_UpdateTalkStateGoronDmtBiggoron(PlayState* play, EnGo2* this) {
             if (Message_ShouldAdvance(play)) {
                 if ((this->actor.textId == 0x3054) || (this->actor.textId == 0x3055)) {
                     if (play->msgCtx.choiceIndex == 0) {
-                        Flags_SetRandomizerInf(RAND_INF_ADULT_TRADES_DMT_TRADE_BROKEN_SWORD);
                         EnGo2_GetItem(this, play, GI_PRESCRIPTION);
                         this->actionFunc = EnGo2_SetupGetItem;
                         return NPC_TALK_STATE_ACTION;
@@ -1887,7 +1885,6 @@ void EnGo2_BiggoronEyedrops(EnGo2* this, PlayState* play) {
                 this->trackingMode = NPC_TRACKING_HEAD_AND_TORSO;
                 this->skelAnime.playSpeed = 0.0f;
                 this->skelAnime.curFrame = this->skelAnime.endFrame;
-                Flags_SetRandomizerInf(RAND_INF_ADULT_TRADES_DMT_TRADE_EYEDROPS);
                 EnGo2_GetItem(this, play, GI_CLAIM_CHECK);
                 this->actionFunc = EnGo2_SetupGetItem;
                 this->goronState = 0;

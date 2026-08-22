@@ -307,7 +307,7 @@ void EnRr_SetupReleasePlayer(EnRr* this, PlayState* play) {
             this->retreat = true;
         }
     }
-    if (CUR_EQUIP_VALUE(EQUIP_TYPE_TUNIC) != EQUIP_VALUE_TUNIC_KOKIRI && !IS_RANDO /* Randomizer Save File */) {
+    if (CUR_EQUIP_VALUE(EQUIP_TYPE_TUNIC) != EQUIP_VALUE_TUNIC_KOKIRI) {
         tunic = Inventory_DeleteEquipment(play, EQUIP_TYPE_TUNIC);
         if (tunic != 0) {
             this->eatenTunic = tunic;

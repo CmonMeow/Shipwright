@@ -1,6 +1,8 @@
 #ifndef Z64ITEM_H
 #define Z64ITEM_H
 
+#define MOD_NONE 0
+
 typedef enum {
     /* 0 */ EQUIP_TYPE_SWORD,
     /* 1 */ EQUIP_TYPE_SHIELD,

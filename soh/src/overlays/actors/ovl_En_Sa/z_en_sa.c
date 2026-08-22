@@ -151,9 +151,6 @@ u16 func_80AF55E0(PlayState* play, Actor* thisx) {
     if (reaction != 0) {
         return reaction;
     }
-    if (IS_RANDO && Randomizer_GetSettingValue(RSK_SARIA_HINT)) {
-        return 0x10AD;
-    }
     if (CHECK_QUEST_ITEM(QUEST_SONG_SARIA)) {
         return 0x10AD;
     }

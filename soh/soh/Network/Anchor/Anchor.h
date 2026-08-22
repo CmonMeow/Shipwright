@@ -98,7 +98,6 @@ class Anchor : public Network {
     void HandlePacket_RequestTeamState(nlohmann::json payload);
     void HandlePacket_RequestTeleport(nlohmann::json payload);
     void HandlePacket_ServerMessage(nlohmann::json payload);
-    void HandlePacket_SetCheckStatus(nlohmann::json payload);
     void HandlePacket_SetFlag(nlohmann::json payload);
     void HandlePacket_TeleportTo(nlohmann::json payload);
     void HandlePacket_UnsetFlag(nlohmann::json payload);
@@ -164,7 +163,6 @@ class Anchor : public Network {
     void SendPacket_PlayerUpdate();
     void SendPacket_RequestTeamState();
     void SendPacket_RequestTeleport(u32 clientId);
-    void SendPacket_SetCheckStatus(RandomizerCheck rc);
     void SendPacket_SetFlag(s16 sceneNum, s16 flagType, s16 flag);
     void SendPacket_TeleportTo(u32 clientId);
     void SendPacket_UnsetFlag(s16 sceneNum, s16 flagType, s16 flag);

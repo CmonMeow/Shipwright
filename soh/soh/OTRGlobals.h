@@ -23,9 +23,12 @@
 #ifdef __cplusplus
 #include <ship/Context.h>
 #include "Enhancements/savestates.h"
-#include "Enhancements/randomizer/randomizer.h"
+#include <memory>
+#include <unordered_map>
 #include <vector>
 #include <string>
+
+struct ImFont;
 
 struct ExtensionEntry {
     std::string path;
@@ -33,7 +36,6 @@ struct ExtensionEntry {
 };
 
 extern std::unordered_map<std::string, ExtensionEntry> ExtensionCache;
-#include "Enhancements/randomizer/settings.h"
 
 const std::string appShortName = "soh";
 
@@ -51,8 +53,6 @@ class OTRGlobals {
 
     std::shared_ptr<Ship::Context> context;
     std::shared_ptr<SaveStateMgr> gSaveStateMgr;
-    std::shared_ptr<Randomizer> gRandomizer;
-    std::shared_ptr<Rando::Context> gRandoContext;
 
     ImFont* defaultFontSmaller;
     ImFont* defaultFontLarger;
@@ -127,42 +127,12 @@ int Controller_ShouldRumble(size_t slot);
 void Controller_BlockGameInput();
 void Controller_UnblockGameInput();
 size_t GetEquipNowMessage(char* buffer, char* src, const size_t maxBufferSize);
-u32 SpoilerFileExists(const char* spoilerFileName);
-Sprite* GetSeedTexture(uint8_t index);
-uint8_t GetSeedIconIndex(uint8_t index);
-u8 Randomizer_GetSettingValue(RandomizerSettingKey randoSettingKey);
-RandomizerCheck Randomizer_GetCheckFromActor(s16 actorId, s16 sceneNum, s16 actorParams);
-ShopItemIdentity Randomizer_IdentifyShopItem(s32 sceneNum, u8 slotIndex);
-void Randomizer_ParseSpoiler(const char* fileLoc);
-bool Randomizer_IsTrialRequired(s32 trialFlag);
-GetItemEntry Randomizer_GetItemFromActor(s16 actorId, s16 sceneNum, s16 actorParams, GetItemID ogId);
-GetItemEntry Randomizer_GetItemFromActorWithoutObtainabilityCheck(s16 actorId, s16 sceneNum, s16 actorParams,
-                                                                  GetItemID ogId);
-GetItemEntry Randomizer_GetItemFromKnownCheck(RandomizerCheck randomizerCheck, GetItemID ogId);
-GetItemEntry Randomizer_GetItemFromKnownCheckWithoutObtainabilityCheck(RandomizerCheck randomizerCheck, GetItemID ogId);
-RandomizerInf Randomizer_GetRandomizerInfFromCheck(RandomizerCheck randomizerCheck);
-bool Randomizer_IsCheckShuffled(RandomizerCheck check);
-GetItemEntry GetItemMystery();
-ItemObtainability Randomizer_GetItemObtainabilityFromRandomizerCheck(RandomizerCheck randomizerCheck);
-uint8_t Randomizer_IsSeedGenerated();
-void Randomizer_SetSeedGenerated(bool seedGenerated);
-uint8_t Randomizer_IsSpoilerLoaded();
-void Randomizer_SetSpoilerLoaded(bool spoilerLoaded);
-uint8_t Randomizer_GenerateRandomizer();
-void Randomizer_ShowRandomizerMenu();
-GetItemEntry ItemTable_Retrieve(int16_t getItemID);
-GetItemEntry ItemTable_RetrieveEntry(s16 modIndex, s16 getItemID);
-void EntranceTracker_SetCurrentGrottoID(s16 entranceIndex);
-void EntranceTracker_SetLastEntranceOverride(s16 entranceIndex);
 void Gfx_RegisterBlendedTexture(const char* name, u8* mask, u8* replacement);
 void Gfx_UnregisterBlendedTexture(const char* name);
 void Gfx_TextureCacheDelete(const uint8_t* addr);
-void SaveManager_ThreadPoolWait();
-void CheckTracker_OnMessageClose();
-void CheckTracker_RecalculateAvailableChecks();
-
 GetItemID RetrieveGetItemIDFromItemID(ItemID itemID);
-RandomizerGet RetrieveRandomizerGetFromItemID(ItemID itemID);
+GetItemEntry ItemTable_Retrieve(int16_t getItemID);
+GetItemEntry ItemTable_RetrieveEntry(s16 tableID, s16 getItemID);
 void Messagebox_ShowErrorBox(char* title, char* body);
 
 uint32_t Ship_GetInterpolationFPS();

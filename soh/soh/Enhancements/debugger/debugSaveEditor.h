@@ -5,7 +5,6 @@
 #include <string>
 #include <vector>
 #include <cstdint>
-#include "soh/Enhancements/randomizer/randomizerTypes.h"
 #include <libultraship/libultraship.h>
 
 typedef enum {
@@ -13,7 +12,6 @@ typedef enum {
     ITEM_GET_INF,
     INF_TABLE,
     EVENT_INF,
-    RANDOMIZER_INF,
 } FlagTableType;
 
 typedef struct {
@@ -359,14 +357,6 @@ const std::vector<FlagTable> flagTables = {
           { 0x23, "Market Crowd Text Randomizer" },
           { 0x24, "Market Crowd Text Randomizer" },
           { 0x30, "Entered the Market" },
-      } },
-    { "Randomizer Inf Flags",
-      RANDOMIZER_INF,
-      (RAND_INF_MAX + 15) / 16,
-      {
-#define RANDO_ENUM_ITEM(rand_inf) { rand_inf, #rand_inf },
-#include "soh/Enhancements/randomizer/randomizerEnums/RandomizerInf.h"
-#undef RANDO_ENUM_ITEM
       } },
 };
 

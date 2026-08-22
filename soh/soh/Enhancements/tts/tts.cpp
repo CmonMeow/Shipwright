@@ -806,11 +806,6 @@ void RegisterOnUpdateMainMenuSelection() {
                 SpeechSynthesizer::Instance->Speak(translation.c_str(), GetLanguageCode());
                 break;
             }
-            case QUEST_RANDOMIZER: {
-                auto translation = GetParameritizedText("quest_sel_randomizer", TEXT_BANK_FILECHOOSE, nullptr);
-                SpeechSynthesizer::Instance->Speak(translation.c_str(), GetLanguageCode());
-                break;
-            }
             case QUEST_BOSSRUSH: {
                 auto translation = GetParameritizedText("quest_sel_boss_rush", TEXT_BANK_FILECHOOSE, nullptr);
                 SpeechSynthesizer::Instance->Speak(translation.c_str(), GetLanguageCode());
@@ -831,16 +826,6 @@ void RegisterOnUpdateMainMenuSelection() {
             auto optionValueName = BossRush_GetSettingChoiceName(optionIndex, optionValue, language);
             auto translation = optionName + std::string(" - ") + optionValueName;
             SpeechSynthesizer::Instance->Speak(translation.c_str(), GetLanguageCode());
-        });
-
-    GameInteractor::Instance->RegisterGameHook<GameInteractor::OnUpdateFileRandomizerOptionSelection>(
-        [](uint8_t optionIndex) {
-            if (!CVarGetInteger(CVAR_SETTING("A11yTTS"), 0))
-                return;
-            uint8_t language = (gSaveContext.language == LANGUAGE_JPN) ? LANGUAGE_ENG : gSaveContext.language;
-
-            auto optionName = SohFileSelect_GetSettingText(optionIndex, language);
-            SpeechSynthesizer::Instance->Speak(optionName, GetLanguageCode());
         });
 
     GameInteractor::Instance->RegisterGameHook<GameInteractor::OnUpdateFileNameSelection>([](int16_t charCode) {

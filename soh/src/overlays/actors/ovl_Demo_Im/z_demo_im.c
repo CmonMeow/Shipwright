@@ -873,12 +873,7 @@ void func_80986B2C(PlayState* play) {
     if (Message_GetState(&play->msgCtx) == TEXT_STATE_CLOSING) {
         Player* player = GET_PLAYER(play);
 
-        // In entrance rando have impa bring link back to the front of castle grounds
-        if (IS_RANDO && Randomizer_GetSettingValue(RSK_SHUFFLE_OVERWORLD_ENTRANCES)) {
-            play->nextEntranceIndex = ENTR_CASTLE_GROUNDS_SOUTH_EXIT;
-        } else {
-            play->nextEntranceIndex = ENTR_HYRULE_FIELD_PAST_BRIDGE_SPAWN;
-        }
+        play->nextEntranceIndex = ENTR_HYRULE_FIELD_PAST_BRIDGE_SPAWN;
         play->transitionType = TRANS_TYPE_CIRCLE(TCA_STARBURST, TCC_BLACK, TCS_FAST);
         play->transitionTrigger = TRANS_TRIGGER_START;
         Player_SetCsActionWithHaltedActors(play, &player->actor, 8);
@@ -943,8 +938,7 @@ void func_80986D40(DemoIm* this, PlayState* play) {
     if (gSaveContext.sceneSetupIndex == 6) {
         this->action = 19;
         this->drawConfig = 1;
-    } else if ((Flags_GetEventChkInf(EVENTCHKINF_ZELDA_FLED_HYRULE_CASTLE)) &&
-               !IS_RANDO) { // SoH [Randomizer] Not sure why we're not killing impa here.
+    } else if (Flags_GetEventChkInf(EVENTCHKINF_ZELDA_FLED_HYRULE_CASTLE)) {
         Actor_Kill(&this->actor);
     } else if (!Flags_GetEventChkInf(EVENTCHKINF_LEARNED_ZELDAS_LULLABY)) {
         this->action = 23;

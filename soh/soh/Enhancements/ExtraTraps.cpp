@@ -1,7 +1,7 @@
 #include "soh/Enhancements/game-interactor/GameInteractor_Hooks.h"
 #include "soh/ShipInit.hpp"
-#include "soh/Enhancements/randomizer/SeedContext.h"
 #include "soh/Notification/Notification.h"
+#include "soh/ShipUtils.h"
 
 extern "C" {
 #include "variables.h"
@@ -66,8 +66,7 @@ std::vector<AltTrapType> getEnabledAddTraps() {
 };
 
 static void RollRandomTrap(uint64_t seed) {
-    uint64_t finalSeed = seed + (IS_RANDO ? static_cast<uint64_t>(Rando::Context::GetInstance()->GetSeed())
-                                          : gSaveContext.ship.stats.fileCreatedAt);
+    uint64_t finalSeed = seed + gSaveContext.ship.stats.fileCreatedAt;
     uint64_t state;
     ShipUtils::RandInit(finalSeed, &state);
 
@@ -161,23 +160,6 @@ static void OnPlayerUpdate() {
 void RegisterExtraTraps() {
     COND_HOOK(OnPlayerUpdate, CVAR_EXTRA_TRAPS_VALUE, OnPlayerUpdate);
 
-    COND_VB_SHOULD(VB_SHORT_CIRCUIT_GIVE_ITEM_PROCESS, true, {
-        if (!gSaveContext.ship.pendingIceTrapCount) {
-            return;
-        }
-
-        Player* player = GET_PLAYER(gPlayState);
-
-        *should = true;
-        gSaveContext.ship.pendingIceTrapCount--;
-        gSaveContext.ship.stats.count[COUNT_ICE_TRAPS]++;
-        GameInteractor_ExecuteOnItemReceiveHooks(ItemTable_RetrieveEntry(MOD_RANDOMIZER, RG_ICE_TRAP));
-        if (CVAR_EXTRA_TRAPS_VALUE) {
-            RollRandomTrap(gPlayState->sceneNum + player->getItemEntry.drawItemId);
-        } else {
-            GameInteractor::RawAction::FreezePlayer();
-        }
-    });
 }
 
 static RegisterShipInitFunc initFunc(RegisterExtraTraps, { CVAR_EXTRA_TRAPS_NAME });

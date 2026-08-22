@@ -4033,15 +4033,6 @@ void Audio_PlayFanfare_Rando(GetItemEntry getItem) {
             }
             Audio_PlayFanfare(temp1);
         }
-    } else if (getItem.modIndex == MOD_RANDOMIZER) {
-        if ((itemId >= RG_BOTTLE_WITH_RED_POTION && itemId <= RG_BOTTLE_WITH_BIG_POE) ||
-            (itemId >= RG_DEKU_TREE_MAP && itemId <= RG_GANONS_CASTLE_SMALL_KEY)) {
-            temp1 = NA_BGM_ITEM_GET | 0x900;
-        } else {
-            // Just in case nothing else matches.
-            temp1 = NA_BGM_ITEM_GET | 0x900;
-        }
-        Audio_PlayFanfare(temp1);
     }
 }
 

@@ -1,5 +1,7 @@
 #include "SohGfxDebuggerWindow.h"
 #include "soh/OTRGlobals.h"
+#include "soh/cvar_prefixes.h"
+#include <libultraship/libultraship.h>
 
 void SohGfxDebuggerWindow::InitElement() {
     GfxDebuggerWindow::InitElement();

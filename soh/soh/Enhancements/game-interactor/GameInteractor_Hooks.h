@@ -83,7 +83,6 @@ void GameInteractor_ExecuteOnUpdateFileTargetSelection(uint8_t optionIndex);
 void GameInteractor_ExecuteOnUpdateFileLanguageSelection(uint8_t optionIndex);
 void GameInteractor_ExecuteOnUpdateFileQuestSelection(uint8_t questIndex);
 void GameInteractor_ExecuteOnUpdateFileBossRushOptionSelection(uint8_t optionIndex, uint8_t optionValue);
-void GameInteractor_ExecuteOnUpdateFileRandomizerOptionSelection(uint8_t optionIndex);
 void GameInteractor_ExecuteOnUpdateFileNameSelection(int16_t charCode);
 void GameInteractor_ExecuteOnFileChooseMain(void* gameState);
 
@@ -103,7 +102,6 @@ void GameInteractor_ExecuteOnOpenText(uint16_t* textId, bool* loadFromMessageTab
 void GameInteractor_ExecuteOnSeqPlayerInit(int32_t playerIdx, int32_t seqId);
 
 // MARK: - Rando
-void GameInteractor_ExecuteOnRandoEntranceDiscovered(u16 entranceIndex, u8 isReversedEntrance);
 
 #ifdef __cplusplus
 }

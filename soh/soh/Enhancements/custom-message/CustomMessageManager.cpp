@@ -100,13 +100,6 @@ CustomMessage::CustomMessage(std::string english_, std::vector<std::string> colo
     position = position_;
 }
 
-CustomMessage::CustomMessage(Text text, TextBoxType type_, TextBoxPosition position_)
-    : type(type_), position(position_) {
-    messages[LANGUAGE_ENG] = text.GetEnglish();
-    messages[LANGUAGE_GER] = text.GetGerman();
-    messages[LANGUAGE_FRA] = text.GetFrench();
-}
-
 typedef struct {
     u16 textId;
     u8 typePos;

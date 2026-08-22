@@ -383,8 +383,7 @@ void EnDaiku_Jailed(EnDaiku* this, PlayState* play) {
 void EnDaiku_WaitFreedom(EnDaiku* this, PlayState* play) {
     SkelAnime_Update(&this->skelAnime);
 
-    if (Flags_GetSwitch(play, this->actor.params >> 8 & 0x3F) ||
-        (IS_RANDO && Flags_GetRandomizerInf(RAND_INF_HAS_SKELETON_KEY))) {
+    if (Flags_GetSwitch(play, this->actor.params >> 8 & 0x3F)) {
         this->actor.flags |= ACTOR_FLAG_ATTENTION_ENABLED | ACTOR_FLAG_FRIENDLY;
         EnDaiku_UpdateText(this, play);
     }

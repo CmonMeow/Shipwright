@@ -6,7 +6,6 @@
 #include <array>
 #include <assert.h>
 #include <spdlog/spdlog.h>
-#include "Enhancements/randomizer/randomizerTypes.h"
 #include <variables.h>
 
 std::string invalidString = "";
@@ -646,40 +645,6 @@ std::vector<std::string> questItemNamesGer = {
     "Goldenes Skulltula-Symbol",
 };
 
-std::array<std::string, RA_MAX> rcareaPrefixes = {
-    "KF",
-    "LW",
-    "SFM",
-    "HF",
-    "LH",
-    "GV",
-    "GF",
-    "Wasteland",
-    "Colossus",
-    "Market",
-    "HC",
-    "Kak",
-    "Graveyard",
-    "DMT",
-    "GC",
-    "DMC",
-    "ZR",
-    "ZD",
-    "ZF",
-    "LLR",
-    "Deku Tree",
-    "Dodongos Cavern",
-    "Jabu Jabus Belly",
-    "Forest Temple",
-    "Fire Temple",
-    "Water Temple",
-    "Spirit Temple",
-    "Shadow Temple",
-    "Bottom of the Well",
-    "Ice Cavern",
-    "Gerudo Training Ground",
-    "Ganon's Castle",
-};
 
 const std::string& SohUtils::GetSceneName(int32_t scene) {
     if (scene > sceneNames.size()) {
@@ -738,16 +703,6 @@ const std::string& SohUtils::GetQuestItemName(int32_t item) {
     }
 
     return (*currentQuestItemNames)[item];
-}
-
-const std::string& SohUtils::GetRandomizerCheckAreaPrefix(int32_t rcarea) {
-    if (rcarea > rcareaPrefixes.size()) {
-        SPDLOG_WARN("Passed invalid rcarea to SohUtils::GetRandomizerCheckAreaPrefix: ({})", rcarea);
-        assert(false);
-        return invalidString;
-    }
-
-    return rcareaPrefixes[rcarea];
 }
 
 void SohUtils::CopyStringToCharArray(char* destination, std::string source, size_t size) {

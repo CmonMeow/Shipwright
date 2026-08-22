@@ -1,14 +1,14 @@
 #include <soh/OTRGlobals.h>
+#include "soh/Enhancements/custom-message/CustomMessageManager.h"
+#include "soh/Enhancements/custom-message/CustomMessageTypes.h"
+#include "soh/Enhancements/game-interactor/GameInteractor_Hooks.h"
+#include "soh/ShipInit.hpp"
 
 extern "C" {
 #include "variables.h"
 }
 
 void AutoDismissSkulltulaMessage(uint16_t* textId, bool* loadFromMessageTable) {
-    if (IS_RANDO && RAND_GET_OPTION(RSK_SHUFFLE_TOKENS)) {
-        *loadFromMessageTable = true;
-        return;
-    }
     *loadFromMessageTable = false;
     CustomMessage msg = CustomMessage::LoadVanillaMessageTableEntry(TEXT_GS_FREEZE);
     msg.Replace(CustomMessage::MESSAGE_END(), "\x0E\x3C");

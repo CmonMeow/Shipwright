@@ -1,9 +1,6 @@
 #include "z_kaleido_scope.h"
 #include "textures/parameter_static/parameter_static.h"
 #include "textures/icon_item_static/icon_item_static.h"
-#include "soh/Enhancements/randomizer/ShuffleTradeItems.h"
-#include "soh/Enhancements/randomizer/RocsFeatherCycle.h"
-#include "soh/Enhancements/randomizer/randomizerTypes.h"
 #include "soh/Enhancements/cosmetics/cosmeticsTypes.h"
 #include "soh/OTRGlobals.h"
 
@@ -321,21 +318,12 @@ void KaleidoScope_HandleItemCycleExtras(PlayState* play, u8 slot, bool canCycle,
 }
 
 bool CanMaskSelect() {
-    if (IS_RANDO) {
-        return ((CVarGetInteger(CVAR_ENHANCEMENT("MaskSelect"), 0) ||
-                 Randomizer_GetSettingValue(RSK_MASK_QUEST) != RO_MASK_QUEST_VANILLA) &&
-                Flags_GetRandomizerInf(RAND_INF_ZELDAS_LETTER) &&
-                Flags_GetInfTable(INFTABLE_SHOWED_ZELDAS_LETTER_TO_GATE_GUARD)) ||
-               Randomizer_GetSettingValue(RSK_MASK_QUEST) == RO_MASK_QUEST_SHUFFLE;
-    }
-
     // only allow mask select when:
     // the shop is open:
     // * zelda's letter check: Flags_GetEventChkInf(EVENTCHKINF_OBTAINED_ZELDAS_LETTER)
     // * kak gate check: Flags_GetInfTable(INFTABLE_SHOWED_ZELDAS_LETTER_TO_GATE_GUARD)
     // and the mask quest is complete: Flags_GetEventChkInf(EVENTCHKINF_PAID_BACK_BUNNY_HOOD_FEE)
-    return (CVarGetInteger(CVAR_ENHANCEMENT("MaskSelect"), 0) ||
-            Randomizer_GetSettingValue(RSK_MASK_QUEST) != RO_MASK_QUEST_VANILLA) &&
+    return CVarGetInteger(CVAR_ENHANCEMENT("MaskSelect"), 0) &&
            Flags_GetEventChkInf(EVENTCHKINF_PAID_BACK_BUNNY_HOOD_FEE) &&
            Flags_GetEventChkInf(EVENTCHKINF_OBTAINED_ZELDAS_LETTER) &&
            Flags_GetInfTable(INFTABLE_SHOWED_ZELDAS_LETTER_TO_GATE_GUARD);
@@ -345,14 +333,12 @@ void KaleidoScope_HandleItemCycles(PlayState* play) {
     // handle the mask select
     KaleidoScope_HandleItemCycleExtras(
         play, SLOT_TRADE_CHILD, CanMaskSelect(),
-        IS_RANDO ? Randomizer_GetPrevChildTradeItem()
-                 : (INV_CONTENT(ITEM_TRADE_CHILD) <= ITEM_MASK_KEATON || INV_CONTENT(ITEM_TRADE_CHILD) > ITEM_MASK_TRUTH
-                        ? ITEM_MASK_TRUTH
-                        : INV_CONTENT(ITEM_TRADE_CHILD) - 1),
-        IS_RANDO ? Randomizer_GetNextChildTradeItem()
-                 : (INV_CONTENT(ITEM_TRADE_CHILD) >= ITEM_MASK_TRUTH || INV_CONTENT(ITEM_TRADE_CHILD) < ITEM_MASK_KEATON
-                        ? ITEM_MASK_KEATON
-                        : INV_CONTENT(ITEM_TRADE_CHILD) + 1),
+        (INV_CONTENT(ITEM_TRADE_CHILD) <= ITEM_MASK_KEATON || INV_CONTENT(ITEM_TRADE_CHILD) > ITEM_MASK_TRUTH
+             ? ITEM_MASK_TRUTH
+             : INV_CONTENT(ITEM_TRADE_CHILD) - 1),
+        (INV_CONTENT(ITEM_TRADE_CHILD) >= ITEM_MASK_TRUTH || INV_CONTENT(ITEM_TRADE_CHILD) < ITEM_MASK_KEATON
+             ? ITEM_MASK_KEATON
+             : INV_CONTENT(ITEM_TRADE_CHILD) + 1),
         true);
 
     // the slot age requirement for the child trade slot has to be updated
@@ -372,37 +358,22 @@ void KaleidoScope_HandleItemCycles(PlayState* play) {
                 : AGE_REQ_CHILD;
     }
 
-    // handle the adult trade select
-    KaleidoScope_HandleItemCycleExtras(play, SLOT_TRADE_ADULT,
-                                       IS_RANDO && Randomizer_GetSettingValue(RSK_SHUFFLE_ADULT_TRADE),
-                                       Randomizer_GetPrevAdultTradeItem(), Randomizer_GetNextAdultTradeItem(), true);
-
-    // Handle Nayru's Love/Roc's Feather
-    KaleidoScope_HandleItemCycleExtras(play, SLOT_NAYRUS_LOVE, Randomizer_GetSettingValue(RSK_ROCS_FEATHER),
-                                       Enhancement_GetPrevNayrusItem(), Enhancement_GetNextNayrusItem(), true);
+    KaleidoScope_HandleItemCycleExtras(play, SLOT_NAYRUS_LOVE, false, ITEM_NONE, ITEM_NONE, true);
 }
 
 void KaleidoScope_DrawItemCycles(PlayState* play) {
     // draw the mask select
     KaleidoScope_DrawItemCycleExtras(
         play, SLOT_TRADE_CHILD, CanMaskSelect(),
-        IS_RANDO ? Randomizer_GetPrevChildTradeItem()
-                 : (INV_CONTENT(ITEM_TRADE_CHILD) <= ITEM_MASK_KEATON || INV_CONTENT(ITEM_TRADE_CHILD) > ITEM_MASK_TRUTH
-                        ? ITEM_MASK_TRUTH
-                        : INV_CONTENT(ITEM_TRADE_CHILD) - 1),
-        IS_RANDO ? Randomizer_GetNextChildTradeItem()
-                 : (INV_CONTENT(ITEM_TRADE_CHILD) >= ITEM_MASK_TRUTH || INV_CONTENT(ITEM_TRADE_CHILD) < ITEM_MASK_KEATON
-                        ? ITEM_MASK_KEATON
-                        : INV_CONTENT(ITEM_TRADE_CHILD) + 1));
-
-    // draw the adult trade select
-    KaleidoScope_DrawItemCycleExtras(play, SLOT_TRADE_ADULT,
-                                     IS_RANDO && Randomizer_GetSettingValue(RSK_SHUFFLE_ADULT_TRADE),
-                                     Randomizer_GetPrevAdultTradeItem(), Randomizer_GetNextAdultTradeItem());
+        (INV_CONTENT(ITEM_TRADE_CHILD) <= ITEM_MASK_KEATON || INV_CONTENT(ITEM_TRADE_CHILD) > ITEM_MASK_TRUTH
+             ? ITEM_MASK_TRUTH
+             : INV_CONTENT(ITEM_TRADE_CHILD) - 1),
+        (INV_CONTENT(ITEM_TRADE_CHILD) >= ITEM_MASK_TRUTH || INV_CONTENT(ITEM_TRADE_CHILD) < ITEM_MASK_KEATON
+             ? ITEM_MASK_KEATON
+             : INV_CONTENT(ITEM_TRADE_CHILD) + 1));
 
     // Draw Nayru's Love/Roc's Feather
-    KaleidoScope_DrawItemCycleExtras(play, SLOT_NAYRUS_LOVE, Randomizer_GetSettingValue(RSK_ROCS_FEATHER),
-                                     Enhancement_GetPrevNayrusItem(), Enhancement_GetNextNayrusItem());
+    KaleidoScope_DrawItemCycleExtras(play, SLOT_NAYRUS_LOVE, false, ITEM_NONE, ITEM_NONE);
 }
 
 bool IsItemCycling() {
@@ -443,10 +414,8 @@ void KaleidoScope_DrawItemSelect(PlayState* play) {
 
     if ((pauseCtx->state == 6) && (pauseCtx->unk_1E4 == 0) && (pauseCtx->pageIndex == PAUSE_ITEM)) {
         bool dpad = (CVarGetInteger(CVAR_SETTING("DPadOnPause"), 0) && !CHECK_BTN_ALL(input->cur.button, BTN_CUP));
-        bool pauseAnyCursor =
-            pauseCtx->cursorSpecialPos == 0 &&
-            ((CVarGetInteger(CVAR_ENHANCEMENT("PauseAnyCursor"), 0) == PAUSE_ANY_CURSOR_RANDO_ONLY && IS_RANDO) ||
-             (CVarGetInteger(CVAR_ENHANCEMENT("PauseAnyCursor"), 0) == PAUSE_ANY_CURSOR_ALWAYS_ON));
+        bool pauseAnyCursor = pauseCtx->cursorSpecialPos == 0 &&
+                              (CVarGetInteger(CVAR_ENHANCEMENT("PauseAnyCursor"), 0) == PAUSE_ANY_CURSOR_ALWAYS_ON);
 
         moveCursorResult = 0 || IsItemCycling();
         oldCursorPoint = pauseCtx->cursorPoint[PAUSE_ITEM];

@@ -104,27 +104,11 @@ inline void from_json(const json& j, SohStats& sohStats) {
     j.at("fileCreatedAt").get_to(sohStats.fileCreatedAt);
 }
 
-inline void to_json(json& j, const ShipRandomizerSaveContextData& shipRandomizerSaveContextData) {
-    j = json{
-        { "triforcePiecesCollected", shipRandomizerSaveContextData.triforcePiecesCollected },
-        { "bombchuUpgradeLevel", shipRandomizerSaveContextData.bombchuUpgradeLevel },
-    };
-}
-
-inline void from_json(const json& j, ShipRandomizerSaveContextData& shipRandomizerSaveContextData) {
-    j.at("triforcePiecesCollected").get_to(shipRandomizerSaveContextData.triforcePiecesCollected);
-    j.at("bombchuUpgradeLevel").get_to(shipRandomizerSaveContextData.bombchuUpgradeLevel);
-}
-
 inline void to_json(json& j, const ShipQuestSpecificSaveContextData& shipQuestSpecificSaveContextData) {
-    j = json{
-        { "randomizer", shipQuestSpecificSaveContextData.randomizer },
-    };
+    j = json::object();
 }
 
-inline void from_json(const json& j, ShipQuestSpecificSaveContextData& shipQuestSpecificSaveContextData) {
-    j.at("randomizer").get_to(shipQuestSpecificSaveContextData.randomizer);
-}
+inline void from_json(const json& j, ShipQuestSpecificSaveContextData& shipQuestSpecificSaveContextData) {}
 
 inline void to_json(json& j, const ShipQuestSaveContextData& shipQuestSaveContextData) {
     j = json{
@@ -142,14 +126,12 @@ inline void to_json(json& j, const ShipSaveContextData& shipSaveContextData) {
     j = json{
         { "stats", shipSaveContextData.stats },
         { "quest", shipSaveContextData.quest },
-        { "randomizerInf", shipSaveContextData.randomizerInf },
     };
 }
 
 inline void from_json(const json& j, ShipSaveContextData& shipSaveContextData) {
     j.at("stats").get_to(shipSaveContextData.stats);
     j.at("quest").get_to(shipSaveContextData.quest);
-    j.at("randomizerInf").get_to(shipSaveContextData.randomizerInf);
 }
 
 inline void to_json(json& j, const SaveContext& saveContext) {

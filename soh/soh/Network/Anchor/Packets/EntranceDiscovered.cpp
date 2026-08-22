@@ -2,8 +2,8 @@
 #include <nlohmann/json.hpp>
 #include <libultraship/libultraship.h>
 #include "soh/Enhancements/game-interactor/GameInteractor.h"
-#include "soh/Enhancements/randomizer/randomizer_entrance.h"
 #include "soh/OTRGlobals.h"
+#include "soh/util.h"
 
 /**
  * ENTRANCE_DISCOVERED
@@ -28,6 +28,5 @@ void Anchor::HandlePacket_EntranceDiscovered(nlohmann::json payload) {
         return;
     }
 
-    u16 entranceIndex = payload["entranceIndex"].get<u16>();
-    Entrance_SetEntranceDiscovered(entranceIndex, 1);
+    (void)payload;
 }

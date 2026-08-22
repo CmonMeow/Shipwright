@@ -7,7 +7,6 @@
 #include "z_en_ge1.h"
 #include "vt.h"
 #include "objects/object_ge1/object_ge1.h"
-#include "soh/Enhancements/randomizer/randomizer_entrance.h"
 #include "soh/ResourceManagerHelpers.h"
 #include "soh/Enhancements/game-interactor/GameInteractor_Hooks.h"
 
@@ -245,9 +244,6 @@ void EnGe1_KickPlayer(EnGe1* this, PlayState* play) {
             play->nextEntranceIndex = ENTR_GERUDOS_FORTRESS_17;
         }
 
-        if (IS_RANDO) {
-            Entrance_OverrideGerudoGuardCapture();
-        }
 
         play->transitionType = TRANS_TYPE_CIRCLE(TCA_STARBURST, TCC_BLACK, TCS_FAST);
         play->transitionTrigger = TRANS_TRIGGER_START;

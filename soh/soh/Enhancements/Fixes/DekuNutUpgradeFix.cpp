@@ -35,10 +35,10 @@ static void DekuNutUpgradeSetByPoachersSaw(bool* should) {
 }
 
 static void RegisterDekuNutUpgradeFix() {
-    COND_VB_SHOULD(VB_POACHERS_SAW_SET_DEKU_NUT_UPGRADE_FLAG, CVAR_NUT_UPGRADE_FIX_VALUE || IS_RANDO,
+    COND_VB_SHOULD(VB_POACHERS_SAW_SET_DEKU_NUT_UPGRADE_FLAG, CVAR_NUT_UPGRADE_FIX_VALUE,
                    { DekuNutUpgradeSetByPoachersSaw(should); });
-    COND_VB_SHOULD(VB_DEKU_SCRUBS_REACT_TO_MASK_OF_TRUTH, CVAR_NUT_UPGRADE_FIX_VALUE && !IS_RANDO,
+    COND_VB_SHOULD(VB_DEKU_SCRUBS_REACT_TO_MASK_OF_TRUTH, CVAR_NUT_UPGRADE_FIX_VALUE,
                    { DekuNutUpgradeFixAtForestStage(should); });
 }
 
-static RegisterShipInitFunc initFunc(RegisterDekuNutUpgradeFix, { CVAR_NUT_UPGRADE_FIX_NAME, "IS_RANDO" });
+static RegisterShipInitFunc initFunc(RegisterDekuNutUpgradeFix, { CVAR_NUT_UPGRADE_FIX_NAME });

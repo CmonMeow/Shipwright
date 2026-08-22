@@ -160,7 +160,6 @@ void func_80A6E70C(EnHs* this, PlayState* play) {
 void func_80A6E740(EnHs* this, PlayState* play) {
     if (Actor_HasParent(&this->actor, play) || !GameInteractor_Should(VB_TRADE_COJIRO, true, this)) {
         this->actor.parent = NULL;
-        Flags_SetRandomizerInf(RAND_INF_ADULT_TRADES_LW_TRADE_COJIRO);
         func_80A6E3A0(this, func_80A6E630);
     } else {
         Actor_OfferGetItem(&this->actor, play, GI_ODD_MUSHROOM, 10000.0f, 50.0f);

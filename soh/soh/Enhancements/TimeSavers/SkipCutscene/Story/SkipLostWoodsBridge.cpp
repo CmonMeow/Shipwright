@@ -14,7 +14,7 @@ void RegisterSkipLostWoodsBridge() {
      * This skips the cutscene where you speak to Saria on the bridge in Lost Woods, where she gives you the Fairy
      * Ocarina.
      */
-    COND_VB_SHOULD(VB_PLAY_TRANSITION_CS, CVarGetInteger(CVAR_ENHANCEMENT("TimeSavers.SkipCutscene.Story"), IS_RANDO), {
+    COND_VB_SHOULD(VB_PLAY_TRANSITION_CS, CVarGetInteger(CVAR_ENHANCEMENT("TimeSavers.SkipCutscene.Story"), 0), {
         if ((gSaveContext.entranceIndex == ENTR_LOST_WOODS_BRIDGE_EAST_EXIT) &&
             !Flags_GetEventChkInf(EVENTCHKINF_SPOKE_TO_SARIA_ON_BRIDGE)) {
             Flags_SetEventChkInf(EVENTCHKINF_SPOKE_TO_SARIA_ON_BRIDGE);
@@ -31,10 +31,10 @@ void RegisterSkipLostWoodsBridge() {
      * instead.
      */
     COND_VB_SHOULD(VB_GIVE_ITEM_FAIRY_OCARINA,
-                   CVarGetInteger(CVAR_ENHANCEMENT("TimeSavers.SkipCutscene.Story"), IS_RANDO), { *should = false; });
+                   CVarGetInteger(CVAR_ENHANCEMENT("TimeSavers.SkipCutscene.Story"), 0), { *should = false; });
 
     // Todo: Move item queueing here
 }
 
 static RegisterShipInitFunc initFunc(RegisterSkipLostWoodsBridge,
-                                     { CVAR_ENHANCEMENT("TimeSavers.SkipCutscene.Story"), "IS_RANDO" });
+                                     { CVAR_ENHANCEMENT("TimeSavers.SkipCutscene.Story") });

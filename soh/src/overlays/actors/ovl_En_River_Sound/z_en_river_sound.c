@@ -40,9 +40,8 @@ void EnRiverSound_Init(Actor* thisx, PlayState* play) {
         Audio_PlayNatureAmbienceSequence(NATURE_ID_KOKIRI_REGION);
         Actor_Kill(&this->actor);
     } else if (this->actor.params == RS_SARIAS_SONG) {
-        // Always have leading music in rando
         if (CVarGetInteger(CVAR_AUDIO("LostWoodsConsistentVolume"), 0) ||
-            ((!CHECK_QUEST_ITEM(QUEST_SONG_LULLABY) || CHECK_QUEST_ITEM(QUEST_SONG_SARIA)) && !IS_RANDO)) {
+            (!CHECK_QUEST_ITEM(QUEST_SONG_LULLABY) || CHECK_QUEST_ITEM(QUEST_SONG_SARIA))) {
             Actor_Kill(&this->actor);
         }
     }

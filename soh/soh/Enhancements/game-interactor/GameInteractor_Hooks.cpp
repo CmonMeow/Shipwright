@@ -349,9 +349,6 @@ void GameInteractor_ExecuteOnUpdateFileBossRushOptionSelection(uint8_t optionInd
                                                                                                 optionValue);
 }
 
-void GameInteractor_ExecuteOnUpdateFileRandomizerOptionSelection(uint8_t optionIndex) {
-    GameInteractor::Instance->ExecuteHooks<GameInteractor::OnUpdateFileRandomizerOptionSelection>(optionIndex);
-}
 
 void GameInteractor_ExecuteOnUpdateFileNameSelection(int16_t charCode) {
     GameInteractor::Instance->ExecuteHooks<GameInteractor::OnUpdateFileNameSelection>(charCode);
@@ -389,10 +386,4 @@ void GameInteractor_ExecuteOnOpenText(uint16_t* textId, bool* loadFromMessageTab
 // Mark: Audio
 void GameInteractor_ExecuteOnSeqPlayerInit(int32_t playerIdx, int32_t seqId) {
     GameInteractor::Instance->ExecuteHooks<GameInteractor::OnSeqPlayerInit>(playerIdx, seqId);
-}
-
-// MARK: - Rando
-void GameInteractor_ExecuteOnRandoEntranceDiscovered(u16 entranceIndex, u8 isReversedEntrance) {
-    GameInteractor::Instance->ExecuteHooks<GameInteractor::OnRandoEntranceDiscovered>(entranceIndex,
-                                                                                      isReversedEntrance);
 }

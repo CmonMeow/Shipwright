@@ -1,2 +1,1576 @@
-﻿  soh.vcxproj -> C:\Users\CmonMeow\Desktop\Shipwright\x64\Release\soh.exe
+﻿  Building Custom Rule C:/Users/CmonMeow/Desktop/Shipwright/soh/CMakeLists.txt
+  ActorDB.cpp
+  CrashHandlerExt.cpp
+  ArrowCycle.cpp
+  AssignableTunicsAndBoots.cpp
+  DekuStick.cpp
+  EasyFrameAdvance.cpp
+  EasyISG.cpp
+  EasyQPA.cpp
+  FreezeTime.cpp
+  GSTargetable.cpp
+  Ammo.cpp
+  Health.cpp
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\ActorDB.cpp(485,25): warning C4267: '=': conversion from 'size_t' to 'int32_t', possible loss of data
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\ActorDB.cpp(555,19): warning C4267: 'return': conversion from 'size_t' to 'int', possible loss of data
+C:\Users\CmonMeow\Desktop\Shipwright\libultraship\include\fast\lus_gbi.h(133,9): warning C4005: 'GIMMCMD': macro redefinition
+  (compiling source file '../../../soh/soh/CrashHandlerExt.cpp')
+      C:\Users\CmonMeow\Desktop\Shipwright\libultraship\include\libultraship\libultra\gbi.h(255,9):
+      see previous definition of 'GIMMCMD'
+  
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\CrashHandlerExt.cpp(44,10): warning C4101: 'intCharBuffer': unreferenced local variable
+  Magic.cpp
+  Money.cpp
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\Cheats\Infinite\Ammo.cpp(22,24): warning C4244: '=': conversion from 'uint16_t' to 'int8_t', possible loss of data
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\Cheats\Infinite\Ammo.cpp(23,22): warning C4244: '=': conversion from 'uint16_t' to 'int8_t', possible loss of data
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\Cheats\Infinite\Ammo.cpp(24,23): warning C4244: '=': conversion from 'uint16_t' to 'int8_t', possible loss of data
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\Cheats\Infinite\Ammo.cpp(25,22): warning C4244: '=': conversion from 'uint16_t' to 'int8_t', possible loss of data
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\Cheats\Infinite\Ammo.cpp(26,28): warning C4244: '=': conversion from 'uint16_t' to 'int8_t', possible loss of data
+  NayrusLove.cpp
+  MoonJump.cpp
+  NoKeeseGuayTarget.cpp
+  NoRedeadFreeze.cpp
+  UnrestrictedItems.cpp
+  AlwaysWinGoronPot.cpp
+  BonkDamage.cpp
+  CuccosToReturn.cpp
+  DampeFire.cpp
+  HyperEnemies.cpp
+  PermanentLosses.cpp
+  SwitchTimerMultiplier.cpp
+  TreesDropSticks.cpp
+  DisableJabuWobble.cpp
+  DisableKokiriDrawDistance.cpp
+  DisableSandstorm.cpp
+  BounceOffWalls.cpp
+  HurtContainer.cpp
+  MirroredWorld.cpp
+  RupeeDash.cpp
+  ShadowTag.cpp
+  ExtraTraps.cpp
+  FileSelectEnhancements.cpp
+  BrokenGiantsKnife.cpp
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\ExtraModes\HurtContainer.cpp(33,5): warning C4805: '!=': unsafe mix of type 'bool' and type 'int32_t' in operation
+  DekuNutUpgradeFix.cpp
+  DirtPathFix.cpp
+  FixKokiriForestQuestState.cpp
+  FixTwoHandedIdleAnim.cpp
+  FloorSwitches.cpp
+  GoronCityDoorFix.cpp
+  HammerHandFix.cpp
+  BossDefeatTimestamps.cpp
+  EnemyDefeatCounts.cpp
+  AgeDependentEquipment.cpp
+  Disable2DBackgrounds.cpp
+  DisableFixedCamera.cpp
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\GameplayStats\BossDefeatTimestamps.cpp(11,5): warning C4244: '=': conversion from 'uint64_t' to 'uint32_t', possible loss of data
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\GameplayStats\BossDefeatTimestamps.cpp(12,5): warning C4244: '=': conversion from 'uint64_t' to 'uint32_t', possible loss of data
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\GameplayStats\BossDefeatTimestamps.cpp(13,5): warning C4244: '=': conversion from 'uint64_t' to 'uint32_t', possible loss of data
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\GameplayStats\BossDefeatTimestamps.cpp(14,5): warning C4244: '=': conversion from 'uint64_t' to 'uint32_t', possible loss of data
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\GameplayStats\BossDefeatTimestamps.cpp(15,5): warning C4244: '=': conversion from 'uint64_t' to 'uint32_t', possible loss of data
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\GameplayStats\BossDefeatTimestamps.cpp(16,5): warning C4244: '=': conversion from 'uint64_t' to 'uint32_t', possible loss of data
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\GameplayStats\BossDefeatTimestamps.cpp(17,5): warning C4244: '=': conversion from 'uint64_t' to 'uint32_t', possible loss of data
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\GameplayStats\BossDefeatTimestamps.cpp(18,5): warning C4244: '=': conversion from 'uint64_t' to 'uint32_t', possible loss of data
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\GameplayStats\BossDefeatTimestamps.cpp(19,5): warning C4244: '=': conversion from 'uint64_t' to 'uint32_t', possible loss of data
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\GameplayStats\BossDefeatTimestamps.cpp(20,5): warning C4244: '=': conversion from 'uint64_t' to 'uint32_t', possible loss of data
+  DisableLinkSpinWithGoronPot.cpp
+  ToTMedallions.cpp
+  VisualAgony.cpp
+  InjectItemCounts.cpp
+  ItemUnequip.cpp
+  AdditionalReticles.cpp
+  BetterBombchuShopping.cpp
+  HookshotReticle.cpp
+  MaskSelect.cpp
+  NoSkulltulaFreeze.cpp
+  Presets.cpp
+  Autosave.cpp
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\Graphics\VisualAgony.cpp(62,100): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\Graphics\VisualAgony.cpp(62,44): warning C4244: '=': conversion from 'float' to 'int16_t', possible loss of data
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\Graphics\VisualAgony.cpp(68,101): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\Graphics\VisualAgony.cpp(68,45): warning C4244: '=': conversion from 'float' to 'int16_t', possible loss of data
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\Items\AdditionalReticles.cpp(38,5): warning C4101: 'pad': unreferenced local variable
+  DaytimeGS.cpp
+  OpenAllHours.cpp
+  PauseWarp.cpp
+  ResetNaviTimer.cpp
+  RebottleBlueFire.cpp
+  RemoteBombchu.cpp
+  RemoveSpinAttackDarkness.cpp
+  ResetGameplayFrames.cpp
+  ResetHotKey.cpp
+  BottleAdventure.cpp
+  GraveHoleJumps.cpp
+  N64WeirdFrames.cpp
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\RemoveSpinAttackDarkness.cpp(25,58): warning C4244: 'argument': conversion from 'f32' to 'int16_t', possible loss of data
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\RemoveSpinAttackDarkness.cpp(24,113): warning C4244: 'argument': conversion from 'f32' to 'int16_t', possible loss of data
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\RemoveSpinAttackDarkness.cpp(24,82): warning C4244: 'argument': conversion from 'f32' to 'int16_t', possible loss of data
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\RemoteBombchu.cpp(123,19): warning C4244: 'initializing': conversion from 'double' to 'f32', possible loss of data
+  WeirdAnimation.cpp
+  PauseBufferInputs.cpp
+  WideShutterDoorRanges.cpp
+  ReworkedTargeting.cpp
+  SkipAmyPuzzle.cpp
+  SunlightArrows.cpp
+  TimeDisplay.cpp
+  CrawlSpeed.cpp
+  DampeAllNight.cpp
+  FasterBeanSkulltula.cpp
+  FasterBottleEmpty.cpp
+  FasterHeavyBlockLift.cpp
+  FasterPauseMenu.cpp
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\TimeDisplay\TimeDisplay.cpp(57,27): warning C4244: 'initializing': conversion from 'double' to 'uint32_t', possible loss of data
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\TimeDisplay\TimeDisplay.cpp(89,49): warning C4244: 'argument': conversion from 'uint64_t' to 'uint32_t', possible loss of data
+  FasterRupeeAccumulator.cpp
+  FasterShadowShip.cpp
+  MarketSneak.cpp
+  QuitFishingAtDoor.cpp
+  SkipIntro.cpp
+  SkipOwlTravel.cpp
+  SkipBlueWarp.cpp
+  SkipDekuTreeIntro.cpp
+  SkipLostWoodsBridge.cpp
+  SkipToGivingZeldasLetter.cpp
+  SkipZeldaFleeingCastle.cpp
+  MoveJabuJabuElevator.cpp
+  MoveMidoInKokiriForest.cpp
+  SkipChildRutoInteractions.cpp
+  SkipWaterGateDelay.cpp
+  UnsheatheWithoutSlashing.cpp
+  Warping.cpp
+  AudioCollection.cpp
+  AudioEditor.cpp
+  AudioHooks.cpp
+  EnemyBGMDisable.cpp
+  LeeverEnemyBGM.cpp
+  BossRush.cpp
+  InputViewer.cpp
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\Warping.cpp(68,70): warning C4244: '=': conversion from 'uint16_t' to 'uint8_t', possible loss of data
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\audio\AudioEditor.cpp(582,90): warning C4244: 'argument': conversion from 'float' to 'uint32_t', possible loss of data
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\audio\AudioEditor.cpp(583,88): warning C4244: 'argument': conversion from 'float' to 'uint32_t', possible loss of data
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\audio\AudioEditor.cpp(584,89): warning C4244: 'argument': conversion from 'float' to 'uint32_t', possible loss of data
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\audio\AudioEditor.cpp(586,94): warning C4244: 'argument': conversion from 'float' to 'uint32_t', possible loss of data
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\audio\AudioEditor.cpp(588,92): warning C4244: 'argument': conversion from 'float' to 'uint32_t', possible loss of data
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\audio\AudioEditor.cpp(589,94): warning C4244: 'argument': conversion from 'float' to 'uint32_t', possible loss of data
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\audio\AudioEditor.cpp(590,91): warning C4244: 'argument': conversion from 'float' to 'uint32_t', possible loss of data
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\audio\AudioEditor.cpp(591,90): warning C4244: 'argument': conversion from 'float' to 'uint32_t', possible loss of data
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\audio\AudioEditor.cpp(598,99): warning C4244: 'argument': conversion from 'float' to 'uint32_t', possible loss of data
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\audio\AudioEditor.cpp(599,92): warning C4244: 'argument': conversion from 'float' to 'uint32_t', possible loss of data
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\boss-rush\BossRush.cpp(305,23): warning C4244: 'initializing': conversion from 'int16_t' to 'uint8_t', possible loss of data
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\boss-rush\BossRush.cpp(354,104): warning C4244: 'argument': conversion from 'int' to 'f32', possible loss of data
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\boss-rush\BossRush.cpp(359,40): warning C4244: 'argument': conversion from 'int' to 'f32', possible loss of data
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\boss-rush\BossRush.cpp(358,101): warning C4244: 'argument': conversion from 'int' to 'f32', possible loss of data
+  Mouse.cpp
+  SohInputEditorWindow.cpp
+  A11yNoScreenFlashForFinishingBlow.cpp
+  CosmeticsEditor.cpp
+  CustomLogoTitle.cpp
+  CustomSkeletons.cpp
+  FileSelectMoreInfo.cpp
+  TimeFlowFileSelect.cpp
+  authenticGfxPatches.cpp
+  customequipment.cpp
+  debugconsole.cpp
+  MessageViewer.cpp
+C:\Users\CmonMeow\Desktop\Shipwright\libultraship\include\fast\lus_gbi.h(133,9): warning C4005: 'GIMMCMD': macro redefinition
+  (compiling source file '../../../soh/soh/Enhancements/controls/SohInputEditorWindow.cpp')
+      C:\Users\CmonMeow\Desktop\Shipwright\libultraship\include\libultraship\libultra\gbi.h(255,9):
+      see previous definition of 'GIMMCMD'
+  
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\cosmetics\CustomLogoTitle.cpp(43,12): warning C4305: '=': truncation from 'double' to 'f32'
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\cosmetics\CustomLogoTitle.cpp(44,12): warning C4305: '=': truncation from 'double' to 'f32'
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\cosmetics\CustomLogoTitle.cpp(48,12): warning C4305: '=': truncation from 'double' to 'f32'
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\cosmetics\CustomLogoTitle.cpp(114,82): warning C4244: 'argument': conversion from 'int16_t' to 'uint8_t', possible loss of data
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\cosmetics\CustomLogoTitle.cpp(116,24): warning C4244: '+=': conversion from 'float' to 'int16_t', possible loss of data
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\cosmetics\CustomLogoTitle.cpp(32,9): warning C4101: 'pad1': unreferenced local variable
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\cosmetics\CustomLogoTitle.cpp(36,9): warning C4101: 'pad2': unreferenced local variable
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\cosmetics\authenticGfxPatches.cpp(103,33): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\cosmetics\authenticGfxPatches.cpp(120,33): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\cosmetics\authenticGfxPatches.cpp(151,29): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\cosmetics\authenticGfxPatches.cpp(168,29): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\cosmetics\authenticGfxPatches.cpp(201,33): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\cosmetics\authenticGfxPatches.cpp(218,33): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\cosmetics\authenticGfxPatches.cpp(253,33): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\cosmetics\authenticGfxPatches.cpp(270,33): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\controls\SohInputEditorWindow.cpp(83,57): warning C4244: '=': conversion from 'float' to 'int32_t', possible loss of data
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\controls\SohInputEditorWindow.cpp(104,64): warning C4244: '=': conversion from 'float' to 'int32_t', possible loss of data
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\controls\SohInputEditorWindow.cpp(909,46): warning C4244: '=': conversion from 'float' to 'int32_t', possible loss of data
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\controls\SohInputEditorWindow.cpp(1103,46): warning C4244: '=': conversion from 'double' to 'uint8_t', possible loss of data
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\controls\SohInputEditorWindow.cpp(1104,46): warning C4244: '=': conversion from 'double' to 'uint8_t', possible loss of data
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\controls\SohInputEditorWindow.cpp(1105,46): warning C4244: '=': conversion from 'double' to 'uint8_t', possible loss of data
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\controls\SohInputEditorWindow.cpp(1337,79): warning C4244: 'argument': conversion from 'float' to 'uint32_t', possible loss of data
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\controls\SohInputEditorWindow.cpp(1338,85): warning C4244: 'argument': conversion from 'float' to 'uint32_t', possible loss of data
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\controls\SohInputEditorWindow.cpp(1370,80): warning C4244: 'argument': conversion from 'float' to 'uint32_t', possible loss of data
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\controls\SohInputEditorWindow.cpp(1373,84): warning C4244: 'argument': conversion from 'float' to 'uint32_t', possible loss of data
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\controls\SohInputEditorWindow.cpp(1441,76): warning C4244: 'argument': conversion from 'float' to 'uint32_t', possible loss of data
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\controls\SohInputEditorWindow.cpp(1474,77): warning C4244: 'argument': conversion from 'float' to 'uint32_t', possible loss of data
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\controls\SohInputEditorWindow.cpp(1475,76): warning C4244: 'argument': conversion from 'float' to 'uint32_t', possible loss of data
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\cosmetics\CosmeticsEditor.cpp(1969,77): warning C4244: 'argument': conversion from 'float' to 'uint32_t', possible loss of data
+  SohConsoleWindow.cpp
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\debugconsole.cpp(92,45): warning C4244: '=': conversion from 'int' to 'f32', possible loss of data
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\debugconsole.cpp(95,45): warning C4244: '=': conversion from 'int' to 'f32', possible loss of data
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\debugconsole.cpp(98,45): warning C4244: '=': conversion from 'int' to 'f32', possible loss of data
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\debugconsole.cpp(67,47): warning C4101: 'ex': unreferenced local variable
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\debugconsole.cpp(134,43): warning C4101: 'ex': unreferenced local variable
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\debugconsole.cpp(173,43): warning C4101: 'ex': unreferenced local variable
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\debugconsole.cpp(241,43): warning C4101: 'ex': unreferenced local variable
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\debugconsole.cpp(282,43): warning C4101: 'ex': unreferenced local variable
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\debugconsole.cpp(355,51): warning C4244: '=': conversion from 'const _Ty2' to 'uint8_t', possible loss of data
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\debugconsole.cpp(355,51): warning C4244:         with
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\debugconsole.cpp(355,51): warning C4244:         [
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\debugconsole.cpp(355,51): warning C4244:             _Ty2=uint16_t
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\debugconsole.cpp(355,51): warning C4244:         ]
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\debugconsole.cpp(338,43): warning C4101: 'ex': unreferenced local variable
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\debugconsole.cpp(414,43): warning C4101: 'ex': unreferenced local variable
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\debugconsole.cpp(580,43): warning C4101: 'ex': unreferenced local variable
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\debugconsole.cpp(605,43): warning C4101: 'ex': unreferenced local variable
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\debugconsole.cpp(632,43): warning C4101: 'ex': unreferenced local variable
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\debugconsole.cpp(660,43): warning C4101: 'ex': unreferenced local variable
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\debugconsole.cpp(688,43): warning C4101: 'ex': unreferenced local variable
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\debugconsole.cpp(720,43): warning C4101: 'ex': unreferenced local variable
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\debugconsole.cpp(753,40): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\debugconsole.cpp(753,30): warning C4244: '=': conversion from 'float' to 'int32_t', possible loss of data
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\debugconsole.cpp(754,43): warning C4101: 'ex': unreferenced local variable
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\debugconsole.cpp(779,43): warning C4101: 'ex': unreferenced local variable
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\debugconsole.cpp(821,43): warning C4101: 'ex': unreferenced local variable
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\debugconsole.cpp(852,43): warning C4101: 'ex': unreferenced local variable
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\debugconsole.cpp(883,43): warning C4101: 'ex': unreferenced local variable
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\debugconsole.cpp(936,43): warning C4101: 'ex': unreferenced local variable
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\debugconsole.cpp(964,43): warning C4101: 'ex': unreferenced local variable
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\debugconsole.cpp(992,43): warning C4101: 'ex': unreferenced local variable
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\debugconsole.cpp(1020,43): warning C4101: 'ex': unreferenced local variable
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\debugconsole.cpp(1049,43): warning C4101: 'ex': unreferenced local variable
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\debugconsole.cpp(1077,43): warning C4101: 'ex': unreferenced local variable
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\debugconsole.cpp(1106,43): warning C4101: 'ex': unreferenced local variable
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\debugconsole.cpp(1131,43): warning C4101: 'ex': unreferenced local variable
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\debugconsole.cpp(1252,43): warning C4101: 'ex': unreferenced local variable
+  SohGfxDebuggerWindow.cpp
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\debugger\MessageViewer.cpp(170,31): warning C4244: '=': conversion from '__int64' to 'uint32_t', possible loss of data
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\debugger\MessageViewer.cpp(215,45): warning C4267: '=': conversion from 'size_t' to 'uint32_t', possible loss of data
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\debugger\MessageViewer.cpp(253,49): warning C4244: '=': conversion from 'uint16_t' to 'uint8_t', possible loss of data
+  SohStatsWindow.cpp
+  actorViewer.cpp
+  colViewer.cpp
+  debugSaveEditor.cpp
+  dlViewer.cpp
+  hookDebugger.cpp
+  performanceTimer.cpp
+  valueViewer.cpp
+  GameInteractionEffect.cpp
+  GameInteractor.cpp
+  GameInteractor_Hooks.cpp
+  GameInteractor_RawAction.cpp
+  GameInteractor_State.cpp
+  gameplaystats.cpp
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\debugger\debugSaveEditor.cpp(309,42): warning C4244: '=': conversion from 'int16_t' to 'int8_t', possible loss of data
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\debugger\debugSaveEditor.cpp(710,28): warning C4267: 'initializing': conversion from 'size_t' to 'uint16_t', possible loss of data
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\debugger\colViewer.cpp(181,57): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\debugger\colViewer.cpp(181,21): warning C4244: 'initializing': conversion from 'float' to 'short', possible loss of data
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\debugger\colViewer.cpp(182,57): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\debugger\colViewer.cpp(182,21): warning C4244: 'initializing': conversion from 'float' to 'short', possible loss of data
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\debugger\colViewer.cpp(183,50): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\debugger\colViewer.cpp(183,28): warning C4244: 'initializing': conversion from 'float' to 'signed char', possible loss of data
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\debugger\colViewer.cpp(184,51): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\debugger\colViewer.cpp(184,28): warning C4244: 'initializing': conversion from 'float' to 'signed char', possible loss of data
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\debugger\colViewer.cpp(341,14): warning C4101: 'gm': unreferenced local variable
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\debugger\colViewer.cpp(340,14): warning C4101: 'cm': unreferenced local variable
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\debugger\debugSaveEditor.cpp(1110,58): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\debugger\debugSaveEditor.cpp(1119,69): warning C4267: 'argument': conversion from 'size_t' to 'uint16_t', possible loss of data
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\debugger\debugSaveEditor.cpp(1122,69): warning C4267: 'argument': conversion from 'size_t' to 'uint16_t', possible loss of data
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\debugger\debugSaveEditor.cpp(1125,69): warning C4267: 'argument': conversion from 'size_t' to 'uint16_t', possible loss of data
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\debugger\debugSaveEditor.cpp(1128,69): warning C4267: 'argument': conversion from 'size_t' to 'uint16_t', possible loss of data
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\debugger\colViewer.cpp(611,77): warning C4244: 'argument': conversion from 'int' to 'f32', possible loss of data
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\debugger\colViewer.cpp(689,16): warning C4838: conversion from 'int16_t' to 'f32' requires a narrowing conversion
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\debugger\colViewer.cpp(689,29): warning C4838: conversion from 'int16_t' to 'f32' requires a narrowing conversion
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\debugger\colViewer.cpp(689,53): warning C4838: conversion from 'int' to 'f32' requires a narrowing conversion
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\debugger\colViewer.cpp(689,53): warning C4244: 'initializing': conversion from 'int' to 'f32', possible loss of data
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\debugger\colViewer.cpp(690,23): warning C4838: conversion from 'int' to 'f32' requires a narrowing conversion
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\debugger\colViewer.cpp(690,23): warning C4244: 'initializing': conversion from 'int' to 'f32', possible loss of data
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\debugger\colViewer.cpp(690,46): warning C4838: conversion from 'int16_t' to 'f32' requires a narrowing conversion
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\debugger\colViewer.cpp(690,70): warning C4838: conversion from 'int' to 'f32' requires a narrowing conversion
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\debugger\colViewer.cpp(690,70): warning C4244: 'initializing': conversion from 'int' to 'f32', possible loss of data
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\debugger\colViewer.cpp(691,23): warning C4838: conversion from 'int' to 'f32' requires a narrowing conversion
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\debugger\colViewer.cpp(691,23): warning C4244: 'initializing': conversion from 'int' to 'f32', possible loss of data
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\debugger\colViewer.cpp(691,46): warning C4838: conversion from 'int16_t' to 'f32' requires a narrowing conversion
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\debugger\colViewer.cpp(691,63): warning C4838: conversion from 'int16_t' to 'f32' requires a narrowing conversion
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\debugger\colViewer.cpp(692,16): warning C4838: conversion from 'int16_t' to 'f32' requires a narrowing conversion
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\debugger\colViewer.cpp(692,29): warning C4838: conversion from 'int16_t' to 'f32' requires a narrowing conversion
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\debugger\colViewer.cpp(692,46): warning C4838: conversion from 'int16_t' to 'f32' requires a narrowing conversion
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\debugger\colViewer.cpp(693,16): warning C4838: conversion from 'int16_t' to 'f32' requires a narrowing conversion
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\debugger\colViewer.cpp(693,53): warning C4838: conversion from 'int' to 'f32' requires a narrowing conversion
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\debugger\colViewer.cpp(693,53): warning C4244: 'initializing': conversion from 'int' to 'f32', possible loss of data
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\debugger\colViewer.cpp(694,23): warning C4838: conversion from 'int' to 'f32' requires a narrowing conversion
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\debugger\colViewer.cpp(694,23): warning C4244: 'initializing': conversion from 'int' to 'f32', possible loss of data
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\debugger\colViewer.cpp(694,70): warning C4838: conversion from 'int' to 'f32' requires a narrowing conversion
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\debugger\colViewer.cpp(694,70): warning C4244: 'initializing': conversion from 'int' to 'f32', possible loss of data
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\debugger\colViewer.cpp(695,23): warning C4838: conversion from 'int' to 'f32' requires a narrowing conversion
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\debugger\colViewer.cpp(695,23): warning C4244: 'initializing': conversion from 'int' to 'f32', possible loss of data
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\debugger\colViewer.cpp(695,63): warning C4838: conversion from 'int16_t' to 'f32' requires a narrowing conversion
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\debugger\colViewer.cpp(696,16): warning C4838: conversion from 'int16_t' to 'f32' requires a narrowing conversion
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\debugger\colViewer.cpp(696,46): warning C4838: conversion from 'int16_t' to 'f32' requires a narrowing conversion
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\debugger\debugSaveEditor.cpp(1156,53): warning C4267: 'argument': conversion from 'size_t' to 'int16_t', possible loss of data
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\debugger\debugSaveEditor.cpp(1201,57): warning C4267: 'argument': conversion from 'size_t' to 'int16_t', possible loss of data
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\debugger\debugSaveEditor.cpp(1212,57): warning C4267: 'argument': conversion from 'size_t' to 'int16_t', possible loss of data
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\debugger\debugSaveEditor.cpp(1240,23): warning C4267: 'argument': conversion from 'size_t' to 'int', possible loss of data
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\debugger\actorViewer.cpp(617,17): warning C4244: 'initializing': conversion from 'int16_t' to 'uint8_t', possible loss of data
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\debugger\debugSaveEditor.cpp(1660,54): warning C4305: '=': truncation from 'ItemID' to 'int8_t'
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\debugger\actorViewer.cpp(756,19): warning C4244: 'initializing': conversion from 'int16_t' to 'uint8_t', possible loss of data
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\debugger\debugSaveEditor.cpp(1660,54): warning C4309: '=': truncation of constant value
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\debugger\dlViewer.cpp(147,21): warning C4244: 'initializing': conversion from 'uintptr_t' to 'int', possible loss of data
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\debugger\dlViewer.cpp(333,36): warning C4101: 'e': unreferenced local variable
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\game-interactor\GameInteractionEffect.cpp(271,60): warning C4244: 'argument': conversion from 'int32_t' to 'float', possible loss of data
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\debugger\valueViewer.cpp(84,43): warning C4244: 'argument': conversion from 'float' to 'uint32_t', possible loss of data
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\debugger\valueViewer.cpp(83,98): warning C4244: 'argument': conversion from 'float' to 'uint32_t', possible loss of data
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\debugger\valueViewer.cpp(83,75): warning C4244: 'argument': conversion from 'float' to 'uint32_t', possible loss of data
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\debugger\valueViewer.cpp(83,52): warning C4244: 'argument': conversion from 'float' to 'uint32_t', possible loss of data
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\debugger\valueViewer.cpp(174,35): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\debugger\colViewer.cpp(741,25): warning C4244: 'argument': conversion from 'double' to 'unsigned __int64', possible loss of data
+      C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\debugger\colViewer.cpp(741,25):
+      the template instantiation context (the oldest one first) is
+          C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\debugger\colViewer.cpp(750,5):
+          see reference to function template instantiation 'size_t ResetVector<std::vector<Gfx,std::allocator<Gfx>>>(T &)' being compiled
+          with
+          [
+              T=std::vector<Gfx,std::allocator<Gfx>>
+          ]
+  
+  ItemTableManager.cpp
+  mod_menu.cpp
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\item-tables\ItemTableManager.cpp(20,39): warning C4101: 'oor': unreferenced local variable
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\item-tables\ItemTableManager.cpp(30,33): warning C4101: 'oor': unreferenced local variable
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\item-tables\ItemTableManager.cpp(38,39): warning C4101: 'oor': unreferenced local variable
+  mods.cpp
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\gameplaystats.cpp(282,58): warning C4244: 'argument': conversion from 'uint64_t' to 'uint32_t', possible loss of data
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\gameplaystats.cpp(456,75): warning C4244: 'argument': conversion from 'uint64_t' to 'uint32_t', possible loss of data
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\gameplaystats.cpp(459,74): warning C4244: 'argument': conversion from 'uint64_t' to 'uint32_t', possible loss of data
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\gameplaystats.cpp(595,23): warning C4018: '<': signed/unsigned mismatch
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\gameplaystats.cpp(616,23): warning C4018: '<': signed/unsigned mismatch
+  nametag.cpp
+  savestates.cpp
+  SAPISpeechSynthesizer.cpp
+  SpeechLogger.cpp
+  SpeechSynthesizer.cpp
+  timesaver_hook_handlers.cpp
+  TimeSplits.cpp
+  Extract.cpp
+  GbiWrap.cpp
+  Anchor.cpp
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\mod_menu.cpp(242,35): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\mod_menu.cpp(243,35): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\mod_menu.cpp(256,35): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\mod_menu.cpp(257,35): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\mod_menu.cpp(267,53): warning C4267: 'argument': conversion from 'size_t' to 'int', possible loss of data
+  AnchorRoomWindow.cpp
+  DummyPlayer.cpp
+  HookHandlers.cpp
+  AllClientState.cpp
+C:\Users\CmonMeow\Desktop\Shipwright\libultraship\include\ship\utils\binarytools\BitConverter.h(169,65): warning C4267: 'argument': conversion from 'size_t' to 'int32_t', possible loss of data
+  (compiling source file '../../../soh/soh/Extractor/Extract.cpp')
+  
+C:\Users\CmonMeow\Desktop\Shipwright\libultraship\include\ship\utils\binarytools\BitConverter.h(174,65): warning C4267: 'argument': conversion from 'size_t' to 'int32_t', possible loss of data
+  (compiling source file '../../../soh/soh/Extractor/Extract.cpp')
+  
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\nametag.cpp(100,50): warning C4244: 'argument': conversion from 'int' to 'f32', possible loss of data
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\nametag.cpp(172,38): warning C4805: '==': unsafe mix of type 'bool' and type 'const uint8_t' in operation
+  DamagePlayer.cpp
+  DisableAnchor.cpp
+  EntranceDiscovered.cpp
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\timesplits\TimeSplits.cpp(348,69): warning C4244: '=': conversion from 'uint64_t' to 'uint32_t', possible loss of data
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\timesplits\TimeSplits.cpp(584,46): warning C4244: '=': conversion from 'uint64_t' to 'uint32_t', possible loss of data
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\timesplits\TimeSplits.cpp(587,47): warning C4244: '=': conversion from 'uint64_t' to 'uint32_t', possible loss of data
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\timesplits\TimeSplits.cpp(590,55): warning C4244: '=': conversion from 'uint64_t' to 'uint32_t', possible loss of data
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\timesplits\TimeSplits.cpp(609,61): warning C4244: '=': conversion from 'uint64_t' to 'uint32_t', possible loss of data
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\timesplits\TimeSplits.cpp(613,36): warning C4244: '=': conversion from 'uint64_t' to 'uint32_t', possible loss of data
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\timesplits\TimeSplits.cpp(617,65): warning C4244: '=': conversion from 'uint64_t' to 'uint32_t', possible loss of data
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\timesplits\TimeSplits.cpp(681,62): warning C4244: 'argument': conversion from 'uint64_t' to 'uint32_t', possible loss of data
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\timesplits\TimeSplits.cpp(1010,57): warning C4244: 'argument': conversion from 'uint16_t' to 'uint8_t', possible loss of data
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\timesplits\TimeSplits.cpp(1015,77): warning C4244: 'argument': conversion from 'int16_t' to 'uint8_t', possible loss of data
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\timesplits\TimeSplits.cpp(1019,60): warning C4244: 'argument': conversion from 'int16_t' to 'uint8_t', possible loss of data
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\timesplits\TimeSplits.cpp(1024,59): warning C4244: 'argument': conversion from 'int16_t' to 'uint8_t', possible loss of data
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\timesplits\TimeSplits.cpp(1032,69): warning C4244: 'argument': conversion from 'int16_t' to 'uint8_t', possible loss of data
+  GameComplete.cpp
+  GiveItem.cpp
+  Handshake.cpp
+  OcarinaSfx.cpp
+  PlayerSfx.cpp
+  PlayerUpdate.cpp
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Network\Anchor\Packets\DamagePlayer.cpp(54,54): warning C4244: '=': conversion from 'int16_t' to 'uint8_t', possible loss of data
+  RequestTeamState.cpp
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Network\Anchor\Packets\GiveItem.cpp(58,43): warning C4244: 'argument': conversion from 'uint16_t' to 'uint8_t', possible loss of data
+  RequestTeleport.cpp
+  ServerMessage.cpp
+  SetFlag.cpp
+  TeleportTo.cpp
+  UnsetFlag.cpp
+  UpdateBeansCount.cpp
+  UpdateClientState.cpp
+  UpdateDungeonItems.cpp
+  UpdateRoomState.cpp
+  UpdateTeamState.cpp
+  CrowdControl.cpp
+  Network.cpp
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Network\Anchor\Packets\UpdateTeamState.cpp(75,69): warning C4244: '=': conversion from 'int16_t' to 'int8_t', possible loss of data
+  Sail.cpp
+  Notification.cpp
+  ActorListIndex.cpp
+  ActorMaximumHealth.cpp
+  ObjectExtension.cpp
+  ResourceManagerHelpers.cpp
+  SaveManager.cpp
+  ShipUtils.cpp
+  ImGuiUtils.cpp
+  ResolutionEditor.cpp
+  SohGui.cpp
+  SohMenu.cpp
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Notification\Notification.cpp(51,29): warning C4146: unary minus operator applied to unsigned type, result still unsigned
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Notification\Notification.cpp(51,28): warning C4146: unary minus operator applied to unsigned type, result still unsigned
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Notification\Notification.cpp(51,26): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+C:\Users\CmonMeow\Desktop\Shipwright\libultraship\include\fast\lus_gbi.h(133,9): warning C4005: 'GIMMCMD': macro redefinition
+  (compiling source file '../../../soh/soh/ResourceManagerHelpers.cpp')
+      C:\Users\CmonMeow\Desktop\Shipwright\libultraship\include\libultraship\libultra\gbi.h(255,9):
+      see previous definition of 'GIMMCMD'
+  
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\ResourceManagerHelpers.cpp(20,107): warning C4267: 'return': conversion from 'size_t' to 'uint32_t', possible loss of data
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\ResourceManagerHelpers.cpp(150,28): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
+  SohMenuDevTools.cpp
+  SohMenuEnhancements.cpp
+  SohMenuNetwork.cpp
+C:\Users\CmonMeow\Desktop\Shipwright\libultraship\include\fast\lus_gbi.h(133,9): warning C4005: 'GIMMCMD': macro redefinition
+  (compiling source file '../../../soh/soh/SohGui/ResolutionEditor.cpp')
+      C:\Users\CmonMeow\Desktop\Shipwright\libultraship\include\libultraship\libultra\gbi.h(255,9):
+      see previous definition of 'GIMMCMD'
+  
+  SohMenuSettings.cpp
+  SohModals.cpp
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SohGui\ResolutionEditor.cpp(119,72): warning C4244: '=': conversion from 'float' to 'int32_t', possible loss of data
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SohGui\ResolutionEditor.cpp(138,32): warning C4244: '=': conversion from 'int32_t' to 'float', possible loss of data
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SohGui\ResolutionEditor.cpp(139,32): warning C4244: '=': conversion from 'int32_t' to 'float', possible loss of data
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SohGui\ResolutionEditor.cpp(155,76): warning C4244: '=': conversion from 'float' to 'int32_t', possible loss of data
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SohGui\ResolutionEditor.cpp(169,28): warning C4244: '=': conversion from 'int32_t' to 'float', possible loss of data
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SohGui\ResolutionEditor.cpp(170,28): warning C4244: '=': conversion from 'int32_t' to 'float', possible loss of data
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SohGui\ResolutionEditor.cpp(270,76): warning C4244: '=': conversion from 'float' to 'int32_t', possible loss of data
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SohGui\ResolutionEditor.cpp(275,80): warning C4244: '=': conversion from 'float' to 'int32_t', possible loss of data
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SohGui\ResolutionEditor.cpp(462,80): warning C4244: '=': conversion from 'float' to 'int32_t', possible loss of data
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SaveManager.cpp(346,55): warning C4309: '=': truncation of constant value
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SaveManager.cpp(451,58): warning C4838: conversion from 'int' to '_Ty' requires a narrowing conversion
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SaveManager.cpp(451,58): warning C4838:         with
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SaveManager.cpp(451,58): warning C4838:         [
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SaveManager.cpp(451,58): warning C4838:             _Ty=char
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SaveManager.cpp(451,58): warning C4838:         ]
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SaveManager.cpp(451,58): warning C4309: 'initializing': truncation of constant value
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SaveManager.cpp(451,64): warning C4838: conversion from 'int' to '_Ty' requires a narrowing conversion
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SaveManager.cpp(451,64): warning C4838:         with
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SaveManager.cpp(451,64): warning C4838:         [
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SaveManager.cpp(451,64): warning C4838:             _Ty=char
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SaveManager.cpp(451,64): warning C4838:         ]
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SaveManager.cpp(451,64): warning C4309: 'initializing': truncation of constant value
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SaveManager.cpp(451,76): warning C4838: conversion from 'int' to '_Ty' requires a narrowing conversion
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SaveManager.cpp(451,76): warning C4838:         with
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SaveManager.cpp(451,76): warning C4838:         [
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SaveManager.cpp(451,76): warning C4838:             _Ty=char
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SaveManager.cpp(451,76): warning C4838:         ]
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SaveManager.cpp(451,76): warning C4309: 'initializing': truncation of constant value
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SaveManager.cpp(451,82): warning C4838: conversion from 'int' to '_Ty' requires a narrowing conversion
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SaveManager.cpp(451,82): warning C4838:         with
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SaveManager.cpp(451,82): warning C4838:         [
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SaveManager.cpp(451,82): warning C4838:             _Ty=char
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SaveManager.cpp(451,82): warning C4838:         ]
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SaveManager.cpp(451,82): warning C4309: 'initializing': truncation of constant value
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SaveManager.cpp(451,88): warning C4838: conversion from 'int' to '_Ty' requires a narrowing conversion
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SaveManager.cpp(451,88): warning C4838:         with
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SaveManager.cpp(451,88): warning C4838:         [
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SaveManager.cpp(451,88): warning C4838:             _Ty=char
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SaveManager.cpp(451,88): warning C4838:         ]
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SaveManager.cpp(451,88): warning C4309: 'initializing': truncation of constant value
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SaveManager.cpp(451,94): warning C4838: conversion from 'int' to '_Ty' requires a narrowing conversion
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SaveManager.cpp(451,94): warning C4838:         with
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SaveManager.cpp(451,94): warning C4838:         [
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SaveManager.cpp(451,94): warning C4838:             _Ty=char
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SaveManager.cpp(451,94): warning C4838:         ]
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SaveManager.cpp(451,94): warning C4309: 'initializing': truncation of constant value
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SaveManager.cpp(451,100): warning C4838: conversion from 'int' to '_Ty' requires a narrowing conversion
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SaveManager.cpp(451,100): warning C4838:         with
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SaveManager.cpp(451,100): warning C4838:         [
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SaveManager.cpp(451,100): warning C4838:             _Ty=char
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SaveManager.cpp(451,100): warning C4838:         ]
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SaveManager.cpp(451,100): warning C4309: 'initializing': truncation of constant value
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SaveManager.cpp(457,58): warning C4838: conversion from 'int' to '_Ty' requires a narrowing conversion
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SaveManager.cpp(457,58): warning C4838:         with
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SaveManager.cpp(457,58): warning C4838:         [
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SaveManager.cpp(457,58): warning C4838:             _Ty=char
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SaveManager.cpp(457,58): warning C4838:         ]
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SaveManager.cpp(457,58): warning C4309: 'initializing': truncation of constant value
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SaveManager.cpp(457,64): warning C4838: conversion from 'int' to '_Ty' requires a narrowing conversion
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SaveManager.cpp(457,64): warning C4838:         with
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SaveManager.cpp(457,64): warning C4838:         [
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SaveManager.cpp(457,64): warning C4838:             _Ty=char
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SaveManager.cpp(457,64): warning C4838:         ]
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SaveManager.cpp(457,64): warning C4309: 'initializing': truncation of constant value
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SaveManager.cpp(457,70): warning C4838: conversion from 'int' to '_Ty' requires a narrowing conversion
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SaveManager.cpp(457,70): warning C4838:         with
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SaveManager.cpp(457,70): warning C4838:         [
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SaveManager.cpp(457,70): warning C4838:             _Ty=char
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SaveManager.cpp(457,70): warning C4838:         ]
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SaveManager.cpp(457,70): warning C4309: 'initializing': truncation of constant value
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SaveManager.cpp(457,76): warning C4838: conversion from 'int' to '_Ty' requires a narrowing conversion
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SaveManager.cpp(457,76): warning C4838:         with
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SaveManager.cpp(457,76): warning C4838:         [
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SaveManager.cpp(457,76): warning C4838:             _Ty=char
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SaveManager.cpp(457,76): warning C4838:         ]
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SaveManager.cpp(457,76): warning C4309: 'initializing': truncation of constant value
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SaveManager.cpp(457,82): warning C4838: conversion from 'int' to '_Ty' requires a narrowing conversion
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SaveManager.cpp(457,82): warning C4838:         with
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SaveManager.cpp(457,82): warning C4838:         [
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SaveManager.cpp(457,82): warning C4838:             _Ty=char
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SaveManager.cpp(457,82): warning C4838:         ]
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SaveManager.cpp(457,82): warning C4309: 'initializing': truncation of constant value
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SaveManager.cpp(457,88): warning C4838: conversion from 'int' to '_Ty' requires a narrowing conversion
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SaveManager.cpp(457,88): warning C4838:         with
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SaveManager.cpp(457,88): warning C4838:         [
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SaveManager.cpp(457,88): warning C4838:             _Ty=char
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SaveManager.cpp(457,88): warning C4838:         ]
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SaveManager.cpp(457,88): warning C4309: 'initializing': truncation of constant value
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SaveManager.cpp(457,94): warning C4838: conversion from 'int' to '_Ty' requires a narrowing conversion
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SaveManager.cpp(457,94): warning C4838:         with
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SaveManager.cpp(457,94): warning C4838:         [
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SaveManager.cpp(457,94): warning C4838:             _Ty=char
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SaveManager.cpp(457,94): warning C4838:         ]
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SaveManager.cpp(457,94): warning C4309: 'initializing': truncation of constant value
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SaveManager.cpp(457,100): warning C4838: conversion from 'int' to '_Ty' requires a narrowing conversion
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SaveManager.cpp(457,100): warning C4838:         with
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SaveManager.cpp(457,100): warning C4838:         [
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SaveManager.cpp(457,100): warning C4838:             _Ty=char
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SaveManager.cpp(457,100): warning C4838:         ]
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SaveManager.cpp(457,100): warning C4309: 'initializing': truncation of constant value
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SaveManager.cpp(571,58): warning C4838: conversion from 'int' to '_Ty' requires a narrowing conversion
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SaveManager.cpp(571,58): warning C4838:         with
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SaveManager.cpp(571,58): warning C4838:         [
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SaveManager.cpp(571,58): warning C4838:             _Ty=char
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SaveManager.cpp(571,58): warning C4838:         ]
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SaveManager.cpp(571,58): warning C4309: 'initializing': truncation of constant value
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SaveManager.cpp(571,64): warning C4838: conversion from 'int' to '_Ty' requires a narrowing conversion
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SaveManager.cpp(571,64): warning C4838:         with
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SaveManager.cpp(571,64): warning C4838:         [
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SaveManager.cpp(571,64): warning C4838:             _Ty=char
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SaveManager.cpp(571,64): warning C4838:         ]
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SaveManager.cpp(571,64): warning C4309: 'initializing': truncation of constant value
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SaveManager.cpp(571,76): warning C4838: conversion from 'int' to '_Ty' requires a narrowing conversion
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SaveManager.cpp(571,76): warning C4838:         with
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SaveManager.cpp(571,76): warning C4838:         [
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SaveManager.cpp(571,76): warning C4838:             _Ty=char
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SaveManager.cpp(571,76): warning C4838:         ]
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SaveManager.cpp(571,76): warning C4309: 'initializing': truncation of constant value
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SaveManager.cpp(571,82): warning C4838: conversion from 'int' to '_Ty' requires a narrowing conversion
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SaveManager.cpp(571,82): warning C4838:         with
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SaveManager.cpp(571,82): warning C4838:         [
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SaveManager.cpp(571,82): warning C4838:             _Ty=char
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SaveManager.cpp(571,82): warning C4838:         ]
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SaveManager.cpp(571,82): warning C4309: 'initializing': truncation of constant value
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SaveManager.cpp(571,88): warning C4838: conversion from 'int' to '_Ty' requires a narrowing conversion
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SaveManager.cpp(571,88): warning C4838:         with
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SaveManager.cpp(571,88): warning C4838:         [
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SaveManager.cpp(571,88): warning C4838:             _Ty=char
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SaveManager.cpp(571,88): warning C4838:         ]
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SaveManager.cpp(571,88): warning C4309: 'initializing': truncation of constant value
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SaveManager.cpp(571,94): warning C4838: conversion from 'int' to '_Ty' requires a narrowing conversion
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SaveManager.cpp(571,94): warning C4838:         with
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SaveManager.cpp(571,94): warning C4838:         [
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SaveManager.cpp(571,94): warning C4838:             _Ty=char
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SaveManager.cpp(571,94): warning C4838:         ]
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SaveManager.cpp(571,94): warning C4309: 'initializing': truncation of constant value
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SaveManager.cpp(571,100): warning C4838: conversion from 'int' to '_Ty' requires a narrowing conversion
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SaveManager.cpp(571,100): warning C4838:         with
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SaveManager.cpp(571,100): warning C4838:         [
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SaveManager.cpp(571,100): warning C4838:             _Ty=char
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SaveManager.cpp(571,100): warning C4838:         ]
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SaveManager.cpp(571,100): warning C4309: 'initializing': truncation of constant value
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SaveManager.cpp(577,58): warning C4838: conversion from 'int' to '_Ty' requires a narrowing conversion
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SaveManager.cpp(577,58): warning C4838:         with
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SaveManager.cpp(577,58): warning C4838:         [
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SaveManager.cpp(577,58): warning C4838:             _Ty=char
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SaveManager.cpp(577,58): warning C4838:         ]
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SaveManager.cpp(577,58): warning C4309: 'initializing': truncation of constant value
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SaveManager.cpp(577,64): warning C4838: conversion from 'int' to '_Ty' requires a narrowing conversion
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SaveManager.cpp(577,64): warning C4838:         with
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SaveManager.cpp(577,64): warning C4838:         [
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SaveManager.cpp(577,64): warning C4838:             _Ty=char
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SaveManager.cpp(577,64): warning C4838:         ]
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SaveManager.cpp(577,64): warning C4309: 'initializing': truncation of constant value
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SaveManager.cpp(577,70): warning C4838: conversion from 'int' to '_Ty' requires a narrowing conversion
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SaveManager.cpp(577,70): warning C4838:         with
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SaveManager.cpp(577,70): warning C4838:         [
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SaveManager.cpp(577,70): warning C4838:             _Ty=char
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SaveManager.cpp(577,70): warning C4838:         ]
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SaveManager.cpp(577,70): warning C4309: 'initializing': truncation of constant value
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SaveManager.cpp(577,76): warning C4838: conversion from 'int' to '_Ty' requires a narrowing conversion
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SaveManager.cpp(577,76): warning C4838:         with
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SaveManager.cpp(577,76): warning C4838:         [
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SaveManager.cpp(577,76): warning C4838:             _Ty=char
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SaveManager.cpp(577,76): warning C4838:         ]
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SaveManager.cpp(577,76): warning C4309: 'initializing': truncation of constant value
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SaveManager.cpp(577,82): warning C4838: conversion from 'int' to '_Ty' requires a narrowing conversion
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SaveManager.cpp(577,82): warning C4838:         with
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SaveManager.cpp(577,82): warning C4838:         [
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SaveManager.cpp(577,82): warning C4838:             _Ty=char
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SaveManager.cpp(577,82): warning C4838:         ]
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SaveManager.cpp(577,82): warning C4309: 'initializing': truncation of constant value
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SaveManager.cpp(577,88): warning C4838: conversion from 'int' to '_Ty' requires a narrowing conversion
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SaveManager.cpp(577,88): warning C4838:         with
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SaveManager.cpp(577,88): warning C4838:         [
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SaveManager.cpp(577,88): warning C4838:             _Ty=char
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SaveManager.cpp(577,88): warning C4838:         ]
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SaveManager.cpp(577,88): warning C4309: 'initializing': truncation of constant value
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SaveManager.cpp(577,94): warning C4838: conversion from 'int' to '_Ty' requires a narrowing conversion
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SaveManager.cpp(577,94): warning C4838:         with
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SaveManager.cpp(577,94): warning C4838:         [
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SaveManager.cpp(577,94): warning C4838:             _Ty=char
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SaveManager.cpp(577,94): warning C4838:         ]
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SaveManager.cpp(577,94): warning C4309: 'initializing': truncation of constant value
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SaveManager.cpp(577,100): warning C4838: conversion from 'int' to '_Ty' requires a narrowing conversion
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SaveManager.cpp(577,100): warning C4838:         with
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SaveManager.cpp(577,100): warning C4838:         [
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SaveManager.cpp(577,100): warning C4838:             _Ty=char
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SaveManager.cpp(577,100): warning C4838:         ]
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SaveManager.cpp(577,100): warning C4309: 'initializing': truncation of constant value
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SohGui\ResolutionEditor.cpp(585,64): warning C4244: '=': conversion from 'float' to 'int32_t', possible loss of data
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SaveManager.cpp(913,36): warning C4101: 'e': unreferenced local variable
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SaveManager.cpp(941,55): warning C4101: 'ex': unreferenced local variable
+  UIWidgets.cpp
+  ConfigUpdaters.cpp
+  frame_interpolation.cpp
+  AnimationFactory.cpp
+  ArrayFactory.cpp
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SohGui\UIWidgets.cpp(31,32): warning C4018: '>=': signed/unsigned mismatch
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SohGui\UIWidgets.cpp(928,27): warning C4244: '=': conversion from 'double' to 'uint8_t', possible loss of data
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SohGui\UIWidgets.cpp(929,27): warning C4244: '=': conversion from 'double' to 'uint8_t', possible loss of data
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SohGui\UIWidgets.cpp(930,27): warning C4244: '=': conversion from 'double' to 'uint8_t', possible loss of data
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SohGui\UIWidgets.cpp(1262,33): warning C4838: conversion from 'float' to 'uint8_t' requires a narrowing conversion
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SohGui\UIWidgets.cpp(1262,33): warning C4244: 'initializing': conversion from 'float' to 'uint8_t', possible loss of data
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SohGui\UIWidgets.cpp(1262,46): warning C4838: conversion from 'float' to 'uint8_t' requires a narrowing conversion
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SohGui\UIWidgets.cpp(1262,46): warning C4244: 'initializing': conversion from 'float' to 'uint8_t', possible loss of data
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SohGui\UIWidgets.cpp(1262,59): warning C4838: conversion from 'float' to 'uint8_t' requires a narrowing conversion
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SohGui\UIWidgets.cpp(1262,59): warning C4244: 'initializing': conversion from 'float' to 'uint8_t', possible loss of data
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SohGui\UIWidgets.cpp(1262,72): warning C4838: conversion from 'float' to 'uint8_t' requires a narrowing conversion
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SohGui\UIWidgets.cpp(1262,72): warning C4244: 'initializing': conversion from 'float' to 'uint8_t', possible loss of data
+  AudioSampleFactory.cpp
+  AudioSequenceFactory.cpp
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\frame_interpolation.cpp(240,24): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\frame_interpolation.cpp(242,20): warning C4305: '+=': truncation from 'double' to 'f32'
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\frame_interpolation.cpp(244,24): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\frame_interpolation.cpp(246,20): warning C4305: '+=': truncation from 'double' to 'f32'
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\frame_interpolation.cpp(250,24): warning C4305: '+=': truncation from 'double' to 'f32'
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\frame_interpolation.cpp(252,24): warning C4305: '+=': truncation from 'double' to 'f32'
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\frame_interpolation.cpp(732,15): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+  AudioSoundFontFactory.cpp
+  BackgroundFactory.cpp
+  CollisionHeaderFactory.cpp
+  CutsceneFactory.cpp
+  PathFactory.cpp
+  PlayerAnimationFactory.cpp
+  SceneFactory.cpp
+  SkeletonFactory.cpp
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\resource\importer\AudioSequenceFactory.cpp(26,27): warning C4018: '<': signed/unsigned mismatch
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\resource\importer\AudioSequenceFactory.cpp(38,27): warning C4018: '<': signed/unsigned mismatch
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\resource\importer\AudioSequenceFactory.cpp(182,51): warning C4244: '=': conversion from 'uint64_t' to 'uint16_t', possible loss of data
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\resource\importer\AudioSequenceFactory.cpp(184,39): warning C4244: '=': conversion from 'uint64_t' to 'uint16_t', possible loss of data
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\resource\importer\AudioSequenceFactory.cpp(198,42): warning C4244: '=': conversion from 'uint64_t' to 'uint16_t', possible loss of data
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\resource\importer\AudioSequenceFactory.cpp(204,49): warning C4244: '=': conversion from 'uint64_t' to 'uint16_t', possible loss of data
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\resource\importer\AudioSequenceFactory.cpp(214,40): warning C4244: '=': conversion from 'uint64_t' to 'uint16_t', possible loss of data
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\resource\importer\AudioSequenceFactory.cpp(247,51): warning C4244: '=': conversion from 'uint64_t' to 'uint16_t', possible loss of data
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\resource\importer\AudioSequenceFactory.cpp(249,39): warning C4244: '=': conversion from 'uint64_t' to 'uint16_t', possible loss of data
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\resource\importer\AudioSequenceFactory.cpp(265,43): warning C4244: '=': conversion from 'uint64_t' to 'uint16_t', possible loss of data
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\resource\importer\AudioSequenceFactory.cpp(268,50): warning C4244: '=': conversion from 'uint64_t' to 'uint16_t', possible loss of data
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\resource\importer\AudioSequenceFactory.cpp(277,43): warning C4244: '=': conversion from 'uint64_t' to 'uint16_t', possible loss of data
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\resource\importer\AudioSequenceFactory.cpp(280,50): warning C4244: '=': conversion from 'uint64_t' to 'uint16_t', possible loss of data
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\resource\importer\AudioSequenceFactory.cpp(288,26): warning C4244: 'initializing': conversion from 'uint64_t' to 'uint16_t', possible loss of data
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\resource\importer\AudioSequenceFactory.cpp(295,42): warning C4244: '=': conversion from 'uint64_t' to 'uint16_t', possible loss of data
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\resource\importer\AudioSequenceFactory.cpp(301,42): warning C4244: '=': conversion from 'uint64_t' to 'uint16_t', possible loss of data
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\resource\importer\AudioSequenceFactory.cpp(235,14): warning C4101: 'layerStart': unreferenced local variable
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\resource\importer\AudioSequenceFactory.cpp(349,69): warning C4267: '=': conversion from 'size_t' to 'uint32_t', possible loss of data
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\resource\importer\AudioSequenceFactory.cpp(357,73): warning C4267: '=': conversion from 'size_t' to 'uint32_t', possible loss of data
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\resource\importer\AudioSequenceFactory.cpp(380,25): warning C4244: '=': conversion from 'float' to 'uint16_t', possible loss of data
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\resource\importer\AudioSequenceFactory.cpp(387,68): warning C4267: '=': conversion from 'size_t' to 'uint32_t', possible loss of data
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\resource\importer\AudioSampleFactory.cpp(80,16): warning C4267: 'return': conversion from 'size_t' to 'long', possible loss of data
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\resource\importer\AudioSampleFactory.cpp(289,32): warning C4267: '=': conversion from 'size_t' to 'u32', possible loss of data
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\resource\importer\AudioSampleFactory.cpp(294,66): warning C4267: '=': conversion from 'size_t' to 'u32', possible loss of data
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\resource\importer\CollisionHeaderFactory.cpp(235,86): warning C4267: '=': conversion from 'size_t' to 'uint16_t', possible loss of data
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\resource\importer\CollisionHeaderFactory.cpp(236,86): warning C4267: '=': conversion from 'size_t' to 'uint16_t', possible loss of data
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\resource\importer\CollisionHeaderFactory.cpp(237,76): warning C4267: '=': conversion from 'size_t' to 'uint32_t', possible loss of data
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\resource\importer\CollisionHeaderFactory.cpp(238,66): warning C4267: '=': conversion from 'size_t' to 'uint32_t', possible loss of data
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\resource\importer\CollisionHeaderFactory.cpp(239,68): warning C4267: '=': conversion from 'size_t' to 'int32_t', possible loss of data
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\resource\importer\CollisionHeaderFactory.cpp(240,90): warning C4267: '=': conversion from 'size_t' to 'uint16_t', possible loss of data
+  SkeletonLimbFactory.cpp
+  TextFactory.cpp
+  EndMarkerFactory.cpp
+  SceneCommandFactory.cpp
+  SetActorListFactory.cpp
+  SetAlternateHeadersFactory.cpp
+  SetCameraSettingsFactory.cpp
+  SetCollisionHeaderFactory.cpp
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\resource\importer\AudioSoundFontFactory.cpp(267,66): warning C4267: '=': conversion from 'size_t' to 'u8', possible loss of data
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\resource\importer\AudioSoundFontFactory.cpp(357,78): warning C4267: '=': conversion from 'size_t' to 'u8', possible loss of data
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\resource\importer\AudioSoundFontFactory.cpp(394,63): warning C4267: '=': conversion from 'size_t' to 'u16', possible loss of data
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\resource\importer\SceneFactory.cpp(77,18): warning C4146: unary minus operator applied to unsigned type, result still unsigned
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\resource\importer\SceneFactory.cpp(77,18): warning C4309: 'argument': truncation of constant value
+  SetCsCameraFactory.cpp
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\resource\importer\PathFactory.cpp(88,42): warning C4267: '=': conversion from 'size_t' to 'uint8_t', possible loss of data
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\resource\importer\PathFactory.cpp(98,38): warning C4267: '=': conversion from 'size_t' to 'uint32_t', possible loss of data
+  SetCutscenesFactory.cpp
+  SetEchoSettingsFactory.cpp
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\resource\importer\scenecommand\SetActorListFactory.cpp(64,59): warning C4267: '=': conversion from 'size_t' to 'uint32_t', possible loss of data
+  SetEntranceListFactory.cpp
+  SetExitListFactory.cpp
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\resource\importer\SkeletonLimbFactory.cpp(175,68): warning C4267: '=': conversion from 'size_t' to 'uint16_t', possible loss of data
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\resource\importer\SkeletonLimbFactory.cpp(180,76): warning C4267: '=': conversion from 'size_t' to 'uint16_t', possible loss of data
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\resource\importer\scenecommand\SetAlternateHeadersFactory.cpp(62,72): warning C4267: '=': conversion from 'size_t' to 'uint32_t', possible loss of data
+  SetLightListFactory.cpp
+  SetLightingSettingsFactory.cpp
+  SetMeshFactory.cpp
+  SetObjectListFactory.cpp
+  SetPathwaysFactory.cpp
+  SetRoomBehaviorFactory.cpp
+  SetRoomListFactory.cpp
+  SetSkyboxModifierFactory.cpp
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\resource\importer\scenecommand\SetEntranceListFactory.cpp(53,68): warning C4267: '=': conversion from 'size_t' to 'uint32_t', possible loss of data
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\resource\importer\scenecommand\SetExitListFactory.cpp(44,52): warning C4267: '=': conversion from 'size_t' to 'uint32_t', possible loss of data
+  SetSkyboxSettingsFactory.cpp
+  SetSoundSettingsFactory.cpp
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\resource\importer\scenecommand\SetLightListFactory.cpp(78,59): warning C4267: '=': conversion from 'size_t' to 'uint32_t', possible loss of data
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\resource\importer\scenecommand\SetObjectListFactory.cpp(44,60): warning C4267: '=': conversion from 'size_t' to 'uint32_t', possible loss of data
+  SetSpecialObjectsFactory.cpp
+  SetStartPositionListFactory.cpp
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\resource\importer\scenecommand\SetMeshFactory.cpp(97,25): warning C4312: 'type cast': conversion from 'uint32_t' to 'void *' of greater size
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\resource\importer\scenecommand\SetMeshFactory.cpp(281,25): warning C4312: 'type cast': conversion from 'uint32_t' to 'void *' of greater size
+  SetTimeSettingsFactory.cpp
+  SetTransitionActorListFactory.cpp
+  SetWindSettingsFactory.cpp
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\resource\importer\scenecommand\SetRoomListFactory.cpp(60,52): warning C4267: '=': conversion from 'size_t' to 'uint32_t', possible loss of data
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\resource\importer\scenecommand\SetPathwaysFactory.cpp(53,52): warning C4267: '=': conversion from 'size_t' to 'uint32_t', possible loss of data
+  PathLogger.cpp
+  SceneCommandLoggers.cpp
+  Animation.cpp
+  Array.cpp
+  AudioSample.cpp
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\resource\importer\scenecommand\SetStartPositionListFactory.cpp(66,88): warning C4267: '=': conversion from 'size_t' to 'uint32_t', possible loss of data
+  AudioSequence.cpp
+  AudioSoundFont.cpp
+  Background.cpp
+  CollisionHeader.cpp
+  Cutscene.cpp
+  Path.cpp
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\resource\importer\scenecommand\SetTransitionActorListFactory.cpp(70,99): warning C4267: '=': conversion from 'size_t' to 'uint32_t', possible loss of data
+  PlayerAnimation.cpp
+  Scene.cpp
+  Skeleton.cpp
+  SkeletonLimb.cpp
+  Text.cpp
+  EndMarker.cpp
+  SetActorList.cpp
+  SetAlternateHeaders.cpp
+  SetCameraSettings.cpp
+  SetCollisionHeader.cpp
+  SetCsCamera.cpp
+  SetCutscenes.cpp
+  SetEchoSettings.cpp
+  SetEntranceList.cpp
+  SetExitList.cpp
+  SetLightList.cpp
+  SetLightingSettings.cpp
+  SetMesh.cpp
+  SetObjectList.cpp
+  SetPathways.cpp
+  SetRoomBehavior.cpp
+  SetRoomList.cpp
+  SetSkyboxModifier.cpp
+  SetSkyboxSettings.cpp
+  SetSoundSettings.cpp
+  SetSpecialObjects.cpp
+  SetStartPositionList.cpp
+  SetTimeSettings.cpp
+  SetTransitionActorList.cpp
+  SetWindSettings.cpp
+  util.cpp
+  z_message_OTR.cpp
+  z_play_otr.cpp
+  z_scene_otr.cpp
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\z_scene_otr.cpp(156,11): warning C4101: 'nextPtr': unreferenced local variable
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\z_scene_otr.cpp(153,19): warning C4101: 'status2': unreferenced local variable
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\z_scene_otr.cpp(252,85): warning C4244: '=': conversion from 'float' to 'uint16_t', possible loss of data
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\z_scene_otr.cpp(504,48): warning C4244: '=': conversion from 'uintptr_t' to 'uint32_t', possible loss of data
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\z_message_OTR.cpp(22,38): warning C4267: '=': conversion from 'size_t' to 'uint32_t', possible loss of data
+  bootcommands.c
+  gameconsole.c
+  FastCrc32C.c
+  framebuffer_effects.c
+  gu_pc.c
+  mixer.c
+  stubs.c
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\mixer.c(10,9): warning C4068: unknown pragma 'GCC'
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\mixer.c(519,9): warning C4068: unknown pragma 'GCC'
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\mixer.c(520,9): warning C4068: unknown pragma 'GCC'
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\mixer.c(524,9): warning C4068: unknown pragma 'GCC'
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Extractor\FastCrc32C.c(83,9): warning C4244: '=': conversion from 'unsigned __int64' to 'uint32_t', possible loss of data
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\gu_pc.c(12,33): warning C4244: '=': conversion from 'float' to 'int32_t', possible loss of data
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\gu_pc.c(13,37): warning C4244: '=': conversion from 'float' to 'int32_t', possible loss of data
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\gu_pc.c(55,18): warning C4133: 'function': incompatible types - from 'Mtx_t' to 'f32 (*)[4]'
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\mixer.c(634,34): warning C4133: 'function': incompatible types - from 'int16_t *' to '__m128i *'
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\mixer.c(626,9): warning C4101: 'i': unreferenced local variable
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\mixer.c(627,13): warning C4101: 'sample': unreferenced local variable
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\framebuffer_effects.c(96,57): warning C4244: 'initializing': conversion from 'float' to 'int16_t', possible loss of data
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\stubs.c(234,20): warning C4267: 'function': conversion from 'size_t' to 'uint32_t', possible loss of data
+  CustomMessageManager.cpp
+  tts.cpp
+  OTRGlobals.cpp
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\custom-message\CustomMessageManager.cpp(116,17): warning C4101: 'nextSeg': unreferenced local variable
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\custom-message\CustomMessageManager.cpp(115,17): warning C4101: 'foundSeg': unreferenced local variable
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\custom-message\CustomMessageManager.cpp(272,49): warning C4267: '=': conversion from 'size_t' to 'uint32_t', possible loss of data
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\custom-message\CustomMessageManager.cpp(276,49): warning C4267: '=': conversion from 'size_t' to 'uint32_t', possible loss of data
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\custom-message\CustomMessageManager.cpp(281,49): warning C4267: '=': conversion from 'size_t' to 'uint32_t', possible loss of data
+C:\Users\CmonMeow\Desktop\Shipwright\libultraship\include\fast\lus_gbi.h(133,9): warning C4005: 'GIMMCMD': macro redefinition
+  (compiling source file '../../../soh/soh/OTRGlobals.cpp')
+      C:\Users\CmonMeow\Desktop\Shipwright\libultraship\include\libultraship\libultra\gbi.h(255,9):
+      see previous definition of 'GIMMCMD'
+  
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\tts\tts.cpp(347,32): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\tts\tts.cpp(422,38): warning C4267: '=': conversion from 'size_t' to 'int8_t', possible loss of data
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\tts\tts.cpp(503,40): warning C4244: 'initializing': conversion from 'uint16_t' to 'uint8_t', possible loss of data
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\tts\tts.cpp(522,42): warning C4267: '=': conversion from 'size_t' to 'int8_t', possible loss of data
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\tts\tts.cpp(856,26): warning C4244: '=': conversion from 'int16_t' to 'char', possible loss of data
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\OTRGlobals.cpp(360,55): warning C4101: 'ex': unreferenced local variable
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\OTRGlobals.cpp(375,55): warning C4101: 'ex': unreferenced local variable
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\OTRGlobals.cpp(490,75): warning C4101: 'ex': unreferenced local variable
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\OTRGlobals.cpp(514,75): warning C4101: 'ex': unreferenced local variable
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\OTRGlobals.cpp(891,28): warning C4996: 'strdup': The POSIX name for this item is deprecated. Instead, use the ISO C and C++ conformant name: _strdup. See online help for details.
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\OTRGlobals.cpp(1471,11): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\OTRGlobals.cpp(1850,78): warning C4267: 'argument': conversion from 'size_t' to 'int', possible loss of data
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\OTRGlobals.cpp(1983,32): warning C4244: 'argument': conversion from 'const _Elem' to 'char', possible loss of data
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\OTRGlobals.cpp(1983,32): warning C4244:         with
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\OTRGlobals.cpp(1983,32): warning C4244:         [
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\OTRGlobals.cpp(1983,32): warning C4244:             _Elem=wchar_t
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\OTRGlobals.cpp(1983,32): warning C4244:         ]
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\OTRGlobals.cpp(2001,41): warning C4244: 'argument': conversion from '__int64' to 'char', possible loss of data
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\OTRGlobals.cpp(2006,41): warning C4244: 'argument': conversion from '__int64' to 'char', possible loss of data
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\OTRGlobals.cpp(2011,41): warning C4244: 'argument': conversion from '__int64' to 'char', possible loss of data
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\OTRGlobals.cpp(2016,41): warning C4244: 'argument': conversion from '__int64' to 'char', possible loss of data
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\OTRGlobals.cpp(2117,27): warning C4244: '=': conversion from 'float' to 'uint8_t', possible loss of data
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\OTRGlobals.cpp(2118,27): warning C4244: '=': conversion from 'float' to 'uint8_t', possible loss of data
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\OTRGlobals.cpp(2119,27): warning C4244: '=': conversion from 'float' to 'uint8_t', possible loss of data
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\OTRGlobals.cpp(2228,46): warning C4267: 'argument': conversion from 'size_t' to 'uint8_t', possible loss of data
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\OTRGlobals.cpp(2413,16): warning C4244: 'return': conversion from 'float' to 'uint32_t', possible loss of data
+  Menu.cpp
+  Menu.cpp
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SohGui\Menu.cpp(69,25): warning C4244: 'return': conversion from '__int64' to 'uint32_t', possible loss of data
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SohGui\Menu.cpp(96,64): warning C4267: '=': conversion from 'size_t' to 'uint32_t', possible loss of data
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SohGui\Menu.cpp(131,34): warning C4244: '=': conversion from 'int32_t' to 'float', possible loss of data
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SohGui\Menu.cpp(132,34): warning C4244: '=': conversion from 'int32_t' to 'float', possible loss of data
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SohGui\Menu.cpp(133,33): warning C4244: '=': conversion from 'int32_t' to 'float', possible loss of data
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SohGui\Menu.cpp(134,33): warning C4244: '=': conversion from 'int32_t' to 'float', possible loss of data
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SohGui\Menu.cpp(816,48): warning C4244: 'argument': conversion from 'float' to 'ImDrawFlags', possible loss of data
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SohGui\Menu.cpp(866,92): warning C4244: 'argument': conversion from 'float' to 'ImDrawFlags', possible loss of data
+cl : command line  warning D9025: overriding '/W3' with '/w'
+cl : command line  warning D9025: overriding '/W3' with '/w'
+cl : command line  warning D9025: overriding '/W3' with '/w'
+  boot_main.c
+cl : command line  warning D9025: overriding '/W3' with '/w'
+cl : command line  warning D9025: overriding '/W3' with '/w'
+  build.c
+cl : command line  warning D9025: overriding '/W3' with '/w'
+cl : command line  warning D9025: overriding '/W3' with '/w'
+cl : command line  warning D9025: overriding '/W3' with '/w'
+cl : command line  warning D9025: overriding '/W3' with '/w'
+cl : command line  warning D9025: overriding '/W3' with '/w'
+cl : command line  warning D9025: overriding '/W3' with '/w'
+cl : command line  warning D9025: overriding '/W3' with '/w'
+  idle.c
+  is_debug.c
+cl : command line  warning D9025: overriding '/W3' with '/w'
+  logutils.c
+  stackcheck.c
+  viconfig.c
+  yaz0.c
+  z_locale.c
+  z_std_dma.c
+  gfxbuffers.c
+  heaps.c
+  zbuffer.c
+  PreRender.c
+  TwoHeadArena.c
+  __osMalloc.c
+  audioMgr.c
+  audio_data.c
+  audio_effects.c
+  audio_heap.c
+  audio_init_params.c
+  audio_load.c
+  audio_playback.c
+  audio_seqplayer.c
+  audio_sound_params.c
+  audio_synthesis.c
+  code_800430A0.c
+  code_8006C3A0.c
+  code_8006C510.c
+  code_800A9F30.c
+  code_800BB0A0.c
+  code_800C3C20.c
+  code_800D2E30.c
+  code_800D31A0.c
+  code_800E4FE0.c
+  code_800E6840.c
+  code_800EC960.c
+  code_800F7260.c
+  code_800F9280.c
+  code_800FBCE0.c
+  code_800FC620.c
+  code_800FCE80.c
+  code_800FD970.c
+  code_801067F0.c
+  code_801068B0.c
+  db_camera.c
+  debug_malloc.c
+  fault.c
+  fault_drawer.c
+  flg_set.c
+  game.c
+  gamealloc.c
+  gfxprint.c
+  graph.c
+  jpegdecoder.c
+  irqmgr.c
+  jpegutils.c
+  listalloc.c
+  loadfragment2.c
+  logseverity.c
+  main.c
+  mempak.c
+  mtxuty-cvt.c
+  padmgr.c
+  padsetup.c
+  padutils.c
+  printutils.c
+  relocation.c
+  sched.c
+  shrink_window.c
+  sleep.c
+  speed_meter.c
+  sys_cfb.c
+  sys_math.c
+  sys_math3d.c
+  sys_math_atan.c
+  sys_matrix.c
+  sys_ucode.c
+  system_malloc.c
+  title_setup.c
+  ucode_disas.c
+  z_DLF.c
+  z_actor.c
+  z_bg_item.c
+  z_bgcheck.c
+  z_camera.c
+  z_cheap_proc.c
+  z_collision_btltbls.c
+  z_collision_check.c
+  z_common_data.c
+  z_construct.c
+  z_debug.c
+  z_debug_display.c
+  z_demo.c
+  z_draw.c
+  z_eff_blure.c
+  z_eff_shield_particle.c
+  z_eff_spark.c
+  z_eff_ss_dead.c
+  z_effect.c
+  z_effect_soft_sprite.c
+  z_effect_soft_sprite_dlftbls.c
+  z_effect_soft_sprite_old_init.c
+  z_elf_message.c
+  z_en_a_keep.c
+  z_en_item00.c
+  z_face_reaction.c
+  z_fbdemo.c
+  z_fbdemo_circle.c
+  z_fbdemo_fade.c
+  z_fbdemo_triforce.c
+  z_fbdemo_wipe1.c
+  z_fcurve_data_skelanime.c
+  z_frame_advance.c
+  z_game_dlftbls.c
+  z_game_over.c
+  z_horse.c
+  z_inventory.c
+  z_jpeg.c
+  z_kaleido_manager.c
+  z_kaleido_scope_call.c
+  z_kaleido_setup.c
+  z_kanfont.c
+  z_kanji.c
+  z_kankyo.c
+  z_lib.c
+  z_lifemeter.c
+  z_lights.c
+  z_malloc.c
+  z_map_data.c
+  z_map_exp.c
+  z_map_mark.c
+  z_message_PAL.c
+  z_moji.c
+  z_msgevent.c
+  z_olib.c
+  z_onepointdemo.c
+  z_parameter.c
+  z_path.c
+  z_play.c
+  z_player_call.c
+  z_player_lib.c
+  z_prenmi.c
+  z_prenmi_buff.c
+  z_quake.c
+  z_rcp.c
+  z_room.c
+  z_sample.c
+  z_scene.c
+  z_scene_table.c
+  z_skelanime.c
+  z_skin.c
+  z_skin_awb.c
+  z_skin_matrix.c
+  z_sound_source.c
+  z_sram.c
+  z_ss_sram.c
+  z_view.c
+  z_vimode.c
+  z_viscvg.c
+  z_vismono.c
+  z_viszbuf.c
+  z_vr_box.c
+  z_vr_box_draw.c
+  coss.c
+  guLookAtHilite.c
+  guLookAt.c
+  guPerspectiveF.c
+  guPosition.c
+  guS2DInitBg.c
+  ortho.c
+  rotate.c
+  sins.c
+  sintable.c
+  sprintf.c
+  z_arms_hook.c
+  z_arrow_fire.c
+  z_arrow_ice.c
+  z_bg_bdan_objects.c
+  z_arrow_light.c
+  z_bg_bdan_switch.c
+  z_bg_bom_guard.c
+  z_bg_bombwall.c
+  z_bg_bowl_wall.c
+  z_bg_breakwall.c
+  z_bg_ddan_jd.c
+  z_bg_ddan_kd.c
+  z_bg_dodoago.c
+  z_bg_dy_yoseizo.c
+  z_bg_ganon_otyuka.c
+  z_bg_gate_shutter.c
+  z_bg_gjyo_bridge.c
+  z_bg_gnd_darkmeiro.c
+  z_bg_gnd_firemeiro.c
+  z_bg_gnd_iceblock.c
+  z_bg_gnd_nisekabe.c
+  z_bg_gnd_soulmeiro.c
+  z_bg_haka.c
+  z_bg_haka_gate.c
+  z_bg_haka_huta.c
+  z_bg_haka_meganebg.c
+  z_bg_haka_megane.c
+  z_bg_haka_sgami.c
+  z_bg_haka_ship.c
+  z_bg_haka_trap.c
+  z_bg_haka_tubo.c
+  z_bg_haka_water.c
+  z_bg_haka_zou.c
+  z_bg_heavy_block.c
+  z_bg_hidan_curtain.c
+  z_bg_hidan_dalm.c
+  z_bg_hidan_firewall.c
+  z_bg_hidan_fslift.c
+  z_bg_hidan_fwbig.c
+  z_bg_hidan_hamstep.c
+  z_bg_hidan_hrock.c
+  z_bg_hidan_kousi.c
+  z_bg_hidan_kowarerukabe.c
+  z_bg_hidan_rock.c
+  z_bg_hidan_rsekizou.c
+  z_bg_hidan_sekizou.c
+  z_bg_hidan_sima.c
+  z_bg_hidan_syoku.c
+  z_bg_ice_objects.c
+  z_bg_ice_shelter.c
+  z_bg_ice_shutter.c
+  z_bg_ice_turara.c
+  z_bg_ingate.c
+  z_bg_jya_1flift.c
+  z_bg_jya_amishutter.c
+  z_bg_jya_bigmirror.c
+  z_bg_jya_block.c
+  z_bg_jya_bombchuiwa.c
+  z_bg_jya_bombiwa.c
+  z_bg_jya_cobra.c
+  z_bg_jya_goroiwa.c
+  z_bg_jya_haheniron.c
+  z_bg_jya_ironobj.c
+  z_bg_jya_kanaami.c
+  z_bg_jya_lift.c
+  z_bg_jya_megami.c
+  z_bg_jya_zurerukabe.c
+  z_bg_menkuri_eye.c
+  z_bg_menkuri_kaiten.c
+  z_bg_menkuri_nisekabe.c
+  z_bg_mizu_bwall.c
+  z_bg_mizu_movebg.c
+  z_bg_mizu_shutter.c
+  z_bg_mizu_uzu.c
+  z_bg_mizu_water.c
+  z_bg_mjin.c
+  z_bg_mori_bigst.c
+  z_bg_mori_elevator.c
+  z_bg_mori_hashigo.c
+  z_bg_mori_hashira4.c
+  z_bg_mori_hineri.c
+  z_bg_mori_idomizu.c
+  z_bg_mori_kaitenkabe.c
+  z_bg_mori_rakkatenjo.c
+  z_bg_po_event.c
+  z_bg_po_syokudai.c
+  z_bg_pushbox.c
+  z_bg_relay_objects.c
+  z_bg_spot00_break.c
+  z_bg_spot00_hanebasi.c
+  z_bg_spot01_fusya.c
+  z_bg_spot01_idohashira.c
+  z_bg_spot01_idomizu.c
+  z_bg_spot01_idosoko.c
+  z_bg_spot01_objects2.c
+  z_bg_spot02_objects.c
+  z_bg_spot03_taki.c
+  z_bg_spot05_soko.c
+  z_bg_spot06_objects.c
+  z_bg_spot07_taki.c
+  z_bg_spot08_bakudankabe.c
+  z_bg_spot08_iceblock.c
+  z_bg_spot09_obj.c
+  z_bg_spot11_bakudankabe.c
+  z_bg_spot11_oasis.c
+  z_bg_spot12_gate.c
+  z_bg_spot12_saku.c
+  z_bg_spot15_rrbox.c
+  z_bg_spot15_saku.c
+  z_bg_spot16_bombstone.c
+  z_bg_spot16_doughnut.c
+  z_bg_spot17_bakudankabe.c
+  z_bg_spot17_funen.c
+  z_bg_spot18_basket.c
+  z_bg_spot18_futa.c
+  z_bg_spot18_obj.c
+  z_bg_spot18_shutter.c
+  z_bg_sst_floor.c
+  z_bg_toki_hikari.c
+  z_bg_toki_swd.c
+  z_bg_toki_swd_cutscene_data_1.c
+  z_bg_toki_swd_cutscene_data_2.c
+  z_bg_toki_swd_cutscene_data_3.c
+  z_bg_treemouth.c
+  z_bg_treemouth_cutscene_data.c
+  z_bg_umajump.c
+  z_bg_vb_sima.c
+  z_bg_ydan_hasi.c
+  z_bg_ydan_maruta.c
+  z_bg_ydan_sp.c
+  z_bg_zg.c
+  z_boss_dodongo.c
+  z_boss_dodongo_data.c
+  z_boss_fd2.c
+  z_boss_fd2_colchk.c
+  z_boss_fd.c
+  z_boss_fd_colchk.c
+  z_boss_ganon2.c
+  z_boss_ganon2_data.c
+  z_boss_ganon.c
+  z_boss_ganondrof.c
+  z_boss_goma.c
+  z_boss_mo.c
+  z_boss_mo_colchk.c
+  z_boss_sst.c
+  z_boss_sst_colchk.c
+  z_boss_tw.c
+  z_boss_va.c
+  z_demo_6k.c
+  z_demo_du.c
+  z_demo_du_cutscene_data.c
+  z_demo_ec.c
+  z_demo_effect.c
+  z_demo_ext.c
+  z_demo_geff.c
+  z_demo_gj.c
+  z_demo_go.c
+  z_demo_gt.c
+  z_demo_ik.c
+  z_demo_im.c
+  z_demo_im_cutscene_data.c
+  z_demo_kankyo.c
+  z_demo_kankyo_cutscene_data1.c
+  z_demo_kankyo_cutscene_data2.c
+  z_demo_kankyo_cutscene_data3.c
+  z_demo_kankyo_cutscene_data4.c
+  z_demo_kankyo_cutscene_data5.c
+  z_demo_kankyo_cutscene_data6.c
+  z_demo_kankyo_cutscene_data7.c
+  z_demo_kankyo_cutscene_data8.c
+  z_demo_kekkai.c
+  z_demo_sa.c
+  z_demo_sa_cutscene_data.c
+  z_demo_shd.c
+  z_demo_tre_lgt.c
+  z_door_ana.c
+  z_door_gerudo.c
+  z_door_killer.c
+  z_door_shutter.c
+  z_door_toki.c
+  z_door_warp1.c
+  z_efc_erupc.c
+  z_eff_dust.c
+  z_elf_msg2.c
+  z_elf_msg.c
+  z_en_am.c
+  z_en_ani.c
+  z_en_anubice.c
+  z_en_anubice_fire.c
+  z_en_anubice_tag.c
+  z_en_arow_trap.c
+  z_en_arrow.c
+  z_en_attack_niw.c
+  z_en_ba.c
+  z_en_bb.c
+  z_en_bdfire.c
+  z_en_bigokuta.c
+  z_en_bili.c
+  z_en_bird.c
+  z_en_blkobj.c
+  z_en_bom.c
+  z_en_bom_bowl_man.c
+  z_en_bom_bowl_pit.c
+  z_en_bom_chu.c
+  z_en_bombf.c
+  z_en_boom.c
+  z_en_box.c
+  z_en_brob.c
+  z_en_bubble.c
+  z_en_butte.c
+  z_en_bw.c
+  z_en_bx.c
+  z_en_changer.c
+  z_en_clear_tag.c
+  z_en_cow.c
+  z_en_crow.c
+  z_en_cs.c
+  z_en_daiku.c
+  z_en_daiku_kakariko.c
+  z_en_dekubaba.c
+  z_en_dekunuts.c
+  z_en_dh.c
+  z_en_dha.c
+  z_en_diving_game.c
+  z_en_dns.c
+  z_en_dnt_demo.c
+  z_en_dnt_jiji.c
+  z_en_dnt_nomal.c
+  z_en_dodojr.c
+  z_en_dodongo.c
+  z_en_dog.c
+  z_en_door.c
+  z_en_ds.c
+  z_en_du.c
+  z_en_dy_extra.c
+  z_en_eg.c
+  z_en_eiyer.c
+  z_en_elf.c
+  z_en_encount1.c
+  z_en_encount2.c
+  z_en_ex_item.c
+  z_en_ex_ruppy.c
+  z_en_fd.c
+  z_en_fd_fire.c
+  z_en_fhg_fire.c
+  z_en_fire_rock.c
+  z_en_firefly.c
+  z_en_fish.c
+  z_en_floormas.c
+  z_en_fr.c
+  z_en_fu.c
+  z_en_fw.c
+  z_en_fz.c
+  z_en_g_switch.c
+  z_en_ganon_mant.c
+  z_en_ganon_organ.c
+  z_en_gb.c
+  z_en_ge1.c
+  z_en_ge2.c
+  z_en_ge3.c
+  z_en_geldb.c
+  z_en_girla.c
+  z_en_gm.c
+  z_en_go2.c
+  z_en_go.c
+  z_en_goma.c
+  z_en_goroiwa.c
+  z_en_gs.c
+  z_en_guest.c
+  z_en_hata.c
+  z_en_heishi1.c
+  z_en_heishi2.c
+  z_en_heishi3.c
+  z_en_heishi4.c
+  z_en_hintnuts.c
+  z_en_holl.c
+  z_en_honotrap.c
+  z_en_horse.c
+  z_en_horse_game_check.c
+  z_en_horse_ganon.c
+  z_en_horse_link_child.c
+  z_en_horse_normal.c
+  z_en_horse_zelda.c
+  z_en_hs2.c
+  z_en_hs.c
+  z_en_hy.c
+  z_en_ice_hono.c
+  z_en_ik.c
+  z_en_in.c
+  z_en_insect.c
+  z_en_ishi.c
+  z_en_it.c
+  z_en_jj.c
+  z_en_jj_cutscene_data.c
+  z_en_js.c
+  z_en_jsjutan.c
+  z_en_kakasi2.c
+  z_en_kakasi3.c
+  z_en_kakasi.c
+  z_en_kanban.c
+  z_en_kanban_gfx.c
+  z_en_karebaba.c
+  z_en_ko.c
+  z_en_kusa.c
+  z_en_kz.c
+  z_en_light.c
+  z_en_lightbox.c
+  z_en_m_fire1.c
+  z_en_m_thunder.c
+  z_en_ma1.c
+  z_en_ma2.c
+  z_en_ma3.c
+  z_en_mag.c
+  z_en_mb.c
+  z_en_md.c
+  z_en_mk.c
+  z_en_mm2.c
+  z_en_mm.c
+  z_en_ms.c
+  z_en_mu.c
+  z_en_nb.c
+  z_en_nb_cutscene_data.c
+  z_en_niw.c
+  z_en_niw_girl.c
+  z_en_niw_lady.c
+  z_en_nutsball.c
+  z_en_nwc.c
+  z_en_ny.c
+  z_en_oe2.c
+  z_en_okarina_effect.c
+  z_en_okarina_tag.c
+  z_en_okarina_tag_cutscene_data.c
+  z_en_okuta.c
+  z_en_ossan.c
+  z_en_owl.c
+  z_en_part.c
+  z_en_partner.c
+  z_en_peehat.c
+  z_en_po_desert.c
+  z_en_po_field.c
+  z_en_po_relay.c
+  z_en_po_sisters.c
+  z_en_poh.c
+  z_en_pu_box.c
+  z_en_rd.c
+  z_en_reeba.c
+  z_en_river_sound.c
+  z_en_rl.c
+  z_en_rr.c
+  z_en_ru1.c
+  z_en_ru1_cutscene_data.c
+  z_en_ru2.c
+  z_en_ru2_cutscene_data.c
+  z_en_sa.c
+  z_en_sb.c
+  z_en_scene_change.c
+  z_en_sda.c
+  z_en_shopnuts.c
+  z_en_si.c
+  z_en_siofuki.c
+  z_en_skb.c
+  z_en_skj.c
+  z_en_skjneedle.c
+  z_en_ssh.c
+  z_en_st.c
+  z_en_sth.c
+  z_en_stream.c
+  z_en_sw.c
+  z_en_syateki_itm.c
+  z_en_syateki_man.c
+  z_en_syateki_niw.c
+  z_en_ta.c
+  z_en_takara_man.c
+  z_en_tana.c
+  z_en_test.c
+  z_en_tg.c
+  z_en_tite.c
+  z_en_tk.c
+  z_en_torch2.c
+  z_en_torch.c
+  z_en_toryo.c
+  z_en_tp.c
+  z_en_tr.c
+  z_en_trap.c
+  z_en_tubo_trap.c
+  z_en_vali.c
+  z_en_vase.c
+  z_en_vb_ball.c
+  z_en_viewer.c
+  z_en_vm.c
+  z_en_wall_tubo.c
+  z_en_wallmas.c
+  z_en_weather_tag.c
+  z_en_weiyer.c
+  z_en_wf.c
+  z_en_wonder_item.c
+  z_en_wonder_talk2.c
+  z_en_wonder_talk.c
+  z_en_wood02.c
+  z_en_xc.c
+  z_en_yabusame_mark.c
+  z_en_yukabyun.c
+  z_en_zf.c
+  z_en_zl1.c
+  z_en_zl1_camera_data.c
+  z_en_zl1_cutscene_data.c
+  z_en_zl2.c
+  z_en_zl3.c
+  z_en_zl4.c
+  z_en_zl4_cutscene_data.c
+  z_en_zo.c
+  z_en_fhg.c
+  z_end_title.c
+  z_fishing.c
+  z_item_b_heart.c
+  z_item_etcetera.c
+  z_item_inbox.c
+  z_item_ocarina.c
+  z_item_shield.c
+  z_magic_dark.c
+  z_magic_fire.c
+  z_magic_wind.c
+  z_mir_ray.c
+  z_obj_bean.c
+  z_obj_blockstop.c
+  z_obj_bombiwa.c
+  z_obj_comb.c
+  z_obj_dekujr.c
+  z_obj_elevator.c
+  z_obj_hamishi.c
+  z_obj_hana.c
+  z_obj_hsblock.c
+  z_obj_ice_poly.c
+  z_obj_kibako2.c
+  z_obj_kibako.c
+  z_obj_lift.c
+  z_obj_lightswitch.c
+  z_obj_makekinsuta.c
+  z_obj_makeoshihiki.c
+  z_obj_mure2.c
+  z_obj_mure3.c
+  z_obj_mure.c
+  z_obj_oshihiki.c
+  z_obj_roomtimer.c
+  z_obj_switch.c
+  z_obj_syokudai.c
+  z_obj_timeblock.c
+  z_obj_tsubo.c
+  z_obj_warp2block.c
+  z_object_kankyo.c
+  z_oceff_spot.c
+  z_oceff_storm.c
+  z_oceff_wipe2.c
+  z_oceff_wipe3.c
+  z_oceff_wipe4.c
+  z_oceff_wipe.c
+  z_shot_sun.c
+  z_player.c
+  z_eff_ss_blast.c
+  z_eff_ss_bomb2.c
+  z_eff_ss_bomb.c
+  z_eff_ss_bubble.c
+  z_eff_ss_d_fire.c
+  z_eff_ss_dead_db.c
+  z_eff_ss_dead_dd.c
+  z_eff_ss_dead_ds.c
+  z_eff_ss_dead_sound.c
+  z_eff_ss_dt_bubble.c
+  z_eff_ss_dust.c
+  z_eff_ss_en_fire.c
+  z_eff_ss_en_ice.c
+  z_eff_ss_extra.c
+  z_eff_ss_fcircle.c
+  z_eff_ss_fhg_flash.c
+  z_eff_ss_fire_tail.c
+  z_eff_ss_g_fire.c
+  z_eff_ss_g_magma2.c
+  z_eff_ss_g_magma.c
+  z_eff_ss_g_ripple.c
+  z_eff_ss_g_spk.c
+  z_eff_ss_g_splash.c
+  z_eff_ss_hahen.c
+  z_eff_ss_hitmark.c
+  z_eff_ss_ice_piece.c
+  z_eff_ss_ice_smoke.c
+  z_eff_ss_k_fire.c
+  z_eff_ss_kakera.c
+  z_eff_ss_kirakira.c
+  z_eff_ss_lightning.c
+  z_eff_ss_sibuki2.c
+  z_eff_ss_sibuki.c
+  z_eff_ss_solder_srch_ball.c
+  z_eff_ss_stick.c
+  z_eff_ss_stone1.c
+  z_file_choose.c
+  z_file_nameset_NES.c
+  z_file_copy_erase.c
+  z_file_nameset_PAL.c
+  z_file_nameset_data.c
+  z_opening.c
+  z_select.c
+  z_title.c
+  z_kaleido_collect.c
+  z_kaleido_debug.c
+  z_kaleido_equipment.c
+  z_kaleido_item.c
+  z_kaleido_map_PAL.c
+  z_kaleido_prompt.c
+  z_kaleido_scope_PAL.c
+  z_lmap_mark.c
+  z_lmap_mark_data.c
+  z_map_mark_data.c
+  Generating code
+  1 of 76872 functions (<0.1%) were compiled, the rest were copied from previous compilation.
+    0 functions were new in current compilation
+    321 functions had inline decision re-evaluated but remain unchanged
+  Finished generating code
+  soh.vcxproj -> C:\Users\CmonMeow\Desktop\Shipwright\x64\Release\soh.exe
   		Copying asset xmls...

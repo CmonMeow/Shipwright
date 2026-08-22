@@ -3,7 +3,13 @@
   "WorkspaceRootPath": "C:\\Users\\CmonMeow\\Desktop\\Shipwright\\build\\x64\\",
   "Documents": [
     {
+      "AbsoluteMoniker": "D:0:0:{9BE9808F-4839-3804-9BD4-6AB6BED0CCA7}|soh\\soh.vcxproj|C:\\Users\\CmonMeow\\Desktop\\Shipwright\\soh\\soh\\CrashHandlerExt.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{9BE9808F-4839-3804-9BD4-6AB6BED0CCA7}|soh\\soh.vcxproj|C:\\Users\\CmonMeow\\Desktop\\Shipwright\\soh\\include\\z64save.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9BE9808F-4839-3804-9BD4-6AB6BED0CCA7}|soh\\soh.vcxproj|C:\\Users\\CmonMeow\\Desktop\\Shipwright\\soh\\src\\overlays\\actors\\ovl_Door_Warp1\\z_door_warp1.c||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
     }
   ],
   "DocumentGroupContainers": [
@@ -13,21 +19,46 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 0,
+          "SelectedChildIndex": 1,
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 1,
               "Title": "z64save.h",
               "DocumentMoniker": "C:\\Users\\CmonMeow\\Desktop\\Shipwright\\soh\\include\\z64save.h",
               "RelativeDocumentMoniker": "..\\..\\soh\\include\\z64save.h",
               "ToolTip": "C:\\Users\\CmonMeow\\Desktop\\Shipwright\\soh\\include\\z64save.h",
               "RelativeToolTip": "..\\..\\soh\\include\\z64save.h",
-              "ViewState": "AgIAAD4BAAAAAAAAAAAUwGwBAAAKAAAAAAAAAA==",
+              "ViewState": "AgIAADgBAAAAAAAAAAAAAHwBAAAOAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
               "WhenOpened": "2026-08-20T06:42:27.07Z",
               "IsPinned": true,
               "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "CrashHandlerExt.cpp",
+              "DocumentMoniker": "C:\\Users\\CmonMeow\\Desktop\\Shipwright\\soh\\soh\\CrashHandlerExt.cpp",
+              "RelativeDocumentMoniker": "..\\..\\soh\\soh\\CrashHandlerExt.cpp",
+              "ToolTip": "C:\\Users\\CmonMeow\\Desktop\\Shipwright\\soh\\soh\\CrashHandlerExt.cpp",
+              "RelativeToolTip": "..\\..\\soh\\soh\\CrashHandlerExt.cpp",
+              "ViewState": "AgIAACAAAAAAAAAAAAAhwCsAAAAJAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
+              "WhenOpened": "2026-08-22T00:46:16.159Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "z_door_warp1.c",
+              "DocumentMoniker": "C:\\Users\\CmonMeow\\Desktop\\Shipwright\\soh\\src\\overlays\\actors\\ovl_Door_Warp1\\z_door_warp1.c",
+              "RelativeDocumentMoniker": "..\\..\\soh\\src\\overlays\\actors\\ovl_Door_Warp1\\z_door_warp1.c",
+              "ToolTip": "C:\\Users\\CmonMeow\\Desktop\\Shipwright\\soh\\src\\overlays\\actors\\ovl_Door_Warp1\\z_door_warp1.c",
+              "RelativeToolTip": "..\\..\\soh\\src\\overlays\\actors\\ovl_Door_Warp1\\z_door_warp1.c",
+              "ViewState": "AgIAAEkBAAAAAAAAAAAAAG4BAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000423|",
+              "WhenOpened": "2026-08-20T08:27:31.828Z"
             }
           ]
         }

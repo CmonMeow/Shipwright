@@ -354,11 +354,6 @@ void EnSsh_Bob(EnSsh* this, PlayState* play) {
 }
 
 s32 EnSsh_IsCloseToLink(EnSsh* this, PlayState* play) {
-    // #region SOH [Randomizer] automatically lower skultulla people
-    if (IS_RANDO) {
-        return true;
-    }
-    // #endregion
     Player* player = GET_PLAYER(play);
     f32 yDist;
     if (this->stateFlags & SSH_STATE_GROUND_START) {
@@ -703,12 +698,6 @@ void EnSsh_Idle(EnSsh* this, PlayState* play) {
                 this->actor.textId = Text_GetFaceReaction(play, 0xD);
                 if (this->actor.textId == 0) {
                     if (this->actor.params == ENSSH_FATHER) {
-                        // #region SOH [Randomizer] Skip the complexity of the father's text when he should just give a
-                        // hint
-                        if (IS_RANDO && Randomizer_GetSettingValue(RSK_KAK_100_SKULLS_HINT)) {
-                            this->actor.textId = 0x27;
-                            // #endregion
-                        } else {
                             if (gSaveContext.inventory.gsTokens >= 50) {
                                 this->actor.textId = 0x29;
                             } else if (gSaveContext.inventory.gsTokens >= 10) {
@@ -724,8 +713,7 @@ void EnSsh_Idle(EnSsh* this, PlayState* play) {
                                     this->actor.textId = 0x26;
                                 }
                             }
-                        }
-                    } else {
+                        } else {
                         this->actor.textId = 0x22;
                     }
                 }

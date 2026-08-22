@@ -1,6 +1,7 @@
 #include "Anchor.h"
 #include <libultraship/libultraship.h>
 #include "soh/Enhancements/game-interactor/GameInteractor.h"
+#include "z64item.h"
 
 extern "C" {
 #include "variables.h"
@@ -120,21 +121,6 @@ void Anchor::RegisterHooks() {
 
     COND_HOOK(OnSceneFlagUnset, isConnected,
               [&](s16 sceneNum, s16 flagType, s16 flag) { SendPacket_UnsetFlag(sceneNum, flagType, flag); });
-
-    COND_HOOK(OnRandoSetCheckStatus, isConnected, [&](RandomizerCheck rc, RandomizerCheckStatus status) {
-        if (!isHandlingUpdateTeamState) {
-            SendPacket_SetCheckStatus(rc);
-        }
-    });
-
-    COND_HOOK(OnRandoSetIsSkipped, isConnected, [&](RandomizerCheck rc, bool isSkipped) {
-        if (!isHandlingUpdateTeamState) {
-            SendPacket_SetCheckStatus(rc);
-        }
-    });
-
-    COND_HOOK(OnRandoEntranceDiscovered, isConnected,
-              [&](u16 entranceIndex, u8 isReversedEntrance) { SendPacket_EntranceDiscovered(entranceIndex); });
 
     COND_ID_HOOK(OnBossDefeat, ACTOR_BOSS_GANON2, isConnected, [&](void* refActor) { SendPacket_GameComplete(); });
 

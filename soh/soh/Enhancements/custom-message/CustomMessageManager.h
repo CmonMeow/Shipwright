@@ -8,7 +8,6 @@
 #include "../../../include/z64item.h"
 #include "../../../include/z64.h"
 #include "../../../include/message_data_textbox_types.h"
-#include "../randomizer/3drando/text.hpp"
 
 #undef MESSAGE_END
 
@@ -50,7 +49,6 @@ class CustomMessage {
     // RANDOTODO trying to declare this with capital and type causes ambiguity with the first signature
     CustomMessage(std::string english_, std::vector<std::string> colors_, std::vector<bool> capital_ = {},
                   TextBoxType type_ = TEXTBOX_TYPE_BLACK, TextBoxPosition position_ = TEXTBOX_POS_BOTTOM);
-    CustomMessage(Text text, TextBoxType type_ = TEXTBOX_TYPE_BLACK, TextBoxPosition position_ = TEXTBOX_POS_BOTTOM);
 
     static CustomMessage LoadVanillaMessageTableEntry(uint16_t textId);
 

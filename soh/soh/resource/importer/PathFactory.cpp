@@ -2,6 +2,8 @@
 #include "soh/resource/type/Path.h"
 #include "soh/resource/logging/PathLogger.h"
 #include "spdlog/spdlog.h"
+#include "soh/cvar_prefixes.h"
+#include <libultraship/libultraship.h>
 #include <tinyxml2.h>
 
 namespace SOH {

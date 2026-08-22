@@ -1,5 +1,4 @@
 #include "soh/Enhancements/game-interactor/GameInteractor_Hooks.h"
-#include "soh/OTRGlobals.h"
 #include "soh/ShipInit.hpp"
 
 extern "C" {
@@ -48,10 +47,7 @@ static void OpenAllHours(void* refActor) {
 }
 
 static void RegisterOpenAllHours() {
-    bool overworldDoorsOpen =
-        !IS_RANDO || !OTRGlobals::Instance->gRandomizer->GetRandoSettingValue(RSK_LOCK_OVERWORLD_DOORS);
-
-    COND_ID_HOOK(OnActorInit, ACTOR_EN_DOOR, CVAR_OPEN_ALL_HOURS_VALUE && overworldDoorsOpen, OpenAllHours);
+    COND_ID_HOOK(OnActorInit, ACTOR_EN_DOOR, CVAR_OPEN_ALL_HOURS_VALUE, OpenAllHours);
 }
 
-static RegisterShipInitFunc initFunc(RegisterOpenAllHours, { CVAR_OPEN_ALL_HOURS_NAME, "IS_RANDO" });
+static RegisterShipInitFunc initFunc(RegisterOpenAllHours, { CVAR_OPEN_ALL_HOURS_NAME });

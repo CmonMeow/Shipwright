@@ -76,25 +76,7 @@ void BgTokiSwd_Init(Actor* thisx, PlayState* play) {
     BgTokiSwd_SetupAction(this, func_808BAF40);
 
     if (LINK_IS_ADULT) {
-        if (IS_RANDO) {
-            if (!CUR_UPG_VALUE(UPG_BOMB_BAG)) {
-                for (size_t i = 0; i < 8; i++) {
-                    if (gSaveContext.equips.buttonItems[i] == ITEM_BOMB) {
-                        gSaveContext.equips.buttonItems[i] = ITEM_NONE;
-                    }
-                }
-            }
-        }
         this->actor.draw = NULL;
-    } else if (IS_RANDO) {
-        // don't give child link a kokiri sword if we don't have one
-        uint32_t kokiriSwordBitMask = 1 << 0;
-        if (!(gSaveContext.inventory.equipment & kokiriSwordBitMask)) {
-            Player* player = GET_PLAYER(gPlayState);
-            player->currentSwordItemId = ITEM_NONE;
-            gSaveContext.equips.buttonItems[0] = ITEM_NONE;
-            Inventory_ChangeEquipment(EQUIP_TYPE_SWORD, EQUIP_VALUE_SWORD_NONE);
-        }
     }
 
     if (gSaveContext.sceneSetupIndex == 5) {
@@ -124,7 +106,7 @@ void func_808BAF40(BgTokiSwd* this, PlayState* play) {
         }
     }
 
-    if (!LINK_IS_ADULT || (Flags_GetEventChkInf(EVENTCHKINF_LEARNED_PRELUDE_OF_LIGHT) && !IS_RANDO) || IS_RANDO) {
+    if (!LINK_IS_ADULT || Flags_GetEventChkInf(EVENTCHKINF_LEARNED_PRELUDE_OF_LIGHT)) {
         if (Actor_HasParent(&this->actor, play)) {
             if (!LINK_IS_ADULT) {
                 if (GameInteractor_Should(VB_GIVE_ITEM_MASTER_SWORD, true)) {
@@ -132,13 +114,9 @@ void func_808BAF40(BgTokiSwd* this, PlayState* play) {
                 }
                 play->csCtx.segment = D_808BB2F0;
 
-                // Discover adult spawn
-                Entrance_SetEntranceDiscovered(ENTR_HYRULE_FIELD_10, false);
             } else {
                 play->csCtx.segment = D_808BB7A0;
 
-                // Discover child spawn
-                Entrance_SetEntranceDiscovered(ENTR_LINKS_HOUSE_CHILD_SPAWN, false);
             }
             Audio_QueueSeqCmd(SEQ_PLAYER_BGM_MAIN << 24 | NA_BGM_STOP);
             Audio_QueueSeqCmd(SEQ_PLAYER_BGM_MAIN << 24 | NA_BGM_MASTER_SWORD);
@@ -198,11 +176,6 @@ void BgTokiSwd_Draw(Actor* thisx, PlayState* play2) {
     s32 pad[3];
 
     // Do not draw the Master Sword in the pedestal if the player has not found it yet
-    if (IS_RANDO && Randomizer_GetSettingValue(RSK_SHUFFLE_MASTER_SWORD) &&
-        !CHECK_OWNED_EQUIP(EQUIP_TYPE_SWORD, EQUIP_INV_SWORD_MASTER)) {
-        return;
-    }
-
     OPEN_DISPS(play->state.gfxCtx);
 
     Gfx_SetupDL_25Opa(play->state.gfxCtx);

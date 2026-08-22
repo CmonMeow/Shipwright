@@ -218,12 +218,6 @@ void BgSpot06Objects_Destroy(Actor* thisx, PlayState* play) {
     // Due to Ships resource caching, the water box collisions for the river have to be manually reset
     play->colCtx.colHeader->waterBoxes[LHWB_GERUDO_VALLEY_RIVER_LOWER].zMin = WATER_LEVEL_RIVER_LOWER_Z;
 
-    if (IS_RANDO && Flags_GetEventChkInf(EVENTCHKINF_USED_WATER_TEMPLE_BLUE_WARP)) {
-        // For randomizer when leaving lake hylia while the water level is lowered,
-        // reset the "raise lake hylia water" flag back to on if the water temple is cleared
-        Flags_SetEventChkInf(EVENTCHKINF_RAISED_LAKE_HYLIA_WATER);
-    }
-
     actionCounter = 0;
     waterMovement = 0;
     switchPressed = 0;
@@ -450,72 +444,6 @@ void BgSpot06Objects_Update(Actor* thisx, PlayState* play) {
     if (thisx->params == LHO_WATER_TEMPLE_ENTRANCE_LOCK) {
         CollisionCheck_SetOC(play, &play->colChkCtx, &this->collider.base);
     }
-
-    // Bail early for water control system for child or non-rando
-    if (LINK_IS_CHILD || !IS_RANDO) {
-        return;
-    }
-
-    // Begin setup for Lake Hylia water control system
-    if (actionCounter == 0) {
-        // Object containing floor switch data (and ice block data)
-        Object_Spawn(&play->objectCtx, OBJECT_GAMEPLAY_DANGEON_KEEP);
-
-        s16 switchParams;
-        if (Flags_GetEventChkInf(EVENTCHKINF_USED_WATER_TEMPLE_BLUE_WARP)) {
-            // Toggle-able floor switch,
-            // linked to temp_switch 0x1E (room temporary, cleared when room unloads)
-            switchParams = 0x3E10;
-        } else {
-            // Frozen rusty switch, same flag as above. It's glitched and can't be pressed
-            switchParams = 0x3E81;
-        }
-
-        // Spawn a floor switch
-        lakeControlFloorSwitch =
-            Actor_Spawn(&play->actorCtx, play, ACTOR_OBJ_SWITCH, -896.0f, -1243.0f, 6953.0f, 0, 0, 0, switchParams);
-        // Spawn a sign
-        Actor_Spawn(&play->actorCtx, play, ACTOR_EN_KANBAN, -970.0f, -1242.0f, 6954.0f, 0, 0, 0,
-                    0x0000 | (TEXT_LAKE_HYLIA_WATER_SWITCH_SIGN & 0xFF));
-
-        // Spawn a Navi check spot when Water Temple isn't cleared
-        if (!Flags_GetEventChkInf(EVENTCHKINF_USED_WATER_TEMPLE_BLUE_WARP)) {
-            Actor_Spawn(&play->actorCtx, play, ACTOR_ELF_MSG2, -896.0f, -1243.0f, 6953.0f, 0, 0, 0,
-                        0x3D00 | (TEXT_LAKE_HYLIA_WATER_SWITCH_NAVI & 0xFF));
-        }
-
-        actionCounter++;
-        return;
-    } else if (actionCounter == 1) {
-        if (!Flags_GetEventChkInf(EVENTCHKINF_USED_WATER_TEMPLE_BLUE_WARP)) {
-            // Remove the link to ice block so melting it doesn't set the flag
-            lakeControlFloorSwitch->params = 0x3E01;
-        }
-
-        actionCounter++;
-        return;
-    }
-
-    // Detect when the switch is pressed
-    if (prevSwitchState != (Flags_GetSwitch(play, 0x3E) != 0)) {
-        prevSwitchState = !prevSwitchState;
-        switchPressed = 1;
-    }
-
-    // When pressed, assign the corresponding action func to the water plane and water movement direction
-    if (switchPressed == 1 && thisx->params == LHO_WATER_PLANE) {
-        // Lower water
-        if (waterMovement >= 0) {
-            waterMovement = -1;
-            this->actionFunc = BgSpot06Objects_WaterPlaneCutsceneLower;
-            // Raise water
-        } else {
-            waterMovement = 1;
-            this->actionFunc = BgSpot06Objects_WaterPlaneCutsceneRise;
-        }
-
-        switchPressed = 0;
-    }
 }
 
 /**
@@ -596,16 +524,8 @@ void BgSpot06Objects_WaterPlaneCutsceneRise(BgSpot06Objects* this, PlayState* pl
         this->dyna.actor.world.pos.y = WATER_LEVEL_RAISED;
         this->actionFunc = BgSpot06Objects_DoNothing;
 
-        // On rando, this is used with the water control system switch to finalize raising the water
-        if (IS_RANDO) {
-            this->lakeHyliaWaterLevel = 0;
-            play->colCtx.colHeader->waterBoxes[LHWB_GERUDO_VALLEY_RIVER_LOWER].ySurface = WATER_LEVEL_RIVER_RAISED;
-            play->colCtx.colHeader->waterBoxes[LHWB_GERUDO_VALLEY_RIVER_LOWER].zMin = WATER_LEVEL_RIVER_LOWER_Z;
-            Flags_SetEventChkInf(EVENTCHKINF_RAISED_LAKE_HYLIA_WATER); // Set the "raise lake hylia water" flag
-            play->roomCtx.unk_74[0] = 0; // Apply the moving under water texture to lake hylia ground
-        }
     } else {
-        Math_SmoothStepToF(&this->lakeHyliaWaterLevel, 1.0f, 0.1f, IS_RANDO ? 10.0f : 1.0f, 0.001f);
+        Math_SmoothStepToF(&this->lakeHyliaWaterLevel, 1.0f, 0.1f, 1.0f, 0.001f);
         play->colCtx.colHeader->waterBoxes[LHWB_GERUDO_VALLEY_RIVER_LOWER].ySurface = WATER_LEVEL_RIVER_LOWERED;
         play->colCtx.colHeader->waterBoxes[LHWB_MAIN_1].ySurface = this->dyna.actor.world.pos.y;
         play->colCtx.colHeader->waterBoxes[LHWB_MAIN_2].ySurface = this->dyna.actor.world.pos.y;

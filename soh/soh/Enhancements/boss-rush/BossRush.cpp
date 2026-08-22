@@ -397,11 +397,11 @@ void BossRush_SpawnBlueWarps(PlayState* play) {
             Actor_Spawn(&play->actorCtx, play, ACTOR_DOOR_WARP1, 199, 6, 0, 0, 0, 0, -1);
         }
         // Spirit Medallion (Twinrova)
-        if (!Flags_GetRandomizerInf(RAND_INF_DUNGEONS_DONE_SPIRIT_TEMPLE)) {
+        if (true) {
             Actor_Spawn(&play->actorCtx, play, ACTOR_DOOR_WARP1, 100, 6, 170, 0, 0, 0, -1);
         }
         // Shadow Medallion (Bongo Bongo)
-        if (!Flags_GetRandomizerInf(RAND_INF_DUNGEONS_DONE_SHADOW_TEMPLE)) {
+        if (true) {
             Actor_Spawn(&play->actorCtx, play, ACTOR_DOOR_WARP1, -100, 6, 170, 0, 0, 0, -1);
         }
     }
@@ -539,12 +539,6 @@ void BossRush_HandleCompleteBoss(PlayState* play) {
         case SCENE_WATER_TEMPLE_BOSS:
             Flags_SetEventChkInf(EVENTCHKINF_USED_WATER_TEMPLE_BLUE_WARP);
             break;
-        case SCENE_SPIRIT_TEMPLE_BOSS:
-            Flags_SetRandomizerInf(RAND_INF_DUNGEONS_DONE_SPIRIT_TEMPLE);
-            break;
-        case SCENE_SHADOW_TEMPLE_BOSS:
-            Flags_SetRandomizerInf(RAND_INF_DUNGEONS_DONE_SHADOW_TEMPLE);
-            break;
         default:
             break;
     }
@@ -626,13 +620,6 @@ extern "C" void BossRush_InitSave() {
     gSaveContext.eventChkInf[7] |= 0x20; // twinrova
     gSaveContext.eventChkInf[7] |= 0x40; // barinade
     gSaveContext.eventChkInf[7] |= 0x80; // bongo bongo
-
-    // Sets all rando flags to false
-    // Boss Rush currently uses 2 randomizer flags (RAND_INF_DUNGEONS_DONE_SPIRIT_TEMPLE &
-    // RAND_INF_DUNGEONS_DONE_SHADOW_TEMPLE)
-    for (s32 i = 0; i < ARRAY_COUNT(gSaveContext.ship.randomizerInf); i++) {
-        gSaveContext.ship.randomizerInf[i] = 0;
-    }
 
     // Set items
     std::array<u8, 24> brItems = {
@@ -722,8 +709,6 @@ extern "C" void BossRush_InitSave() {
             Flags_SetEventChkInf(EVENTCHKINF_USED_FOREST_TEMPLE_BLUE_WARP);
             Flags_SetEventChkInf(EVENTCHKINF_USED_FIRE_TEMPLE_BLUE_WARP);
             Flags_SetEventChkInf(EVENTCHKINF_USED_WATER_TEMPLE_BLUE_WARP);
-            Flags_SetRandomizerInf(RAND_INF_DUNGEONS_DONE_SPIRIT_TEMPLE);
-            Flags_SetRandomizerInf(RAND_INF_DUNGEONS_DONE_SHADOW_TEMPLE);
         }
         gSaveContext.linkAge = LINK_AGE_ADULT;
         BossRush_SetEquipment(LINK_AGE_ADULT);

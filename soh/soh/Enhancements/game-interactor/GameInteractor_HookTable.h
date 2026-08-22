@@ -76,7 +76,6 @@ DEFINE_HOOK(OnUpdateFileTargetSelection, (uint8_t optionIndex));
 DEFINE_HOOK(OnUpdateFileLanguageSelection, (uint8_t optionIndex));
 DEFINE_HOOK(OnUpdateFileQuestSelection, (uint8_t questIndex));
 DEFINE_HOOK(OnUpdateFileBossRushOptionSelection, (uint8_t optionIndex, uint8_t optionValue));
-DEFINE_HOOK(OnUpdateFileRandomizerOptionSelection, (uint8_t optionIndex));
 DEFINE_HOOK(OnUpdateFileNameSelection, (int16_t charCode));
 DEFINE_HOOK(OnFileChooseMain, (void* gameState));
 DEFINE_HOOK(OnGenerationCompletion, ());
@@ -90,8 +89,3 @@ DEFINE_HOOK(OnOpenText, (uint16_t * textId, bool* loadFromMessageTable));
 
 // Audio
 DEFINE_HOOK(OnSeqPlayerInit, (int32_t playerIdx, int32_t seqId));
-
-// Rando
-DEFINE_HOOK(OnRandoSetCheckStatus, (RandomizerCheck rc, RandomizerCheckStatus status));
-DEFINE_HOOK(OnRandoSetIsSkipped, (RandomizerCheck rc, bool isSkipped));
-DEFINE_HOOK(OnRandoEntranceDiscovered, (u16 entranceIndex, u8 isReversedEntrance));

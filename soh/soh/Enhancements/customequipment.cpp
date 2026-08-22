@@ -7,7 +7,6 @@
 #include "soh/ShipInit.hpp"
 #include "soh/ResourceManagerHelpers.h"
 #include "soh_assets.h"
-#include "kaleido.h"
 #include "soh/cvar_prefixes.h"
 
 extern SaveContext gSaveContext;

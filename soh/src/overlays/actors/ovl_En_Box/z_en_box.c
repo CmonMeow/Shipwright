@@ -5,7 +5,6 @@
 #include "soh/OTRGlobals.h"
 #include "soh/ResourceManagerHelpers.h"
 #include "soh/Enhancements/game-interactor/GameInteractor_Hooks.h"
-#include "soh/Enhancements/randomizer/item_category_adj.h"
 
 #define FLAGS 0
 
@@ -191,13 +190,6 @@ void EnBox_Init(Actor* thisx, PlayState* play2) {
     Animation_Change(&this->skelanime, anim, 1.5f, animFrameStart, endFrame, ANIMMODE_ONCE, 0.0f);
 
     this->getItemEntry = ItemTable_RetrieveEntry(MOD_NONE, this->dyna.actor.params >> 5 & 0x7F);
-    if (IS_RANDO) {
-        RandomizerCheck rc = Randomizer_GetCheckFromActor(this->dyna.actor.id, play->sceneNum, this->dyna.actor.params);
-        if (rc != RC_UNKNOWN_CHECK) {
-            this->getItemEntry = Randomizer_GetItemFromKnownCheck(rc, this->dyna.actor.params >> 5 & 0x7F);
-        }
-    }
-
     EnBox_UpdateTexture(this, play);
     // For SOH we spawn a chest actor instead of rendering the object from scratch for forest boss
     // key chest, and it's up on the wall so disable gravity for it.
@@ -576,13 +568,7 @@ void EnBox_UpdateTexture(EnBox* this, PlayState* play) {
     GetItemCategory getItemCategory;
     GetItemEntry chestItem = this->getItemEntry;
 
-    int isVanilla = !csmc || (requiresStoneAgony && !CHECK_QUEST_ITEM(QUEST_STONE_OF_AGONY)) ||
-                    (play->sceneNum == SCENE_TREASURE_BOX_SHOP &&
-                     this->dyna.actor.room != 6); // Exclude treasure game chests except for the final room
-
-    if (!isVanilla) {
-        getItemCategory = Randomizer_AdjustItemCategory(chestItem);
-    }
+    bool isVanilla = true;
 
     switch (this->type) {
         case ENBOX_TYPE_SMALL:
@@ -598,40 +584,7 @@ void EnBox_UpdateTexture(EnBox* this, PlayState* play) {
     }
 
     // Change model/texture
-    if (!isVanilla) {
-        switch (getItemCategory) {
-            case ITEM_CATEGORY_MAJOR:
-                this->boxBodyDL = EnBox_LoadChestDL(gChestBodyMajorDL, gTreasureChestChestFrontDL);
-                this->boxLidDL = EnBox_LoadChestDL(gChestLidMajorDL, gTreasureChestChestSideAndLidDL);
-                break;
-            case ITEM_CATEGORY_SKULLTULA_TOKEN:
-                this->boxBodyDL = EnBox_LoadChestDL(gChestBodyTokenDL, gTreasureChestChestFrontDL);
-                this->boxLidDL = EnBox_LoadChestDL(gChestLidTokenDL, gTreasureChestChestSideAndLidDL);
-                break;
-            case ITEM_CATEGORY_SMALL_KEY:
-                this->boxBodyDL = EnBox_LoadChestDL(gChestBodySmallKeyDL, gTreasureChestChestFrontDL);
-                this->boxLidDL = EnBox_LoadChestDL(gChestLidSmallKeyDL, gTreasureChestChestSideAndLidDL);
-                break;
-            case ITEM_CATEGORY_BOSS_KEY:
-                this->boxBodyDL = EnBox_LoadChestDL(gTreasureChestBossKeyChestFrontDL, gTreasureChestChestFrontDL);
-                this->boxLidDL =
-                    EnBox_LoadChestDL(gTreasureChestBossKeyChestSideAndTopDL, gTreasureChestChestSideAndLidDL);
-                break;
-            case ITEM_CATEGORY_HEALTH:
-                this->boxBodyDL = EnBox_LoadChestDL(gChestBodyHeartDL, gTreasureChestChestFrontDL);
-                this->boxLidDL = EnBox_LoadChestDL(gChestLidHeartDL, gTreasureChestChestSideAndLidDL);
-                break;
-            case ITEM_CATEGORY_LESSER:
-                this->boxBodyDL = EnBox_LoadChestDL(gChestBodyMinorDL, gTreasureChestChestFrontDL);
-                this->boxLidDL = EnBox_LoadChestDL(gChestLidMinorDL, gTreasureChestChestSideAndLidDL);
-                break;
-            case ITEM_CATEGORY_JUNK:
-            default:
-                this->boxBodyDL = EnBox_LoadChestDL(gChestBodyJunkDL, gTreasureChestChestFrontDL);
-                this->boxLidDL = EnBox_LoadChestDL(gChestLidJunkDL, gTreasureChestChestSideAndLidDL);
-                break;
-        }
-    } else {
+    {
         if (this->type != ENBOX_TYPE_DECORATED_BIG) {
             this->boxBodyDL = EnBox_LoadChestDL(gTreasureChestChestFrontDL, NULL);
             this->boxLidDL = EnBox_LoadChestDL(gTreasureChestChestSideAndLidDL, NULL);

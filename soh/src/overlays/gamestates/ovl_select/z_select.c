@@ -10,8 +10,6 @@
 
 #include "soh/Enhancements/enhancementTypes.h"
 #include "soh/Enhancements/game-interactor/GameInteractor_Hooks.h"
-#include "soh/Enhancements/randomizer/randomizer_entrance.h"
-#include "soh/Enhancements/randomizer/randomizer_grotto.h"
 #include "soh/OTRGlobals.h"
 #include "soh/ResourceManagerHelpers.h"
 
@@ -41,12 +39,6 @@ void Select_LoadGame(SelectContext* this, s32 entranceIndex) {
     gSaveContext.forceRisingButtonAlphas = gSaveContext.unk_13E8 = gSaveContext.unk_13EA = gSaveContext.unk_13EC = 0;
     Audio_QueueSeqCmd(SEQ_PLAYER_BGM_MAIN << 24 | NA_BGM_STOP);
     gSaveContext.entranceIndex = entranceIndex;
-
-    // Check the entrance to see if the exit should be overridden to a grotto return point for entrance rando
-    if (IS_RANDO && Randomizer_GetSettingValue(RSK_SHUFFLE_ENTRANCES)) {
-        // Ignore return value as we want to load into the entrance specified by the debug menu
-        Grotto_OverrideSpecialEntrance(Entrance_GetOverride(entranceIndex));
-    }
 
     if (this->isBetterWarp) {
         CVarSetInteger(CVAR_GENERAL("BetterDebugWarpScreenCurrentScene"), this->currentScene);
@@ -108,15 +100,6 @@ void Select_Grotto_LoadGame(SelectContext* this, s32 grottoIndex) {
     gSaveContext.respawn[RESPAWN_MODE_RETURN].roomIndex = this->betterGrottos[grottoIndex].roomIndex;
     gSaveContext.respawn[RESPAWN_MODE_RETURN].playerParams = 0x4ff;
     gSaveContext.respawn[RESPAWN_MODE_RETURN].pos = this->betterGrottos[grottoIndex].pos;
-
-    // Check the entrance to see if the exit should be overridden to a grotto return point for entrance rando
-    if (IS_RANDO && Randomizer_GetSettingValue(RSK_SHUFFLE_ENTRANCES)) {
-        // Use grotto content and parent scene num to identify the right grotto
-        s16 grottoEntrance = Grotto_GetRenamedGrottoIndexFromOriginal(this->betterGrottos[grottoIndex].data,
-                                                                      this->betterGrottos[grottoIndex].exitScene);
-        // Ignore return value as we want to load into the entrance specified by the debug menu
-        Grotto_OverrideSpecialEntrance(Entrance_GetOverride(grottoEntrance));
-    }
 
     if (this->isBetterWarp) {
         CVarSetInteger(CVAR_GENERAL("BetterDebugWarpScreenCurrentScene"), this->currentScene);

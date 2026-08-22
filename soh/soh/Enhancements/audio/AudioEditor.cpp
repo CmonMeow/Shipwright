@@ -6,7 +6,6 @@
 #include <string>
 #include <libultraship/libultraship.h>
 #include <functions.h>
-#include "../randomizer/3drando/random.hpp"
 #include "soh/OTRGlobals.h"
 #include "soh/cvar_prefixes.h"
 #include <ship/utils/StringHelper.h>
@@ -119,8 +118,7 @@ void RandomizeGroup(SeqType type, bool manual = true) {
         int randomizeMode = CVarGetInteger(CVAR_AUDIO("RandomizeAudioGenModes"), 0);
         if (randomizeMode == RANDOMIZE_ON_FILE_LOAD_SEEDED || randomizeMode == RANDOMIZE_ON_RANDO_GEN_ONLY) {
 
-            uint32_t finalSeed = type + (IS_RANDO ? Rando::Context::GetInstance()->GetSeed()
-                                                  : static_cast<uint32_t>(gSaveContext.ship.stats.fileCreatedAt));
+            uint32_t finalSeed = type + static_cast<uint32_t>(gSaveContext.ship.stats.fileCreatedAt);
             ShipUtils::RandInit(finalSeed, &localRngState);
             shuffleState = &localRngState;
         }

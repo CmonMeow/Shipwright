@@ -315,7 +315,6 @@ void func_80B20768(EnToryo* this, PlayState* play) {
         if (Actor_HasParent(&this->actor, play) || !GameInteractor_Should(VB_TRADE_SAW, true, this)) {
             this->actor.parent = NULL;
             this->unk_1E4 = 5;
-            Flags_SetRandomizerInf(RAND_INF_ADULT_TRADES_GV_TRADE_SAW);
         } else {
             Actor_OfferGetItem(&this->actor, play, GI_SWORD_BROKEN, 100.0f, 10.0f);
         }

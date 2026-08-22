@@ -8,7 +8,6 @@
 #include "z64bgcheck.h"
 #include "soh/Enhancements/item-tables/ItemTableTypes.h"
 #include "z64actor_enum.h"
-#include "soh/Enhancements/randomizer/randomizerTypes.h"
 
 #define ACTOR_NUMBER_MAX 2000
 #define INVISIBLE_ACTOR_MAX 20
@@ -379,12 +378,8 @@ typedef struct EnItem00 {
     /* 0x15A */ s16 unk_15A;
     /* 0x15C */ f32 scale;
     /* 0x160 */ ColliderCylinder collider;
-    // #region SOH [Randomizer]
-    RandomizerCheck randoCheck;
-    RandomizerInf randoInf;
     /*       */ s16 ogParams;
     /*       */ GetItemEntry itemEntry;
-    // #endregion
 } EnItem00; // size = 0x1AC
 
 // Only A_OBJ_SIGNPOST_OBLONG and A_OBJ_SIGNPOST_ARROW are used in room files.

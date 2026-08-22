@@ -5,6 +5,7 @@
 #include "soh/OTRGlobals.h"
 #include <soh/Network/Sail/Sail.h>
 #include <soh/Network/CrowdControl/CrowdControl.h>
+#include "soh/util.h"
 
 namespace SohGui {
 

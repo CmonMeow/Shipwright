@@ -26,8 +26,6 @@ static std::map<int32_t, const char*> languages = {
     { LANGUAGE_FRA, "French" },
     { LANGUAGE_JPN, "Japanese" },
 };
-void UpdateMenuTricks();
-void UpdateMenuLocations();
 
 class SohMenu : public Ship::Menu {
   public:
@@ -44,7 +42,6 @@ class SohMenu : public Ship::Menu {
     void AddMenuSettings();
     void AddMenuEnhancements();
     void AddMenuDevTools();
-    void AddMenuRandomizer();
     void AddMenuNetwork();
     static void UpdateLanguageMap(std::map<int32_t, const char*>& languageMap);
 

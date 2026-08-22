@@ -203,7 +203,6 @@ void KaleidoScope_DrawEquipment(PlayState* play) {
     if ((pauseCtx->state == 6) && (pauseCtx->unk_1E4 == 0) && (pauseCtx->pageIndex == PAUSE_EQUIP)) {
         bool dpad = (CVarGetInteger(CVAR_SETTING("DPadOnPause"), 0) && !CHECK_BTN_ALL(input->cur.button, BTN_CUP));
         bool pauseAnyCursor =
-            (CVarGetInteger(CVAR_ENHANCEMENT("PauseAnyCursor"), 0) == PAUSE_ANY_CURSOR_RANDO_ONLY && IS_RANDO) ||
             (CVarGetInteger(CVAR_ENHANCEMENT("PauseAnyCursor"), 0) == PAUSE_ANY_CURSOR_ALWAYS_ON);
 
         oldCursorPoint = pauseCtx->cursorPoint[PAUSE_EQUIP];
@@ -499,7 +498,7 @@ void KaleidoScope_DrawEquipment(PlayState* play) {
         }
 
         if (pauseCtx->cursorItem[PAUSE_EQUIP] == ITEM_BRACELET) {
-            if (LINK_AGE_IN_YEARS == YEARS_CHILD || IS_RANDO) {
+            if (LINK_AGE_IN_YEARS == YEARS_CHILD) {
                 pauseCtx->nameColorSet = 0;
             } else {
                 pauseCtx->nameColorSet = 1;
@@ -804,11 +803,11 @@ void KaleidoScope_DrawEquipment(PlayState* play) {
                     32, 32, 0);
                 gSPGrayscale(POLY_OPA_DISP++, false);
             } else if (CUR_UPG_VALUE(sAdultUpgrades[i]) != 0) {
-                // Grey Out the Goron Bracelet when Not Randomized and Toggle Strength Option is off
+                // Grey out the Goron Bracelet when Toggle Strength is off
                 // Grey Out Strength Upgrades when Disabled and the Toggle Strength Option is on
                 if ((drawGreyItems &&
                      (((sAdultUpgradeItemBases[i] + CUR_UPG_VALUE(sAdultUpgrades[i]) - 1) == ITEM_BRACELET &&
-                       !(IS_RANDO) && !CVarGetInteger(CVAR_ENHANCEMENT("ToggleStrength"), 0)))) ||
+                       !CVarGetInteger(CVAR_ENHANCEMENT("ToggleStrength"), 0)))) ||
                     (CVarGetInteger(CVAR_ENHANCEMENT("ToggleStrength"), 0) &&
                      CVarGetInteger(CVAR_ENHANCEMENT("StrengthDisabled"), 0) && sAdultUpgrades[i] == UPG_STRENGTH)) {
                     gDPSetGrayscaleColor(POLY_OPA_DISP++, 109, 109, 109, 255);

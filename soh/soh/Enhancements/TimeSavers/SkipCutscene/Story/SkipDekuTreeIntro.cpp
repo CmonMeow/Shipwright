@@ -10,7 +10,7 @@ extern "C" {
  */
 void RegisterSkipDekuTreeIntro() {
     COND_VB_SHOULD(VB_PLAY_DEKU_TREE_INTRO_CS,
-                   CVarGetInteger(CVAR_ENHANCEMENT("TimeSavers.SkipCutscene.Story"), IS_RANDO), {
+                   CVarGetInteger(CVAR_ENHANCEMENT("TimeSavers.SkipCutscene.Story"), 0), {
                        BgTreemouth* treeMouth = va_arg(args, BgTreemouth*);
                        Flags_SetEventChkInf(EVENTCHKINF_DEKU_TREE_OPENED_MOUTH);
                        Audio_PlaySoundGeneral(NA_SE_EV_WOODDOOR_OPEN, &gSfxDefaultPos, 4, &gSfxDefaultFreqAndVolScale,
@@ -21,4 +21,4 @@ void RegisterSkipDekuTreeIntro() {
 }
 
 static RegisterShipInitFunc initFunc(RegisterSkipDekuTreeIntro,
-                                     { CVAR_ENHANCEMENT("TimeSavers.SkipCutscene.Story"), "IS_RANDO" });
+                                     { CVAR_ENHANCEMENT("TimeSavers.SkipCutscene.Story") });

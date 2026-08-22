@@ -1,9 +1,9 @@
 #include "GameInteractor.h"
 #include <libultraship/bridge.h>
-#include "soh/Enhancements/randomizer/3drando/random.hpp"
 #include <math.h>
 #include "soh/Enhancements/debugger/colViewer.h"
 #include "soh/Enhancements/nametag.h"
+#include "soh/ShipUtils.h"
 
 extern "C" {
 #include "variables.h"
@@ -220,8 +220,6 @@ bool GameInteractor::RawAction::CheckFlag(int16_t flagType, int16_t flag) {
             return Flags_GetInfTable(flag);
         case FlagType::FLAG_EVENT_INF:
             return Flags_GetEventInf(flag);
-        case FlagType::FLAG_RANDOMIZER_INF:
-            return Flags_GetRandomizerInf(static_cast<RandomizerInf>(flag));
         case FlagType::FLAG_GS_TOKEN:
             return GET_GS_FLAGS((flag & 0x1F00) >> 8);
         default:
@@ -244,14 +242,6 @@ void GameInteractor::RawAction::SetFlag(int16_t flagType, int16_t flag) {
         case FlagType::FLAG_EVENT_INF:
             gSaveContext.eventInf[flag >> 4] |= (1 << (flag & 0xF));
             break;
-        case FlagType::FLAG_RANDOMIZER_INF:
-            if (!IS_RANDO) {
-                LUSLOG_ERROR("Tried to set randomizerInf flag outside of rando (%d)", flag);
-                assert(false);
-                break;
-            }
-            gSaveContext.ship.randomizerInf[flag >> 4] |= (1 << (flag & 0xF));
-            break;
         case FlagType::FLAG_GS_TOKEN:
             SET_GS_FLAGS((flag & 0x1F00) >> 8, flag & 0xFF);
             break;
@@ -271,14 +261,6 @@ void GameInteractor::RawAction::UnsetFlag(int16_t flagType, int16_t flag) {
             break;
         case FlagType::FLAG_EVENT_INF:
             gSaveContext.eventInf[flag >> 4] &= ~(1 << (flag & 0xF));
-            break;
-        case FlagType::FLAG_RANDOMIZER_INF:
-            if (!IS_RANDO) {
-                LUSLOG_ERROR("Tried to unset randomizerInf flag outside of rando (%d)", flag);
-                assert(false);
-                break;
-            }
-            gSaveContext.ship.randomizerInf[flag >> 4] &= ~(1 << (flag & 0xF));
             break;
     }
 };
@@ -498,7 +480,7 @@ GameInteractionEffectQueryResult GameInteractor::RawAction::SpawnEnemyWithOffset
     }
 
     // Generate point in random angle with a radius.
-    float angle = static_cast<float>(RandomDouble() * 2 * M_PI);
+    float angle = static_cast<float>(ShipUtils::RandomDouble() * 2 * M_PI);
     float radius = 150;
     float posXOffset = radius * cos(angle);
     float posZOffset = radius * sin(angle);

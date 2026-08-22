@@ -25,11 +25,7 @@ void OnGameFrameUpdateInfiniteAmmo() {
     AMMO(ITEM_BOW) = CUR_CAPACITY(UPG_QUIVER);
     AMMO(ITEM_SLINGSHOT) = CUR_CAPACITY(UPG_BULLET_BAG);
     if (INV_CONTENT(ITEM_BOMBCHU) != ITEM_NONE) {
-        int chuCapacity = 50;
-        if (IS_RANDO && RAND_GET_OPTION(RSK_BOMBCHU_BAG).Is(RO_BOMBCHU_BAG_PROGRESSIVE)) {
-            chuCapacity = OTRGlobals::Instance->gRandoContext->GetBombchuCapacity();
-        }
-        AMMO(ITEM_BOMBCHU) = chuCapacity;
+        AMMO(ITEM_BOMBCHU) = 50;
     }
 }
 

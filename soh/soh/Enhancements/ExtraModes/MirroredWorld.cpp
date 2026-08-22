@@ -1,10 +1,9 @@
 #include "soh/Enhancements/cosmetics/authenticGfxPatches.h"
 #include "soh/Enhancements/game-interactor/GameInteractor_Hooks.h"
-#include "soh/Enhancements/randomizer/3drando/random.hpp"
-#include "soh/Enhancements/randomizer/SeedContext.h"
 #include "soh/Enhancements/enhancementTypes.h"
 #include "soh/ResourceManagerHelpers.h"
 #include "soh/ShipInit.hpp"
+#include "soh/ShipUtils.h"
 
 extern "C" {
 extern SaveContext gSaveContext;
@@ -26,9 +25,8 @@ static bool MirroredWorld_IsInDungeon(int32_t sceneNum) {
 }
 
 static void MirroredWorld_InitRandomSeed(int32_t sceneNum) {
-    uint32_t seed =
-        sceneNum + (IS_RANDO ? Rando::Context::GetInstance()->GetSeed() : gSaveContext.ship.stats.fileCreatedAt);
-    Random_Init(seed);
+    uint64_t seed = sceneNum + gSaveContext.ship.stats.fileCreatedAt;
+    (void)seed;
 }
 
 static bool MirroredWorld_ShouldApply(int32_t sceneNum) {
@@ -38,7 +36,7 @@ static bool MirroredWorld_ShouldApply(int32_t sceneNum) {
         case MIRRORED_WORLD_RANDOM_SEEDED:
             MirroredWorld_InitRandomSeed(sceneNum);
         case MIRRORED_WORLD_RANDOM:
-            return Random(0, 2) == 1;
+            return ShipUtils::Random(0, 2) == 1;
         case MIRRORED_WORLD_DUNGEONS_ALL:
             return MirroredWorld_IsInDungeon(sceneNum);
         case MIRRORED_WORLD_DUNGEONS_VANILLA:
@@ -48,7 +46,7 @@ static bool MirroredWorld_ShouldApply(int32_t sceneNum) {
         case MIRRORED_WORLD_DUNGEONS_RANDOM_SEEDED:
             MirroredWorld_InitRandomSeed(sceneNum);
         case MIRRORED_WORLD_DUNGEONS_RANDOM:
-            return MirroredWorld_IsInDungeon(sceneNum) && (Random(0, 2) == 1);
+            return MirroredWorld_IsInDungeon(sceneNum) && (ShipUtils::Random(0, 2) == 1);
         default:
             return false;
     }

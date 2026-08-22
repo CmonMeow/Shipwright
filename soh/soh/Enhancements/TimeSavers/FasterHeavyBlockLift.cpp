@@ -14,7 +14,7 @@ extern SaveContext gSaveContext;
 #define CVAR_BLOCKLIFT_VALUE CVarGetInteger(CVAR_BLOCKLIFT_NAME, 0)
 
 #define CVAR_SKIP_CUTSCENE_NAME CVAR_ENHANCEMENT("TimeSavers.SkipCutscene.OnePoint")
-#define CVAR_SKIP_CUTSCENE_VALUE CVarGetInteger(CVAR_SKIP_CUTSCENE_NAME, IS_RANDO)
+#define CVAR_SKIP_CUTSCENE_VALUE CVarGetInteger(CVAR_SKIP_CUTSCENE_NAME, 0)
 
 /**
  * This primarily handles speeding up the heavy block lifts (OGC and in the Fire Trial) but also handles skipping

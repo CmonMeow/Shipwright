@@ -143,9 +143,6 @@ f32 DemoEffect_InterpolateCsFrames(PlayState* play, s32 csActionId) {
  */
 void DemoEffect_InitJewel(PlayState* play, DemoEffect* this) {
     this->initDrawFunc = DemoEffect_DrawJewel;
-    if (IS_RANDO && (play->sceneNum != SCENE_TEMPLE_OF_TIME || this->actor.params == DEMO_EFFECT_LIGHTARROW)) {
-        this->initDrawFunc = DemoEffect_DrawGetItem;
-    }
     if (!LINK_IS_ADULT) {
         this->initUpdateFunc = DemoEffect_UpdateJewelChild;
     } else {
@@ -157,9 +154,7 @@ void DemoEffect_InitJewel(PlayState* play, DemoEffect* this) {
         Actor_SetScale(&this->actor, 0.10f);
     }
     this->csActionId = 1;
-    this->actor.shape.rot.x =
-        (IS_RANDO && (play->sceneNum != SCENE_TEMPLE_OF_TIME || this->actor.params == DEMO_EFFECT_LIGHTARROW)) ? 0
-                                                                                                               : 16384;
+    this->actor.shape.rot.x = 16384;
     DemoEffect_InitJewelColor(this);
     this->jewel.alpha = 0;
     this->jewelCsRotation.x = this->jewelCsRotation.y = this->jewelCsRotation.z = 0;
@@ -638,8 +633,7 @@ void DemoEffect_UpdateGetItem(DemoEffect* this, PlayState* play) {
 
         Actor_SetScale(thisx, 0.20f);
 
-        if (gSaveContext.entranceIndex == ENTR_TEMPLE_OF_TIME_ENTRANCE ||
-            (IS_RANDO && gSaveContext.entranceIndex == ENTR_TEMPLE_OF_TIME_WARP_PAD)) {
+        if (gSaveContext.entranceIndex == ENTR_TEMPLE_OF_TIME_ENTRANCE) {
             switch (play->csCtx.npcActions[this->csActionId]->action) {
                 case 2:
                     DemoEffect_MedalSparkle(this, play, 0);
@@ -651,8 +645,7 @@ void DemoEffect_UpdateGetItem(DemoEffect* this, PlayState* play) {
         }
         switch (play->csCtx.npcActions[this->csActionId]->action) {
             case 2:
-                if (gSaveContext.entranceIndex == ENTR_TEMPLE_OF_TIME_ENTRANCE ||
-                    (IS_RANDO && gSaveContext.entranceIndex == ENTR_TEMPLE_OF_TIME_WARP_PAD)) {
+                if (gSaveContext.entranceIndex == ENTR_TEMPLE_OF_TIME_ENTRANCE) {
                     Audio_PlayActorSound2(thisx, NA_SE_EV_MEDAL_APPEAR_L - SFX_FLAG);
                 } else {
                     Sfx_PlaySfxCentered2(NA_SE_EV_MEDAL_APPEAR_S - SFX_FLAG);
@@ -667,8 +660,7 @@ void DemoEffect_UpdateGetItem(DemoEffect* this, PlayState* play) {
                 if (this->getItem.drawId != GID_ARROW_LIGHT) {
                     this->actor.shape.rot.y += this->getItem.rotation;
                 }
-                if (gSaveContext.entranceIndex == ENTR_TEMPLE_OF_TIME_ENTRANCE ||
-                    (IS_RANDO && gSaveContext.entranceIndex == ENTR_TEMPLE_OF_TIME_WARP_PAD)) {
+                if (gSaveContext.entranceIndex == ENTR_TEMPLE_OF_TIME_ENTRANCE) {
                     Audio_PlayActorSound2(thisx, NA_SE_EV_MEDAL_APPEAR_L - SFX_FLAG);
                 } else {
                     Sfx_PlaySfxCentered2(NA_SE_EV_MEDAL_APPEAR_S - SFX_FLAG);
@@ -1549,33 +1541,6 @@ void DemoEffect_UpdateJewelAdult(DemoEffect* this, PlayState* play) {
     this->actor.shape.rot.y += 0x0400;
     DemoEffect_PlayJewelSfx(this, play);
 
-    if (IS_RANDO) {
-        switch (this->jewel.type) {
-            case DEMO_EFFECT_JEWEL_KOKIRI:
-                if (CHECK_QUEST_ITEM(QUEST_KOKIRI_EMERALD)) {
-                    DemoEffect_SetJewelColor(this, 1.0f);
-                } else {
-                    DemoEffect_SetJewelColor(this, 0.0f);
-                }
-                break;
-            case DEMO_EFFECT_JEWEL_GORON:
-                if (CHECK_QUEST_ITEM(QUEST_GORON_RUBY)) {
-                    DemoEffect_SetJewelColor(this, 1.0f);
-                } else {
-                    DemoEffect_SetJewelColor(this, 0.0f);
-                }
-                break;
-            case DEMO_EFFECT_JEWEL_ZORA:
-                if (CHECK_QUEST_ITEM(QUEST_ZORA_SAPPHIRE)) {
-                    DemoEffect_SetJewelColor(this, 1.0f);
-                } else {
-                    DemoEffect_SetJewelColor(this, 0.0f);
-                }
-                break;
-        }
-    } else {
-        DemoEffect_SetJewelColor(this, 1.0f);
-    }
 }
 
 /**
@@ -1618,16 +1583,14 @@ void DemoEffect_UpdateJewelChild(DemoEffect* this, PlayState* play) {
                 return;
             default:
                 DemoEffect_MoveToCsEndpoint(this, play, this->csActionId, 0);
-                if (gSaveContext.entranceIndex == ENTR_TEMPLE_OF_TIME_ENTRANCE ||
-                    (IS_RANDO && gSaveContext.entranceIndex == ENTR_TEMPLE_OF_TIME_WARP_PAD)) {
+                if (gSaveContext.entranceIndex == ENTR_TEMPLE_OF_TIME_ENTRANCE) {
                     DemoEffect_MoveJewelSplit(&thisx->world, this);
                 }
                 break;
         }
     }
 
-    if (gSaveContext.entranceIndex == ENTR_TEMPLE_OF_TIME_ENTRANCE ||
-        (IS_RANDO && gSaveContext.entranceIndex == ENTR_TEMPLE_OF_TIME_WARP_PAD)) {
+    if (gSaveContext.entranceIndex == ENTR_TEMPLE_OF_TIME_ENTRANCE) {
         if (!Flags_GetEventChkInf(EVENTCHKINF_OPENED_THE_DOOR_OF_TIME)) {
             hasCmdAction = play->csCtx.state && play->csCtx.npcActions[this->csActionId];
             if (!hasCmdAction) {
@@ -1641,33 +1604,6 @@ void DemoEffect_UpdateJewelChild(DemoEffect* this, PlayState* play) {
     DemoEffect_PlayJewelSfx(this, play);
     this->effectFlags &= ~1;
 
-    if (IS_RANDO) {
-        switch (this->jewel.type) {
-            case DEMO_EFFECT_JEWEL_KOKIRI:
-                if (CHECK_QUEST_ITEM(QUEST_KOKIRI_EMERALD)) {
-                    DemoEffect_SetJewelColor(this, 1.0f);
-                } else {
-                    DemoEffect_SetJewelColor(this, 0.0f);
-                }
-                break;
-            case DEMO_EFFECT_JEWEL_GORON:
-                if (CHECK_QUEST_ITEM(QUEST_GORON_RUBY)) {
-                    DemoEffect_SetJewelColor(this, 1.0f);
-                } else {
-                    DemoEffect_SetJewelColor(this, 0.0f);
-                }
-                break;
-            case DEMO_EFFECT_JEWEL_ZORA:
-                if (CHECK_QUEST_ITEM(QUEST_ZORA_SAPPHIRE)) {
-                    DemoEffect_SetJewelColor(this, 1.0f);
-                } else {
-                    DemoEffect_SetJewelColor(this, 0.0f);
-                }
-                break;
-        }
-    } else {
-        // Contrary to it's adult conterpart Authenthic doesn't use DemoEffect_SetJewelColor(this, 1.0f); here
-    }
 }
 
 /**
@@ -2076,66 +2012,6 @@ void DemoEffect_DrawGetItem(Actor* thisx, PlayState* play) {
         if (!this->getItem.isLoaded) {
             this->getItem.isLoaded = 1;
             return;
-        }
-        if (IS_RANDO && (play->sceneNum != SCENE_TEMPLE_OF_TIME || this->actor.params == DEMO_EFFECT_LIGHTARROW)) {
-            GetItemEntry getItemEntry = GET_ITEM_NONE;
-            RandomizerCheck rc = RC_MAX;
-            RandomizerGet rg = RG_NONE;
-
-            switch (this->actor.params & 0x00FF) {
-                case DEMO_EFFECT_JEWEL_KOKIRI:
-                    rc = RC_QUEEN_GOHMA;
-                    rg = RG_KOKIRI_EMERALD;
-                    break;
-                case DEMO_EFFECT_JEWEL_GORON:
-                    rc = RC_KING_DODONGO;
-                    rg = RG_GORON_RUBY;
-                    break;
-                case DEMO_EFFECT_JEWEL_ZORA:
-                    rc = RC_BARINADE;
-                    rg = RG_ZORA_SAPPHIRE;
-                    break;
-                case DEMO_EFFECT_MEDAL_FOREST:
-                    rc = RC_PHANTOM_GANON;
-                    rg = RG_FOREST_MEDALLION;
-                    break;
-                case DEMO_EFFECT_MEDAL_FIRE:
-                    rc = RC_VOLVAGIA;
-                    rg = RG_FIRE_MEDALLION;
-                    break;
-                case DEMO_EFFECT_MEDAL_WATER:
-                    rc = RC_MORPHA;
-                    rg = RG_WATER_MEDALLION;
-                    break;
-                case DEMO_EFFECT_MEDAL_SPIRIT:
-                    rc = RC_TWINROVA;
-                    rg = RG_SPIRIT_MEDALLION;
-                    break;
-                case DEMO_EFFECT_MEDAL_SHADOW:
-                    rc = RC_BONGO_BONGO;
-                    rg = RG_SHADOW_MEDALLION;
-                    break;
-                case DEMO_EFFECT_MEDAL_LIGHT:
-                    rc = RC_GIFT_FROM_RAURU;
-                    rg = RG_LIGHT_MEDALLION;
-                    break;
-                case DEMO_EFFECT_LIGHTARROW:
-                    rc = RC_TOT_LIGHT_ARROWS_CUTSCENE;
-                    rg = RG_LIGHT_ARROWS;
-                    break;
-            }
-            getItemEntry = Randomizer_GetItemFromKnownCheck(rc, rg);
-            if (getItemEntry.getItemId != GI_NONE) {
-                if (CVarGetInteger(CVAR_RANDOMIZER_ENHANCEMENT("MysteriousShuffle"), 0) &&
-                    Randomizer_IsCheckShuffled(rc)) {
-                    getItemEntry = GetItemMystery();
-                }
-                this->getItem.drawId = getItemEntry.gid;
-                func_8002EBCC(thisx, play, 0);
-                func_8002ED80(thisx, play, 0);
-                GetItemEntry_Draw(play, getItemEntry);
-                return;
-            }
         }
         func_8002EBCC(thisx, play, 0);
         func_8002ED80(thisx, play, 0);

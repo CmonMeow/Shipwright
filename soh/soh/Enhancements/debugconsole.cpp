@@ -11,7 +11,6 @@
 #include "soh/Enhancements/game-interactor/GameInteractor.h"
 #include "soh/Enhancements/cosmetics/CosmeticsEditor.h"
 #include "soh/Enhancements/audio/AudioEditor.h"
-#include "soh/Enhancements/randomizer/logic.h"
 
 #define Path _Path
 #define PATH_HACK
@@ -390,11 +389,9 @@ static bool GiveItemHandler(std::shared_ptr<Ship::Console> Console, const std::v
     GetItemEntry getItemEntry = GET_ITEM_NONE;
 
     if (args[1].compare("vanilla") == 0) {
-        getItemEntry = ItemTableManager::Instance->RetrieveItemEntry(MOD_NONE, std::stoi(args[2]));
-    } else if (args[1].compare("randomizer") == 0) {
-        getItemEntry = Rando::StaticData::RetrieveItem((RandomizerGet)std::stoi(args[2])).GetGIEntry_Copy();
+        getItemEntry = ItemTableManager::Instance->RetrieveItemEntry(0, std::stoi(args[2]));
     } else {
-        ERROR_MESSAGE("[SOH] Invalid argument passed, must be 'vanilla' or 'randomizer'");
+        ERROR_MESSAGE("[SOH] Invalid argument passed, must be 'vanilla'");
         return 1;
     }
 
@@ -1308,34 +1305,6 @@ static bool CuccoStormHandler(std::shared_ptr<Ship::Console> Console, const std:
     }
 }
 
-static bool GenerateRandoHandler(std::shared_ptr<Ship::Console> Console, const std::vector<std::string>& args,
-                                 std::string* output) {
-    if (args.size() == 1) {
-        if (GenerateRandomizer()) {
-            return 0;
-        }
-    }
-
-    try {
-        uint32_t value = std::stoi(args[1], NULL, 10);
-        std::string seed = "";
-        if (args.size() == 3) {
-            int testing = std::stoi(args[1], nullptr, 10);
-            seed = "seed_testing_count";
-        }
-
-        if (GenerateRandomizer(seed + std::to_string(value))) {
-            return 0;
-        }
-    } catch (std::invalid_argument const& ex) {
-        ERROR_MESSAGE("[SOH] seed|count value must be a number.");
-        return 1;
-    }
-
-    ERROR_MESSAGE("[SOH] Rando generation already in progress");
-    return 1;
-}
-
 static constexpr std::array<std::pair<const char*, CosmeticGroup>, COSMETICS_GROUP_MAX> cosmetic_groups = { {
     { "link", COSMETICS_GROUP_LINK },
     { "mirror_shield", COSMETICS_GROUP_MIRRORSHIELD },
@@ -1445,67 +1414,6 @@ static bool SfxHandler(std::shared_ptr<Ship::Console> Console, const std::vector
         return 1;
     }
 
-    return 0;
-}
-
-static bool AvailableChecksProcessUndiscoveredExitsHandler(std::shared_ptr<Ship::Console> Console,
-                                                           const std::vector<std::string>& args, std::string* output) {
-    const auto& logic = Rando::Context::GetInstance()->GetLogic();
-    bool enabled = false;
-
-    if (args.size() == 1) {
-        enabled = !logic->ACProcessUndiscoveredExits;
-    } else {
-        try {
-            enabled = std::stoi(args[1]);
-        } catch (std::invalid_argument const& ex) {
-            ERROR_MESSAGE("[SOH] Enable should be 0 or 1");
-            return 1;
-        }
-    }
-
-    logic->ACProcessUndiscoveredExits = enabled;
-    INFO_MESSAGE("[SOH] Available Checks - Process Undiscovered Exits %s",
-                 logic->ACProcessUndiscoveredExits ? "enabled" : "disabled");
-
-    CheckTracker::RecalculateAvailableChecks();
-    return 0;
-}
-
-static bool AvailableChecksRecalculateHandler(std::shared_ptr<Ship::Console> Console,
-                                              const std::vector<std::string>& args, std::string* output) {
-    RandomizerRegion startingRegion = RR_ROOT;
-    RandoAgeTime startingAgeTime = RAT_NONE;
-
-    if (args.size() > 1) {
-        try {
-            startingRegion = static_cast<RandomizerRegion>(std::stoi(args[1]));
-        } catch (std::invalid_argument const& ex) {
-            ERROR_MESSAGE("[SOH] Region should be a number");
-            return 1;
-        }
-
-        if (startingRegion <= RR_NONE || startingRegion >= RR_MAX) {
-            ERROR_MESSAGE("[SOH] Region should be between 1 and %d", RR_MAX - 1);
-            return 1;
-        }
-    }
-
-    if (args.size() > 2) {
-        if (args[2] == "ChildDay") {
-            startingAgeTime = RAT_CHILD_DAY;
-        } else if (args[2] == "ChildNight") {
-            startingAgeTime = RAT_CHILD_NIGHT;
-        } else if (args[2] == "AdultDay") {
-            startingAgeTime = RAT_ADULT_DAY;
-        } else if (args[2] == "AdultNight") {
-            startingAgeTime = RAT_ADULT_NIGHT;
-        } else {
-            ERROR_MESSAGE("[SOH] Age Time should be ChildDay, ChildNight, AdultDay, or AdultNight");
-        }
-    }
-
-    CheckTracker::RecalculateAvailableChecks(startingRegion, startingAgeTime);
     return 0;
 }
 
@@ -1746,13 +1654,6 @@ void DebugConsole_Init(void) {
 
     CMD_REGISTER("cucco_storm", { CuccoStormHandler, "Cucco Storm" });
 
-    CMD_REGISTER("gen_rando", { GenerateRandoHandler,
-                                "Generate a randomizer seed",
-                                {
-                                    { "seed|count", Ship::ArgumentType::NUMBER, true },
-                                    { "testing", Ship::ArgumentType::NUMBER, true },
-                                } });
-
     CMD_REGISTER("cosmetics", { CosmeticsHandler,
                                 "Change cosmetics.",
                                 {
@@ -1766,18 +1667,6 @@ void DebugConsole_Init(void) {
                               { "reset|randomize", Ship::ArgumentType::TEXT },
                               { "group_name", Ship::ArgumentType::TEXT, true },
                           } });
-
-    CMD_REGISTER("acpue", { AvailableChecksProcessUndiscoveredExitsHandler,
-                            "Available Checks - Process Undiscovered Exits",
-                            { { "enable", Ship::ArgumentType::NUMBER, true } } });
-
-    Ship::Context::GetInstance()->GetConsole()->AddCommand(
-        "acr", { AvailableChecksRecalculateHandler,
-                 "Available Checks - Recalculate",
-                 {
-                     { "starting_region", Ship::ArgumentType::NUMBER, true },
-                     { "ChildDay|ChildNight|AdultDay|AdultNight", Ship::ArgumentType::TEXT, true },
-                 } });
 
     Ship::Context::GetInstance()->GetWindow()->GetGui()->SaveConsoleVariablesNextFrame();
 }

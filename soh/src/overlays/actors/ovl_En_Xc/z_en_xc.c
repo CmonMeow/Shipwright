@@ -274,10 +274,6 @@ void func_80B3C9EC(EnXc* this) {
     this->action = SHEIK_ACTION_BLOCK_PEDESTAL;
     this->drawMode = SHEIK_DRAW_DEFAULT;
     this->unk_30C = 1;
-    // SOH [Randomizer] We don't want sheik blocking the pedestal in randomizer
-    if (IS_RANDO) {
-        Actor_Kill(&this->actor);
-    }
     return;
 }
 
@@ -405,9 +401,7 @@ void SoH_EnXc_RandoStand(EnXc* this, PlayState* play) {
     this->action = SHEIK_ACTION_BLOCK_PEDESTAL;
     this->drawMode = SHEIK_DRAW_DEFAULT;
     this->unk_30C = 1;
-    if (!IS_RANDO) {
-        Actor_Kill(&this->actor);
-    }
+    Actor_Kill(&this->actor);
 }
 
 void EnXc_SetWalkingSFX(EnXc* this, PlayState* play) {

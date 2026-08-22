@@ -1004,7 +1004,7 @@ void GetItem_DrawTriforcePiece(PlayState* play, s16 drawId) {
 
     Matrix_Scale(0.035f, 0.035f, 0.035f, MTXMODE_APPLY);
 
-    uint8_t index = gSaveContext.ship.quest.data.randomizer.triforcePiecesCollected % 3;
+    uint8_t index = 0;
     Gfx* triforcePieceDL;
 
     switch (index) {

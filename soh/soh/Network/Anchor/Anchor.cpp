@@ -4,8 +4,10 @@
 #include "soh/OTRGlobals.h"
 #include "soh/Enhancements/nametag.h"
 #include "soh/ObjectExtension/ObjectExtension.h"
+#include "z64player.h"
 
 extern "C" {
+#include "macros.h"
 #include "variables.h"
 #include "functions.h"
 extern PlayState* gPlayState;
@@ -153,8 +155,6 @@ void Anchor::ProcessIncomingPacketQueue() {
                 HandlePacket_RequestTeleport(payload);
             else if (packetType == SERVER_MESSAGE)
                 HandlePacket_ServerMessage(payload);
-            else if (packetType == SET_CHECK_STATUS)
-                HandlePacket_SetCheckStatus(payload);
             else if (packetType == SET_FLAG)
                 HandlePacket_SetFlag(payload);
             else if (packetType == TELEPORT_TO)

@@ -3,10 +3,11 @@
 #include <libultraship/libultraship.h>
 #include "soh/Enhancements/game-interactor/GameInteractor.h"
 #include "soh/Notification/Notification.h"
-#include "soh/Enhancements/randomizer/randomizer.h"
 #include "soh/SohGui/ImGuiUtils.h"
 #include "soh/Enhancements/item-tables/ItemTableManager.h"
 #include "soh/OTRGlobals.h"
+#include "soh/util.h"
+#include "z64item.h"
 
 extern "C" {
 #include "functions.h"
@@ -21,16 +22,6 @@ uint8_t incomingIceTrapsFromAnchor = 0;
 
 void Anchor::SendPacket_GiveItem(u16 modId, s16 getItemId) {
     if (!IsSaveLoaded() || isProcessingIncomingPacket || !roomState.syncItemsAndFlags) {
-        return;
-    }
-
-    if (modId == MOD_RANDOMIZER && getItemId == RG_ICE_TRAP && incomingIceTrapsFromAnchor > 0) {
-        incomingIceTrapsFromAnchor = MAX(incomingIceTrapsFromAnchor - 1, 0);
-        return;
-    }
-
-    // Ignore sending master sword in final Ganon fight
-    if (modId == MOD_RANDOMIZER && getItemId == RG_MASTER_SWORD && gPlayState->sceneNum == SCENE_GANON_BOSS) {
         return;
     }
 
@@ -55,24 +46,16 @@ void Anchor::HandlePacket_GiveItem(nlohmann::json payload) {
     u16 getItemId = payload["getItemId"].get<u16>();
 
     GetItemEntry getItemEntry;
-    if (modId == MOD_NONE) {
-        getItemEntry = ItemTableManager::Instance->RetrieveItemEntry(MOD_NONE, getItemId);
-    } else {
-        getItemEntry = Rando::StaticData::RetrieveItem(static_cast<RandomizerGet>(getItemId)).GetGIEntry_Copy();
+    if (modId != MOD_NONE) {
+        return;
     }
+    getItemEntry = ItemTableManager::Instance->RetrieveItemEntry(MOD_NONE, getItemId);
 
     if (getItemEntry.modIndex == MOD_NONE) {
         if (getItemEntry.getItemId == GI_SWORD_BGS) {
             gSaveContext.bgsFlag = true;
         }
         Item_Give(gPlayState, getItemEntry.itemId);
-    } else if (getItemEntry.modIndex == MOD_RANDOMIZER) {
-        if (getItemEntry.getItemId == RG_ICE_TRAP) {
-            gSaveContext.ship.pendingIceTrapCount++;
-            incomingIceTrapsFromAnchor++;
-        } else {
-            Randomizer_Item_Give(gPlayState, getItemEntry);
-        }
     }
 
     // Full heal if getting a heart container or piece
@@ -96,12 +79,6 @@ void Anchor::HandlePacket_GiveItem(nlohmann::json payload) {
                 .prefix = client.name,
                 .message = "found",
                 .suffix = SohUtils::GetItemName(getItemEntry.itemId),
-            });
-        } else if (getItemEntry.modIndex == MOD_RANDOMIZER) {
-            Notification::Emit({
-                .prefix = client.name,
-                .message = "found",
-                .suffix = Rando::StaticData::RetrieveItem((RandomizerGet)getItemEntry.getItemId).GetName().english,
             });
         }
     }

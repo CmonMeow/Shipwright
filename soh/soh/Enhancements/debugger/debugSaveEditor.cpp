@@ -1,5 +1,4 @@
 #include "debugSaveEditor.h"
-#include "soh/Enhancements/randomizer/randomizerTypes.h"
 #include "soh/util.h"
 #include "soh/SohGui/ImGuiUtils.h"
 #include "soh/OTRGlobals.h"
@@ -406,14 +405,6 @@ void DrawInfoTab() {
     Combobox("Z Target Mode", &gSaveContext.zTargetSetting, zTargetMap,
              comboboxOptionsBase.Tooltip("Z-Targeting behavior"));
 
-    if (IS_RANDO &&
-        (OTRGlobals::Instance->gRandomizer->GetRandoSettingValue(RSK_TRIFORCE_HUNT) != RO_TRIFORCE_HUNT_OFF)) {
-        PushStyleInput(THEME_COLOR);
-        ImGui::InputScalar("Triforce Pieces", ImGuiDataType_U8,
-                           &gSaveContext.ship.quest.data.randomizer.triforcePiecesCollected);
-        Tooltip("Currently obtained Triforce Pieces. For Triforce Hunt.");
-        PopStyleInput();
-    }
 
     ImGui::PushItemWidth(ImGui::GetFontSize() * 10);
     static std::array<const char*, 7> minigameHS = { "Horseback Archery", "Big Poe Points",
@@ -652,15 +643,6 @@ void DrawInventoryTab() {
         }
     }
 
-    // Trade quest flags are only used when shuffling the trade sequence, so
-    // don't show this if it isn't needed.
-    if (IS_RANDO && OTRGlobals::Instance->gRandomizer->GetRandoSettingValue(RSK_SHUFFLE_ADULT_TRADE) &&
-        ImGui::TreeNode("Adult trade quest items")) {
-        for (int i = ITEM_POCKET_EGG; i <= ITEM_CLAIM_CHECK; i++) {
-            DrawBGSItemFlag(i);
-        }
-        ImGui::TreePop();
-    }
 }
 
 // Draw a flag bitfield as an grid of checkboxes
@@ -712,8 +694,6 @@ static uint16_t& GetFlagTableEntry(const FlagTable& flagTable, size_t row) {
             return gSaveContext.infTable[row];
         case EVENT_INF:
             return gSaveContext.eventInf[row];
-        case RANDOMIZER_INF:
-            return gSaveContext.ship.randomizerInf[row];
         default: // Shouldn't be hit
             assert(false);
             return gSaveContext.eventChkInf[row];
@@ -1094,8 +1074,7 @@ void DrawFlagsTab() {
 
             // If playing a Randomizer Save with Shuffle Skull Tokens on anything other than "Off" we don't want to keep
             // GS Token Count updated, since Gold Skulltulas killed will not correlate to GS Tokens Collected.
-            if (!(IS_RANDO &&
-                  OTRGlobals::Instance->gRandomizer->GetRandoSettingValue(RSK_SHUFFLE_TOKENS) != RO_TOKENSANITY_OFF)) {
+            if (true) {
                 static bool keepGsCountUpdated = true;
                 Checkbox("Keep GS Count Updated", &keepGsCountUpdated,
                          checkboxOptionsBase.Tooltip(
@@ -1113,10 +1092,6 @@ void DrawFlagsTab() {
 
     for (size_t i = 0; i < flagTables.size(); i++) {
         const FlagTable& flagTable = flagTables[i];
-        if (flagTable.flagTableType == RANDOMIZER_INF && !IS_RANDO && !IS_BOSS_RUSH) {
-            continue;
-        }
-
         if (ImGui::TreeNode(flagTable.name)) {
             ImGui::PushID(flagTable.name);
             ImGuiTextFilter& flagFilter = flagTableFilters[flagTable.name];
@@ -1152,44 +1127,12 @@ void DrawFlagsTab() {
                                 case EVENT_INF:
                                     DrawFlagTableArray16(flagTable, j, gSaveContext.eventInf[j]);
                                     break;
-                                case RANDOMIZER_INF:
-                                    DrawFlagTableArray16(flagTable, j, gSaveContext.ship.randomizerInf[j]);
-                                    break;
                             }
                         },
                         flagTable.name);
                 }
             } else {
                 DrawFlagTableSearchResults(flagTable, flagFilter);
-            }
-
-            // make some buttons to help with fishsanity debugging
-            uint8_t fsMode = OTRGlobals::Instance->gRandomizer->GetRandoSettingValue(RSK_FISHSANITY);
-            if (flagTable.flagTableType == RANDOMIZER_INF && fsMode != RO_FISHSANITY_OFF &&
-                fsMode != RO_FISHSANITY_OVERWORLD) {
-                if (ImGui::Button("Catch All (Child)")) {
-                    for (int k = RAND_INF_CHILD_FISH_1; k <= RAND_INF_CHILD_LOACH_2; k++) {
-                        Flags_SetRandomizerInf((RandomizerInf)k);
-                    }
-                }
-                ImGui::SameLine();
-                if (ImGui::Button("Uncatch All (Child)")) {
-                    for (int k = RAND_INF_CHILD_FISH_1; k <= RAND_INF_CHILD_LOACH_2; k++) {
-                        Flags_UnsetRandomizerInf((RandomizerInf)k);
-                    }
-                }
-
-                if (ImGui::Button("Catch All (Adult)")) {
-                    for (int k = RAND_INF_ADULT_FISH_1; k <= RAND_INF_ADULT_LOACH; k++) {
-                        Flags_SetRandomizerInf((RandomizerInf)k);
-                    }
-                }
-                ImGui::SameLine();
-                if (ImGui::Button("Uncatch All (Adult)")) {
-                    for (int k = RAND_INF_ADULT_FISH_1; k <= RAND_INF_ADULT_LOACH; k++) {
-                        Flags_UnsetRandomizerInf((RandomizerInf)k);
-                    }
-                }
             }
 
             ImGui::PopID();
@@ -1369,11 +1312,6 @@ void DrawEquipmentTab() {
         "Adult (200)",
         "Giant (500)",
     };
-    // only display Tycoon wallet if you're in a save file that would allow it.
-    if (IS_RANDO && OTRGlobals::Instance->gRandomizer->GetRandoSettingValue(RSK_INCLUDE_TYCOON_WALLET)) {
-        const std::string walletName = "Tycoon (999)";
-        walletNamesImpl.push_back(walletName);
-    }
     // copy it to const value for display in ImGui.
     const std::vector<std::string> walletNames = walletNamesImpl;
     DrawUpgrade("Wallet", UPG_WALLET, walletNames);
@@ -1394,38 +1332,6 @@ void DrawEquipmentTab() {
     };
     DrawUpgrade("Deku Nut Capacity", UPG_NUTS, nutNames);
 
-    if (IS_RANDO &&
-        OTRGlobals::Instance->gRandomizer->GetRandoSettingValue(RSK_BOMBCHU_BAG) == RO_BOMBCHU_BAG_PROGRESSIVE) {
-        const std::vector<std::string> bombchuNames = {
-            "None",
-            "20",
-            "30",
-            "50",
-        };
-        ImGui::Text("%s", "Bombchu Bag Capacity");
-        ImGui::SameLine();
-        ImGui::PushID("Bombchu Bag Capacity");
-        PushStyleCombobox(THEME_COLOR);
-        ImGui::AlignTextToFramePadding();
-        auto value = gSaveContext.ship.quest.data.randomizer.bombchuUpgradeLevel;
-        auto name = value < bombchuNames.size() ? bombchuNames[value].c_str() : "Glitched";
-        if (ImGui::BeginCombo("##upgrade", name)) {
-            for (size_t i = 0; i < bombchuNames.size(); i++) {
-                if (ImGui::Selectable(bombchuNames[i].c_str())) {
-                    gSaveContext.ship.quest.data.randomizer.bombchuUpgradeLevel = i;
-                    if (i > 0) {
-                        INV_CONTENT(ITEM_BOMBCHU) = ITEM_BOMBCHU;
-                    } else {
-                        INV_CONTENT(ITEM_BOMBCHU) = ITEM_NONE;
-                    }
-                }
-            }
-            ImGui::EndCombo();
-        }
-        PopStyleCombobox();
-        ImGui::PopID();
-        UIWidgets::Tooltip("Bombchu Bag Capapcity");
-    }
 }
 
 // Draws a toggleable icon for a quest item that is faded when disabled

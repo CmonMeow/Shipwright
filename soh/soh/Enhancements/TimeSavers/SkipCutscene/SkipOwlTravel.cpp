@@ -1,5 +1,4 @@
 #include "soh/Enhancements/game-interactor/GameInteractor.h"
-#include "soh/Enhancements/randomizer/randomizer_entrance.h"
 #include "soh/ShipInit.hpp"
 #include <cassert>
 
@@ -8,7 +7,6 @@ extern "C" {
 extern PlayState* gPlayState;
 extern SaveContext gSaveContext;
 
-u8 Randomizer_GetSettingValue(RandomizerSettingKey randoSettingKey);
 }
 
 #define CVAR_NAME CVAR_ENHANCEMENT("TimeSavers.SkipCutscene.OnePoint")
@@ -30,10 +28,6 @@ static s16 GetEntranceIndex(s32 owlType) {
             return ENTR_MAX;
     }
 
-    if (IS_RANDO && Randomizer_GetSettingValue(RSK_SHUFFLE_OWL_DROPS)) {
-        entranceIndex = Entrance_OverrideNextIndex(entranceIndex);
-    }
-
     return entranceIndex;
 }
 
@@ -44,11 +38,11 @@ static void SkipOwlTravel(s32 owlType) {
 }
 
 static void RegisterSkipOwlTravel() {
-    COND_VB_SHOULD(VB_PLAY_OWL_TRAVEL_CS, CVAR_VALUE || IS_RANDO, {
+    COND_VB_SHOULD(VB_PLAY_OWL_TRAVEL_CS, CVAR_VALUE, {
         s32 owlType = va_arg(args, s32);
         SkipOwlTravel(owlType);
         *should = false;
     });
 }
 
-static RegisterShipInitFunc initFunc(RegisterSkipOwlTravel, { CVAR_NAME, "IS_RANDO" });
+static RegisterShipInitFunc initFunc(RegisterSkipOwlTravel, { CVAR_NAME });

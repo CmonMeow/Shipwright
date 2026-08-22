@@ -20,7 +20,6 @@
 #include "soh/OTRGlobals.h"
 #include "soh/ResourceManagerHelpers.h"
 #include "soh/SaveManager.h"
-#include "soh/Enhancements/kaleido.h"
 #include <soh_assets.h>
 
 static void* sEquipmentFRATexs[] = {
@@ -1632,14 +1631,9 @@ void KaleidoScope_DrawPages(PlayState* play, GraphicsContext* gfxCtx) {
 
             gSPMatrix(POLY_OPA_DISP++, MATRIX_NEWMTX(gfxCtx), G_MTX_NOPUSH | G_MTX_LOAD | G_MTX_MODELVIEW);
 
-            if (pauseCtx->randoQuestMode) {
-                POLY_OPA_DISP = KaleidoScope_DrawPageSections(POLY_OPA_DISP, pauseCtx->saveVtx, sGameOverTexs);
-                RandoKaleido_DrawMiscCollectibles(play);
-            } else {
-                POLY_OPA_DISP = KaleidoScope_DrawPageSections(POLY_OPA_DISP, pauseCtx->questPageVtx,
-                                                              sQuestStatusTexs[gSaveContext.language]);
-                KaleidoScope_DrawQuestStatus(play, gfxCtx);
-            }
+            POLY_OPA_DISP = KaleidoScope_DrawPageSections(POLY_OPA_DISP, pauseCtx->questPageVtx,
+                                                          sQuestStatusTexs[gSaveContext.language]);
+            KaleidoScope_DrawQuestStatus(play, gfxCtx);
         }
 
         if (pauseCtx->pageIndex != PAUSE_MAP) {
@@ -1727,14 +1721,9 @@ void KaleidoScope_DrawPages(PlayState* play, GraphicsContext* gfxCtx) {
 
                 gSPMatrix(POLY_OPA_DISP++, MATRIX_NEWMTX(gfxCtx), G_MTX_NOPUSH | G_MTX_LOAD | G_MTX_MODELVIEW);
 
-                if (pauseCtx->randoQuestMode) {
-                    POLY_OPA_DISP = KaleidoScope_DrawPageSections(POLY_OPA_DISP, pauseCtx->saveVtx, sGameOverTexs);
-                    RandoKaleido_DrawMiscCollectibles(play);
-                } else {
-                    POLY_OPA_DISP = KaleidoScope_DrawPageSections(POLY_OPA_DISP, pauseCtx->questPageVtx,
-                                                                  sQuestStatusTexs[gSaveContext.language]);
-                    KaleidoScope_DrawQuestStatus(play, gfxCtx);
-                }
+                POLY_OPA_DISP = KaleidoScope_DrawPageSections(POLY_OPA_DISP, pauseCtx->questPageVtx,
+                                                              sQuestStatusTexs[gSaveContext.language]);
+                KaleidoScope_DrawQuestStatus(play, gfxCtx);
 
                 if (pauseCtx->cursorSpecialPos == 0) {
                     KaleidoScope_DrawCursor(play, PAUSE_QUEST);
@@ -2285,7 +2274,6 @@ void KaleidoScope_DrawInfoPanel(PlayState* play) {
             }
         } else {
             bool pauseAnyCursor =
-                (CVarGetInteger(CVAR_ENHANCEMENT("PauseAnyCursor"), 0) == PAUSE_ANY_CURSOR_RANDO_ONLY && IS_RANDO) ||
                 (CVarGetInteger(CVAR_ENHANCEMENT("PauseAnyCursor"), 0) == PAUSE_ANY_CURSOR_ALWAYS_ON);
             if (!pauseCtx->pageIndex &&
                 (!pauseAnyCursor || (gSaveContext.inventory.items[pauseCtx->cursorPoint[PAUSE_ITEM]] !=
@@ -2436,7 +2424,6 @@ void KaleidoScope_UpdateNamePanel(PlayState* play) {
     PauseContext* pauseCtx = &play->pauseCtx;
     u16 sp2A;
     bool pauseAnyCursor =
-        (CVarGetInteger(CVAR_ENHANCEMENT("PauseAnyCursor"), 0) == PAUSE_ANY_CURSOR_RANDO_ONLY && IS_RANDO) ||
         (CVarGetInteger(CVAR_ENHANCEMENT("PauseAnyCursor"), 0) == PAUSE_ANY_CURSOR_ALWAYS_ON);
 
     if ((pauseCtx->namedItem != pauseCtx->cursorItem[pauseCtx->pageIndex]) ||
@@ -4277,11 +4264,6 @@ void KaleidoScope_Update(PlayState* play) {
                         Interface_ChangeAlpha(50);
                         pauseCtx->unk_1EC = 0;
                         pauseCtx->state = 7;
-                    } else if (IS_RANDO && CHECK_BTN_ALL(input->press.button, BTN_CUP) &&
-                               pauseCtx->pageIndex == PAUSE_QUEST) {
-                        Audio_PlaySoundGeneral(NA_SE_SY_DECIDE, &gSfxDefaultPos, 4, &gSfxDefaultFreqAndVolScale,
-                                               &gSfxDefaultFreqAndVolScale, &gSfxDefaultReverb);
-                        pauseCtx->randoQuestMode ^= 1;
                     }
                     break;
 
@@ -4864,9 +4846,6 @@ void KaleidoScope_Update(PlayState* play) {
             for (int buttonIndex = 0; buttonIndex < ARRAY_COUNT(gSaveContext.buttonStatus); buttonIndex++) {
                 gSaveContext.buttonStatus[buttonIndex] = sButtonStatusSave[buttonIndex];
             }
-
-            // Used to clear swordless temp B after unpause so minigame/epona handling restarts
-            Interface_RandoRestoreSwordless();
 
             interfaceCtx->unk_1FA = interfaceCtx->unk_1FC = 0;
             osSyncPrintf(VT_FGCOL(YELLOW));

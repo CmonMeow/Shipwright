@@ -86,14 +86,7 @@ std::shared_ptr<DLViewerWindow> mDLViewerWindow;
 std::shared_ptr<ValueViewerWindow> mValueViewerWindow;
 std::shared_ptr<MessageViewer> mMessageViewerWindow;
 std::shared_ptr<GameplayStatsWindow> mGameplayStatsWindow;
-std::shared_ptr<CheckTracker::CheckTrackerSettingsWindow> mCheckTrackerSettingsWindow;
-std::shared_ptr<CheckTracker::CheckTrackerWindow> mCheckTrackerWindow;
-std::shared_ptr<EntranceTracker::EntranceTrackerSettingsWindow> mEntranceTrackerSettingsWindow;
-std::shared_ptr<EntranceTracker::EntranceTrackerWindow> mEntranceTrackerWindow;
-std::shared_ptr<ItemTrackerSettingsWindow> mItemTrackerSettingsWindow;
-std::shared_ptr<ItemTrackerWindow> mItemTrackerWindow;
 std::shared_ptr<TimeSplitWindow> mTimeSplitWindow;
-std::shared_ptr<PlandomizerWindow> mPlandomizerWindow;
 std::shared_ptr<SohModalWindow> mModalWindow;
 std::shared_ptr<Notification::Window> mNotificationWindow;
 std::shared_ptr<TimeDisplayWindow> mTimeDisplayWindow;
@@ -174,29 +167,8 @@ void SetupGuiElements() {
     mGameplayStatsWindow =
         std::make_shared<GameplayStatsWindow>(CVAR_WINDOW("GameplayStats"), "Gameplay Stats", ImVec2(480, 550));
     gui->AddGuiWindow(mGameplayStatsWindow);
-    mCheckTrackerWindow = std::make_shared<CheckTracker::CheckTrackerWindow>(CVAR_WINDOW("CheckTracker"),
-                                                                             "Check Tracker", ImVec2(400, 540));
-    gui->AddGuiWindow(mCheckTrackerWindow);
-    mCheckTrackerSettingsWindow = std::make_shared<CheckTracker::CheckTrackerSettingsWindow>(
-        CVAR_WINDOW("CheckTrackerSettings"), "Check Tracker Settings", ImVec2(600, 375));
-    gui->AddGuiWindow(mCheckTrackerSettingsWindow);
-    mEntranceTrackerWindow = std::make_shared<EntranceTracker::EntranceTrackerWindow>(
-        CVAR_WINDOW("EntranceTracker"), "Entrance Tracker", ImVec2(500, 750));
-    gui->AddGuiWindow(mEntranceTrackerWindow);
-    mEntranceTrackerSettingsWindow = std::make_shared<EntranceTracker::EntranceTrackerSettingsWindow>(
-        CVAR_WINDOW("EntranceTrackerSettings"), "Entrance Tracker Settings", ImVec2(600, 375));
-    gui->AddGuiWindow(mEntranceTrackerSettingsWindow);
-    mItemTrackerWindow =
-        std::make_shared<ItemTrackerWindow>(CVAR_WINDOW("ItemTracker"), "Item Tracker", ImVec2(350, 600));
-    gui->AddGuiWindow(mItemTrackerWindow);
-    mItemTrackerSettingsWindow = std::make_shared<ItemTrackerSettingsWindow>(CVAR_WINDOW("ItemTrackerSettings"),
-                                                                             "Item Tracker Settings", ImVec2(733, 472));
-    gui->AddGuiWindow(mItemTrackerSettingsWindow);
     mTimeSplitWindow = std::make_shared<TimeSplitWindow>(CVAR_WINDOW("TimeSplits"), "Time Splits", ImVec2(450, 660));
     gui->AddGuiWindow(mTimeSplitWindow);
-    mPlandomizerWindow =
-        std::make_shared<PlandomizerWindow>(CVAR_WINDOW("PlandomizerEditor"), "Plandomizer Editor", ImVec2(850, 760));
-    gui->AddGuiWindow(mPlandomizerWindow);
     mNotificationWindow = std::make_shared<Notification::Window>(CVAR_WINDOW("Notifications"), "Notifications Window");
     gui->AddGuiWindow(mNotificationWindow);
     mNotificationWindow->Show();
@@ -212,12 +184,6 @@ void Destroy() {
 
     mNotificationWindow = nullptr;
     mModalWindow = nullptr;
-    mItemTrackerWindow = nullptr;
-    mItemTrackerSettingsWindow = nullptr;
-    mEntranceTrackerWindow = nullptr;
-    mEntranceTrackerSettingsWindow = nullptr;
-    mCheckTrackerWindow = nullptr;
-    mCheckTrackerSettingsWindow = nullptr;
     mGameplayStatsWindow = nullptr;
     mDLViewerWindow = nullptr;
     mValueViewerWindow = nullptr;
@@ -235,7 +201,6 @@ void Destroy() {
     mInputViewer = nullptr;
     mInputViewerSettings = nullptr;
     mTimeSplitWindow = nullptr;
-    mPlandomizerWindow = nullptr;
     mTimeDisplayWindow = nullptr;
     mAnchorRoomWindow = nullptr;
 }
@@ -255,12 +220,6 @@ bool DismissPopup(std::string title) {
         return true;
     }
     return false;
-}
-
-void ShowRandomizerSettingsMenu() {
-    CVarSetString(CVAR_SETTING("Menu.ActiveHeader"), "Randomizer");
-    CVarSetString(CVAR_SETTING("Menu.RandomizerSidebarSection"), "General");
-    mSohMenu->Show();
 }
 
 void ShowEscMenu() {

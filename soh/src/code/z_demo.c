@@ -31,7 +31,6 @@
 
 #include "scenes/misc/hakaana_ouke/hakaana_ouke_scene.h"
 
-#include "soh/Enhancements/randomizer/randomizer_entrance.h"
 #include "soh/OTRGlobals.h"
 #include "soh/ResourceManagerHelpers.h"
 #include "soh/Enhancements/game-interactor/GameInteractor_Hooks.h"
@@ -249,8 +248,7 @@ void func_80064824(PlayState* play, CutsceneContext* csCtx, CsCmdBase* cmd) {
         case 3:
             if (sp3F != 0) {
                 Flags_SetEnv(play, 0);
-                if (gSaveContext.entranceIndex == ENTR_TEMPLE_OF_TIME_ENTRANCE ||
-                    (IS_RANDO && gSaveContext.entranceIndex == ENTR_TEMPLE_OF_TIME_WARP_PAD)) {
+                if (gSaveContext.entranceIndex == ENTR_TEMPLE_OF_TIME_ENTRANCE) {
                     Flags_SetEnv(play, 2);
                 }
             }
@@ -743,11 +741,7 @@ void Cutscene_Command_Terminator(PlayState* play, CutsceneContext* csCtx, CsCmdB
                 play->transitionType = TRANS_TYPE_FADE_WHITE;
                 break;
             case 24:
-                if (IS_RANDO && Randomizer_GetSettingValue(RSK_SHUFFLE_ENTRANCES)) {
-                    play->nextEntranceIndex = Entrance_OverrideNextIndex(ENTR_JABU_JABU_ENTRANCE);
-                } else {
-                    play->nextEntranceIndex = ENTR_JABU_JABU_ENTRANCE;
-                }
+                play->nextEntranceIndex = ENTR_JABU_JABU_ENTRANCE;
                 play->transitionTrigger = TRANS_TRIGGER_START;
                 play->transitionType = TRANS_TYPE_FADE_BLACK;
                 break;
@@ -1586,49 +1580,7 @@ void Cutscene_Command_Textbox(PlayState* play, CutsceneContext* csCtx, CsCmdText
                     Message_StartTextbox(play, cmd->textId1, NULL);
                 } else {
                     GetItemEntry getItemEntry = GET_ITEM_NONE;
-                    if (IS_RANDO) {
-                        switch (cmd->base) {
-                            case 0x80:
-                                getItemEntry = Randomizer_GetItemFromKnownCheck(RC_QUEEN_GOHMA, RG_KOKIRI_EMERALD);
-                                break;
-                            case 0x81:
-                                getItemEntry = Randomizer_GetItemFromKnownCheck(RC_KING_DODONGO, RG_GORON_RUBY);
-                                break;
-                            case 0x82:
-                                getItemEntry = Randomizer_GetItemFromKnownCheck(RC_BARINADE, RG_ZORA_SAPPHIRE);
-                                break;
-                            case 0x3E:
-                                getItemEntry = Randomizer_GetItemFromKnownCheck(RC_PHANTOM_GANON, RG_FOREST_MEDALLION);
-                                break;
-                            case 0x3C:
-                                getItemEntry = Randomizer_GetItemFromKnownCheck(RC_VOLVAGIA, RG_FIRE_MEDALLION);
-                                break;
-                            case 0x3D:
-                                getItemEntry = Randomizer_GetItemFromKnownCheck(RC_MORPHA, RG_WATER_MEDALLION);
-                                break;
-                            case 0x3F:
-                                getItemEntry = Randomizer_GetItemFromKnownCheck(RC_TWINROVA, RG_SPIRIT_MEDALLION);
-                                break;
-                            case 0x41:
-                                getItemEntry = Randomizer_GetItemFromKnownCheck(RC_BONGO_BONGO, RG_SHADOW_MEDALLION);
-                                break;
-                            case 0x40:
-                                getItemEntry = Randomizer_GetItemFromKnownCheck(RC_GIFT_FROM_RAURU, RG_LIGHT_MEDALLION);
-                                break;
-                            case 0x72:
-                                getItemEntry =
-                                    Randomizer_GetItemFromKnownCheck(RC_TOT_LIGHT_ARROWS_CUTSCENE, RG_LIGHT_ARROWS);
-                                break;
-                        }
-                        if (getItemEntry.getItemId != GI_NONE) {
-                            // cmd->base = getItemEntry.textId;
-                            // GET_PLAYER(play)->getItemEntry = getItemEntry;
-                        }
-                    }
                     Message_StartTextbox(play, cmd->base, NULL);
-                    if (IS_RANDO && getItemEntry.getItemId != GI_NONE) {
-                        // GET_PLAYER(play)->getItemEntry = (GetItemEntry)GET_ITEM_NONE;
-                    }
                 }
                 return;
             }

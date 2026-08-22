@@ -1,1 +1,76 @@
-﻿  libultraship.vcxproj -> C:\Users\CmonMeow\Desktop\Shipwright\x64\Release\libultraship.lib
+﻿  Building Custom Rule C:/Users/CmonMeow/Desktop/Shipwright/libultraship/src/CMakeLists.txt
+cl : command line  warning D9025: overriding '/W3' with '/w'
+cl : command line  warning D9025: overriding '/W3' with '/w'
+  Fast3dWindow.cpp
+cl : command line  warning D9025: overriding '/W3' with '/w'
+cl : command line  warning D9025: overriding '/W3' with '/w'
+  gfx_opengl.cpp
+  gfx_sdl2.cpp
+cl : command line  warning D9025: overriding '/W3' with '/w'
+cl : command line  warning D9025: overriding '/W3' with '/w'
+  interpreter.cpp
+  controllerbridge.cpp
+cl : command line  warning D9025: overriding '/W3' with '/w'
+cl : command line  warning D9025: overriding '/W3' with '/w'
+cl : command line  warning D9025: overriding '/W3' with '/w'
+cl : command line  warning D9025: overriding '/W3' with '/w'
+  gfxbridge.cpp
+  resourcebridge.cpp
+  windowbridge.cpp
+  os.cpp
+cl : command line  warning D9025: overriding '/W3' with '/w'
+cl : command line  warning D9025: overriding '/W3' with '/w'
+cl : command line  warning D9025: overriding '/W3' with '/w'
+  os_cache.cpp
+  os_eeprom.cpp
+  os_mesg.cpp
+  os_pi.cpp
+  os_vi.cpp
+  os_vm.cpp
+  GfxDebuggerWindow.cpp
+  Context.cpp
+  Audio.cpp
+  Config.cpp
+  ConsoleVariable.cpp
+  ControllerButton.cpp
+  ControllerStick.cpp
+  AxisDirectionMappingFactory.cpp
+  ButtonMappingFactory.cpp
+  GyroMappingFactory.cpp
+  LEDMappingFactory.cpp
+  RumbleMappingFactory.cpp
+  KeyboardKeyToAnyMapping.cpp
+  KeyboardKeyToAxisDirectionMapping.cpp
+  KeyboardKeyToButtonMapping.cpp
+  MouseButtonToAxisDirectionMapping.cpp
+  MouseButtonToButtonMapping.cpp
+  MouseWheelToAxisDirectionMapping.cpp
+  MouseWheelToButtonMapping.cpp
+  WheelHandler.cpp
+  SDLAxisDirectionToAxisDirectionMapping.cpp
+  SDLAxisDirectionToButtonMapping.cpp
+  SDLButtonToAxisDirectionMapping.cpp
+  SDLButtonToButtonMapping.cpp
+  SDLGyroMapping.cpp
+  SDLLEDMapping.cpp
+  SDLRumbleMapping.cpp
+  SDLAddRemoveDeviceEventHandler.cpp
+  Archive.cpp
+  O2rArchive.cpp
+  FileDropMgr.cpp
+  Window.cpp
+  ConsoleWindow.cpp
+  GameOverlay.cpp
+  Gui.cpp
+  GuiMenuBar.cpp
+  GuiWindow.cpp
+  InputEditorWindow.cpp
+  GuiTexture.cpp
+  GuiTextureFactory.cpp
+cl : command line  warning D9025: overriding '/W3' with '/w'
+  ControlDeck.cpp
+cl : command line  warning D9025: overriding '/W3' with '/w'
+  ControlDeck.cpp
+cl : command line  warning D9025: overriding '/W3' with '/w'
+  Controller.cpp
+  libultraship.vcxproj -> C:\Users\CmonMeow\Desktop\Shipwright\x64\Release\libultraship.lib

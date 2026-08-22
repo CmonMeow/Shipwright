@@ -94,16 +94,10 @@
     <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\ExtraModes\BounceOffWalls.cpp">
       <Filter>soh\Enhancements\ExtraModes</Filter>
     </ClCompile>
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\ExtraModes\EnemyRandomizer.cpp">
-      <Filter>soh\Enhancements\ExtraModes</Filter>
-    </ClCompile>
     <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\ExtraModes\HurtContainer.cpp">
       <Filter>soh\Enhancements\ExtraModes</Filter>
     </ClCompile>
     <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\ExtraModes\MirroredWorld.cpp">
-      <Filter>soh\Enhancements\ExtraModes</Filter>
-    </ClCompile>
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\ExtraModes\RandomizedEnemySizes.cpp">
       <Filter>soh\Enhancements\ExtraModes</Filter>
     </ClCompile>
     <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\ExtraModes\RupeeDash.cpp">
@@ -364,9 +358,6 @@
     <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\cosmetics\FileSelectMoreInfo.cpp">
       <Filter>soh\Enhancements\cosmetics</Filter>
     </ClCompile>
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\cosmetics\NoMasterSword.cpp">
-      <Filter>soh\Enhancements\cosmetics</Filter>
-    </ClCompile>
     <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\cosmetics\TimeFlowFileSelect.cpp">
       <Filter>soh\Enhancements\cosmetics</Filter>
     </ClCompile>
@@ -439,9 +430,6 @@
     <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\item-tables\ItemTableManager.cpp">
       <Filter>soh\Enhancements\item-tables</Filter>
     </ClCompile>
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\kaleido.cpp">
-      <Filter>soh\Enhancements</Filter>
-    </ClCompile>
     <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\mod_menu.cpp">
       <Filter>soh\Enhancements</Filter>
     </ClCompile>
@@ -450,336 +438,6 @@
     </ClCompile>
     <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\nametag.cpp">
       <Filter>soh\Enhancements</Filter>
-    </ClCompile>
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\randomizer\3drando\custom_messages.cpp">
-      <Filter>soh\Enhancements\randomizer\3drando</Filter>
-    </ClCompile>
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\randomizer\3drando\fill.cpp">
-      <Filter>soh\Enhancements\randomizer\3drando</Filter>
-    </ClCompile>
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\randomizer\3drando\hint_list.cpp">
-      <Filter>soh\Enhancements\randomizer\3drando</Filter>
-    </ClCompile>
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\randomizer\3drando\hint_list\hint_list_exclude_dungeon.cpp">
-      <Filter>soh\Enhancements\randomizer\3drando\hint_list</Filter>
-    </ClCompile>
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\randomizer\3drando\hint_list\hint_list_exclude_overworld.cpp">
-      <Filter>soh\Enhancements\randomizer\3drando\hint_list</Filter>
-    </ClCompile>
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\randomizer\3drando\hint_list\hint_list_item.cpp">
-      <Filter>soh\Enhancements\randomizer\3drando\hint_list</Filter>
-    </ClCompile>
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\randomizer\3drando\hints.cpp">
-      <Filter>soh\Enhancements\randomizer\3drando</Filter>
-    </ClCompile>
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\randomizer\3drando\item_pool.cpp">
-      <Filter>soh\Enhancements\randomizer\3drando</Filter>
-    </ClCompile>
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\randomizer\3drando\menu.cpp">
-      <Filter>soh\Enhancements\randomizer\3drando</Filter>
-    </ClCompile>
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\randomizer\3drando\playthrough.cpp">
-      <Filter>soh\Enhancements\randomizer\3drando</Filter>
-    </ClCompile>
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\randomizer\3drando\rando_main.cpp">
-      <Filter>soh\Enhancements\randomizer\3drando</Filter>
-    </ClCompile>
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\randomizer\3drando\random.cpp">
-      <Filter>soh\Enhancements\randomizer\3drando</Filter>
-    </ClCompile>
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\randomizer\3drando\shops.cpp">
-      <Filter>soh\Enhancements\randomizer\3drando</Filter>
-    </ClCompile>
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\randomizer\3drando\spoiler_log.cpp">
-      <Filter>soh\Enhancements\randomizer\3drando</Filter>
-    </ClCompile>
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\randomizer\3drando\starting_inventory.cpp">
-      <Filter>soh\Enhancements\randomizer\3drando</Filter>
-    </ClCompile>
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\randomizer\BigPoes.cpp">
-      <Filter>soh\Enhancements\randomizer</Filter>
-    </ClCompile>
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\randomizer\Bombchus.cpp">
-      <Filter>soh\Enhancements\randomizer</Filter>
-    </ClCompile>
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\randomizer\ColoredMapsAndCompasses.cpp">
-      <Filter>soh\Enhancements\randomizer</Filter>
-    </ClCompile>
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\randomizer\LockOverworldDoors.cpp">
-      <Filter>soh\Enhancements\randomizer</Filter>
-    </ClCompile>
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\randomizer\MedallionLockedTrials.cpp">
-      <Filter>soh\Enhancements\randomizer</Filter>
-    </ClCompile>
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\randomizer\Messages\EntranceHints.cpp">
-      <Filter>soh\Enhancements\randomizer\Messages</Filter>
-    </ClCompile>
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\randomizer\Messages\Goron.cpp">
-      <Filter>soh\Enhancements\randomizer\Messages</Filter>
-    </ClCompile>
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\randomizer\Messages\GossipStoneHints.cpp">
-      <Filter>soh\Enhancements\randomizer\Messages</Filter>
-    </ClCompile>
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\randomizer\Messages\ItemMessages.cpp">
-      <Filter>soh\Enhancements\randomizer\Messages</Filter>
-    </ClCompile>
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\randomizer\Messages\MerchantMessages.cpp">
-      <Filter>soh\Enhancements\randomizer\Messages</Filter>
-    </ClCompile>
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\randomizer\Messages\Miscellaneous.cpp">
-      <Filter>soh\Enhancements\randomizer\Messages</Filter>
-    </ClCompile>
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\randomizer\Messages\Navi.cpp">
-      <Filter>soh\Enhancements\randomizer\Messages</Filter>
-    </ClCompile>
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\randomizer\Messages\Rupees.cpp">
-      <Filter>soh\Enhancements\randomizer\Messages</Filter>
-    </ClCompile>
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\randomizer\Messages\StaticHints.cpp">
-      <Filter>soh\Enhancements\randomizer\Messages</Filter>
-    </ClCompile>
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\randomizer\Plandomizer.cpp">
-      <Filter>soh\Enhancements\randomizer</Filter>
-    </ClCompile>
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\randomizer\RocsFeather.cpp">
-      <Filter>soh\Enhancements\randomizer</Filter>
-    </ClCompile>
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\randomizer\RocsFeatherCycle.c">
-      <Filter>soh\Enhancements\randomizer</Filter>
-    </ClCompile>
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\randomizer\SeedContext.cpp">
-      <Filter>soh\Enhancements\randomizer</Filter>
-    </ClCompile>
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\randomizer\ShuffleBeehives.cpp">
-      <Filter>soh\Enhancements\randomizer</Filter>
-    </ClCompile>
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\randomizer\ShuffleCows.cpp">
-      <Filter>soh\Enhancements\randomizer</Filter>
-    </ClCompile>
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\randomizer\ShuffleCrates.cpp">
-      <Filter>soh\Enhancements\randomizer</Filter>
-    </ClCompile>
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\randomizer\ShuffleFairies.cpp">
-      <Filter>soh\Enhancements\randomizer</Filter>
-    </ClCompile>
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\randomizer\ShuffleFreestanding.cpp">
-      <Filter>soh\Enhancements\randomizer</Filter>
-    </ClCompile>
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\randomizer\ShuffleGrass.cpp">
-      <Filter>soh\Enhancements\randomizer</Filter>
-    </ClCompile>
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\randomizer\ShufflePots.cpp">
-      <Filter>soh\Enhancements\randomizer</Filter>
-    </ClCompile>
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\randomizer\ShuffleSongs.cpp">
-      <Filter>soh\Enhancements\randomizer</Filter>
-    </ClCompile>
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\randomizer\ShuffleSpeak.cpp">
-      <Filter>soh\Enhancements\randomizer</Filter>
-    </ClCompile>
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\randomizer\ShuffleTradeItems.c">
-      <Filter>soh\Enhancements\randomizer</Filter>
-    </ClCompile>
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\randomizer\ShuffleTrees.cpp">
-      <Filter>soh\Enhancements\randomizer</Filter>
-    </ClCompile>
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\randomizer\Traps.cpp">
-      <Filter>soh\Enhancements\randomizer</Filter>
-    </ClCompile>
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\randomizer\draw.cpp">
-      <Filter>soh\Enhancements\randomizer</Filter>
-    </ClCompile>
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\randomizer\dungeon.cpp">
-      <Filter>soh\Enhancements\randomizer</Filter>
-    </ClCompile>
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\randomizer\entrance.cpp">
-      <Filter>soh\Enhancements\randomizer</Filter>
-    </ClCompile>
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\randomizer\fishsanity.cpp">
-      <Filter>soh\Enhancements\randomizer</Filter>
-    </ClCompile>
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\randomizer\hint.cpp">
-      <Filter>soh\Enhancements\randomizer</Filter>
-    </ClCompile>
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\randomizer\hook_handlers.cpp">
-      <Filter>soh\Enhancements\randomizer</Filter>
-    </ClCompile>
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\randomizer\item.cpp">
-      <Filter>soh\Enhancements\randomizer</Filter>
-    </ClCompile>
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\randomizer\item_category_adj.cpp">
-      <Filter>soh\Enhancements\randomizer</Filter>
-    </ClCompile>
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\randomizer\item_list.cpp">
-      <Filter>soh\Enhancements\randomizer</Filter>
-    </ClCompile>
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\randomizer\item_location.cpp">
-      <Filter>soh\Enhancements\randomizer</Filter>
-    </ClCompile>
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\randomizer\item_override.cpp">
-      <Filter>soh\Enhancements\randomizer</Filter>
-    </ClCompile>
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\randomizer\location.cpp">
-      <Filter>soh\Enhancements\randomizer</Filter>
-    </ClCompile>
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\randomizer\location_access.cpp">
-      <Filter>soh\Enhancements\randomizer</Filter>
-    </ClCompile>
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\randomizer\location_access\dungeons\bottom_of_the_well.cpp">
-      <Filter>soh\Enhancements\randomizer\location_access\dungeons</Filter>
-    </ClCompile>
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\randomizer\location_access\dungeons\deku_tree.cpp">
-      <Filter>soh\Enhancements\randomizer\location_access\dungeons</Filter>
-    </ClCompile>
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\randomizer\location_access\dungeons\dodongos_cavern.cpp">
-      <Filter>soh\Enhancements\randomizer\location_access\dungeons</Filter>
-    </ClCompile>
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\randomizer\location_access\dungeons\fire_temple.cpp">
-      <Filter>soh\Enhancements\randomizer\location_access\dungeons</Filter>
-    </ClCompile>
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\randomizer\location_access\dungeons\forest_temple.cpp">
-      <Filter>soh\Enhancements\randomizer\location_access\dungeons</Filter>
-    </ClCompile>
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\randomizer\location_access\dungeons\ganons_castle.cpp">
-      <Filter>soh\Enhancements\randomizer\location_access\dungeons</Filter>
-    </ClCompile>
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\randomizer\location_access\dungeons\gerudo_training_ground.cpp">
-      <Filter>soh\Enhancements\randomizer\location_access\dungeons</Filter>
-    </ClCompile>
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\randomizer\location_access\dungeons\ice_cavern.cpp">
-      <Filter>soh\Enhancements\randomizer\location_access\dungeons</Filter>
-    </ClCompile>
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\randomizer\location_access\dungeons\jabujabus_belly.cpp">
-      <Filter>soh\Enhancements\randomizer\location_access\dungeons</Filter>
-    </ClCompile>
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\randomizer\location_access\dungeons\shadow_temple.cpp">
-      <Filter>soh\Enhancements\randomizer\location_access\dungeons</Filter>
-    </ClCompile>
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\randomizer\location_access\dungeons\spirit_temple.cpp">
-      <Filter>soh\Enhancements\randomizer\location_access\dungeons</Filter>
-    </ClCompile>
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\randomizer\location_access\dungeons\water_temple.cpp">
-      <Filter>soh\Enhancements\randomizer\location_access\dungeons</Filter>
-    </ClCompile>
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\randomizer\location_access\overworld\castle_grounds.cpp">
-      <Filter>soh\Enhancements\randomizer\location_access\overworld</Filter>
-    </ClCompile>
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\randomizer\location_access\overworld\death_mountain_crater.cpp">
-      <Filter>soh\Enhancements\randomizer\location_access\overworld</Filter>
-    </ClCompile>
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\randomizer\location_access\overworld\death_mountain_trail.cpp">
-      <Filter>soh\Enhancements\randomizer\location_access\overworld</Filter>
-    </ClCompile>
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\randomizer\location_access\overworld\desert_colossus.cpp">
-      <Filter>soh\Enhancements\randomizer\location_access\overworld</Filter>
-    </ClCompile>
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\randomizer\location_access\overworld\gerudo_fortress.cpp">
-      <Filter>soh\Enhancements\randomizer\location_access\overworld</Filter>
-    </ClCompile>
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\randomizer\location_access\overworld\gerudo_valley.cpp">
-      <Filter>soh\Enhancements\randomizer\location_access\overworld</Filter>
-    </ClCompile>
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\randomizer\location_access\overworld\goron_city.cpp">
-      <Filter>soh\Enhancements\randomizer\location_access\overworld</Filter>
-    </ClCompile>
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\randomizer\location_access\overworld\graveyard.cpp">
-      <Filter>soh\Enhancements\randomizer\location_access\overworld</Filter>
-    </ClCompile>
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\randomizer\location_access\overworld\haunted_wasteland.cpp">
-      <Filter>soh\Enhancements\randomizer\location_access\overworld</Filter>
-    </ClCompile>
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\randomizer\location_access\overworld\hyrule_field.cpp">
-      <Filter>soh\Enhancements\randomizer\location_access\overworld</Filter>
-    </ClCompile>
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\randomizer\location_access\overworld\kakariko.cpp">
-      <Filter>soh\Enhancements\randomizer\location_access\overworld</Filter>
-    </ClCompile>
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\randomizer\location_access\overworld\kokiri_forest.cpp">
-      <Filter>soh\Enhancements\randomizer\location_access\overworld</Filter>
-    </ClCompile>
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\randomizer\location_access\overworld\lake_hylia.cpp">
-      <Filter>soh\Enhancements\randomizer\location_access\overworld</Filter>
-    </ClCompile>
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\randomizer\location_access\overworld\lon_lon_ranch.cpp">
-      <Filter>soh\Enhancements\randomizer\location_access\overworld</Filter>
-    </ClCompile>
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\randomizer\location_access\overworld\lost_woods.cpp">
-      <Filter>soh\Enhancements\randomizer\location_access\overworld</Filter>
-    </ClCompile>
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\randomizer\location_access\overworld\market.cpp">
-      <Filter>soh\Enhancements\randomizer\location_access\overworld</Filter>
-    </ClCompile>
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\randomizer\location_access\overworld\sacred_forest_meadow.cpp">
-      <Filter>soh\Enhancements\randomizer\location_access\overworld</Filter>
-    </ClCompile>
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\randomizer\location_access\overworld\temple_of_time.cpp">
-      <Filter>soh\Enhancements\randomizer\location_access\overworld</Filter>
-    </ClCompile>
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\randomizer\location_access\overworld\thieves_hideout.cpp">
-      <Filter>soh\Enhancements\randomizer\location_access\overworld</Filter>
-    </ClCompile>
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\randomizer\location_access\overworld\zoras_domain.cpp">
-      <Filter>soh\Enhancements\randomizer\location_access\overworld</Filter>
-    </ClCompile>
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\randomizer\location_access\overworld\zoras_fountain.cpp">
-      <Filter>soh\Enhancements\randomizer\location_access\overworld</Filter>
-    </ClCompile>
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\randomizer\location_access\overworld\zoras_river.cpp">
-      <Filter>soh\Enhancements\randomizer\location_access\overworld</Filter>
-    </ClCompile>
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\randomizer\location_access\root.cpp">
-      <Filter>soh\Enhancements\randomizer\location_access</Filter>
-    </ClCompile>
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\randomizer\location_list.cpp">
-      <Filter>soh\Enhancements\randomizer</Filter>
-    </ClCompile>
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\randomizer\logic.cpp">
-      <Filter>soh\Enhancements\randomizer</Filter>
-    </ClCompile>
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\randomizer\option.cpp">
-      <Filter>soh\Enhancements\randomizer</Filter>
-    </ClCompile>
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\randomizer\option_descriptions.cpp">
-      <Filter>soh\Enhancements\randomizer</Filter>
-    </ClCompile>
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\randomizer\randomizer.cpp">
-      <Filter>soh\Enhancements\randomizer</Filter>
-    </ClCompile>
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\randomizer\randomizerEnumStrings.cpp">
-      <Filter>soh\Enhancements\randomizer</Filter>
-    </ClCompile>
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\randomizer\randomizer_check_objects.cpp">
-      <Filter>soh\Enhancements\randomizer</Filter>
-    </ClCompile>
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\randomizer\randomizer_check_tracker.cpp">
-      <Filter>soh\Enhancements\randomizer</Filter>
-    </ClCompile>
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\randomizer\randomizer_entrance.c">
-      <Filter>soh\Enhancements\randomizer</Filter>
-    </ClCompile>
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\randomizer\randomizer_entrance_tracker.cpp">
-      <Filter>soh\Enhancements\randomizer</Filter>
-    </ClCompile>
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\randomizer\randomizer_grotto.c">
-      <Filter>soh\Enhancements\randomizer</Filter>
-    </ClCompile>
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\randomizer\randomizer_item_tracker.cpp">
-      <Filter>soh\Enhancements\randomizer</Filter>
-    </ClCompile>
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\randomizer\savefile.cpp">
-      <Filter>soh\Enhancements\randomizer</Filter>
-    </ClCompile>
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\randomizer\settings.cpp">
-      <Filter>soh\Enhancements\randomizer</Filter>
-    </ClCompile>
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\randomizer\static_data.cpp">
-      <Filter>soh\Enhancements\randomizer</Filter>
-    </ClCompile>
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\randomizer\trial.cpp">
-      <Filter>soh\Enhancements\randomizer</Filter>
-    </ClCompile>
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\randomizer\tricks.cpp">
-      <Filter>soh\Enhancements\randomizer</Filter>
     </ClCompile>
     <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\savestates.cpp">
       <Filter>soh\Enhancements</Filter>
@@ -865,9 +523,6 @@
     <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Network\Anchor\Packets\ServerMessage.cpp">
       <Filter>soh\Network\Anchor\Packets</Filter>
     </ClCompile>
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Network\Anchor\Packets\SetCheckStatus.cpp">
-      <Filter>soh\Network\Anchor\Packets</Filter>
-    </ClCompile>
     <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Network\Anchor\Packets\SetFlag.cpp">
       <Filter>soh\Network\Anchor\Packets</Filter>
     </ClCompile>
@@ -947,9 +602,6 @@
       <Filter>soh\SohGui</Filter>
     </ClCompile>
     <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SohGui\SohMenuNetwork.cpp">
-      <Filter>soh\SohGui</Filter>
-    </ClCompile>
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SohGui\SohMenuRandomizer.cpp">
       <Filter>soh\SohGui</Filter>
     </ClCompile>
     <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SohGui\SohMenuSettings.cpp">
@@ -3573,9 +3225,6 @@
     <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\item-tables\ItemTableTypes.h">
       <Filter>soh\Enhancements\item-tables</Filter>
     </ClInclude>
-    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\kaleido.h">
-      <Filter>soh\Enhancements</Filter>
-    </ClInclude>
     <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\mod_menu.h">
       <Filter>soh\Enhancements</Filter>
     </ClInclude>
@@ -3584,177 +3233,6 @@
     </ClInclude>
     <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\nametag.h">
       <Filter>soh\Enhancements</Filter>
-    </ClInclude>
-    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\randomizer\3drando\custom_messages.hpp">
-      <Filter>soh\Enhancements\randomizer\3drando</Filter>
-    </ClInclude>
-    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\randomizer\3drando\fill.hpp">
-      <Filter>soh\Enhancements\randomizer\3drando</Filter>
-    </ClInclude>
-    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\randomizer\3drando\hints.hpp">
-      <Filter>soh\Enhancements\randomizer\3drando</Filter>
-    </ClInclude>
-    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\randomizer\3drando\item_pool.hpp">
-      <Filter>soh\Enhancements\randomizer\3drando</Filter>
-    </ClInclude>
-    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\randomizer\3drando\menu.hpp">
-      <Filter>soh\Enhancements\randomizer\3drando</Filter>
-    </ClInclude>
-    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\randomizer\3drando\playthrough.hpp">
-      <Filter>soh\Enhancements\randomizer\3drando</Filter>
-    </ClInclude>
-    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\randomizer\3drando\pool_functions.hpp">
-      <Filter>soh\Enhancements\randomizer\3drando</Filter>
-    </ClInclude>
-    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\randomizer\3drando\rando_main.hpp">
-      <Filter>soh\Enhancements\randomizer\3drando</Filter>
-    </ClInclude>
-    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\randomizer\3drando\random.hpp">
-      <Filter>soh\Enhancements\randomizer\3drando</Filter>
-    </ClInclude>
-    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\randomizer\3drando\shops.hpp">
-      <Filter>soh\Enhancements\randomizer\3drando</Filter>
-    </ClInclude>
-    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\randomizer\3drando\spoiler_log.hpp">
-      <Filter>soh\Enhancements\randomizer\3drando</Filter>
-    </ClInclude>
-    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\randomizer\3drando\starting_inventory.hpp">
-      <Filter>soh\Enhancements\randomizer\3drando</Filter>
-    </ClInclude>
-    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\randomizer\3drando\text.hpp">
-      <Filter>soh\Enhancements\randomizer\3drando</Filter>
-    </ClInclude>
-    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\randomizer\Plandomizer.h">
-      <Filter>soh\Enhancements\randomizer</Filter>
-    </ClInclude>
-    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\randomizer\RocsFeatherCycle.h">
-      <Filter>soh\Enhancements\randomizer</Filter>
-    </ClInclude>
-    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\randomizer\SeedContext.h">
-      <Filter>soh\Enhancements\randomizer</Filter>
-    </ClInclude>
-    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\randomizer\ShuffleTradeItems.h">
-      <Filter>soh\Enhancements\randomizer</Filter>
-    </ClInclude>
-    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\randomizer\Traps.h">
-      <Filter>soh\Enhancements\randomizer</Filter>
-    </ClInclude>
-    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\randomizer\draw.h">
-      <Filter>soh\Enhancements\randomizer</Filter>
-    </ClInclude>
-    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\randomizer\dungeon.h">
-      <Filter>soh\Enhancements\randomizer</Filter>
-    </ClInclude>
-    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\randomizer\entrance.h">
-      <Filter>soh\Enhancements\randomizer</Filter>
-    </ClInclude>
-    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\randomizer\fishsanity.h">
-      <Filter>soh\Enhancements\randomizer</Filter>
-    </ClInclude>
-    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\randomizer\hint.h">
-      <Filter>soh\Enhancements\randomizer</Filter>
-    </ClInclude>
-    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\randomizer\item.h">
-      <Filter>soh\Enhancements\randomizer</Filter>
-    </ClInclude>
-    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\randomizer\item_category_adj.h">
-      <Filter>soh\Enhancements\randomizer</Filter>
-    </ClInclude>
-    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\randomizer\item_location.h">
-      <Filter>soh\Enhancements\randomizer</Filter>
-    </ClInclude>
-    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\randomizer\item_override.h">
-      <Filter>soh\Enhancements\randomizer</Filter>
-    </ClInclude>
-    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\randomizer\location.h">
-      <Filter>soh\Enhancements\randomizer</Filter>
-    </ClInclude>
-    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\randomizer\location_access.h">
-      <Filter>soh\Enhancements\randomizer</Filter>
-    </ClInclude>
-    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\randomizer\logic.h">
-      <Filter>soh\Enhancements\randomizer</Filter>
-    </ClInclude>
-    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\randomizer\option.h">
-      <Filter>soh\Enhancements\randomizer</Filter>
-    </ClInclude>
-    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\randomizer\rando_hash.h">
-      <Filter>soh\Enhancements\randomizer</Filter>
-    </ClInclude>
-    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\randomizer\randomizer.h">
-      <Filter>soh\Enhancements\randomizer</Filter>
-    </ClInclude>
-    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\randomizer\randomizerEnumStrings.h">
-      <Filter>soh\Enhancements\randomizer</Filter>
-    </ClInclude>
-    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\randomizer\randomizerEnums.h">
-      <Filter>soh\Enhancements\randomizer</Filter>
-    </ClInclude>
-    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\randomizer\randomizerEnums\LogicVal.h">
-      <Filter>soh\Enhancements\randomizer\randomizerEnums</Filter>
-    </ClInclude>
-    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\randomizer\randomizerEnums\RandomizerCheck.h">
-      <Filter>soh\Enhancements\randomizer\randomizerEnums</Filter>
-    </ClInclude>
-    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\randomizer\randomizerEnums\RandomizerGet.h">
-      <Filter>soh\Enhancements\randomizer\randomizerEnums</Filter>
-    </ClInclude>
-    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\randomizer\randomizerEnums\RandomizerHintTextKey.h">
-      <Filter>soh\Enhancements\randomizer\randomizerEnums</Filter>
-    </ClInclude>
-    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\randomizer\randomizerEnums\RandomizerInf.h">
-      <Filter>soh\Enhancements\randomizer\randomizerEnums</Filter>
-    </ClInclude>
-    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\randomizer\randomizerEnums\RandomizerMiscEnums.h">
-      <Filter>soh\Enhancements\randomizer\randomizerEnums</Filter>
-    </ClInclude>
-    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\randomizer\randomizerEnums\RandomizerOptions.h">
-      <Filter>soh\Enhancements\randomizer\randomizerEnums</Filter>
-    </ClInclude>
-    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\randomizer\randomizerEnums\RandomizerRegion.h">
-      <Filter>soh\Enhancements\randomizer\randomizerEnums</Filter>
-    </ClInclude>
-    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\randomizer\randomizerEnums\RandomizerSettingKey.h">
-      <Filter>soh\Enhancements\randomizer\randomizerEnums</Filter>
-    </ClInclude>
-    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\randomizer\randomizerEnums\RandomizerTrick.h">
-      <Filter>soh\Enhancements\randomizer\randomizerEnums</Filter>
-    </ClInclude>
-    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\randomizer\randomizerTypes.h">
-      <Filter>soh\Enhancements\randomizer</Filter>
-    </ClInclude>
-    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\randomizer\randomizer_check_objects.h">
-      <Filter>soh\Enhancements\randomizer</Filter>
-    </ClInclude>
-    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\randomizer\randomizer_check_tracker.h">
-      <Filter>soh\Enhancements\randomizer</Filter>
-    </ClInclude>
-    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\randomizer\randomizer_entrance.h">
-      <Filter>soh\Enhancements\randomizer</Filter>
-    </ClInclude>
-    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\randomizer\randomizer_entrance_tracker.h">
-      <Filter>soh\Enhancements\randomizer</Filter>
-    </ClInclude>
-    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\randomizer\randomizer_grotto.h">
-      <Filter>soh\Enhancements\randomizer</Filter>
-    </ClInclude>
-    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\randomizer\randomizer_item_tracker.h">
-      <Filter>soh\Enhancements\randomizer</Filter>
-    </ClInclude>
-    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\randomizer\savefile.h">
-      <Filter>soh\Enhancements\randomizer</Filter>
-    </ClInclude>
-    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\randomizer\settings.h">
-      <Filter>soh\Enhancements\randomizer</Filter>
-    </ClInclude>
-    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\randomizer\static_data.h">
-      <Filter>soh\Enhancements\randomizer</Filter>
-    </ClInclude>
-    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\randomizer\trial.h">
-      <Filter>soh\Enhancements\randomizer</Filter>
-    </ClInclude>
-    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\randomizer\tricks.h">
-      <Filter>soh\Enhancements\randomizer</Filter>
     </ClInclude>
     <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\savestates.h">
       <Filter>soh\Enhancements</Filter>
@@ -5657,30 +5135,6 @@
     </Filter>
     <Filter Include="soh\Enhancements\item-tables">
       <UniqueIdentifier>{4054BB16-B39B-317F-84DF-59691CF5480F}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="soh\Enhancements\randomizer">
-      <UniqueIdentifier>{359226B9-C9FE-359A-8ACB-FE5D977DC7FE}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="soh\Enhancements\randomizer\3drando">
-      <UniqueIdentifier>{6BE0E48D-521D-30C5-821B-7C68DB19EB87}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="soh\Enhancements\randomizer\3drando\hint_list">
-      <UniqueIdentifier>{E90A5885-6B61-355B-8217-D7362DC4C1F0}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="soh\Enhancements\randomizer\Messages">
-      <UniqueIdentifier>{D572597B-D1F3-3573-B4E2-8D3D30F45F68}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="soh\Enhancements\randomizer\location_access">
-      <UniqueIdentifier>{734A6FCE-3499-3A84-BE7E-0DE9B5BB14EF}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="soh\Enhancements\randomizer\location_access\dungeons">
-      <UniqueIdentifier>{0C063386-8E9E-3607-AF7C-B892F345645E}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="soh\Enhancements\randomizer\location_access\overworld">
-      <UniqueIdentifier>{00BE5C0D-273E-351A-9F48-D58FF0109B1E}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="soh\Enhancements\randomizer\randomizerEnums">
-      <UniqueIdentifier>{612372EC-8CA0-3C68-A5DF-E79A09C4457F}</UniqueIdentifier>
     </Filter>
     <Filter Include="soh\Enhancements\speechsynthesizer">
       <UniqueIdentifier>{8DA6E169-E0D2-3515-8E58-F9950690E352}</UniqueIdentifier>

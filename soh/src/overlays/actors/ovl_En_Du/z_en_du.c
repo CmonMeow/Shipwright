@@ -557,7 +557,6 @@ void func_809FEB08(EnDu* this, PlayState* play) {
         return;
     }
     if (GameInteractor_Should(VB_BE_ELIGIBLE_FOR_DARUNIAS_JOY_REWARD, CUR_UPG_VALUE(UPG_STRENGTH) <= 0)) {
-        Flags_SetRandomizerInf(RAND_INF_DARUNIAS_JOY);
         this->actor.textId = 0x301C;
         EnDu_SetupAction(this, func_809FEC14);
     } else {

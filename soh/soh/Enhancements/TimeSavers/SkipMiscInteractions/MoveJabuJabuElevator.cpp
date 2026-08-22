@@ -21,8 +21,8 @@ void BdanInit(void* actorRef) {
  */
 void RegisterMoveJabuJabuElevator() {
     COND_ID_HOOK(OnActorInit, ACTOR_BG_BDAN_OBJECTS,
-                 CVarGetInteger(CVAR_ENHANCEMENT("TimeSavers.SkipMiscInteractions"), IS_RANDO), BdanInit);
+                 CVarGetInteger(CVAR_ENHANCEMENT("TimeSavers.SkipMiscInteractions"), 0), BdanInit);
 }
 
 static RegisterShipInitFunc initFunc(RegisterMoveJabuJabuElevator,
-                                     { CVAR_ENHANCEMENT("TimeSavers.SkipMiscInteractions"), "IS_RANDO" });
+                                     { CVAR_ENHANCEMENT("TimeSavers.SkipMiscInteractions") });

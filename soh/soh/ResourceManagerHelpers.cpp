@@ -4,7 +4,6 @@
 #include "z64.h"
 #include "cvar_prefixes.h"
 #include "Enhancements/enhancementTypes.h"
-#include "Enhancements/randomizer/dungeon.h"
 #include <libultraship/libultraship.h>
 #include <soh/GameVersions.h>
 #include "resource/type/SohResourceType.h"
@@ -99,12 +98,6 @@ u32 IsSceneMasterQuest(s16 sceneNum) {
             return true;
         }
 
-        if (IS_RANDO) {
-            auto dungeon = OTRGlobals::Instance->gRandoContext->GetDungeons()->GetDungeonFromScene(sceneNum);
-            if (dungeon != nullptr && dungeon->IsMQ()) {
-                return true;
-            }
-        }
     }
 
     return false;
