@@ -7,7 +7,6 @@
 #include "z_en_dns.h"
 #include "objects/object_shopnuts/object_shopnuts.h"
 #include "vt.h"
-#include "soh/Enhancements/game-interactor/GameInteractor_Hooks.h"
 #include "soh/OTRGlobals.h"
 #include "soh/ResourceManagerHelpers.h"
 
@@ -321,7 +320,7 @@ void EnDns_Idle(EnDns* this, PlayState* play) {
         } else {
             this->actor.flags &= ~ACTOR_FLAG_TALK_OFFER_AUTO_ACCEPTED;
         }
-        if (GameInteractor_Should(VB_BUSINESS_SCRUB_SPEAK, this->actor.xzDistToPlayer < 130.0f)) {
+        if ((this->actor.xzDistToPlayer < 130.0f)) {
             func_8002F2F4(&this->actor, play);
         }
     }
@@ -384,15 +383,15 @@ void EnDns_OfferSaleItem(EnDns* this, PlayState* play) {
 void EnDns_SetupSale(EnDns* this, PlayState* play) {
     if ((Message_GetState(&play->msgCtx) == TEXT_STATE_EVENT) && Message_ShouldAdvance(play)) {
         Message_CloseTextbox(play);
-        if (GameInteractor_Should(VB_GIVE_ITEM_FROM_BUSINESS_SCRUB, true, this)) {
+        
             EnDns_OfferSaleItem(this, play);
-        }
+        
         this->actionFunc = EnDns_Sale;
     }
 }
 
 void EnDns_Sale(EnDns* this, PlayState* play) {
-    if (Actor_HasParent(&this->actor, play) || !GameInteractor_Should(VB_GIVE_ITEM_FROM_BUSINESS_SCRUB, true, this)) {
+    if (Actor_HasParent(&this->actor, play) || !(true)) {
         this->actor.parent = NULL;
         this->actionFunc = EnDns_SetupBurrow;
     } else {
@@ -466,7 +465,6 @@ void EnDns_PostBurrow(EnDns* this, PlayState* play) {
             }
         }
         Actor_Kill(&this->actor);
-        GameInteractor_ExecuteOnEnemyDefeat(&this->actor);
     }
 }
 

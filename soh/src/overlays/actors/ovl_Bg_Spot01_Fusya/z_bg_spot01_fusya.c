@@ -60,11 +60,9 @@ void func_808AAA50(BgSpot01Fusya* this, PlayState* play) {
     f32 temp;
     Actor* thisx = &this->actor;
 
-    if (CVarGetInteger(CVAR_COSMETIC("Kak.Windmill_Speed.Changed"), 0)) {
-        this->unk_158 = CVarGetFloat(CVAR_COSMETIC("Kak.Windmill_Speed.Value"), 100.0f);
-    } else {
+    
         this->unk_158 = 100.0f;
-    }
+    
 
     if (Flags_GetEventChkInf(EVENTCHKINF_PLAYED_SONG_OF_STORMS_IN_WINDMILL)) {
         this->unk_158 = 1800.0f;

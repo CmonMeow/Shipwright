@@ -3,7 +3,6 @@
 #include "vt.h"
 #include "objects/object_fr/object_fr.h"
 #include <assert.h>
-#include "soh/Enhancements/game-interactor/GameInteractor_Hooks.h"
 #include "soh/ResourceManagerHelpers.h"
 
 #define FLAGS                                                                                  \
@@ -819,28 +818,12 @@ void EnFr_SetupFrogSong(EnFr* this, PlayState* play) {
     if (this->frogSongTimer != 0) {
         this->frogSongTimer--;
     } else {
-        // #region SOH [Enhancement]
-        if (CVarGetInteger(CVAR_ENHANCEMENT("CustomizeFrogsOcarinaGame"), 0)) {
-            this->frogSongTimer = 40 * CVarGetInteger(CVAR_ENHANCEMENT("FrogsModifyFailTime"), 1);
-            if (CVarGetInteger(CVAR_ENHANCEMENT("InstantFrogsGameWin"), 0)) {
-                this->actor.textId = 0x40AC;
-                EnFr_SetupReward(this, play, false);
-            } else {
-                this->ocarinaNoteIndex = 0;
-                func_8010BD58(play, OCARINA_ACTION_FROGS);
-                this->ocarinaNote = EnFr_GetNextNoteFrogSong(this->ocarinaNoteIndex);
-                EnFr_CheckOcarinaInputFrogSong(this->ocarinaNote);
-                this->actionFunc = EnFr_ContinueFrogSong;
-            }
-            // #endregion
-        } else {
-            this->frogSongTimer = 40;
-            this->ocarinaNoteIndex = 0;
-            func_8010BD58(play, OCARINA_ACTION_FROGS);
-            this->ocarinaNote = EnFr_GetNextNoteFrogSong(this->ocarinaNoteIndex);
-            EnFr_CheckOcarinaInputFrogSong(this->ocarinaNote);
-            this->actionFunc = EnFr_ContinueFrogSong;
-        }
+        this->frogSongTimer = 40;
+        this->ocarinaNoteIndex = 0;
+        func_8010BD58(play, OCARINA_ACTION_FROGS);
+        this->ocarinaNote = EnFr_GetNextNoteFrogSong(this->ocarinaNoteIndex);
+        EnFr_CheckOcarinaInputFrogSong(this->ocarinaNote);
+        this->actionFunc = EnFr_ContinueFrogSong;
     }
 }
 
@@ -862,13 +845,7 @@ s32 EnFr_IsFrogSongComplete(EnFr* this, PlayState* play) {
         ocarinaNote = EnFr_GetNextNoteFrogSong(ocarinaNoteIndex);
         this->ocarinaNote = ocarinaNote;
         EnFr_CheckOcarinaInputFrogSong(ocarinaNote);
-        // #region SOH [Enhancement]
-        if (CVarGetInteger(CVAR_ENHANCEMENT("CustomizeFrogsOcarinaGame"), 0)) {
-            this->frogSongTimer = sTimerFrogSong[index] * CVarGetInteger(CVAR_ENHANCEMENT("FrogsModifyFailTime"), 1);
-            // #endregion
-        } else {
-            this->frogSongTimer = sTimerFrogSong[index];
-        }
+        this->frogSongTimer = sTimerFrogSong[index];
     }
     return false;
 }
@@ -891,12 +868,7 @@ void EnFr_ContinueFrogSong(EnFr* this, PlayState* play) {
     if (this->frogSongTimer == 0) {
         EnFr_OcarinaMistake(this, play);
     } else {
-        // #region SOH [Enhancement] - Don't decrement timer
-        if (!CVarGetInteger(CVAR_ENHANCEMENT("CustomizeFrogsOcarinaGame"), 0) ||
-            !CVarGetInteger(CVAR_ENHANCEMENT("FrogsUnlimitedFailTime"), 0)) {
-            // #endregion
-            this->frogSongTimer--;
-        }
+        this->frogSongTimer--;
         if (play->msgCtx.msgMode == MSGMODE_FROGS_PLAYING) {
             counter = 0;
             for (i = 0; i < ARRAY_COUNT(sEnFrPointers.frogs); i++) {
@@ -975,8 +947,6 @@ void EnFr_SetReward(EnFr* this, PlayState* play) {
     if ((songIndex >= FROG_ZL) && (songIndex <= FROG_SOT)) {
         if (!(gSaveContext.eventChkInf[13] & sSongIndex[songIndex])) {
             gSaveContext.eventChkInf[13] |= sSongIndex[songIndex];
-            GameInteractor_ExecuteOnFlagSet(FLAG_EVENT_CHECK_INF,
-                                            (EVENTCHKINF_SONGS_FOR_FROGS_INDEX << 4) + sSongIndexShift[songIndex]);
             this->reward = GI_RUPEE_PURPLE;
         } else {
             this->reward = GI_RUPEE_BLUE;
@@ -984,8 +954,6 @@ void EnFr_SetReward(EnFr* this, PlayState* play) {
     } else if (songIndex == FROG_STORMS) {
         if (!(gSaveContext.eventChkInf[13] & sSongIndex[songIndex])) {
             gSaveContext.eventChkInf[13] |= sSongIndex[songIndex];
-            GameInteractor_ExecuteOnFlagSet(FLAG_EVENT_CHECK_INF,
-                                            (EVENTCHKINF_SONGS_FOR_FROGS_INDEX << 4) + sSongIndexShift[songIndex]);
             this->reward = GI_HEART_PIECE;
         } else {
             this->reward = GI_RUPEE_BLUE;
@@ -993,8 +961,6 @@ void EnFr_SetReward(EnFr* this, PlayState* play) {
     } else if (songIndex == FROG_CHOIR_SONG) {
         if (!(gSaveContext.eventChkInf[13] & sSongIndex[songIndex])) {
             gSaveContext.eventChkInf[13] |= sSongIndex[songIndex];
-            GameInteractor_ExecuteOnFlagSet(FLAG_EVENT_CHECK_INF,
-                                            (EVENTCHKINF_SONGS_FOR_FROGS_INDEX << 4) + sSongIndexShift[songIndex]);
             this->reward = GI_HEART_PIECE;
         } else {
             this->reward = GI_RUPEE_PURPLE;
@@ -1041,7 +1007,7 @@ void EnFr_Deactivate(EnFr* this, PlayState* play) {
 
     play->msgCtx.ocarinaMode = OCARINA_MODE_04;
     Audio_PlayActorSound2(&this->actor, NA_SE_EV_FROG_CRY_0);
-    if (GameInteractor_Should(VB_FROGS_GO_TO_IDLE, this->reward == GI_NONE, this)) {
+    if ((this->reward == GI_NONE)) {
         this->actionFunc = EnFr_Idle;
     } else {
         this->actionFunc = EnFr_GiveReward;

@@ -8,7 +8,6 @@
 #include "objects/object_oF1d_map/object_oF1d_map.h"
 #include "objects/object_gm/object_gm.h"
 #include "vt.h"
-#include "soh/Enhancements/game-interactor/GameInteractor_Hooks.h"
 #include <assert.h>
 #include "soh/ResourceManagerHelpers.h"
 
@@ -98,9 +97,7 @@ void EnGm_Destroy(Actor* thisx, PlayState* play) {
 s32 func_80A3D7C8(void) {
     if (LINK_AGE_IN_YEARS == YEARS_CHILD) {
         return 0;
-    } else if (GameInteractor_Should(
-                   VB_BE_ELIGIBLE_FOR_GIANTS_KNIFE_PURCHASE,
-                   (!CHECK_OWNED_EQUIP_ALT(EQUIP_TYPE_SWORD, EQUIP_INV_SWORD_BIGGORON) // Don't have giant's knife
+    } else if (((!CHECK_OWNED_EQUIP_ALT(EQUIP_TYPE_SWORD, EQUIP_INV_SWORD_BIGGORON) // Don't have giant's knife
                     ))) {
         return 1;
     } else if (CHECK_OWNED_EQUIP_ALT(EQUIP_TYPE_SWORD, EQUIP_INV_SWORD_BROKENGIANTKNIFE)) { // Have broken giant's knife
@@ -247,14 +244,14 @@ void EnGm_ProcessChoiceIndex(EnGm* this, PlayState* play) {
     if (Message_GetState(&play->msgCtx) == TEXT_STATE_CHOICE && Message_ShouldAdvance(play)) {
         switch (play->msgCtx.choiceIndex) {
             case 0: // yes
-                if (GameInteractor_Should(VB_CHECK_RANDO_PRICE_OF_MEDIGORON, gSaveContext.rupees < 200, this)) {
+                if (gSaveContext.rupees < 200) {
                     Message_ContinueTextbox(play, 0xC8);
                     this->actionFunc = func_80A3DD7C;
                 } else {
-                    if (GameInteractor_Should(VB_GIVE_ITEM_FROM_MEDIGORON, true, this)) {
+                    
                         Actor_OfferGetItem(&this->actor, play, GI_SWORD_KNIFE, 415.0f, 10.0f);
                         this->actionFunc = func_80A3DF00;
-                    }
+                    
                 }
                 break;
             case 1: // no

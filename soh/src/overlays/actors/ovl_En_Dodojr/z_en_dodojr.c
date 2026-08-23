@@ -7,7 +7,6 @@
 #include "z_en_dodojr.h"
 #include "overlays/actors/ovl_En_Bom/z_en_bom.h"
 #include "objects/object_dodojr/object_dodojr.h"
-#include "soh/Enhancements/game-interactor/GameInteractor_Hooks.h"
 #include "soh/ResourceManagerHelpers.h"
 
 #define FLAGS (ACTOR_FLAG_ATTENTION_ENABLED | ACTOR_FLAG_HOSTILE)
@@ -187,7 +186,6 @@ void func_809F6A20(EnDodojr* this) {
         this->unk_1FC = 3;
         this->actor.velocity.y = 10.0f;
     }
-    GameInteractor_ExecuteOnEnemyDefeat(&this->actor);
 }
 
 void func_809F6AC4(EnDodojr* this) {

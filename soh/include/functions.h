@@ -11,7 +11,7 @@ extern "C"
 #endif
 
 #include <libultraship/log/luslog.h>
-#include <soh/Enhancements/item-tables/ItemTableTypes.h>
+#include <soh/ItemTableTypes.h>
 
 #if (LOG_LEVEL_GAME_PRINTS >= SPDLOG_ACTIVE_LEVEL) && !(LOG_LEVEL_GAME_PRINTS >= 6)
 #define osSyncPrintf(...) lusprintf(__FILE__, __LINE__, LOG_LEVEL_GAME_PRINTS , __VA_ARGS__)
@@ -184,7 +184,6 @@ void EnItem00_CustomItemsParticles(Actor* Parent, PlayState* play, GetItemEntry 
 void EnItem00_SetupAction(EnItem00* this, EnItem00ActionFunc actionFunc);
 void func_8001E5C8(EnItem00* this, PlayState* play);
 void Item_DropCollectibleRandom(PlayState* play, Actor* fromActor, Vec3f* spawnPos, s16 params);
-void EffectBlure_ChangeType(EffectBlure* this, int type);
 void EffectBlure_AddVertex(EffectBlure* this, Vec3f* p1, Vec3f* p2);
 void EffectBlure_AddSpace(EffectBlure* this);
 void EffectBlure_Init1(void* thisx, void* initParamsx);
@@ -1066,7 +1065,6 @@ void func_800849EC(PlayState* play);
 void Interface_LoadItemIcon1(PlayState* play, u16 button);
 void Interface_LoadItemIcon2(PlayState* play, u16 button);
 void func_80084BF4(PlayState* play, u16 flag);
-uint16_t Interface_DrawTextLine(GraphicsContext* gfx, char text[], int16_t x, int16_t y, uint16_t colorR, uint16_t colorG, uint16_t colorB, uint16_t colorA, float textScale, uint8_t textShadow);
 u8 Item_Give(PlayState* play, u8 item);
 u8 Item_CheckObtainability(u8 item);
 void Inventory_DeleteItem(u16 item, u16 invSlot);
@@ -1090,7 +1088,6 @@ void Interface_SetSubTimer(s16 seconds);
 void Interface_SetSubTimerToFinalSecond(PlayState* play);
 void Interface_SetTimer(s16 arg0);
 void Interface_Draw(PlayState* play);
-void Interface_DrawTotalGameplayTimer(PlayState* play);
 void Interface_Update(PlayState* play);
 Path* Path_GetByIndex(PlayState* play, s16 index, s16 max);
 f32 Path_OrientAndGetDistSq(Actor* actor, Path* path, s16 waypoint, s16* yaw);
@@ -2098,11 +2095,9 @@ void func_800F595C(u16);
 void func_800F59E8(u16);
 s32 func_800F5A58(u8);
 void func_800F5ACC(u16 seqId);
-void PreviewSequence(u16 seqId);
 void func_800F5B58(void);
 void func_800F5BF0(u8 natureAmbienceId);
 void Audio_PlayFanfare(u16);
-void Audio_PlayFanfare_Rando(GetItemEntry getItem);
 void func_800F5C2C(void);
 void func_800F5E18(u8 playerIdx, u16 seqId, u8 fadeTimer, s8 arg3, s8 arg4);
 void Audio_SetSequenceMode(u8 seqMode);
@@ -2142,7 +2137,6 @@ void Audio_StopSfxByPosAndBank(u8, Vec3f*);
 void Audio_StopSfxByPos(Vec3f*);
 void func_800F9280(u8 playerIdx, u8 seqId, u8 arg2, u16 fadeTimer);
 void Audio_QueueSeqCmd(u32 bgmID);
-void Audio_QueuePreviewSeqCmd(u16 seqId);
 void Audio_StopSfxByPosAndId(Vec3f* pos, u16 sfxId);
 void Audio_StopSfxByTokenAndId(u8, u16);
 void Audio_StopSfxById(u32 sfxId);

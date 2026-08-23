@@ -13,9 +13,7 @@ std::shared_ptr<Ship::IResource> SetEchoSettingsFactory::ReadResource(std::share
 
     setEchoSettings->settings.echo = reader->ReadInt8();
 
-    if (CVarGetInteger(CVAR_DEVELOPER_TOOLS("ResourceLogging"), 0)) {
-        LogEchoSettingsAsXML(setEchoSettings);
-    }
+    
 
     return setEchoSettings;
 }

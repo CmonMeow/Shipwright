@@ -61,15 +61,6 @@ typedef enum {
     CM_START_QUEST_MENU,
     CM_QUEST_TO_MAIN,
     CM_NAME_ENTRY_TO_QUEST_MENU,
-    CM_ROTATE_TO_BOSS_RUSH_MENU,
-    CM_BOSS_RUSH_MENU,
-    CM_START_BOSS_RUSH_MENU,
-    CM_BOSS_RUSH_TO_QUEST,
-    CM_ROTATE_TO_RANDOMIZER_SETTINGS_MENU,
-    CM_RANDOMIZER_SETTINGS_MENU,
-    CM_START_RANDOMIZER_SETTINGS_MENU,
-    CM_RANDOMIZER_SETTINGS_MENU_TO_QUEST,
-    CM_NAME_ENTRY_TO_RANDOMIZER_SETTINGS_MENU,
 } ConfigMode;
 
 typedef enum {
@@ -257,9 +248,6 @@ extern s16 D_808125EC[];
 extern s16 D_80812604[];
 
 // Port Data:
-extern s16 sLastCharIndex;
-extern s16 sLastKbdX;
-extern s8 sLastOptionButtonIndex;
 
 // #endregion
 

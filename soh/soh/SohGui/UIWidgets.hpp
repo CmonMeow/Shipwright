@@ -9,7 +9,6 @@
 #include <imgui.h>
 #include <libultraship/libultraship.h>
 #include "soh/ShipUtils.h"
-#include "soh/ShipInit.hpp"
 
 namespace UIWidgets {
 
@@ -1028,7 +1027,6 @@ bool CVarCombobox(const char* label, const char* cvarName, const std::map<T, con
     if (Combobox<T>(label, &value, comboMap, options)) {
         CVarSetInteger(cvarName, value);
         Ship::Context::GetInstance()->GetWindow()->GetGui()->SaveConsoleVariablesNextFrame();
-        ShipInit::Init(cvarName);
         dirty = true;
     }
     return dirty;
@@ -1042,7 +1040,6 @@ bool CVarCombobox(const char* label, const char* cvarName, const std::vector<con
     if (Combobox<T>(label, &value, comboVector, options)) {
         CVarSetInteger(cvarName, value);
         Ship::Context::GetInstance()->GetWindow()->GetGui()->SaveConsoleVariablesNextFrame();
-        ShipInit::Init(cvarName);
         dirty = true;
     }
     return dirty;
@@ -1056,7 +1053,6 @@ bool CVarCombobox(const char* label, const char* cvarName, const char* (&comboAr
     if (Combobox<T>(label, &value, comboArray, options)) {
         CVarSetInteger(cvarName, value);
         Ship::Context::GetInstance()->GetWindow()->GetGui()->SaveConsoleVariablesNextFrame();
-        ShipInit::Init(cvarName);
         dirty = true;
     }
     return dirty;

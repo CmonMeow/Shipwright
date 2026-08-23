@@ -6,7 +6,6 @@
 
 #include "z_en_zf.h"
 #include "objects/object_zf/object_zf.h"
-#include "soh/Enhancements/game-interactor/GameInteractor_Hooks.h"
 #include "soh/ResourceManagerHelpers.h"
 
 #define FLAGS (ACTOR_FLAG_ATTENTION_ENABLED | ACTOR_FLAG_HOSTILE | ACTOR_FLAG_UPDATE_CULLING_DISABLED)
@@ -1926,7 +1925,6 @@ void EnZf_SetupDie(EnZf* this) {
     Audio_PlayActorSound2(&this->actor, NA_SE_EN_RIZA_DEAD);
     EnZf_SetupAction(this, EnZf_Die);
 
-    GameInteractor_ExecuteOnEnemyDefeat(&this->actor);
 }
 
 void EnZf_Die(EnZf* this, PlayState* play) {

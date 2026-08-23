@@ -60,10 +60,6 @@ static s16 sObjectIDs[] = {
     OBJECT_DEKUNUTS, OBJECT_HINTNUTS, OBJECT_SHOPNUTS, OBJECT_DNS, OBJECT_DNK,
 };
 
-static Gfx* sDListsNew[] = {
-    gGiNutDL, gGiNutDL, gGiNutDL, gGiNutDL, gGiNutDL,
-};
-
 static Gfx* sDLists[] = {
     gDekuNutsDekuNutDL, gHintNutsNutDL, gBusinessScrubDekuNutDL, gDntJijiNutDL, gDntStageNutDL,
 };
@@ -75,11 +71,7 @@ void EnNutsball_Init(Actor* thisx, PlayState* play) {
     ActorShape_Init(&this->actor.shape, 400.0f, ActorShadow_DrawCircle, 13.0f);
     Collider_InitCylinder(play, &this->collider);
     Collider_SetCylinder(play, &this->collider, &this->actor, &sCylinderInit);
-    if (CVarGetInteger(CVAR_ENHANCEMENT("RandomizedEnemies"), 0)) {
-        this->objBankIndex = 0;
-    } else {
-        this->objBankIndex = Object_GetIndex(&play->objectCtx, sObjectIDs[this->actor.params]);
-    }
+    this->objBankIndex = Object_GetIndex(&play->objectCtx, sObjectIDs[this->actor.params]);
 
     if (this->objBankIndex < 0) {
         Actor_Kill(&this->actor);
@@ -178,24 +170,12 @@ void EnNutsball_Draw(Actor* thisx, PlayState* play) {
 
     OPEN_DISPS(play->state.gfxCtx);
 
-    if (CVarGetInteger(CVAR_ENHANCEMENT("NewDrops"), 0) != 0) {
-        Gfx_SetupDL_25Opa(play->state.gfxCtx);
-        gSPSegment(POLY_OPA_DISP++, 0x08,
-                   Gfx_TwoTexScrollEx(play->state.gfxCtx, 0, 1 * (play->state.frames * 6), 1 * (play->state.frames * 6),
-                                      32, 32, 1, 1 * (play->state.frames * 6), 1 * (play->state.frames * 6), 32, 32, 6,
-                                      6, 6, 6));
-        Matrix_Scale(25.0f, 25.0f, 25.0f, MTXMODE_APPLY);
-        Matrix_RotateX(thisx->home.rot.z * 9.58738e-05f, MTXMODE_APPLY);
-        gSPMatrix(POLY_OPA_DISP++, MATRIX_NEWMTX(play->state.gfxCtx), G_MTX_MODELVIEW | G_MTX_LOAD);
-        gSPDisplayList(POLY_OPA_DISP++, sDListsNew[thisx->params]);
-    } else {
-        Gfx_SetupDL_25Opa(play->state.gfxCtx);
-        Matrix_Mult(&play->billboardMtxF, MTXMODE_APPLY);
+    Gfx_SetupDL_25Opa(play->state.gfxCtx);
+    Matrix_Mult(&play->billboardMtxF, MTXMODE_APPLY);
 
-        Matrix_RotateZ(thisx->home.rot.z * 9.58738e-05f, MTXMODE_APPLY);
-        gSPMatrix(POLY_OPA_DISP++, MATRIX_NEWMTX(play->state.gfxCtx), G_MTX_MODELVIEW | G_MTX_LOAD);
-        gSPDisplayList(POLY_OPA_DISP++, sDLists[thisx->params]);
-    }
+    Matrix_RotateZ(thisx->home.rot.z * 9.58738e-05f, MTXMODE_APPLY);
+    gSPMatrix(POLY_OPA_DISP++, MATRIX_NEWMTX(play->state.gfxCtx), G_MTX_MODELVIEW | G_MTX_LOAD);
+    gSPDisplayList(POLY_OPA_DISP++, sDLists[thisx->params]);
 
     CLOSE_DISPS(play->state.gfxCtx);
 }

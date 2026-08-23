@@ -1,7 +1,6 @@
 #include "z_en_okuta.h"
 #include "objects/object_okuta/object_okuta.h"
 #include "objects/gameplay_field_keep/gameplay_field_keep.h"
-#include "soh/Enhancements/game-interactor/GameInteractor_Hooks.h"
 #include "soh/ResourceManagerHelpers.h"
 
 #define FLAGS (ACTOR_FLAG_ATTENTION_ENABLED | ACTOR_FLAG_HOSTILE)
@@ -259,7 +258,6 @@ void EnOkuta_SetupDie(EnOkuta* this) {
     Animation_MorphToPlayOnce(&this->skelAnime, &gOctorokDieAnim, -3.0f);
     this->timer = 0;
     this->actionFunc = EnOkuta_Die;
-    GameInteractor_ExecuteOnEnemyDefeat(&this->actor);
 }
 
 void EnOkuta_SetupFreeze(EnOkuta* this) {
@@ -507,50 +505,7 @@ void EnOkuta_ProjectileFly(EnOkuta* this, PlayState* play) {
             pos.x = this->actor.world.pos.x;
             pos.y = this->actor.world.pos.y + 11.0f;
             pos.z = this->actor.world.pos.z;
-            if (CVarGetInteger(CVAR_ENHANCEMENT("NewDrops"), 0) != 0) {
-                static s16 sEffectScales[] = {
-                    145, 135, 115, 85, 75, 53, 45, 40, 35,
-                };
-                s32 pad;
-                Vec3f velocity;
-                Vec3f pos;
-                s16 phi_s0 = 500;
-                s16 gravity;
-                s16 phi_v0;
-                f32 temp_f20;
-                f32 temp_f22;
-                s32 i;
-                for (s16 i = 0; i < ARRAY_COUNT(sEffectScales); i++) {
-                    phi_s0 += 10000;
-
-                    temp_f20 = Rand_ZeroOne() * 5.0f;
-                    pos.x = (Math_SinS(phi_s0) * temp_f20) + this->actor.world.pos.x;
-                    pos.y = (Rand_ZeroOne() * 40.0f) + this->actor.world.pos.y + 5.0f;
-                    pos.z = (Math_CosS(phi_s0) * temp_f20) + this->actor.world.pos.z;
-
-                    temp_f20 = (Rand_ZeroOne() * 5.0f) + 2.0f;
-                    velocity.x = Math_SinS(phi_s0) * temp_f20;
-                    temp_f22 = Rand_ZeroOne();
-                    velocity.y = (Rand_ZeroOne() * i * 2.5f) + (temp_f22 * 5.0f);
-                    velocity.z = Math_CosS(phi_s0) * temp_f20;
-
-                    if (i == 0) {
-                        phi_v0 = 41;
-                        gravity = -450;
-                    } else if (i < 4) {
-                        phi_v0 = 37;
-                        gravity = -380;
-                    } else {
-                        phi_v0 = 69;
-                        gravity = -320;
-                    }
-                    EffectSsKakera_Spawn(play, &pos, &velocity, &this->actor.world.pos, gravity, phi_v0, 30, 5, 0,
-                                         sEffectScales[i] / 5, 3, 0, 70, 1, OBJECT_GAMEPLAY_FIELD_KEEP,
-                                         gSilverRockFragmentsDL);
-                }
-            } else {
-                EffectSsHahen_SpawnBurst(play, &pos, 6.0f, 0, 1, 2, 15, 7, 10, gOctorokProjectileDL);
-            }
+            EffectSsHahen_SpawnBurst(play, &pos, 6.0f, 0, 1, 2, 15, 7, 10, gOctorokProjectileDL);
 
             SoundSource_PlaySfxAtFixedWorldPos(play, &this->actor.world.pos, 20, NA_SE_EN_OCTAROCK_ROCK);
             Actor_Kill(&this->actor);
@@ -764,22 +719,10 @@ void EnOkuta_Draw(Actor* thisx, PlayState* play) {
     } else {
         OPEN_DISPS(play->state.gfxCtx);
 
-        if (CVarGetInteger(CVAR_ENHANCEMENT("NewDrops"), 0) != 0) {
-            Gfx_SetupDL_25Opa(play->state.gfxCtx);
-            gSPSegment(POLY_OPA_DISP++, 0x08,
-                       Gfx_TwoTexScrollEx(play->state.gfxCtx, 0, 1 * (play->state.frames * 6),
-                                          1 * (play->state.frames * 6), 32, 32, 1, 1 * (play->state.frames * 6),
-                                          1 * (play->state.frames * 6), 32, 32, 6, 6, 6, 6));
-            Matrix_Scale(7.0f, 7.0f, 7.0f, MTXMODE_APPLY);
-            Matrix_RotateX(thisx->home.rot.z * (M_PI / 0x8000), MTXMODE_APPLY);
-            gSPMatrix(POLY_OPA_DISP++, MATRIX_NEWMTX(play->state.gfxCtx), G_MTX_MODELVIEW | G_MTX_LOAD);
-            gSPDisplayList(POLY_OPA_DISP++, gSilverRockDL);
-        } else {
-            Matrix_Mult(&play->billboardMtxF, MTXMODE_APPLY);
-            Matrix_RotateZ(this->actor.home.rot.z * (M_PI / 0x8000), MTXMODE_APPLY);
-            gSPMatrix(POLY_OPA_DISP++, MATRIX_NEWMTX(play->state.gfxCtx), G_MTX_NOPUSH | G_MTX_LOAD | G_MTX_MODELVIEW);
-            gSPDisplayList(POLY_OPA_DISP++, gOctorokProjectileDL);
-        }
+        Matrix_Mult(&play->billboardMtxF, MTXMODE_APPLY);
+        Matrix_RotateZ(this->actor.home.rot.z * (M_PI / 0x8000), MTXMODE_APPLY);
+        gSPMatrix(POLY_OPA_DISP++, MATRIX_NEWMTX(play->state.gfxCtx), G_MTX_NOPUSH | G_MTX_LOAD | G_MTX_MODELVIEW);
+        gSPDisplayList(POLY_OPA_DISP++, gOctorokProjectileDL);
 
         CLOSE_DISPS(play->state.gfxCtx);
     }

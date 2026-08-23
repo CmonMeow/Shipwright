@@ -7,8 +7,6 @@
 #include "z_bg_heavy_block.h"
 #include "objects/object_heavy_object/object_heavy_object.h"
 #include "vt.h"
-#include "soh/Enhancements/game-interactor/GameInteractor_Hooks.h"
-
 #define FLAGS 0
 
 #define PIECE_FLAG_HIT_FLOOR (1 << 0)
@@ -369,9 +367,9 @@ void BgHeavyBlock_LiftedUp(BgHeavyBlock* this, PlayState* play) {
 
     this->timer++;
 
-    if (GameInteractor_Should(VB_FREEZE_LINK_FOR_BLOCK_THROW, true, this)) {
+    
         Player_SetCsActionWithHaltedActors(play, &player->actor, 8);
-    }
+    
 
     // if parent is NULL, link threw it
     if (Actor_HasNoParent(&this->dyna.actor, play)) {

@@ -8,8 +8,6 @@
 #include "overlays/actors/ovl_En_Bom_Bowl_Pit/z_en_bom_bowl_pit.h"
 #include "objects/gameplay_keep/gameplay_keep.h"
 #include "vt.h"
-#include "soh/Enhancements/game-interactor/GameInteractor_Hooks.h"
-
 #define FLAGS (ACTOR_FLAG_UPDATE_CULLING_DISABLED | ACTOR_FLAG_DRAW_CULLING_DISABLED)
 
 void EnExItem_Init(Actor* thisx, PlayState* play);
@@ -362,7 +360,7 @@ void EnExItem_TargetPrizeApproach(EnExItem* this, PlayState* play) {
         Math_SmoothStepToS(&this->actor.shape.rot.y, -0x4000, 5, 0x1000, 0);
     }
 
-    if (GameInteractor_Should(VB_PLAY_ONEPOINT_ACTOR_CS, true, &this->actor) && this->timer != 0) {
+    if ((true) && this->timer != 0) {
         if (this->prizeRotateTimer != 0) {
             tmpf1 = play->view.lookAt.x - play->view.eye.x;
             tmpf2 = play->view.lookAt.y - 10.0f - play->view.eye.y;
@@ -388,7 +386,7 @@ void EnExItem_TargetPrizeApproach(EnExItem* this, PlayState* play) {
         Player_SetCsActionWithHaltedActors(play, NULL, 7);
         this->actor.parent = NULL;
 
-        if (!GameInteractor_Should(VB_PLAY_ONEPOINT_ACTOR_CS, true, &this->actor)) {
+        if (!(true)) {
             GET_PLAYER(play)->stateFlags1 &= ~(PLAYER_STATE1_GETTING_ITEM | PLAYER_STATE1_CARRYING_ACTOR);
         }
 
@@ -398,9 +396,9 @@ void EnExItem_TargetPrizeApproach(EnExItem* this, PlayState* play) {
             getItemId = GI_BULLET_BAG_50;
         }
 
-        if (GameInteractor_Should(VB_GIVE_ITEM_FROM_TARGET_IN_WOODS, true, &this->actor)) {
+        
             Actor_OfferGetItem(&this->actor, play, getItemId, 2000.0f, 1000.0f);
-        }
+        
 
         this->actionFunc = EnExItem_TargetPrizeGive;
     }
@@ -408,7 +406,7 @@ void EnExItem_TargetPrizeApproach(EnExItem* this, PlayState* play) {
 
 void EnExItem_TargetPrizeGive(EnExItem* this, PlayState* play) {
     if (Actor_HasParent(&this->actor, play) ||
-        !GameInteractor_Should(VB_GIVE_ITEM_FROM_TARGET_IN_WOODS, true, &this->actor)) {
+        !(true)) {
         this->actionFunc = EnExItem_TargetPrizeFinish;
     } else {
         s32 getItemId = (CUR_UPG_VALUE(UPG_BULLET_BAG) == 2) ? GI_BULLET_BAG_50 : GI_BULLET_BAG_40;
@@ -417,7 +415,7 @@ void EnExItem_TargetPrizeGive(EnExItem* this, PlayState* play) {
 }
 
 void EnExItem_TargetPrizeFinish(EnExItem* this, PlayState* play) {
-    if (!GameInteractor_Should(VB_GIVE_ITEM_FROM_TARGET_IN_WOODS, true, &this->actor) ||
+    if (!(true) ||
         (Message_GetState(&play->msgCtx) == TEXT_STATE_DONE) && Message_ShouldAdvance(play)) {
         // "Successful completion"
         osSyncPrintf(VT_FGCOL(GREEN) "☆☆☆☆☆ 正常終了 ☆☆☆☆☆ \n" VT_RST);

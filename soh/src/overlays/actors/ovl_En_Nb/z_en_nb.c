@@ -9,8 +9,6 @@
 #include "objects/object_nb/object_nb.h"
 #include "overlays/actors/ovl_Door_Warp1/z_door_warp1.h"
 #include "soh/ResourceManagerHelpers.h"
-#include "soh/Enhancements/game-interactor/GameInteractor_Hooks.h"
-
 #define FLAGS ACTOR_FLAG_UPDATE_CULLING_DISABLED
 
 typedef enum {
@@ -326,9 +324,9 @@ void EnNb_GiveMedallion(EnNb* this, PlayState* play) {
     f32 posZ = player->actor.world.pos.z;
 
     Actor_SpawnAsChild(&play->actorCtx, &this->actor, play, ACTOR_DEMO_EFFECT, posX, posY, posZ, 0, 0, 0, 0xC);
-    if (GameInteractor_Should(VB_GIVE_ITEM_SPIRIT_MEDALLION, true)) {
+    
         Item_Give(play, ITEM_MEDALLION_SPIRIT);
-    }
+    
 }
 
 void EnNb_ComeUpImpl(EnNb* this, PlayState* play) {
@@ -344,9 +342,9 @@ void EnNb_SetupChamberCsImpl(EnNb* this, PlayState* play) {
         this->action = NB_CHAMBER_UNDERGROUND;
         play->csCtx.segment = &D_80AB431C;
         gSaveContext.cutsceneTrigger = 2;
-        if (GameInteractor_Should(VB_GIVE_ITEM_SPIRIT_MEDALLION, true)) {
+        
             Item_Give(play, ITEM_MEDALLION_SPIRIT);
-        }
+        
         player->actor.world.rot.y = player->actor.shape.rot.y = this->actor.world.rot.y + 0x8000;
     }
 }

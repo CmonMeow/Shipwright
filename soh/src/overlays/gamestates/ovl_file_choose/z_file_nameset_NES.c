@@ -2,7 +2,6 @@
 #include "textures/title_static/title_static.h"
 #include "assets/overlays/ovl_File_Choose/ovl_file_choose.h"
 #include "assets/soh_assets.h"
-#include "soh/Enhancements/game-interactor/GameInteractor_Hooks.h"
 #include "soh/SaveManager.h"
 #include "soh/ResourceManagerHelpers.h"
 
@@ -547,14 +546,10 @@ void FileChoose_DrawNameEntryNES(GameState* thisx) {
                     this->newFileNameCharCount = 0;
                     if (this->prevConfigMode == CM_QUEST_MENU) {
                         this->configMode = CM_NAME_ENTRY_TO_QUEST_MENU;
-                    } else if (this->prevConfigMode == CM_RANDOMIZER_SETTINGS_MENU) {
-                        this->configMode = CM_NAME_ENTRY_TO_RANDOMIZER_SETTINGS_MENU;
                     } else {
                         this->configMode = CM_NAME_ENTRY_TO_MAIN;
                     }
                     this->prevConfigMode = CM_NAME_ENTRY;
-                    sLastCharIndex = -1;
-                    CVarSetInteger(CVAR_GENERAL("OnFileSelectNameEntry"), 0);
                 } else {
                     for (i = this->newFileNameCharCount; i < 7; i++) {
                         filename[i] = filename[i + 1];
@@ -710,7 +705,6 @@ void FileChoose_DrawNameEntryNES(GameState* thisx) {
                                 gSaveContext.dayTime = dayTime;
                                 this->prevConfigMode = CM_MAIN_MENU;
                                 this->configMode = CM_NAME_ENTRY_TO_MAIN;
-                                CVarSetInteger(CVAR_GENERAL("OnFileSelectNameEntry"), 0);
                                 this->nameBoxAlpha[this->buttonIndex] = this->nameAlpha[this->buttonIndex] = 200;
                                 this->connectorAlpha[this->buttonIndex] = 255;
                                 func_800AA000(300.0f, 180, 20, 100);
@@ -778,7 +772,6 @@ void FileChoose_UpdateKeyboardCursorNES(GameState* thisx) {
     Input* input = &this->state.input[0];
     s16 prevKbdX;
     s32 pad;
-    bool dpad = CVarGetInteger(CVAR_SETTING("DpadInText"), 0);
 
     if (this->charPage < 3) {
         if (CHECK_BTN_ALL(input->press.button, BTN_R)) {
@@ -800,7 +793,7 @@ void FileChoose_UpdateKeyboardCursorNES(GameState* thisx) {
         } else {
             this->kbdButton = 99;
             if (this->kbdY != 5) {
-                if ((this->stickRelX < -30) || (dpad && CHECK_BTN_ALL(input->press.button, BTN_DLEFT))) {
+                if ((this->stickRelX < -30)) {
                     Audio_PlaySoundGeneral(NA_SE_SY_FSEL_CURSOR, &gSfxDefaultPos, 4, &gSfxDefaultFreqAndVolScale,
                                            &gSfxDefaultFreqAndVolScale, &gSfxDefaultReverb);
                     this->charIndex--;
@@ -809,7 +802,7 @@ void FileChoose_UpdateKeyboardCursorNES(GameState* thisx) {
                         this->kbdX = 12;
                         this->charIndex = this->kbdY * 13 + this->kbdX;
                     }
-                } else if ((this->stickRelX > 30) || (dpad && CHECK_BTN_ALL(input->press.button, BTN_DRIGHT))) {
+                } else if ((this->stickRelX > 30)) {
                     Audio_PlaySoundGeneral(NA_SE_SY_FSEL_CURSOR, &gSfxDefaultPos, 4, &gSfxDefaultFreqAndVolScale,
                                            &gSfxDefaultFreqAndVolScale, &gSfxDefaultReverb);
                     this->charIndex++;
@@ -820,14 +813,14 @@ void FileChoose_UpdateKeyboardCursorNES(GameState* thisx) {
                     }
                 }
             } else if (gSaveContext.language == LANGUAGE_JPN) {
-                if ((this->stickRelX < -30) || (dpad && CHECK_BTN_ALL(input->press.button, BTN_DLEFT))) {
+                if ((this->stickRelX < -30)) {
                     Audio_PlaySoundGeneral(NA_SE_SY_FSEL_CURSOR, &gSfxDefaultPos, 4, &gSfxDefaultFreqAndVolScale,
                                            &gSfxDefaultFreqAndVolScale, &gSfxDefaultReverb);
                     this->kbdX--;
                     if (this->kbdX < 0) {
                         this->kbdX = 4;
                     }
-                } else if ((this->stickRelX > 30) || (dpad && CHECK_BTN_ALL(input->press.button, BTN_DRIGHT))) {
+                } else if ((this->stickRelX > 30)) {
                     Audio_PlaySoundGeneral(NA_SE_SY_FSEL_CURSOR, &gSfxDefaultPos, 4, &gSfxDefaultFreqAndVolScale,
                                            &gSfxDefaultFreqAndVolScale, &gSfxDefaultReverb);
                     this->kbdX++;
@@ -836,14 +829,14 @@ void FileChoose_UpdateKeyboardCursorNES(GameState* thisx) {
                     }
                 }
             } else {
-                if ((this->stickRelX < -30) || (dpad && CHECK_BTN_ALL(input->press.button, BTN_DLEFT))) {
+                if ((this->stickRelX < -30)) {
                     Audio_PlaySoundGeneral(NA_SE_SY_FSEL_CURSOR, &gSfxDefaultPos, 4, &gSfxDefaultFreqAndVolScale,
                                            &gSfxDefaultFreqAndVolScale, &gSfxDefaultReverb);
                     this->kbdX--;
                     if (this->kbdX < 3) {
                         this->kbdX = 4;
                     }
-                } else if ((this->stickRelX > 30) || (dpad && CHECK_BTN_ALL(input->press.button, BTN_DRIGHT))) {
+                } else if ((this->stickRelX > 30)) {
                     Audio_PlaySoundGeneral(NA_SE_SY_FSEL_CURSOR, &gSfxDefaultPos, 4, &gSfxDefaultFreqAndVolScale,
                                            &gSfxDefaultFreqAndVolScale, &gSfxDefaultReverb);
                     this->kbdX++;
@@ -853,7 +846,7 @@ void FileChoose_UpdateKeyboardCursorNES(GameState* thisx) {
                 }
             }
 
-            if ((this->stickRelY > 30) || (dpad && CHECK_BTN_ALL(input->press.button, BTN_DUP))) {
+            if ((this->stickRelY > 30)) {
                 Audio_PlaySoundGeneral(NA_SE_SY_FSEL_CURSOR, &gSfxDefaultPos, 4, &gSfxDefaultFreqAndVolScale,
                                        &gSfxDefaultFreqAndVolScale, &gSfxDefaultReverb);
                 this->kbdY--;
@@ -898,7 +891,7 @@ void FileChoose_UpdateKeyboardCursorNES(GameState* thisx) {
                         this->charIndex += this->kbdX;
                     }
                 }
-            } else if ((this->stickRelY < -30) || (dpad && CHECK_BTN_ALL(input->press.button, BTN_DDOWN))) {
+            } else if ((this->stickRelY < -30)) {
                 Audio_PlaySoundGeneral(NA_SE_SY_FSEL_CURSOR, &gSfxDefaultPos, 4, &gSfxDefaultFreqAndVolScale,
                                        &gSfxDefaultFreqAndVolScale, &gSfxDefaultReverb);
                 this->kbdY++;
@@ -950,17 +943,6 @@ void FileChoose_UpdateKeyboardCursorNES(GameState* thisx) {
             if (this->kbdY == 5) {
                 this->kbdButton = this->kbdX;
 
-                if (sLastKbdX != this->kbdX) {
-                    // NTSC TODO: Figure out japanese TTS
-                    // GameInteractor_ExecuteOnUpdateFileNameSelection(0xF0 + this->kbdX);
-                    sLastKbdX = this->kbdX;
-                    sLastCharIndex = -1;
-                }
-            } else if (sLastCharIndex != this->charIndex && this->charIndex < 65) {
-                // NTSC TODO: Figure out japanese TTS
-                // GameInteractor_ExecuteOnUpdateFileNameSelection(D_808123F0[this->charIndex]);
-                sLastCharIndex = this->charIndex;
-                sLastKbdX = -1;
             }
         }
     } else {
@@ -996,14 +978,12 @@ void FileChoose_UpdateOptionsMenuNES(GameState* thisx) {
     FileChooseContext* this = (FileChooseContext*)thisx;
     // SramContext* sramCtx = &this->sramCtx;
     Input* input = &this->state.input[0];
-    bool dpad = CVarGetInteger(CVAR_SETTING("DpadInText"), 0);
 
     if (CHECK_BTN_ALL(input->press.button, BTN_B)) {
         Audio_PlaySoundGeneral(NA_SE_SY_FSEL_DECIDE_L, &gSfxDefaultPos, 4, &gSfxDefaultFreqAndVolScale,
                                &gSfxDefaultFreqAndVolScale, &gSfxDefaultReverb);
         this->prevConfigMode = this->configMode;
         this->configMode = CM_OPTIONS_TO_MAIN;
-        sLastOptionButtonIndex = -1;
         // sramCtx->readBuff[0] = gSaveContext.audioSetting;
         // sramCtx->readBuff[1] = gSaveContext.zTargetSetting;
         // osSyncPrintf("ＳＡＶＥ");
@@ -1022,7 +1002,7 @@ void FileChoose_UpdateOptionsMenuNES(GameState* thisx) {
         return;
     }
 
-    if ((this->stickRelX < -30) || (dpad && CHECK_BTN_ALL(input->press.button, BTN_DLEFT))) {
+    if ((this->stickRelX < -30)) {
         Audio_PlaySoundGeneral(NA_SE_SY_FSEL_CURSOR, &gSfxDefaultPos, 4, &gSfxDefaultFreqAndVolScale,
                                &gSfxDefaultFreqAndVolScale, &gSfxDefaultReverb);
 
@@ -1036,7 +1016,7 @@ void FileChoose_UpdateOptionsMenuNES(GameState* thisx) {
         } else {
             gSaveContext.zTargetSetting ^= 1;
         }
-    } else if ((this->stickRelX > 30) || (dpad && CHECK_BTN_ALL(input->press.button, BTN_DRIGHT))) {
+    } else if ((this->stickRelX > 30)) {
         Audio_PlaySoundGeneral(NA_SE_SY_FSEL_CURSOR, &gSfxDefaultPos, 4, &gSfxDefaultFreqAndVolScale,
                                &gSfxDefaultFreqAndVolScale, &gSfxDefaultReverb);
 
@@ -1051,8 +1031,7 @@ void FileChoose_UpdateOptionsMenuNES(GameState* thisx) {
         }
     }
 
-    if ((this->stickRelY < -30) || (this->stickRelY > 30) ||
-        (dpad && CHECK_BTN_ANY(input->press.button, BTN_DDOWN | BTN_DUP))) {
+    if ((this->stickRelY < -30) || (this->stickRelY > 30)) {
         Audio_PlaySoundGeneral(NA_SE_SY_FSEL_CURSOR, &gSfxDefaultPos, 4, &gSfxDefaultFreqAndVolScale,
                                &gSfxDefaultFreqAndVolScale, &gSfxDefaultReverb);
         sSelectedSetting ^= 1;
@@ -1062,19 +1041,6 @@ void FileChoose_UpdateOptionsMenuNES(GameState* thisx) {
         sSelectedSetting ^= 1;
     }
 
-    if (sSelectedSetting == FS_SETTING_AUDIO) {
-        if (sLastOptionButtonIndex != gSaveContext.audioSetting) {
-            GameInteractor_ExecuteOnUpdateFileAudioSelection(gSaveContext.audioSetting);
-            sLastOptionButtonIndex = gSaveContext.audioSetting;
-        }
-    } else if (sSelectedSetting == FS_SETTING_TARGET) {
-        // offset to detect switching between modes
-        u8 optionOffset = gSaveContext.zTargetSetting + FS_AUDIO_SURROUND + FS_SETTING_TARGET;
-        if (sLastOptionButtonIndex != optionOffset) {
-            GameInteractor_ExecuteOnUpdateFileTargetSelection(gSaveContext.zTargetSetting);
-            sLastOptionButtonIndex = optionOffset;
-        }
-    }
 }
 
 void FileChoose_DrawOptionsImplNES(GameState* thisx) {
@@ -1094,16 +1060,7 @@ void FileChoose_DrawOptionsImplNES(GameState* thisx) {
         { 0, 0, 0 },
         { 0, 150, 150 },
     };
-    if (CVarGetInteger(CVAR_COSMETIC("Title.FileChoose.Changed"), 0)) {
-        Color_RGB8 backgroundColor =
-            CVarGetColor24(CVAR_COSMETIC("Title.FileChoose.Value"), (Color_RGB8){ 100, 150, 255 });
-        cursorPrimColors[1][0] = MIN(backgroundColor.r + 100, 255);
-        cursorPrimColors[1][1] = MIN(backgroundColor.g + 100, 255);
-        cursorPrimColors[1][2] = MIN(backgroundColor.b + 100, 255);
-        cursorEnvColors[1][0] = MIN(backgroundColor.r + 50, 255);
-        cursorEnvColors[1][1] = MIN(backgroundColor.g + 50, 255);
-        cursorEnvColors[1][2] = MIN(backgroundColor.b + 50, 255);
-    }
+    
 
     FileChooseContext* this = (FileChooseContext*)thisx;
     s16 cursorRed;

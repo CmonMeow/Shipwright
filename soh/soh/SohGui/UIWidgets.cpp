@@ -379,7 +379,6 @@ bool CVarCheckbox(const char* label, const char* cvarName, const CheckboxOptions
     if (Checkbox(label, &value, options)) {
         CVarSetInteger(cvarName, value);
         Ship::Context::GetInstance()->GetWindow()->GetGui()->SaveConsoleVariablesNextFrame();
-        ShipInit::Init(cvarName);
         dirty = true;
     }
     return dirty;
@@ -610,7 +609,6 @@ bool CVarSliderInt(const char* label, const char* cvarName, const IntSliderOptio
     if (SliderInt(label, &value, options)) {
         CVarSetInteger(cvarName, value);
         Ship::Context::GetInstance()->GetWindow()->GetGui()->SaveConsoleVariablesNextFrame();
-        ShipInit::Init(cvarName);
         dirty = true;
     }
     return dirty;
@@ -741,7 +739,6 @@ bool CVarSliderFloat(const char* label, const char* cvarName, const FloatSliderO
     if (SliderFloat(label, &value, options)) {
         CVarSetFloat(cvarName, value);
         Ship::Context::GetInstance()->GetWindow()->GetGui()->SaveConsoleVariablesNextFrame();
-        ShipInit::Init(cvarName);
         dirty = true;
     }
     return dirty;
@@ -818,7 +815,6 @@ bool CVarInputString(const char* label, const char* cvarName, const InputOptions
     if (InputString(label, &value, options)) {
         CVarSetString(cvarName, value.c_str());
         Ship::Context::GetInstance()->GetWindow()->GetGui()->SaveConsoleVariablesNextFrame();
-        ShipInit::Init(cvarName);
         dirty = true;
     }
     return dirty;
@@ -870,7 +866,6 @@ bool CVarInputInt(const char* label, const char* cvarName, const InputOptions& o
     if (InputInt(label, &value, options)) {
         CVarSetInteger(cvarName, value);
         Ship::Context::GetInstance()->GetWindow()->GetGui()->SaveConsoleVariablesNextFrame();
-        ShipInit::Init(cvarName);
         dirty = true;
     }
     return dirty;
@@ -930,7 +925,6 @@ bool CVarColorPicker(const char* label, const char* cvarName, Color_RGBA8 defaul
             color.b = fmin(fmax(colorVec.z * 255, 0), 255);
             CVarSetColor(valueCVar.c_str(), color);
             CVarSetInteger(rainbowCVar.c_str(), 0); // On click disable rainbow mode.
-            ShipInit::Init(rainbowCVar.c_str());
             Ship::Context::GetInstance()->GetWindow()->GetGui()->SaveConsoleVariablesNextFrame();
         }
     }
@@ -960,7 +954,6 @@ bool CVarColorPicker(const char* label, const char* cvarName, Color_RGBA8 defaul
         color.a = (uint8_t)(colorVec.w * 255.0f);
         CVarSetColor(valueCVar.c_str(), color);
         Ship::Context::GetInstance()->GetWindow()->GetGui()->SaveConsoleVariablesNextFrame();
-        ShipInit::Init(valueCVar.c_str());
         changed = true;
     }
 
@@ -1242,7 +1235,6 @@ bool CVarBtnSelector(const char* label, const char* cvarName, const BtnSelectorO
     if (BtnSelector(label, &value, options)) {
         CVarSetInteger(cvarName, value);
         Ship::Context::GetInstance()->GetWindow()->GetGui()->SaveConsoleVariablesNextFrame();
-        ShipInit::Init(cvarName);
         dirty = true;
     }
 

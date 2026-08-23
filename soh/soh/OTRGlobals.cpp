@@ -15,18 +15,14 @@
 #include <soh/GameVersions.h>
 #include <spdlog/sinks/rotating_file_sink.h>
 
-#include "Enhancements/gameconsole.h"
 #ifdef _WIN32
 #include <Windows.h>
 #else
 #include <time.h>
 #endif
 #include <ship/audio/AudioPlayer.h>
-#include "Enhancements/speechsynthesizer/SpeechSynthesizer.h"
 #include "Enhancements/controls/SohInputEditorWindow.h"
-#include "Enhancements/audio/AudioCollection.h"
-#include "Enhancements/debugconsole.h"
-#include "Enhancements/gameplaystats.h"
+#include "Enhancements/debugger/colViewer.h"
 #include "frame_interpolation.h"
 #include "SohGui/SohMenu.h"
 #include "SohGui/SohGui.hpp"
@@ -37,7 +33,6 @@
 #include <ship/window/FileDropMgr.h>
 #include <ship/window/gui/resource/Font.h>
 #include <ship/utils/StringHelper.h>
-#include "Enhancements/custom-message/CustomMessageManager.h"
 #include "util.h"
 
 #if not defined(__SWITCH__) && not defined(__WIIU__)
@@ -60,15 +55,9 @@
 #endif
 
 #include <functions.h>
-#include "Enhancements/item-tables/ItemTableManager.h"
 #include "soh/SohGui/ImGuiUtils.h"
 #include "ActorDB.h"
 #include "SaveManager.h"
-#include "soh/Network/CrowdControl/CrowdControl.h"
-#include "soh/Network/Sail/Sail.h"
-#include "soh/Network/Anchor/Anchor.h"
-#include "Enhancements/mods.h"
-#include "Enhancements/game-interactor/GameInteractor.h"
 #include <libultraship/libultraship.h>
 #include <libultraship/controller/controldeck/ControlDeck.h>
 #include <fast/resource/ResourceType.h>
@@ -113,23 +102,14 @@
 #include "soh/resource/importer/TextFactory.h"
 #include "soh/resource/importer/BackgroundFactory.h"
 
-#include "soh/config/ConfigUpdaters.h"
-#include "soh/ShipInit.hpp"
 
 bool SoH_HandleConfigDrop(char* filePath);
 
 OTRGlobals* OTRGlobals::Instance;
 SaveManager* SaveManager::Instance;
-CustomMessageManager* CustomMessageManager::Instance;
-ItemTableManager* ItemTableManager::Instance;
-GameInteractor* GameInteractor::Instance;
-AudioCollection* AudioCollection::Instance;
-SpeechSynthesizer* SpeechSynthesizer::Instance;
-CrowdControl* CrowdControl::Instance;
-Sail* Sail::Instance;
-Anchor* Anchor::Instance;
 
 extern "C" char** cameraStrings;
+extern "C" PlayState* gPlayState;
 
 extern "C" void PadMgr_ThreadEntry(PadMgr* padMgr);
 std::vector<std::shared_ptr<std::string>> cameraStdStrings;
@@ -140,8 +120,6 @@ Color_RGB8 zoraColor = { 0x00, 0xEC, 0x64 };
 
 int32_t previousImGuiScaleIndex;
 float previousImGuiScale;
-
-bool prevAltAssets = false;
 
 // Same as NaviColor type from OoT src (z_actor.c), but modified to be sans alpha channel for Controller LED.
 typedef struct {
@@ -277,14 +255,6 @@ OTRGlobals::OTRGlobals() {
     auto controlDeck = std::make_shared<LUS::ControlDeck>(std::vector<CONTROLLERBUTTONS_T>({
         BTN_CUSTOM_MODIFIER1,
         BTN_CUSTOM_MODIFIER2,
-        BTN_CUSTOM_OCARINA_NOTE_D4,
-        BTN_CUSTOM_OCARINA_NOTE_F4,
-        BTN_CUSTOM_OCARINA_NOTE_A4,
-        BTN_CUSTOM_OCARINA_NOTE_B4,
-        BTN_CUSTOM_OCARINA_NOTE_D5,
-        BTN_CUSTOM_OCARINA_DISABLE_SONGS,
-        BTN_CUSTOM_OCARINA_PITCH_UP,
-        BTN_CUSTOM_OCARINA_PITCH_DOWN,
     }));
     context->InitControlDeck(controlDeck);
     context->InitResourceManager({ portArchivePath }, {}, 3, true);
@@ -361,23 +331,6 @@ bool PathTestCleanup(FILE* tfile) {
     return true;
 }
 
-void CheckAndCreateModFolder() {
-    try {
-        std::string modsPath = Ship::Context::LocateFileAcrossAppDirs("mods", appShortName);
-        if (!std::filesystem::exists(modsPath)) {
-            // Create mods folder relative to app dir
-            modsPath = Ship::Context::GetPathRelativeToAppDirectory("mods", appShortName);
-            std::string filePath = modsPath + "/custom_mod_files_go_here.txt";
-            if (std::filesystem::create_directories(modsPath)) {
-                std::ofstream(filePath).close();
-            }
-        }
-    } catch (std::filesystem::filesystem_error const& ex) {
-        // Couldn't make the folder, continue silently
-        return;
-    }
-}
-
 namespace SohGui {
 extern std::shared_ptr<SohGui::SohMenu> mSohMenu;
 }
@@ -440,10 +393,6 @@ void OTRGlobals::RunExtract(int argc, char* argv[]) {
 
     std::shared_ptr<BS::thread_pool> threadPool = std::make_shared<BS::thread_pool>(1);
     std::optional<std::future<void>> extractionTask;
-
-#if not defined(__SWITCH__) && not defined(__WIIU__)
-    CheckAndCreateModFolder();
-#endif
 
     while (!extractDone) {
         if (SohGui::PopupsQueued() > 0 || extractionTask.has_value()) {
@@ -782,7 +731,7 @@ void OTRGlobals::Initialize() {
     context->InitConfiguration();
     context->InitConsoleVariables();
     auto logLevel =
-        static_cast<spdlog::level::level_enum>(CVarGetInteger(CVAR_DEVELOPER_TOOLS("LogLevel"), defaultLogLevel));
+        static_cast<spdlog::level::level_enum>((defaultLogLevel));
     context->InitLogging(logLevel, logLevel);
     Ship::Context::GetInstance()->GetLogger()->set_pattern("[%H:%M:%S.%e] [%s:%#] [%l] %v");
 
@@ -790,13 +739,10 @@ void OTRGlobals::Initialize() {
     context->InitFileDropMgr();
 
     // tell LUS to reserve 3 SoH specific threads (Game, Audio, Save)
-    prevAltAssets = CVarGetInteger(CVAR_SETTING("AltAssets"), 1);
-    context->GetResourceManager()->SetAltAssetsEnabled(prevAltAssets);
+    context->GetResourceManager()->SetAltAssetsEnabled(false);
 
     context->InitCrashHandler();
 
-    context->GetWindow()->SetAutoCaptureMouse(CVarGetInteger(CVAR_SETTING("EnableMouse"), 0) &&
-                                              CVarGetInteger(CVAR_SETTING("AutoCaptureMouse"), 1));
     context->GetWindow()->SetForceCursorVisibility(CVarGetInteger(CVAR_SETTING("CursorVisibility"), 0));
 
     context->InitAudio({ .SampleRate = 32000, .SampleLength = 1024, .DesiredBuffered = 1680 });
@@ -876,8 +822,6 @@ void OTRGlobals::Initialize() {
                                     "Sequence", static_cast<uint32_t>(SOH::ResourceType::SOH_AudioSequence), 0);
     loader->RegisterResourceFactory(std::make_shared<SOH::ResourceFactoryBinaryBackgroundV0>(), RESOURCE_FORMAT_BINARY,
                                     "Background", static_cast<uint32_t>(SOH::ResourceType::SOH_Background), 0);
-
-    gSaveStateMgr = std::make_shared<SaveStateMgr>();
 
     hasMasterQuest = hasOriginal = false;
 
@@ -1076,8 +1020,7 @@ extern "C" void OTRAudio_Exit() {
 #endif
 }
 
-extern "C" void VanillaItemTable_Init() {
-    static GetItemEntry getItemTable[] = {
+static GetItemEntry sVanillaItemTable[] = {
         // clang-format off
         GET_ITEM(ITEM_BOMBS_5,          OBJECT_GI_BOMB_1,        GID_BOMB,             0x32, 0x59, CHEST_ANIM_SHORT, ITEM_CATEGORY_JUNK,            MOD_NONE, GI_BOMBS_5),
         GET_ITEM(ITEM_NUTS_5,           OBJECT_GI_NUTS,          GID_NUTS,             0x34, 0x0C, CHEST_ANIM_SHORT, ITEM_CATEGORY_JUNK,            MOD_NONE, GI_NUTS_5),
@@ -1206,17 +1149,7 @@ extern "C" void VanillaItemTable_Init() {
         GET_ITEM_NONE,
         GET_ITEM_NONE // GI_MAX - if you need to add to this table insert it before this entry.
         // clang-format on
-    };
-    ItemTableManager::Instance->AddItemTable(MOD_NONE);
-    for (uint8_t i = 0; i < ARRAY_COUNT(getItemTable); i++) {
-        // The vanilla item table array started with ITEM_BOMBS_5,
-        // but the GetItemID enum started with GI_NONE. Then everywhere
-        // that table was accessed used `GetItemID - 1`. This allows the
-        // "first" item of the new map to start at 1, syncing it up with
-        // the GetItemID values and removing the need for the `- 1`
-        ItemTableManager::Instance->AddItemEntry(MOD_NONE, i + 1, getItemTable[i]);
-    }
-}
+};
 
 std::unordered_map<ItemID, GetItemID> ItemIDtoGetItemIDMap{
     { ITEM_ARROWS_LARGE, GI_ARROWS_LARGE },
@@ -1414,74 +1347,21 @@ extern "C" void InitOTR(int argc, char* argv[]) {
     OTRGlobals::Instance->RunExtract(argc, argv);
 
     OTRGlobals::Instance->Initialize();
-    CustomMessageManager::Instance = new CustomMessageManager();
-    ItemTableManager::Instance = new ItemTableManager();
-    GameInteractor::Instance = new GameInteractor();
+    InitColViewer();
     SaveManager::Instance = new SaveManager();
 
-    std::shared_ptr<Ship::Config> conf = OTRGlobals::Instance->context->GetConfig();
-    conf->RegisterVersionUpdater(std::make_shared<SOH::ConfigVersion1Updater>());
-    conf->RegisterVersionUpdater(std::make_shared<SOH::ConfigVersion2Updater>());
-    conf->RegisterVersionUpdater(std::make_shared<SOH::ConfigVersion3Updater>());
-    conf->RegisterVersionUpdater(std::make_shared<SOH::ConfigVersion4Updater>());
-    conf->RegisterVersionUpdater(std::make_shared<SOH::ConfigVersion5Updater>());
-    conf->RegisterVersionUpdater(std::make_shared<SOH::ConfigVersion6Updater>());
-    conf->RunVersionUpdates();
-
-    SohGui::SetupGuiElements();
     SohGui::SetupMenuElements();
 
-    AudioCollection::Instance = new AudioCollection();
     ActorDB::Instance = new ActorDB();
-#ifdef __APPLE__
-    SpeechSynthesizer::Instance = new DarwinSpeechSynthesizer();
-#elif defined(_WIN32)
-    SpeechSynthesizer::Instance = new SAPISpeechSynthesizer();
-#elif ESPEAK
-    SpeechSynthesizer::Instance = new ESpeakSpeechSynthesizer();
-#else
-    SpeechSynthesizer::Instance = new SpeechLogger();
-#endif
-    SpeechSynthesizer::Instance->Init();
-
-    CrowdControl::Instance = new CrowdControl();
-    Sail::Instance = new Sail();
-    Anchor::Instance = new Anchor();
-
     OTRMessage_Init();
     OTRAudio_Init();
     OTRExtScanner();
-    VanillaItemTable_Init();
-    DebugConsole_Init();
-
-    InitMods();
     ActorDB::AddBuiltInCustomActors();
     Ship::Context::GetInstance()->GetFileDropMgr()->RegisterDropHandler(SoH_HandleConfigDrop);
 
     RegisterImGuiItemIcons();
 
-    time_t now = time(NULL);
-    tm* tm_now = localtime(&now);
-    if (tm_now->tm_mon == 11 && tm_now->tm_mday >= 24 && tm_now->tm_mday <= 25) {
-        CVarRegisterInteger(CVAR_GENERAL("LetItSnow"), 1);
-    } else {
-        CVarClear(CVAR_GENERAL("LetItSnow"));
-    }
-
-    srand(now);
-#ifdef ENABLE_REMOTE_CONTROL
-    SDLNet_Init();
-#endif
-    if (CVarGetInteger(CVAR_REMOTE_CROWD_CONTROL("Enabled"), 0)) {
-        CrowdControl::Instance->Enable();
-    }
-    if (CVarGetInteger(CVAR_REMOTE_SAIL("Enabled"), 0)) {
-        Sail::Instance->Enable();
-    }
-    if (CVarGetInteger(CVAR_REMOTE_ANCHOR("Enabled"), 0)) {
-        Anchor::Instance->Enable();
-    }
-    ShipInit::InitAll();
+    srand(time(NULL));
 }
 
 extern "C" void SaveManager_ThreadPoolWait() {
@@ -1491,18 +1371,6 @@ extern "C" void SaveManager_ThreadPoolWait() {
 extern "C" void DeinitOTR() {
     SaveManager_ThreadPoolWait();
     OTRAudio_Exit();
-    if (CVarGetInteger(CVAR_REMOTE_CROWD_CONTROL("Enabled"), 0)) {
-        CrowdControl::Instance->Disable();
-    }
-    if (CVarGetInteger(CVAR_REMOTE_SAIL("Enabled"), 0)) {
-        Sail::Instance->Disable();
-    }
-    if (CVarGetInteger(CVAR_REMOTE_ANCHOR("Enabled"), 0)) {
-        Anchor::Instance->Disable();
-    }
-#ifdef ENABLE_REMOTE_CONTROL
-    SDLNet_Quit();
-#endif
 
     // Destroying gui here because we have shared ptrs to LUS objects which output to SPDLOG which is destroyed before
     // these shared ptrs.
@@ -1558,93 +1426,7 @@ extern "C" void Graph_StartFrame() {
 
     switch (dwScancode) {
         case KbScancode::LUS_KB_F1: {
-            std::shared_ptr<SohModalWindow> modal = static_pointer_cast<SohModalWindow>(
-                Ship::Context::GetInstance()->GetWindow()->GetGui()->GetGuiWindow("Modal Window"));
-            if (modal->IsPopupOpen("Menu Moved")) {
-                modal->DismissPopup();
-            } else {
-                modal->RegisterPopup("Menu Moved",
-                                     "The menubar, accessed by hitting F1, no longer exists.\nThe new menu can be "
-                                     "accessed by hitting the Esc button instead.",
-                                     "OK");
-            }
-            break;
-        }
-        case KbScancode::LUS_KB_F5: {
-            if (CVarGetInteger(CVAR_CHEAT("SaveStatesEnabled"), 0) == 0) {
-                Ship::Context::GetInstance()->GetWindow()->GetGui()->GetGameOverlay()->TextDrawNotification(
-                    6.0f, true, "Save states not enabled. Check Cheats Menu.");
-                return;
-            }
-            const unsigned int slot = OTRGlobals::Instance->gSaveStateMgr->GetCurrentSlot();
-            const SaveStateReturn stateReturn =
-                OTRGlobals::Instance->gSaveStateMgr->AddRequest({ slot, RequestType::SAVE });
-
-            switch (stateReturn) {
-                case SaveStateReturn::SUCCESS:
-                    SPDLOG_INFO("[SOH] Saved state to slot {}", slot);
-                    break;
-                case SaveStateReturn::FAIL_WRONG_GAMESTATE:
-                    SPDLOG_ERROR("[SOH] Can not save a state outside of \"GamePlay\"");
-                    break;
-                    [[unlikely]] default : break;
-            }
-            break;
-        }
-        case KbScancode::LUS_KB_F6: {
-            if (CVarGetInteger(CVAR_CHEAT("SaveStatesEnabled"), 0) == 0) {
-                Ship::Context::GetInstance()->GetWindow()->GetGui()->GetGameOverlay()->TextDrawNotification(
-                    6.0f, true, "Save states not enabled. Check Cheats Menu.");
-                return;
-            }
-            unsigned int slot = OTRGlobals::Instance->gSaveStateMgr->GetCurrentSlot();
-            slot++;
-            if (slot > 5) {
-                slot = 0;
-            }
-            OTRGlobals::Instance->gSaveStateMgr->SetCurrentSlot(slot);
-            SPDLOG_INFO("Set SaveState slot to {}.", slot);
-            break;
-        }
-        case KbScancode::LUS_KB_F7: {
-            if (CVarGetInteger(CVAR_CHEAT("SaveStatesEnabled"), 0) == 0) {
-                Ship::Context::GetInstance()->GetWindow()->GetGui()->GetGameOverlay()->TextDrawNotification(
-                    6.0f, true, "Save states not enabled. Check Cheats Menu.");
-                return;
-            }
-            const unsigned int slot = OTRGlobals::Instance->gSaveStateMgr->GetCurrentSlot();
-            const SaveStateReturn stateReturn =
-                OTRGlobals::Instance->gSaveStateMgr->AddRequest({ slot, RequestType::LOAD });
-
-            switch (stateReturn) {
-                case SaveStateReturn::SUCCESS:
-                    SPDLOG_INFO("[SOH] Loaded state from slot {}", slot);
-                    break;
-                case SaveStateReturn::FAIL_INVALID_SLOT:
-                    SPDLOG_ERROR("[SOH] Invalid State Slot Number {}", slot);
-                    break;
-                case SaveStateReturn::FAIL_STATE_EMPTY:
-                    SPDLOG_ERROR("[SOH] State Slot {} is empty", slot);
-                    break;
-                case SaveStateReturn::FAIL_WRONG_GAMESTATE:
-                    SPDLOG_ERROR("[SOH] Can not load a state outside of \"GamePlay\"");
-                    break;
-                    [[unlikely]] default : break;
-            }
-
-            break;
-        }
-#if defined(_WIN32) || defined(__APPLE__)
-        case KbScancode::LUS_KB_F9: {
-            // Toggle TTS
-            CVarSetInteger(CVAR_SETTING("A11yTTS"), !CVarGetInteger(CVAR_SETTING("A11yTTS"), 0));
-            break;
-        }
-#endif
-        case KbScancode::LUS_KB_TAB: {
-            if (CVarGetInteger(CVAR_SETTING("Mods.AlternateAssetsHotkey"), 1)) {
-                CVarSetInteger(CVAR_SETTING("AltAssets"), !CVarGetInteger(CVAR_SETTING("AltAssets"), 1));
-            }
+            ToggleColViewer();
             break;
         }
     }
@@ -1733,15 +1515,6 @@ extern "C" void Graph_ProcessGfxCommands(Gfx* commands) {
         while (audio.processing) {
             audio.cv_from_thread.wait(Lock);
         }
-    }
-
-    bool curAltAssets = CVarGetInteger(CVAR_SETTING("AltAssets"), 1);
-    if (prevAltAssets != curAltAssets) {
-        prevAltAssets = curAltAssets;
-        Ship::Context::GetInstance()->GetResourceManager()->SetAltAssetsEnabled(curAltAssets);
-        gfx_texture_cache_clear();
-        SOH::SkeletonPatcher::UpdateSkeletons();
-        GameInteractor::Instance->ExecuteHooks<GameInteractor::OnAssetAltChange>();
     }
 
     // OTRTODO: FIGURE OUT END FRAME POINT
@@ -2034,70 +1807,26 @@ Color_RGB8 GetColorForControllerLED() {
         LEDColorSource source =
             static_cast<LEDColorSource>(CVarGetInteger(CVAR_SETTING("LEDColorSource"), LED_SOURCE_TUNIC_ORIGINAL));
         bool criticalOverride = CVarGetInteger(CVAR_SETTING("LEDCriticalOverride"), 1);
-        if (gPlayState && (source == LED_SOURCE_TUNIC_ORIGINAL || source == LED_SOURCE_TUNIC_COSMETICS)) {
+        if (gPlayState && source == LED_SOURCE_TUNIC_ORIGINAL) {
             switch (CUR_EQUIP_VALUE(EQUIP_TYPE_TUNIC)) {
                 case EQUIP_VALUE_TUNIC_KOKIRI:
-                    color = source == LED_SOURCE_TUNIC_COSMETICS
-                                ? CVarGetColor24(CVAR_COSMETIC("Link.KokiriTunic.Value"), kokiriColor)
-                                : kokiriColor;
+                    color = kokiriColor;
                     break;
                 case EQUIP_VALUE_TUNIC_GORON:
-                    color = source == LED_SOURCE_TUNIC_COSMETICS
-                                ? CVarGetColor24(CVAR_COSMETIC("Link.GoronTunic.Value"), goronColor)
-                                : goronColor;
+                    color = goronColor;
                     break;
                 case EQUIP_VALUE_TUNIC_ZORA:
-                    color = source == LED_SOURCE_TUNIC_COSMETICS
-                                ? CVarGetColor24(CVAR_COSMETIC("Link.ZoraTunic.Value"), zoraColor)
-                                : zoraColor;
+                    color = zoraColor;
                     break;
             }
         }
-        if (gPlayState && (source == LED_SOURCE_NAVI_ORIGINAL || source == LED_SOURCE_NAVI_COSMETICS)) {
+        if (gPlayState && source == LED_SOURCE_NAVI_ORIGINAL) {
             Actor* arrowPointedActor = gPlayState->actorCtx.targetCtx.arrowPointedActor;
             if (arrowPointedActor) {
                 ActorCategory category = (ActorCategory)arrowPointedActor->category;
-                switch (category) {
-                    case ACTORCAT_PLAYER:
-                        if (source == LED_SOURCE_NAVI_COSMETICS &&
-                            CVarGetInteger(CVAR_COSMETIC("Navi.IdlePrimary.Changed"), 0)) {
-                            color = CVarGetColor24(CVAR_COSMETIC("Navi.IdlePrimary.Value"), defaultIdleColor.inner);
-                            break;
-                        }
-                        color = LEDColorDefaultNaviColorList[category].inner;
-                        break;
-                    case ACTORCAT_NPC:
-                        if (source == LED_SOURCE_NAVI_COSMETICS &&
-                            CVarGetInteger(CVAR_COSMETIC("Navi.NPCPrimary.Changed"), 0)) {
-                            color = CVarGetColor24(CVAR_COSMETIC("Navi.NPCPrimary.Value"), defaultNPCColor.inner);
-                            break;
-                        }
-                        color = LEDColorDefaultNaviColorList[category].inner;
-                        break;
-                    case ACTORCAT_ENEMY:
-                    case ACTORCAT_BOSS:
-                        if (source == LED_SOURCE_NAVI_COSMETICS &&
-                            CVarGetInteger(CVAR_COSMETIC("Navi.EnemyPrimary.Changed"), 0)) {
-                            color = CVarGetColor24(CVAR_COSMETIC("Navi.EnemyPrimary.Value"), defaultEnemyColor.inner);
-                            break;
-                        }
-                        color = LEDColorDefaultNaviColorList[category].inner;
-                        break;
-                    default:
-                        if (source == LED_SOURCE_NAVI_COSMETICS &&
-                            CVarGetInteger(CVAR_COSMETIC("Navi.PropsPrimary.Changed"), 0)) {
-                            color = CVarGetColor24(CVAR_COSMETIC("Navi.PropsPrimary.Value"), defaultPropsColor.inner);
-                            break;
-                        }
-                        color = LEDColorDefaultNaviColorList[category].inner;
-                }
+                color = LEDColorDefaultNaviColorList[category].inner;
             } else { // No target actor.
-                if (source == LED_SOURCE_NAVI_COSMETICS &&
-                    CVarGetInteger(CVAR_COSMETIC("Navi.IdlePrimary.Changed"), 0)) {
-                    color = CVarGetColor24(CVAR_COSMETIC("Navi.IdlePrimary.Value"), defaultIdleColor.inner);
-                } else {
-                    color = LEDColorDefaultNaviColorList[ACTORCAT_PLAYER].inner;
-                }
+                color = LEDColorDefaultNaviColorList[ACTORCAT_PLAYER].inner;
             }
         }
         if (source == LED_SOURCE_CUSTOM) {
@@ -2187,7 +1916,7 @@ extern "C" uint32_t OTRGetGameRenderHeight() {
     return height;
 }
 
-f32 floorf(f32 x); // RANDOTODO False positive error "allowing all exceptions is incompatible with previous function"
+f32 floorf(f32 x);
 f32 ceilf(f32 x);  // This gets annoying
 
 extern "C" int16_t OTRGetRectDimensionFromLeftEdge(float v) {
@@ -2234,61 +1963,24 @@ extern "C" int Controller_ShouldRumble(size_t slot) {
     return 1;
 }
 
-extern "C" size_t GetEquipNowMessage(char* buffer, char* src, const size_t maxBufferSize) {
-    CustomMessage customMessage("\x04\x1A\x08"
-                                "Would you like to equip it now?"
-                                "\x09&&"
-                                "\x1B%g"
-                                "Yes"
-                                "&"
-                                "No"
-                                "%w\x02",
-                                "\x04\x1A\x08"
-                                "M"
-                                "\x9A"
-                                "chtest Du es jetzt ausr\x9Esten?"
-                                "\x09&&"
-                                "\x1B%g"
-                                "Ja!"
-                                "&"
-                                "Nein!"
-                                "%w\x02",
-                                "\x04\x1A\x08"
-                                "D\x96sirez-vous l'\x96quiper maintenant?"
-                                "\x09&&"
-                                "\x1B%g"
-                                "Oui"
-                                "&"
-                                "Non"
-                                "%w\x02");
-    customMessage.Format();
-
-    std::string postfix = customMessage.GetForCurrentLanguage();
-    std::string str;
-    std::string FixedBaseStr(src);
-    size_t RemoveControlChar = FixedBaseStr.find_first_of("\x02");
-
-    if (RemoveControlChar != std::string::npos) {
-        FixedBaseStr = FixedBaseStr.substr(0, RemoveControlChar);
-    }
-    str = FixedBaseStr + postfix;
-
-    if (!str.empty()) {
-        memset(buffer, 0, maxBufferSize);
-        const size_t copiedCharLen = std::min<size_t>(maxBufferSize - 1, str.length());
-        memcpy(buffer, str.c_str(), copiedCharLen);
-        return copiedCharLen;
-    }
-    return 0;
-}
-
 extern "C" GetItemEntry ItemTable_Retrieve(int16_t getItemID) {
-    GetItemEntry giEntry = ItemTableManager::Instance->RetrieveItemEntry(MOD_NONE, getItemID);
+    if (getItemID <= GI_NONE || getItemID > ARRAY_COUNT(sVanillaItemTable)) {
+        return GET_ITEM_NONE;
+    }
+
+    GetItemEntry giEntry = sVanillaItemTable[getItemID - 1];
+    giEntry.drawItemId = giEntry.itemId;
+    giEntry.drawModIndex = MOD_NONE;
     return giEntry;
 }
 
 extern "C" GetItemEntry ItemTable_RetrieveEntry(s16 tableID, s16 getItemID) {
-    return ItemTableManager::Instance->RetrieveItemEntry(tableID, getItemID);
+    if (tableID == MOD_NONE) {
+        return ItemTable_Retrieve(getItemID);
+    }
+
+    GetItemEntry none = GET_ITEM_NONE;
+    return none;
 }
 
 extern "C" void Gfx_RegisterBlendedTexture(const char* name, u8* mask, u8* replacement) {
@@ -2348,12 +2040,6 @@ bool SoH_HandleConfigDrop(char* filePath) {
             return false;
         }
 
-        CVarClearBlock(CVAR_PREFIX_ENHANCEMENT);
-        CVarClearBlock(CVAR_PREFIX_CHEAT);
-        CVarClearBlock(CVAR_PREFIX_RANDOMIZER_SETTING);
-        CVarClearBlock(CVAR_PREFIX_RANDOMIZER_ENHANCEMENT);
-        CVarClearBlock(CVAR_PREFIX_DEVELOPER_TOOLS);
-
         // Flatten everything under CVars into a single array
         auto cvars = configJson["CVars"].flatten();
 
@@ -2374,19 +2060,7 @@ bool SoH_HandleConfigDrop(char* filePath) {
         }
 
         auto gui = Ship::Context::GetInstance()->GetWindow()->GetGui();
-        gui->GetGuiWindow("Console")->Hide();
-        gui->GetGuiWindow("Actor Viewer")->Hide();
-        gui->GetGuiWindow("Collision Viewer")->Hide();
-        gui->GetGuiWindow("Save Editor")->Hide();
-        gui->GetGuiWindow("Display List Viewer")->Hide();
-        gui->GetGuiWindow("Stats")->Hide();
-        std::dynamic_pointer_cast<Ship::ConsoleWindow>(
-            Ship::Context::GetInstance()->GetWindow()->GetGui()->GetGuiWindow("Console"))
-            ->ClearBindings();
-
         gui->SaveConsoleVariablesNextFrame();
-        ShipInit::Init("*");
-
         uint32_t finalHash = SohUtils::Hash(configJson.dump());
         gui->GetGameOverlay()->TextDrawNotification(30.0f, true, "Configuration Loaded. Hash: %d", finalHash);
         return true;

@@ -26,9 +26,8 @@ void func_801109B0(PlayState* play) {
     interfaceCtx->minimapAlpha = 0;
     interfaceCtx->unk_260 = 0;
     interfaceCtx->unk_244 = interfaceCtx->aAlpha = interfaceCtx->bAlpha = interfaceCtx->cLeftAlpha =
-        interfaceCtx->cDownAlpha = interfaceCtx->cRightAlpha = interfaceCtx->dpadUpAlpha = interfaceCtx->dpadDownAlpha =
-            interfaceCtx->dpadLeftAlpha = interfaceCtx->dpadRightAlpha = interfaceCtx->healthAlpha =
-                interfaceCtx->startAlpha = interfaceCtx->magicAlpha = 0;
+        interfaceCtx->cDownAlpha = interfaceCtx->cRightAlpha = interfaceCtx->healthAlpha = interfaceCtx->startAlpha =
+            interfaceCtx->magicAlpha = 0;
 
     parameterSize = (uintptr_t)_parameter_staticSegmentRomEnd - (uintptr_t)_parameter_staticSegmentRomStart;
 
@@ -438,9 +437,7 @@ void Regs_InitDataImpl(void) {
     WREG(28) = 0;
     R_OW_MINIMAP_X = 238;
     R_OW_MINIMAP_Y = 164;
-    if (!CVarGetInteger(CVAR_ENHANCEMENT("RememberMapToggleState"), 0)) {
-        R_MINIMAP_DISABLED = CVarGetInteger(CVAR_ENHANCEMENT("MinimalUI"), 0);
-    }
+    R_MINIMAP_DISABLED = 0;
     WREG(32) = 122;
     WREG(33) = 60;
     WREG(35) = 0;

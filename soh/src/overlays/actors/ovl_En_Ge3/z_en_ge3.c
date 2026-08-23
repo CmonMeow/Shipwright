@@ -7,8 +7,6 @@
 #include "z_en_ge3.h"
 #include "objects/object_geldb/object_geldb.h"
 #include "soh/ResourceManagerHelpers.h"
-#include "soh/Enhancements/game-interactor/GameInteractor_Hooks.h"
-
 #define FLAGS (ACTOR_FLAG_ATTENTION_ENABLED | ACTOR_FLAG_FRIENDLY | ACTOR_FLAG_UPDATE_CULLING_DISABLED)
 
 void EnGe3_Init(Actor* thisx, PlayState* play);
@@ -142,7 +140,7 @@ void EnGe3_WaitLookAtPlayer(EnGe3* this, PlayState* play) {
 }
 
 void EnGe3_WaitTillCardGiven(EnGe3* this, PlayState* play) {
-    if (Actor_HasParent(&this->actor, play) || !GameInteractor_Should(VB_GIVE_ITEM_GERUDO_MEMBERSHIP_CARD, true)) {
+    if (Actor_HasParent(&this->actor, play) || !(true)) {
         this->actor.parent = NULL;
         this->actionFunc = EnGe3_Wait;
     } else {
@@ -151,14 +149,13 @@ void EnGe3_WaitTillCardGiven(EnGe3* this, PlayState* play) {
 }
 
 void EnGe3_GiveCard(EnGe3* this, PlayState* play) {
-    if (GameInteractor_Should(VB_END_GERUDO_MEMBERSHIP_TALK,
-                              (Message_GetState(&play->msgCtx) == TEXT_STATE_EVENT) && Message_ShouldAdvance(play))) {
+    if (((Message_GetState(&play->msgCtx) == TEXT_STATE_EVENT) && Message_ShouldAdvance(play))) {
         Message_CloseTextbox(play);
         this->actor.flags &= ~ACTOR_FLAG_TALK_OFFER_AUTO_ACCEPTED;
         this->actionFunc = EnGe3_WaitTillCardGiven;
-        if (GameInteractor_Should(VB_GIVE_ITEM_GERUDO_MEMBERSHIP_CARD, true)) {
+        
             Actor_OfferGetItem(&this->actor, play, GI_GERUDO_CARD, 10000.0f, 50.0f);
-        }
+        
     }
 }
 

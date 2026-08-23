@@ -6,8 +6,6 @@
 
 #include "z_bg_bdan_switch.h"
 #include "objects/object_bdan_objects/object_bdan_objects.h"
-#include "soh/Enhancements/game-interactor/GameInteractor_Hooks.h"
-
 #define FLAGS ACTOR_FLAG_UPDATE_CULLING_DISABLED
 
 void BgBdanSwitch_Init(Actor* thisx, PlayState* play);
@@ -224,13 +222,13 @@ void func_8086D4B4(BgBdanSwitch* this, PlayState* play) {
     if (!Flags_GetSwitch(play, (this->dyna.actor.params >> 8) & 0x3F)) {
         type = this->dyna.actor.params & 0xFF;
         Flags_SetSwitch(play, (this->dyna.actor.params >> 8) & 0x3F);
-        if (GameInteractor_Should(VB_PLAY_ONEPOINT_ACTOR_CS, true, this)) {
+        
             if (type == BLUE || type == YELLOW_TALL_2) {
                 OnePointCutscene_AttentionSetSfx(play, &this->dyna.actor, NA_SE_SY_TRE_BOX_APPEAR);
             } else {
                 OnePointCutscene_AttentionSetSfx(play, &this->dyna.actor, NA_SE_SY_CORRECT_CHIME);
             }
-        }
+        
     }
 }
 
@@ -238,9 +236,9 @@ void func_8086D548(BgBdanSwitch* this, PlayState* play) {
     if (Flags_GetSwitch(play, (this->dyna.actor.params >> 8) & 0x3F)) {
         Flags_UnsetSwitch(play, (this->dyna.actor.params >> 8) & 0x3F);
         if ((this->dyna.actor.params & 0xFF) == YELLOW_TALL_2) {
-            if (GameInteractor_Should(VB_PLAY_ONEPOINT_ACTOR_CS, true, this)) {
+            
                 OnePointCutscene_AttentionSetSfx(play, &this->dyna.actor, NA_SE_SY_TRE_BOX_APPEAR);
-            }
+            
         }
     }
 }

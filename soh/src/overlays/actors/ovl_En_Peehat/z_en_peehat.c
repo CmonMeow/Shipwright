@@ -2,7 +2,6 @@
 #include "objects/object_peehat/object_peehat.h"
 #include "overlays/actors/ovl_En_Bom/z_en_bom.h"
 #include "overlays/effects/ovl_Effect_Ss_Hahen/z_eff_ss_hahen.h"
-#include "soh/Enhancements/game-interactor/GameInteractor_Hooks.h"
 #include "soh/ResourceManagerHelpers.h"
 
 #define FLAGS                                                                                 \
@@ -328,9 +327,7 @@ void EnPeehat_Ground_SetStateGround(EnPeehat* this) {
 }
 
 void EnPeehat_Ground_StateGround(EnPeehat* this, PlayState* play) {
-    // Keep the peahat as the version that doesn't spawn extra enemies and can actually be killed
-    // when Enemy Randomizer is on.
-    if (IS_DAY || CVarGetInteger(CVAR_ENHANCEMENT("RandomizedEnemies"), 0)) {
+    if (IS_DAY) {
         this->actor.flags |= ACTOR_FLAG_ATTENTION_ENABLED;
         if (this->riseDelayTimer == 0) {
             if (this->actor.xzDistToPlayer < this->xzDistToRise) {
@@ -595,7 +592,6 @@ void EnPeehat_Larva_StateSeekPlayer(EnPeehat* this, PlayState* play) {
             }
             Item_DropCollectibleRandom(play, &this->actor, &this->actor.world.pos, 0x20);
             Actor_Kill(&this->actor);
-            GameInteractor_ExecuteOnEnemyDefeat(&this->actor);
         }
     }
 }
@@ -764,7 +760,6 @@ void EnPeehat_StateAttackRecoil(EnPeehat* this, PlayState* play) {
                 EffectSsDeadDb_Spawn(play, &pos, &zeroVec, &zeroVec, 40, 7, 255, 255, 255, 255, 255, 0, 0, 1, 9, 1);
             }
             Actor_Kill(&this->actor);
-            GameInteractor_ExecuteOnEnemyDefeat(&this->actor);
         } else {
             EnPeehat_Ground_SetStateSeekPlayer(this);
             // Is PEAHAT_TYPE_GROUNDED
@@ -881,7 +876,6 @@ void EnPeehat_StateExplode(EnPeehat* this, PlayState* play) {
         Item_DropCollectibleRandom(play, &this->actor, &this->actor.world.pos, 0x40);
         Item_DropCollectibleRandom(play, &this->actor, &this->actor.world.pos, 0x40);
         Actor_Kill(&this->actor);
-        GameInteractor_ExecuteOnEnemyDefeat(&this->actor);
     }
 }
 

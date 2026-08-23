@@ -2,10 +2,6 @@
 #include <libultraship/bridge/audiobridge.h>
 #include "global.h"
 #include "soh/OTRGlobals.h"
-#include "soh/Enhancements/audio/AudioEditor.h"
-#include "soh/Enhancements/game-interactor/GameInteractor.h"
-#include "soh/Enhancements/game-interactor/GameInteractor_Hooks.h"
-
 // TODO: can these macros be shared between files? code_800F9280 seems to use
 // versions without any casts...
 #define Audio_DisableSeq(playerIdx, fadeOut) Audio_QueueCmdS32(0x83000000 | ((u8)playerIdx << 16), fadeOut)
@@ -27,10 +23,6 @@
 #define Audio_SeqCmd8(playerIdx, a, b, c) \
     Audio_QueueSeqCmd(0x80000000 | ((u8)playerIdx << 24) | ((u8)a << 16) | ((u8)b << 8) | ((u8)c))
 #define Audio_SeqCmdF(playerIdx, a) Audio_QueueSeqCmd(0xF0000000 | ((u8)playerIdx << 24) | ((u8)a))
-#define BTN_CUSTOM_RSTICK_UP ((CONTROLLERBUTTONS_T)0x01000000)
-#define BTN_CUSTOM_RSTICK_DOWN ((CONTROLLERBUTTONS_T)0x02000000)
-#define BTN_CUSTOM_RSTICK_LEFT ((CONTROLLERBUTTONS_T)0x04000000)
-#define BTN_CUSTOM_RSTICK_RIGHT ((CONTROLLERBUTTONS_T)0x08000000)
 
 typedef struct {
     /* 0x0 */ f32 vol;
@@ -1256,39 +1248,6 @@ void Audio_StepFreqLerp(FreqLerp* lerp);
 void func_800F56A8(void);
 void Audio_PlayNatureAmbienceSequence(u8 natureAmbienceId);
 s32 Audio_SetGanonDistVol(u8 targetVol);
-void Audio_PlayFanfare_Rando(GetItemEntry getItem);
-
-// Function originally not called, so repurposing for control mapping
-void Audio_OcaUpdateBtnMap(bool customControls) {
-    if (customControls) {
-        sOcarinaD5BtnMap = BTN_CUSTOM_OCARINA_NOTE_D5;
-        sOcarinaB4BtnMap = BTN_CUSTOM_OCARINA_NOTE_B4;
-        sOcarinaA4BtnMap = BTN_CUSTOM_OCARINA_NOTE_A4;
-        sOcarinaF4BtnMap = BTN_CUSTOM_OCARINA_NOTE_F4;
-        sOcarinaD4BtnMap = BTN_CUSTOM_OCARINA_NOTE_D4;
-    } else {
-        sOcarinaD5BtnMap = BTN_CUP;
-        sOcarinaB4BtnMap = BTN_CLEFT;
-        sOcarinaA4BtnMap = BTN_CRIGHT;
-        sOcarinaF4BtnMap = BTN_CDOWN;
-        sOcarinaD4BtnMap = BTN_A;
-    }
-    if (CVarGetInteger(CVAR_SETTING("CustomOcarina.Dpad"), 0)) {
-        sOcarinaD5BtnMap |= BTN_DUP;
-        sOcarinaB4BtnMap |= BTN_DLEFT;
-        sOcarinaA4BtnMap |= BTN_DRIGHT;
-        sOcarinaF4BtnMap |= BTN_DDOWN;
-    }
-    if (CVarGetInteger(CVAR_SETTING("CustomOcarina.RightStick"), 0)) {
-        sOcarinaD5BtnMap |= BTN_CUSTOM_RSTICK_UP;
-        sOcarinaB4BtnMap |= BTN_CUSTOM_RSTICK_LEFT;
-        sOcarinaA4BtnMap |= BTN_CUSTOM_RSTICK_RIGHT;
-        sOcarinaF4BtnMap |= BTN_CUSTOM_RSTICK_DOWN;
-    }
-
-    sOcarinaAllowedBtnMask =
-        (sOcarinaD5BtnMap | sOcarinaB4BtnMap | sOcarinaA4BtnMap | sOcarinaF4BtnMap | sOcarinaD4BtnMap);
-}
 
 void Audio_GetOcaInput(void) {
     Input inputs[4];
@@ -1301,21 +1260,6 @@ void Audio_GetOcaInput(void) {
     sPrevOcarinaBtnPress = sp18;
     sCurOcaStick.x = input->rel.stick_x;
     sCurOcaStick.y = input->rel.stick_y;
-    s8 rstick_x = input->cur.right_stick_x;
-    s8 rstick_y = input->cur.right_stick_y;
-    const s8 sensitivity = 64;
-    if (rstick_x > sensitivity) {
-        sCurOcarinaBtnPress |= BTN_CUSTOM_RSTICK_RIGHT;
-    }
-    if (rstick_x < -sensitivity) {
-        sCurOcarinaBtnPress |= BTN_CUSTOM_RSTICK_LEFT;
-    }
-    if (rstick_y > sensitivity) {
-        sCurOcarinaBtnPress |= BTN_CUSTOM_RSTICK_UP;
-    }
-    if (rstick_y < -sensitivity) {
-        sCurOcarinaBtnPress |= BTN_CUSTOM_RSTICK_DOWN;
-    }
 }
 
 f32 Audio_OcaAdjStick(s8 inp) {
@@ -1533,14 +1477,7 @@ void func_800ED200(void) {
     u8 j;
     u8 k;
 
-    u32 disableSongBtnMap;
-    if (CVarGetInteger(CVAR_SETTING("CustomOcarina.Enabled"), 0)) {
-        disableSongBtnMap = BTN_CUSTOM_OCARINA_DISABLE_SONGS;
-    } else {
-        disableSongBtnMap = BTN_L;
-    }
-
-    if (CHECK_BTN_ANY(sCurOcarinaBtnPress, disableSongBtnMap) &&
+    if (CHECK_BTN_ANY(sCurOcarinaBtnPress, BTN_L) &&
         CHECK_BTN_ANY(sCurOcarinaBtnPress, sOcarinaAllowedBtnMask)) {
         func_800ECC04((u16)D_80130F3C);
         return;
@@ -1594,13 +1531,9 @@ void func_800ED200(void) {
 
 void func_800ED458(s32 arg0) {
     u32 phi_v1_2;
-    bool customControls = CVarGetInteger(CVAR_SETTING("CustomOcarina.Enabled"), 0);
-
     if (D_80130F3C != 0 && sOcarinaDropInputTimer != 0) {
         sOcarinaDropInputTimer--;
-        if (!CVarGetInteger(CVAR_ENHANCEMENT("DpadNoDropOcarinaInput"), 0)) {
-            return;
-        }
+        return;
     }
 
     if ((D_8016BA10 == 0) ||
@@ -1615,47 +1548,34 @@ void func_800ED458(s32 arg0) {
             D_8016BA18 &= phi_v1_2;
         }
 
-        Audio_OcaUpdateBtnMap(customControls);
-        if (D_8016BA18 & sOcarinaD4BtnMap && GameInteractor_Should(VB_HAVE_OCARINA_NOTE_D4, true)) {
+        if (D_8016BA18 & sOcarinaD4BtnMap) {
             osSyncPrintf("Presss NA_KEY_D4 %08x\n", sOcarinaD4BtnMap);
             sCurOcarinaBtnVal = 2;
             sCurOcarinaBtnIdx = 0;
-        } else if (D_8016BA18 & sOcarinaF4BtnMap && GameInteractor_Should(VB_HAVE_OCARINA_NOTE_F4, true)) {
+        } else if (D_8016BA18 & sOcarinaF4BtnMap) {
             osSyncPrintf("Presss NA_KEY_F4 %08x\n", sOcarinaF4BtnMap);
             sCurOcarinaBtnVal = 5;
             sCurOcarinaBtnIdx = 1;
-        } else if (D_8016BA18 & sOcarinaA4BtnMap && GameInteractor_Should(VB_HAVE_OCARINA_NOTE_A4, true)) {
+        } else if (D_8016BA18 & sOcarinaA4BtnMap) {
             osSyncPrintf("Presss NA_KEY_A4 %08x\n", sOcarinaA4BtnMap);
             sCurOcarinaBtnVal = 9;
             sCurOcarinaBtnIdx = 2;
-        } else if (D_8016BA18 & sOcarinaB4BtnMap && GameInteractor_Should(VB_HAVE_OCARINA_NOTE_B4, true)) {
+        } else if (D_8016BA18 & sOcarinaB4BtnMap) {
             osSyncPrintf("Presss NA_KEY_B4 %08x\n", sOcarinaA4BtnMap);
             sCurOcarinaBtnVal = 0xB;
             sCurOcarinaBtnIdx = 3;
-        } else if (D_8016BA18 & sOcarinaD5BtnMap && GameInteractor_Should(VB_HAVE_OCARINA_NOTE_D5, true)) {
+        } else if (D_8016BA18 & sOcarinaD5BtnMap) {
             osSyncPrintf("Presss NA_KEY_D5 %08x\n", sOcarinaD5BtnMap);
             sCurOcarinaBtnVal = 0xE;
             sCurOcarinaBtnIdx = 4;
         }
 
-        u32 noteSharpBtnMap;
-        if (customControls) {
-            noteSharpBtnMap = BTN_CUSTOM_OCARINA_PITCH_UP;
-        } else {
-            noteSharpBtnMap = BTN_R;
-        }
-        if ((sCurOcarinaBtnVal != 0xFF) && (sCurOcarinaBtnPress & noteSharpBtnMap) && (sRecordingState != 2)) {
+        if ((sCurOcarinaBtnVal != 0xFF) && (sCurOcarinaBtnPress & BTN_R) && (sRecordingState != 2)) {
             sCurOcarinaBtnIdx += 0x80;
             sCurOcarinaBtnVal++;
         }
 
-        u32 noteFlatBtnMap;
-        if (customControls) {
-            noteFlatBtnMap = BTN_CUSTOM_OCARINA_PITCH_DOWN;
-        } else {
-            noteFlatBtnMap = BTN_Z;
-        }
-        if ((sCurOcarinaBtnVal != 0xFF) && (sCurOcarinaBtnPress & noteFlatBtnMap) && (sRecordingState != 2)) {
+        if ((sCurOcarinaBtnVal != 0xFF) && (sCurOcarinaBtnPress & BTN_Z) && (sRecordingState != 2)) {
             sCurOcarinaBtnIdx += 0x40;
             sCurOcarinaBtnVal--;
         }
@@ -1678,7 +1598,6 @@ void func_800ED458(s32 arg0) {
         } else if ((sPrevOcarinaNoteVal != 0xFF) && (sCurOcarinaBtnVal == 0xFF)) {
             Audio_StopSfxById(NA_SE_OC_OCARINA);
         }
-        GameInteractor_ExecuteOnOcarinaNote(sCurOcarinaBtnVal, D_80130F24, D_80130F10);
     }
 }
 
@@ -1689,13 +1608,6 @@ void func_800ED848(u8 inputEnabled) {
 void Audio_OcaSetInstrument(u8 arg0) {
     if (D_80130F10 == arg0) {
         return;
-    }
-
-    u16 sfxEditorId = arg0 + 0x81;
-    u16 newArg0 = AudioEditor_GetReplacementSeq(sfxEditorId);
-    if (newArg0 != sfxEditorId) {
-        gAudioContext.seqReplaced[SEQ_PLAYER_SFX] = 1;
-        arg0 = newArg0 - 0x81;
     }
 
     Audio_SeqCmd8(SEQ_PLAYER_SFX, 1, SFX_PLAYER_CHANNEL_OCARINA, arg0);
@@ -2056,38 +1968,15 @@ void func_800EE404(void) {
 void Audio_OcaMemoryGameStart(u8 minigameRound) {
     u8 i;
 
-    // #region SOH [Enhancement]
-    if (CVarGetInteger(CVAR_ENHANCEMENT("CustomizeOcarinaGame"), 0)) {
-        u8 startingNotes = 3;
-        u8 roundOneCount = CVarGetInteger(CVAR_ENHANCEMENT("OcarinaGame.RoundOneNotes"), 5);
-        u8 roundTwoCount = CVarGetInteger(CVAR_ENHANCEMENT("OcarinaGame.RoundTwoNotes"), 6);
-        u8 roundThreeCount = CVarGetInteger(CVAR_ENHANCEMENT("OcarinaGame.RoundThreeNotes"), 8);
-        u8 modMinigameNoteCnts[] = { roundOneCount, roundTwoCount, roundThreeCount };
+    if (minigameRound > 2) {
+        minigameRound = 2;
+    }
 
-        startingNotes = CVarGetInteger(CVAR_ENHANCEMENT("OcarinaGame.StartingNotes"), 3);
+    sOcaMinigameAppendPos = 0;
+    sOcaMinigameEndPos = sOcaMinigameNoteCnts[minigameRound];
 
-        if (minigameRound > 2) {
-            minigameRound = 2;
-        }
-
-        sOcaMinigameAppendPos = 0;
-        sOcaMinigameEndPos = modMinigameNoteCnts[minigameRound];
-
-        for (i = 0; i < startingNotes; i++) {
-            Audio_OcaMemoryGameGenNote();
-        }
-        // #endregion
-    } else {
-        if (minigameRound > 2) {
-            minigameRound = 2;
-        }
-
-        sOcaMinigameAppendPos = 0;
-        sOcaMinigameEndPos = sOcaMinigameNoteCnts[minigameRound];
-
-        for (i = 0; i < 3; i++) {
-            Audio_OcaMemoryGameGenNote();
-        }
+    for (i = 0; i < 3; i++) {
+        Audio_OcaMemoryGameGenNote();
     }
 }
 
@@ -2106,24 +1995,11 @@ s32 Audio_OcaMemoryGameGenNote(void) {
         rndNote = sOcarinaNoteValues[(rnd + 1) % 5];
     }
 
-    // #region SOH [Enhancement]
-    if (CVarGetInteger(CVAR_ENHANCEMENT("CustomizeOcarinaGame"), 0)) {
-        int noteSpeed = 0x2D;
-        noteSpeed = noteSpeed / CVarGetInteger(CVAR_ENHANCEMENT("OcarinaGame.NoteSpeed"), 1);
-
-        sOcarinaSongs[OCARINA_SONG_MEMORY_GAME][sOcaMinigameAppendPos].noteIdx = rndNote;
-        sOcarinaSongs[OCARINA_SONG_MEMORY_GAME][sOcaMinigameAppendPos].unk_02 = noteSpeed;
-        sOcarinaSongs[OCARINA_SONG_MEMORY_GAME][sOcaMinigameAppendPos].volume = 0x50;
-        sOcarinaSongs[OCARINA_SONG_MEMORY_GAME][sOcaMinigameAppendPos].vibrato = 0;
-        sOcarinaSongs[OCARINA_SONG_MEMORY_GAME][sOcaMinigameAppendPos].tone = 0;
-        // #endregion
-    } else {
-        sOcarinaSongs[OCARINA_SONG_MEMORY_GAME][sOcaMinigameAppendPos].noteIdx = rndNote;
-        sOcarinaSongs[OCARINA_SONG_MEMORY_GAME][sOcaMinigameAppendPos].unk_02 = 0x2D;
-        sOcarinaSongs[OCARINA_SONG_MEMORY_GAME][sOcaMinigameAppendPos].volume = 0x50;
-        sOcarinaSongs[OCARINA_SONG_MEMORY_GAME][sOcaMinigameAppendPos].vibrato = 0;
-        sOcarinaSongs[OCARINA_SONG_MEMORY_GAME][sOcaMinigameAppendPos].tone = 0;
-    }
+    sOcarinaSongs[OCARINA_SONG_MEMORY_GAME][sOcaMinigameAppendPos].noteIdx = rndNote;
+    sOcarinaSongs[OCARINA_SONG_MEMORY_GAME][sOcaMinigameAppendPos].unk_02 = 0x2D;
+    sOcarinaSongs[OCARINA_SONG_MEMORY_GAME][sOcaMinigameAppendPos].volume = 0x50;
+    sOcarinaSongs[OCARINA_SONG_MEMORY_GAME][sOcaMinigameAppendPos].vibrato = 0;
+    sOcarinaSongs[OCARINA_SONG_MEMORY_GAME][sOcaMinigameAppendPos].tone = 0;
 
     sOcaMinigameAppendPos++;
 
@@ -3028,9 +2904,9 @@ void AudioDebug_ProcessInput_SndCont(void) {
 
     if (CHECK_BTN_ANY(sDebugPadPress, BTN_DLEFT)) {
         if (sAudioSndContWork[sAudioSndContSel] >= step) {
-            if (1) {
+            
                 sAudioSndContWork[sAudioSndContSel] -= step;
-            }
+            
         } else {
             sAudioSndContWork[sAudioSndContSel] += sAudioSndContWorkLims[sAudioSndContSel] - step;
         }
@@ -3992,50 +3868,6 @@ void Audio_ResetSfxChannelState(void) {
     sAudioCodeReverb = 0;
 }
 
-// Function to play "get-item" fanfares according to the type of item obtained (used in rando)
-// Longer fanfares for medallions/stones/songs are behind the Cvar
-void Audio_PlayFanfare_Rando(GetItemEntry getItem) {
-    s32 temp1;
-    s16 getItemId = getItem.getItemId;
-    s16 itemId = getItem.itemId;
-
-    if (getItem.modIndex == MOD_NONE) {
-        if (((itemId >= ITEM_RUPEE_GREEN) && (itemId <= ITEM_RUPEE_GOLD)) || (itemId == ITEM_HEART)) {
-            Audio_PlaySoundGeneral(NA_SE_SY_GET_BOXITEM, &gSfxDefaultPos, 4, &gSfxDefaultFreqAndVolScale,
-                                   &gSfxDefaultFreqAndVolScale, &gSfxDefaultReverb);
-        } else {
-            if (itemId == ITEM_HEART_CONTAINER ||
-                ((itemId == ITEM_HEART_PIECE_2) && ((gSaveContext.inventory.questItems & 0xF0000000) == 0x40000000))) {
-                temp1 = NA_BGM_HEART_GET | 0x900;
-            } else {
-                temp1 = (itemId == ITEM_HEART_PIECE_2) ? NA_BGM_SMALL_ITEM_GET : NA_BGM_ITEM_GET | 0x900;
-            }
-            // If we get a skulltula token or the "WINNER" heart, play "get small item"
-            // Also make sure "WINNER" heart is not the 4th heart piece.
-            if (itemId == ITEM_SKULL_TOKEN || (getItemId == GI_HEART_PIECE_WIN && itemId == ITEM_HEART_PIECE_2 &&
-                                               (gSaveContext.inventory.questItems & 0xF0000000) != 0x40000000)) {
-                temp1 = NA_BGM_SMALL_ITEM_GET | 0x900;
-            }
-            // If the setting is toggled on and we get special quest items (longer fanfares):
-            if (CVarGetInteger(CVAR_RANDOMIZER_ENHANCEMENT("QuestItemFanfares"), 0) != 0) {
-                // If we get a medallion, play the "get a medallion" fanfare
-                if ((itemId >= ITEM_MEDALLION_FOREST) && (itemId <= ITEM_MEDALLION_LIGHT)) {
-                    temp1 = NA_BGM_MEDALLION_GET | 0x900;
-                }
-                // If it's a Spiritual Stone, play the "get a spiritual stone" fanfare
-                if ((itemId >= ITEM_KOKIRI_EMERALD) && (itemId <= ITEM_ZORA_SAPPHIRE)) {
-                    temp1 = NA_BGM_SPIRITUAL_STONE | 0x900;
-                }
-                // If the item we're getting is a song, play the "learned a song" fanfare
-                if ((itemId >= ITEM_SONG_MINUET) && (itemId <= ITEM_SONG_STORMS)) {
-                    temp1 = NA_BGM_OCA_FAIRY_GET | 0x900;
-                }
-            }
-            Audio_PlayFanfare(temp1);
-        }
-    }
-}
-
 void func_800F3F3C(u8 arg0) {
     if (gSoundBankMuted[0] != 1) {
         Audio_StartSeq(SEQ_PLAYER_BGM_SUB, 0, NA_BGM_VARIOUS_SFX);
@@ -4623,22 +4455,6 @@ void func_800F5ACC(u16 seqId) {
         }
 
         Audio_StartSeq(SEQ_PLAYER_BGM_MAIN, 0, seqId);
-    }
-}
-
-// based on func_800F5ACC
-void PreviewSequence(u16 seqId) {
-    u16 curSeqId = func_800FA0B4(SEQ_PLAYER_BGM_MAIN);
-
-    if ((curSeqId & 0xFF) != NA_BGM_GANON_TOWER && (curSeqId & 0xFF) != NA_BGM_ESCAPE && curSeqId != seqId) {
-        Audio_SetSequenceMode(SEQ_MODE_IGNORE);
-        if (curSeqId != NA_BGM_DISABLED) {
-            sPrevMainBgmSeqId = curSeqId;
-        } else {
-            osSyncPrintf("Middle Boss BGM Start not stack \n");
-        }
-
-        Audio_QueuePreviewSeqCmd(seqId);
     }
 }
 

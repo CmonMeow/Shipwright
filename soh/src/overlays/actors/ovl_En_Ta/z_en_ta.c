@@ -9,8 +9,6 @@
 #include "objects/object_ta/object_ta.h"
 #include "soh/OTRGlobals.h"
 #include "soh/ResourceManagerHelpers.h"
-#include "soh/Enhancements/game-interactor/GameInteractor_Hooks.h"
-
 #define FLAGS (ACTOR_FLAG_ATTENTION_ENABLED | ACTOR_FLAG_FRIENDLY)
 
 void EnTa_Init(Actor* thisx, PlayState* play);
@@ -468,9 +466,9 @@ void func_80B14B6C(EnTa* this, PlayState* play) {
         EnTa_SetupAction(this, func_80B14AF4, EnTa_AnimRepeatCurrent);
         this->unk_2CC = 5;
         Flags_SetEventChkInf(EVENTCHKINF_TALON_RETURNED_FROM_CASTLE);
-        if (GameInteractor_Should(VB_PLAY_ONEPOINT_ACTOR_CS, true, this)) {
+        
             OnePointCutscene_EndCutscene(play, csCamIdx);
-        }
+        
         Animation_PlayOnce(&this->skelAnime, &gTalonRunTransitionAnim);
         this->currentAnimation = &gTalonRunAnim;
     }
@@ -697,7 +695,7 @@ void EnTa_RunCuccoGame(EnTa* this, PlayState* play) {
                 this->superCuccos[i]->actor.gravity -= 0.03f;
             }
 
-            if (!GameInteractor_Should(VB_PREVENT_STRENGTH, !func_80B150AC(this, play, i))) {
+            if (!(!func_80B150AC(this, play, i))) {
                 if (this->unk_2C4[i] > 0) {
                     this->unk_2C4[i]--;
                 } else {
@@ -871,7 +869,7 @@ void EnTa_TalkGeneralInLonLonHouse(EnTa* this, PlayState* play) {
 
 void EnTa_GiveItemInLonLonHouse(EnTa* this, PlayState* play) {
     if (Actor_HasParent(&this->actor, play) ||
-        !GameInteractor_Should(VB_GIVE_ITEM_FROM_TALONS_CHICKENS, true, &this->actor)) {
+        !(true)) {
         this->actor.parent = NULL;
         this->actionFunc = EnTa_TalkGeneralInLonLonHouse;
         if (!(this->unk_2E0 & 0x2)) {
@@ -881,9 +879,9 @@ void EnTa_GiveItemInLonLonHouse(EnTa* this, PlayState* play) {
     } else if (this->unk_2E0 & 2) {
         Actor_OfferGetItem(&this->actor, play, GI_MILK, 10000.0f, 50.0f);
     } else {
-        if (GameInteractor_Should(VB_GIVE_ITEM_FROM_TALONS_CHICKENS, true, &this->actor)) {
+        
             Actor_OfferGetItem(&this->actor, play, GI_MILK_BOTTLE, 10000.0f, 50.0f);
-        }
+        
     }
     this->unk_2E0 |= 1;
 }
@@ -893,9 +891,9 @@ void EnTa_TalkAfterCuccoGameFirstWon(EnTa* this, PlayState* play) {
         Message_CloseTextbox(play);
         this->unk_2E0 &= ~0x2;
         EnTa_SetupAction(this, EnTa_GiveItemInLonLonHouse, EnTa_AnimRunToEnd);
-        if (GameInteractor_Should(VB_GIVE_ITEM_FROM_TALONS_CHICKENS, true, &this->actor)) {
+        
             Actor_OfferGetItem(&this->actor, play, GI_MILK_BOTTLE, 10000.0f, 50.0f);
-        }
+        
     }
 }
 

@@ -1,4 +1,4 @@
-﻿#include "file_choose.h"
+#include "file_choose.h"
 
 #include <string.h>
 #include <stdio.h>
@@ -15,9 +15,6 @@
 #include "objects/object_mag/object_mag.h"
 #include "objects/gameplay_keep/gameplay_keep.h"
 #include "soh_assets.h"
-#include "soh/Enhancements/boss-rush/BossRush.h"
-#include "soh/Enhancements/FileSelectEnhancements.h"
-#include "soh/Enhancements/game-interactor/GameInteractor_Hooks.h"
 #include <assert.h>
 #include "z64save.h"
 #include "soh/SaveManager.h"
@@ -26,7 +23,7 @@
 #include "soh/ShipUtils.h"
 
 #define MIN_QUEST (ResourceMgr_GameHasOriginal() ? QUEST_NORMAL : QUEST_MASTER)
-#define MAX_QUEST QUEST_BOSSRUSH
+#define MAX_QUEST QUEST_MASTER
 
 typedef struct Sprite {
     char tex[512];
@@ -38,8 +35,6 @@ typedef struct Sprite {
 } Sprite;
 
 void Sram_InitDebugSave(void);
-void Sram_InitBossRushSave();
-
 void FileChoose_DrawTextureI8(GraphicsContext* gfxCtx, const void* texture, s16 texWidth, s16 texHeight, s16 rectLeft,
                               s16 rectTop, s16 rectWidth, s16 rectHeight, s16 dsdx, s16 dtdy) {
     OPEN_DISPS(gfxCtx);
@@ -269,7 +264,6 @@ void FileChoose_FinishFadeIn(GameState* thisx) {
         this->controlsAlpha = 255;
         this->windowAlpha = 200;
         this->configMode = CM_MAIN_MENU;
-        GameInteractor_ExecuteOnPresentFileSelect();
     }
 }
 
@@ -312,7 +306,6 @@ void SpriteDraw(FileChooseContext* this, Sprite* sprite, int left, int top, int 
 void FileChoose_UpdateMainMenu(GameState* thisx) {
     FileChooseContext* this = (FileChooseContext*)thisx;
     Input* input = &this->state.input[0];
-    bool dpad = CVarGetInteger(CVAR_SETTING("DpadInText"), 0);
 
 
     if (CHECK_BTN_ALL(input->press.button, BTN_START) || CHECK_BTN_ALL(input->press.button, BTN_A)) {
@@ -369,11 +362,11 @@ void FileChoose_UpdateMainMenu(GameState* thisx) {
             }
         }
     } else {
-        if ((ABS(this->stickRelY) > 30) || (dpad && CHECK_BTN_ANY(input->press.button, BTN_DDOWN | BTN_DUP))) {
+        if ((ABS(this->stickRelY) > 30)) {
             Audio_PlaySoundGeneral(NA_SE_SY_FSEL_CURSOR, &gSfxDefaultPos, 4, &gSfxDefaultFreqAndVolScale,
                                    &gSfxDefaultFreqAndVolScale, &gSfxDefaultReverb);
 
-            if ((this->stickRelY > 30) || (dpad && CHECK_BTN_ALL(input->press.button, BTN_DUP))) {
+            if ((this->stickRelY > 30)) {
                 this->buttonIndex--;
                 if (this->buttonIndex < FS_BTN_MAIN_FILE_1) {
                     this->buttonIndex = FS_BTN_MAIN_OPTIONS;
@@ -412,7 +405,6 @@ void FileChoose_UpdateMainMenu(GameState* thisx) {
         }
 
         if (sLastFileChooseButtonIndex != this->buttonIndex) {
-            GameInteractor_ExecuteOnUpdateFileSelectSelection(this->buttonIndex);
             sLastFileChooseButtonIndex = this->buttonIndex;
         }
     }
@@ -484,45 +476,27 @@ void FileChoose_StartQuestMenu(GameState* thisx) {
         this->logoAlpha = 255;
         this->configMode = CM_QUEST_MENU;
 
-        GameInteractor_ExecuteOnUpdateFileQuestSelection(this->questType[this->buttonIndex]);
-    }
-}
-
-void FileChoose_StartBossRushMenu(GameState* thisx) {
-    FileChooseContext* this = (FileChooseContext*)thisx;
-
-    this->logoAlpha -= 25;
-    this->bossRushUIAlpha = 0;
-    this->bossRushArrowOffset = 0;
-
-    if (this->logoAlpha <= 0) {
-        this->logoAlpha = 0;
-        this->configMode = CM_BOSS_RUSH_MENU;
     }
 }
 
 void FileChoose_UpdateQuestMenu(GameState* thisx) {
     static u8 emptyName[] = { 0x3E, 0x3E, 0x3E, 0x3E, 0x3E, 0x3E, 0x3E, 0x3E };
     static u8 emptyNameNES[] = { 0xDF, 0xDF, 0xDF, 0xDF, 0xDF, 0xDF, 0xDF, 0xDF };
-    static u8 linkName[] = { 0x15, 0x2C, 0x31, 0x2E, 0x3E, 0x3E, 0x3E, 0x3E };
-    static u8 linkNameNES[] = { 0xB6, 0xCD, 0xD2, 0xCF, 0xDF, 0xDF, 0xDF, 0xDF };
-    static u8 linkNameJP[] = { 0x81, 0x87, 0x61, 0xDF, 0xDF, 0xDF, 0xDF, 0xDF };
     FileChoose_UpdateStickDirectionPromptAnim(thisx);
     FileChooseContext* this = (FileChooseContext*)thisx;
     Input* input = &this->state.input[0];
     s8 i = 0;
-    bool dpad = CVarGetInteger(CVAR_SETTING("DpadInText"), 0);
     void* defaultName;
 
 
-    if (ABS(this->stickRelX) > 30 || (dpad && CHECK_BTN_ANY(input->press.button, BTN_DLEFT | BTN_DRIGHT))) {
-        if (this->stickRelX > 30 || (dpad && CHECK_BTN_ANY(input->press.button, BTN_DRIGHT))) {
+    if (ABS(this->stickRelX) > 30) {
+        if (this->stickRelX > 30) {
             this->questType[this->buttonIndex] += 1;
             while (this->questType[this->buttonIndex] == QUEST_MASTER && !ResourceMgr_GameHasMasterQuest()) {
                 // If Master Quest is selected without a Master Quest OTR present, skip past it.
                 this->questType[this->buttonIndex] += 1;
             }
-        } else if (this->stickRelX < -30 || (dpad && CHECK_BTN_ANY(input->press.button, BTN_DLEFT))) {
+        } else if (this->stickRelX < -30) {
             this->questType[this->buttonIndex] -= 1;
             while (this->questType[this->buttonIndex] == QUEST_MASTER && !ResourceMgr_GameHasMasterQuest()) {
                 // If Master Quest is selected without a Master Quest OTR present, skip past it.
@@ -540,51 +514,36 @@ void FileChoose_UpdateQuestMenu(GameState* thisx) {
         Audio_PlaySoundGeneral(NA_SE_SY_FSEL_CURSOR, &gSfxDefaultPos, 4, &gSfxDefaultFreqAndVolScale,
                                &gSfxDefaultFreqAndVolScale, &gSfxDefaultReverb);
 
-        GameInteractor_ExecuteOnUpdateFileQuestSelection(this->questType[this->buttonIndex]);
     }
 
     if (CHECK_BTN_ALL(input->press.button, BTN_A)) {
         gSaveContext.ship.quest.id = this->questType[this->buttonIndex];
 
-        if (this->questType[this->buttonIndex] == QUEST_BOSSRUSH) {
-            Audio_PlaySoundGeneral(NA_SE_SY_FSEL_DECIDE_L, &gSfxDefaultPos, 4, &gSfxDefaultFreqAndVolScale,
-                                   &gSfxDefaultFreqAndVolScale, &gSfxDefaultReverb);
-            this->prevConfigMode = this->configMode;
-            this->configMode = CM_ROTATE_TO_BOSS_RUSH_MENU;
-            return;
-        } else {
-            Audio_PlaySoundGeneral(NA_SE_SY_FSEL_DECIDE_L, &gSfxDefaultPos, 4, &gSfxDefaultFreqAndVolScale,
-                                   &gSfxDefaultFreqAndVolScale, &gSfxDefaultReverb);
-            osSyncPrintf("Selected Dungeon Quest: %d\n", IS_MASTER_QUEST);
-            this->prevConfigMode = this->configMode;
-            this->configMode = CM_ROTATE_TO_NAME_ENTRY;
-            this->logoAlpha = 0;
-            this->kbdButton = FS_KBD_BTN_NONE;
-            this->charPage = FS_CHAR_PAGE_ENG;
-            this->kbdX = 0;
-            this->kbdY = 0;
-            this->charIndex = 0;
-            this->charBgAlpha = 0;
-            this->newFileNameCharCount = CVarGetInteger(CVAR_ENHANCEMENT("LinkDefaultName"), 0) ? 4 : 0;
-            this->nameEntryBoxPosX = 120;
-            this->nameEntryBoxAlpha = 0;
-            if (ResourceMgr_GetGameRegion(0) == GAME_REGION_PAL && gSaveContext.language != LANGUAGE_JPN) {
-                defaultName = CVarGetInteger(CVAR_ENHANCEMENT("LinkDefaultName"), 0) ? &linkName : &emptyName;
-            } else if (gSaveContext.language == LANGUAGE_JPN) { // Japanese
-                if (CVarGetInteger(CVAR_ENHANCEMENT("LinkDefaultName"), 0) != 0) {
-                    // Set player name to "リンク" ("Link" in Katakana, 3 characters long) when playing in Japanese.
-                    defaultName = &linkNameJP;
-                    this->newFileNameCharCount = 3;
-                } else {
-                    defaultName = &emptyNameNES;
-                }
-                this->charPage = FS_CHAR_PAGE_HIRA; // Default to Hiragana Keyboard
-            } else {                                // GAME_REGION_NTSC
-                defaultName = CVarGetInteger(CVAR_ENHANCEMENT("LinkDefaultName"), 0) ? &linkNameNES : &emptyNameNES;
-            }
-            memcpy(Save_GetSaveMetaInfo(this->buttonIndex)->playerName, defaultName, 8);
-            return;
+        Audio_PlaySoundGeneral(NA_SE_SY_FSEL_DECIDE_L, &gSfxDefaultPos, 4, &gSfxDefaultFreqAndVolScale,
+                               &gSfxDefaultFreqAndVolScale, &gSfxDefaultReverb);
+        osSyncPrintf("Selected Dungeon Quest: %d\n", IS_MASTER_QUEST);
+        this->prevConfigMode = this->configMode;
+        this->configMode = CM_ROTATE_TO_NAME_ENTRY;
+        this->logoAlpha = 0;
+        this->kbdButton = FS_KBD_BTN_NONE;
+        this->charPage = FS_CHAR_PAGE_ENG;
+        this->kbdX = 0;
+        this->kbdY = 0;
+        this->charIndex = 0;
+        this->charBgAlpha = 0;
+        this->newFileNameCharCount = 0;
+        this->nameEntryBoxPosX = 120;
+        this->nameEntryBoxAlpha = 0;
+        if (ResourceMgr_GetGameRegion(0) == GAME_REGION_PAL && gSaveContext.language != LANGUAGE_JPN) {
+            defaultName = &emptyName;
+        } else if (gSaveContext.language == LANGUAGE_JPN) { // Japanese
+            defaultName = &emptyNameNES;
+            this->charPage = FS_CHAR_PAGE_HIRA; // Default to Hiragana Keyboard
+        } else {                                // GAME_REGION_NTSC
+            defaultName = &emptyNameNES;
         }
+        memcpy(Save_GetSaveMetaInfo(this->buttonIndex)->playerName, defaultName, 8);
+        return;
     }
 
     if (CHECK_BTN_ALL(input->press.button, BTN_B)) {
@@ -672,8 +631,7 @@ void FileChoose_RotateToMain(GameState* thisx) {
 void FileChoose_RotateToQuest(GameState* thisx) {
     FileChooseContext* this = (FileChooseContext*)thisx;
 
-    if (this->configMode == CM_NAME_ENTRY_TO_QUEST_MENU || this->configMode == CM_BOSS_RUSH_TO_QUEST ||
-        false) {
+    if (this->configMode == CM_NAME_ENTRY_TO_QUEST_MENU) {
         this->windowRot -= VREG(16);
 
         if (this->windowRot <= 314.0f) {
@@ -687,17 +645,6 @@ void FileChoose_RotateToQuest(GameState* thisx) {
             this->windowRot = 314.0f;
             this->configMode = CM_START_QUEST_MENU;
         }
-    }
-}
-
-void FileChoose_RotateToBossRush(GameState* thisx) {
-    FileChooseContext* this = (FileChooseContext*)thisx;
-
-    this->windowRot += VREG(16);
-
-    if (this->windowRot >= 628.0f) {
-        this->windowRot = 628.0f;
-        this->configMode = CM_START_BOSS_RUSH_MENU;
     }
 }
 
@@ -725,8 +672,6 @@ static void (*gConfigModeUpdateFuncs[])(GameState*) = {
     FileChoose_UnusedCMDelay,       FileChoose_RotateToQuest,
     FileChoose_UpdateQuestMenu,     FileChoose_StartQuestMenu,
     FileChoose_RotateToMain,        FileChoose_RotateToQuest,
-    FileChoose_RotateToBossRush,    FileChoose_UpdateBossRushMenu,
-    FileChoose_StartBossRushMenu,   FileChoose_RotateToQuest,
 };
 
 static void (*gConfigModeUpdateFuncsNES[])(GameState*) = {
@@ -753,8 +698,6 @@ static void (*gConfigModeUpdateFuncsNES[])(GameState*) = {
     FileChoose_UnusedCMDelay,       FileChoose_RotateToQuest,
     FileChoose_UpdateQuestMenu,     FileChoose_StartQuestMenu,
     FileChoose_RotateToMain,        FileChoose_RotateToQuest,
-    FileChoose_RotateToBossRush,    FileChoose_UpdateBossRushMenu,
-    FileChoose_StartBossRushMenu,   FileChoose_RotateToQuest,
 };
 
 /**
@@ -1165,21 +1108,13 @@ void FileChoose_DrawFileInfo(GameState* thisx, s16 fileIndex, s16 isActive) {
     s16 deathCountSplit[3];
 
     Color_RGB8 heartColor = { HEARTS_PRIM_R, HEARTS_PRIM_G, HEARTS_PRIM_B };
-    if (CVarGetInteger(CVAR_COSMETIC("Consumable.Hearts.Changed"), 0)) {
-        heartColor = CVarGetColor24(CVAR_COSMETIC("Consumable.Hearts.Value"), heartColor);
-    }
+    
     Color_RGB8 heartBorder = { HEARTS_ENV_R, HEARTS_ENV_G, HEARTS_ENV_B };
-    if (CVarGetInteger(CVAR_COSMETIC("Consumable.HeartBorder.Changed"), 0)) {
-        heartBorder = CVarGetColor24(CVAR_COSMETIC("Consumable.HeartBorder.Value"), heartBorder);
-    }
+    
     Color_RGB8 ddColor = { HEARTS_DD_ENV_R, HEARTS_DD_ENV_G, HEARTS_DD_ENV_B };
-    if (CVarGetInteger(CVAR_COSMETIC("Consumable.DDHearts.Changed"), 0)) {
-        ddColor = CVarGetColor24(CVAR_COSMETIC("Consumable.DDHearts.Value"), ddColor);
-    }
+    
     Color_RGB8 ddBorder = { HEARTS_DD_PRIM_R, HEARTS_DD_PRIM_G, HEARTS_DD_PRIM_B };
-    if (CVarGetInteger(CVAR_COSMETIC("Consumable.DDHeartBorder.Changed"), 0)) {
-        ddBorder = CVarGetColor24(CVAR_COSMETIC("Consumable.DDHeartBorder.Value"), ddBorder);
-    }
+    
 
     OPEN_DISPS(this->state.gfxCtx);
 
@@ -1243,12 +1178,12 @@ void FileChoose_DrawFileInfo(GameState* thisx, s16 fileIndex, s16 isActive) {
                                &deathCountSplit[2]);
 
         // draw death count
-        if (GameInteractor_Should(VB_FILE_SELECT_DRAW_DEATHS, true, this)) {
+        
             for (i = 0, vtxOffset = 0; i < 3; i++, vtxOffset += 4) {
                 FileChoose_DrawCharacter(this->state.gfxCtx, sp54->fontBuf + deathCountSplit[i] * FONT_CHAR_TEX_SIZE,
                                          vtxOffset);
             }
-        }
+        
 
         gDPPipeSync(POLY_OPA_DISP++);
 
@@ -1269,14 +1204,14 @@ void FileChoose_DrawFileInfo(GameState* thisx, s16 fileIndex, s16 isActive) {
 
         i = Save_GetSaveMetaInfo(fileIndex)->healthCapacity / FULL_HEART_HEALTH;
 
-        if (GameInteractor_Should(VB_FILE_SELECT_DRAW_HEARTS, true, this)) {
+        
             // draw hearts
             for (vtxOffset = 0, j = 0; j < i; j++, vtxOffset += 4) {
                 gSPVertex(POLY_OPA_DISP++, &this->windowContentVtx[D_8081284C[fileIndex] + vtxOffset] + 0x30, 4, 0);
 
                 POLY_OPA_DISP = FileChoose_QuadTextureIA8(POLY_OPA_DISP, sHeartTextures[heartType], 0x10, 0x10, 0);
             }
-        }
+        
 
         gDPPipeSync(POLY_OPA_DISP++);
 
@@ -1286,7 +1221,7 @@ void FileChoose_DrawFileInfo(GameState* thisx, s16 fileIndex, s16 isActive) {
             textAlpha = 255;
         }
 
-        if (GameInteractor_Should(VB_FILE_SELECT_DRAW_QUEST_ITEMS, true, this, fileIndex, textAlpha)) {
+        
             // draw quest items
             for (vtxOffset = 0, j = 0; j < 9; j++, vtxOffset += 4) {
                 if (Save_GetSaveMetaInfo(fileIndex)->questItems & gBitFlags[sQuestItemFlags[j]]) {
@@ -1307,7 +1242,7 @@ void FileChoose_DrawFileInfo(GameState* thisx, s16 fileIndex, s16 isActive) {
                     }
                 }
             }
-        }
+        
     }
 
     CLOSE_DISPS(this->state.gfxCtx);
@@ -1379,20 +1314,6 @@ const char* FileChoose_GetQuestChooseTitleTexName(Language lang) {
     }
 }
 
-const char* FileChoose_GetSohOptionsTitleTexName(Language lang) {
-    switch (lang) {
-        case LANGUAGE_ENG:
-        default:
-            return gFileSelBossRushSettingsENGText;
-        case LANGUAGE_FRA:
-            return gFileSelBossRushSettingsFRAText;
-        case LANGUAGE_GER:
-            return gFileSelBossRushSettingsGERText;
-        case LANGUAGE_JPN:
-            return gFileSelBossRushSettingsJPNText;
-    }
-}
-
 /**
  * Draw most window contents including buttons, labels, and icons.
  * Does not include anything from the keyboard and settings windows.
@@ -1413,13 +1334,7 @@ void FileChoose_DrawWindowContents(GameState* thisx) {
         case CM_START_QUEST_MENU:
         case CM_QUEST_TO_MAIN:
         case CM_NAME_ENTRY_TO_QUEST_MENU:
-        case CM_ROTATE_TO_BOSS_RUSH_MENU:
             tex = FileChoose_GetQuestChooseTitleTexName(gSaveContext.language);
-            break;
-        case CM_BOSS_RUSH_MENU:
-        case CM_START_BOSS_RUSH_MENU:
-        case CM_BOSS_RUSH_TO_QUEST:
-            tex = FileChoose_GetSohOptionsTitleTexName(gSaveContext.language);
             break;
         default:
             tex = sTitleLabels[gSaveContext.language][this->titleLabel];
@@ -1511,23 +1426,8 @@ void FileChoose_DrawWindowContents(GameState* thisx) {
                 }
                 break;
 
-            case QUEST_BOSSRUSH:
-                gDPSetPrimColor(POLY_OPA_DISP++, 0, 0, 255, 255, 255, this->logoAlpha);
-                FileChoose_DrawTextureI8(this->state.gfxCtx, gTitleTheLegendOfTextTex, 72, 8, 156, 108, 72, 8, 1024,
-                                         1024);
-                FileChoose_DrawTextureI8(this->state.gfxCtx, gTitleOcarinaOfTimeTMTextTex, 96, 8, 154, 163, 96, 8, 1024,
-                                         1024);
-                FileChoose_DrawImageRGBA32(
-                    this->state.gfxCtx, 160, 135,
-                    ResourceMgr_GameHasOriginal() ? gTitleZeldaShieldLogoTex : gTitleZeldaShieldLogoMQTex, 160, 160);
-                FileChoose_DrawImageRGBA32(this->state.gfxCtx, 182, 180, gTitleBossRushSubtitleTex, 128, 32);
-                break;
         }
-    } else if (this->configMode == CM_BOSS_RUSH_MENU) {
-        FileChoose_DrawBossRushMenuWindowContents(this);
-    } else if (this->configMode != CM_ROTATE_TO_NAME_ENTRY && this->configMode != CM_START_BOSS_RUSH_MENU &&
-               this->configMode != CM_ROTATE_TO_BOSS_RUSH_MENU && this->configMode != CM_BOSS_RUSH_TO_QUEST &&
-               true) {
+    } else if (this->configMode != CM_ROTATE_TO_NAME_ENTRY) {
         gDPPipeSync(POLY_OPA_DISP++);
         gDPSetPrimColor(POLY_OPA_DISP++, 0, 0, 255, 255, 255, this->titleAlpha[1]);
         gDPLoadTextureBlock(POLY_OPA_DISP++, sTitleLabels[gSaveContext.language][this->nextTitleLabel], G_IM_FMT_IA,
@@ -1545,7 +1445,7 @@ void FileChoose_DrawWindowContents(GameState* thisx) {
             gDPSetPrimColor(POLY_OPA_DISP++, 0, 0, this->windowColor[0], this->windowColor[1], this->windowColor[2],
                             this->fileInfoAlpha[fileIndex]);
 
-            if (GameInteractor_Should(VB_FILE_SELECT_DRAW_FILE_INFO_BOX, true, this)) {
+            
                 gSPVertex(POLY_OPA_DISP++, &this->windowContentVtx[temp], 20, 0);
 
                 for (quadVtxIndex = 0, i = 0; i < 5; i++, quadVtxIndex += 4) {
@@ -1555,7 +1455,7 @@ void FileChoose_DrawWindowContents(GameState* thisx) {
                     gSP1Quadrangle(POLY_OPA_DISP++, quadVtxIndex, quadVtxIndex + 2, quadVtxIndex + 3, quadVtxIndex + 1,
                                    0);
                 }
-            }
+            
         }
 
         for (i = 0; i < 3; i++, temp += 20) {
@@ -1852,8 +1752,7 @@ void FileChoose_ConfigModeDraw(GameState* thisx) {
     // draw quest menu
     if (this->configMode == CM_QUEST_MENU || (this->configMode == CM_ROTATE_TO_QUEST_MENU) ||
         this->configMode == CM_ROTATE_TO_NAME_ENTRY || this->configMode == CM_QUEST_TO_MAIN ||
-        this->configMode == CM_NAME_ENTRY_TO_QUEST_MENU || this->configMode == CM_ROTATE_TO_BOSS_RUSH_MENU ||
-        false) {
+        this->configMode == CM_NAME_ENTRY_TO_QUEST_MENU) {
         // window
         gDPPipeSync(POLY_OPA_DISP++);
         gDPSetCombineMode(POLY_OPA_DISP++, G_CC_MODULATEIA_PRIM, G_CC_MODULATEIA_PRIM);
@@ -1864,37 +1763,6 @@ void FileChoose_ConfigModeDraw(GameState* thisx) {
         Matrix_Translate(0.0f, 0.0f, -93.6f, MTXMODE_NEW);
         Matrix_Scale(0.78f, 0.78f, 0.78f, MTXMODE_APPLY);
         Matrix_RotateX((this->windowRot - 314.0f) / 100.0f, MTXMODE_APPLY);
-
-        gSPMatrix(POLY_OPA_DISP++, MATRIX_NEWMTX(this->state.gfxCtx), G_MTX_NOPUSH | G_MTX_LOAD | G_MTX_MODELVIEW);
-
-        gSPVertex(POLY_OPA_DISP++, &this->windowVtx[0], 32, 0);
-        gSPDisplayList(POLY_OPA_DISP++, gFileSelWindow1DL);
-
-        gSPVertex(POLY_OPA_DISP++, &this->windowVtx[32], 32, 0);
-        gSPDisplayList(POLY_OPA_DISP++, gFileSelWindow2DL);
-
-        gSPVertex(POLY_OPA_DISP++, &this->windowVtx[64], 16, 0);
-        gSPDisplayList(POLY_OPA_DISP++, gFileSelWindow3DL);
-
-        gDPPipeSync(POLY_OPA_DISP++);
-
-        FileChoose_DrawWindowContents(&this->state);
-    }
-
-    // Draw Boss Rush Options Menu
-    if (this->configMode == CM_BOSS_RUSH_MENU || this->configMode == CM_ROTATE_TO_BOSS_RUSH_MENU ||
-        this->configMode == CM_START_BOSS_RUSH_MENU || this->configMode == CM_BOSS_RUSH_TO_QUEST ||
-        true) {
-        // window
-        gDPPipeSync(POLY_OPA_DISP++);
-        gDPSetCombineMode(POLY_OPA_DISP++, G_CC_MODULATEIA_PRIM, G_CC_MODULATEIA_PRIM);
-        gDPSetPrimColor(POLY_OPA_DISP++, 0, 0, this->windowColor[0], this->windowColor[1], this->windowColor[2],
-                        this->windowAlpha);
-        gDPSetEnvColor(POLY_OPA_DISP++, 0, 0, 0, 0);
-
-        Matrix_Translate(0.0f, 0.0f, -93.6f, MTXMODE_NEW);
-        Matrix_Scale(0.78f, 0.78f, 0.78f, MTXMODE_APPLY);
-        Matrix_RotateX((this->windowRot - 628.0f) / 100.0f, MTXMODE_APPLY);
 
         gSPMatrix(POLY_OPA_DISP++, MATRIX_NEWMTX(this->state.gfxCtx), G_MTX_NOPUSH | G_MTX_LOAD | G_MTX_MODELVIEW);
 
@@ -2007,7 +1875,6 @@ void FileChoose_FadeInFileInfo(GameState* thisx) {
 void FileChoose_ConfirmFile(GameState* thisx) {
     FileChooseContext* this = (FileChooseContext*)thisx;
     Input* input = &this->state.input[0];
-    bool dpad = CVarGetInteger(CVAR_SETTING("DpadInText"), 0);
 
     if (CHECK_BTN_ALL(input->press.button, BTN_START) || (CHECK_BTN_ALL(input->press.button, BTN_A))) {
         if (this->confirmButtonIndex == FS_BTN_CONFIRM_YES) {
@@ -2025,14 +1892,13 @@ void FileChoose_ConfirmFile(GameState* thisx) {
         Audio_PlaySoundGeneral(NA_SE_SY_FSEL_CLOSE, &gSfxDefaultPos, 4, &gSfxDefaultFreqAndVolScale,
                                &gSfxDefaultFreqAndVolScale, &gSfxDefaultReverb);
         this->selectMode++;
-    } else if ((ABS(this->stickRelY) >= 30) || (dpad && CHECK_BTN_ANY(input->press.button, BTN_DDOWN | BTN_DUP))) {
+    } else if ((ABS(this->stickRelY) >= 30)) {
         Audio_PlaySoundGeneral(NA_SE_SY_FSEL_CURSOR, &gSfxDefaultPos, 4, &gSfxDefaultFreqAndVolScale,
                                &gSfxDefaultFreqAndVolScale, &gSfxDefaultReverb);
         this->confirmButtonIndex ^= 1;
     }
 
     if (sLastFileChooseButtonIndex != this->confirmButtonIndex) {
-        GameInteractor_ExecuteOnUpdateFileSelectConfirmationSelection(this->confirmButtonIndex);
         sLastFileChooseButtonIndex = this->confirmButtonIndex;
     }
 }
@@ -2141,20 +2007,11 @@ void FileChoose_LoadGame(GameState* thisx) {
     gSaveContext.fileNum = this->buttonIndex;
     gSaveContext.gameMode = GAMEMODE_NORMAL;
 
-    if ((this->buttonIndex == FS_BTN_SELECT_FILE_1 && CVarGetInteger(CVAR_DEVELOPER_TOOLS("DebugEnabled"), 0)) ||
-        this->buttonIndex == 0xFF) {
-        if (this->buttonIndex == 0xFF) {
-            Sram_InitDebugSave();
-        } else {
-            Sram_OpenSave();
-        }
+    if (this->buttonIndex == 0xFF) {
+        Sram_InitDebugSave();
         SET_NEXT_GAMESTATE(&this->state, Select_Init, SelectContext);
     } else {
-        if (this->buttonIndex == 0xFE) {
-            Sram_InitBossRushSave();
-        } else {
-            Sram_OpenSave();
-        }
+        Sram_OpenSave();
         SET_NEXT_GAMESTATE(&this->state, Play_Init, PlayState);
     }
 
@@ -2165,9 +2022,7 @@ void FileChoose_LoadGame(GameState* thisx) {
     gSaveContext.seqId = (u8)NA_BGM_DISABLED;
     gSaveContext.natureAmbienceId = 0xFF;
     gSaveContext.showTitleCard = true;
-    if (!CVarGetInteger(CVAR_ENHANCEMENT("DogFollowsEverywhere"), 0)) {
-        gSaveContext.dogParams = 0;
-    }
+    gSaveContext.dogParams = 0;
     gSaveContext.timerState = TIMER_STATE_OFF;
     gSaveContext.subTimerState = SUBTIMER_STATE_OFF;
     gSaveContext.eventInf[0] = 0;
@@ -2205,7 +2060,6 @@ void FileChoose_LoadGame(GameState* thisx) {
 
     gSaveContext.naviTimer = 0;
 
-    GameInteractor_ExecuteOnLoadGame(gSaveContext.fileNum);
 }
 
 static void (*gSelectModeUpdateFuncs[])(GameState*) = {
@@ -2307,24 +2161,8 @@ void FileChoose_Main(GameState* thisx) {
 
     Color_RGB8 helpTextColor = { 100, 255, 255 };
 
-    GameInteractor_ExecuteOnFileChooseMain(thisx);
 
-    if (CVarGetInteger(CVAR_COSMETIC("Title.FileChoose.Changed"), 0)) {
-        Color_RGB8 backgroundColor =
-            CVarGetColor24(CVAR_COSMETIC("Title.FileChoose.Value"), (Color_RGB8){ 100, 150, 255 });
-        this->windowColor[0] = backgroundColor.r;
-        this->windowColor[1] = backgroundColor.g;
-        this->windowColor[2] = backgroundColor.b;
-        this->highlightColor[0] = MIN(backgroundColor.r + 100, 255);
-        this->highlightColor[1] = MIN(backgroundColor.g + 100, 255);
-        this->highlightColor[2] = MIN(backgroundColor.b + 100, 255);
-        helpTextColor.r = MIN(backgroundColor.r + 100, 255);
-        helpTextColor.g = MIN(backgroundColor.g + 100, 255);
-        helpTextColor.b = MIN(backgroundColor.b + 100, 255);
-        sWindowContentColors[0][0] = backgroundColor.r;
-        sWindowContentColors[0][1] = backgroundColor.g;
-        sWindowContentColors[0][2] = backgroundColor.b;
-    } else {
+    
         this->windowColor[0] = 100;
         this->windowColor[1] = 150;
         this->windowColor[2] = 255;
@@ -2334,7 +2172,7 @@ void FileChoose_Main(GameState* thisx) {
         sWindowContentColors[0][0] = 100;
         sWindowContentColors[0][1] = 150;
         sWindowContentColors[0][2] = 255;
-    }
+    
 
     OPEN_DISPS(this->state.gfxCtx);
 
@@ -2348,52 +2186,6 @@ void FileChoose_Main(GameState* thisx) {
 
     this->stickRelX = input->rel.stick_x;
     this->stickRelY = input->rel.stick_y;
-
-    if (CVarGetInteger(CVAR_SETTING("DpadHoldChange"), 1) && CVarGetInteger(CVAR_SETTING("DpadInText"), 0)) {
-        if (CHECK_BTN_ALL(input->cur.button, BTN_DLEFT)) {
-            if (CHECK_BTN_ALL(input->press.button, BTN_DLEFT)) {
-                this->inputTimerX = 10;
-                this->stickXDir = -1;
-            } else if (--(this->inputTimerX) < 0) {
-                this->inputTimerX = XREG(6);
-                input->press.button |= BTN_DLEFT;
-            }
-        } else if (CHECK_BTN_ALL(input->rel.button, BTN_DLEFT)) {
-            this->stickXDir = 0;
-        } else if (CHECK_BTN_ALL(input->cur.button, BTN_DRIGHT)) {
-            if (CHECK_BTN_ALL(input->press.button, BTN_DRIGHT)) {
-                this->inputTimerX = 10;
-                this->stickXDir = 1;
-            } else if (--(this->inputTimerX) < 0) {
-                this->inputTimerX = XREG(6);
-                input->press.button |= BTN_DRIGHT;
-            }
-        } else if (CHECK_BTN_ALL(input->rel.button, BTN_DRIGHT)) {
-            this->stickXDir = 0;
-        }
-
-        if (CHECK_BTN_ALL(input->cur.button, BTN_DDOWN)) {
-            if (CHECK_BTN_ALL(input->press.button, BTN_DDOWN)) {
-                this->inputTimerY = 10;
-                this->stickYDir = -1;
-            } else if (--(this->inputTimerY) < 0) {
-                this->inputTimerY = XREG(6);
-                input->press.button |= BTN_DDOWN;
-            }
-        } else if (CHECK_BTN_ALL(input->rel.button, BTN_DDOWN)) {
-            this->stickYDir = 0;
-        } else if (CHECK_BTN_ALL(input->cur.button, BTN_DUP)) {
-            if (CHECK_BTN_ALL(input->press.button, BTN_DUP)) {
-                this->inputTimerY = 10;
-                this->stickYDir = -1;
-            } else if (--(this->inputTimerY) < 0) {
-                this->inputTimerY = XREG(6);
-                input->press.button |= BTN_DUP;
-            }
-        } else if (CHECK_BTN_ALL(input->rel.button, BTN_DUP)) {
-            this->stickYDir = 0;
-        }
-    }
 
     if (this->stickRelX < -30) {
         if (this->stickXDir == -1) {
@@ -2472,8 +2264,6 @@ void FileChoose_Main(GameState* thisx) {
                             G_TX_NOLOD, G_TX_NOLOD);
         gSPTextureRectangle(POLY_OPA_DISP++, 0x0168, 0x0330, 0x03A8, 0x0370, G_TX_RENDERTILE, 0, 0, 0x0400, 0x0400);
     }
-
-    // Draw rando save version warning over the controls text, but before the screen fill fade out
 
     gDPPipeSync(POLY_OPA_DISP++);
     gSPDisplayList(POLY_OPA_DISP++, sScreenFillSetupDL);
@@ -2644,9 +2434,6 @@ void FileChoose_InitContext(GameState* thisx) {
     this->arrowAnimTween = 0;
     this->stickAnimTween = 0;
 
-    this->bossRushIndex = 0;
-    this->bossRushOffset = 0;
-
     ShrinkWindow_SetVal(0);
 
     gSaveContext.skyboxTime = 0;
@@ -2692,7 +2479,6 @@ void FileChoose_Init(GameState* thisx) {
     this->questType[0] = MIN_QUEST;
     this->questType[1] = MIN_QUEST;
     this->questType[2] = MIN_QUEST;
-    CVarSetInteger(CVAR_GENERAL("OnFileSelectNameEntry"), 0);
 
     SREG(30) = 1;
     osSyncPrintf("SIZE=%x\n", size);

@@ -17,9 +17,7 @@ std::shared_ptr<Ship::IResource> SetObjectListFactory::ReadResource(std::shared_
         setObjectList->objects.push_back(reader->ReadUInt16());
     }
 
-    if (CVarGetInteger(CVAR_DEVELOPER_TOOLS("ResourceLogging"), 0)) {
-        LogObjectListAsXML(setObjectList);
-    }
+    
 
     return setObjectList;
 }

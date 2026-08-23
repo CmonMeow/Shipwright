@@ -6,7 +6,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "soh/Enhancements/gameconsole.h"
 #include "soh/OTRGlobals.h"
 #include "libultraship/bridge.h"
 
@@ -408,17 +407,6 @@ void Graph_Update(GraphicsContext* gfxCtx, GameState* gameState) {
         sGraphUpdateTime = time;
     }
 
-    s32 mask = CVarGetInteger("gDeveloperTools.MapSelectBtn", BTN_Z | BTN_L | BTN_R);
-
-    if (CVarGetInteger(CVAR_DEVELOPER_TOOLS("DebugEnabled"), 0)) {
-        if (CHECK_BTN_ANY(gameState->input[0].press.button, mask) &&
-            CHECK_BTN_ALL(gameState->input[0].cur.button, mask)) {
-            gSaveContext.gameMode = GAMEMODE_NORMAL;
-            SET_NEXT_GAMESTATE(gameState, Select_Init, SelectContext);
-            gameState->running = false;
-        }
-    }
-
     if (gIsCtrlr2Valid && PreNmiBuff_IsResetting(gAppNmiBufferPtr) && !gameState->unk_A0) {
         // "To reset mode"
         osSyncPrintf(VT_COL(YELLOW, BLACK) "PRE-NMIによりリセットモードに移行します\n" VT_RST);
@@ -431,8 +419,6 @@ uint64_t GetFrequency();
 uint64_t GetPerfCounter();
 
 extern AudioMgr gAudioMgr;
-
-extern void ProcessSaveStateRequests(void);
 
 static void RunFrame() {
     u32 size;
@@ -498,7 +484,6 @@ static void RunFrame() {
             // uint64_t diff = (ticksB - ticksA) / (freq / 1000);
             // printf("Frame simulated in %ims\n", diff);
             runFrameContext.state = 1;
-            ProcessSaveStateRequests();
             return;
         nextFrame:;
         }

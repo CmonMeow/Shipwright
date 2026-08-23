@@ -41,9 +41,7 @@ ResourceFactoryBinaryPathV0::ReadResource(std::shared_ptr<Ship::File> file,
         path->pathData.push_back(pathDataEntry);
     }
 
-    if (CVarGetInteger(CVAR_DEVELOPER_TOOLS("ResourceLogging"), 0)) {
-        LogPathAsXML(path);
-    }
+    
 
     return path;
 }

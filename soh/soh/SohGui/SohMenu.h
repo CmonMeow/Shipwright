@@ -10,15 +10,6 @@ extern "C" {
 #include "z64.h"
 }
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-void enableBetaQuest();
-void disableBetaQuest();
-#ifdef __cplusplus
-}
-#endif
-
 namespace SohGui {
 static std::map<int32_t, const char*> languages = {
     { LANGUAGE_ENG, "English" },
@@ -40,9 +31,6 @@ class SohMenu : public Ship::Menu {
     WidgetInfo& AddWidget(WidgetPath& pathInfo, std::string widgetName, WidgetType widgetType);
     void AddMenuElements();
     void AddMenuSettings();
-    void AddMenuEnhancements();
-    void AddMenuDevTools();
-    void AddMenuNetwork();
     static void UpdateLanguageMap(std::map<int32_t, const char*>& languageMap);
 
   private:

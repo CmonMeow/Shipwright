@@ -6,7 +6,6 @@
 #include "global.h"
 #include "vt.h"
 #include "stdio.h"
-#include <soh/Enhancements/bootcommands.h>
 #include "soh/OTRGlobals.h"
 
 #include <libultraship/bridge.h>
@@ -59,12 +58,9 @@ int SDL_main(int argc, char* argv[]) {
 #else //_WIN32
 int main(int argc, char* argv[]) {
 #endif
-    GameConsole_Init();
     InitOTR(argc, argv);
     // TODO: Was moved to below InitOTR because it requires window to be setup. But will be late to catch crashes.
     CrashHandlerRegisterCallback(CrashHandler_PrintSohData);
-    BootCommands_Init();
-
     Heaps_Alloc();
     Main(0);
     DeinitOTR();

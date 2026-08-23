@@ -26,9 +26,7 @@ SetAlternateHeadersFactory::ReadResource(std::shared_ptr<Ship::ResourceInitData>
         }
     }
 
-    if (CVarGetInteger(CVAR_DEVELOPER_TOOLS("ResourceLogging"), 0)) {
-        LogAlternateHeadersAsXML(setAlternateHeaders);
-    }
+    
 
     return setAlternateHeaders;
 }

@@ -14,9 +14,7 @@ std::shared_ptr<Ship::IResource> SetRoomBehaviorFactory::ReadResource(std::share
     setRoomBehavior->roomBehavior.gameplayFlags = reader->ReadInt8();
     setRoomBehavior->roomBehavior.gameplayFlags2 = reader->ReadInt32();
 
-    if (CVarGetInteger(CVAR_DEVELOPER_TOOLS("ResourceLogging"), 0)) {
-        LogRoomBehaviorAsXML(setRoomBehavior);
-    }
+    
 
     return setRoomBehavior;
 }

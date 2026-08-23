@@ -1,6 +1,5 @@
 #include "SaveManager.h"
 #include "OTRGlobals.h"
-#include "Enhancements/game-interactor/GameInteractor.h"
 #include "soh/util.h"
 #include "ResourceManagerHelpers.h"
 
@@ -57,10 +56,6 @@ std::filesystem::path SaveManager::GetFileTempName(int fileNum) {
 
 SaveManager::SaveManager() {
     coreSectionIDsByName["base"] = SECTION_ID_BASE;
-    coreSectionIDsByName["sohStats"] = SECTION_ID_STATS;
-    coreSectionIDsByName["entrances"] = SECTION_ID_ENTRANCES;
-    coreSectionIDsByName["scenes"] = SECTION_ID_SCENES;
-    coreSectionIDsByName["trackerData"] = SECTION_ID_TRACKER_DATA;
     AddLoadFunction("base", 1, LoadBaseVersion1);
     AddLoadFunction("base", 2, LoadBaseVersion2);
     AddLoadFunction("base", 3, LoadBaseVersion3);
@@ -69,9 +64,6 @@ SaveManager::SaveManager() {
 
 
     AddInitFunction(InitFileImpl);
-
-    GameInteractor::Instance->RegisterGameHook<GameInteractor::OnExitGame>(
-        [this](uint32_t fileNum) { ThreadPoolWait(); });
 
     smThreadPool = std::make_shared<BS::thread_pool>(1);
 
@@ -100,7 +92,6 @@ SaveManager::SaveManager() {
     }
 }
 
-// Randomizer save sections were intentionally removed. Vanilla saves continue through the base section.
 void SaveManager::Init() {
     // Wait on saves that snuck through the Wait in OnExitGame
     ThreadPoolWait();
@@ -165,7 +156,6 @@ void SaveManager::StartupCheckAndInitMeta(int fileNum) {
 
     std::ifstream input(fileName);
 
-    bool deleteRando = false;
     nlohmann::json metaSaveBlock = nlohmann::json::object();
     input >> metaSaveBlock;
     input.close();
@@ -175,18 +165,6 @@ void SaveManager::StartupCheckAndInitMeta(int fileNum) {
         assert(false);
         return;
     }
-    // Older files may contain a randomizer section. Drop only that obsolete section and
-    //    // retain the vanilla base/stat sections so the save remains usable.
-    if (metaSaveBlock["sections"].contains("randomizer")) {
-        metaSaveBlock["sections"].erase("randomizer");
-        metaSaveBlock["fileType"] = FILE_TYPE_SAVE_VANILLA;
-        saveMtx.lock();
-        std::ofstream output(GetFileName(fileNum));
-        output << metaSaveBlock.dump(1);
-        output.close();
-        saveMtx.unlock();
-    }
-
     fileMetaInfo[fileNum].valid = true;
     nlohmann::json& baseBlock = metaSaveBlock["sections"]["base"]["data"];
     fileMetaInfo[fileNum].deaths = baseBlock["deaths"];
@@ -215,11 +193,10 @@ void SaveManager::StartupCheckAndInitMeta(int fileNum) {
     fileMetaInfo[fileNum].requiresMasterQuest = baseBlock["isMasterQuest"];
 
 
-    fileMetaInfo[fileNum].buildVersionMajor = metaSaveBlock["sections"]["sohStats"]["data"]["buildVersionMajor"];
-    fileMetaInfo[fileNum].buildVersionMinor = metaSaveBlock["sections"]["sohStats"]["data"]["buildVersionMinor"];
-    fileMetaInfo[fileNum].buildVersionPatch = metaSaveBlock["sections"]["sohStats"]["data"]["buildVersionPatch"];
-    SohUtils::CopyStringToCharArray(fileMetaInfo[fileNum].buildVersion,
-                                    metaSaveBlock["sections"]["sohStats"]["data"]["buildVersion"],
+    fileMetaInfo[fileNum].buildVersionMajor = gBuildVersionMajor;
+    fileMetaInfo[fileNum].buildVersionMinor = gBuildVersionMinor;
+    fileMetaInfo[fileNum].buildVersionPatch = gBuildVersionPatch;
+    SohUtils::CopyStringToCharArray(fileMetaInfo[fileNum].buildVersion, std::string((char*)gBuildVersion),
                                     ARRAY_COUNT(fileMetaInfo[fileNum].buildVersion));
 }
 
@@ -253,10 +230,10 @@ void SaveManager::InitMeta(int fileNum) {
     fileMetaInfo[fileNum].requiresMasterQuest = IS_MASTER_QUEST;
     fileMetaInfo[fileNum].requiresOriginal = !IS_MASTER_QUEST;
 
-    fileMetaInfo[fileNum].buildVersionMajor = gSaveContext.ship.stats.buildVersionMajor;
-    fileMetaInfo[fileNum].buildVersionMinor = gSaveContext.ship.stats.buildVersionMinor;
-    fileMetaInfo[fileNum].buildVersionPatch = gSaveContext.ship.stats.buildVersionPatch;
-    SohUtils::CopyStringToCharArray(fileMetaInfo[fileNum].buildVersion, gSaveContext.ship.stats.buildVersion,
+    fileMetaInfo[fileNum].buildVersionMajor = gBuildVersionMajor;
+    fileMetaInfo[fileNum].buildVersionMinor = gBuildVersionMinor;
+    fileMetaInfo[fileNum].buildVersionPatch = gBuildVersionPatch;
+    SohUtils::CopyStringToCharArray(fileMetaInfo[fileNum].buildVersion, std::string((char*)gBuildVersion),
                                     ARRAY_COUNT(fileMetaInfo[fileNum].buildVersion));
 }
 
@@ -421,21 +398,10 @@ void SaveManager::InitFileNormal() {
     // Init with normal quest unless only an MQ rom is provided
     gSaveContext.ship.quest.id = OTRGlobals::Instance->HasOriginal() ? QUEST_NORMAL : QUEST_MASTER;
 
-    // RANDOTODO (ADD ITEMLOCATIONS TO GSAVECONTEXT)
 }
 
 void SaveManager::InitFileDebug() {
     InitFileNormal();
-
-    // don't apply gDebugSaveFileMode on the title screen
-    if (gSaveContext.fileNum != 0xFF) {
-        if (CVarGetInteger(CVAR_DEVELOPER_TOOLS("DebugSaveFileMode"), 1) == 2) {
-            InitFileMaxed();
-            return;
-        } else if (CVarGetInteger(CVAR_DEVELOPER_TOOLS("DebugSaveFileMode"), 1) == 0) {
-            return;
-        }
-    }
 
     gSaveContext.totalDays = 0;
     gSaveContext.bgsDayCount = 0;
@@ -749,7 +715,6 @@ void SaveManager::SaveFileThreaded(int fileNum, SaveContext* saveContext, int se
     SPDLOG_INFO("Save File - fileNum: {}", fileNum);
     // Needed for first time save, hasn't changed in forever anyway
     saveBlock["version"] = 1;
-    saveBlock["fileType"] = FILE_TYPE_SAVE_VANILLA;
     if (sectionID == SECTION_ID_BASE) {
         for (auto& sectionHandlerPair : sectionSaveHandlers) {
             auto& saveFuncInfo = sectionHandlerPair.second;
@@ -811,7 +776,6 @@ void SaveManager::SaveFileThreaded(int fileNum, SaveContext* saveContext, int se
 
     delete saveContext;
     InitMeta(fileNum);
-    GameInteractor::Instance->ExecuteHooks<GameInteractor::OnSaveFile>(fileNum, sectionID);
     SPDLOG_INFO("Save File Finish - fileNum: {}", fileNum);
     saveMtx.unlock();
 }
@@ -819,8 +783,7 @@ void SaveManager::SaveFileThreaded(int fileNum, SaveContext* saveContext, int se
 // SaveSection creates a copy of gSaveContext to prevent mid-save data modification, and passes its reference to
 // SaveFileThreaded This should never be called with threaded == false except during file creation
 void SaveManager::SaveSection(int fileNum, int sectionID, bool threaded) {
-    // Don't save in Boss rush.
-    if (fileNum == 0xFF || fileNum == 0xFE) {
+    if (fileNum == 0xFF) {
         return;
     }
     // Don't save a nonexistent section
@@ -909,7 +872,6 @@ void SaveManager::LoadFile(int fileNum) {
                 break;
         }
         InitMeta(fileNum);
-        GameInteractor::Instance->ExecuteHooks<GameInteractor::OnLoadFile>(fileNum);
     } catch (const std::exception& e) {
         input.close();
         std::string newFileName =
@@ -1225,30 +1187,6 @@ void SaveManager::LoadBaseVersion2() {
         SaveManager::Instance->LoadData("defenseHearts", gSaveContext.inventory.defenseHearts);
         SaveManager::Instance->LoadData("gsTokens", gSaveContext.inventory.gsTokens);
     });
-    SaveManager::Instance->LoadStruct("sohStats", []() {
-        SaveManager::Instance->LoadData("heartPieces", gSaveContext.ship.stats.heartPieces);
-        SaveManager::Instance->LoadData("heartContainers", gSaveContext.ship.stats.heartContainers);
-        SaveManager::Instance->LoadArray("dungeonKeys", ARRAY_COUNT(gSaveContext.ship.stats.dungeonKeys), [](size_t i) {
-            SaveManager::Instance->LoadData("", gSaveContext.ship.stats.dungeonKeys[i]);
-        });
-        SaveManager::Instance->LoadData("rtaTiming", gSaveContext.ship.stats.rtaTiming);
-        SaveManager::Instance->LoadData("firstInput", gSaveContext.ship.stats.firstInput);
-        SaveManager::Instance->LoadData("fileCreatedAt", gSaveContext.ship.stats.fileCreatedAt);
-        SaveManager::Instance->LoadData("playTimer", gSaveContext.ship.stats.playTimer);
-        SaveManager::Instance->LoadData("pauseTimer", gSaveContext.ship.stats.pauseTimer);
-        SaveManager::Instance->LoadArray(
-            "timestamps", ARRAY_COUNT(gSaveContext.ship.stats.itemTimestamp),
-            [](size_t i) { SaveManager::Instance->LoadData("", gSaveContext.ship.stats.itemTimestamp[i]); });
-        SaveManager::Instance->LoadArray("counts", ARRAY_COUNT(gSaveContext.ship.stats.count), [](size_t i) {
-            SaveManager::Instance->LoadData("", gSaveContext.ship.stats.count[i]);
-        });
-        SaveManager::Instance->LoadArray(
-            "scenesDiscovered", ARRAY_COUNT(gSaveContext.ship.stats.scenesDiscovered),
-            [](size_t i) { SaveManager::Instance->LoadData("", gSaveContext.ship.stats.scenesDiscovered[i]); });
-        SaveManager::Instance->LoadArray(
-            "entrancesDiscovered", ARRAY_COUNT(gSaveContext.ship.stats.entrancesDiscovered),
-            [](size_t i) { SaveManager::Instance->LoadData("", gSaveContext.ship.stats.entrancesDiscovered[i]); });
-    });
     SaveManager::Instance->LoadArray("sceneFlags", ARRAY_COUNT(gSaveContext.sceneFlags), [](size_t i) {
         SaveManager::Instance->LoadStruct("", [&i]() {
             SaveManager::Instance->LoadData("chest", gSaveContext.sceneFlags[i].chest);
@@ -1433,47 +1371,6 @@ void SaveManager::LoadBaseVersion3() {
         });
         SaveManager::Instance->LoadData("defenseHearts", gSaveContext.inventory.defenseHearts);
         SaveManager::Instance->LoadData("gsTokens", gSaveContext.inventory.gsTokens);
-    });
-    SaveManager::Instance->LoadStruct("sohStats", []() {
-        SaveManager::Instance->LoadCharArray("buildVersion", gSaveContext.ship.stats.buildVersion,
-                                             ARRAY_COUNT(gSaveContext.ship.stats.buildVersion));
-        SaveManager::Instance->LoadData("buildVersionMajor", gSaveContext.ship.stats.buildVersionMajor);
-        SaveManager::Instance->LoadData("buildVersionMinor", gSaveContext.ship.stats.buildVersionMinor);
-        SaveManager::Instance->LoadData("buildVersionPatch", gSaveContext.ship.stats.buildVersionPatch);
-
-        SaveManager::Instance->LoadData("heartPieces", gSaveContext.ship.stats.heartPieces);
-        SaveManager::Instance->LoadData("heartContainers", gSaveContext.ship.stats.heartContainers);
-        SaveManager::Instance->LoadArray("dungeonKeys", ARRAY_COUNT(gSaveContext.ship.stats.dungeonKeys), [](size_t i) {
-            SaveManager::Instance->LoadData("", gSaveContext.ship.stats.dungeonKeys[i]);
-        });
-        SaveManager::Instance->LoadData("rtaTiming", gSaveContext.ship.stats.rtaTiming);
-        SaveManager::Instance->LoadData("firstInput", gSaveContext.ship.stats.firstInput);
-        SaveManager::Instance->LoadData("fileCreatedAt", gSaveContext.ship.stats.fileCreatedAt);
-        SaveManager::Instance->LoadData("playTimer", gSaveContext.ship.stats.playTimer);
-        SaveManager::Instance->LoadData("pauseTimer", gSaveContext.ship.stats.pauseTimer);
-        SaveManager::Instance->LoadArray(
-            "itemTimestamps", ARRAY_COUNT(gSaveContext.ship.stats.itemTimestamp),
-            [](size_t i) { SaveManager::Instance->LoadData("", gSaveContext.ship.stats.itemTimestamp[i]); });
-        SaveManager::Instance->LoadArray(
-            "sceneTimestamps", ARRAY_COUNT(gSaveContext.ship.stats.sceneTimestamps), [](size_t i) {
-                SaveManager::Instance->LoadStruct("", [&i]() {
-                    SaveManager::Instance->LoadData("scene", gSaveContext.ship.stats.sceneTimestamps[i].scene);
-                    SaveManager::Instance->LoadData("room", gSaveContext.ship.stats.sceneTimestamps[i].room);
-                    SaveManager::Instance->LoadData("sceneTime", gSaveContext.ship.stats.sceneTimestamps[i].sceneTime);
-                    SaveManager::Instance->LoadData("roomTime", gSaveContext.ship.stats.sceneTimestamps[i].roomTime);
-                    SaveManager::Instance->LoadData("isRoom", gSaveContext.ship.stats.sceneTimestamps[i].isRoom);
-                });
-            });
-        SaveManager::Instance->LoadData("tsIdx", gSaveContext.ship.stats.tsIdx);
-        SaveManager::Instance->LoadArray("counts", ARRAY_COUNT(gSaveContext.ship.stats.count), [](size_t i) {
-            SaveManager::Instance->LoadData("", gSaveContext.ship.stats.count[i]);
-        });
-        SaveManager::Instance->LoadArray(
-            "scenesDiscovered", ARRAY_COUNT(gSaveContext.ship.stats.scenesDiscovered),
-            [](size_t i) { SaveManager::Instance->LoadData("", gSaveContext.ship.stats.scenesDiscovered[i]); });
-        SaveManager::Instance->LoadArray(
-            "entrancesDiscovered", ARRAY_COUNT(gSaveContext.ship.stats.entrancesDiscovered),
-            [](size_t i) { SaveManager::Instance->LoadData("", gSaveContext.ship.stats.entrancesDiscovered[i]); });
     });
     SaveManager::Instance->LoadArray("sceneFlags", ARRAY_COUNT(gSaveContext.sceneFlags), [](size_t i) {
         SaveManager::Instance->LoadStruct("", [&i]() {
@@ -2021,7 +1918,6 @@ void SaveManager::DeleteZeldaFile(int fileNum) {
     fileMetaInfo[fileNum].valid = false;
     fileMetaInfo[fileNum].requiresMasterQuest = false;
     fileMetaInfo[fileNum].requiresOriginal = false;
-    GameInteractor::Instance->ExecuteHooks<GameInteractor::OnDeleteFile>(fileNum);
 }
 
 // Functionality required to convert old saves into versioned saves

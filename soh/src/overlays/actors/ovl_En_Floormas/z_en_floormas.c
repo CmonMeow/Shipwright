@@ -6,7 +6,6 @@
 
 #include "z_en_floormas.h"
 #include "objects/object_wallmaster/object_wallmaster.h"
-#include "soh/Enhancements/game-interactor/GameInteractor_Hooks.h"
 #include "soh/ResourceManagerHelpers.h"
 
 #define FLAGS (ACTOR_FLAG_ATTENTION_ENABLED | ACTOR_FLAG_HOSTILE | ACTOR_FLAG_HOOKSHOT_PULLS_PLAYER)
@@ -443,7 +442,6 @@ void EnFloormas_Die(EnFloormas* this, PlayState* play) {
         // Die
         Item_DropCollectibleRandom(play, &this->actor, &this->actor.world.pos, 0x90);
         EnFloormas_SetupSmShrink(this, play);
-        GameInteractor_ExecuteOnEnemyDefeat(&this->actor);
     }
 }
 

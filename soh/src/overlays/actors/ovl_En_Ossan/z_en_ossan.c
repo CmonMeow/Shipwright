@@ -13,8 +13,6 @@
 #include "objects/object_mastergolon/object_mastergolon.h"
 #include "objects/object_masterzoora/object_masterzoora.h"
 #include "objects/object_masterkokirihead/object_masterkokirihead.h"
-#include "soh/Enhancements/cosmetics/cosmeticsTypes.h"
-#include "soh/Enhancements/game-interactor/GameInteractor_Hooks.h"
 #include <assert.h>
 #include "soh/OTRGlobals.h"
 
@@ -589,15 +587,12 @@ void EnOssan_Init(Actor* thisx, PlayState* play) {
         return;
     }
 
-    // If you haven't given Zelda's Letter to the Kakariko Guard
-    // or are rando'd and haven't gotten gotten the letter from zelda yet
-
+    // The Kakariko potion shop is unavailable to child Link.
     if (this->actor.params == OSSAN_TYPE_KAKARIKO_POTION && (LINK_AGE_IN_YEARS == YEARS_CHILD)) {
         Actor_Kill(&this->actor);
         return;
     }
 
-    // Don't kill bombchu shop actor in rando, making it so the shop is immediately open
     // Flags_GetEventChkInf(EVENTCHKINF_USED_DODONGOS_CAVERN_BLUE_WARP) - Completed Dodongo's Cavern
 
     objectIds = sShopkeeperObjectIds[this->actor.params];
@@ -638,10 +633,6 @@ void EnOssan_UpdateCursorPos(PlayState* play, EnOssan* this) {
     Actor_GetScreenPos(play, &this->shelfSlots[this->cursorIndex]->actor, &x, &y);
     this->cursorX = x;
     this->cursorY = y;
-
-    if (CVarGetInteger(CVAR_ENHANCEMENT("MirroredWorld"), 0)) {
-        this->cursorX = SCREEN_WIDTH - x;
-    }
 }
 
 void EnOssan_EndInteraction(PlayState* play, EnOssan* this) {
@@ -749,10 +740,6 @@ void EnOssan_UpdateJoystickInputState(PlayState* play, EnOssan* this) {
     Input* input = &play->state.input[0];
     s8 stickX = input->rel.stick_x;
     s8 stickY = input->rel.stick_y;
-
-    if (CVarGetInteger(CVAR_ENHANCEMENT("MirroredWorld"), 0)) {
-        stickX = -input->rel.stick_x;
-    }
 
     this->moveHorizontal = this->moveVertical = false;
 
@@ -950,7 +937,6 @@ s32 EnOssan_FacingShopkeeperDialogResult(EnOssan* this, PlayState* play) {
 void EnOssan_State_FacingShopkeeper(EnOssan* this, PlayState* play, Player* player) {
     Input* input = &play->state.input[0];
     u8 nextIndex;
-    bool dpad = CVarGetInteger(CVAR_SETTING("DpadInText"), 0);
 
     if ((Message_GetState(&play->msgCtx) == TEXT_STATE_CHOICE) &&
         !EnOssan_TestEndInteraction(this, play, &play->state.input[0])) {
@@ -961,13 +947,9 @@ void EnOssan_State_FacingShopkeeper(EnOssan* this, PlayState* play, Player* play
 
         u16 dLeft = BTN_DLEFT;
         u16 dRight = BTN_DRIGHT;
-        if (CVarGetInteger(CVAR_ENHANCEMENT("MirroredWorld"), 0)) {
-            dLeft = BTN_DRIGHT;
-            dRight = BTN_DLEFT;
-        }
 
         // Stick Left
-        if ((this->stickAccumX < 0) || (dpad && CHECK_BTN_ALL(input->press.button, dLeft))) {
+        if ((this->stickAccumX < 0)) {
             nextIndex = EnOssan_SetCursorIndexFromNeutral(this, 4);
             if (nextIndex != CURSOR_INVALID) {
                 this->cursorIndex = nextIndex;
@@ -975,10 +957,8 @@ void EnOssan_State_FacingShopkeeper(EnOssan* this, PlayState* play, Player* play
                 Interface_SetDoAction(play, DO_ACTION_DECIDE);
                 this->stickLeftPrompt.isEnabled = false;
                 Sfx_PlaySfxCentered(NA_SE_SY_CURSOR);
-                GameInteractor_ExecuteOnShopSlotChangeHooks(this->cursorIndex,
-                                                            this->shelfSlots[this->cursorIndex]->basePrice);
             }
-        } else if ((this->stickAccumX > 0) || (dpad && CHECK_BTN_ALL(input->press.button, dRight))) {
+        } else if ((this->stickAccumX > 0)) {
             nextIndex = EnOssan_SetCursorIndexFromNeutral(this, 0);
             if (nextIndex != CURSOR_INVALID) {
                 this->cursorIndex = nextIndex;
@@ -986,8 +966,6 @@ void EnOssan_State_FacingShopkeeper(EnOssan* this, PlayState* play, Player* play
                 Interface_SetDoAction(play, DO_ACTION_DECIDE);
                 this->stickRightPrompt.isEnabled = false;
                 Sfx_PlaySfxCentered(NA_SE_SY_CURSOR);
-                GameInteractor_ExecuteOnShopSlotChangeHooks(this->cursorIndex,
-                                                            this->shelfSlots[this->cursorIndex]->basePrice);
             }
         }
     }
@@ -1041,9 +1019,8 @@ void EnOssan_CursorUpDown(EnOssan* this, PlayState* play) {
     Input* input = &play->state.input[0];
     u8 curTemp = this->cursorIndex;
     u8 curScanTemp;
-    bool dpad = CVarGetInteger(CVAR_SETTING("DpadInText"), 0);
 
-    if ((this->stickAccumY < 0) || (dpad && CHECK_BTN_ALL(input->press.button, BTN_DDOWN))) {
+    if ((this->stickAccumY < 0)) {
         curTemp &= 0xFE;
         if (this->shelfSlots[curTemp] != NULL) {
             this->cursorIndex = curTemp;
@@ -1082,7 +1059,7 @@ void EnOssan_CursorUpDown(EnOssan* this, PlayState* play) {
                 }
             }
         }
-    } else if ((this->stickAccumY > 0) || (dpad && CHECK_BTN_ALL(input->press.button, BTN_DUP))) {
+    } else if ((this->stickAccumY > 0)) {
         curTemp |= 1;
         if (this->shelfSlots[curTemp] != NULL) {
             this->cursorIndex = curTemp;
@@ -1194,7 +1171,6 @@ void EnOssan_State_BrowseLeftShelf(EnOssan* this, PlayState* play, Player* playe
     u8 prevIndex = this->cursorIndex;
     s32 c;
     s32 d;
-    bool dpad = CVarGetInteger(CVAR_SETTING("DpadInText"), 0);
 
     if (!EnOssan_ReturnItemToShelf(this)) {
         osSyncPrintf("%s[%d]:" VT_FGCOL(GREEN) "ズーム中！！" VT_RST "\n", __FILE__, __LINE__);
@@ -1213,13 +1189,9 @@ void EnOssan_State_BrowseLeftShelf(EnOssan* this, PlayState* play, Player* playe
 
         u16 dLeft = BTN_DLEFT;
         u16 dRight = BTN_DRIGHT;
-        if (CVarGetInteger(CVAR_ENHANCEMENT("MirroredWorld"), 0)) {
-            dLeft = BTN_DRIGHT;
-            dRight = BTN_DLEFT;
-        }
 
         if (this->moveHorizontal) {
-            if ((this->stickAccumX > 0) || (dpad && CHECK_BTN_ALL(input->press.button, dRight))) {
+            if ((this->stickAccumX > 0)) {
                 a = EnOssan_CursorRight(this, this->cursorIndex, 4);
                 if (a != CURSOR_INVALID) {
                     this->cursorIndex = a;
@@ -1227,15 +1199,14 @@ void EnOssan_State_BrowseLeftShelf(EnOssan* this, PlayState* play, Player* playe
                     EnOssan_SetLookToShopkeeperFromShelf(play, this);
                     return;
                 }
-            } else if ((this->stickAccumX < 0) || (dpad && CHECK_BTN_ALL(input->press.button, dLeft))) {
+            } else if ((this->stickAccumX < 0)) {
                 b = EnOssan_CursorLeft(this, this->cursorIndex, 8);
                 if (b != CURSOR_INVALID) {
                     this->cursorIndex = b;
                 }
             }
         } else {
-            if ((this->stickAccumX > 0 && this->stickAccumX > 500) ||
-                (dpad && CHECK_BTN_ALL(input->press.button, dRight))) {
+            if ((this->stickAccumX > 0 && this->stickAccumX > 500)) {
                 c = EnOssan_CursorRight(this, this->cursorIndex, 4);
                 if (c != CURSOR_INVALID) {
                     this->cursorIndex = c;
@@ -1243,8 +1214,7 @@ void EnOssan_State_BrowseLeftShelf(EnOssan* this, PlayState* play, Player* playe
                     EnOssan_SetLookToShopkeeperFromShelf(play, this);
                     return;
                 }
-            } else if ((this->stickAccumX < 0 && this->stickAccumX < -500) ||
-                       (dpad && CHECK_BTN_ALL(input->press.button, dLeft))) {
+            } else if ((this->stickAccumX < 0 && this->stickAccumX < -500)) {
                 d = EnOssan_CursorLeft(this, this->cursorIndex, 8);
                 if (d != CURSOR_INVALID) {
                     this->cursorIndex = d;
@@ -1253,8 +1223,6 @@ void EnOssan_State_BrowseLeftShelf(EnOssan* this, PlayState* play, Player* playe
         }
         EnOssan_CursorUpDown(this, play);
         if (this->cursorIndex != prevIndex) {
-            GameInteractor_ExecuteOnShopSlotChangeHooks(this->cursorIndex,
-                                                        this->shelfSlots[this->cursorIndex]->basePrice);
             Message_ContinueTextbox(play, this->shelfSlots[this->cursorIndex]->actor.textId);
             Sfx_PlaySfxCentered(NA_SE_SY_CURSOR);
         }
@@ -1266,7 +1234,6 @@ void EnOssan_State_BrowseRightShelf(EnOssan* this, PlayState* play, Player* play
     s32 pad[2];
     u8 prevIndex;
     u8 nextIndex;
-    bool dpad = CVarGetInteger(CVAR_SETTING("DpadInText"), 0);
 
     prevIndex = this->cursorIndex;
     if (!EnOssan_ReturnItemToShelf(this)) {
@@ -1286,13 +1253,9 @@ void EnOssan_State_BrowseRightShelf(EnOssan* this, PlayState* play, Player* play
 
         u16 dLeft = BTN_DLEFT;
         u16 dRight = BTN_DRIGHT;
-        if (CVarGetInteger(CVAR_ENHANCEMENT("MirroredWorld"), 0)) {
-            dLeft = BTN_DRIGHT;
-            dRight = BTN_DLEFT;
-        }
 
         if (this->moveHorizontal) {
-            if ((this->stickAccumX < 0) || (dpad && CHECK_BTN_ALL(input->press.button, dLeft))) {
+            if ((this->stickAccumX < 0)) {
                 nextIndex = EnOssan_CursorRight(this, this->cursorIndex, 0);
                 if (nextIndex != CURSOR_INVALID) {
                     this->cursorIndex = nextIndex;
@@ -1300,15 +1263,14 @@ void EnOssan_State_BrowseRightShelf(EnOssan* this, PlayState* play, Player* play
                     EnOssan_SetLookToShopkeeperFromShelf(play, this);
                     return;
                 }
-            } else if ((this->stickAccumX > 0) || (dpad && CHECK_BTN_ALL(input->press.button, dRight))) {
+            } else if ((this->stickAccumX > 0)) {
                 nextIndex = EnOssan_CursorLeft(this, this->cursorIndex, 4);
                 if (nextIndex != CURSOR_INVALID) {
                     this->cursorIndex = nextIndex;
                 }
             }
         } else {
-            if ((this->stickAccumX < 0 && this->stickAccumX < -500) ||
-                (dpad && CHECK_BTN_ALL(input->press.button, dLeft))) {
+            if ((this->stickAccumX < 0 && this->stickAccumX < -500)) {
                 nextIndex = EnOssan_CursorRight(this, this->cursorIndex, 0);
                 if (nextIndex != CURSOR_INVALID) {
                     this->cursorIndex = nextIndex;
@@ -1316,8 +1278,7 @@ void EnOssan_State_BrowseRightShelf(EnOssan* this, PlayState* play, Player* play
                     EnOssan_SetLookToShopkeeperFromShelf(play, this);
                     return;
                 }
-            } else if ((this->stickAccumX > 0 && this->stickAccumX > 500) ||
-                       (dpad && CHECK_BTN_ALL(input->press.button, dRight))) {
+            } else if ((this->stickAccumX > 0 && this->stickAccumX > 500)) {
                 nextIndex = EnOssan_CursorLeft(this, this->cursorIndex, 4);
                 if (nextIndex != CURSOR_INVALID) {
                     this->cursorIndex = nextIndex;
@@ -1326,8 +1287,6 @@ void EnOssan_State_BrowseRightShelf(EnOssan* this, PlayState* play, Player* play
         }
         EnOssan_CursorUpDown(this, play);
         if (this->cursorIndex != prevIndex) {
-            GameInteractor_ExecuteOnShopSlotChangeHooks(this->cursorIndex,
-                                                        this->shelfSlots[this->cursorIndex]->basePrice);
             Message_ContinueTextbox(play, this->shelfSlots[this->cursorIndex]->actor.textId);
             Sfx_PlaySfxCentered(NA_SE_SY_CURSOR);
         }
@@ -1893,11 +1852,7 @@ void EnOssan_UpdateItemSelectedProperty(EnOssan* this) {
 
 void EnOssan_UpdateCursorAnim(EnOssan* this) {
     Color_RGB8 aButtonColor = { 0, 80, 255 };
-    if (CVarGetInteger(CVAR_COSMETIC("HUD.AButton.Changed"), 0)) {
-        aButtonColor = CVarGetColor24(CVAR_COSMETIC("HUD.AButton.Value"), aButtonColor);
-    } else if (CVarGetInteger(CVAR_COSMETIC("DefaultColorScheme"), COLORSCHEME_N64) == COLORSCHEME_GAMECUBE) {
-        aButtonColor = (Color_RGB8){ 0, 255, 80 };
-    }
+    
     f32 t;
 
     t = this->cursorAnimTween;
@@ -2077,8 +2032,7 @@ u16 EnOssan_SetupHelloDialog(EnOssan* this) {
     this->happyMaskShopState = OSSAN_HAPPY_STATE_NONE;
     // mask shop messages
     if (this->actor.params == OSSAN_TYPE_MASK) {
-        if (GameInteractor_Should(VB_HAPPY_MASK_SHOP_CHECK_SOLD_OUT, INV_CONTENT(ITEM_TRADE_CHILD) == ITEM_SOLD_OUT,
-                                  this)) {
+        if ((INV_CONTENT(ITEM_TRADE_CHILD) == ITEM_SOLD_OUT)) {
             if (Flags_GetItemGetInf(ITEMGETINF_3B)) {
                 if (!Flags_GetEventChkInf(EVENTCHKINF_PAID_BACK_BUNNY_HOOD_FEE)) {
                     // Pay back Bunny Hood
@@ -2331,12 +2285,6 @@ void EnOssan_DrawStickDirectionPrompts(PlayState* play, EnOssan* this) {
     s32 drawStickLeftPrompt = this->stickLeftPrompt.isEnabled;
     s32 drawStickRightPrompt = this->stickRightPrompt.isEnabled;
 
-    // Invert which stick prompt is active when only one is active
-    if (CVarGetInteger(CVAR_ENHANCEMENT("MirroredWorld"), 0) && (drawStickLeftPrompt != drawStickRightPrompt)) {
-        drawStickLeftPrompt = !drawStickLeftPrompt;
-        drawStickRightPrompt = !drawStickRightPrompt;
-    }
-
     OPEN_DISPS(play->state.gfxCtx);
     if (drawStickLeftPrompt || drawStickRightPrompt) {
         Gfx_SetupDL_39Overlay(play->state.gfxCtx);
@@ -2453,7 +2401,7 @@ s32 EnGo2_OverrideLimbDrawGoronShopkeeper(PlayState* play, s32 limb, Gfx** dList
     EnOssan* this = (EnOssan*)thisx;
 
     if (limb == 17) {
-        Matrix_Translate(CVarGetFloat(CVAR_COSMETIC("Goron.NeckLength"), 0.0f), 0.0f, 0.0f, MTXMODE_APPLY);
+        Matrix_Translate((0.0f), 0.0f, 0.0f, MTXMODE_APPLY);
     }
     return 0;
 }

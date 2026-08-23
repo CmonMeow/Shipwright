@@ -1,4 +1,3 @@
-#include "soh/Enhancements/game-interactor/GameInteractor_Hooks.h"
 #include "ResourceManagerHelpers.h"
 #include <libultraship/libultraship.h>
 #include "soh/resource/type/Scene.h"
@@ -466,7 +465,7 @@ s32 OTRScene_ExecuteCommands(PlayState* play, SOH::Scene* scene) {
 extern "C" s32 OTRfunc_800973FC(PlayState* play, RoomContext* roomCtx) {
     if (roomCtx->status == 1) {
         // if (!osRecvMesg(&roomCtx->loadQueue, NULL, OS_MESG_NOBLOCK)) {
-        if (1) {
+        
             roomCtx->status = 0;
             roomCtx->curRoom.segment = roomCtx->unk_34;
             gSegments[3] = VIRTUAL_TO_PHYSICAL(roomCtx->unk_34);
@@ -476,10 +475,9 @@ extern "C" s32 OTRfunc_800973FC(PlayState* play, RoomContext* roomCtx) {
             Player_SetBootData(play, GET_PLAYER(play));
             Actor_SpawnTransitionActors(play, &play->actorCtx);
 
-            GameInteractor_ExecuteAfterSceneCommands(play->sceneNum);
 
             return 1;
-        }
+        
 
         return 0;
     }

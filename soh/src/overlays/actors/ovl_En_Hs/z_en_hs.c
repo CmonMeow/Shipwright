@@ -8,8 +8,6 @@
 #include "vt.h"
 #include "objects/object_hs/object_hs.h"
 #include "soh/ResourceManagerHelpers.h"
-#include "soh/Enhancements/game-interactor/GameInteractor_Hooks.h"
-
 #define FLAGS (ACTOR_FLAG_ATTENTION_ENABLED | ACTOR_FLAG_FRIENDLY)
 
 void EnHs_Init(Actor* thisx, PlayState* play);
@@ -80,7 +78,7 @@ void EnHs_Init(Actor* thisx, PlayState* play) {
         // "chicken shop (adult era)"
         osSyncPrintf(VT_FGCOL(CYAN) " ヒヨコの店(大人の時) \n" VT_RST);
         func_80A6E3A0(this, func_80A6E9AC);
-        if (GameInteractor_Should(VB_DESPAWN_GROG, Flags_GetItemGetInf(ITEMGETINF_30), this)) {
+        if ((Flags_GetItemGetInf(ITEMGETINF_30))) {
             // "chicken shop closed"
             osSyncPrintf(VT_FGCOL(CYAN) " ヒヨコ屋閉店 \n" VT_RST);
             Actor_Kill(&this->actor);
@@ -131,10 +129,10 @@ void func_80A6E5EC(EnHs* this, PlayState* play) {
 
 void func_80A6E630(EnHs* this, PlayState* play) {
     if ((Message_GetState(&play->msgCtx) == TEXT_STATE_DONE) && Message_ShouldAdvance(play)) {
-        if (GameInteractor_Should(VB_TRADE_TIMER_ODD_MUSHROOM, true)) {
+        
             Interface_SetSubTimer(180);
             gSaveContext.eventInf[1] &= ~1;
-        }
+        
         func_80A6E3A0(this, func_80A6E6B0);
     }
 
@@ -158,7 +156,7 @@ void func_80A6E70C(EnHs* this, PlayState* play) {
 }
 
 void func_80A6E740(EnHs* this, PlayState* play) {
-    if (Actor_HasParent(&this->actor, play) || !GameInteractor_Should(VB_TRADE_COJIRO, true, this)) {
+    if (Actor_HasParent(&this->actor, play) || !(true)) {
         this->actor.parent = NULL;
         func_80A6E3A0(this, func_80A6E630);
     } else {
@@ -173,9 +171,9 @@ void func_80A6E7BC(EnHs* this, PlayState* play) {
         switch (play->msgCtx.choiceIndex) {
             case 0:
                 func_80A6E3A0(this, func_80A6E740);
-                if (GameInteractor_Should(VB_TRADE_COJIRO, true, this)) {
+                
                     Actor_OfferGetItem(&this->actor, play, GI_ODD_MUSHROOM, 10000.0f, 50.0f);
-                }
+                
                 break;
             case 1:
                 Message_ContinueTextbox(play, 0x10B4);

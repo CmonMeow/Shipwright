@@ -31,9 +31,7 @@ SetTransitionActorListFactory::ReadResource(std::shared_ptr<Ship::ResourceInitDa
         setTransitionActorList->transitionActorList.push_back(entry);
     }
 
-    if (CVarGetInteger(CVAR_DEVELOPER_TOOLS("ResourceLogging"), 0)) {
-        LogTransitionActorListAsXML(setTransitionActorList);
-    }
+    
 
     return setTransitionActorList;
 }

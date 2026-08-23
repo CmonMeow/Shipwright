@@ -5,8 +5,6 @@
  */
 #include "z_en_girla.h"
 #include "vt.h"
-
-#include "soh/Enhancements/game-interactor/GameInteractor_Hooks.h"
 #include "soh/OTRGlobals.h"
 #include <assert.h>
 
@@ -135,8 +133,7 @@ static char* sShopItemDescriptions[] = {
     "爆弾×30      ",  // "Bomb x30"
     "爆弾×5       ",  // "Bomb x5"
     "赤クスリ      ", // "Red medicine"
-    "赤クスリ      ", // "Red medicine"
-    "Random Item  "   // "Random Item"
+    "赤クスリ      "  // "Red medicine"
 };
 
 static s16 sMaskShopItems[8] = {
@@ -457,7 +454,7 @@ s32 EnGirlA_CanBuy_DekuNuts(PlayState* play, EnGirlA* this) {
     if (gSaveContext.rupees < this->basePrice) {
         return CANBUY_RESULT_NEED_RUPEES;
     }
-    if ((Item_CheckObtainability(ITEM_NUT) == ITEM_NONE) && !CVarGetInteger(CVAR_ENHANCEMENT("FastDrops"), 0)) {
+    if (Item_CheckObtainability(ITEM_NUT) == ITEM_NONE) {
         return CANBUY_RESULT_SUCCESS_FANFARE;
     }
     return CANBUY_RESULT_SUCCESS;
@@ -471,7 +468,7 @@ s32 EnGirlA_CanBuy_DekuSticks(PlayState* play, EnGirlA* this) {
     if (gSaveContext.rupees < this->basePrice) {
         return CANBUY_RESULT_NEED_RUPEES;
     }
-    if ((Item_CheckObtainability(ITEM_STICK) == ITEM_NONE) && !CVarGetInteger(CVAR_ENHANCEMENT("FastDrops"), 0)) {
+    if (Item_CheckObtainability(ITEM_STICK) == ITEM_NONE) {
         return CANBUY_RESULT_SUCCESS_FANFARE;
     }
     return CANBUY_RESULT_SUCCESS;
@@ -641,9 +638,7 @@ s32 EnGirlA_CanBuy_Unk20(PlayState* play, EnGirlA* this) {
 
 s32 EnGirlA_CanBuy_Bombchus(PlayState* play, EnGirlA* this) {
     s32 canBuy;
-    if (GameInteractor_Should(VB_CAN_BUY_BOMBCHUS, false, &canBuy)) {
-        return canBuy;
-    }
+    
 
     if (AMMO(ITEM_BOMBCHU) >= 50) {
         return CANBUY_RESULT_CANT_GET_NOW;
@@ -664,7 +659,7 @@ s32 EnGirlA_CanBuy_DekuSeeds(PlayState* play, EnGirlA* this) {
     if (gSaveContext.rupees < this->basePrice) {
         return CANBUY_RESULT_NEED_RUPEES;
     }
-    if ((Item_CheckObtainability(ITEM_SEEDS) == ITEM_NONE) && !CVarGetInteger(CVAR_ENHANCEMENT("FastDrops"), 0)) {
+    if (Item_CheckObtainability(ITEM_SEEDS) == ITEM_NONE) {
         return CANBUY_RESULT_SUCCESS_FANFARE;
     }
     return CANBUY_RESULT_SUCCESS;
@@ -937,9 +932,7 @@ void EnGirlA_BuyEvent_ObtainBombchuPack(PlayState* play, EnGirlA* this) {
     gSaveContext.ship.pendingSaleMod = entry.modIndex;
     Rupees_ChangeBy(-this->basePrice);
 
-    // Normally, buying a bombchu pack sets a flag indicating the pack is now sold out
-    // If they're in logic for rando, skip setting that flag so they can be purchased repeatedly
-    // #endregion
+    // Buying a bombchu pack sets a flag indicating the pack is now sold out.
 
     switch (this->actor.params) {
         case SI_BOMBCHU_10_2:

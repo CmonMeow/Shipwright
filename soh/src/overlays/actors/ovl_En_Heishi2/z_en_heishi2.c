@@ -12,9 +12,6 @@
 #include "overlays/actors/ovl_En_Bom/z_en_bom.h"
 #include "overlays/actors/ovl_Bg_Spot15_Saku/z_bg_spot15_saku.h"
 #include "soh/ResourceManagerHelpers.h"
-#include "soh/Enhancements/game-interactor/GameInteractor.h"
-#include "soh/Enhancements/game-interactor/GameInteractor_Hooks.h"
-
 #define FLAGS (ACTOR_FLAG_ATTENTION_ENABLED | ACTOR_FLAG_FRIENDLY)
 
 void EnHeishi2_Init(Actor* thisx, PlayState* play);
@@ -189,7 +186,7 @@ void func_80A531E4(EnHeishi2* this, PlayState* play) {
 void func_80A53278(EnHeishi2* this, PlayState* play) {
     this->unk_30B = 0;
     this->unk_30E = 0;
-    if (GameInteractor_Should(VB_CAN_BRIBE_HEISHI2, true, this)) {
+    
         if (Text_GetFaceReaction(play, 5) != 0) {
             this->actor.textId = Text_GetFaceReaction(play, 5);
             this->unk_30B = 1;
@@ -237,7 +234,7 @@ void func_80A53278(EnHeishi2* this, PlayState* play) {
             this->actor.textId = 0x7029;
             this->actionFunc = func_80A5475C;
         }
-    }
+    
 }
 
 void func_80A5344C(EnHeishi2* this, PlayState* play) {
@@ -316,7 +313,7 @@ void func_80A5372C(EnHeishi2* this, PlayState* play) {
     f32 frameCount = Animation_GetLastFrame(&gEnHeishiIdleAnim);
 
     Animation_Change(&this->skelAnime, &gEnHeishiIdleAnim, 1.0f, 0.0f, (s16)frameCount, ANIMMODE_LOOP, -10.0f);
-    if (GameInteractor_Should(VB_PLAY_GATE_OPENING_OR_CLOSING_CS, true, this, false)) {
+    
         this->unk_2F2[0] = 200;
         this->cameraId = Play_CreateSubCamera(play);
         Play_ChangeCameraStatus(play, MAIN_CAM, CAM_STAT_WAIT);
@@ -330,7 +327,7 @@ void func_80A5372C(EnHeishi2* this, PlayState* play) {
         this->unk_28C.z = 3014.0f;
 
         Play_CameraSetAtEye(play, this->cameraId, &this->unk_280, &this->unk_28C);
-    }
+    
     this->actionFunc = func_80A53850;
 }
 
@@ -338,15 +335,15 @@ void func_80A53850(EnHeishi2* this, PlayState* play) {
     BgSpot15Saku* gate;
 
     SkelAnime_Update(&this->skelAnime);
-    if (GameInteractor_Should(VB_PLAY_GATE_OPENING_OR_CLOSING_CS, true, this, false)) {
+    
         Play_CameraSetAtEye(play, this->cameraId, &this->unk_280, &this->unk_28C);
-    }
+    
     gate = (BgSpot15Saku*)this->gate;
     if ((this->unk_2F2[0] == 0) || (gate->unk_168 == 0)) {
-        if (GameInteractor_Should(VB_PLAY_GATE_OPENING_OR_CLOSING_CS, true, this, true)) {
+        
             Play_ClearCamera(play, this->cameraId);
             Play_ChangeCameraStatus(play, MAIN_CAM, CAM_STAT_ACTIVE);
-        }
+        
         Message_CloseTextbox(play);
         this->unk_30C = 1;
         Player_SetCsActionWithHaltedActors(play, NULL, 7);
@@ -418,8 +415,7 @@ void func_80A53AD4(EnHeishi2* this, PlayState* play) {
     this->unk_300 = TEXT_STATE_DONE;
     if (Actor_ProcessTalkRequest(&this->actor, play)) {
         exchangeItemId = func_8002F368(play);
-        if (GameInteractor_Should(VB_HEISHI2_ACCEPT_ITEM_AS_ZELDAS_LETTER, exchangeItemId == EXCH_ITEM_LETTER_ZELDA,
-                                  exchangeItemId)) {
+        if ((exchangeItemId == EXCH_ITEM_LETTER_ZELDA)) {
             Sfx_PlaySfxCentered(NA_SE_SY_CORRECT_CHIME);
             player->actor.textId = 0x2010;
             this->unk_300 = TEXT_STATE_EVENT;
@@ -487,7 +483,7 @@ void func_80A53DF8(EnHeishi2* this, PlayState* play) {
     f32 frameCount = Animation_GetLastFrame(&gEnHeishiIdleAnim);
 
     Animation_Change(&this->skelAnime, &gEnHeishiIdleAnim, 1.0f, 0.0f, (s16)frameCount, ANIMMODE_LOOP, -10.0f);
-    if (GameInteractor_Should(VB_PLAY_GATE_OPENING_OR_CLOSING_CS, true, this, false)) {
+    
         this->unk_2F2[0] = 200;
         this->cameraId = Play_CreateSubCamera(play);
         Play_ChangeCameraStatus(play, MAIN_CAM, CAM_STAT_WAIT);
@@ -505,7 +501,7 @@ void func_80A53DF8(EnHeishi2* this, PlayState* play) {
         this->unk_298.z = -1079.0f;
         this->unk_28C.z = -1079.0f;
         Play_CameraSetAtEye(play, this->cameraId, &this->unk_280, &this->unk_28C);
-    }
+    
     this->actionFunc = func_80A53F30;
 }
 
@@ -513,15 +509,15 @@ void func_80A53F30(EnHeishi2* this, PlayState* play) {
     BgGateShutter* gate;
 
     SkelAnime_Update(&this->skelAnime);
-    if (GameInteractor_Should(VB_PLAY_GATE_OPENING_OR_CLOSING_CS, true, this, false)) {
+    
         Play_CameraSetAtEye(play, this->cameraId, &this->unk_280, &this->unk_28C);
-    }
+    
     gate = (BgGateShutter*)this->gate;
     if ((this->unk_2F2[0] == 0) || (gate->openingState == 0)) {
-        if (GameInteractor_Should(VB_PLAY_GATE_OPENING_OR_CLOSING_CS, true, this, true)) {
+        
             Play_ClearCamera(play, this->cameraId);
             Play_ChangeCameraStatus(play, MAIN_CAM, CAM_STAT_ACTIVE);
-        }
+        
         if ((this->unk_30A != 2)) {
             if (this->unk_30A == 0) {
                 this->actor.textId = 0x2015;

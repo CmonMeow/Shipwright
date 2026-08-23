@@ -25,9 +25,7 @@ std::shared_ptr<Ship::IResource> SetRoomListFactory::ReadResource(std::shared_pt
         setRoomList->rooms.push_back(room);
     }
 
-    if (CVarGetInteger(CVAR_DEVELOPER_TOOLS("ResourceLogging"), 0)) {
-        LogRoomListAsXML(setRoomList);
-    }
+    
 
     return setRoomList;
 }

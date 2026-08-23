@@ -8,8 +8,6 @@
 #include "objects/object_ps/object_ps.h"
 #include "soh/frame_interpolation.h"
 #include "soh/ResourceManagerHelpers.h"
-#include "soh/Enhancements/game-interactor/GameInteractor_Hooks.h"
-
 #define FLAGS (ACTOR_FLAG_ATTENTION_ENABLED | ACTOR_FLAG_FRIENDLY)
 
 void EnGb_Init(Actor* thisx, PlayState* play);
@@ -287,7 +285,7 @@ void func_80A2F83C(EnGb* this, PlayState* play) {
         }
     }
     if (Actor_ProcessTalkRequest(&this->dyna.actor, play)) {
-        if (GameInteractor_Should(VB_SELL_POES_TO_POE_COLLECTOR, true, this)) {
+        
             switch (func_8002F368(play)) {
                 case EXCH_ITEM_NONE:
                     func_80A2F180(this);
@@ -302,7 +300,7 @@ void func_80A2F83C(EnGb* this, PlayState* play) {
                     this->actionFunc = func_80A2FA50;
                     break;
             }
-        }
+        
         return;
     }
     if (this->dyna.actor.xzDistToPlayer < 100.0f) {
@@ -359,10 +357,10 @@ void func_80A2FA50(EnGb* this, PlayState* play) {
 
 void func_80A2FB40(EnGb* this, PlayState* play) {
     if (Message_GetState(&play->msgCtx) == TEXT_STATE_DONE && Message_ShouldAdvance(play)) {
-        if (GameInteractor_Should(VB_GIVE_ITEM_FROM_POE_COLLECTOR, true, this)) {
+        
             Actor_OfferGetItem(&this->dyna.actor, play, GI_BOTTLE, 100.0f, 10.0f);
             this->actionFunc = func_80A2FBB0;
-        }
+        
     }
 }
 

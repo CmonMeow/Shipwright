@@ -1,7 +1,6 @@
 #include "z_en_daiku.h"
 #include "overlays/actors/ovl_En_GeldB/z_en_geldb.h"
 #include "objects/object_daiku/object_daiku.h"
-#include "soh/Enhancements/game-interactor/GameInteractor_Hooks.h"
 #include "soh/ResourceManagerHelpers.h"
 
 #define FLAGS (ACTOR_FLAG_ATTENTION_ENABLED | ACTOR_FLAG_FRIENDLY | ACTOR_FLAG_UPDATE_CULLING_DISABLED)
@@ -406,8 +405,6 @@ void EnDaiku_InitEscape(EnDaiku* this, PlayState* play) {
 
     gSaveContext.eventChkInf[EVENTCHKINF_CARPENTERS_FREE_INDEX] |=
         EVENTCHKINF_CARPENTERS_FREE_MASK(this->actor.params & 3);
-    GameInteractor_ExecuteOnFlagSet(FLAG_EVENT_CHECK_INF,
-                                    (EVENTCHKINF_CARPENTERS_FREE_INDEX << 4) + (this->actor.params & 3));
 
     this->actor.gravity = -1.0f;
     this->escapeSubCamTimer = sEscapeSubCamParams[this->actor.params & 3].maxFramesActive;
@@ -453,7 +450,7 @@ void EnDaiku_InitSubCamera(EnDaiku* this, PlayState* play) {
     this->subCamActive = true;
     this->escapeSubCamTimer = sEscapeSubCamParams[this->actor.params & 3].maxFramesActive;
 
-    if (!GameInteractor_Should(VB_PLAY_CARPENTER_FREE_CS, true, this)) {
+    if (!(true)) {
         return;
     }
 
@@ -483,7 +480,7 @@ void EnDaiku_InitSubCamera(EnDaiku* this, PlayState* play) {
 void EnDaiku_UpdateSubCamera(EnDaiku* this, PlayState* play) {
     s32 pad;
 
-    if (!GameInteractor_Should(VB_PLAY_CARPENTER_FREE_CS, true, this)) {
+    if (!(true)) {
         return;
     }
 
@@ -503,10 +500,10 @@ void EnDaiku_EscapeSuccess(EnDaiku* this, PlayState* play) {
     Actor* gerudoGuard;
     Vec3f vec;
 
-    if (GameInteractor_Should(VB_PLAY_CARPENTER_FREE_CS, true, this)) {
+    
         Play_ClearCamera(play, this->subCamId);
         Play_ChangeCameraStatus(play, MAIN_CAM, CAM_STAT_ACTIVE);
-    }
+    
     this->subCamActive = false;
 
     if (GET_EVENTCHKINF_CARPENTERS_FREE_ALL()) {

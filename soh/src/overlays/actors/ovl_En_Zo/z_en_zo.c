@@ -425,9 +425,7 @@ u16 EnZo_GetTextId(PlayState* play, Actor* thisx) {
                 return 0x402D;
             }
 
-            if (Flags_GetEventChkInf(EVENTCHKINF_KING_ZORA_MOVED) ||
-                (CVarGetInteger(CVAR_ENHANCEMENT("FixZoraHintDialogue"), 0) &&
-                 Flags_GetEventChkInf(EVENTCHKINF_OBTAINED_RUTOS_LETTER))) {
+            if (Flags_GetEventChkInf(EVENTCHKINF_KING_ZORA_MOVED)) {
                 return 0x4010;
             }
             if (Flags_GetEventChkInf(EVENTCHKINF_SPOKE_TO_A_ZORA)) {

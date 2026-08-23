@@ -7,8 +7,6 @@
 #include "z_en_ani.h"
 #include "objects/object_ani/object_ani.h"
 #include "soh/ResourceManagerHelpers.h"
-#include "soh/Enhancements/game-interactor/GameInteractor_Hooks.h"
-
 #define FLAGS (ACTOR_FLAG_ATTENTION_ENABLED | ACTOR_FLAG_FRIENDLY)
 
 void EnAni_Init(Actor* thisx, PlayState* play);
@@ -121,7 +119,7 @@ void func_809B0524(EnAni* this, PlayState* play) {
 }
 
 void func_809B0558(EnAni* this, PlayState* play) {
-    if (Actor_HasParent(&this->actor, play) || !GameInteractor_Should(VB_GIVE_ITEM_FROM_MAN_ON_ROOF, true)) {
+    if (Actor_HasParent(&this->actor, play) || !(true)) {
         this->actor.parent = NULL;
         if (!LINK_IS_ADULT) {
             EnAni_SetupAction(this, func_809B04F0);
@@ -130,9 +128,9 @@ void func_809B0558(EnAni* this, PlayState* play) {
         }
         Flags_SetItemGetInf(ITEMGETINF_15);
     } else {
-        if (GameInteractor_Should(VB_GIVE_ITEM_FROM_MAN_ON_ROOF, true)) {
+        
             Actor_OfferGetItem(&this->actor, play, GI_HEART_PIECE, 10000.0f, 200.0f);
-        }
+        
     }
 }
 
@@ -141,9 +139,9 @@ void func_809B05F0(EnAni* this, PlayState* play) {
         EnAni_SetupAction(this, func_809B0558);
     }
 
-    if (GameInteractor_Should(VB_GIVE_ITEM_FROM_MAN_ON_ROOF, true)) {
+    
         Actor_OfferGetItem(&this->actor, play, GI_HEART_PIECE, 10000.0f, 200.0f);
-    }
+    
 }
 
 void func_809B064C(EnAni* this, PlayState* play) {

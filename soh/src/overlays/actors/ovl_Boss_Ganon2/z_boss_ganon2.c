@@ -9,8 +9,6 @@
 #include "soh/frame_interpolation.h"
 #include "soh/OTRGlobals.h"
 #include "soh/ResourceManagerHelpers.h"
-#include "soh/Enhancements/game-interactor/GameInteractor_Hooks.h"
-
 #include <string.h>
 
 #define FLAGS                                                                                 \
@@ -238,15 +236,8 @@ void func_808FD5F4(BossGanon2* this, PlayState* play) {
                 sBossGanon2Zelda->actor.world.pos.z = -214.0f;
                 sBossGanon2Zelda->actor.shape.rot.y = -0x7000;
 
-                // In rando, skip past the cutscene to the part where the player takes control again.
-                if (!IS_BOSS_RUSH) {
-                    this->csState = 1;
-                    this->csTimer = 0;
-                } else {
-                    this->csState = 4;
-                    this->csTimer = 99;
-                    sBossGanon2Zelda->unk_3C8 = 4;
-                }
+                this->csState = 1;
+                this->csTimer = 0;
 
                 this->unk_3BC.x = 0.0f;
                 this->unk_3BC.y = 1.0f;
@@ -785,14 +776,14 @@ void func_808FD5F4(BossGanon2* this, PlayState* play) {
             break;
         case 24:
             SkelAnime_Update(&this->skelAnime);
-            if (1) {
+            
                 BossGanon2Effect* effect = play->specialEffects;
 
                 this->unk_3B0 = effect->position;
                 this->unk_3A4.x = effect->position.x + 70.0f;
                 this->unk_3A4.y = effect->position.y - 30.0f;
                 this->unk_3A4.z = effect->position.z + 70.0f;
-            }
+            
             if ((this->csTimer & 3) == 0) {
                 Sfx_PlaySfxCentered(NA_SE_IT_SWORD_SWING);
             }
@@ -1677,7 +1668,6 @@ void func_8090120C(BossGanon2* this, PlayState* play) {
             if ((ABS(temp_a0_2) < 0x2000) && (sqrtf(SQ(temp_f14) + SQ(temp_f12)) < 70.0f) &&
                 (player->meleeWeaponState != 0) && (player->heldItemAction == PLAYER_IA_SWORD_MASTER)) {
                 func_80064520(play, &play->csCtx);
-                GameInteractor_ExecuteOnBossDefeat(&this->actor);
                 this->unk_39E = Play_CreateSubCamera(play);
                 Play_ChangeCameraStatus(play, MAIN_CAM, CAM_STAT_WAIT);
                 Play_ChangeCameraStatus(play, this->unk_39E, CAM_STAT_ACTIVE);

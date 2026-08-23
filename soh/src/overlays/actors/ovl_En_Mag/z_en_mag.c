@@ -8,7 +8,6 @@
 #include "objects/object_mag/object_mag.h"
 #include <soh/GameVersions.h>
 #include "soh/ResourceManagerHelpers.h"
-#include <string.h>
 
 #define FLAGS (ACTOR_FLAG_UPDATE_CULLING_DISABLED | ACTOR_FLAG_DRAW_CULLING_DISABLED)
 
@@ -40,18 +39,6 @@ typedef enum {
     FONT_TYPE_PAL,
     FONT_TYPE_NTSC,
 } FontType;
-
-const char* noControllerMsg[] = {
-    "NO CONTROLLER",
-    "CONTROLLER FEHLT",
-    "MANETTE DEBRANCHEE",
-};
-
-const char* pressStartMsg[] = {
-    "PRESS START",
-    "DRUCKE START",
-    "APPUYEZ SUR START",
-};
 
 FontType sFontType;
 
@@ -409,78 +396,6 @@ void EnMag_DrawCharTexture(Gfx** gfxP, u8* texture, s32 rectLeft, s32 rectTop) {
     *gfxP = gfx;
 }
 
-// #region SOH - Translate Title Screen
-bool EnMag_ShouldDrawNoController(Font* font, Gfx** gfxP, bool isActualText) {
-    if (!CVarGetInteger(CVAR_SETTING("TitleScreenTranslation"), 0) || !ResourceMgr_IsPalLoaded()) {
-        return true;
-    }
-    Gfx* gfx = *gfxP;
-    u8 language = (gSaveContext.language == LANGUAGE_JPN) ? LANGUAGE_ENG : gSaveContext.language;
-    s32 length = strlen(noControllerMsg[language]);
-    u16 rectLeft = VREG(19) + ((length - 13) * -3);
-    u16 rectTop = YREG(10) + 171;
-    s32 i;
-
-    if (!isActualText) {
-        rectLeft++;
-        rectTop++;
-    }
-
-    if (sFontType != FONT_TYPE_PAL) {
-        Font_LoadOrderedFont(font);
-        sFontType = FONT_TYPE_PAL;
-    }
-
-    for (i = 0; i < length; i++) {
-        EnMag_DrawCharTexture(&gfx, font->fontBuf + (noControllerMsg[language][i] - '\x37') * FONT_CHAR_TEX_SIZE,
-                              rectLeft, rectTop);
-        if (noControllerMsg[language][i] == ' ') {
-            rectLeft += VREG(23);
-        } else {
-            rectLeft += VREG(21);
-        }
-    }
-
-    *gfxP = gfx;
-    return false;
-}
-
-bool EnMag_ShouldDrawPressStart(Font* font, Gfx** gfxP, bool isActualText) {
-    if (!CVarGetInteger(CVAR_SETTING("TitleScreenTranslation"), 0) || !ResourceMgr_IsPalLoaded()) {
-        return true;
-    }
-    Gfx* gfx = *gfxP;
-    u8 language = (gSaveContext.language == LANGUAGE_JPN) ? LANGUAGE_ENG : gSaveContext.language;
-    s32 length = strlen(pressStartMsg[language]);
-    u16 rectLeft = YREG(7) + ((length - 11) * -3);
-    u16 rectTop = YREG(10) + 171;
-    s32 i;
-
-    if (!isActualText) {
-        rectLeft++;
-        rectTop++;
-    }
-
-    if (sFontType != FONT_TYPE_PAL) {
-        Font_LoadOrderedFont(font);
-        sFontType = FONT_TYPE_PAL;
-    }
-
-    for (i = 0; i < length; i++) {
-        EnMag_DrawCharTexture(&gfx, font->fontBuf + (pressStartMsg[language][i] - '\x37') * FONT_CHAR_TEX_SIZE,
-                              rectLeft, rectTop);
-        if (pressStartMsg[language][i] == ' ') {
-            rectLeft += YREG(9);
-        } else {
-            rectLeft += YREG(8);
-        }
-    }
-
-    *gfxP = gfx;
-    return false;
-}
-// #endregion
-
 // Title logo is shifted to the left in Master Quest
 #define LOGO_X_SHIFT (isMQ ? 0 : -8)
 #define LOGO_TEX (isMQ ? gTitleZeldaShieldLogoMQTex : gTitleZeldaShieldLogoTex)
@@ -672,15 +587,13 @@ void EnMag_DrawInner(Actor* thisx, PlayState* play, Gfx** gfxP) {
                           0);
         gDPSetPrimColor(gfx++, 0, 0, 0, 0, 0, textAlpha);
 
-        if (EnMag_ShouldDrawNoController(font, &gfx, false)) {
-            rectLeft = VREG(19) + 1;
-            for (i = 0; i < ARRAY_COUNT(noControllerFontIndices[sFontType]); i++) {
-                EnMag_DrawCharTexture(&gfx, font->fontBuf + noControllerFontIndices[sFontType][i] * FONT_CHAR_TEX_SIZE,
-                                      rectLeft, YREG(10) + 172);
-                rectLeft += VREG(21);
-                if (i == 1) {
-                    rectLeft += VREG(23);
-                }
+        rectLeft = VREG(19) + 1;
+        for (i = 0; i < ARRAY_COUNT(noControllerFontIndices[sFontType]); i++) {
+            EnMag_DrawCharTexture(&gfx, font->fontBuf + noControllerFontIndices[sFontType][i] * FONT_CHAR_TEX_SIZE,
+                                  rectLeft, YREG(10) + 172);
+            rectLeft += VREG(21);
+            if (i == 1) {
+                rectLeft += VREG(23);
             }
         }
 
@@ -688,15 +601,13 @@ void EnMag_DrawInner(Actor* thisx, PlayState* play, Gfx** gfxP) {
         gDPPipeSync(gfx++);
         gDPSetPrimColor(gfx++, 0, 0, 100, 255, 255, textAlpha);
 
-        if (EnMag_ShouldDrawNoController(font, &gfx, true)) {
-            rectLeft = VREG(19);
-            for (i = 0; i < ARRAY_COUNT(noControllerFontIndices[sFontType]); i++) {
-                EnMag_DrawCharTexture(&gfx, font->fontBuf + noControllerFontIndices[sFontType][i] * FONT_CHAR_TEX_SIZE,
-                                      rectLeft, YREG(10) + 171);
-                rectLeft += VREG(21);
-                if (i == 1) {
-                    rectLeft += VREG(23);
-                }
+        rectLeft = VREG(19);
+        for (i = 0; i < ARRAY_COUNT(noControllerFontIndices[sFontType]); i++) {
+            EnMag_DrawCharTexture(&gfx, font->fontBuf + noControllerFontIndices[sFontType][i] * FONT_CHAR_TEX_SIZE,
+                                  rectLeft, YREG(10) + 171);
+            rectLeft += VREG(21);
+            if (i == 1) {
+                rectLeft += VREG(23);
             }
         }
     } else if (this->copyrightAlpha >= 200.0f) {
@@ -712,15 +623,13 @@ void EnMag_DrawInner(Actor* thisx, PlayState* play, Gfx** gfxP) {
                           0);
         gDPSetPrimColor(gfx++, 0, 0, 0, 0, 0, textAlpha);
 
-        if (EnMag_ShouldDrawPressStart(font, &gfx, false)) {
-            rectLeft = YREG(7) + 1;
-            for (i = 0; i < ARRAY_COUNT(pressStartFontIndices[sFontType]); i++) {
-                EnMag_DrawCharTexture(&gfx, font->fontBuf + pressStartFontIndices[sFontType][i] * FONT_CHAR_TEX_SIZE,
-                                      rectLeft, YREG(10) + 172);
-                rectLeft += YREG(8);
-                if (i == 4) {
-                    rectLeft += YREG(9);
-                }
+        rectLeft = YREG(7) + 1;
+        for (i = 0; i < ARRAY_COUNT(pressStartFontIndices[sFontType]); i++) {
+            EnMag_DrawCharTexture(&gfx, font->fontBuf + pressStartFontIndices[sFontType][i] * FONT_CHAR_TEX_SIZE,
+                                  rectLeft, YREG(10) + 172);
+            rectLeft += YREG(8);
+            if (i == 4) {
+                rectLeft += YREG(9);
             }
         }
 
@@ -728,15 +637,13 @@ void EnMag_DrawInner(Actor* thisx, PlayState* play, Gfx** gfxP) {
         gDPPipeSync(gfx++);
         gDPSetPrimColor(gfx++, 0, 0, YREG(4), YREG(5), YREG(6), textAlpha);
 
-        if (EnMag_ShouldDrawPressStart(font, &gfx, true)) {
-            rectLeft = YREG(7);
-            for (i = 0; i < ARRAY_COUNT(pressStartFontIndices[sFontType]); i++) {
-                EnMag_DrawCharTexture(&gfx, font->fontBuf + pressStartFontIndices[sFontType][i] * FONT_CHAR_TEX_SIZE,
-                                      rectLeft, YREG(10) + 171);
-                rectLeft += YREG(8);
-                if (i == 4) {
-                    rectLeft += YREG(9);
-                }
+        rectLeft = YREG(7);
+        for (i = 0; i < ARRAY_COUNT(pressStartFontIndices[sFontType]); i++) {
+            EnMag_DrawCharTexture(&gfx, font->fontBuf + pressStartFontIndices[sFontType][i] * FONT_CHAR_TEX_SIZE,
+                                  rectLeft, YREG(10) + 171);
+            rectLeft += YREG(8);
+            if (i == 4) {
+                rectLeft += YREG(9);
             }
         }
     }

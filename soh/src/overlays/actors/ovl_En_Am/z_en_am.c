@@ -7,7 +7,6 @@
 #include "z_en_am.h"
 #include "objects/object_am/object_am.h"
 #include "overlays/actors/ovl_En_Bom/z_en_bom.h"
-#include "soh/Enhancements/game-interactor/GameInteractor_Hooks.h"
 #include "soh/ResourceManagerHelpers.h"
 
 #define FLAGS                                                                                 \
@@ -672,11 +671,9 @@ void EnAm_Statue(EnAm* this, PlayState* play) {
     Player* player = GET_PLAYER(play);
     f32 temp158f = this->dyna.unk_158;
     s16 moveDir = 0;
-    s32 blockSpeed = CVarGetInteger(CVAR_ENHANCEMENT("FasterBlockPush"), 0);
-
     if (this->unk_258 == 0) {
         if (this->dyna.unk_150 != 0.0f) {
-            this->unk_258 = 0x8000 - (blockSpeed * 0x1000);
+            this->unk_258 = 0x8000;
         }
     } else {
         this->unk_258 -= 0x800;
@@ -703,17 +700,7 @@ void EnAm_Statue(EnAm* this, PlayState* play) {
         }
 
         this->dyna.actor.world.rot.y = this->dyna.unk_158;
-        this->dyna.actor.speedXZ =
-            Math_SinS(this->unk_258 * 8 / (8 - blockSpeed)) * (this->dyna.unk_150 * 0.5f) +
-            (blockSpeed == 5
-                 ? blockSpeed * (this->dyna.unk_150 * 0.5f) * 0.25681
-                 : (blockSpeed == 4
-                        ? blockSpeed * (this->dyna.unk_150 * 0.5f) * 0.18305
-                        : (blockSpeed == 3
-                               ? blockSpeed * (this->dyna.unk_150 * 0.5f) * 0.14222
-                               : (blockSpeed == 2
-                                      ? blockSpeed * (this->dyna.unk_150 * 0.5f) * 0.11625
-                                      : (blockSpeed == 1 ? blockSpeed * (this->dyna.unk_150 * 0.5f) * 0.09828 : 0)))));
+        this->dyna.actor.speedXZ = Math_SinS(this->unk_258) * (this->dyna.unk_150 * 0.5f);
     }
 
     if (this->dyna.actor.bgCheckFlags & 2) {
@@ -894,7 +881,6 @@ void EnAm_Update(Actor* thisx, PlayState* play) {
                     dustPosScale += 60.0f;
                 }
 
-                GameInteractor_ExecuteOnEnemyDefeat(thisx);
 
                 Actor_Kill(&this->dyna.actor);
                 return;

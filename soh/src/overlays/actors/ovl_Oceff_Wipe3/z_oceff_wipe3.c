@@ -74,11 +74,10 @@ void OceffWipe3_Draw(Actor* thisx, PlayState* play) {
     eye = GET_ACTIVE_CAM(play)->eye;
     Camera_GetSkyboxOffset(&vec, GET_ACTIVE_CAM(play));
 
-    int fastOcarinaPlayback = (CVarGetInteger(CVAR_ENHANCEMENT("FastOcarinaPlayback"), 0) != 0);
     if (this->counter < 32) {
-        z = Math_SinS(this->counter << 9) * (fastOcarinaPlayback ? 1200.0f : 1330.0f);
+        z = Math_SinS(this->counter << 9) * 1330.0f;
     } else {
-        z = fastOcarinaPlayback ? 1200.0f : 1330.0f;
+        z = 1330.0f;
     }
 
     vtxPtr = ResourceMgr_LoadVtxByName(sFrustumVtx);

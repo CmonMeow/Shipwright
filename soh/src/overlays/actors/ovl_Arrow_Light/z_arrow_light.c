@@ -194,13 +194,9 @@ void ArrowLight_Draw(Actor* thisx, PlayState* play) {
     Actor* tranform;
 
     Color_RGB8 primaryColor = { 255, 255, 170 };
-    if (CVarGetInteger(CVAR_COSMETIC("Arrows.LightPrimary.Changed"), 0)) {
-        primaryColor = CVarGetColor24(CVAR_COSMETIC("Arrows.LightPrimary.Value"), primaryColor);
-    }
+    
     Color_RGB8 secondaryColor = { 255, 255, 0 };
-    if (CVarGetInteger(CVAR_COSMETIC("Arrows.LightSecondary.Changed"), 0)) {
-        secondaryColor = CVarGetColor24(CVAR_COSMETIC("Arrows.LightSecondary.Value"), secondaryColor);
-    }
+    
 
     if ((arrow != NULL) && (arrow->actor.update != NULL) && (this->timer < 255)) {
         tranform = (arrow->hitFlags & 2) ? &this->actor : &arrow->actor;

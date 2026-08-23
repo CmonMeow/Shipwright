@@ -1,6 +1,5 @@
 #include "z_en_eiyer.h"
 #include "objects/object_ei/object_ei.h"
-#include "soh/Enhancements/game-interactor/GameInteractor_Hooks.h"
 #include "soh/ResourceManagerHelpers.h"
 
 #define FLAGS (ACTOR_FLAG_ATTENTION_ENABLED | ACTOR_FLAG_HOSTILE)
@@ -614,7 +613,6 @@ void EnEiyer_UpdateDamage(EnEiyer* this, PlayState* play) {
                 Enemy_StartFinishingBlow(play, &this->actor);
                 Audio_PlayActorSound2(&this->actor, NA_SE_EN_EIER_DEAD);
                 this->actor.flags &= ~ACTOR_FLAG_ATTENTION_ENABLED;
-                GameInteractor_ExecuteOnEnemyDefeat(&this->actor);
             }
 
             // If underground, one hit kill

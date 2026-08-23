@@ -3,8 +3,6 @@
 #include "objects/gameplay_keep/gameplay_keep.h"
 #include "overlays/effects/ovl_Effect_Ss_Dead_Sound/z_eff_ss_dead_sound.h"
 #include "textures/icon_item_static/icon_item_static.h"
-#include "soh/Enhancements/game-interactor/GameInteractor.h"
-#include "soh/Enhancements/game-interactor/GameInteractor_Hooks.h"
 #include "soh/OTRGlobals.h"
 
 #define FLAGS 0
@@ -334,15 +332,8 @@ void EnItem00_SetupAction(EnItem00* this, EnItem00ActionFunc actionFunc) {
 }
 
 void EnItem00_SetObjectDependency(EnItem00* this, PlayState* play, s16 objectIndex) {
-    // Remove object dependency for Enemy Randomizer and Crowd Control to allow Like-likes to
-    // drop equipment correctly in rooms where Like-likes normally don't spawn.
-    if (CVarGetInteger(CVAR_ENHANCEMENT("RandomizedEnemies"), 0) ||
-        (CVarGetInteger(CVAR_REMOTE_CROWD_CONTROL("Enabled"), 0))) {
-        this->actor.objBankIndex = 0;
-    } else {
-        this->actor.objBankIndex = Object_GetIndex(&play->objectCtx, objectIndex);
-        Actor_SetObjectDependency(play, &this->actor);
-    }
+    this->actor.objBankIndex = Object_GetIndex(&play->objectCtx, objectIndex);
+    Actor_SetObjectDependency(play, &this->actor);
 }
 
 void EnItem00_Init(Actor* thisx, PlayState* play) {
@@ -361,7 +352,7 @@ void EnItem00_Init(Actor* thisx, PlayState* play) {
 
     this->actor.params &= 0xFF;
 
-    if (GameInteractor_Should(VB_ITEM00_DESPAWN, Flags_GetCollectible(play, this->collectibleFlag), this)) {
+    if ((Flags_GetCollectible(play, this->collectibleFlag))) {
         Actor_Kill(&this->actor);
         return;
     }
@@ -506,7 +497,7 @@ void EnItem00_Init(Actor* thisx, PlayState* play) {
     this->actor.velocity.y = 0.0f;
     this->actor.gravity = 0.0f;
 
-    if (!GameInteractor_Should(VB_GIVE_ITEM_FROM_ITEM_00, true, this)) {
+    if (!(true)) {
         return;
     }
 
@@ -766,14 +757,13 @@ void EnItem00_Update(Actor* thisx, PlayState* play) {
     EnItem00* this = (EnItem00*)thisx;
     s32 pad;
 
-    // Rotate some drops when 3D drops are on, otherwise reset rotation back to 0 for billboard effect
+    // Custom give-item drops rotate; vanilla collectible drops remain billboards.
     if ((this->actor.params == ITEM00_HEART && this->unk_15A >= 0) ||
         (this->actor.params >= ITEM00_ARROWS_SMALL && this->actor.params <= ITEM00_SMALL_KEY) ||
         this->actor.params == ITEM00_BOMBS_A || this->actor.params == ITEM00_ARROWS_SINGLE ||
         this->actor.params == ITEM00_BOMBS_SPECIAL ||
         (this->actor.params >= ITEM00_BOMBCHU && this->actor.params <= ITEM00_SOH_GIVE_ITEM_ENTRY_GI)) {
-        if (CVarGetInteger(CVAR_ENHANCEMENT("NewDrops"), 0) ||
-            (this->actor.params >= ITEM00_SOH_DUMMY && this->actor.params <= ITEM00_SOH_GIVE_ITEM_ENTRY_GI)) {
+        if (this->actor.params >= ITEM00_SOH_DUMMY && this->actor.params <= ITEM00_SOH_GIVE_ITEM_ENTRY_GI) {
             this->actor.shape.rot.y += 960;
         } else {
             this->actor.shape.rot.y = 0;
@@ -782,9 +772,6 @@ void EnItem00_Update(Actor* thisx, PlayState* play) {
 
     if (this->unk_15A > 0) {
         this->unk_15A--;
-        if (CVarGetInteger(CVAR_CHEAT("DropsDontDie"), 0) && (this->unk_154 <= 0)) {
-            this->unk_15A++;
-        }
     }
 
     if ((this->unk_15A > 0) && (this->unk_15A < 41) && (this->unk_154 <= 0)) {
@@ -857,7 +844,7 @@ void EnItem00_Update(Actor* thisx, PlayState* play) {
         return;
     }
 
-    if (!GameInteractor_Should(VB_GIVE_ITEM_FROM_ITEM_00, true, this)) {
+    if (!(true)) {
         return;
     }
 
@@ -996,171 +983,53 @@ void EnItem00_Draw(Actor* thisx, PlayState* play) {
     EnItem00* this = (EnItem00*)thisx;
     f32 mtxScale;
 
-    // Setup Hilites for 3D drops
-    if (CVarGetInteger(CVAR_ENHANCEMENT("NewDrops"), 0)) {
-        func_8002EBCC(&this->actor, play, 0);
-        func_8002ED80(&this->actor, play, 0);
-    }
-
     if (!(this->unk_156 & this->unk_158)) {
         switch (this->actor.params) {
             case ITEM00_RUPEE_GREEN:
-                if (CVarGetInteger(CVAR_ENHANCEMENT("NewDrops"), 0)) {
-                    mtxScale = 25.0f;
-                    Matrix_Scale(mtxScale, mtxScale, mtxScale, MTXMODE_APPLY);
-                    GetItem_Draw(play, GID_RUPEE_GREEN);
-                    break;
-                }
             case ITEM00_RUPEE_BLUE:
-                if (CVarGetInteger(CVAR_ENHANCEMENT("NewDrops"), 0)) {
-                    mtxScale = 25.0f;
-                    Matrix_Scale(mtxScale, mtxScale, mtxScale, MTXMODE_APPLY);
-                    GetItem_Draw(play, GID_RUPEE_BLUE);
-                    break;
-                }
             case ITEM00_RUPEE_RED:
-                if (CVarGetInteger(CVAR_ENHANCEMENT("NewDrops"), 0)) {
-                    mtxScale = 25.0f;
-                    Matrix_Scale(mtxScale, mtxScale, mtxScale, MTXMODE_APPLY);
-                    GetItem_Draw(play, GID_RUPEE_RED);
-                    break;
-                }
             case ITEM00_RUPEE_ORANGE:
-                if (CVarGetInteger(CVAR_ENHANCEMENT("NewDrops"), 0)) {
-                    mtxScale = 17.5f;
-                    Matrix_Scale(mtxScale, mtxScale, mtxScale, MTXMODE_APPLY);
-                    GetItem_Draw(play, GID_RUPEE_GOLD);
-                    break;
-                }
             case ITEM00_RUPEE_PURPLE:
-                if (CVarGetInteger(CVAR_ENHANCEMENT("NewDrops"), 0)) {
-                    mtxScale = 17.5f;
-                    Matrix_Scale(mtxScale, mtxScale, mtxScale, MTXMODE_APPLY);
-                    GetItem_Draw(play, GID_RUPEE_PURPLE);
-                } else {
-                    // All rupees fallthrough here when 3d drops are off
-                    EnItem00_DrawRupee(this, play);
-                }
+                EnItem00_DrawRupee(this, play);
                 break;
             case ITEM00_HEART_PIECE:
-                if (CVarGetInteger(CVAR_ENHANCEMENT("NewDrops"), 0)) {
-                    mtxScale = 21.0f;
-                    Matrix_Scale(mtxScale, mtxScale, mtxScale, MTXMODE_APPLY);
-                    GetItem_Draw(play, GID_HEART_PIECE);
-                } else {
-                    EnItem00_DrawHeartPiece(this, play);
-                }
+                EnItem00_DrawHeartPiece(this, play);
                 break;
             case ITEM00_HEART_CONTAINER:
                 EnItem00_DrawHeartContainer(this, play);
                 break;
             case ITEM00_HEART:
-                // Only change despawn-able recovery hearts
-                if (CVarGetInteger(CVAR_ENHANCEMENT("NewDrops"), 0) && this->unk_15A >= 0) {
-                    mtxScale = 16.0f;
-                    Matrix_Scale(mtxScale, mtxScale, mtxScale, MTXMODE_APPLY);
-                    GetItem_Draw(play, GID_HEART);
-                    break;
-                } else {
-                    // Overworld hearts that are always 3D
-                    if (this->unk_15A < 0) {
-                        if (this->unk_15A == -1) {
-                            s8 bankIndex = Object_GetIndex(&play->objectCtx, OBJECT_GI_HEART);
-                            if (Object_IsLoaded(&play->objectCtx, bankIndex)) {
-                                this->actor.objBankIndex = bankIndex;
-                                Actor_SetObjectDependency(play, &this->actor);
-                                this->unk_15A = -2;
-                            }
-                        } else {
-                            mtxScale = 16.0f;
-                            Matrix_Scale(mtxScale, mtxScale, mtxScale, MTXMODE_APPLY);
-                            GetItem_Draw(play, GID_HEART);
+                // Overworld hearts are always 3D.
+                if (this->unk_15A < 0) {
+                    if (this->unk_15A == -1) {
+                        s8 bankIndex = Object_GetIndex(&play->objectCtx, OBJECT_GI_HEART);
+                        if (Object_IsLoaded(&play->objectCtx, bankIndex)) {
+                            this->actor.objBankIndex = bankIndex;
+                            Actor_SetObjectDependency(play, &this->actor);
+                            this->unk_15A = -2;
                         }
-                        break;
+                    } else {
+                        mtxScale = 16.0f;
+                        Matrix_Scale(mtxScale, mtxScale, mtxScale, MTXMODE_APPLY);
+                        GetItem_Draw(play, GID_HEART);
                     }
+                    break;
                 }
             case ITEM00_BOMBS_A:
             case ITEM00_BOMBS_B:
             case ITEM00_BOMBS_SPECIAL:
-                if (CVarGetInteger(CVAR_ENHANCEMENT("NewDrops"), 0)) {
-                    mtxScale = 8.0f;
-                    Matrix_Scale(mtxScale, mtxScale, mtxScale, MTXMODE_APPLY);
-                    GetItem_Draw(play, GID_BOMB);
-                    break;
-                }
             case ITEM00_ARROWS_SINGLE:
             case ITEM00_ARROWS_SMALL:
-                if (CVarGetInteger(CVAR_ENHANCEMENT("NewDrops"), 0)) {
-                    mtxScale = 7.0f;
-                    Matrix_Scale(mtxScale, mtxScale, mtxScale, MTXMODE_APPLY);
-                    GetItem_Draw(play, GID_ARROWS_SMALL);
-                    break;
-                }
             case ITEM00_ARROWS_MEDIUM:
-                if (CVarGetInteger(CVAR_ENHANCEMENT("NewDrops"), 0)) {
-                    mtxScale = 7.0f;
-                    Matrix_Scale(mtxScale, mtxScale, mtxScale, MTXMODE_APPLY);
-                    GetItem_Draw(play, GID_ARROWS_MEDIUM);
-                    break;
-                }
             case ITEM00_ARROWS_LARGE:
-                if (CVarGetInteger(CVAR_ENHANCEMENT("NewDrops"), 0)) {
-                    mtxScale = 7.0f;
-                    Matrix_Scale(mtxScale, mtxScale, mtxScale, MTXMODE_APPLY);
-                    GetItem_Draw(play, GID_ARROWS_LARGE);
-                    break;
-                }
             case ITEM00_NUTS:
-                if (CVarGetInteger(CVAR_ENHANCEMENT("NewDrops"), 0)) {
-                    mtxScale = 9.0f;
-                    Matrix_Scale(mtxScale, mtxScale, mtxScale, MTXMODE_APPLY);
-                    GetItem_Draw(play, GID_NUTS);
-                    break;
-                }
             case ITEM00_STICK:
-                if (CVarGetInteger(CVAR_ENHANCEMENT("NewDrops"), 0)) {
-                    mtxScale = 7.5f;
-                    Matrix_Scale(mtxScale, mtxScale, mtxScale, MTXMODE_APPLY);
-                    GetItem_Draw(play, GID_STICK);
-                    break;
-                }
             case ITEM00_MAGIC_LARGE:
-                if (CVarGetInteger(CVAR_ENHANCEMENT("NewDrops"), 0)) {
-                    mtxScale = 8.0f;
-                    Matrix_Scale(mtxScale, mtxScale, mtxScale, MTXMODE_APPLY);
-                    GetItem_Draw(play, GID_MAGIC_LARGE);
-                    break;
-                }
             case ITEM00_MAGIC_SMALL:
-                if (CVarGetInteger(CVAR_ENHANCEMENT("NewDrops"), 0)) {
-                    mtxScale = 8.0f;
-                    Matrix_Scale(mtxScale, mtxScale, mtxScale, MTXMODE_APPLY);
-                    GetItem_Draw(play, GID_MAGIC_SMALL);
-                    break;
-                }
             case ITEM00_SEEDS:
-                if (CVarGetInteger(CVAR_ENHANCEMENT("NewDrops"), 0)) {
-                    mtxScale = 7.0f;
-                    Matrix_Scale(mtxScale, mtxScale, mtxScale, MTXMODE_APPLY);
-                    GetItem_Draw(play, GID_SEEDS);
-                    break;
-                }
             case ITEM00_BOMBCHU:
-                if (CVarGetInteger(CVAR_ENHANCEMENT("NewDrops"), 0)) {
-                    mtxScale = 9.0f;
-                    Matrix_Scale(mtxScale, mtxScale, mtxScale, MTXMODE_APPLY);
-                    GetItem_Draw(play, GID_BOMBCHU);
-                    break;
-                }
             case ITEM00_SMALL_KEY:
-                if (CVarGetInteger(CVAR_ENHANCEMENT("NewDrops"), 0)) {
-                    mtxScale = 8.0f;
-                    Matrix_Scale(mtxScale, mtxScale, mtxScale, MTXMODE_APPLY);
-                    GetItem_Draw(play, GID_KEY_SMALL);
-                } else {
-                    // All collectibles fallthrough here when 3d drops are off
-                    EnItem00_DrawCollectible(this, play);
-                }
+                EnItem00_DrawCollectible(this, play);
                 break;
             case ITEM00_SHIELD_DEKU:
                 GetItem_Draw(play, GID_SHIELD_DEKU);
@@ -1304,24 +1173,24 @@ void EnItem00_DrawRupee(EnItem00* this, PlayState* play) {
     u8 shouldColor = 0;
     switch (texIndex) {
         case 0:
-            rupeeColor = CVarGetColor24(CVAR_COSMETIC("Consumable.GreenRupee.Value"), (Color_RGB8){ 255, 255, 255 });
-            shouldColor = CVarGetInteger(CVAR_COSMETIC("Consumable.GreenRupee.Changed"), 0);
+            rupeeColor = ((Color_RGB8){ 255, 255, 255 });
+            shouldColor = (0);
             break;
         case 1:
-            rupeeColor = CVarGetColor24(CVAR_COSMETIC("Consumable.BlueRupee.Value"), (Color_RGB8){ 255, 255, 255 });
-            shouldColor = CVarGetInteger(CVAR_COSMETIC("Consumable.BlueRupee.Changed"), 0);
+            rupeeColor = ((Color_RGB8){ 255, 255, 255 });
+            shouldColor = (0);
             break;
         case 2:
-            rupeeColor = CVarGetColor24(CVAR_COSMETIC("Consumable.RedRupee.Value"), (Color_RGB8){ 255, 255, 255 });
-            shouldColor = CVarGetInteger(CVAR_COSMETIC("Consumable.RedRupee.Changed"), 0);
+            rupeeColor = ((Color_RGB8){ 255, 255, 255 });
+            shouldColor = (0);
             break;
         case 4: // orange rupee texture corresponds to the purple rupee (authentic bug)
-            rupeeColor = CVarGetColor24(CVAR_COSMETIC("Consumable.PurpleRupee.Value"), (Color_RGB8){ 255, 255, 255 });
-            shouldColor = CVarGetInteger(CVAR_COSMETIC("Consumable.PurpleRupee.Changed"), 0);
+            rupeeColor = ((Color_RGB8){ 255, 255, 255 });
+            shouldColor = (0);
             break;
         case 3: // pink rupee texture corresponds to the gold rupee (authentic bug)
-            rupeeColor = CVarGetColor24(CVAR_COSMETIC("Consumable.GoldRupee.Value"), (Color_RGB8){ 255, 255, 255 });
-            shouldColor = CVarGetInteger(CVAR_COSMETIC("Consumable.GoldRupee.Changed"), 0);
+            rupeeColor = ((Color_RGB8){ 255, 255, 255 });
+            shouldColor = (0);
             break;
     }
 
@@ -1438,38 +1307,6 @@ void EnItem00_DrawHeartPiece(EnItem00* this, PlayState* play) {
     CLOSE_DISPS(play->state.gfxCtx);
 }
 
-// #region [Randomizer] [Enchancment]
-/**
- * Sometimes convert the given drop ID into a bombchu.
- * Returns the new drop type ID.
- */
-s16 EnItem00_ConvertBombDropToBombchu(s16 dropId) {
-    if (INV_CONTENT(ITEM_BOMBCHU) == ITEM_NONE) {
-        return dropId;
-    }
-
-    if (INV_CONTENT(ITEM_BOMB) == ITEM_NONE) {
-        return ITEM00_BOMBCHU;
-    }
-
-    if (AMMO(ITEM_BOMB) <= 15) {
-        // Player needs bombs and might need chus, so drop whichever has less
-        if (AMMO(ITEM_BOMB) <= AMMO(ITEM_BOMBCHU)) {
-            return dropId;
-        } else {
-            return ITEM00_BOMBCHU;
-        }
-    } else {
-        // Player has enough bombs, so drop chus if they need some, else it's 50/50
-        if (AMMO(ITEM_BOMBCHU) <= 15) {
-            return ITEM00_BOMBCHU;
-        } else {
-            return Rand_Next() % 2 ? dropId : ITEM00_BOMBCHU;
-        }
-    }
-}
-// #endregion
-
 /**
  * Converts a given drop type ID based on link's current age, health and owned items.
  * Returns a new drop type ID or -1 to cancel the drop.
@@ -1478,19 +1315,13 @@ s16 func_8001F404(s16 dropId) {
     if (LINK_IS_ADULT) {
         if (dropId == ITEM00_SEEDS) {
             dropId = ITEM00_ARROWS_SMALL;
-        } else if (GameInteractor_Should(VB_PREVENT_ADULT_STICK, dropId == ITEM00_STICK)) {
+        } else if ((dropId == ITEM00_STICK)) {
             dropId = ITEM00_RUPEE_GREEN;
         }
     } else {
         if (dropId == ITEM00_ARROWS_SMALL || dropId == ITEM00_ARROWS_MEDIUM || dropId == ITEM00_ARROWS_LARGE) {
             dropId = ITEM00_SEEDS;
         }
-    }
-
-    if (CVarGetInteger(CVAR_ENHANCEMENT("EnableBombchuDrops"), 0) &&
-        (dropId == ITEM00_BOMBS_A || dropId == ITEM00_BOMBS_B || dropId == ITEM00_BOMBS_SPECIAL) &&
-        (INV_CONTENT(ITEM_BOMB) != ITEM_NONE)) {
-        dropId = EnItem00_ConvertBombDropToBombchu(dropId);
     }
 
     // This is convoluted but it seems like it must be a single condition to match
@@ -1520,10 +1351,6 @@ EnItem00* Item_DropCollectible(PlayState* play, Vec3f* spawnPos, s16 params) {
     s16 param3F00 = params & 0x3F00;
 
     params &= 0x3FFF;
-
-    if ((params & 0x00FF) == ITEM00_HEART && CVarGetInteger(CVAR_ENHANCEMENT("NoHeartDrops"), 0)) {
-        return NULL;
-    }
 
     if (((params & 0x00FF) == ITEM00_FLEXIBLE) && !param4000) {
         // TODO: Prevent the cast to EnItem00 here since this is a different actor (En_Elf)
@@ -1568,10 +1395,6 @@ EnItem00* Item_DropCollectible2(PlayState* play, Vec3f* spawnPos, s16 params) {
 
     params &= 0x3FFF;
 
-    if ((params & 0x00FF) == ITEM00_HEART && CVarGetInteger(CVAR_ENHANCEMENT("NoHeartDrops"), 0)) {
-        return NULL;
-    }
-
     if (((params & 0x00FF) == ITEM00_FLEXIBLE) && !param4000) {
         // TODO: Prevent the cast to EnItem00 here since this is a different actor (En_Elf)
         spawnedActor = (EnItem00*)Actor_Spawn(&play->actorCtx, play, ACTOR_EN_ELF, spawnPos->x, spawnPos->y + 40.0f,
@@ -1606,10 +1429,6 @@ void Item_DropCollectibleRandom(PlayState* play, Actor* fromActor, Vec3f* spawnP
 
     param8000 = params & 0x8000;
     params &= 0x7FFF;
-
-    if (CVarGetInteger(CVAR_ENHANCEMENT("NoRandomDrops"), 0)) {
-        return;
-    }
 
     if (fromActor != NULL) {
         if (fromActor->dropFlag) {
@@ -1652,13 +1471,11 @@ void Item_DropCollectibleRandom(PlayState* play, Actor* fromActor, Vec3f* spawnP
             EffectSsDeadSound_SpawnStationary(play, spawnPos, NA_SE_EV_BUTTERFRY_TO_FAIRY, true,
                                               DEADSOUND_REPEAT_MODE_OFF, 40);
             return;
-        } else if (gSaveContext.health <= 0x30 &&
-                   !CVarGetInteger(CVAR_ENHANCEMENT("NoHeartDrops"), 0)) { // 3 hearts or less
+        } else if (gSaveContext.health <= 0x30) { // 3 hearts or less
             params = 0xB * 0x10;
             dropTableIndex = 0x0;
             dropId = ITEM00_HEART;
-        } else if (gSaveContext.health <= 0x50 &&
-                   !CVarGetInteger(CVAR_ENHANCEMENT("NoHeartDrops"), 0)) { // 5 hearts or less
+        } else if (gSaveContext.health <= 0x50) { // 5 hearts or less
             params = 0xA * 0x10;
             dropTableIndex = 0x0;
             dropId = ITEM00_HEART;
@@ -1691,7 +1508,7 @@ void Item_DropCollectibleRandom(PlayState* play, Actor* fromActor, Vec3f* spawnP
         }
     }
 
-    if (dropId != 0xFF && (!CVarGetInteger(CVAR_ENHANCEMENT("NoHeartDrops"), 0) || dropId != ITEM00_HEART)) {
+    if (dropId != 0xFF) {
         dropQuantity = sDropQuantities[params + dropTableIndex];
         while (dropQuantity > 0) {
             if (!param8000) {
@@ -1716,11 +1533,7 @@ void Item_DropCollectibleRandom(PlayState* play, Actor* fromActor, Vec3f* spawnP
                     }
                 }
             } else {
-                if (CVarGetInteger(CVAR_ENHANCEMENT("BushDropFix"), 0)) {
-                    Item_DropCollectible(play, spawnPos, dropId | 0x8000);
-                } else {
-                    Item_DropCollectible(play, spawnPos, params | 0x8000);
-                }
+                Item_DropCollectible(play, spawnPos, params | 0x8000);
             }
             dropQuantity--;
         }

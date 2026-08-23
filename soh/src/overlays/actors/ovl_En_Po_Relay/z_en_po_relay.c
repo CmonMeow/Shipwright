@@ -8,9 +8,6 @@
 #include "overlays/actors/ovl_En_Honotrap/z_en_honotrap.h"
 #include "objects/object_tk/object_tk.h"
 #include "soh/ResourceManagerHelpers.h"
-#include "soh/Enhancements/game-interactor/GameInteractor.h"
-#include "soh/Enhancements/game-interactor/GameInteractor_Hooks.h"
-
 #define FLAGS                                                                                  \
     (ACTOR_FLAG_ATTENTION_ENABLED | ACTOR_FLAG_FRIENDLY | ACTOR_FLAG_UPDATE_CULLING_DISABLED | \
      ACTOR_FLAG_IGNORE_QUAKE | ACTOR_FLAG_TALK_OFFER_AUTO_ACCEPTED)
@@ -198,7 +195,7 @@ void EnPoRelay_Race(EnPoRelay* this, PlayState* play) {
     if (this->actionTimer != 0) {
         this->actionTimer--;
     }
-    if (GameInteractor_Should(VB_DAMPE_DROP_FLAME, this->actionTimer == 0 && Rand_ZeroOne() < 0.03f, this)) {
+    if ((this->actionTimer == 0 && Rand_ZeroOne() < 0.03f)) {
         this->actionTimer = 32;
         if (this->pathIndex < 23) {
             speed = Rand_ZeroOne() * 3.0f;
@@ -236,10 +233,6 @@ void EnPoRelay_Race(EnPoRelay* this, PlayState* play) {
             speed = 4.5f;
         } else {
             speed = 3.5f;
-        }
-
-        if (CVarGetInteger(CVAR_ENHANCEMENT("FixDampeGoingBackwards"), false)) {
-            speed = ABS(speed);
         }
 
         multiplier = 250.0f - this->actor.xzDistToPlayer;

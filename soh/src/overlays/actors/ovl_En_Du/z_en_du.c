@@ -1,8 +1,6 @@
 #include "z_en_du.h"
 #include "objects/object_du/object_du.h"
 #include "scenes/overworld/spot18/spot18_scene.h"
-#include "soh/Enhancements/game-interactor/GameInteractor_Hooks.h"
-
 #define FLAGS (ACTOR_FLAG_ATTENTION_ENABLED | ACTOR_FLAG_FRIENDLY | ACTOR_FLAG_UPDATE_DURING_OCARINA)
 
 void EnDu_Init(Actor* thisx, PlayState* play);
@@ -95,26 +93,6 @@ static AnimationInfo sAnimationInfo[] = {
     { &gDaruniaDancingLoop4Anim, 1.0f, 0.0f, -1.0f, ANIMMODE_ONCE, 0.0f },
     { &gDaruniaDancingEndAnim, 1.0f, 0.0f, -1.0f, ANIMMODE_ONCE, -6.0f },
 };
-
-// #region SOH [Enhancement] Only animations too fast need to be slowed down, otherwise not touched
-static AnimationInfo sAnimationInfoFix[] = {
-    { NULL },
-    { NULL },
-    { NULL },
-    { NULL },
-    { NULL },
-    { NULL },
-    { NULL },
-    { &gDaruniaDancingLoop1Anim, 0.78f, 0.0f, -1.0f, ANIMMODE_ONCE, -10.0f }, //
-    { &gDaruniaDancingLoop1Anim, 0.77f, 0.0f, -1.0f, ANIMMODE_ONCE, 0.0f },   // hop
-    { &gDaruniaDancingLoop2Anim, 0.78f, 0.0f, -1.0f, ANIMMODE_ONCE, 0.0f },   // from hop to spin
-    { &gDaruniaDancingLoop3Anim, 0.77f, 0.0f, -1.0f, ANIMMODE_ONCE, 0.0f },   // spin
-    { NULL },
-    { NULL },
-    { &gDaruniaDancingLoop4Anim, 0.78f, 0.0f, -1.0f, ANIMMODE_ONCE, 0.0f }, // from spin to hop
-    { NULL },
-};
-// #endregion
 
 void EnDu_SetupAction(EnDu* this, EnDuActionFunc actionFunc) {
     this->actionFunc = actionFunc;
@@ -277,13 +255,7 @@ void func_809FE040(EnDu* this) {
         if (this->unk_1E6 >= 8) {
             this->unk_1E6 = 0;
         }
-        // #region SOH[Enhancement]
-        if (CVarGetInteger(CVAR_ENHANCEMENT("FixDaruniaDanceSpeed"), 1)) {
-            Animation_ChangeByInfo(&this->skelAnime, sAnimationInfoFix, animationIndices[this->unk_1E6]);
-            // #endregion
-        } else {
-            Animation_ChangeByInfo(&this->skelAnime, sAnimationInfo, animationIndices[this->unk_1E6]);
-        }
+        Animation_ChangeByInfo(&this->skelAnime, sAnimationInfo, animationIndices[this->unk_1E6]);
     }
 }
 
@@ -299,13 +271,7 @@ void func_809FE104(EnDu* this) {
         if (Animation_OnFrame(&this->skelAnime, this->skelAnime.endFrame)) {
             this->unk_1E6++;
             if (this->unk_1E6 < 4) {
-                // #region SOH[Enhancement]
-                if (CVarGetInteger(CVAR_ENHANCEMENT("FixDaruniaDanceSpeed"), 1) && this->unk_1E6 <= 1) {
-                    Animation_ChangeByInfo(&this->skelAnime, sAnimationInfoFix, animationIndices[this->unk_1E6]);
-                    // #endregion
-                } else {
-                    Animation_ChangeByInfo(&this->skelAnime, sAnimationInfo, animationIndices[this->unk_1E6]);
-                }
+                Animation_ChangeByInfo(&this->skelAnime, sAnimationInfo, animationIndices[this->unk_1E6]);
             }
         }
     }
@@ -378,20 +344,20 @@ void func_809FE4A4(EnDu* this, PlayState* play) {
         play->msgCtx.ocarinaMode = OCARINA_MODE_00;
         EnDu_SetupAction(this, func_809FE3C0);
     } else if (play->msgCtx.ocarinaMode >= OCARINA_MODE_06) {
-        if (GameInteractor_Should(VB_PLAY_DARUNIAS_JOY_CS, true)) {
+        
             play->csCtx.segment = SEGMENTED_TO_VIRTUAL(gGoronCityDaruniaWrongCs);
             gSaveContext.cutsceneTrigger = 1;
-        }
+        
         this->unk_1E8 = 1;
         EnDu_SetupAction(this, func_809FE890);
         play->msgCtx.ocarinaMode = OCARINA_MODE_04;
     } else if (play->msgCtx.ocarinaMode == OCARINA_MODE_03) {
         Audio_PlaySoundGeneral(NA_SE_SY_CORRECT_CHIME, &gSfxDefaultPos, 4, &gSfxDefaultFreqAndVolScale,
                                &gSfxDefaultFreqAndVolScale, &gSfxDefaultReverb);
-        if (GameInteractor_Should(VB_PLAY_DARUNIAS_JOY_CS, true)) {
+        
             play->csCtx.segment = SEGMENTED_TO_VIRTUAL(gGoronCityDaruniaCorrectCs);
             gSaveContext.cutsceneTrigger = 1;
-        }
+        
         this->unk_1E8 = 0;
         EnDu_SetupAction(this, func_809FE890);
         play->msgCtx.ocarinaMode = OCARINA_MODE_04;
@@ -497,13 +463,7 @@ void func_809FE890(EnDu* this, PlayState* play) {
             }
             if (csAction->action == 7 || csAction->action == 8) {
                 this->unk_1E6 = 0;
-                // #region SOH[Enhancement]
-                if (CVarGetInteger(CVAR_ENHANCEMENT("FixDaruniaDanceSpeed"), 1)) {
-                    Animation_ChangeByInfo(&this->skelAnime, sAnimationInfoFix, ENDU_ANIM_7);
-                    // #endregion
-                } else {
-                    Animation_ChangeByInfo(&this->skelAnime, sAnimationInfo, ENDU_ANIM_7);
-                }
+                Animation_ChangeByInfo(&this->skelAnime, sAnimationInfo, ENDU_ANIM_7);
             }
             this->unk_1EA = csAction->action;
             if (this->unk_1EA == 7) {
@@ -556,7 +516,7 @@ void func_809FEB08(EnDu* this, PlayState* play) {
         EnDu_SetupAction(this, func_809FE3C0);
         return;
     }
-    if (GameInteractor_Should(VB_BE_ELIGIBLE_FOR_DARUNIAS_JOY_REWARD, CUR_UPG_VALUE(UPG_STRENGTH) <= 0)) {
+    if ((CUR_UPG_VALUE(UPG_STRENGTH) <= 0)) {
         this->actor.textId = 0x301C;
         EnDu_SetupAction(this, func_809FEC14);
     } else {
@@ -577,7 +537,7 @@ void func_809FEC14(EnDu* this, PlayState* play) {
 }
 
 void func_809FEC70(EnDu* this, PlayState* play) {
-    if (Actor_HasParent(&this->actor, play) || !GameInteractor_Should(VB_GIVE_ITEM_STRENGTH_1, true)) {
+    if (Actor_HasParent(&this->actor, play) || !(true)) {
         this->actor.parent = NULL;
         EnDu_SetupAction(this, func_809FECE4);
     } else {

@@ -2,8 +2,6 @@
 #include "global.h"
 #include "vt.h"
 #include "libultraship/bridge.h"
-#include "soh/Enhancements/game-interactor/GameInteractor.h"
-#include "soh/Enhancements/game-interactor/GameInteractor_Hooks.h"
 #include "soh/ResourceManagerHelpers.h"
 
 #include "message_data_static.h"
@@ -106,7 +104,7 @@ void func_800C4344(GameState* gameState) {
         HREG(95) = CHECK_BTN_ALL(selectedInput->press.button, hReg82);
     }
 
-    if (CVarGetInteger(CVAR_DEVELOPER_TOOLS("RegEditEnabled"), 0) || gIsCtrlr2Valid) {
+    if (gIsCtrlr2Valid) {
         func_8006390C(&gameState->input[1]);
     }
 
@@ -175,9 +173,6 @@ void GameState_Draw(GameState* gameState, GraphicsContext* gfxCtx) {
     }
 
     sLastButtonPressed = gameState->input[0].press.button | gameState->input[0].cur.button;
-    if (R_DISABLE_INPUT_DISPLAY == 0 && CVarGetInteger(CVAR_DEVELOPER_TOOLS("DebugEnabled"), 0)) {
-        GameState_DrawInputDisplay(sLastButtonPressed, &newDList);
-    }
 
     if (R_ENABLE_AUDIO_DBG & 1) {
         s32 pad;
@@ -265,7 +260,6 @@ void GameState_Update(GameState* gameState) {
 
     GameState_SetFrameBuffer(gfxCtx);
 
-    GameInteractor_ExecuteOnGameStateMainStart();
 
     gameState->main(gameState);
 
@@ -353,7 +347,6 @@ void GameState_Update(GameState* gameState) {
         gSaveContext.language = LANGUAGE_ENG;
     }
 
-    GameInteractor_ExecuteOnGameFrameUpdate();
     gameState->frames++;
 }
 

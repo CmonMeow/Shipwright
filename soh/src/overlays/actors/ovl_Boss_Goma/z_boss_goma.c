@@ -5,9 +5,6 @@
 #include "overlays/actors/ovl_Door_Shutter/z_door_shutter.h"
 #include "overlays/actors/ovl_Door_Warp1/z_door_warp1.h"
 #include "soh/OTRGlobals.h"
-#include "soh/Enhancements/game-interactor/GameInteractor.h"
-#include "soh/Enhancements/game-interactor/GameInteractor_Hooks.h"
-
 #define FLAGS                                                                                 \
     (ACTOR_FLAG_ATTENTION_ENABLED | ACTOR_FLAG_HOSTILE | ACTOR_FLAG_UPDATE_CULLING_DISABLED | \
      ACTOR_FLAG_DRAW_CULLING_DISABLED)
@@ -343,13 +340,13 @@ void BossGoma_Init(Actor* thisx, PlayState* play) {
 
     if (Flags_GetClear(play, play->roomCtx.curRoom.num)) {
         Actor_Kill(&this->actor);
-        if (GameInteractor_Should(VB_SPAWN_BLUE_WARP, true, this)) {
+        
             Actor_SpawnAsChild(&play->actorCtx, &this->actor, play, ACTOR_DOOR_WARP1, 0.0f, -640.0f, 0.0f, 0, 0, 0,
                                WARP_DUNGEON_CHILD);
-        }
-        if (GameInteractor_Should(VB_SPAWN_HEART_CONTAINER, true)) {
+        
+        
             Actor_Spawn(&play->actorCtx, play, ACTOR_ITEM_B_HEART, 141.0f, -640.0f, -84.0f, 0, 0, 0, 0);
-        }
+        
     }
 
     for (int i = 0; i < ARRAY_COUNT(sClearPixelTex16); i++) {
@@ -451,11 +448,6 @@ void BossGoma_SetupCeilingIdle(BossGoma* this) {
  * When the player killed all children gohmas
  */
 void BossGoma_SetupFallJump(BossGoma* this) {
-    // When in Enemy Randomizer, reset the state of the spawned Gohma Larva because it's not done
-    // by the (non-existent) Larva themselves.
-    if (CVarGetInteger(CVAR_ENHANCEMENT("RandomizedEnemies"), 0)) {
-        this->childrenGohmaState[0] = this->childrenGohmaState[1] = this->childrenGohmaState[2] = 0;
-    }
     Animation_Change(&this->skelanime, &gGohmaLandAnim, 1.0f, 0.0f, 0.0f, ANIMMODE_ONCE, -5.0f);
     this->actionFunc = BossGoma_FallJump;
     this->actor.speedXZ = 0.0f;
@@ -1124,10 +1116,10 @@ void BossGoma_Defeated(BossGoma* this, PlayState* play) {
                 this->timer = 70;
                 this->decayingProgress = 0;
                 this->subCameraFollowSpeed = 0.0f;
-                if (GameInteractor_Should(VB_SPAWN_HEART_CONTAINER, true)) {
+                
                     Actor_Spawn(&play->actorCtx, play, ACTOR_ITEM_B_HEART, this->actor.world.pos.x,
                                 this->actor.world.pos.y, this->actor.world.pos.z, 0, 0, 0, 0);
-                }
+                
             }
             break;
 
@@ -1158,10 +1150,10 @@ void BossGoma_Defeated(BossGoma* this, PlayState* play) {
                     }
                 }
 
-                if (GameInteractor_Should(VB_SPAWN_BLUE_WARP, true, this)) {
+                
                     Actor_SpawnAsChild(&play->actorCtx, &this->actor, play, ACTOR_DOOR_WARP1, childPos.x,
                                        this->actor.world.pos.y, childPos.z, 0, 0, 0, WARP_DUNGEON_CHILD);
-                }
+                
                 Flags_SetClear(play, play->roomCtx.curRoom.num);
             }
 
@@ -1561,18 +1553,11 @@ void BossGoma_CeilingIdle(BossGoma* this, PlayState* play) {
     Math_ApproachZeroF(&this->actor.speedXZ, 0.5f, 2.0f);
 
     if (this->framesUntilNextAction == 0) {
-        Actor* nearbyEnTest = NULL;
-        if (CVarGetInteger(CVAR_ENHANCEMENT("RandomizedEnemies"), 0)) {
-            nearbyEnTest = Actor_FindNearby(play, &this->actor, -1, ACTORCAT_ENEMY, 8000.0f);
-        }
         if (this->childrenGohmaState[0] == 0 && this->childrenGohmaState[1] == 0 && this->childrenGohmaState[2] == 0) {
             // if no child gohma has been spawned
             BossGoma_SetupCeilingPrepareSpawnGohmas(this);
-        } else if ((this->childrenGohmaState[0] < 0 && this->childrenGohmaState[1] < 0 &&
-                    this->childrenGohmaState[2] < 0) ||
-                   (nearbyEnTest == NULL && CVarGetInteger(CVAR_ENHANCEMENT("RandomizedEnemies"), 0))) {
-            // In authentic gameplay, check if all baby Ghomas are dead. In Enemy Randomizer, check if there's no
-            // enemies alive.
+        } else if (this->childrenGohmaState[0] < 0 && this->childrenGohmaState[1] < 0 &&
+                   this->childrenGohmaState[2] < 0) {
             BossGoma_SetupFallJump(this);
         } else {
             for (i = 0; i < ARRAY_COUNT(this->childrenGohmaState); i++) {
@@ -1846,7 +1831,6 @@ void BossGoma_UpdateHit(BossGoma* this, PlayState* play) {
                 } else {
                     BossGoma_SetupDefeated(this, play);
                     Enemy_StartFinishingBlow(play, &this->actor);
-                    GameInteractor_ExecuteOnBossDefeat(&this->actor);
                 }
 
                 this->invincibilityFrames = 10;

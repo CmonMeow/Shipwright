@@ -8,11 +8,9 @@
 #include "alloca.h"
 #include "textures/nintendo_rogo_static/nintendo_rogo_static.h"
 #include "assets/objects/gameplay_keep/gameplay_keep.h"
-#include <soh/Enhancements/bootcommands.h>
 #include <soh/GameVersions.h>
 #include <soh/SaveManager.h>
 #include "soh/ResourceManagerHelpers.h"
-#include "soh/Enhancements/game-interactor/GameInteractor_Hooks.h"
 #include <string.h>
 
 #include "time.h"
@@ -168,6 +166,4 @@ void Title_Init(GameState* thisx) {
     this->coverAlpha = 255;
     this->addAlpha = -3;
     this->visibleDuration = 0x3C;
-
-    GameInteractor_ExecuteOnZTitleInit(this);
 }

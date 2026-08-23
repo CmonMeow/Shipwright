@@ -22,9 +22,7 @@ std::shared_ptr<Ship::IResource> SetEntranceListFactory::ReadResource(std::share
         setEntranceList->entrances.push_back(entranceEntry);
     }
 
-    if (CVarGetInteger(CVAR_DEVELOPER_TOOLS("ResourceLogging"), 0)) {
-        LogEntranceListAsXML(setEntranceList);
-    }
+    
 
     return setEntranceList;
 }

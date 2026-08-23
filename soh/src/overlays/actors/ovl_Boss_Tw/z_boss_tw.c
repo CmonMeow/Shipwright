@@ -4,9 +4,6 @@
 #include "objects/object_tw/object_tw.h"
 #include "overlays/actors/ovl_Door_Warp1/z_door_warp1.h"
 #include "soh/frame_interpolation.h"
-#include "soh/Enhancements/game-interactor/GameInteractor.h"
-#include "soh/Enhancements/game-interactor/GameInteractor_Hooks.h"
-
 #include <string.h>
 
 #define FLAGS                                                                                 \
@@ -537,14 +534,14 @@ void BossTw_Init(Actor* thisx, PlayState* play2) {
         if (Flags_GetClear(play, play->roomCtx.curRoom.num)) {
             // twinrova has been defeated.
             Actor_Kill(&this->actor);
-            if (GameInteractor_Should(VB_SPAWN_BLUE_WARP, true, this)) {
+            
                 Actor_SpawnAsChild(&play->actorCtx, &this->actor, play, ACTOR_DOOR_WARP1, 600.0f, 230.0f, 0.0f, 0, 0, 0,
                                    WARP_DUNGEON_ADULT);
-            }
+            
 
-            if (GameInteractor_Should(VB_SPAWN_HEART_CONTAINER, true)) {
+            
                 Actor_Spawn(&play->actorCtx, play, ACTOR_ITEM_B_HEART, -600.0f, 230.0f, 0.0f, 0, 0, 0, 0);
-            }
+            
         } else {
             sKotakePtr =
                 (BossTw*)Actor_SpawnAsChild(&play->actorCtx, &this->actor, play, ACTOR_BOSS_TW, this->actor.world.pos.x,
@@ -2375,11 +2372,6 @@ void BossTw_DeathCSMsgSfx(BossTw* this, PlayState* play) {
     koumeAnim = 0;
     sp35 = 0;
 
-    // Skip ahead to last part of the cutscene in rando
-                if (this->work[CS_TIMER_2] == 10 && IS_BOSS_RUSH) {
-        this->work[CS_TIMER_2] = 860;
-    }
-
     if (this->work[CS_TIMER_2] == 80) {
         koumeAnim = 1;
     }
@@ -2557,16 +2549,6 @@ void BossTw_DeathCSMsgSfx(BossTw* this, PlayState* play) {
 
     if (this->work[CS_TIMER_2] >= 120 && this->work[CS_TIMER_2] < 500) {
         Math_ApproachF(&this->workf[UNK_F18], 255.0f, 0.1f, 5.0f);
-    }
-
-    // Add separate timings for the "beam" that opens and closes around the sisters
-    // Needed because we skip ahead in cutscene timer value so it never gets called otherwise
-    if (IS_BOSS_RUSH) {
-        if (this->work[CS_TIMER_2] < 900) {
-            Math_ApproachF(&this->workf[UNK_F18], 255.0f, 0.1f, 5.0f);
-        } else if (this->work[CS_TIMER_2] > 910) {
-            Math_ApproachF(&this->workf[UNK_F18], 0.0f, 1.0f, 3.0f);
-        }
     }
 
     if (this->work[CS_TIMER_2] >= 150) {
@@ -2804,14 +2786,14 @@ void BossTw_TwinrovaDeathCS(BossTw* this, PlayState* play) {
                 func_80064534(play, &play->csCtx);
                 Player_SetCsActionWithHaltedActors(play, &this->actor, 7);
                 Audio_QueueSeqCmd(SEQ_PLAYER_BGM_MAIN << 24 | NA_BGM_BOSS_CLEAR);
-                if (GameInteractor_Should(VB_SPAWN_BLUE_WARP, true, this)) {
+                
                     Actor_SpawnAsChild(&play->actorCtx, &this->actor, play, ACTOR_DOOR_WARP1, 600.0f, 230.0f, 0.0f, 0,
                                        0, 0, WARP_DUNGEON_ADULT);
-                }
+                
 
-                if (GameInteractor_Should(VB_SPAWN_HEART_CONTAINER, true)) {
+                
                     Actor_Spawn(&play->actorCtx, play, ACTOR_ITEM_B_HEART, -600.0f, 230.f, 0.0f, 0, 0, 0, 0);
-                }
+                
 
                 this->actor.world.pos.y = -2000.0f;
                 this->workf[UNK_F18] = 0.0f;
@@ -5273,7 +5255,6 @@ void BossTw_TwinrovaDamage(BossTw* this, PlayState* play, u8 damage) {
             BossTw_TwinrovaSetupDeathCS(this, play);
             Enemy_StartFinishingBlow(play, &this->actor);
             Audio_PlayActorSound2(&this->actor, NA_SE_EN_TWINROBA_YOUNG_DEAD);
-            GameInteractor_ExecuteOnBossDefeat(&this->actor);
             return;
         }
 

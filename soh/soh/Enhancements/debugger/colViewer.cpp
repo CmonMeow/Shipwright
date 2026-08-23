@@ -1,44 +1,19 @@
 #include "colViewer.h"
-#include "soh/SohGui/UIWidgets.hpp"
-#include "soh/SohGui/SohGui.hpp"
 
 #include <vector>
-#include <string>
 #include <cmath>
-#include "soh/Enhancements/game-interactor/GameInteractor.h"
+#include <libultraship/libultraship.h>
 
 extern "C" {
 #include <z64.h>
 #include "variables.h"
 #include "functions.h"
 #include "macros.h"
-#include "soh/cvar_prefixes.h"
 #include "overlays/actors/ovl_En_Kakasi2/z_en_kakasi2.h"
 extern PlayState* gPlayState;
 }
 
-enum ColRenderSetting { ColRenderDisabled, ColRenderSolid, ColRenderTransparent };
-
-static std::map<int32_t, const char*> ColRenderSettingNames = {
-    { ColRenderDisabled, "Disabled" },
-    { ColRenderSolid, "Solid" },
-    { ColRenderTransparent, "Transparent" },
-};
-
-ImVec4 scene_col;
-ImVec4 hookshot_col;
-ImVec4 entrance_col;
-ImVec4 specialSurface_col;
-ImVec4 interactable_col;
-ImVec4 slope_col;
-ImVec4 void_col;
-
-ImVec4 oc_col;
-ImVec4 ac_col;
-ImVec4 at_col;
-
-ImVec4 waterbox_col;
-ImVec4 scarecrow_col;
+static bool sColViewerEnabled = false;
 
 static std::vector<Gfx> opaDl;
 static std::vector<Gfx> xluDl;
@@ -51,101 +26,6 @@ static std::vector<Gfx> cylinderGfx;
 static std::vector<Vtx> cylinderVtx;
 static std::vector<Gfx> sphereGfx;
 static std::vector<Vtx> sphereVtx;
-
-using namespace UIWidgets;
-
-// Draws the ImGui window for the collision viewer
-void ColViewerWindow::DrawElement() {
-    ImGui::BeginDisabled(CVarGetInteger(CVAR_SETTING("DisableChanges"), 0));
-    CheckboxOptions checkOpt = CheckboxOptions().Color(THEME_COLOR);
-    ComboboxOptions comboOpt = ComboboxOptions().Color(THEME_COLOR);
-    CVarCheckbox("Enabled", CVAR_DEVELOPER_TOOLS("ColViewer.Enabled"), checkOpt);
-
-    CVarCombobox("Scene", CVAR_DEVELOPER_TOOLS("ColViewer.Scene"), ColRenderSettingNames, comboOpt);
-    CVarCombobox("Bg Actors", CVAR_DEVELOPER_TOOLS("ColViewer.BGActors"), ColRenderSettingNames, comboOpt);
-    CVarCombobox("Col Check", CVAR_DEVELOPER_TOOLS("ColViewer.ColCheck"), ColRenderSettingNames, comboOpt);
-    CVarCombobox("Waterbox", CVAR_DEVELOPER_TOOLS("ColViewer.Waterbox"), ColRenderSettingNames, comboOpt);
-    CVarCombobox("Scarecrow Spawn", CVAR_DEVELOPER_TOOLS("ColViewer.ScarecrowSpawn"), ColRenderSettingNames, comboOpt);
-
-    CVarCheckbox("Apply as decal", CVAR_DEVELOPER_TOOLS("ColViewer.Decal"),
-                 checkOpt.DefaultValue(true).Tooltip(
-                     "Applies the collision as a decal display. This can be useful if there is z-fighting occuring "
-                     "with the scene geometry, but can cause other artifacts."));
-    CVarCheckbox("Shaded", CVAR_DEVELOPER_TOOLS("ColViewer.Shaded"),
-                 checkOpt.DefaultValue(false).Tooltip("Applies the scene's shading to the collision display."));
-
-    // This has to be duplicated in both code paths due to the nature of ImGui::IsItemHovered()
-    const std::string colorHelpText = "View and change the colors used for collision display.";
-    PushStyleHeader(THEME_COLOR);
-    if (ImGui::TreeNode("Colors")) {
-        UIWidgets::Tooltip(colorHelpText.c_str());
-
-        if (CVarColorPicker("Normal", CVAR_DEVELOPER_TOOLS("ColViewer.ColorNormal"), { 255, 255, 255, 255 }, false,
-                            ColorPickerResetButton | ColorPickerRandomButton, THEME_COLOR)) {
-            scene_col =
-                VecFromRGBA8(CVarGetColor(CVAR_DEVELOPER_TOOLS("ColViewer.ColorNormal"), { 255, 255, 255, 255 }));
-        }
-        if (CVarColorPicker("Hookshot", CVAR_DEVELOPER_TOOLS("ColViewer.ColorHookshot"), { 128, 128, 255, 255 }, false,
-                            ColorPickerResetButton | ColorPickerRandomButton, THEME_COLOR)) {
-            hookshot_col =
-                VecFromRGBA8(CVarGetColor(CVAR_DEVELOPER_TOOLS("ColViewer.ColorHookshot"), { 128, 128, 255, 255 }));
-        }
-        if (CVarColorPicker("Entrance", CVAR_DEVELOPER_TOOLS("ColViewer.ColorEntrance"), { 0, 255, 0, 255 }, false,
-                            ColorPickerResetButton | ColorPickerRandomButton, THEME_COLOR)) {
-            entrance_col =
-                VecFromRGBA8(CVarGetColor(CVAR_DEVELOPER_TOOLS("ColViewer.ColorEntrance"), { 0, 255, 0, 255 }));
-        }
-        if (CVarColorPicker("Special Surface (Grass/Sand/Etc)", CVAR_DEVELOPER_TOOLS("ColViewer.ColorSpecialSurface"),
-                            { 192, 255, 192, 255 }, false, ColorPickerResetButton | ColorPickerRandomButton,
-                            THEME_COLOR)) {
-            specialSurface_col = VecFromRGBA8(
-                CVarGetColor(CVAR_DEVELOPER_TOOLS("ColViewer.ColorSpecialSurface"), { 192, 255, 192, 255 }));
-        }
-        if (CVarColorPicker("Interactable (Vines/Crawlspace/Etc)", CVAR_DEVELOPER_TOOLS("ColViewer.ColorInteractable"),
-                            { 192, 0, 192, 255 }, false, ColorPickerResetButton | ColorPickerRandomButton,
-                            THEME_COLOR)) {
-            interactable_col =
-                VecFromRGBA8(CVarGetColor(CVAR_DEVELOPER_TOOLS("ColViewer.ColorInteractable"), { 192, 0, 192, 255 }));
-        }
-        if (CVarColorPicker("Slope", CVAR_DEVELOPER_TOOLS("ColViewer.ColorSlope"), { 255, 255, 128, 255 }, false,
-                            ColorPickerResetButton | ColorPickerRandomButton, THEME_COLOR)) {
-            slope_col =
-                VecFromRGBA8(CVarGetColor(CVAR_DEVELOPER_TOOLS("ColViewer.ColorSlope"), { 255, 255, 128, 255 }));
-        }
-        if (CVarColorPicker("Void", CVAR_DEVELOPER_TOOLS("ColViewer.ColorVoid"), { 255, 0, 0, 255 }, false,
-                            ColorPickerResetButton | ColorPickerRandomButton, THEME_COLOR)) {
-            void_col = VecFromRGBA8(CVarGetColor(CVAR_DEVELOPER_TOOLS("ColViewer.ColorVoid"), { 255, 0, 0, 255 }));
-        }
-        if (CVarColorPicker("OC", CVAR_DEVELOPER_TOOLS("ColViewer.ColorOC"), { 255, 255, 255, 255 }, false,
-                            ColorPickerResetButton | ColorPickerRandomButton, THEME_COLOR)) {
-            oc_col = VecFromRGBA8(CVarGetColor(CVAR_DEVELOPER_TOOLS("ColViewer.ColorOC"), { 255, 255, 255, 255 }));
-        }
-        if (CVarColorPicker("AC", CVAR_DEVELOPER_TOOLS("ColViewer.ColorAC"), { 0, 0, 255, 255 }, false,
-                            ColorPickerResetButton | ColorPickerRandomButton, THEME_COLOR)) {
-            ac_col = VecFromRGBA8(CVarGetColor(CVAR_DEVELOPER_TOOLS("ColViewer.ColorAC"), { 0, 0, 255, 255 }));
-        }
-        if (CVarColorPicker("AT", CVAR_DEVELOPER_TOOLS("ColViewer.ColorAT"), { 255, 0, 0, 255 }, false,
-                            ColorPickerResetButton | ColorPickerRandomButton, THEME_COLOR)) {
-            at_col = VecFromRGBA8(CVarGetColor(CVAR_DEVELOPER_TOOLS("ColViewer.ColorAT"), { 255, 0, 0, 255 }));
-        }
-        if (CVarColorPicker("Waterbox", CVAR_DEVELOPER_TOOLS("ColViewer.ColorWaterbox"), { 0, 0, 255, 255 }, false,
-                            ColorPickerResetButton | ColorPickerRandomButton, THEME_COLOR)) {
-            waterbox_col =
-                VecFromRGBA8(CVarGetColor(CVAR_DEVELOPER_TOOLS("ColViewer.ColorWaterbox"), { 0, 0, 255, 255 }));
-        }
-        if (CVarColorPicker("Scarecrow Spawn", CVAR_DEVELOPER_TOOLS("ColViewer.ColorScarecrow"), { 255, 128, 0, 200 },
-                            false, ColorPickerResetButton | ColorPickerRandomButton, THEME_COLOR)) {
-            scarecrow_col =
-                VecFromRGBA8(CVarGetColor(CVAR_DEVELOPER_TOOLS("ColViewer.ColorScarecrow"), { 255, 128, 0, 200 }));
-        }
-
-        ImGui::TreePop();
-    } else {
-        UIWidgets::Tooltip(colorHelpText.c_str());
-    }
-    PopStyleHeader();
-    ImGui::EndDisabled();
-}
 
 // Calculates the normal for a triangle at the 3 specified points
 void CalcTriNorm(const Vec3f& v1, const Vec3f& v2, const Vec3f& v3, Vec3f& norm) {
@@ -331,48 +211,19 @@ void CreateSphereData() {
     sphereGfx.push_back(gsSPEndDisplayList());
 }
 
-// Initializes the display list for a ColRenderSetting
-void InitGfx(std::vector<Gfx>& gfx, ColRenderSetting setting) {
-    uint32_t rm;
-    uint32_t blc1;
-    uint32_t blc2;
-    uint8_t alpha;
-    uint64_t cm;
-    uint32_t gm;
-
-    if (setting == ColRenderTransparent) {
-        rm = Z_CMP | IM_RD | CVG_DST_FULL | FORCE_BL;
-        blc1 = GBL_c1(G_BL_CLR_IN, G_BL_A_IN, G_BL_CLR_MEM, G_BL_1MA);
-        blc2 = GBL_c2(G_BL_CLR_IN, G_BL_A_IN, G_BL_CLR_MEM, G_BL_1MA);
-        alpha = 0x80;
-    } else {
-        rm = Z_CMP | Z_UPD | CVG_DST_CLAMP | FORCE_BL;
-        blc1 = GBL_c1(G_BL_CLR_IN, G_BL_0, G_BL_CLR_IN, G_BL_1);
-        blc2 = GBL_c2(G_BL_CLR_IN, G_BL_0, G_BL_CLR_IN, G_BL_1);
-        alpha = 0xFF;
-    }
-
-    if (CVarGetInteger(CVAR_DEVELOPER_TOOLS("ColViewer.Decal"), 1) != 0) {
-        rm |= ZMODE_DEC;
-    } else if (setting == ColRenderTransparent) {
-        rm |= ZMODE_XLU;
-    } else {
-        rm |= ZMODE_OPA;
-    }
+// Initializes a translucent decal display list for collision geometry.
+void InitGfx(std::vector<Gfx>& gfx) {
+    uint32_t rm = Z_CMP | IM_RD | CVG_DST_FULL | FORCE_BL | ZMODE_DEC;
+    uint32_t blc1 = GBL_c1(G_BL_CLR_IN, G_BL_A_IN, G_BL_CLR_MEM, G_BL_1MA);
+    uint32_t blc2 = GBL_c2(G_BL_CLR_IN, G_BL_A_IN, G_BL_CLR_MEM, G_BL_1MA);
 
     gfx.push_back(gsSPTexture(0, 0, 0, G_TX_RENDERTILE, G_OFF));
     gfx.push_back(gsDPSetCycleType(G_CYC_1CYCLE));
     gfx.push_back(gsDPSetRenderMode(rm | blc1, rm | blc2));
 
-    if (CVarGetInteger(CVAR_DEVELOPER_TOOLS("ColViewer.Shaded"), 0) != 0) {
-        gfx.push_back(gsDPSetCombineMode(G_CC_MODULATERGB_PRIM_ENVA, G_CC_MODULATERGB_PRIM_ENVA));
-        gfx.push_back(gsSPLoadGeometryMode(G_CULL_BACK | G_ZBUFFER | G_LIGHTING));
-    } else {
-        gfx.push_back(gsDPSetCombineMode(G_CC_PRIMITIVE_ENVA, G_CC_PRIMITIVE_ENVA));
-        gfx.push_back(gsSPLoadGeometryMode(G_ZBUFFER));
-    }
-
-    gfx.push_back(gsDPSetEnvColor(0xFF, 0xFF, 0xFF, alpha));
+    gfx.push_back(gsDPSetCombineMode(G_CC_PRIMITIVE_ENVA, G_CC_PRIMITIVE_ENVA));
+    gfx.push_back(gsSPLoadGeometryMode(G_ZBUFFER));
+    gfx.push_back(gsDPSetEnvColor(0xFF, 0xFF, 0xFF, 0x80));
 }
 
 // Draws a dynapoly structure (scenes or Bg Actors)
@@ -393,21 +244,21 @@ void DrawDynapoly(std::vector<Gfx>& dl, CollisionHeader* col, int32_t bgId) {
         CollisionPoly* poly = &col->polyList[i];
 
         if (SurfaceType_IsHookshotSurface(&gPlayState->colCtx, poly, bgId)) {
-            color = CVarGetColor(CVAR_DEVELOPER_TOOLS("ColViewer.ColorHookshot.Value"), { 128, 128, 255, 255 });
+            color = { 128, 128, 255, 255 };
         } else if (func_80041D94(&gPlayState->colCtx, poly, bgId) > 0x01) {
-            color = CVarGetColor(CVAR_DEVELOPER_TOOLS("ColViewer.ColorInteractable.Value"), { 192, 0, 192, 255 });
+            color = { 192, 0, 192, 255 };
         } else if (func_80041E80(&gPlayState->colCtx, poly, bgId) == 0x0C) {
-            color = CVarGetColor(CVAR_DEVELOPER_TOOLS("ColViewer.ColorVoid.Value"), { 255, 0, 0, 255 });
+            color = { 255, 0, 0, 255 };
         } else if (SurfaceType_GetSceneExitIndex(&gPlayState->colCtx, poly, bgId) ||
                    func_80041E80(&gPlayState->colCtx, poly, bgId) == 0x05) {
-            color = CVarGetColor(CVAR_DEVELOPER_TOOLS("ColViewer.ColorEntrance.Value"), { 0, 255, 0, 255 });
+            color = { 0, 255, 0, 255 };
         } else if (func_80041D4C(&gPlayState->colCtx, poly, bgId) != 0 ||
                    SurfaceType_IsWallDamage(&gPlayState->colCtx, poly, bgId)) {
-            color = CVarGetColor(CVAR_DEVELOPER_TOOLS("ColViewer.ColorSpecialSurface.Value"), { 192, 255, 192, 255 });
+            color = { 192, 255, 192, 255 };
         } else if (SurfaceType_GetSlope(&gPlayState->colCtx, poly, bgId) == 0x01) {
-            color = CVarGetColor(CVAR_DEVELOPER_TOOLS("ColViewer.ColorSlope.Value"), { 255, 255, 128, 255 });
+            color = { 255, 255, 128, 255 };
         } else {
-            color = CVarGetColor(CVAR_DEVELOPER_TOOLS("ColViewer.ColorNormal.Value"), { 255, 255, 255, 255 });
+            color = { 255, 255, 255, 255 };
         }
 
         if (color.r != lastColorR || color.g != lastColorG || color.b != lastColorB) {
@@ -455,15 +306,8 @@ void DrawDynapoly(std::vector<Gfx>& dl, CollisionHeader* col, int32_t bgId) {
 
 // Draws the scene
 void DrawSceneCollision() {
-    ColRenderSetting showSceneColSetting =
-        (ColRenderSetting)CVarGetInteger(CVAR_DEVELOPER_TOOLS("ColViewer.Scene"), COLVIEW_DISABLED);
-
-    if (showSceneColSetting == ColRenderDisabled || !CVarGetInteger(CVAR_DEVELOPER_TOOLS("ColViewer.Enabled"), 0)) {
-        return;
-    }
-
-    std::vector<Gfx>& dl = (showSceneColSetting == ColRenderTransparent) ? xluDl : opaDl;
-    InitGfx(dl, showSceneColSetting);
+    std::vector<Gfx>& dl = xluDl;
+    InitGfx(dl);
     dl.push_back(gsSPMatrix(&gMtxClear, G_MTX_MODELVIEW | G_MTX_LOAD | G_MTX_NOPUSH));
 
     DrawDynapoly(dl, gPlayState->colCtx.colHeader, BGCHECK_SCENE);
@@ -471,14 +315,8 @@ void DrawSceneCollision() {
 
 // Draws all Bg Actors
 void DrawBgActorCollision() {
-    ColRenderSetting showBgActorSetting =
-        (ColRenderSetting)CVarGetInteger(CVAR_DEVELOPER_TOOLS("ColViewer.BGActors"), COLVIEW_DISABLED);
-    if (showBgActorSetting == ColRenderDisabled || !CVarGetInteger(CVAR_DEVELOPER_TOOLS("ColViewer.Enabled"), 0)) {
-        return;
-    }
-
-    std::vector<Gfx>& dl = (showBgActorSetting == ColRenderTransparent) ? xluDl : opaDl;
-    InitGfx(dl, showBgActorSetting);
+    std::vector<Gfx>& dl = xluDl;
+    InitGfx(dl);
     dl.push_back(gsSPMatrix(&gMtxClear, G_MTX_MODELVIEW | G_MTX_LOAD | G_MTX_NOPUSH));
 
     for (int32_t bgIndex = 0; bgIndex < BG_ACTOR_MAX; bgIndex++) {
@@ -533,19 +371,11 @@ void DrawScarecrowSpawn(std::vector<Gfx>& dl, EnKakasi2* scarecrow) {
 }
 
 void DrawScarecrowSpawns() {
-    ColRenderSetting showScarecrowSetting =
-        (ColRenderSetting)CVarGetInteger(CVAR_DEVELOPER_TOOLS("ColViewer.ScarecrowSpawn"), COLVIEW_DISABLED);
-
-    if (showScarecrowSetting == ColRenderDisabled || !CVarGetInteger(CVAR_DEVELOPER_TOOLS("ColViewer.Enabled"), 0) ||
-        gPlayState == nullptr) {
-        return;
-    }
-
-    std::vector<Gfx>& dl = (showScarecrowSetting == ColRenderTransparent) ? xluDl : opaDl;
-    InitGfx(dl, showScarecrowSetting);
+    std::vector<Gfx>& dl = xluDl;
+    InitGfx(dl);
     dl.push_back(gsSPMatrix(&gMtxClear, G_MTX_MODELVIEW | G_MTX_LOAD | G_MTX_NOPUSH));
 
-    Color_RGBA8 color = CVarGetColor(CVAR_DEVELOPER_TOOLS("ColViewer.ColorScarecrow.Value"), { 255, 128, 0, 200 });
+    Color_RGBA8 color = { 255, 128, 0, 200 };
     dl.push_back(gsDPSetPrimColor(0, 0, color.r, color.g, color.b, color.a));
 
     ActorContext* actorCtx = &gPlayState->actorCtx;
@@ -654,24 +484,18 @@ void DrawColCheckList(std::vector<Gfx>& dl, Collider** objects, int32_t count) {
 
 // Draws all Col Check objects
 void DrawColCheckCollision() {
-    ColRenderSetting showColCheckSetting =
-        (ColRenderSetting)CVarGetInteger(CVAR_DEVELOPER_TOOLS("ColViewer.ColCheck"), COLVIEW_DISABLED);
-    if (showColCheckSetting == ColRenderDisabled || !CVarGetInteger(CVAR_DEVELOPER_TOOLS("ColViewer.Enabled"), 0)) {
-        return;
-    }
-
-    std::vector<Gfx>& dl = (showColCheckSetting == ColRenderTransparent) ? xluDl : opaDl;
-    InitGfx(dl, showColCheckSetting);
+    std::vector<Gfx>& dl = xluDl;
+    InitGfx(dl);
     dl.push_back(gsSPMatrix(&gMtxClear, G_MTX_MODELVIEW | G_MTX_LOAD | G_MTX_NOPUSH));
 
     CollisionCheckContext& col = gPlayState->colChkCtx;
-    Color_RGBA8 color = CVarGetColor(CVAR_DEVELOPER_TOOLS("ColViewer.ColorOC.Value"), { 255, 255, 255, 255 });
+    Color_RGBA8 color = { 255, 255, 255, 255 };
     dl.push_back(gsDPSetPrimColor(0, 0, color.r, color.g, color.b, 255));
     DrawColCheckList(dl, col.colOC, col.colOCCount);
-    color = CVarGetColor(CVAR_DEVELOPER_TOOLS("ColViewer.ColorAC.Value"), { 0, 0, 255, 255 });
+    color = { 0, 0, 255, 255 };
     dl.push_back(gsDPSetPrimColor(0, 0, color.r, color.g, color.b, 255));
     DrawColCheckList(dl, col.colAC, col.colACCount);
-    color = CVarGetColor(CVAR_DEVELOPER_TOOLS("ColViewer.ColorAT.Value"), { 0, 0, 255, 255 });
+    color = { 255, 0, 0, 255 };
     dl.push_back(gsDPSetPrimColor(0, 0, color.r, color.g, color.b, 255));
 
     DrawColCheckList(dl, col.colAT, col.colATCount);
@@ -707,17 +531,11 @@ extern "C" f32 zdWaterBoxMinY;
 
 // Draws all waterboxes
 void DrawWaterboxList() {
-    ColRenderSetting showWaterboxSetting =
-        (ColRenderSetting)CVarGetInteger(CVAR_DEVELOPER_TOOLS("ColViewer.Waterbox"), COLVIEW_DISABLED);
-    if (showWaterboxSetting == ColRenderDisabled || !CVarGetInteger(CVAR_DEVELOPER_TOOLS("ColViewer.Enabled"), 0)) {
-        return;
-    }
-
-    std::vector<Gfx>& dl = (showWaterboxSetting == ColRenderTransparent) ? xluDl : opaDl;
-    InitGfx(dl, showWaterboxSetting);
+    std::vector<Gfx>& dl = xluDl;
+    InitGfx(dl);
     dl.push_back(gsSPMatrix(&gMtxClear, G_MTX_MODELVIEW | G_MTX_LOAD | G_MTX_NOPUSH));
 
-    Color_RGBA8 color = CVarGetColor(CVAR_DEVELOPER_TOOLS("ColViewer.ColorWaterbox.Value"), { 0, 0, 255, 255 });
+    Color_RGBA8 color = { 0, 0, 255, 255 };
 
     dl.push_back(gsDPSetPrimColor(0, 0, color.r, color.g, color.b, 255));
 
@@ -743,7 +561,7 @@ template <typename T> size_t ResetVector(T& vec) {
 }
 
 extern "C" void DrawColViewer() {
-    if (gPlayState == nullptr) {
+    if (!sColViewerEnabled || gPlayState == nullptr) {
         return;
     }
 
@@ -781,30 +599,20 @@ extern "C" void DrawColViewer() {
 
     OPEN_DISPS(gPlayState->state.gfxCtx);
 
-    uint8_t mirroredWorld = CVarGetInteger(CVAR_ENHANCEMENT("MirroredWorld"), 0);
-    // Col viewer needs inverted culling in mirror mode for both OPA and XLU buffers
-    if (mirroredWorld) {
-        gSPSetExtraGeometryMode(POLY_OPA_DISP++, G_EX_INVERT_CULLING);
-        gSPSetExtraGeometryMode(POLY_XLU_DISP++, G_EX_INVERT_CULLING);
-    }
-
     opaDl.push_back(gsSPEndDisplayList());
     gSPDisplayList(POLY_OPA_DISP++, opaDl.data());
 
     xluDl.push_back(gsSPEndDisplayList());
     gSPDisplayList(POLY_XLU_DISP++, xluDl.data());
 
-    if (mirroredWorld) {
-        gSPClearExtraGeometryMode(POLY_OPA_DISP++, G_EX_INVERT_CULLING);
-        gSPClearExtraGeometryMode(POLY_XLU_DISP++, G_EX_INVERT_CULLING);
-    }
-
     CLOSE_DISPS(gPlayState->state.gfxCtx);
 }
 
-void ColViewerWindow::InitElement() {
+extern "C" void ToggleColViewer() {
+    sColViewerEnabled = !sColViewerEnabled;
+}
+
+extern "C" void InitColViewer() {
     CreateCylinderData();
     CreateSphereData();
-
-    GameInteractor::Instance->RegisterGameHook<GameInteractor::OnPlayDrawEnd>(DrawColViewer);
 }

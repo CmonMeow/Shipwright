@@ -200,12 +200,8 @@ void MagicDark_DiamondDraw(Actor* thisx, PlayState* play) {
     u16 gameplayFrames = play->gameplayFrames;
     Color_RGB8 Spell_env = { 0, 100, 255 };
     Color_RGB8 Spell_col = { 170, 255, 255 };
-    if (CVarGetInteger(CVAR_COSMETIC("Magic.NayrusSecondary.Changed"), 0)) {
-        Spell_env = CVarGetColor24(CVAR_COSMETIC("Magic.NayrusSecondary.Value"), Spell_env);
-    }
-    if (CVarGetInteger(CVAR_COSMETIC("Magic.NayrusPrimary.Changed"), 0)) {
-        Spell_col = CVarGetColor24(CVAR_COSMETIC("Magic.NayrusPrimary.Value"), Spell_col);
-    }
+    
+    
 
     OPEN_DISPS(play->state.gfxCtx);
 
@@ -273,12 +269,8 @@ void MagicDark_OrbDraw(Actor* thisx, PlayState* play) {
 
     Color_RGB8 Spell_env = { 0, 150, 255 };
     Color_RGB8 Spell_col = { 170, 255, 255 };
-    if (CVarGetInteger(CVAR_COSMETIC("Magic.NayrusSecondary.Changed"), 0)) {
-        Spell_env = CVarGetColor24(CVAR_COSMETIC("Magic.NayrusSecondary.Value"), Spell_env);
-    }
-    if (CVarGetInteger(CVAR_COSMETIC("Magic.NayrusPrimary.Changed"), 0)) {
-        Spell_col = CVarGetColor24(CVAR_COSMETIC("Magic.NayrusPrimary.Value"), Spell_col);
-    }
+    
+    
 
     gDPSetPrimColor(POLY_XLU_DISP++, 0, 0x80, Spell_col.r, Spell_col.g, Spell_col.b, 255);
     gDPSetEnvColor(POLY_XLU_DISP++, Spell_env.r, Spell_env.g, Spell_env.b, 255);

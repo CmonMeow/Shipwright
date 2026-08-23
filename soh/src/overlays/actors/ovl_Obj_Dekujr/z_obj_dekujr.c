@@ -6,8 +6,6 @@
 
 #include "z_obj_dekujr.h"
 #include "objects/object_dekujr/object_dekujr.h"
-#include "soh/Enhancements/game-interactor/GameInteractor_Hooks.h"
-
 #define FLAGS (ACTOR_FLAG_ATTENTION_ENABLED | ACTOR_FLAG_FRIENDLY)
 
 void ObjDekujr_Init(Actor* thisx, PlayState* play);
@@ -57,8 +55,7 @@ void ObjDekujr_Init(Actor* thisx, PlayState* play) {
         this->unk_19C = 0;
         this->unk_19B = 1;
     }
-    if (!GameInteractor_Should(VB_DEKU_JR_CONSIDER_FOREST_TEMPLE_FINISHED, CHECK_QUEST_ITEM(QUEST_MEDALLION_FOREST),
-                               this)) {
+    if (!(CHECK_QUEST_ITEM(QUEST_MEDALLION_FOREST))) {
         Actor_Kill(thisx);
     } else {
         ActorShape_Init(&thisx->shape, 0.0f, NULL, 0.0f);

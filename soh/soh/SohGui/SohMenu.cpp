@@ -86,9 +86,6 @@ SohMenu::SohMenu(const std::string& consoleVariable, const std::string& name)
 
 void SohMenu::AddMenuElements() {
     AddMenuSettings();
-    AddMenuEnhancements();
-    AddMenuNetwork();
-    AddMenuDevTools();
 
     if (CVarGetInteger(CVAR_SETTING("Menu.SidebarSearch"), 0)) {
         InsertSidebarSearch();
@@ -148,7 +145,7 @@ void SohMenu::InitElement() {
         { DISABLE_FOR_NULL_PLAY_STATE,
           { [](disabledInfo& info) -> bool { return gPlayState == NULL; }, "Save Not Loaded" } },
         { DISABLE_FOR_DEBUG_MODE_OFF,
-          { [](disabledInfo& info) -> bool { return !CVarGetInteger(CVAR_DEVELOPER_TOOLS("DebugEnabled"), 0); },
+          { [](disabledInfo& info) -> bool { return !(0); },
             "Debug Mode is Disabled" } },
         { DISABLE_FOR_FRAME_ADVANCE_OFF,
           { [](disabledInfo& info) -> bool { return !(gPlayState != nullptr && gPlayState->frameAdvCtx.enabled); },

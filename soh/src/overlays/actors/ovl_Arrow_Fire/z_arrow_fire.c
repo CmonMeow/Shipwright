@@ -195,13 +195,9 @@ void ArrowFire_Draw(Actor* thisx, PlayState* play2) {
     Actor* tranform;
 
     Color_RGB8 primaryColor = { 255, 200, 0 };
-    if (CVarGetInteger(CVAR_COSMETIC("Arrows.FirePrimary.Changed"), 0)) {
-        primaryColor = CVarGetColor24(CVAR_COSMETIC("Arrows.FirePrimary.Value"), primaryColor);
-    }
+    
     Color_RGB8 secondaryColor = { 255, 0, 0 };
-    if (CVarGetInteger(CVAR_COSMETIC("Arrows.FireSecondary.Changed"), 0)) {
-        secondaryColor = CVarGetColor24(CVAR_COSMETIC("Arrows.FireSecondary.Value"), secondaryColor);
-    }
+    
 
     stateFrames = play->state.frames;
     arrow = (EnArrow*)this->actor.parent;

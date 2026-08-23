@@ -1,6 +1,4 @@
 #include "SohMenu.h"
-#include "soh/Notification/Notification.h"
-#include "soh/Enhancements/enhancementTypes.h"
 #include "SohModals.h"
 #include "soh/OTRGlobals.h"
 #include <soh/GameVersions.h>
@@ -47,16 +45,6 @@ static const std::map<int32_t, const char*> textureFilteringMap = {
     { Fast::FILTER_THREE_POINT, "Three-Point" },
     { Fast::FILTER_LINEAR, "Linear" },
     { Fast::FILTER_NONE, "None" },
-};
-
-static const std::map<int32_t, const char*> notificationPosition = {
-    { 0, "Top Left" }, { 1, "Top Right" }, { 2, "Bottom Left" }, { 3, "Bottom Right" }, { 4, "Hidden" },
-};
-
-static const std::map<int32_t, const char*> bootSequenceLabels = {
-    { BOOTSEQUENCE_DEFAULT, "Default" },        { BOOTSEQUENCE_AUTHENTIC, "Authentic" },
-    { BOOTSEQUENCE_FILESELECT, "File Select" }, { BOOTSEQUENCE_DEBUGWARPSCREEN, "Debug Warp Screen" },
-    { BOOTSEQUENCE_WARPPOINT, "Warp Point" },
 };
 
 const char* GetGameVersionString(uint32_t index) {
@@ -142,7 +130,7 @@ void SohMenu::AddMenuSettings() {
         .CVar(CVAR_IMGUI_CONTROLLER_NAV)
         .RaceDisable(false)
         .Options(CheckboxOptions().Tooltip(
-            "Allows controller navigation of the port menu (Settings, Enhancements,...)\nCAUTION: "
+            "Allows controller navigation of the port menu.\nCAUTION: "
             "This will disable game inputs while the menu is visible.\n\nD-pad to move between "
             "items, A to select, B to move up in scope."));
     AddWidget(path, "Allow background inputs", WIDGET_CVAR_CHECKBOX)
@@ -198,28 +186,9 @@ void SohMenu::AddMenuSettings() {
             std::string filesPath = Ship::Context::GetInstance()->GetAppDirectoryPath();
             SDL_OpenURL(std::string("file:///" + std::filesystem::absolute(filesPath).string()).c_str());
         })
-        .Options(ButtonOptions().Tooltip("Opens the folder that contains the save and mods folders, etc."));
-
-    AddWidget(path, "Boot", WIDGET_SEPARATOR_TEXT);
-    AddWidget(path, "Boot Sequence", WIDGET_CVAR_COMBOBOX)
-        .CVar(CVAR_SETTING("BootSequence"))
-        .RaceDisable(false)
-        .Options(ComboboxOptions()
-                     .DefaultIndex(BOOTSEQUENCE_DEFAULT)
-                     .LabelPosition(LabelPositions::Far)
-                     .ComponentAlignment(ComponentAlignments::Right)
-                     .ComboMap(bootSequenceLabels)
-                     .Tooltip("Configure what happens when starting or resetting the game.\n\n"
-                              "Default: LUS logo -> N64 logo\n"
-                              "Authentic: N64 logo only\n"
-                              "File Select: Skip to file select menu\n"
-                              "Debug Warp Screen: Skip to the debug warp screen\n"
-                              "Warp Point: Skip to active warp point (if set), see Dev Tools -> General"));
+        .Options(ButtonOptions().Tooltip("Opens the folder containing the application files."));
 
     AddWidget(path, "Languages", WIDGET_SEPARATOR_TEXT);
-    AddWidget(path, "Translate Title Screen", WIDGET_CVAR_CHECKBOX)
-        .CVar(CVAR_SETTING("TitleScreenTranslation"))
-        .RaceDisable(false);
     AddWidget(path, "Language", WIDGET_CVAR_COMBOBOX)
         .CVar(CVAR_SETTING("Languages"))
         .RaceDisable(false)
@@ -232,25 +201,6 @@ void SohMenu::AddMenuSettings() {
                      .ComponentAlignment(ComponentAlignments::Right)
                      .ComboMap(languages)
                      .DefaultIndex(LANGUAGE_ENG));
-    AddWidget(path, "Accessibility", WIDGET_SEPARATOR_TEXT);
-#if defined(_WIN32) || defined(__APPLE__) || defined(ESPEAK)
-    AddWidget(path, "Text to Speech", WIDGET_CVAR_CHECKBOX)
-        .CVar(CVAR_SETTING("A11yTTS"))
-        .RaceDisable(false)
-        .Options(CheckboxOptions().Tooltip("Enables text to speech for in game dialog"));
-#endif
-    AddWidget(path, "Disable Idle Camera Re-Centering", WIDGET_CVAR_CHECKBOX)
-        .CVar(CVAR_SETTING("A11yDisableIdleCam"))
-        .RaceDisable(false)
-        .Options(CheckboxOptions().Tooltip("Disables the automatic re-centering of the camera when idle."));
-    AddWidget(path, "Disable Screen Flash for Finishing Blow", WIDGET_CVAR_CHECKBOX)
-        .CVar(CVAR_SETTING("A11yNoScreenFlashForFinishingBlow"))
-        .RaceDisable(false)
-        .Options(CheckboxOptions().Tooltip("Disables the white screen flash on enemy kill."));
-    AddWidget(path, "Disable Jabu Wobble", WIDGET_CVAR_CHECKBOX)
-        .CVar(CVAR_SETTING("A11yNoJabuWobble"))
-        .RaceDisable(false)
-        .Options(CheckboxOptions().Tooltip("Disable the geometry wobble and camera distortion inside Jabu."));
     AddWidget(path, "EXPERIMENTAL", WIDGET_SEPARATOR_TEXT).Options(TextOptions().Color(Colors::Orange));
     AddWidget(path, "ImGui Menu Scaling", WIDGET_CVAR_COMBOBOX)
         .CVar(CVAR_SETTING("ImGuiScale"))
@@ -452,87 +402,6 @@ void SohMenu::AddMenuSettings() {
         .HideInSearch(true)
         .Options(WindowButtonOptions().Tooltip("Enables the separate Bindings Window."));
 
-    // Input Viewer
-    path.sidebarName = "Input Viewer";
-    AddSidebarEntry("Settings", path.sidebarName, 3);
-    AddWidget(path, "Input Viewer", WIDGET_SEPARATOR_TEXT);
-    AddWidget(path, "Toggle Input Viewer", WIDGET_WINDOW_BUTTON)
-        .CVar(CVAR_WINDOW("InputViewer"))
-        .RaceDisable(false)
-        .WindowName("Input Viewer")
-        .HideInSearch(true)
-        .Options(WindowButtonOptions().Tooltip("Toggles the Input Viewer.").EmbedWindow(false));
-
-    AddWidget(path, "Input Viewer Settings", WIDGET_SEPARATOR_TEXT);
-    AddWidget(path, "Popout Input Viewer Settings", WIDGET_WINDOW_BUTTON)
-        .CVar(CVAR_WINDOW("InputViewerSettings"))
-        .RaceDisable(false)
-        .WindowName("Input Viewer Settings")
-        .HideInSearch(true)
-        .Options(WindowButtonOptions().Tooltip("Enables the separate Input Viewer Settings Window."));
-
-    // Notifications
-    path.sidebarName = "Notifications";
-    path.column = SECTION_COLUMN_1;
-    AddSidebarEntry("Settings", path.sidebarName, 3);
-    AddWidget(path, "Position", WIDGET_CVAR_COMBOBOX)
-        .CVar(CVAR_SETTING("Notifications.Position"))
-        .RaceDisable(false)
-        .Options(ComboboxOptions()
-                     .Tooltip("Which corner of the screen notifications appear in.")
-                     .ComboMap(notificationPosition)
-                     .DefaultIndex(3));
-    AddWidget(path, "Duration (seconds):", WIDGET_CVAR_SLIDER_FLOAT)
-        .CVar(CVAR_SETTING("Notifications.Duration"))
-        .RaceDisable(false)
-        .Options(FloatSliderOptions()
-                     .Tooltip("How long notifications are displayed for.")
-                     .Format("%.1f")
-                     .Step(0.1f)
-                     .Min(3.0f)
-                     .Max(30.0f)
-                     .DefaultValue(10.0f));
-    AddWidget(path, "Background Opacity", WIDGET_CVAR_SLIDER_FLOAT)
-        .CVar(CVAR_SETTING("Notifications.BgOpacity"))
-        .RaceDisable(false)
-        .Options(FloatSliderOptions()
-                     .Tooltip("How opaque the background of notifications is.")
-                     .DefaultValue(0.5f)
-                     .IsPercentage());
-    AddWidget(path, "Size:", WIDGET_CVAR_SLIDER_FLOAT)
-        .CVar(CVAR_SETTING("Notifications.Size"))
-        .RaceDisable(false)
-        .Options(FloatSliderOptions()
-                     .Tooltip("How large notifications are.")
-                     .Format("%.1f")
-                     .Step(0.1f)
-                     .Min(1.0f)
-                     .Max(5.0f)
-                     .DefaultValue(1.8f));
-    AddWidget(path, "Test Notification", WIDGET_BUTTON)
-        .RaceDisable(false)
-        .Callback([](WidgetInfo& info) {
-            Notification::Emit({
-                .itemIcon = "__OTR__textures/icon_item_24_static/gQuestIconGoldSkulltulaTex",
-                .prefix = "This",
-                .message = "is a",
-                .suffix = "test.",
-            });
-        })
-        .Options(ButtonOptions().Tooltip("Displays a test notification."));
-    AddWidget(path, "Mute Notification Sound", WIDGET_CVAR_CHECKBOX)
-        .CVar(CVAR_SETTING("Notifications.Mute"))
-        .RaceDisable(false)
-        .Options(CheckboxOptions().Tooltip("Prevent notifications from playing a sound."));
-
-    // Mod Menu
-    path.sidebarName = "Mod Menu";
-    AddSidebarEntry("Settings", path.sidebarName, 1);
-    AddWidget(path, "Popout Mod Menu Window", WIDGET_WINDOW_BUTTON)
-        .CVar(CVAR_WINDOW("ModMenu"))
-        .WindowName("Mod Menu")
-        .HideInSearch(true)
-        .Options(WindowButtonOptions().Tooltip("Enables the separate Mod Menu Window."));
 }
 
 } // namespace SohGui

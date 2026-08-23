@@ -14,8 +14,6 @@ struct PlayState;
 struct Actor;
 
 f32 Ship_GetExtendedAspectRatioMultiplier();
-void Ship_ExtendedCullingActorAdjustProjectedZ(Actor* actor);
-void Ship_ExtendedCullingActorAdjustProjectedX(Actor* actor);
 void Ship_ExtendedCullingActorRestoreProjectedPos(PlayState* play, Actor* actor);
 
 bool Ship_IsCStringEmpty(const char* str);

@@ -9,7 +9,6 @@
 #include "overlays/effects/ovl_Effect_Ss_Dead_Sound/z_eff_ss_dead_sound.h"
 #include "vt.h"
 #include "objects/object_tite/object_tite.h"
-#include "soh/Enhancements/game-interactor/GameInteractor_Hooks.h"
 #include "soh/ResourceManagerHelpers.h"
 
 #define FLAGS (ACTOR_FLAG_ATTENTION_ENABLED | ACTOR_FLAG_HOSTILE | ACTOR_FLAG_UPDATE_CULLING_DISABLED)
@@ -771,7 +770,6 @@ void EnTite_FallApart(EnTite* this, PlayState* play) {
         } else {
             Item_DropCollectibleRandom(play, &this->actor, &this->actor.world.pos, 0x40);
         }
-        GameInteractor_ExecuteOnEnemyDefeat(&this->actor);
         Actor_Kill(&this->actor);
     }
 }

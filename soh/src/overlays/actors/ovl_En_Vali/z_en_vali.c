@@ -6,7 +6,6 @@
 
 #include "z_en_vali.h"
 #include "objects/object_vali/object_vali.h"
-#include "soh/Enhancements/game-interactor/GameInteractor_Hooks.h"
 #include <stdlib.h>
 #include "soh/ResourceManagerHelpers.h"
 
@@ -244,14 +243,14 @@ void EnVali_SetupBurnt(EnVali* this) {
 void EnVali_SetupDivideAndDie(EnVali* this, PlayState* play) {
     s32 i;
 
-    if (GameInteractor_Should(VB_BIRI_SPAWN_JELLYFISH_UPON_DEATH, true, this, play)) {
+    
         for (i = 0; i < 3; i++) {
             Actor_Spawn(&play->actorCtx, play, ACTOR_EN_BILI, this->actor.world.pos.x, this->actor.world.pos.y,
                         this->actor.world.pos.z, 0, this->actor.world.rot.y, 0, 0);
 
             this->actor.world.rot.y += 0x10000 / 3;
         }
-    }
+    
 
     Item_DropCollectibleRandom(play, &this->actor, &this->actor.world.pos, 0x50);
     this->timer = Rand_S16Offset(10, 10);
@@ -260,7 +259,6 @@ void EnVali_SetupDivideAndDie(EnVali* this, PlayState* play) {
     this->actor.flags &= ~ACTOR_FLAG_ATTENTION_ENABLED;
     this->actor.draw = NULL;
     this->actionFunc = EnVali_DivideAndDie;
-    GameInteractor_ExecuteOnEnemyDefeat(&this->actor);
 }
 
 void EnVali_SetupStunned(EnVali* this) {

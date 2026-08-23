@@ -1,17 +1,13 @@
 #pragma once
 
-#include <libultraship/libultraship.h>
+#ifdef __cplusplus
+extern "C" {
+#endif
 
-typedef enum { COLVIEW_DISABLED, COLVIEW_SOLID, COLVIEW_TRANSPARENT } ColViewerRenderSetting;
+void InitColViewer(void);
+void ToggleColViewer(void);
+void DrawColViewer(void);
 
 #ifdef __cplusplus
-class ColViewerWindow final : public Ship::GuiWindow {
-  public:
-    using GuiWindow::GuiWindow;
-
-    void InitElement() override;
-    void DrawElement() override;
-    void UpdateElement() override{};
-};
-
+}
 #endif

@@ -7,8 +7,6 @@
 #include "z_en_ms.h"
 #include "objects/object_ms/object_ms.h"
 #include "soh/ResourceManagerHelpers.h"
-#include "soh/Enhancements/game-interactor/GameInteractor_Hooks.h"
-
 #define FLAGS (ACTOR_FLAG_ATTENTION_ENABLED | ACTOR_FLAG_FRIENDLY)
 
 void EnMs_Init(Actor* thisx, PlayState* play);
@@ -129,16 +127,15 @@ void EnMs_Talk(EnMs* this, PlayState* play) {
     } else if (Message_ShouldAdvance(play)) {
         switch (play->msgCtx.choiceIndex) {
             case 0: // yes
-                if (!GameInteractor_Should(VB_BE_ELIGIBLE_FOR_MAGIC_BEANS_PURCHASE,
-                                           (gSaveContext.rupees >= sPrices[BEANS_BOUGHT]), this)) {
+                if (!((gSaveContext.rupees >= sPrices[BEANS_BOUGHT]))) {
                     Message_ContinueTextbox(play, 0x4069); // not enough rupees text
                     return;
                 }
 
-                if (GameInteractor_Should(VB_GIVE_ITEM_FROM_MAGIC_BEAN_SALESMAN, true, this)) {
+                
                     Actor_OfferGetItem(&this->actor, play, GI_BEAN, 90.0f, 10.0f);
                     this->actionFunc = EnMs_Sell;
-                }
+                
                 return;
             case 1: // no
                 Message_ContinueTextbox(play, 0x4068);
@@ -150,9 +147,9 @@ void EnMs_Talk(EnMs* this, PlayState* play) {
 
 void EnMs_Sell(EnMs* this, PlayState* play) {
     if (Actor_HasParent(&this->actor, play)) {
-        if (GameInteractor_Should(VB_MAGIC_BEAN_SALESMAN_TAKE_MONEY, true, this)) {
+        
             Rupees_ChangeBy(-sPrices[BEANS_BOUGHT]);
-        }
+        
         this->actor.parent = NULL;
         this->actionFunc = EnMs_TalkAfterPurchase;
     } else {

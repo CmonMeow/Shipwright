@@ -29,9 +29,7 @@ SetStartPositionListFactory::ReadResource(std::shared_ptr<Ship::ResourceInitData
         setStartPositionList->startPositions.push_back(entry);
     }
 
-    if (CVarGetInteger(CVAR_DEVELOPER_TOOLS("ResourceLogging"), 0)) {
-        LogStartPositionListAsXML(setStartPositionList);
-    }
+    
 
     return setStartPositionList;
 }

@@ -8,8 +8,6 @@
 #include "objects/object_md/object_md.h"
 #include "overlays/actors/ovl_En_Elf/z_en_elf.h"
 #include "soh/ResourceManagerHelpers.h"
-#include "soh/Enhancements/game-interactor/GameInteractor_Hooks.h"
-
 #define FLAGS                                                                                  \
     (ACTOR_FLAG_ATTENTION_ENABLED | ACTOR_FLAG_FRIENDLY | ACTOR_FLAG_UPDATE_CULLING_DISABLED | \
      ACTOR_FLAG_UPDATE_DURING_OCARINA)
@@ -376,7 +374,7 @@ u16 EnMd_GetTextKokiriForest(PlayState* play, EnMd* this) {
     this->messageEntry = 0;
     this->messageState = TEXT_STATE_NONE;
 
-    if (GameInteractor_Should(VB_MIDO_CONSIDER_DEKU_TREE_DEAD, CHECK_QUEST_ITEM(QUEST_KOKIRI_EMERALD), this)) {
+    if ((CHECK_QUEST_ITEM(QUEST_KOKIRI_EMERALD))) {
         return 0x1045;
     }
 
@@ -620,8 +618,8 @@ u8 EnMd_SetMovedPos(EnMd* this, PlayState* play) {
 void EnMd_UpdateAlphaByDistance(EnMd* this, PlayState* play) {
     f32 radius;
 
-    if (GameInteractor_Should(VB_FADE_KOKIRI, play->sceneNum != SCENE_MIDOS_HOUSE, this)) {
-        radius = (GameInteractor_Should(VB_MIDO_CONSIDER_DEKU_TREE_DEAD, CHECK_QUEST_ITEM(QUEST_KOKIRI_EMERALD)) &&
+    if ((play->sceneNum != SCENE_MIDOS_HOUSE)) {
+        radius = ((CHECK_QUEST_ITEM(QUEST_KOKIRI_EMERALD)) &&
                   !Flags_GetEventChkInf(EVENTCHKINF_SPOKE_TO_MIDO_AFTER_DEKU_TREES_DEATH) &&
                   (play->sceneNum == SCENE_KOKIRI_FOREST))
                      ? 100.0f
@@ -644,7 +642,7 @@ void EnMd_Init(Actor* thisx, PlayState* play) {
     Collider_InitCylinder(play, &this->collider);
     Collider_SetCylinder(play, &this->collider, &this->actor, &sCylinderInit);
     CollisionCheck_SetInfo2(&this->actor.colChkInfo, NULL, &sColChkInfoInit);
-    if (!GameInteractor_Should(VB_MIDO_SPAWN, EnMd_ShouldSpawn(this, play), this)) {
+    if (!(EnMd_ShouldSpawn(this, play))) {
         Actor_Kill(&this->actor);
         return;
     }
@@ -658,7 +656,7 @@ void EnMd_Init(Actor* thisx, PlayState* play) {
 
     if (((play->sceneNum == SCENE_KOKIRI_FOREST) && !Flags_GetEventChkInf(EVENTCHKINF_SHOWED_MIDO_SWORD_SHIELD)) ||
         ((play->sceneNum == SCENE_KOKIRI_FOREST) && Flags_GetEventChkInf(EVENTCHKINF_SHOWED_MIDO_SWORD_SHIELD) &&
-         GameInteractor_Should(VB_MIDO_CONSIDER_DEKU_TREE_DEAD, CHECK_QUEST_ITEM(QUEST_KOKIRI_EMERALD))) ||
+         (CHECK_QUEST_ITEM(QUEST_KOKIRI_EMERALD))) ||
         ((play->sceneNum == SCENE_LOST_WOODS) &&
          !Flags_GetEventChkInf(EVENTCHKINF_PLAYED_SARIAS_SONG_FOR_MIDO_AS_ADULT))) {
         this->actor.home.pos = this->actor.world.pos;
@@ -721,11 +719,10 @@ void EnMd_BlockPath(EnMd* this, PlayState* play) {
         this->skelAnime.playSpeed = CLAMP(temp, 1.0f, 3.0f);
     }
 
-    if ((GameInteractor_Should(VB_MOVE_MIDO_IN_KOKIRI_FOREST, this->interactInfo.talkState == NPC_TALK_STATE_ACTION,
-                               this) &&
+    if (((this->interactInfo.talkState == NPC_TALK_STATE_ACTION) &&
          play->sceneNum == SCENE_KOKIRI_FOREST) ||
         this->interactInfo.talkState == NPC_TALK_STATE_ACTION) {
-        if (GameInteractor_Should(VB_MIDO_CONSIDER_DEKU_TREE_DEAD, CHECK_QUEST_ITEM(QUEST_KOKIRI_EMERALD)) &&
+        if ((CHECK_QUEST_ITEM(QUEST_KOKIRI_EMERALD)) &&
             !Flags_GetEventChkInf(EVENTCHKINF_SPOKE_TO_MIDO_AFTER_DEKU_TREES_DEATH) &&
             (play->sceneNum == SCENE_KOKIRI_FOREST)) {
             play->msgCtx.msgMode = MSGMODE_PAUSED;
@@ -794,7 +791,7 @@ void EnMd_Walk(EnMd* this, PlayState* play) {
         return;
     }
 
-    if (GameInteractor_Should(VB_MIDO_CONSIDER_DEKU_TREE_DEAD, CHECK_QUEST_ITEM(QUEST_KOKIRI_EMERALD)) &&
+    if ((CHECK_QUEST_ITEM(QUEST_KOKIRI_EMERALD)) &&
         !Flags_GetEventChkInf(EVENTCHKINF_SPOKE_TO_MIDO_AFTER_DEKU_TREES_DEATH) &&
         (play->sceneNum == SCENE_KOKIRI_FOREST)) {
         Message_CloseTextbox(play);

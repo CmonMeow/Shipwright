@@ -8,8 +8,6 @@
 #include "objects/object_gs/object_gs.h"
 #include "overlays/actors/ovl_En_Elf/z_en_elf.h"
 #include "objects/gameplay_keep/gameplay_keep.h"
-#include "soh/Enhancements/game-interactor/GameInteractor_Hooks.h"
-
 #define FLAGS (ACTOR_FLAG_ATTENTION_ENABLED | ACTOR_FLAG_FRIENDLY | ACTOR_FLAG_UPDATE_DURING_OCARINA)
 
 void EnGs_Init(Actor* thisx, PlayState* play);
@@ -150,7 +148,7 @@ void func_80A4E470(EnGs* this, PlayState* play) {
                 func_8010BD58(play, OCARINA_ACTION_FREE_PLAY);
                 this->unk_19D |= 1;
             }
-        } else if (GameInteractor_Should(VB_SPAWN_GOSSIP_STONE_FAIRY, this->unk_19D & 1, this)) {
+        } else if ((this->unk_19D & 1)) {
             if (play->msgCtx.ocarinaMode == OCARINA_MODE_04) {
                 if ((play->msgCtx.unk_E3F2 == OCARINA_SONG_SARIAS) || (play->msgCtx.unk_E3F2 == OCARINA_SONG_EPONAS) ||
                     (play->msgCtx.unk_E3F2 == OCARINA_SONG_LULLABY) || (play->msgCtx.unk_E3F2 == OCARINA_SONG_SUNS) ||
@@ -586,13 +584,9 @@ void EnGs_Draw(Actor* thisx, PlayState* play) {
             gDPSetPrimColor(POLY_OPA_DISP++, 0, 0, this->flashColor.r, this->flashColor.g, this->flashColor.b,
                             this->flashColor.a);
         } else {
-            if (CVarGetInteger(CVAR_COSMETIC("World.GossipStone.Changed"), 0)) {
-                Color_RGB8 color =
-                    CVarGetColor24(CVAR_COSMETIC("World.GossipStone.Value"), (Color_RGB8){ 255, 255, 255 });
-                gDPSetPrimColor(POLY_OPA_DISP++, 0, 0, color.r, color.g, color.b, 255);
-            } else {
+            
                 gDPSetPrimColor(POLY_OPA_DISP++, 0, 0, 255, 255, 255, 255);
-            }
+            
         }
 
         gSPDisplayList(POLY_OPA_DISP++, gGossipStoneDL);

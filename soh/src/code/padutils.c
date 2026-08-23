@@ -93,7 +93,7 @@ void PadUtils_UpdateRelXY(Input* input) {
     PadUtils_SetRelXY(input, relX, relY);
 }
 
-// #region SOH [Enhancement]
+// PC controller right-stick helpers.
 s8 PadUtils_GetCurRX(Input* input) {
     return input->cur.right_stick_x;
 }
@@ -148,4 +148,3 @@ void PadUtils_UpdateRelRXY(Input* input) {
 
     PadUtils_SetRelRXY(input, relX, relY);
 }
-// #endregion

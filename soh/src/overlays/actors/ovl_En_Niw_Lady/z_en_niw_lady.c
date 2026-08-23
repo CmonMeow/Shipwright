@@ -4,8 +4,6 @@
 #include "overlays/actors/ovl_En_Niw/z_en_niw.h"
 #include "vt.h"
 #include "soh/ResourceManagerHelpers.h"
-#include "soh/Enhancements/game-interactor/GameInteractor_Hooks.h"
-
 #define FLAGS (ACTOR_FLAG_ATTENTION_ENABLED | ACTOR_FLAG_FRIENDLY | ACTOR_FLAG_UPDATE_CULLING_DISABLED)
 
 void EnNiwLady_Init(Actor* thisx, PlayState* play);
@@ -205,9 +203,9 @@ void func_80ABA244(EnNiwLady* this, PlayState* play) {
     EnNiw* currentCucco;
     s32 phi_s1;
 
-    if (GameInteractor_Should(VB_SET_CUCCO_COUNT, true, this)) {
+    
         this->cuccosInPen = 0;
-    }
+    
     currentCucco = (EnNiw*)play->actorCtx.actorLists[ACTORCAT_PROP].head;
     while (currentCucco != NULL) {
         if (currentCucco->actor.id == ACTOR_EN_NIW) {
@@ -312,14 +310,10 @@ void func_80ABA654(EnNiwLady* this, PlayState* play) {
         if (!Flags_GetItemGetInf(ITEMGETINF_0C)) {
             this->actor.parent = NULL;
 
-            if (GameInteractor_Should(VB_GIVE_ITEM_FROM_ANJU_AS_CHILD, true, this)) {
+            
                 this->getItemId = GI_BOTTLE;
                 Actor_OfferGetItem(&this->actor, play, GI_BOTTLE, 100.0f, 50.0f);
-            } else {
-                // Circumvent the item offer action
-                this->actionFunc = func_80ABAC84;
-                return;
-            }
+            
 
             this->actionFunc = func_80ABAC00;
             return;
@@ -402,10 +396,10 @@ void func_80ABA9B8(EnNiwLady* this, PlayState* play) {
                 Message_CloseTextbox(play);
                 this->actor.parent = NULL;
 
-                if (GameInteractor_Should(VB_GIVE_ITEM_FROM_ANJU_AS_ADULT, true, this)) {
+                
                     Actor_OfferGetItem(&this->actor, play, GI_POCKET_EGG, 200.0f, 100.0f);
                     this->actionFunc = func_80ABAC00;
-                }
+                
 
                 break;
             case 1:
@@ -433,10 +427,10 @@ void func_80ABAB08(EnNiwLady* this, PlayState* play) {
             case 0:
                 Message_CloseTextbox(play);
                 this->actor.parent = NULL;
-                if (GameInteractor_Should(VB_TRADE_POCKET_CUCCO, true, this)) {
+                
                     Actor_OfferGetItem(&this->actor, play, GI_COJIRO, 200.0f, 100.0f);
                     this->actionFunc = func_80ABAC00;
-                }
+                
                 break;
             case 1:
                 Message_CloseTextbox(play);

@@ -6,8 +6,6 @@
 
 #include "z_en_torch2.h"
 #include "objects/object_torch2/object_torch2.h"
-#include "soh/Enhancements/game-interactor/GameInteractor_Hooks.h"
-
 #define FLAGS                                                                                 \
     (ACTOR_FLAG_ATTENTION_ENABLED | ACTOR_FLAG_HOSTILE | ACTOR_FLAG_UPDATE_CULLING_DISABLED | \
      ACTOR_FLAG_DRAW_CULLING_DISABLED)
@@ -128,12 +126,6 @@ void EnTorch2_Init(Actor* thisx, PlayState* play2) {
     PlayState* play = play2;
     Player* this = (Player*)thisx;
 
-    // Change Dark Link to regular enemy instead of boss with enemy randomizer and crowd control.
-    // This way Dark Link will be considered for "clear enemy" rooms properly.
-    if (CVarGetInteger(CVAR_ENHANCEMENT("RandomizedEnemies"), 0) ||
-        (CVarGetInteger(CVAR_REMOTE_CROWD_CONTROL("Enabled"), 0))) {
-        Actor_ChangeCategory(play, &play->actorCtx, thisx, ACTORCAT_ENEMY);
-    }
 
     sInput.cur.button = sInput.press.button = sInput.rel.button = 0;
     sInput.cur.stick_x = sInput.cur.stick_y = 0;
@@ -279,11 +271,7 @@ void EnTorch2_Update(Actor* thisx, PlayState* play2) {
                     if (stickY) {}
                     sInput.cur.stick_y = stickY;
                 }
-                // Disable miniboss music with Enemy Randomizer because the music would keep
-                // playing if the enemy was never defeated, which is common with Enemy Randomizer.
-                if (!CVarGetInteger(CVAR_ENHANCEMENT("RandomizedEnemies"), 0)) {
-                    func_800F5ACC(NA_BGM_MINI_BOSS);
-                }
+                func_800F5ACC(NA_BGM_MINI_BOSS);
                 sActionState = ENTORCH2_ATTACK;
             }
             break;
@@ -564,7 +552,6 @@ void EnTorch2_Update(Actor* thisx, PlayState* play2) {
         case ENTORCH2_DEATH:
             if (sAlpha - 13 <= 0) {
                 sAlpha = 0;
-                GameInteractor_ExecuteOnEnemyDefeat(&this->actor);
                 Actor_Kill(&this->actor);
                 return;
             }
@@ -599,10 +586,6 @@ void EnTorch2_Update(Actor* thisx, PlayState* play2) {
     input->rel.button = input->prev.button & pad54;
     input->prev.button = input->cur.button & (u16) ~(BTN_A | BTN_B);
     PadUtils_UpdateRelXY(input);
-
-    if (CVarGetInteger(CVAR_ENHANCEMENT("MirroredWorld"), 0)) {
-        input->rel.stick_x *= -1;
-    }
 
     input->press.stick_x += (s8)(input->cur.stick_x - input->prev.stick_x);
     input->press.stick_y += (s8)(input->cur.stick_y - input->prev.stick_y);
@@ -706,7 +689,7 @@ void EnTorch2_Update(Actor* thisx, PlayState* play2) {
             sStaggerCount = 0;
         }
     }
-    if (GameInteractor_Should(VB_TORCH2_HANDLE_CLANKING, player->linearVelocity == -18.0f, this)) {
+    if ((player->linearVelocity == -18.0f)) {
         if (this->actor.xzDistToPlayer > 80.0f) {
             player->linearVelocity = 1.2f;
         } else if (this->actor.xzDistToPlayer < 70.0f) {

@@ -7,8 +7,6 @@
 #include "z_item_ocarina.h"
 #include "scenes/overworld/spot00/spot00_scene.h"
 #include "soh/OTRGlobals.h"
-#include "soh/Enhancements/game-interactor/GameInteractor_Hooks.h"
-
 #define FLAGS ACTOR_FLAG_UPDATE_CULLING_DISABLED
 
 void ItemOcarina_Init(Actor* thisx, PlayState* play);
@@ -179,16 +177,16 @@ void ItemOcarina_StartSoTCutscene(ItemOcarina* this, PlayState* play) {
 
 void ItemOcarina_WaitInWater(ItemOcarina* this, PlayState* play) {
     if (Actor_HasParent(&this->actor, play) ||
-        (!GameInteractor_Should(VB_GIVE_ITEM_OCARINA_OF_TIME, true) && (this->actor.xzDistToPlayer < 20.0f) &&
+        (!(true) && (this->actor.xzDistToPlayer < 20.0f) &&
          (fabsf(this->actor.yDistToPlayer) < 10.0f) && GET_PLAYER(play)->stateFlags2 & PLAYER_STATE2_DIVING)) {
         Flags_SetEventChkInf(EVENTCHKINF_OBTAINED_OCARINA_OF_TIME);
         Flags_SetSwitch(play, 3);
         this->actionFunc = ItemOcarina_StartSoTCutscene;
         this->actor.draw = NULL;
     } else {
-        if (GameInteractor_Should(VB_GIVE_ITEM_OCARINA_OF_TIME, true)) {
+        
             Actor_OfferGetItem(&this->actor, play, GI_OCARINA_OOT, 30.0f, 50.0f);
-        }
+        
 
         if ((play->gameplayFrames & 13) == 0) {
             EffectSsBubble_Spawn(play, &this->actor.world.pos, 0.0f, 0.0f, 10.0f, 0.13f);

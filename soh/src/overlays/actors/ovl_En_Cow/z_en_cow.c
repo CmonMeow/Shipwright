@@ -7,8 +7,6 @@
 #include "z_en_cow.h"
 #include "objects/object_cow/object_cow.h"
 #include "soh/ResourceManagerHelpers.h"
-#include "soh/Enhancements/game-interactor/GameInteractor_Hooks.h"
-
 #define FLAGS (ACTOR_FLAG_ATTENTION_ENABLED | ACTOR_FLAG_FRIENDLY)
 
 void EnCow_Init(Actor* thisx, PlayState* play);
@@ -119,10 +117,8 @@ void EnCow_Init(Actor* thisx, PlayState* play) {
             Collider_SetCylinder(play, &this->colliders[1], &this->actor, &sCylinderInit);
             func_809DEE9C(this);
             this->actionFunc = func_809DF96C;
-            if (GameInteractor_Should(VB_DESPAWN_HORSE_RACE_COW,
-                                      (play->sceneNum == SCENE_LINKS_HOUSE &&
-                                       (!LINK_IS_ADULT || !Flags_GetEventChkInf(EVENTCHKINF_WON_COW_IN_MALONS_RACE))),
-                                      this)) {
+            if (((play->sceneNum == SCENE_LINKS_HOUSE &&
+                                       (!LINK_IS_ADULT || !Flags_GetEventChkInf(EVENTCHKINF_WON_COW_IN_MALONS_RACE))))) {
                 Actor_Kill(&this->actor);
                 return;
             }
@@ -262,14 +258,12 @@ void func_809DF96C(EnCow* this, PlayState* play) {
                 if ((this->actor.xzDistToPlayer < 150.0f) &&
                     (ABS((s16)(this->actor.yawTowardsPlayer - this->actor.shape.rot.y)) < 0x61A8)) {
                     DREG(53) = 0;
-                    if (GameInteractor_Should(VB_GIVE_ITEM_FROM_COW, true, this)) {
+                    
                         this->actionFunc = func_809DF8FC;
                         this->actor.flags |= ACTOR_FLAG_TALK_OFFER_AUTO_ACCEPTED;
                         func_8002F2CC(&this->actor, play, 170.0f);
                         this->actor.textId = 0x2006;
-                    } else {
-                        return;
-                    }
+                    
                 } else {
                     this->unk_276 |= 4;
                 }

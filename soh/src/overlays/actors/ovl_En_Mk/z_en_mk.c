@@ -7,8 +7,6 @@
 #include "z_en_mk.h"
 #include "objects/object_mk/object_mk.h"
 #include "soh/ResourceManagerHelpers.h"
-#include "soh/Enhancements/game-interactor/GameInteractor_Hooks.h"
-
 #define FLAGS (ACTOR_FLAG_ATTENTION_ENABLED | ACTOR_FLAG_FRIENDLY | ACTOR_FLAG_UPDATE_CULLING_DISABLED)
 
 void EnMk_Init(Actor* thisx, PlayState* play);
@@ -94,13 +92,13 @@ void func_80AACA40(EnMk* this, PlayState* play) {
 }
 
 void func_80AACA94(EnMk* this, PlayState* play) {
-    if (Actor_HasParent(&this->actor, play) != 0 || !GameInteractor_Should(VB_TRADE_FROG, true, this)) {
+    if (Actor_HasParent(&this->actor, play) != 0 || !(true)) {
         this->actor.parent = NULL;
-        if (GameInteractor_Should(VB_TRADE_TIMER_EYEDROPS, true, this)) {
+        
             this->actionFunc = func_80AACA40;
             Interface_SetSubTimer(240);
             gSaveContext.eventInf[1] &= ~1;
-        }
+        
     } else {
         Actor_OfferGetItem(&this->actor, play, GI_EYEDROPS, 10000.0f, 50.0f);
     }
@@ -109,9 +107,9 @@ void func_80AACA94(EnMk* this, PlayState* play) {
 void func_80AACB14(EnMk* this, PlayState* play) {
     if (Actor_TextboxIsClosing(&this->actor, play)) {
         this->actionFunc = func_80AACA94;
-        if (GameInteractor_Should(VB_TRADE_FROG, true, this)) {
+        
             Actor_OfferGetItem(&this->actor, play, GI_EYEDROPS, 10000.0f, 50.0f);
-        }
+        
     }
 }
 
@@ -137,7 +135,7 @@ void func_80AACC04(EnMk* this, PlayState* play) {
     if (this->timer > 0) {
         this->timer--;
     } else {
-        this->timer = GameInteractor_Should(VB_PLAY_EYEDROP_CREATION_ANIM, true, this) ? 16 : 0;
+        this->timer = (true) ? 16 : 0;
         this->actionFunc = func_80AACBAC;
         Animation_Change(&this->skelAnime, &object_mk_Anim_000D88, 1.0f, 0.0f,
                          Animation_GetLastFrame(&object_mk_Anim_000D88), ANIMMODE_LOOP, -4.0f);
@@ -150,7 +148,7 @@ void func_80AACCA0(EnMk* this, PlayState* play) {
         this->timer--;
         this->actor.shape.rot.y += 0x800;
     } else {
-        this->timer = GameInteractor_Should(VB_PLAY_EYEDROP_CREATION_ANIM, true, this) ? 120 : 0;
+        this->timer = (true) ? 120 : 0;
         this->actionFunc = func_80AACC04;
         Animation_Change(&this->skelAnime, &object_mk_Anim_000724, 1.0f, 0.0f,
                          Animation_GetLastFrame(&object_mk_Anim_000724), ANIMMODE_LOOP, -4.0f);
@@ -166,7 +164,7 @@ void func_80AACD48(EnMk* this, PlayState* play) {
         this->actionFunc = func_80AACCA0;
         play->msgCtx.msgMode = MSGMODE_PAUSED;
         player->exchangeItemId = EXCH_ITEM_NONE;
-        this->timer = GameInteractor_Should(VB_PLAY_EYEDROP_CREATION_ANIM, true, this) ? 16 : 0;
+        this->timer = (true) ? 16 : 0;
         Animation_Change(&this->skelAnime, &object_mk_Anim_000D88, 1.0f, 0.0f,
                          Animation_GetLastFrame(&object_mk_Anim_000D88), ANIMMODE_LOOP, -4.0f);
         this->flags &= ~2;
@@ -200,7 +198,7 @@ void func_80AACEE8(EnMk* this, PlayState* play) {
 }
 
 void func_80AACFA0(EnMk* this, PlayState* play) {
-    if (Actor_HasParent(&this->actor, play) || !GameInteractor_Should(VB_GIVE_ITEM_FROM_LAB_DIVE, true, this)) {
+    if (Actor_HasParent(&this->actor, play) || !(true)) {
         this->actor.parent = NULL;
         this->actionFunc = func_80AACA40;
         Flags_SetItemGetInf(ITEMGETINF_10);
@@ -212,9 +210,9 @@ void func_80AACFA0(EnMk* this, PlayState* play) {
 void func_80AAD014(EnMk* this, PlayState* play) {
     if (Actor_TextboxIsClosing(&this->actor, play)) {
         this->actionFunc = func_80AACFA0;
-        if (GameInteractor_Should(VB_GIVE_ITEM_FROM_LAB_DIVE, true, this)) {
+        
             Actor_OfferGetItem(&this->actor, play, GI_HEART_PIECE, 10000.0f, 50.0f);
-        }
+        
     }
 
     this->flags |= 1;
@@ -233,8 +231,7 @@ void EnMk_Wait(EnMk* this, PlayState* play) {
             player->actor.textId = this->actor.textId;
             this->actionFunc = func_80AACA40;
         } else {
-            if (GameInteractor_Should(VB_USE_EYEDROP_DIALOGUE, (INV_CONTENT(ITEM_ODD_MUSHROOM) == ITEM_EYEDROPS),
-                                      this)) {
+            if (((INV_CONTENT(ITEM_ODD_MUSHROOM) == ITEM_EYEDROPS))) {
                 player->actor.textId = 0x4032;
                 this->actionFunc = func_80AACA40;
             } else {

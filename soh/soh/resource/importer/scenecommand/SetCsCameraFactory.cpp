@@ -16,9 +16,7 @@ std::shared_ptr<Ship::IResource> SetCsCameraFactory::ReadResource(std::shared_pt
 
     // OTRTODO: FINISH!
 
-    if (CVarGetInteger(CVAR_DEVELOPER_TOOLS("ResourceLogging"), 0)) {
-        LogCsCameraAsXML(setCsCamera);
-    }
+    
 
     return setCsCamera;
 }

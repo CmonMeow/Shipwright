@@ -1,8 +1,6 @@
 #include "global.h"
 #include "vt.h"
 #include "overlays/actors/ovl_En_Sw/z_en_sw.h"
-#include "soh/Enhancements/game-interactor/GameInteractor_Hooks.h"
-
 static s16 sDisableAttention = false;
 static s16 sUnused = -1;
 s32 sPrevFrameCs1100 = -4096;
@@ -330,18 +328,16 @@ s32 OnePointCutscene_SetInfo(PlayState* play, s16 camIdx, s16 csId, Actor* actor
         case 9601:
             Play_CameraChangeSetting(play, camIdx, CAM_SET_CS_3);
             Play_CameraChangeSetting(play, MAIN_CAM, mainCam->prevSetting);
-            if (GameInteractor_Should(VB_CRAWL_SPEED_EXIT_CS, true, csCam, csId, D_80120430, D_8012042C, D_80120308,
-                                      D_80120398)) {
+            
                 OnePointCutscene_SetCsCamPoints(csCam, D_80120430 | 0x1000, D_8012042C, D_80120308, D_80120398);
-            }
+            
             break;
         case 9602:
             Play_CameraChangeSetting(play, camIdx, CAM_SET_CS_3);
             Play_CameraChangeSetting(play, MAIN_CAM, mainCam->prevSetting);
-            if (GameInteractor_Should(VB_CRAWL_SPEED_EXIT_CS, true, csCam, csId, D_80120430, D_8012042C, D_80120308,
-                                      D_80120434)) {
+            
                 OnePointCutscene_SetCsCamPoints(csCam, D_80120430 | 0x1000, D_8012042C, D_80120308, D_80120434);
-            }
+            
             break;
         case 4175:
             csInfo->keyFrames = D_8012147C;
@@ -883,9 +879,9 @@ s32 OnePointCutscene_SetInfo(PlayState* play, s16 camIdx, s16 csId, Actor* actor
             csInfo->keyFrameCnt = 1;
 
             func_800C0808(play, camIdx, player, CAM_SET_CS_C);
-            if (GameInteractor_Should(VB_LINK_SPIN_WITH_GORON_POT, true)) {
+            
                 func_8002DF38(play, &player->actor, 1);
-            }
+            
 
             i = Quake_Add(csCam, 3);
             Quake_SetSpeed(i, 12000);
@@ -1161,11 +1157,11 @@ s16 OnePointCutscene_Init(PlayState* play, s16 csId, s16 timer, Actor* actor, s1
     Camera* csCam;
 
     if (actor != NULL && actor->id != ACTOR_PLAYER) {
-        if (!GameInteractor_Should(VB_PLAY_ONEPOINT_ACTOR_CS, true, actor)) {
+        if (!(true)) {
             return SUBCAM_NONE;
         }
     } else {
-        if (!GameInteractor_Should(VB_PLAY_ONEPOINT_CS, true, &csId)) {
+        if (!(true)) {
             return SUBCAM_NONE;
         }
     }

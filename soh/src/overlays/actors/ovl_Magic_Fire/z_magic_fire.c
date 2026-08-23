@@ -217,12 +217,8 @@ void MagicFire_Draw(Actor* thisx, PlayState* play) {
     u8 alpha;
     Color_RGB8 Spell_env = { 255, 0, 0 };
     Color_RGB8 Spell_col = { 255, 200, 0 };
-    if (CVarGetInteger(CVAR_COSMETIC("Magic.DinsSecondary.Changed"), 0)) {
-        Spell_env = CVarGetColor24(CVAR_COSMETIC("Magic.DinsSecondary.Value"), Spell_env);
-    }
-    if (CVarGetInteger(CVAR_COSMETIC("Magic.DinsPrimaryary.Changed"), 0)) {
-        Spell_col = CVarGetColor24(CVAR_COSMETIC("Magic.DinsPrimary.Value"), Spell_col);
-    }
+    
+    
 
     if (this->action > 0) {
         OPEN_DISPS(play->state.gfxCtx);

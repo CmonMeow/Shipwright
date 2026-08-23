@@ -7,8 +7,6 @@
 #include "z_bg_haka_tubo.h"
 #include "objects/gameplay_keep/gameplay_keep.h"
 #include "objects/object_haka_objects/object_haka_objects.h"
-#include "soh/Enhancements/game-interactor/GameInteractor_Hooks.h"
-
 #define FLAGS ACTOR_FLAG_UPDATE_CULLING_DISABLED
 
 void BgHakaTubo_Init(Actor* thisx, PlayState* play);
@@ -175,17 +173,15 @@ void BgHakaTubo_DropCollectible(BgHakaTubo* this, PlayState* play) {
             } else if (rnd < 0.2f) {
                 // Unlucky, no reward and spawn keese
                 collectibleParams = -1;
-                if (GameInteractor_Should(VB_HAKA_TUBO_SPAWN_KEESE, true, this, play)) {
+                
                     Actor_Spawn(&play->actorCtx, play, ACTOR_EN_FIREFLY, this->dyna.actor.world.pos.x,
                                 this->dyna.actor.world.pos.y + 80.0f, this->dyna.actor.world.pos.z, 0,
                                 this->dyna.actor.shape.rot.y, 0, 2);
-                }
+                
                 Sfx_PlaySfxCentered(NA_SE_SY_ERROR);
             } else {
                 // Random rewards
-                if (CVarGetInteger(CVAR_ENHANCEMENT("NoRandomDrops"), 0)) {
-                    collectibleParams = -1;
-                } else if (rnd < 0.4f) {
+                if (rnd < 0.4f) {
                     collectibleParams = ITEM00_BOMBS_A;
                 } else if (rnd < 0.6f) {
                     collectibleParams = ITEM00_MAGIC_LARGE;
@@ -198,11 +194,7 @@ void BgHakaTubo_DropCollectible(BgHakaTubo* this, PlayState* play) {
             }
         } else if (Flags_GetCollectible(play, this->dyna.actor.params) != 0) {
             // If small key already collected, drop recovery heart instead
-            if (CVarGetInteger(CVAR_ENHANCEMENT("NoHeartDrops"), 0)) {
-                collectibleParams = -1;
-            } else {
-                collectibleParams = ITEM00_HEART;
-            }
+            collectibleParams = ITEM00_HEART;
             Sfx_PlaySfxCentered(NA_SE_SY_TRE_BOX_APPEAR);
         } else {
             // Drops a small key and sets a collect flag

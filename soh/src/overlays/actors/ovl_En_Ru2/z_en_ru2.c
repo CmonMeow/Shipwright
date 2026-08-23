@@ -9,8 +9,6 @@
 #include "overlays/actors/ovl_Door_Warp1/z_door_warp1.h"
 #include "vt.h"
 #include "soh/ResourceManagerHelpers.h"
-#include "soh/Enhancements/game-interactor/GameInteractor_Hooks.h"
-
 #define FLAGS ACTOR_FLAG_UPDATE_CULLING_DISABLED
 
 void EnRu2_Init(Actor* thisx, PlayState* play);
@@ -330,9 +328,9 @@ void EnRu2_SpawnWaterMedallion(EnRu2* this, PlayState* play) {
 
     Actor_SpawnAsChild(&play->actorCtx, &this->actor, play, ACTOR_DEMO_EFFECT, posX, posY, posZ, 0, 0, 0, 10);
     // Give the water medallion. This is redundant as it was already given in `EnRu2_CheckWaterMedallionCutscene`
-    if (GameInteractor_Should(VB_GIVE_ITEM_WATER_MEDALLION, true)) {
+    
         Item_Give(play, ITEM_MEDALLION_WATER);
-    }
+    
 }
 
 /**
@@ -350,9 +348,9 @@ void EnRu2_CheckWaterMedallionCutscene(EnRu2* this, PlayState* play) {
         this->action = ENRU2_AWAIT_BLUE_WARP;
         play->csCtx.segment = &gWaterMedallionCs;
         gSaveContext.cutsceneTrigger = 2;
-        if (GameInteractor_Should(VB_GIVE_ITEM_WATER_MEDALLION, true)) {
+        
             Item_Give(play, ITEM_MEDALLION_WATER);
-        }
+        
         yaw = this->actor.world.rot.y + 0x8000;
         player->actor.shape.rot.y = yaw;
         player->actor.world.rot.y = yaw;

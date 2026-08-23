@@ -792,10 +792,6 @@ typedef struct {
     /* 0x024C */ u16    cDownAlpha;
     /* 0x024E */ u16    cRightAlpha;
     /* 0x0250 */ u16    healthAlpha; // also max C-Up alpha
-    /* 0x024E */ u16    dpadUpAlpha;
-    /* 0x024E */ u16    dpadDownAlpha;
-    /* 0x024E */ u16    dpadLeftAlpha;
-    /* 0x024E */ u16    dpadRightAlpha;
     /* 0x0252 */ u16    magicAlpha; // also Rupee and Key counters alpha
     /* 0x0254 */ u16    minimapAlpha;
     /* 0x0256 */ s16    startAlpha;
@@ -925,10 +921,7 @@ typedef struct {
     /* 0x0266 */ u8     worldMapPoints[20]; // 0 = hidden; 1 = displayed; 2 = highlighted
     /* 0x027A */ u8     tradeQuestLocation;
     /* 0x027C */ SkelAnime playerSkelAnime;
-    // #region SOH [Randomizer]
-    /* 0x02C0 */ u8     randoQuestMode; // 0 = Off (normal quest menu); 1 = On (Misc Collectibles menu)
-    // #endregion
-} PauseContext; // size = 0x2C1
+} PauseContext;
 
 typedef enum {
     /* 00 */ GAMEOVER_INACTIVE,
@@ -1332,42 +1325,6 @@ typedef struct {
     /*      */ char* frenchMessage;
 } SceneSelectLoadingMessages;
 
-typedef struct {
-    /*      */ char* japaneseAge;
-    /*      */ char* englishAge;
-    /*      */ char* germanAge;
-    /*      */ char* frenchAge;
-} BetterSceneSelectAgeLabels;
-
-
-typedef struct {
-  /*      */ char* japaneseName;
-  /*      */ char* englishName;
-  /*      */ char* germanName;
-  /*      */ char* frenchName;
-  /*      */ s32 entranceIndex;
-  /*      */ u8 canBeMQ;
-} BetterSceneSelectEntrancePair;
-
-typedef struct {
-    /*      */ char* japaneseName;
-    /*      */ char* englishName;
-    /*      */ char* germanName;
-    /*      */ char* frenchName;
-    /*      */ void (*loadFunc)(struct SelectContext*, s32);
-    /*      */ u8 entranceCount;
-    /*      */ BetterSceneSelectEntrancePair entrancePairs[18];
-} BetterSceneSelectEntry;
-
-typedef struct {
-    /*      */ s32 entranceIndex;
-    /*      */ s32 returnEntranceIndex;
-    /*      */ s8 roomIndex;
-    /*      */ s8 data;
-    /*      */ s8 exitScene;
-    /*      */ Vec3f pos;
-} BetterSceneSelectGrottoData;
-
 typedef struct SelectContext {
     /* 0x0000 */ GameState state;
     /* 0x00A8 */ View view;
@@ -1388,12 +1345,6 @@ typedef struct SelectContext {
     /* 0x0230 */ s32 lockDown;
     /* 0x0234 */ s32 unk_234; // unused
     /* 0x0238 */ u8* staticSegment;
-    // #region SOH [General]
-    /*        */ s32 currentEntrance;
-    /*        */ u8 isBetterWarp;
-    /*        */ BetterSceneSelectEntry* betterScenes;
-    /*        */ BetterSceneSelectGrottoData* betterGrottos;
-    // #endregion
 } SelectContext; // size = 0x240
 
 typedef struct {
@@ -1427,9 +1378,6 @@ typedef struct PlayState {
     /* 0x00790 */ Camera* cameraPtrs[NUM_CAMS];
     /* 0x007A0 */ s16 activeCamera;
     /* 0x007A2 */ s16 nextCamera;
-    /* 0x007A2 */ bool manualCamera;
-    /* 0x007A2 */ f32 camX;
-    /* 0x007A2 */ f32 camY;
     /* 0x007A4 */ SequenceContext sequenceCtx;
     /* 0x007A8 */ LightContext lightCtx;
     /* 0x007B8 */ FrameAdvanceContext frameAdvCtx;
@@ -1600,13 +1548,6 @@ typedef struct FileChooseContext {
     f32 stickAnimTween;
     u8 arrowAnimState;
     u8 stickAnimState;
-    uint8_t bossRushIndex;
-    uint8_t bossRushOffset;
-    int16_t bossRushUIAlpha;
-    uint16_t bossRushArrowOffset;
-    uint8_t randomizerIndex;
-    int16_t randomizerUIAlpha;
-    uint16_t randomizerArrowOffset;
 } FileChooseContext; // size = 0x1CAE0
 
 // Macros for `EntranceInfo.field`
@@ -2324,17 +2265,9 @@ typedef struct {
 } SkyboxTableEntry;
 
 typedef enum {
-    /* 0x00 */ PAUSE_ANY_CURSOR_RANDO_ONLY,
-    /* 0x01 */ PAUSE_ANY_CURSOR_ALWAYS_ON,
-    /* 0x02 */ PAUSE_ANY_CURSOR_ALWAYS_OFF,
-} PauseCursorAnySlotOptions;
-
-typedef enum {
     LED_SOURCE_TUNIC_ORIGINAL,
-    LED_SOURCE_TUNIC_COSMETICS,
     LED_SOURCE_HEALTH,
     LED_SOURCE_NAVI_ORIGINAL,
-    LED_SOURCE_NAVI_COSMETICS,
     LED_SOURCE_CUSTOM
 } LEDColorSource;
 

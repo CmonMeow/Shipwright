@@ -4,8 +4,6 @@
 #include <assert.h>
 #include "soh/OTRGlobals.h"
 #include "soh/ResourceManagerHelpers.h"
-#include "soh/Enhancements/game-interactor/GameInteractor_Hooks.h"
-
 #define FLAGS 0
 
 // movement flags
@@ -262,9 +260,9 @@ void EnBox_Fall(EnBox* this, PlayState* play) {
             this->dyna.actor.shape.rot.z = 0;
             this->dyna.actor.world.pos.y = this->dyna.actor.floorHeight;
             EnBox_SetupAction(this, EnBox_WaitOpen);
-            if (GameInteractor_Should(VB_PLAY_ONEPOINT_ACTOR_CS, true, this)) {
+            
                 OnePointCutscene_EndCutscene(play, this->unk_1AC);
-            }
+            
         }
         Audio_PlaySoundGeneral(NA_SE_EV_COFFIN_CAP_BOUND, &this->dyna.actor.projectedPos, 4,
                                &gSfxDefaultFreqAndVolScale, &gSfxDefaultFreqAndVolScale, &gSfxDefaultReverb);
@@ -474,7 +472,6 @@ void EnBox_Open(EnBox* this, PlayState* play) {
 
         if (Animation_OnFrame(&this->skelanime, 30.0f)) {
             sfxId = NA_SE_EV_TBOX_UNLOCK;
-            gSaveContext.ship.stats.count[COUNT_CHESTS_OPENED]++;
         } else if (Animation_OnFrame(&this->skelanime, 90.0f)) {
             sfxId = NA_SE_EV_TBOX_OPEN;
         }
@@ -554,22 +551,13 @@ void EnBox_Update(Actor* thisx, PlayState* play) {
             Actor_SetFocus(&this->dyna.actor, 40.0f);
     }
 
-    if (GameInteractor_Should(VB_CHEST_USE_ICE_EFFECT,
-                              (this->dyna.actor.params >> 5 & 0x7F) == GI_ICE_TRAP && this->actionFunc == EnBox_Open &&
-                                  this->skelanime.curFrame > 45 && this->iceSmokeTimer < 100,
-                              this)) {
+    if (((this->dyna.actor.params >> 5 & 0x7F) == GI_ICE_TRAP && this->actionFunc == EnBox_Open &&
+                                  this->skelanime.curFrame > 45 && this->iceSmokeTimer < 100)) {
         EnBox_SpawnIceSmoke(this, play);
     }
 }
 
 void EnBox_UpdateTexture(EnBox* this, PlayState* play) {
-    bool csmc = CVarGetInteger(CVAR_ENHANCEMENT("ChestSizeAndTextureMatchContents"), 0);
-    int requiresStoneAgony = CVarGetInteger(CVAR_ENHANCEMENT("ChestSizeDependsStoneOfAgony"), 0);
-    GetItemCategory getItemCategory;
-    GetItemEntry chestItem = this->getItemEntry;
-
-    bool isVanilla = true;
-
     switch (this->type) {
         case ENBOX_TYPE_SMALL:
         case ENBOX_TYPE_6:

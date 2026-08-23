@@ -13,8 +13,6 @@
 #include "objects/object_hintnuts/object_hintnuts.h"
 #include "vt.h"
 #include "soh/ResourceManagerHelpers.h"
-#include "soh/Enhancements/game-interactor/GameInteractor_Hooks.h"
-
 #define FLAGS (ACTOR_FLAG_UPDATE_CULLING_DISABLED | ACTOR_FLAG_DRAW_CULLING_DISABLED)
 
 void EnDntNomal_Init(Actor* thisx, PlayState* play);
@@ -254,7 +252,7 @@ void EnDntNomal_TargetWait(EnDntNomal* this, PlayState* play) {
             if (!LINK_IS_ADULT && !Flags_GetItemGetInf(ITEMGETINF_1D)) {
                 this->hitCounter++;
                 if (this->hitCounter >= 3) {
-                    if (!GameInteractor_Should(VB_PLAY_ONEPOINT_ACTOR_CS, true, &this->actor)) {
+                    if (!(true)) {
                         this->actionFunc = EnDntNomal_TargetGivePrize;
                     } else {
                         OnePointCutscene_Init(play, 4140, -99, &this->actor, MAIN_CAM);

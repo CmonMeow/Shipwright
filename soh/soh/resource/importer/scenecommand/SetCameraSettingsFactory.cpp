@@ -15,9 +15,7 @@ SetCameraSettingsFactory::ReadResource(std::shared_ptr<Ship::ResourceInitData> i
     setCameraSettings->settings.cameraMovement = reader->ReadInt8();
     setCameraSettings->settings.worldMapArea = reader->ReadInt32();
 
-    if (CVarGetInteger(CVAR_DEVELOPER_TOOLS("ResourceLogging"), 0)) {
-        LogCameraSettingsAsXML(setCameraSettings);
-    }
+    
 
     return setCameraSettings;
 }

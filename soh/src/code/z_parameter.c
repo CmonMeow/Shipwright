@@ -5,22 +5,13 @@
 #include "textures/icon_item_static/icon_item_static.h"
 #include "soh_assets.h"
 
-#include "soh/Enhancements/gameplaystats.h"
-#include "soh/Enhancements/custom-message/CustomMessageInterfaceAddon.h"
-#include "soh/Enhancements/cosmetics/cosmeticsTypes.h"
-#include "soh/Enhancements/enhancementTypes.h"
 #include "soh/ShipUtils.h"
 
 #include <string.h>
 #include <stdlib.h>
 #include <assert.h>
-
-#include "soh/Enhancements/game-interactor/GameInteractor.h"
-#include "soh/Enhancements/game-interactor/GameInteractor_Hooks.h"
 #include "soh/OTRGlobals.h"
 #include "soh/ResourceManagerHelpers.h"
-#include "soh/Enhancements/gameplaystats.h"
-#include "soh/ObjectExtension/ActorMaximumHealth.h"
 
 #include "message_data_static.h"
 extern MessageTableEntry* sNesMessageEntryTablePtr;
@@ -256,45 +247,6 @@ void func_80082644(PlayState* play, s16 alpha) {
         }
     }
 
-    if (gSaveContext.buttonStatus[5] == BTN_DISABLED) {
-        if (interfaceCtx->dpadUpAlpha != 70) {
-            interfaceCtx->dpadUpAlpha = 70;
-        }
-    } else {
-        if (interfaceCtx->dpadUpAlpha != 255) {
-            interfaceCtx->dpadUpAlpha = alpha;
-        }
-    }
-
-    if (gSaveContext.buttonStatus[6] == BTN_DISABLED) {
-        if (interfaceCtx->dpadDownAlpha != 70) {
-            interfaceCtx->dpadDownAlpha = 70;
-        }
-    } else {
-        if (interfaceCtx->dpadDownAlpha != 255) {
-            interfaceCtx->dpadDownAlpha = alpha;
-        }
-    }
-
-    if (gSaveContext.buttonStatus[7] == BTN_DISABLED) {
-        if (interfaceCtx->dpadLeftAlpha != 70) {
-            interfaceCtx->dpadLeftAlpha = 70;
-        }
-    } else {
-        if (interfaceCtx->dpadLeftAlpha != 255) {
-            interfaceCtx->dpadLeftAlpha = alpha;
-        }
-    }
-
-    if (gSaveContext.buttonStatus[8] == BTN_DISABLED) {
-        if (interfaceCtx->dpadRightAlpha != 70) {
-            interfaceCtx->dpadRightAlpha = 70;
-        }
-    } else {
-        if (interfaceCtx->dpadRightAlpha != 255) {
-            interfaceCtx->dpadRightAlpha = alpha;
-        }
-    }
 }
 
 void func_8008277C(PlayState* play, s16 maxAlpha, s16 alpha) {
@@ -325,21 +277,9 @@ void func_8008277C(PlayState* play, s16 maxAlpha, s16 alpha) {
         interfaceCtx->cRightAlpha = maxAlpha;
     }
 
-    if ((interfaceCtx->dpadUpAlpha != 0) && (interfaceCtx->dpadUpAlpha > maxAlpha)) {
-        interfaceCtx->dpadUpAlpha = maxAlpha;
-    }
 
-    if ((interfaceCtx->dpadDownAlpha != 0) && (interfaceCtx->dpadDownAlpha > maxAlpha)) {
-        interfaceCtx->dpadDownAlpha = maxAlpha;
-    }
 
-    if ((interfaceCtx->dpadLeftAlpha != 0) && (interfaceCtx->dpadLeftAlpha > maxAlpha)) {
-        interfaceCtx->dpadLeftAlpha = maxAlpha;
-    }
 
-    if ((interfaceCtx->dpadRightAlpha != 0) && (interfaceCtx->dpadRightAlpha > maxAlpha)) {
-        interfaceCtx->dpadRightAlpha = maxAlpha;
-    }
 }
 
 void func_80082850(PlayState* play, s16 maxAlpha) {
@@ -378,21 +318,9 @@ void func_80082850(PlayState* play, s16 maxAlpha) {
                 interfaceCtx->cRightAlpha = maxAlpha;
             }
 
-            if ((interfaceCtx->dpadUpAlpha != 0) && (interfaceCtx->dpadUpAlpha > maxAlpha)) {
-                interfaceCtx->dpadUpAlpha = maxAlpha;
-            }
 
-            if ((interfaceCtx->dpadDownAlpha != 0) && (interfaceCtx->dpadDownAlpha > maxAlpha)) {
-                interfaceCtx->dpadDownAlpha = maxAlpha;
-            }
 
-            if ((interfaceCtx->dpadLeftAlpha != 0) && (interfaceCtx->dpadLeftAlpha > maxAlpha)) {
-                interfaceCtx->dpadLeftAlpha = maxAlpha;
-            }
 
-            if ((interfaceCtx->dpadRightAlpha != 0) && (interfaceCtx->dpadRightAlpha > maxAlpha)) {
-                interfaceCtx->dpadRightAlpha = maxAlpha;
-            }
 
             if ((interfaceCtx->healthAlpha != 0) && (interfaceCtx->healthAlpha > maxAlpha)) {
                 interfaceCtx->healthAlpha = maxAlpha;
@@ -450,21 +378,9 @@ void func_80082850(PlayState* play, s16 maxAlpha) {
                 interfaceCtx->cRightAlpha = maxAlpha;
             }
 
-            if ((interfaceCtx->dpadUpAlpha != 0) && (interfaceCtx->dpadUpAlpha > maxAlpha)) {
-                interfaceCtx->dpadUpAlpha = maxAlpha;
-            }
 
-            if ((interfaceCtx->dpadDownAlpha != 0) && (interfaceCtx->dpadDownAlpha > maxAlpha)) {
-                interfaceCtx->dpadDownAlpha = maxAlpha;
-            }
 
-            if ((interfaceCtx->dpadLeftAlpha != 0) && (interfaceCtx->dpadLeftAlpha > maxAlpha)) {
-                interfaceCtx->dpadLeftAlpha = maxAlpha;
-            }
 
-            if ((interfaceCtx->dpadRightAlpha != 0) && (interfaceCtx->dpadRightAlpha > maxAlpha)) {
-                interfaceCtx->dpadRightAlpha = maxAlpha;
-            }
 
             if ((interfaceCtx->healthAlpha != 0) && (interfaceCtx->healthAlpha > maxAlpha)) {
                 interfaceCtx->healthAlpha = maxAlpha;
@@ -589,21 +505,9 @@ void func_80082850(PlayState* play, s16 maxAlpha) {
                 interfaceCtx->cRightAlpha = maxAlpha;
             }
 
-            if ((interfaceCtx->dpadUpAlpha != 0) && (interfaceCtx->dpadUpAlpha > maxAlpha)) {
-                interfaceCtx->dpadUpAlpha = maxAlpha;
-            }
 
-            if ((interfaceCtx->dpadDownAlpha != 0) && (interfaceCtx->dpadDownAlpha > maxAlpha)) {
-                interfaceCtx->dpadDownAlpha = maxAlpha;
-            }
 
-            if ((interfaceCtx->dpadLeftAlpha != 0) && (interfaceCtx->dpadLeftAlpha > maxAlpha)) {
-                interfaceCtx->dpadLeftAlpha = maxAlpha;
-            }
 
-            if ((interfaceCtx->dpadRightAlpha != 0) && (interfaceCtx->dpadRightAlpha > maxAlpha)) {
-                interfaceCtx->dpadRightAlpha = maxAlpha;
-            }
 
             if ((interfaceCtx->minimapAlpha != 0) && (interfaceCtx->minimapAlpha > maxAlpha)) {
                 interfaceCtx->minimapAlpha = maxAlpha;
@@ -635,21 +539,9 @@ void func_80082850(PlayState* play, s16 maxAlpha) {
                 interfaceCtx->cRightAlpha = maxAlpha;
             }
 
-            if ((interfaceCtx->dpadUpAlpha != 0) && (interfaceCtx->dpadUpAlpha > maxAlpha)) {
-                interfaceCtx->dpadUpAlpha = maxAlpha;
-            }
 
-            if ((interfaceCtx->dpadDownAlpha != 0) && (interfaceCtx->dpadDownAlpha > maxAlpha)) {
-                interfaceCtx->dpadDownAlpha = maxAlpha;
-            }
 
-            if ((interfaceCtx->dpadLeftAlpha != 0) && (interfaceCtx->dpadLeftAlpha > maxAlpha)) {
-                interfaceCtx->dpadLeftAlpha = maxAlpha;
-            }
 
-            if ((interfaceCtx->dpadRightAlpha != 0) && (interfaceCtx->dpadRightAlpha > maxAlpha)) {
-                interfaceCtx->dpadRightAlpha = maxAlpha;
-            }
 
             if ((interfaceCtx->healthAlpha != 0) && (interfaceCtx->healthAlpha > maxAlpha)) {
                 interfaceCtx->healthAlpha = maxAlpha;
@@ -689,21 +581,9 @@ void func_80082850(PlayState* play, s16 maxAlpha) {
                 interfaceCtx->cRightAlpha = maxAlpha;
             }
 
-            if ((interfaceCtx->dpadUpAlpha != 0) && (interfaceCtx->dpadUpAlpha > maxAlpha)) {
-                interfaceCtx->dpadUpAlpha = maxAlpha;
-            }
 
-            if ((interfaceCtx->dpadDownAlpha != 0) && (interfaceCtx->dpadDownAlpha > maxAlpha)) {
-                interfaceCtx->dpadDownAlpha = maxAlpha;
-            }
 
-            if ((interfaceCtx->dpadLeftAlpha != 0) && (interfaceCtx->dpadLeftAlpha > maxAlpha)) {
-                interfaceCtx->dpadLeftAlpha = maxAlpha;
-            }
 
-            if ((interfaceCtx->dpadRightAlpha != 0) && (interfaceCtx->dpadRightAlpha > maxAlpha)) {
-                interfaceCtx->dpadRightAlpha = maxAlpha;
-            }
 
             if ((interfaceCtx->minimapAlpha != 0) && (interfaceCtx->minimapAlpha > maxAlpha)) {
                 interfaceCtx->minimapAlpha = maxAlpha;
@@ -743,21 +623,9 @@ void func_80082850(PlayState* play, s16 maxAlpha) {
                 interfaceCtx->cRightAlpha = maxAlpha;
             }
 
-            if ((interfaceCtx->dpadUpAlpha != 0) && (interfaceCtx->dpadUpAlpha > maxAlpha)) {
-                interfaceCtx->dpadUpAlpha = maxAlpha;
-            }
 
-            if ((interfaceCtx->dpadDownAlpha != 0) && (interfaceCtx->dpadDownAlpha > maxAlpha)) {
-                interfaceCtx->dpadDownAlpha = maxAlpha;
-            }
 
-            if ((interfaceCtx->dpadLeftAlpha != 0) && (interfaceCtx->dpadLeftAlpha > maxAlpha)) {
-                interfaceCtx->dpadLeftAlpha = maxAlpha;
-            }
 
-            if ((interfaceCtx->dpadRightAlpha != 0) && (interfaceCtx->dpadRightAlpha > maxAlpha)) {
-                interfaceCtx->dpadRightAlpha = maxAlpha;
-            }
 
             if ((interfaceCtx->magicAlpha != 0) && (interfaceCtx->magicAlpha > maxAlpha)) {
                 interfaceCtx->magicAlpha = maxAlpha;
@@ -820,8 +688,6 @@ void func_80083108(PlayState* play) {
                 if (gSaveContext.buttonStatus[0] == BTN_DISABLED) {
                     gSaveContext.buttonStatus[0] = gSaveContext.buttonStatus[1] = gSaveContext.buttonStatus[2] =
                         gSaveContext.buttonStatus[3] = BTN_ENABLED;
-                    gSaveContext.buttonStatus[5] = gSaveContext.buttonStatus[6] = gSaveContext.buttonStatus[7] =
-                        gSaveContext.buttonStatus[8] = BTN_ENABLED;
                 }
 
                 if ((gSaveContext.equips.buttonItems[0] != ITEM_SLINGSHOT) &&
@@ -852,8 +718,6 @@ void func_80083108(PlayState* play) {
 
                     gSaveContext.buttonStatus[1] = gSaveContext.buttonStatus[2] = gSaveContext.buttonStatus[3] =
                         BTN_DISABLED;
-                    gSaveContext.buttonStatus[5] = gSaveContext.buttonStatus[6] = gSaveContext.buttonStatus[7] =
-                        gSaveContext.buttonStatus[8] = BTN_DISABLED;
                     Interface_ChangeAlpha(6);
                 }
 
@@ -873,8 +737,7 @@ void func_80083108(PlayState* play) {
                     Interface_ChangeAlpha(12);
                 }
             }
-            // Don't hide the HUD in the Chamber of Sages when in Boss Rush.
-        } else if (play->sceneNum == SCENE_CHAMBER_OF_THE_SAGES && !IS_BOSS_RUSH) {
+        } else if (play->sceneNum == SCENE_CHAMBER_OF_THE_SAGES) {
             Interface_ChangeAlpha(1);
         } else if (play->sceneNum == SCENE_FISHING_POND) {
             gSaveContext.forceRisingButtonAlphas = 2;
@@ -902,8 +765,6 @@ void func_80083108(PlayState* play) {
 
                 gSaveContext.buttonStatus[0] = gSaveContext.buttonStatus[1] = gSaveContext.buttonStatus[2] =
                     gSaveContext.buttonStatus[3] = BTN_DISABLED;
-                gSaveContext.buttonStatus[5] = gSaveContext.buttonStatus[6] = gSaveContext.buttonStatus[7] =
-                    gSaveContext.buttonStatus[8] = BTN_DISABLED;
                 Interface_ChangeAlpha(50);
             } else {
                 if (gSaveContext.buttonStatus[0] == BTN_ENABLED) {
@@ -912,16 +773,10 @@ void func_80083108(PlayState* play) {
 
                 gSaveContext.buttonStatus[0] = gSaveContext.buttonStatus[1] = gSaveContext.buttonStatus[2] =
                     gSaveContext.buttonStatus[3] = BTN_DISABLED;
-                gSaveContext.buttonStatus[5] = gSaveContext.buttonStatus[6] = gSaveContext.buttonStatus[7] =
-                    gSaveContext.buttonStatus[8] = BTN_DISABLED;
                 Interface_ChangeAlpha(50);
             }
         } else if (msgCtx->msgMode == MSGMODE_NONE) {
-            if (GameInteractor_PacifistModeActive()) {
-                gSaveContext.buttonStatus[0] = gSaveContext.buttonStatus[1] = gSaveContext.buttonStatus[2] =
-                    gSaveContext.buttonStatus[3] = gSaveContext.buttonStatus[5] = gSaveContext.buttonStatus[6] =
-                        gSaveContext.buttonStatus[7] = gSaveContext.buttonStatus[8] = BTN_DISABLED;
-            } else if ((Player_GetEnvironmentalHazard(play) >= 2) && (Player_GetEnvironmentalHazard(play) < 5)) {
+            if ((Player_GetEnvironmentalHazard(play) >= 2) && (Player_GetEnvironmentalHazard(play) < 5)) {
                 if (gSaveContext.buttonStatus[0] != BTN_DISABLED) {
                     sp28 = 1;
                 }
@@ -973,10 +828,6 @@ void func_80083108(PlayState* play) {
                     gSaveContext.buttonStatus[1] = BTN_DISABLED;
                     gSaveContext.buttonStatus[2] = BTN_DISABLED;
                     gSaveContext.buttonStatus[3] = BTN_DISABLED;
-                    gSaveContext.buttonStatus[5] = BTN_DISABLED;
-                    gSaveContext.buttonStatus[6] = BTN_DISABLED;
-                    gSaveContext.buttonStatus[7] = BTN_DISABLED;
-                    gSaveContext.buttonStatus[8] = BTN_DISABLED;
                     gSaveContext.unk_13EA = 0;
                     Interface_ChangeAlpha(50);
                 }
@@ -1122,12 +973,7 @@ void func_80083108(PlayState* play) {
 
                 if (interfaceCtx->restrictions.tradeItems != 0) {
                     for (i = 1; i < ARRAY_COUNT(gSaveContext.equips.buttonItems); i++) {
-                        if ((CVarGetInteger(CVAR_ENHANCEMENT("MMBunnyHood"), BUNNY_HOOD_VANILLA) !=
-                             BUNNY_HOOD_VANILLA) &&
-                            (gSaveContext.equips.buttonItems[i] >= ITEM_MASK_KEATON) &&
-                            (gSaveContext.equips.buttonItems[i] <= ITEM_MASK_TRUTH)) {
-                            gSaveContext.buttonStatus[BUTTON_STATUS_INDEX(i)] = BTN_ENABLED;
-                        } else if ((gSaveContext.equips.buttonItems[i] >= ITEM_WEIRD_EGG) &&
+                        if ((gSaveContext.equips.buttonItems[i] >= ITEM_WEIRD_EGG) &&
                                    (gSaveContext.equips.buttonItems[i] <= ITEM_CLAIM_CHECK)) {
                             if (gSaveContext.buttonStatus[BUTTON_STATUS_INDEX(i)] == BTN_ENABLED) {
                                 sp28 = 1;
@@ -1355,11 +1201,6 @@ void Interface_SetSceneRestrictions(PlayState* play) {
                          interfaceCtx->restrictions.farores, interfaceCtx->restrictions.dinsNayrus,
                          interfaceCtx->restrictions.all);
             osSyncPrintf(VT_RST);
-            if (CVarGetInteger(CVAR_ENHANCEMENT("BetterFarore"), 0)) {
-                if (currentScene == SCENE_GERUDO_TRAINING_GROUND || currentScene == SCENE_INSIDE_GANONS_CASTLE) {
-                    interfaceCtx->restrictions.farores = 0;
-                }
-            }
             return;
         }
         i++;
@@ -1427,15 +1268,6 @@ void Inventory_SwapAgeEquipment(void) {
                                             (EQUIP_VALUE_SHIELD_HYLIAN << (EQUIP_TYPE_SHIELD * 4)) |
                                             (EQUIP_VALUE_TUNIC_KOKIRI << (EQUIP_TYPE_TUNIC * 4)) |
                                             (EQUIP_VALUE_BOOTS_KOKIRI << (EQUIP_TYPE_BOOTS * 4));
-            // Set the dpad to nothing
-            gSaveContext.equips.buttonItems[4] = ITEM_NONE;
-            gSaveContext.equips.buttonItems[5] = ITEM_NONE;
-            gSaveContext.equips.buttonItems[6] = ITEM_NONE;
-            gSaveContext.equips.buttonItems[7] = ITEM_NONE;
-            gSaveContext.equips.cButtonSlots[3] = SLOT_NONE;
-            gSaveContext.equips.cButtonSlots[4] = SLOT_NONE;
-            gSaveContext.equips.cButtonSlots[5] = SLOT_NONE;
-            gSaveContext.equips.cButtonSlots[6] = SLOT_NONE;
         } else {
             for (i = 0; i < ARRAY_COUNT(gSaveContext.equips.buttonItems); i++) {
                 gSaveContext.equips.buttonItems[i] = gSaveContext.adultEquips.buttonItems[i];
@@ -1449,10 +1281,10 @@ void Inventory_SwapAgeEquipment(void) {
                     ((gSaveContext.equips.buttonItems[i] >= ITEM_WEIRD_EGG) &&
                      (gSaveContext.equips.buttonItems[i] <= ITEM_CLAIM_CHECK))) {
                     osSyncPrintf("Register_Item_Pt(%d)=%d\n", i, gSaveContext.equips.cButtonSlots[i - 1]);
-                    if (GameInteractor_Should(VB_SET_BUTTON_ITEM_FROM_C_BUTTON_SLOT, true, i)) {
+                    
                         gSaveContext.equips.buttonItems[i] =
                             gSaveContext.inventory.items[gSaveContext.equips.cButtonSlots[i - 1]];
-                    }
+                    
                 }
             }
 
@@ -1568,62 +1400,15 @@ void func_80084BF4(PlayState* play, u16 flag) {
 
         gSaveContext.buttonStatus[0] = gSaveContext.buttonStatus[1] = gSaveContext.buttonStatus[2] =
             gSaveContext.buttonStatus[3] = BTN_ENABLED;
-        gSaveContext.buttonStatus[5] = gSaveContext.buttonStatus[6] = gSaveContext.buttonStatus[7] =
-            gSaveContext.buttonStatus[8] = BTN_ENABLED;
         Interface_ChangeAlpha(7);
     } else {
         gSaveContext.buttonStatus[0] = gSaveContext.buttonStatus[1] = gSaveContext.buttonStatus[2] =
             gSaveContext.buttonStatus[3] = BTN_ENABLED;
-        gSaveContext.buttonStatus[5] = gSaveContext.buttonStatus[6] = gSaveContext.buttonStatus[7] =
-            gSaveContext.buttonStatus[8] = BTN_ENABLED;
         func_80083108(play);
     }
 }
 
-// Gameplay stat tracking: Update time the item was acquired
-// (special cases for some duplicate items)
-void GameplayStats_SetTimestamp(PlayState* play, u8 item) {
-
-    // If we already have a timestamp for this item, do nothing
-    if (gSaveContext.ship.stats.itemTimestamp[item] != 0) {
-        return;
-    }
-    // Use ITEM_KEY_BOSS only for Ganon's boss key - not any other boss keys
-    if (play != NULL) {
-        if (item == ITEM_KEY_BOSS && play->sceneNum != SCENE_INSIDE_GANONS_CASTLE &&
-            play->sceneNum != SCENE_GANONS_TOWER) {
-            return;
-        }
-    }
-
-    u32 time = GAMEPLAYSTAT_TOTAL_TIME;
-
-    // Have items in Link's pocket shown as being obtained at 0.1 seconds
-    if (time == 0) {
-        time = 1;
-    }
-
-    // Count any bottled item as a bottle
-    if (item >= ITEM_BOTTLE && item <= ITEM_POE) {
-        if (gSaveContext.ship.stats.itemTimestamp[ITEM_BOTTLE] == 0) {
-            gSaveContext.ship.stats.itemTimestamp[ITEM_BOTTLE] = time;
-        }
-        return;
-    }
-    // Count any bombchu pack as bombchus
-    if (item == ITEM_BOMBCHU || (item >= ITEM_BOMBCHUS_5 && item <= ITEM_BOMBCHUS_20)) {
-        if (gSaveContext.ship.stats.itemTimestamp[ITEM_BOMBCHU] == 0) {
-            gSaveContext.ship.stats.itemTimestamp[ITEM_BOMBCHU] = time;
-        }
-        return;
-    }
-
-    gSaveContext.ship.stats.itemTimestamp[item] = time;
-    GameInteractor_ExecuteOnTimestamp(item);
-}
-
 u8 Return_Item_Entry(GetItemEntry itemEntry, u8 returnItem) {
-    GameInteractor_ExecuteOnItemReceiveHooks(itemEntry);
     return returnItem;
 }
 
@@ -1664,9 +1449,6 @@ u8 Item_Give(PlayState* play, u8 item) {
     s16 temp;
 
     GetItemID returnItem = ITEM_NONE;
-
-    // Gameplay stats: Update the time the item was obtained
-    GameplayStats_SetTimestamp(play, item);
 
     slot = SLOT(item);
     if (item >= ITEM_STICKS_5) {
@@ -1957,11 +1739,11 @@ u8 Item_Give(PlayState* play, u8 item) {
             AMMO(ITEM_BOMBCHU) = 10;
         } else {
             AMMO(ITEM_BOMBCHU) += 10;
-            if (GameInteractor_Should(VB_CHECK_BOMBCHU_CAPACITY, true)) {
+            
                 if (AMMO(ITEM_BOMBCHU) > 50) {
                     AMMO(ITEM_BOMBCHU) = 50;
                 }
-            }
+            
         }
         return Return_Item(item, MOD_NONE, ITEM_NONE);
     } else if ((item == ITEM_BOMBCHUS_5) || (item == ITEM_BOMBCHUS_20)) {
@@ -1970,11 +1752,11 @@ u8 Item_Give(PlayState* play, u8 item) {
             AMMO(ITEM_BOMBCHU) += sAmmoRefillCounts[item - ITEM_BOMBCHUS_5 + 8];
         } else {
             AMMO(ITEM_BOMBCHU) += sAmmoRefillCounts[item - ITEM_BOMBCHUS_5 + 8];
-            if (GameInteractor_Should(VB_CHECK_BOMBCHU_CAPACITY, true)) {
+            
                 if (AMMO(ITEM_BOMBCHU) > 50) {
                     AMMO(ITEM_BOMBCHU) = 50;
                 }
-            }
+            
         }
         return Return_Item(item, MOD_NONE, ITEM_NONE);
     } else if ((item >= ITEM_ARROWS_SMALL) && (item <= ITEM_ARROWS_LARGE)) {
@@ -2044,14 +1826,12 @@ u8 Item_Give(PlayState* play, u8 item) {
         return Return_Item(item, MOD_NONE, ITEM_NONE);
     } else if ((item == ITEM_HEART_PIECE_2) || (item == ITEM_HEART_PIECE)) {
         gSaveContext.inventory.questItems += 1 << (QUEST_HEART_PIECE + 4);
-        gSaveContext.ship.stats.heartPieces++;
         return Return_Item(item, MOD_NONE, ITEM_NONE);
     } else if (item == ITEM_HEART_CONTAINER) {
-        if (GameInteractor_Should(VB_HEARTS_INCREASE_WITH_CONTAINERS, true)) {
+        
             gSaveContext.healthCapacity += FULL_HEART_HEALTH;
             gSaveContext.health += FULL_HEART_HEALTH;
-        }
-        gSaveContext.ship.stats.heartContainers++;
+        
         return Return_Item(item, MOD_NONE, ITEM_NONE);
     } else if (item == ITEM_HEART) {
         osSyncPrintf("回復ハート回復ハート回復ハート\n"); // "Recovery Heart"
@@ -2146,7 +1926,7 @@ u8 Item_Give(PlayState* play, u8 item) {
         }
         return Return_Item(item, MOD_NONE, ITEM_NONE);
     } else if ((item >= ITEM_WEIRD_EGG) && (item <= ITEM_CLAIM_CHECK)) {
-        if (GameInteractor_Should(VB_POACHERS_SAW_SET_DEKU_NUT_UPGRADE_FLAG, item == ITEM_SAW)) {
+        if ((item == ITEM_SAW)) {
             Flags_SetItemGetInf(ITEMGETINF_OBTAINED_NUT_UPGRADE_FROM_STAGE);
         }
 
@@ -2396,9 +2176,9 @@ void Inventory_UpdateBottleItem(PlayState* play, u8 item, u8 button) {
         item = ITEM_MILK_HALF;
     }
 
-    if (GameInteractor_Should(VB_UPDATE_BOTTLE_ITEM, true, button, item)) {
+    
         gSaveContext.inventory.items[gSaveContext.equips.cButtonSlots[button - 1]] = item;
-    }
+    
 
     gSaveContext.equips.buttonItems[button] = item;
 
@@ -2481,7 +2261,6 @@ void Interface_SetDoAction(PlayState* play, u16 action) {
     PauseContext* pauseCtx = &play->pauseCtx;
 
     if (interfaceCtx->unk_1F0 != action) {
-        GameInteractor_ExecuteOnSetDoAction(action);
         interfaceCtx->unk_1F0 = action;
         interfaceCtx->unk_1EC = 1;
         interfaceCtx->unk_1F4 = 0.0f;
@@ -2497,15 +2276,13 @@ void Interface_SetNaviCall(PlayState* play, u16 naviCallState) {
 
     if (((naviCallState == 0x1D) || (naviCallState == 0x1E)) && !interfaceCtx->naviCalling &&
         (play->csCtx.state == CS_STATE_IDLE)) {
-        if (!CVarGetInteger(CVAR_AUDIO("DisableNaviCallAudio"), 0)) {
-            // clang-format off
-            if (naviCallState == 0x1E) { Audio_PlaySoundGeneral(NA_SE_VO_NAVY_CALL, &gSfxDefaultPos, 4,
-                                                                &gSfxDefaultFreqAndVolScale, &gSfxDefaultFreqAndVolScale, &gSfxDefaultReverb); }
-            // clang-format on
+        // clang-format off
+        if (naviCallState == 0x1E) { Audio_PlaySoundGeneral(NA_SE_VO_NAVY_CALL, &gSfxDefaultPos, 4,
+                                                            &gSfxDefaultFreqAndVolScale, &gSfxDefaultFreqAndVolScale, &gSfxDefaultReverb); }
+        // clang-format on
 
-            if (naviCallState == 0x1D) {
-                func_800F4524(&gSfxDefaultPos, NA_SE_VO_NA_HELLO_2, 32);
-            }
+        if (naviCallState == 0x1D) {
+            func_800F4524(&gSfxDefaultPos, NA_SE_VO_NA_HELLO_2, 32);
         }
 
         interfaceCtx->naviCalling = 1;
@@ -2558,19 +2335,6 @@ s32 Health_ChangeBy(PlayState* play, s16 healthChange) {
     osSyncPrintf("＊＊＊＊＊  増減=%d (now=%d, max=%d)  ＊＊＊", healthChange, gSaveContext.health,
                  gSaveContext.healthCapacity);
 
-    if (healthChange < 0) {
-        gSaveContext.ship.stats.count[COUNT_DAMAGE_TAKEN] += -healthChange;
-    }
-
-    // If one-hit ko mode is on, any damage kills you and you cannot gain health.
-    if (GameInteractor_OneHitKOActive()) {
-        if (healthChange < 0) {
-            gSaveContext.health = 0;
-        }
-
-        return 0;
-    }
-
     // clang-format off
     if (healthChange > 0) { Audio_PlaySoundGeneral(NA_SE_SY_HP_RECOVER, &gSfxDefaultPos, 4,
                                                    &gSfxDefaultFreqAndVolScale, &gSfxDefaultFreqAndVolScale, &gSfxDefaultReverb);
@@ -2579,15 +2343,6 @@ s32 Health_ChangeBy(PlayState* play, s16 healthChange) {
         osSyncPrintf("ハート減少半分！！＝%d\n", healthChange); // "Heart decrease halved!!＝%d"
     }
     // clang-format on
-
-    int32_t giDefenseModifier = GameInteractor_DefenseModifier();
-    if (giDefenseModifier != 0 && healthChange < 0) {
-        if (giDefenseModifier > 0) {
-            healthChange /= giDefenseModifier;
-        } else {
-            healthChange *= abs(giDefenseModifier);
-        }
-    }
 
     gSaveContext.health += healthChange;
 
@@ -2611,7 +2366,6 @@ s32 Health_ChangeBy(PlayState* play, s16 healthChange) {
     // "Life=%d ＊＊＊  %d ＊＊＊＊＊＊"
     osSyncPrintf("  ライフ=%d  ＊＊＊  %d  ＊＊＊＊＊＊\n", gSaveContext.health, healthLevel);
 
-    GameInteractor_ExecuteOnPlayerHealthChange(healthChange);
 
     if (gSaveContext.health <= 0) {
         gSaveContext.health = 0;
@@ -2628,42 +2382,6 @@ void Rupees_ChangeBy(s16 rupeeChange) {
         gSaveContext.rupeeAccumulator += rupeeChange;
     }
 
-    if (rupeeChange > 0) {
-        gSaveContext.ship.stats.count[COUNT_RUPEES_COLLECTED] += rupeeChange;
-    }
-    if (rupeeChange < 0) {
-        gSaveContext.ship.stats.count[COUNT_RUPEES_SPENT] += -rupeeChange;
-    }
-}
-
-void GameplayStats_UpdateAmmoUsed(s16 item, s16 ammoUsed) {
-
-    switch (item) {
-        case ITEM_STICK:
-            gSaveContext.ship.stats.count[COUNT_AMMO_USED_STICK] += ammoUsed;
-            break;
-        case ITEM_NUT:
-            gSaveContext.ship.stats.count[COUNT_AMMO_USED_NUT] += ammoUsed;
-            break;
-        case ITEM_BOMB:
-            gSaveContext.ship.stats.count[COUNT_AMMO_USED_BOMB] += ammoUsed;
-            break;
-        case ITEM_BOW:
-            gSaveContext.ship.stats.count[COUNT_AMMO_USED_ARROW] += ammoUsed;
-            break;
-        case ITEM_SLINGSHOT:
-            gSaveContext.ship.stats.count[COUNT_AMMO_USED_SEED] += ammoUsed;
-            break;
-        case ITEM_BOMBCHU:
-            gSaveContext.ship.stats.count[COUNT_AMMO_USED_BOMBCHU] += ammoUsed;
-            break;
-        case ITEM_BEAN:
-            gSaveContext.ship.stats.count[COUNT_AMMO_USED_BEAN] += ammoUsed;
-            break;
-        default:
-            break;
-    }
-    return;
 }
 
 void Inventory_ChangeAmmo(s16 item, s16 ammoChange) {
@@ -2689,13 +2407,11 @@ void Inventory_ChangeAmmo(s16 item, s16 ammoChange) {
     } else if (item == ITEM_BOMBCHU) {
         AMMO(ITEM_BOMBCHU) += ammoChange;
 
-        if (GameInteractor_Should(VB_CHECK_BOMBCHU_CAPACITY, true)) {
+        
             if (AMMO(ITEM_BOMBCHU) > 50) {
                 AMMO(ITEM_BOMBCHU) = 50;
             }
-        } else if (AMMO(ITEM_BOMBCHU) < 0) {
-            AMMO(ITEM_BOMBCHU) = 0;
-        }
+        
     } else if (item == ITEM_BOW) {
         AMMO(ITEM_BOW) += ammoChange;
 
@@ -2726,9 +2442,6 @@ void Inventory_ChangeAmmo(s16 item, s16 ammoChange) {
 
     osSyncPrintf("合計 = (%d)\n", AMMO(item)); // "Total = (%d)"
 
-    if (ammoChange < 0) {
-        GameplayStats_UpdateAmmoUsed(item, -ammoChange);
-    }
 }
 
 void Magic_Fill(PlayState* play) {
@@ -2850,33 +2563,7 @@ void Interface_UpdateMagicBar(PlayState* play) {
     Color_RGB8 MagicBorder_2 = { 255, 255, 150 };
     Color_RGB8 MagicBorder_3 = { 255, 255, 50 };
 
-    if (CVarGetInteger(CVAR_COSMETIC("Consumable.MagicBorderActive.Changed"),
-                       0)) { // This will make custom color based on users selected colors.
-        sMagicBorderColors[0][0] = CVarGetColor24(CVAR_COSMETIC("Consumable.MagicBorderActive.Value"), MagicBorder_0).r;
-        sMagicBorderColors[0][1] = CVarGetColor24(CVAR_COSMETIC("Consumable.MagicBorderActive.Value"), MagicBorder_0).g;
-        sMagicBorderColors[0][2] = CVarGetColor24(CVAR_COSMETIC("Consumable.MagicBorderActive.Value"), MagicBorder_0).b;
-
-        sMagicBorderColors[1][0] =
-            CVarGetColor24(CVAR_COSMETIC("Consumable.MagicBorderActive.Value"), MagicBorder_1).r / 2;
-        sMagicBorderColors[1][1] =
-            CVarGetColor24(CVAR_COSMETIC("Consumable.MagicBorderActive.Value"), MagicBorder_1).g / 2;
-        sMagicBorderColors[1][2] =
-            CVarGetColor24(CVAR_COSMETIC("Consumable.MagicBorderActive.Value"), MagicBorder_1).b / 2;
-
-        sMagicBorderColors[2][0] =
-            CVarGetColor24(CVAR_COSMETIC("Consumable.MagicBorderActive.Value"), MagicBorder_2).r / 2.5;
-        sMagicBorderColors[2][1] =
-            CVarGetColor24(CVAR_COSMETIC("Consumable.MagicBorderActive.Value"), MagicBorder_2).g / 2.5;
-        sMagicBorderColors[2][2] =
-            CVarGetColor24(CVAR_COSMETIC("Consumable.MagicBorderActive.Value"), MagicBorder_2).b / 2.5;
-
-        sMagicBorderColors[3][0] =
-            CVarGetColor24(CVAR_COSMETIC("Consumable.MagicBorderActive.Value"), MagicBorder_3).r / 3;
-        sMagicBorderColors[3][1] =
-            CVarGetColor24(CVAR_COSMETIC("Consumable.MagicBorderActive.Value"), MagicBorder_3).g / 3;
-        sMagicBorderColors[3][2] =
-            CVarGetColor24(CVAR_COSMETIC("Consumable.MagicBorderActive.Value"), MagicBorder_3).b / 3;
-    }
+    
 
     static s16 sMagicBorderIndexes[] = { 0, 1, 1, 0 };
     static s16 sMagicBorderRatio = 2;
@@ -2936,18 +2623,14 @@ void Interface_UpdateMagicBar(PlayState* play) {
                 if (gSaveContext.magic <= 0) {
                     gSaveContext.magic = 0;
                     gSaveContext.magicState = MAGIC_STATE_METER_FLASH_1;
-                    if (CVarGetInteger(CVAR_COSMETIC("Consumable.MagicBorder.Changed"), 0)) {
-                        sMagicBorder = CVarGetColor24(CVAR_COSMETIC("Consumable.MagicBorder.Value"), sMagicBorder_ori);
-                    } else {
+                    
                         sMagicBorder = sMagicBorder_ori;
-                    }
+                    
                 } else if (gSaveContext.magic == gSaveContext.magicTarget) {
                     gSaveContext.magicState = MAGIC_STATE_METER_FLASH_1;
-                    if (CVarGetInteger(CVAR_COSMETIC("Consumable.MagicBorder.Changed"), 0)) {
-                        sMagicBorder = CVarGetColor24(CVAR_COSMETIC("Consumable.MagicBorder.Value"), sMagicBorder_ori);
-                    } else {
+                    
                         sMagicBorder = sMagicBorder_ori;
-                    }
+                    
                 }
             }
         case MAGIC_STATE_METER_FLASH_1:
@@ -2990,11 +2673,9 @@ void Interface_UpdateMagicBar(PlayState* play) {
             break;
 
         case MAGIC_STATE_RESET:
-            if (CVarGetInteger(CVAR_COSMETIC("Consumable.MagicBorder.Changed"), 0)) {
-                sMagicBorder = CVarGetColor24(CVAR_COSMETIC("Consumable.MagicBorder.Value"), sMagicBorder_ori);
-            } else {
+            
                 sMagicBorder = sMagicBorder_ori;
-            }
+            
             gSaveContext.magicState = MAGIC_STATE_IDLE;
             break;
 
@@ -3003,10 +2684,7 @@ void Interface_UpdateMagicBar(PlayState* play) {
                 (play->gameOverCtx.state == GAMEOVER_INACTIVE) && (play->transitionTrigger == TRANS_TRIGGER_OFF) &&
                 (play->transitionMode == TRANS_MODE_OFF) && !Play_InCsMode(play)) {
                 bool hasLens = false;
-                for (int buttonIndex = 1; buttonIndex < ((CVarGetInteger(CVAR_ENHANCEMENT("DpadEquips"), 0) != 0)
-                                                             ? ARRAY_COUNT(gSaveContext.equips.buttonItems)
-                                                             : 4);
-                     buttonIndex++) {
+                for (int buttonIndex = 1; buttonIndex < 4; buttonIndex++) {
                     if (gSaveContext.equips.buttonItems[buttonIndex] == ITEM_LENS) {
                         hasLens = true;
                         break;
@@ -3019,11 +2697,9 @@ void Interface_UpdateMagicBar(PlayState* play) {
                     Audio_PlaySoundGeneral(NA_SE_SY_GLASSMODE_OFF, &gSfxDefaultPos, 4, &gSfxDefaultFreqAndVolScale,
                                            &gSfxDefaultFreqAndVolScale, &gSfxDefaultReverb);
                     gSaveContext.magicState = MAGIC_STATE_IDLE;
-                    if (CVarGetInteger(CVAR_COSMETIC("Consumable.MagicBorder.Changed"), 0)) {
-                        sMagicBorder = CVarGetColor24(CVAR_COSMETIC("Consumable.MagicBorder.Value"), sMagicBorder_ori);
-                    } else {
+                    
                         sMagicBorder = sMagicBorder_ori;
-                    }
+                    
                     break;
                 }
 
@@ -3083,11 +2759,9 @@ void Interface_UpdateMagicBar(PlayState* play) {
 
         default:
             gSaveContext.magicState = MAGIC_STATE_IDLE;
-            if (CVarGetInteger(CVAR_COSMETIC("Consumable.MagicBorder.Changed"), 0)) {
-                sMagicBorder = CVarGetColor24(CVAR_COSMETIC("Consumable.MagicBorder.Value"), sMagicBorder_ori);
-            } else {
+            
                 sMagicBorder = sMagicBorder_ori;
-            }
+            
             break;
     }
 }
@@ -3124,28 +2798,17 @@ void Interface_DrawMagicBar(PlayState* play) {
                                   R_MAGIC_FILL_COLOR(2) }; // Magic bar fill
     Color_RGB8 magicbar_blue = { 0, 0, 200 };              // Infinite magic bar
 
-    if (CVarGetInteger(CVAR_COSMETIC("Consumable.MagicActive.Changed"), 0)) {
-        magicbar_yellow = CVarGetColor24(CVAR_COSMETIC("Consumable.MagicActive.Value"), magicbar_yellow);
-    }
-    if (CVarGetInteger(CVAR_COSMETIC("Consumable.Magic.Changed"), 0)) {
-        magicbar_green = CVarGetColor24(CVAR_COSMETIC("Consumable.Magic.Value"), magicbar_green);
-    }
-    if (CVarGetInteger("gCosmetics.Consumable_MagicInfinite.Changed", 0)) {
-        magicbar_blue = CVarGetColor24("gCosmetics.Consumable_MagicInfinite.Value", magicbar_blue);
-    }
-
+    
+    
     OPEN_DISPS(play->state.gfxCtx);
 
     if (gSaveContext.magicLevel != 0) {
         s16 X_Margins;
         s16 Y_Margins;
-        if (CVarGetInteger(CVAR_COSMETIC("HUD.MagicBar.UseMargins"), 0) != 0) {
-            X_Margins = Left_HUD_Margin;
-            Y_Margins = (Top_HUD_Margin * -1);
-        } else {
+        
             X_Margins = 0;
             Y_Margins = 0;
-        }
+        
         const s16 magicBarY_original_l = R_MAGIC_BAR_LARGE_Y + Y_Margins;
         const s16 magicBarY_original_s = R_MAGIC_BAR_SMALL_Y + Y_Margins;
         const s16 PosX_Start_original = OTRGetRectDimensionFromLeftEdge(R_MAGIC_BAR_X + X_Margins);
@@ -3157,57 +2820,8 @@ void Interface_DrawMagicBar(PlayState* play) {
         s16 rMagicBarX;
         s16 PosX_MidEnd;
         s16 rMagicFillX;
-        s32 lineLength = CVarGetInteger(CVAR_COSMETIC("HUD.Hearts.LineLength"), 10);
-        if (CVarGetInteger(CVAR_COSMETIC("HUD.MagicBar.PosType"), 0) != ORIGINAL_LOCATION) {
-            magicBarY = CVarGetInteger(CVAR_COSMETIC("HUD.MagicBar.PosY"), 0) + Y_Margins;
-            if (CVarGetInteger(CVAR_COSMETIC("HUD.MagicBar.PosType"), 0) == ANCHOR_LEFT) {
-                if (CVarGetInteger(CVAR_COSMETIC("HUD.MagicBar.UseMargins"), 0) != 0) {
-                    X_Margins = Left_HUD_Margin;
-                };
-                PosX_Start =
-                    OTRGetDimensionFromLeftEdge(CVarGetInteger(CVAR_COSMETIC("HUD.MagicBar.PosX"), 0) + X_Margins);
-                rMagicBarX =
-                    OTRGetDimensionFromLeftEdge(CVarGetInteger(CVAR_COSMETIC("HUD.MagicBar.PosX"), 0) + X_Margins);
-                PosX_MidEnd =
-                    OTRGetDimensionFromLeftEdge(CVarGetInteger(CVAR_COSMETIC("HUD.MagicBar.PosX"), 0) + X_Margins + 8);
-                rMagicFillX =
-                    OTRGetDimensionFromLeftEdge(CVarGetInteger(CVAR_COSMETIC("HUD.MagicBar.PosX"), 0) + X_Margins + 8);
-            } else if (CVarGetInteger(CVAR_COSMETIC("HUD.MagicBar.PosType"), 0) == ANCHOR_RIGHT) {
-                if (CVarGetInteger(CVAR_COSMETIC("HUD.MagicBar.UseMargins"), 0) != 0) {
-                    X_Margins = Right_HUD_Margin;
-                };
-                PosX_Start =
-                    OTRGetDimensionFromRightEdge(CVarGetInteger(CVAR_COSMETIC("HUD.MagicBar.PosX"), 0) + X_Margins);
-                rMagicBarX =
-                    OTRGetDimensionFromRightEdge(CVarGetInteger(CVAR_COSMETIC("HUD.MagicBar.PosX"), 0) + X_Margins);
-                PosX_MidEnd =
-                    OTRGetDimensionFromRightEdge(CVarGetInteger(CVAR_COSMETIC("HUD.MagicBar.PosX"), 0) + X_Margins + 8);
-                rMagicFillX =
-                    OTRGetDimensionFromRightEdge(CVarGetInteger(CVAR_COSMETIC("HUD.MagicBar.PosX"), 0) + X_Margins + 8);
-            } else if (CVarGetInteger(CVAR_COSMETIC("HUD.MagicBar.PosType"), 0) == ANCHOR_NONE) {
-                PosX_Start = CVarGetInteger(CVAR_COSMETIC("HUD.MagicBar.PosX"), 0) + X_Margins;
-                rMagicBarX = CVarGetInteger(CVAR_COSMETIC("HUD.MagicBar.PosX"), 0) + X_Margins;
-                PosX_MidEnd = CVarGetInteger(CVAR_COSMETIC("HUD.MagicBar.PosX"), 0) + X_Margins + 8;
-                rMagicFillX = CVarGetInteger(CVAR_COSMETIC("HUD.MagicBar.PosX"), 0) + X_Margins + 8;
-            } else if (CVarGetInteger(CVAR_COSMETIC("HUD.MagicBar.PosType"), 0) == HIDDEN) {
-                PosX_Start = -9999;
-                rMagicBarX = -9999;
-                PosX_MidEnd = -9999;
-                rMagicFillX = -9999;
-            } else if (CVarGetInteger(CVAR_COSMETIC("HUD.MagicBar.PosType"), 0) == ANCHOR_TO_LIFE_METER) {
-                magicBarY =
-                    R_MAGIC_BAR_SMALL_Y - 2 +
-                    magicDrop * (lineLength == 0 ? 0 : (gSaveContext.healthCapacity - 1) / (0x10 * lineLength)) +
-                    CVarGetInteger(CVAR_COSMETIC("HUD.MagicBar.PosY"), 0) + getHealthMeterYOffset();
-                s16 xPushover =
-                    CVarGetInteger(CVAR_COSMETIC("HUD.MagicBar.PosX"), 0) + getHealthMeterXOffset() + R_MAGIC_BAR_X - 1;
-                PosX_Start = xPushover;
-                rMagicBarX = xPushover;
-                PosX_MidEnd = xPushover + 8;
-                rMagicFillX = CVarGetInteger(CVAR_COSMETIC("HUD.MagicBar.PosX"), 0) + getHealthMeterXOffset() +
-                              R_MAGIC_FILL_X - 1;
-            }
-        } else {
+        s32 lineLength = (10);
+        
             if ((gSaveContext.healthCapacity - 1) / FULL_HEART_HEALTH >= lineLength && lineLength != 0) {
                 magicBarY =
                     magicBarY_original_l +
@@ -3219,7 +2833,7 @@ void Interface_DrawMagicBar(PlayState* play) {
             rMagicBarX = rMagicBarX_original;
             PosX_MidEnd = PosX_MidEnd_original;
             rMagicFillX = rMagicFillX_original;
-        }
+        
 
         Gfx_SetupDL_39Overlay(play->state.gfxCtx);
 
@@ -3277,155 +2891,6 @@ void Interface_DrawMagicBar(PlayState* play) {
             gSPWideTextureRectangle(OVERLAY_DISP++, rMagicFillX << 2, (magicBarY + 3) << 2,
                                     (rMagicFillX + gSaveContext.magic) << 2, (magicBarY + 10) << 2, G_TX_RENDERTILE, 0,
                                     0, 1 << 10, 1 << 10);
-        }
-    }
-
-    CLOSE_DISPS(play->state.gfxCtx);
-}
-
-static Vtx sEnemyHealthVtx[16];
-static Mtx sEnemyHealthMtx[2];
-
-// Draws an enemy health bar using the magic bar textures and positions it in a similar way to Z-Targeting
-void Interface_DrawEnemyHealthBar(TargetContext* targetCtx, PlayState* play) {
-    InterfaceContext* interfaceCtx = &play->interfaceCtx;
-    Player* player = GET_PLAYER(play);
-    Actor* actor = targetCtx->targetedActor;
-
-    Vec3f projTargetCenter;
-    f32 projTargetCappedInvW;
-
-    Color_RGBA8 healthbar_red = { 255, 0, 0, 255 };
-    Color_RGBA8 healthbar_border = { 255, 255, 255, 255 };
-    s16 healthbar_fillWidth = 64;
-    s16 healthbar_actorOffset = 40;
-    s32 healthbar_offsetX = CVarGetInteger(CVAR_COSMETIC("HUD.EnemyHealthBar.PosX"), 0);
-    s32 healthbar_offsetY = CVarGetInteger(CVAR_COSMETIC("HUD.EnemyHealthBar.PosY"), 0);
-    s8 anchorType = CVarGetInteger(CVAR_COSMETIC("HUD.EnemyHealthBar.PosType"), ENEMYHEALTH_ANCHOR_ACTOR);
-
-    if (CVarGetInteger(CVAR_COSMETIC("HUD.EnemyHealthBar.Changed"), 0)) {
-        healthbar_red = CVarGetColor(CVAR_COSMETIC("HUD.EnemyHealthBar.Value"), healthbar_red);
-    }
-    if (CVarGetInteger(CVAR_COSMETIC("HUD.EnemyHealthBorder.Changed"), 0)) {
-        healthbar_border = CVarGetColor(CVAR_COSMETIC("HUD.EnemyHealthBorder.Value"), healthbar_border);
-    }
-    if (CVarGetInteger(CVAR_COSMETIC("HUD.EnemyHealthBar.Width.Changed"), 0)) {
-        healthbar_fillWidth = CVarGetInteger(CVAR_COSMETIC("HUD.EnemyHealthBar.Width.Value"), healthbar_fillWidth);
-    }
-
-    OPEN_DISPS(play->state.gfxCtx);
-
-    if (targetCtx->unk_48 != 0 && actor != NULL && actor->category == ACTORCAT_ENEMY) {
-        s16 texHeight = 16;
-        s16 endTexWidth = 8;
-        f32 scaleY = -0.75f;
-        f32 scaledHeight = -texHeight * scaleY;
-        f32 halfBarWidth = endTexWidth + ((f32)healthbar_fillWidth / 2);
-        s16 healthBarFill = ((f32)actor->colChkInfo.health / GetActorMaximumHealth(actor)) * healthbar_fillWidth;
-
-        if (anchorType == ENEMYHEALTH_ANCHOR_ACTOR) {
-            // Get actor projected position
-            func_8002BE04(play, &targetCtx->targetCenterPos, &projTargetCenter, &projTargetCappedInvW);
-
-            projTargetCenter.x = (SCREEN_WIDTH / 2) * (projTargetCenter.x * projTargetCappedInvW);
-            projTargetCenter.x = projTargetCenter.x * (CVarGetInteger(CVAR_ENHANCEMENT("MirroredWorld"), 0) ? -1 : 1);
-            projTargetCenter.x =
-                CLAMP(projTargetCenter.x, (-SCREEN_WIDTH / 2) + halfBarWidth, (SCREEN_WIDTH / 2) - halfBarWidth);
-
-            projTargetCenter.y = (SCREEN_HEIGHT / 2) * (projTargetCenter.y * projTargetCappedInvW);
-            projTargetCenter.y = projTargetCenter.y - healthbar_offsetY + healthbar_actorOffset;
-            projTargetCenter.y = CLAMP(projTargetCenter.y, (-SCREEN_HEIGHT / 2) + (scaledHeight / 2),
-                                       (SCREEN_HEIGHT / 2) - (scaledHeight / 2));
-        } else if (anchorType == ENEMYHEALTH_ANCHOR_TOP) {
-            projTargetCenter.x = healthbar_offsetX;
-            projTargetCenter.y = (SCREEN_HEIGHT / 2) - (scaledHeight / 2) - healthbar_offsetY;
-        } else if (anchorType == ENEMYHEALTH_ANCHOR_BOTTOM) {
-            projTargetCenter.x = healthbar_offsetX;
-            projTargetCenter.y = (-SCREEN_HEIGHT / 2) + (scaledHeight / 2) - healthbar_offsetY;
-        }
-
-        // Health bar border end left
-        Ship_CreateQuadVertexGroup(&sEnemyHealthVtx[0], -floorf(halfBarWidth), -texHeight / 2, endTexWidth, texHeight,
-                                   0);
-        // Health bar border middle
-        Ship_CreateQuadVertexGroup(&sEnemyHealthVtx[4], -floorf(halfBarWidth) + endTexWidth, -texHeight / 2,
-                                   healthbar_fillWidth, texHeight, 0);
-        // Health bar border end right
-        Ship_CreateQuadVertexGroup(&sEnemyHealthVtx[8], ceilf(halfBarWidth) - endTexWidth, -texHeight / 2, endTexWidth,
-                                   texHeight, 1);
-        // Health bar fill
-        Ship_CreateQuadVertexGroup(&sEnemyHealthVtx[12], -floorf(halfBarWidth) + endTexWidth, (-texHeight / 2) + 3,
-                                   healthBarFill, 7, 0);
-
-        if (((!(player->stateFlags1 & PLAYER_STATE1_TALKING)) || (actor != player->focusActor)) &&
-            targetCtx->unk_44 < 500.0f) {
-            f32 slideInOffsetY = 0;
-
-            // Slide in the health bar from edge of the screen (mimic the Z-Target triangles fly in)
-            if (anchorType == ENEMYHEALTH_ANCHOR_ACTOR && targetCtx->unk_44 > 120.0f) {
-                slideInOffsetY = (targetCtx->unk_44 - 120.0f) / 2;
-                // Slide in from the top if the bar is placed on the top half of the screen
-                if (healthbar_offsetY - healthbar_actorOffset <= 0) {
-                    slideInOffsetY *= -1;
-                }
-            }
-
-            // Setup DL for overlay disp
-            Gfx_SetupDL_39Overlay(play->state.gfxCtx);
-
-            Matrix_Translate(projTargetCenter.x, projTargetCenter.y - slideInOffsetY, 0, MTXMODE_NEW);
-            Matrix_Scale(1.0f, scaleY, 1.0f, MTXMODE_APPLY);
-            Matrix_ToMtx(&sEnemyHealthMtx[0], __FILE__, __LINE__);
-            gSPMatrix(OVERLAY_DISP++, &sEnemyHealthMtx[0], G_MTX_MODELVIEW | G_MTX_LOAD);
-
-            // Health bar border
-            gDPPipeSync(OVERLAY_DISP++);
-            gDPSetPrimColor(OVERLAY_DISP++, 0, 0, healthbar_border.r, healthbar_border.g, healthbar_border.b,
-                            healthbar_border.a);
-            gDPSetEnvColor(OVERLAY_DISP++, 100, 50, 50, 255);
-
-            gSPVertex(OVERLAY_DISP++, sEnemyHealthVtx, 16, 0);
-
-            gDPLoadTextureBlock(OVERLAY_DISP++, gMagicMeterEndTex, G_IM_FMT_IA, G_IM_SIZ_8b, endTexWidth, texHeight, 0,
-                                G_TX_NOMIRROR | G_TX_WRAP, G_TX_NOMIRROR | G_TX_WRAP, G_TX_NOMASK, G_TX_NOMASK,
-                                G_TX_NOLOD, G_TX_NOLOD);
-
-            gSP1Quadrangle(OVERLAY_DISP++, 0, 2, 3, 1, 0);
-
-            gDPLoadTextureBlock(OVERLAY_DISP++, gMagicMeterMidTex, G_IM_FMT_IA, G_IM_SIZ_8b, 24, texHeight, 0,
-                                G_TX_NOMIRROR | G_TX_WRAP, G_TX_NOMIRROR | G_TX_WRAP, G_TX_NOMASK, G_TX_NOMASK,
-                                G_TX_NOLOD, G_TX_NOLOD);
-
-            gSP1Quadrangle(OVERLAY_DISP++, 4, 6, 7, 5, 0);
-
-            gDPLoadTextureBlock(OVERLAY_DISP++, gMagicMeterEndTex, G_IM_FMT_IA, G_IM_SIZ_8b, endTexWidth, texHeight, 0,
-                                G_TX_MIRROR | G_TX_WRAP, G_TX_NOMIRROR | G_TX_WRAP, 3, G_TX_NOMASK, G_TX_NOLOD,
-                                G_TX_NOLOD);
-
-            gSP1Quadrangle(OVERLAY_DISP++, 8, 10, 11, 9, 0);
-
-            // Health bar fill
-            Matrix_Push();
-            Matrix_Translate(-0.375f, -0.5f, 0, MTXMODE_APPLY);
-            Matrix_ToMtx(&sEnemyHealthMtx[1], __FILE__, __LINE__);
-            gSPMatrix(OVERLAY_DISP++, &sEnemyHealthMtx[1], G_MTX_MODELVIEW | G_MTX_LOAD);
-
-            gDPPipeSync(OVERLAY_DISP++);
-            gDPSetCombineLERP(OVERLAY_DISP++, PRIMITIVE, ENVIRONMENT, TEXEL0, ENVIRONMENT, 0, 0, 0, PRIMITIVE,
-                              PRIMITIVE, ENVIRONMENT, TEXEL0, ENVIRONMENT, 0, 0, 0, PRIMITIVE);
-            gDPSetEnvColor(OVERLAY_DISP++, 0, 0, 0, 255);
-
-            gDPSetPrimColor(OVERLAY_DISP++, 0, 0, healthbar_red.r, healthbar_red.g, healthbar_red.b, healthbar_red.a);
-
-            gDPLoadMultiBlock_4b(OVERLAY_DISP++, gMagicMeterFillTex, 0, G_TX_RENDERTILE, G_IM_FMT_I, 16, texHeight, 0,
-                                 G_TX_NOMIRROR | G_TX_WRAP, G_TX_NOMIRROR | G_TX_WRAP, G_TX_NOMASK, G_TX_NOMASK,
-                                 G_TX_NOLOD, G_TX_NOLOD);
-
-            gSPVertex(OVERLAY_DISP++, &sEnemyHealthVtx[12], 4, 0);
-
-            gSP1Quadrangle(OVERLAY_DISP++, 0, 2, 3, 1, 0);
-
-            Matrix_Pop();
         }
     }
 
@@ -3492,103 +2957,52 @@ void Interface_DrawItemButtons(PlayState* play) {
     s16 height;
 
     Color_RGB8 bButtonColor = { 0, 150, 0 };
-    if (CVarGetInteger(CVAR_COSMETIC("HUD.BButton.Changed"), 0)) {
-        bButtonColor = CVarGetColor24(CVAR_COSMETIC("HUD.BButton.Value"), bButtonColor);
-    } else if (CVarGetInteger(CVAR_COSMETIC("DefaultColorScheme"), COLORSCHEME_N64) == COLORSCHEME_GAMECUBE) {
-        bButtonColor = (Color_RGB8){ 255, 30, 30 };
-    }
+    
 
     Color_RGB8 cButtonsColor = { 255, 160, 0 };
-    if (CVarGetInteger(CVAR_COSMETIC("HUD.CButtons.Changed"), 0)) {
-        cButtonsColor = CVarGetColor24(CVAR_COSMETIC("HUD.CButtons.Value"), cButtonsColor);
-    }
+    
     Color_RGB8 cUpButtonColor = cButtonsColor;
-    if (CVarGetInteger(CVAR_COSMETIC("HUD.CUpButton.Changed"), 0)) {
-        cUpButtonColor = CVarGetColor24(CVAR_COSMETIC("HUD.CUpButton.Value"), cUpButtonColor);
-    }
+    
     Color_RGB8 cDownButtonColor = cButtonsColor;
-    if (CVarGetInteger(CVAR_COSMETIC("HUD.CDownButton.Changed"), 0)) {
-        cDownButtonColor = CVarGetColor24(CVAR_COSMETIC("HUD.CDownButton.Value"), cDownButtonColor);
-    }
+    
     Color_RGB8 cLeftButtonColor = cButtonsColor;
-    if (CVarGetInteger(CVAR_COSMETIC("HUD.CLeftButton.Changed"), 0)) {
-        cLeftButtonColor = CVarGetColor24(CVAR_COSMETIC("HUD.CLeftButton.Value"), cLeftButtonColor);
-    }
+    
     Color_RGB8 cRightButtonColor = cButtonsColor;
-    if (CVarGetInteger(CVAR_COSMETIC("HUD.CRightButton.Changed"), 0)) {
-        cRightButtonColor = CVarGetColor24(CVAR_COSMETIC("HUD.CRightButton.Value"), cRightButtonColor);
-    }
+    
 
     Color_RGB8 startButtonColor = { 200, 0, 0 };
-    if (CVarGetInteger(CVAR_COSMETIC("HUD.StartButton.Changed"), 0)) {
-        startButtonColor = CVarGetColor24(CVAR_COSMETIC("HUD.StartButton.Value"), startButtonColor);
-    } else if (CVarGetInteger(CVAR_COSMETIC("DefaultColorScheme"), COLORSCHEME_N64) == COLORSCHEME_GAMECUBE) {
-        startButtonColor = (Color_RGB8){ 120, 120, 120 };
-    }
+    
 
     // B Button
     s16 X_Margins_BtnB;
     s16 Y_Margins_BtnB;
     s16 BBtn_Size = 32;
     int BBtnScaled = BBtn_Size * 0.95f;
-    if (CVarGetInteger(CVAR_COSMETIC("HUD.BButton.PosType"), 0) != ORIGINAL_LOCATION) {
-        BBtnScaled = BBtn_Size * CVarGetFloat(CVAR_COSMETIC("HUD.BButton.Scale"), 0.95f);
-    }
+    
     int BBtn_factor = (1 << 10) * BBtn_Size / BBtnScaled;
-    if (CVarGetInteger(CVAR_COSMETIC("HUD.BButton.UseMargins"), 0) != 0) {
-        if (CVarGetInteger(CVAR_COSMETIC("HUD.BButton.PosType"), 0) == ORIGINAL_LOCATION) {
-            X_Margins_BtnB = Right_HUD_Margin;
-        };
-        Y_Margins_BtnB = (Top_HUD_Margin * -1);
-    } else {
+    
         X_Margins_BtnB = 0;
         Y_Margins_BtnB = 0;
-    }
+    
     s16 PosX_BtnB_ori = OTRGetRectDimensionFromRightEdge(R_ITEM_BTN_X(0) + X_Margins_BtnB);
     s16 PosY_BtnB_ori = R_ITEM_BTN_Y(0) + Y_Margins_BtnB;
     s16 PosX_BtnB;
     s16 PosY_BtnB;
-    if (CVarGetInteger(CVAR_COSMETIC("HUD.BButton.PosType"), 0) != ORIGINAL_LOCATION) {
-        PosY_BtnB = CVarGetInteger(CVAR_COSMETIC("HUD.BButton.PosY"), 0) + Y_Margins_BtnB;
-        if (CVarGetInteger(CVAR_COSMETIC("HUD.BButton.PosType"), 0) == ANCHOR_LEFT) {
-            if (CVarGetInteger(CVAR_COSMETIC("HUD.BButton.UseMargins"), 0) != 0) {
-                X_Margins_BtnB = Left_HUD_Margin;
-            };
-            PosX_BtnB =
-                OTRGetDimensionFromLeftEdge(CVarGetInteger(CVAR_COSMETIC("HUD.BButton.PosX"), 0) + X_Margins_BtnB);
-        } else if (CVarGetInteger(CVAR_COSMETIC("HUD.BButton.PosType"), 0) == ANCHOR_RIGHT) {
-            if (CVarGetInteger(CVAR_COSMETIC("HUD.BButton.UseMargins"), 0) != 0) {
-                X_Margins_BtnB = Right_HUD_Margin;
-            };
-            PosX_BtnB =
-                OTRGetDimensionFromRightEdge(CVarGetInteger(CVAR_COSMETIC("HUD.BButton.PosX"), 0) + X_Margins_BtnB);
-        } else if (CVarGetInteger(CVAR_COSMETIC("HUD.BButton.PosType"), 0) == ANCHOR_NONE) {
-            PosX_BtnB = CVarGetInteger(CVAR_COSMETIC("HUD.BButton.PosX"), 0);
-        } else if (CVarGetInteger(CVAR_COSMETIC("HUD.BButton.PosType"), 0) == HIDDEN) {
-            PosX_BtnB = -9999;
-        }
-    } else {
+    
         PosY_BtnB = PosY_BtnB_ori;
         PosX_BtnB = PosX_BtnB_ori;
-    }
+    
     // Start Button
     s16 X_Margins_StartBtn;
     s16 Y_Margins_StartBtn;
-    if (CVarGetInteger(CVAR_COSMETIC("HUD.StartButton.UseMargins"), 0) != 0) {
-        if (CVarGetInteger(CVAR_COSMETIC("HUD.StartButton.PosType"), 0) == ORIGINAL_LOCATION) {
-            X_Margins_StartBtn = Right_HUD_Margin;
-        };
-        Y_Margins_StartBtn = Top_HUD_Margin * -1;
-    } else {
+    
         X_Margins_StartBtn = 0;
         Y_Margins_StartBtn = 0;
-    }
+    
     s16 StartBtn_Icon_H = 32;
     s16 StartBtn_Icon_W = 32;
     float Start_BTN_Scale = 0.75f;
-    if (CVarGetInteger(CVAR_COSMETIC("HUD.StartButton.PosType"), 0) != ORIGINAL_LOCATION) {
-        Start_BTN_Scale = CVarGetFloat(CVAR_COSMETIC("HUD.StartButton.Scale"), 0.75f);
-    }
+    
     int StartBTN_H_Scaled = StartBtn_Icon_H * Start_BTN_Scale;
     int StartBTN_W_Scaled = StartBtn_Icon_W * Start_BTN_Scale;
     int StartBTN_W_factor = (1 << 10) * StartBtn_Icon_W / StartBTN_W_Scaled;
@@ -3600,34 +3014,14 @@ void Interface_DrawItemButtons(PlayState* play) {
     s16 StartBTN_Label_H = DO_ACTION_TEX_HEIGHT();
     s16 PosX_StartBtn;
     s16 PosY_StartBtn;
-    if (CVarGetInteger(CVAR_COSMETIC("HUD.StartButton.PosType"), 0) != ORIGINAL_LOCATION) {
-        PosY_StartBtn =
-            CVarGetInteger(CVAR_COSMETIC("HUD.StartButton.PosY"), 0) - (Start_BTN_Scale * 13) + Y_Margins_StartBtn;
-        if (CVarGetInteger(CVAR_COSMETIC("HUD.StartButton.PosType"), 0) == ANCHOR_LEFT) {
-            if (CVarGetInteger(CVAR_COSMETIC("HUD.StartButton.UseMargins"), 0) != 0) {
-                X_Margins_StartBtn = Left_HUD_Margin;
-            };
-            PosX_StartBtn = OTRGetDimensionFromLeftEdge(CVarGetInteger(CVAR_COSMETIC("HUD.StartButton.PosX"), 0) -
-                                                        (Start_BTN_Scale * 13) + X_Margins_StartBtn);
-        } else if (CVarGetInteger(CVAR_COSMETIC("HUD.StartButton.PosType"), 0) == ANCHOR_RIGHT) {
-            if (CVarGetInteger(CVAR_COSMETIC("HUD.StartButton.UseMargins"), 0) != 0) {
-                X_Margins_StartBtn = Right_HUD_Margin;
-            };
-            PosX_StartBtn = OTRGetDimensionFromRightEdge(CVarGetInteger(CVAR_COSMETIC("HUD.StartButton.PosX"), 0) -
-                                                         (Start_BTN_Scale * 13) + X_Margins_StartBtn);
-        } else if (CVarGetInteger(CVAR_COSMETIC("HUD.StartButton.PosType"), 0) == ANCHOR_NONE) {
-            PosX_StartBtn = CVarGetInteger(CVAR_COSMETIC("HUD.StartButton.PosX"), 0);
-        } else if (CVarGetInteger(CVAR_COSMETIC("HUD.StartButton.PosType"), 0) == HIDDEN) {
-            PosX_StartBtn = -9999;
-        }
-    } else {
+    
         StartBTN_H_Scaled = StartBtn_Icon_H * 0.75f;
         StartBTN_W_Scaled = StartBtn_Icon_W * 0.75f;
         StartBTN_W_factor = (1 << 10) * StartBtn_Icon_W / StartBTN_W_Scaled;
         StartBTN_H_factor = (1 << 10) * StartBtn_Icon_H / StartBTN_H_Scaled;
         PosY_StartBtn = PosY_StartBtn_ori;
         PosX_StartBtn = PosX_StartBtn_ori;
-    }
+    
     // C Buttons position
     s16 X_Margins_CL;
     s16 X_Margins_CR;
@@ -3637,47 +3031,27 @@ void Interface_DrawItemButtons(PlayState* play) {
     s16 Y_Margins_CR;
     s16 Y_Margins_CU;
     s16 Y_Margins_CD;
-    if (CVarGetInteger(CVAR_COSMETIC("HUD.CLeftButton.UseMargins"), 0) != 0) {
-        if (CVarGetInteger(CVAR_COSMETIC("HUD.CLeftButton.PosType"), 0) == ORIGINAL_LOCATION) {
-            X_Margins_CL = Right_HUD_Margin;
-        };
-        Y_Margins_CL = (Top_HUD_Margin * -1);
-    } else {
+    
         X_Margins_CL = 0;
         Y_Margins_CL = 0;
-    }
-    if (CVarGetInteger(CVAR_COSMETIC("HUD.CRightButton.UseMargins"), 0) != 0) {
-        if (CVarGetInteger(CVAR_COSMETIC("HUD.CRightButton.PosType"), 0) == ORIGINAL_LOCATION) {
-            X_Margins_CR = Right_HUD_Margin;
-        };
-        Y_Margins_CR = (Top_HUD_Margin * -1);
-    } else {
+    
+    
         X_Margins_CR = 0;
         Y_Margins_CR = 0;
-    }
-    if (CVarGetInteger(CVAR_COSMETIC("HUD.CUpButton.UseMargins"), 0) != 0) {
-        if (CVarGetInteger(CVAR_COSMETIC("HUD.CUpButton.PosType"), 0) == ORIGINAL_LOCATION) {
-            X_Margins_CU = Right_HUD_Margin;
-        };
-        Y_Margins_CU = (Top_HUD_Margin * -1);
-    } else {
+    
+    
         X_Margins_CU = 0;
         Y_Margins_CU = 0;
-    }
-    if (CVarGetInteger(CVAR_COSMETIC("HUD.CDownButton.UseMargins"), 0) != 0) {
-        if (CVarGetInteger(CVAR_COSMETIC("HUD.CDownButton.PosType"), 0) == ORIGINAL_LOCATION) {
-            X_Margins_CD = Right_HUD_Margin;
-        };
-        Y_Margins_CD = (Top_HUD_Margin * -1);
-    } else {
+    
+    
         X_Margins_CD = 0;
         Y_Margins_CD = 0;
-    }
+    
     const s16 C_Left_BTN_Pos_ori[] = { C_LEFT_BUTTON_X + X_Margins_CL, C_LEFT_BUTTON_Y + Y_Margins_CL }; //(X,Y)
     const s16 C_Right_BTN_Pos_ori[] = { C_RIGHT_BUTTON_X + X_Margins_CR, C_RIGHT_BUTTON_Y + Y_Margins_CR };
     const s16 C_Up_BTN_Pos_ori[] = { C_UP_BUTTON_X + X_Margins_CU, C_UP_BUTTON_Y + Y_Margins_CU };
     const s16 C_Down_BTN_Pos_ori[] = { C_DOWN_BUTTON_X + X_Margins_CD, C_DOWN_BUTTON_Y + Y_Margins_CD };
-    s16 LabelX_Navi = 7 + !!CVarGetInteger(CVAR_ENHANCEMENT("NaviTextFix"), 0);
+    s16 LabelX_Navi = 7;
     s16 LabelY_Navi = 4;
     s16 C_Left_BTN_Pos[2]; //(X,Y)
     s16 C_Right_BTN_Pos[2];
@@ -3685,129 +3059,47 @@ void Interface_DrawItemButtons(PlayState* play) {
     s16 C_Down_BTN_Pos[2];
     // C button Left
     s16 C_Left_BTN_Size = 32;
-    float CLeftScale = CVarGetFloat(CVAR_COSMETIC("HUD.CLeftButton.Scale"), 0.87f);
+    float CLeftScale = (0.87f);
     int CLeftScaled = C_Left_BTN_Size * 0.87f;
-    if (CVarGetInteger(CVAR_COSMETIC("HUD.CLeftButton.PosType"), 0) != ORIGINAL_LOCATION) {
-        CLeftScaled = C_Left_BTN_Size * CLeftScale;
-    }
+    
     int CLeft_factor = (1 << 10) * C_Left_BTN_Size / CLeftScaled;
-    if (CVarGetInteger(CVAR_COSMETIC("HUD.CLeftButton.PosType"), 0) != ORIGINAL_LOCATION) {
-        C_Left_BTN_Pos[1] = CVarGetInteger(CVAR_COSMETIC("HUD.CLeftButton.PosY"), 0) + Y_Margins_CL;
-        if (CVarGetInteger(CVAR_COSMETIC("HUD.CLeftButton.PosType"), 0) == ANCHOR_LEFT) {
-            if (CVarGetInteger(CVAR_COSMETIC("HUD.CLeftButton.UseMargins"), 0) != 0) {
-                X_Margins_CL = Left_HUD_Margin;
-            };
-            C_Left_BTN_Pos[0] =
-                OTRGetDimensionFromLeftEdge(CVarGetInteger(CVAR_COSMETIC("HUD.CLeftButton.PosX"), 0) + X_Margins_CL);
-        } else if (CVarGetInteger(CVAR_COSMETIC("HUD.CLeftButton.PosType"), 0) == ANCHOR_RIGHT) {
-            if (CVarGetInteger(CVAR_COSMETIC("HUD.CLeftButton.UseMargins"), 0) != 0) {
-                X_Margins_CL = Right_HUD_Margin;
-            };
-            C_Left_BTN_Pos[0] =
-                OTRGetDimensionFromRightEdge(CVarGetInteger(CVAR_COSMETIC("HUD.CLeftButton.PosX"), 0) + X_Margins_CL);
-        } else if (CVarGetInteger(CVAR_COSMETIC("HUD.CLeftButton.PosType"), 0) == ANCHOR_NONE) {
-            C_Left_BTN_Pos[0] = CVarGetInteger(CVAR_COSMETIC("HUD.CLeftButton.PosX"), 0);
-        } else if (CVarGetInteger(CVAR_COSMETIC("HUD.CLeftButton.PosType"), 0) == HIDDEN) {
-            C_Left_BTN_Pos[0] = -9999;
-        }
-    } else {
+    
         C_Left_BTN_Pos[1] = C_Left_BTN_Pos_ori[1];
         C_Left_BTN_Pos[0] = OTRGetRectDimensionFromRightEdge(C_Left_BTN_Pos_ori[0]);
-    }
+    
     // C button Right
     s16 C_Right_BTN_Size = 32;
-    float CRightScale = CVarGetFloat(CVAR_COSMETIC("HUD.CRightButton.Scale"), 0.87f);
+    float CRightScale = (0.87f);
     int CRightScaled = C_Right_BTN_Size * 0.87f;
-    if (CVarGetInteger(CVAR_COSMETIC("HUD.CRightButton.PosType"), 0) != ORIGINAL_LOCATION) {
-        CRightScaled = C_Right_BTN_Size * CRightScale;
-    }
+    
     int CRight_factor = (1 << 10) * C_Right_BTN_Size / CRightScaled;
-    if (CVarGetInteger(CVAR_COSMETIC("HUD.CRightButton.PosType"), 0) != ORIGINAL_LOCATION) {
-        C_Right_BTN_Pos[1] = CVarGetInteger(CVAR_COSMETIC("HUD.CRightButton.PosY"), 0) + Y_Margins_CR;
-        if (CVarGetInteger(CVAR_COSMETIC("HUD.CRightButton.PosType"), 0) == ANCHOR_LEFT) {
-            if (CVarGetInteger(CVAR_COSMETIC("HUD.CRightButton.UseMargins"), 0) != 0) {
-                X_Margins_CR = Left_HUD_Margin;
-            };
-            C_Right_BTN_Pos[0] =
-                OTRGetDimensionFromLeftEdge(CVarGetInteger(CVAR_COSMETIC("HUD.CRightButton.PosX"), 0) + X_Margins_CR);
-        } else if (CVarGetInteger(CVAR_COSMETIC("HUD.CRightButton.PosType"), 0) == ANCHOR_RIGHT) {
-            if (CVarGetInteger(CVAR_COSMETIC("HUD.CRightButton.UseMargins"), 0) != 0) {
-                X_Margins_CR = Right_HUD_Margin;
-            };
-            C_Right_BTN_Pos[0] =
-                OTRGetDimensionFromRightEdge(CVarGetInteger(CVAR_COSMETIC("HUD.CRightButton.PosX"), 0) + X_Margins_CR);
-        } else if (CVarGetInteger(CVAR_COSMETIC("HUD.CRightButton.PosType"), 0) == ANCHOR_NONE) {
-            C_Right_BTN_Pos[0] = CVarGetInteger(CVAR_COSMETIC("HUD.CRightButton.PosX"), 0);
-        } else if (CVarGetInteger(CVAR_COSMETIC("HUD.CRightButton.PosType"), 0) == HIDDEN) {
-            C_Right_BTN_Pos[0] = -9999;
-        }
-    } else {
+    
         C_Right_BTN_Pos[1] = C_Right_BTN_Pos_ori[1];
         C_Right_BTN_Pos[0] = OTRGetRectDimensionFromRightEdge(C_Right_BTN_Pos_ori[0]);
-    }
+    
     // C Button Up
     s16 C_Up_BTN_Size = 32;
     int CUpScaled = C_Up_BTN_Size * 0.5f;
-    float CUpScale = CVarGetFloat(CVAR_COSMETIC("HUD.CUpButton.Scale"), 0.5f);
-    if (CVarGetInteger(CVAR_COSMETIC("HUD.CUpButton.PosType"), 0) != ORIGINAL_LOCATION) {
-        CUpScaled = C_Up_BTN_Size * CUpScale;
-    }
+    float CUpScale = (0.5f);
+    
     int CUp_factor = (1 << 10) * C_Up_BTN_Size / CUpScaled;
-    if (CVarGetInteger(CVAR_COSMETIC("HUD.CUpButton.PosType"), 0) != ORIGINAL_LOCATION) {
-        C_Up_BTN_Pos[1] = CVarGetInteger(CVAR_COSMETIC("HUD.CUpButton.PosY"), 0) + Y_Margins_CU;
-        if (CVarGetInteger(CVAR_COSMETIC("HUD.CUpButton.PosType"), 0) == ANCHOR_LEFT) {
-            if (CVarGetInteger(CVAR_COSMETIC("HUD.CUpButton.UseMargins"), 0) != 0) {
-                X_Margins_CU = Left_HUD_Margin;
-            };
-            C_Up_BTN_Pos[0] =
-                OTRGetDimensionFromLeftEdge(CVarGetInteger(CVAR_COSMETIC("HUD.CUpButton.PosX"), 0) + X_Margins_CU);
-        } else if (CVarGetInteger(CVAR_COSMETIC("HUD.CUpButton.PosType"), 0) == ANCHOR_RIGHT) {
-            if (CVarGetInteger(CVAR_COSMETIC("HUD.CUpButton.UseMargins"), 0) != 0) {
-                X_Margins_CU = Right_HUD_Margin;
-            };
-            C_Up_BTN_Pos[0] =
-                OTRGetDimensionFromRightEdge(CVarGetInteger(CVAR_COSMETIC("HUD.CUpButton.PosX"), 0) + X_Margins_CU);
-        } else if (CVarGetInteger(CVAR_COSMETIC("HUD.CUpButton.PosType"), 0) == ANCHOR_NONE) {
-            C_Up_BTN_Pos[0] = CVarGetInteger(CVAR_COSMETIC("HUD.CUpButton.PosX"), 0);
-        } else if (CVarGetInteger(CVAR_COSMETIC("HUD.CUpButton.PosType"), 0) == HIDDEN) {
-            C_Up_BTN_Pos[0] = -9999;
-        }
-    } else {
+    
         C_Up_BTN_Pos[1] = C_Up_BTN_Pos_ori[1];
         C_Up_BTN_Pos[0] = OTRGetRectDimensionFromRightEdge(C_Up_BTN_Pos_ori[0]);
-    }
+    
     // C Button down
     s16 C_Down_BTN_Size = 32;
-    float CDownScale = CVarGetFloat(CVAR_COSMETIC("HUD.CDownButton.Scale"), 0.87f);
-    if (CVarGetInteger(CVAR_COSMETIC("HUD.CDownButton.PosType"), 0) == ORIGINAL_LOCATION) {
+    float CDownScale = (0.87f);
+    
         CDownScale = 0.87f;
-    }
+    
     int CDownScaled = C_Down_BTN_Size * CDownScale;
     int CDown_factor = (1 << 10) * C_Down_BTN_Size / CDownScaled;
     int PositionAdjustment = CDownScaled / 2;
-    if (CVarGetInteger(CVAR_COSMETIC("HUD.CDownButton.PosType"), 0) != ORIGINAL_LOCATION) {
-        C_Down_BTN_Pos[1] = CVarGetInteger(CVAR_COSMETIC("HUD.CDownButton.PosY"), 0) + Y_Margins_CD;
-        if (CVarGetInteger(CVAR_COSMETIC("HUD.CDownButton.PosType"), 0) == ANCHOR_LEFT) {
-            if (CVarGetInteger(CVAR_COSMETIC("HUD.CDownButton.UseMargins"), 0) != 0) {
-                X_Margins_CD = Left_HUD_Margin;
-            };
-            C_Down_BTN_Pos[0] =
-                OTRGetDimensionFromLeftEdge(CVarGetInteger(CVAR_COSMETIC("HUD.CDownButton.PosX"), 0) + X_Margins_CD);
-        } else if (CVarGetInteger(CVAR_COSMETIC("HUD.CDownButton.PosType"), 0) == ANCHOR_RIGHT) {
-            if (CVarGetInteger(CVAR_COSMETIC("HUD.CDownButton.UseMargins"), 0) != 0) {
-                X_Margins_CD = Right_HUD_Margin;
-            };
-            C_Down_BTN_Pos[0] =
-                OTRGetDimensionFromRightEdge(CVarGetInteger(CVAR_COSMETIC("HUD.CDownButton.PosX"), 0) + X_Margins_CD);
-        } else if (CVarGetInteger(CVAR_COSMETIC("HUD.CDownButton.PosType"), 0) == ANCHOR_NONE) {
-            C_Down_BTN_Pos[0] = CVarGetInteger(CVAR_COSMETIC("HUD.CDownButton.PosX"), 0);
-        } else if (CVarGetInteger(CVAR_COSMETIC("HUD.CDownButton.PosType"), 0) == HIDDEN) {
-            C_Down_BTN_Pos[0] = -9999;
-        }
-    } else {
+    
         C_Down_BTN_Pos[1] = C_Down_BTN_Pos_ori[1];
         C_Down_BTN_Pos[0] = OTRGetRectDimensionFromRightEdge(C_Down_BTN_Pos_ori[0]);
-    }
+    
 
     OPEN_DISPS(play->state.gfxCtx);
 
@@ -3937,33 +3229,18 @@ void Interface_DrawItemButtons(PlayState* play) {
             s16 Y_Margins_CL;
             s16 Y_Margins_CR;
             s16 Y_Margins_CD;
-            if (CVarGetInteger(CVAR_COSMETIC("HUD.CLeftButton.UseMargins"), 0) != 0) {
-                if (CVarGetInteger(CVAR_COSMETIC("HUD.CLeftButton.PosType"), 0) == ORIGINAL_LOCATION) {
-                    X_Margins_CL = Right_HUD_Margin;
-                };
-                Y_Margins_CL = (Top_HUD_Margin * -1);
-            } else {
+            
                 X_Margins_CL = 0;
                 Y_Margins_CL = 0;
-            }
-            if (CVarGetInteger(CVAR_COSMETIC("HUD.CRightButton.UseMargins"), 0) != 0) {
-                if (CVarGetInteger(CVAR_COSMETIC("HUD.CRightButton.PosType"), 0) == ORIGINAL_LOCATION) {
-                    X_Margins_CR = Right_HUD_Margin;
-                };
-                Y_Margins_CR = (Top_HUD_Margin * -1);
-            } else {
+            
+            
                 X_Margins_CR = 0;
                 Y_Margins_CR = 0;
-            }
-            if (CVarGetInteger(CVAR_COSMETIC("HUD.CDownButton.UseMargins"), 0) != 0) {
-                if (CVarGetInteger(CVAR_COSMETIC("HUD.CDownButton.PosType"), 0) == ORIGINAL_LOCATION) {
-                    X_Margins_CD = Right_HUD_Margin;
-                };
-                Y_Margins_CD = (Top_HUD_Margin * -1);
-            } else {
+            
+            
                 X_Margins_CD = 0;
                 Y_Margins_CD = 0;
-            }
+            
             const s16 ItemIconWidthFactor[3][2] = {
                 { CLeftScaled, CLeft_factor },
                 { CDownScaled, CDown_factor },
@@ -3976,77 +3253,20 @@ void Interface_DrawItemButtons(PlayState* play) {
             };
             s16 ItemIconPos[3][2]; //(X,Y)
             // C button Left
-            if (CVarGetInteger(CVAR_COSMETIC("HUD.CLeftButton.PosType"), 0) != ORIGINAL_LOCATION) {
-                ItemIconPos[0][1] = CVarGetInteger(CVAR_COSMETIC("HUD.CLeftButton.PosY"), 0) + Y_Margins_CL;
-                if (CVarGetInteger(CVAR_COSMETIC("HUD.CLeftButton.PosType"), 0) == ANCHOR_LEFT) {
-                    if (CVarGetInteger(CVAR_COSMETIC("HUD.CLeftButton.UseMargins"), 0) != 0) {
-                        X_Margins_CL = Left_HUD_Margin;
-                    };
-                    ItemIconPos[0][0] = OTRGetDimensionFromLeftEdge(
-                        CVarGetInteger(CVAR_COSMETIC("HUD.CLeftButton.PosX"), 0) + X_Margins_CL);
-                } else if (CVarGetInteger(CVAR_COSMETIC("HUD.CLeftButton.PosType"), 0) == ANCHOR_RIGHT) {
-                    if (CVarGetInteger(CVAR_COSMETIC("HUD.CLeftButton.UseMargins"), 0) != 0) {
-                        X_Margins_CL = Right_HUD_Margin;
-                    };
-                    ItemIconPos[0][0] = OTRGetDimensionFromRightEdge(
-                        CVarGetInteger(CVAR_COSMETIC("HUD.CLeftButton.PosX"), 0) + X_Margins_CL);
-                } else if (CVarGetInteger(CVAR_COSMETIC("HUD.CLeftButton.PosType"), 0) == ANCHOR_NONE) {
-                    ItemIconPos[0][0] = CVarGetInteger(CVAR_COSMETIC("HUD.CLeftButton.PosX"), 0);
-                } else if (CVarGetInteger(CVAR_COSMETIC("HUD.CLeftButton.PosType"), 0) == HIDDEN) {
-                    ItemIconPos[0][0] = -9999;
-                }
-            } else {
+            
                 ItemIconPos[0][0] = OTRGetRectDimensionFromRightEdge(ItemIconPos_ori[0][0]);
                 ItemIconPos[0][1] = ItemIconPos_ori[0][1];
-            }
+            
             // C Button down
-            if (CVarGetInteger(CVAR_COSMETIC("HUD.CDownButton.PosType"), 0) != ORIGINAL_LOCATION) {
-                ItemIconPos[1][1] = CVarGetInteger(CVAR_COSMETIC("HUD.CDownButton.PosY"), 0) + Y_Margins_CD;
-                if (CVarGetInteger(CVAR_COSMETIC("HUD.CDownButton.PosType"), 0) == ANCHOR_LEFT) {
-                    if (CVarGetInteger(CVAR_COSMETIC("HUD.CDownButton.UseMargins"), 0) != 0) {
-                        X_Margins_CD = Left_HUD_Margin;
-                    };
-                    ItemIconPos[1][0] = OTRGetDimensionFromLeftEdge(
-                        CVarGetInteger(CVAR_COSMETIC("HUD.CDownButton.PosX"), 0) + X_Margins_CD);
-                } else if (CVarGetInteger(CVAR_COSMETIC("HUD.CDownButton.PosType"), 0) == ANCHOR_RIGHT) {
-                    if (CVarGetInteger(CVAR_COSMETIC("HUD.CDownButton.UseMargins"), 0) != 0) {
-                        X_Margins_CD = Right_HUD_Margin;
-                    };
-                    ItemIconPos[1][0] = OTRGetDimensionFromRightEdge(
-                        CVarGetInteger(CVAR_COSMETIC("HUD.CDownButton.PosX"), 0) + X_Margins_CD);
-                } else if (CVarGetInteger(CVAR_COSMETIC("HUD.CDownButton.PosType"), 0) == ANCHOR_NONE) {
-                    ItemIconPos[1][0] = CVarGetInteger(CVAR_COSMETIC("HUD.CDownButton.PosX"), 0);
-                } else if (CVarGetInteger(CVAR_COSMETIC("HUD.CDownButton.PosType"), 0) == HIDDEN) {
-                    ItemIconPos[1][0] = -9999;
-                }
-            } else {
+            
                 ItemIconPos[1][0] = OTRGetRectDimensionFromRightEdge(ItemIconPos_ori[1][0]);
                 ItemIconPos[1][1] = ItemIconPos_ori[1][1];
-            }
+            
             // C button Right
-            if (CVarGetInteger(CVAR_COSMETIC("HUD.CRightButton.PosType"), 0) != ORIGINAL_LOCATION) {
-                ItemIconPos[2][1] = CVarGetInteger(CVAR_COSMETIC("HUD.CRightButton.PosY"), 0) + Y_Margins_CR;
-                if (CVarGetInteger(CVAR_COSMETIC("HUD.CRightButton.PosType"), 0) == ANCHOR_LEFT) {
-                    if (CVarGetInteger(CVAR_COSMETIC("HUD.CRightButton.UseMargins"), 0) != 0) {
-                        X_Margins_CR = Left_HUD_Margin;
-                    };
-                    ItemIconPos[2][0] = OTRGetDimensionFromLeftEdge(
-                        CVarGetInteger(CVAR_COSMETIC("HUD.CRightButton.PosX"), 0) + X_Margins_CR);
-                } else if (CVarGetInteger(CVAR_COSMETIC("HUD.CRightButton.PosType"), 0) == ANCHOR_RIGHT) {
-                    if (CVarGetInteger(CVAR_COSMETIC("HUD.CRightButton.UseMargins"), 0) != 0) {
-                        X_Margins_CR = Right_HUD_Margin;
-                    };
-                    ItemIconPos[2][0] = OTRGetDimensionFromRightEdge(
-                        CVarGetInteger(CVAR_COSMETIC("HUD.CRightButton.PosX"), 0) + X_Margins_CR);
-                } else if (CVarGetInteger(CVAR_COSMETIC("HUD.CRightButton.PosType"), 0) == ANCHOR_NONE) {
-                    ItemIconPos[2][0] = CVarGetInteger(CVAR_COSMETIC("HUD.CRightButton.PosX"), 0);
-                } else if (CVarGetInteger(CVAR_COSMETIC("HUD.CRightButton.PosType"), 0) == HIDDEN) {
-                    ItemIconPos[2][0] = -9999;
-                }
-            } else {
+            
                 ItemIconPos[2][0] = OTRGetRectDimensionFromRightEdge(ItemIconPos_ori[2][0]);
                 ItemIconPos[2][1] = ItemIconPos_ori[2][1];
-            }
+            
 
             if (temp == 1) {
                 gDPSetPrimColor(OVERLAY_DISP++, 0, 0, cLeftButtonColor.r, cLeftButtonColor.g, cLeftButtonColor.b,
@@ -4077,13 +3297,12 @@ void Interface_DrawItemButtons(PlayState* play) {
     CLOSE_DISPS(play->state.gfxCtx);
 }
 
-int16_t gItemIconWidth[] = { 30, 24, 24, 24, 16, 16, 16, 16 };
-int16_t gItemIconDD[] = { 550, 680, 680, 680, 1024, 1024, 1024, 1024 };
+int16_t gItemIconWidth[] = { 30, 24, 24, 24 };
+int16_t gItemIconDD[] = { 550, 680, 680, 680 };
 
 void Interface_DrawItemIconTexture(PlayState* play, void* texture, s16 button) {
     OPEN_DISPS(play->state.gfxCtx);
     GraphicsContext* gfxCtx = play->state.gfxCtx;
-    InterfaceContext* interfaceCtx = &play->interfaceCtx;
     s16 X_Margins_CL;
     s16 X_Margins_CR;
     s16 X_Margins_CD;
@@ -4092,222 +3311,48 @@ void Interface_DrawItemIconTexture(PlayState* play, void* texture, s16 button) {
     s16 Y_Margins_CD;
     s16 X_Margins_BtnB;
     s16 Y_Margins_BtnB;
-    s16 X_Margins_DPad_Items;
-    s16 Y_Margins_DPad_Items;
-    if (CVarGetInteger(CVAR_COSMETIC("HUD.BButton.UseMargins"), 0) != 0) {
-        if (CVarGetInteger(CVAR_COSMETIC("HUD.BButton.PosType"), 0) == ORIGINAL_LOCATION) {
-            X_Margins_BtnB = Right_HUD_Margin;
-        };
-        Y_Margins_BtnB = (Top_HUD_Margin * -1);
-    } else {
+    
         X_Margins_BtnB = 0;
         Y_Margins_BtnB = 0;
-    }
-    if (CVarGetInteger(CVAR_COSMETIC("HUD.CLeftButton.UseMargins"), 0) != 0) {
-        if (CVarGetInteger(CVAR_COSMETIC("HUD.CLeftButton.PosType"), 0) == ORIGINAL_LOCATION) {
-            X_Margins_CL = Right_HUD_Margin;
-        };
-        Y_Margins_CL = (Top_HUD_Margin * -1);
-    } else {
+    
+    
         X_Margins_CL = 0;
         Y_Margins_CL = 0;
-    }
-    if (CVarGetInteger(CVAR_COSMETIC("HUD.CRightButton.UseMargins"), 0) != 0) {
-        if (CVarGetInteger(CVAR_COSMETIC("HUD.CRightButton.PosType"), 0) == ORIGINAL_LOCATION) {
-            X_Margins_CR = Right_HUD_Margin;
-        };
-        Y_Margins_CR = (Top_HUD_Margin * -1);
-    } else {
+    
+    
         X_Margins_CR = 0;
         Y_Margins_CR = 0;
-    }
-    if (CVarGetInteger(CVAR_COSMETIC("HUD.CDownButton.UseMargins"), 0) != 0) {
-        if (CVarGetInteger(CVAR_COSMETIC("HUD.CDownButton.PosType"), 0) == ORIGINAL_LOCATION) {
-            X_Margins_CD = Right_HUD_Margin;
-        };
-        Y_Margins_CD = (Top_HUD_Margin * -1);
-    } else {
+    
+    
         X_Margins_CD = 0;
         Y_Margins_CD = 0;
-    }
-    if (CVarGetInteger(CVAR_COSMETIC("HUD.Dpad.UseMargins"), 0) != 0) {
-        if (CVarGetInteger(CVAR_COSMETIC("HUD.Dpad.PosType"), 0) == ORIGINAL_LOCATION) {
-            X_Margins_DPad_Items = Right_HUD_Margin;
-        };
-        Y_Margins_DPad_Items = (Top_HUD_Margin * -1);
-    } else {
-        X_Margins_DPad_Items = 0;
-        Y_Margins_DPad_Items = 0;
-    }
-    const s16 ItemIconPos_ori[8][2] = { { B_BUTTON_X + X_Margins_BtnB, B_BUTTON_Y + Y_Margins_BtnB },
+    
+    
+    const s16 ItemIconPos_ori[4][2] = { { B_BUTTON_X + X_Margins_BtnB, B_BUTTON_Y + Y_Margins_BtnB },
                                         { C_LEFT_BUTTON_X + X_Margins_CL, C_LEFT_BUTTON_Y + Y_Margins_CL },
                                         { C_DOWN_BUTTON_X + X_Margins_CD, C_DOWN_BUTTON_Y + Y_Margins_CD },
-                                        { C_RIGHT_BUTTON_X + X_Margins_CR, C_RIGHT_BUTTON_Y + Y_Margins_CR },
-                                        { DPAD_UP_X + X_Margins_DPad_Items, DPAD_UP_Y + Y_Margins_DPad_Items },
-                                        { DPAD_DOWN_X + X_Margins_DPad_Items, DPAD_DOWN_Y + Y_Margins_DPad_Items },
-                                        { DPAD_LEFT_X + X_Margins_DPad_Items, DPAD_LEFT_Y + Y_Margins_DPad_Items },
-                                        { DPAD_RIGHT_X + X_Margins_DPad_Items, DPAD_RIGHT_Y + Y_Margins_DPad_Items } };
-    u16 ItemsSlotsAlpha[8] = { interfaceCtx->bAlpha,        interfaceCtx->cLeftAlpha,    interfaceCtx->cRightAlpha,
-                               interfaceCtx->cDownAlpha,    interfaceCtx->dpadUpAlpha,   interfaceCtx->dpadDownAlpha,
-                               interfaceCtx->dpadLeftAlpha, interfaceCtx->dpadRightAlpha };
-    s16 DPad_ItemsOffset[4][2] = {
-        { 7, -8 },         // Up
-        { 7, 24 },         // Down
-        { -9, 8 },         // Left
-        { 23, 8 },         // Right
-    };                     //(X,Y) Used with custom position to place it properly.
-    s16 ItemIconPos[8][2]; //(X,Y)
-    // DPadItems
-    if (CVarGetInteger(CVAR_COSMETIC("HUD.Dpad.PosType"), 0) != ORIGINAL_LOCATION) {
-        ItemIconPos[4][1] =
-            CVarGetInteger(CVAR_COSMETIC("HUD.Dpad.PosY"), 0) + Y_Margins_DPad_Items + DPad_ItemsOffset[0][1]; // Up
-        ItemIconPos[5][1] =
-            CVarGetInteger(CVAR_COSMETIC("HUD.Dpad.PosY"), 0) + Y_Margins_DPad_Items + DPad_ItemsOffset[1][1]; // Down
-        ItemIconPos[6][1] =
-            CVarGetInteger(CVAR_COSMETIC("HUD.Dpad.PosY"), 0) + Y_Margins_DPad_Items + DPad_ItemsOffset[2][1]; // Left
-        ItemIconPos[7][1] =
-            CVarGetInteger(CVAR_COSMETIC("HUD.Dpad.PosY"), 0) + Y_Margins_DPad_Items + DPad_ItemsOffset[3][1]; // Right
-        if (CVarGetInteger(CVAR_COSMETIC("HUD.Dpad.PosType"), 0) == ANCHOR_LEFT) {
-            if (CVarGetInteger(CVAR_COSMETIC("HUD.Dpad.UseMargins"), 0) != 0) {
-                X_Margins_DPad_Items = Left_HUD_Margin;
-            };
-            ItemIconPos[4][0] = OTRGetDimensionFromLeftEdge(CVarGetInteger(CVAR_COSMETIC("HUD.Dpad.PosX"), 0) +
-                                                            X_Margins_DPad_Items + DPad_ItemsOffset[0][0]);
-            ItemIconPos[5][0] = OTRGetDimensionFromLeftEdge(CVarGetInteger(CVAR_COSMETIC("HUD.Dpad.PosX"), 0) +
-                                                            X_Margins_DPad_Items + DPad_ItemsOffset[1][0]);
-            ItemIconPos[6][0] = OTRGetDimensionFromLeftEdge(CVarGetInteger(CVAR_COSMETIC("HUD.Dpad.PosX"), 0) +
-                                                            X_Margins_DPad_Items + DPad_ItemsOffset[2][0]);
-            ItemIconPos[7][0] = OTRGetDimensionFromLeftEdge(CVarGetInteger(CVAR_COSMETIC("HUD.Dpad.PosX"), 0) +
-                                                            X_Margins_DPad_Items + DPad_ItemsOffset[3][0]);
-        } else if (CVarGetInteger(CVAR_COSMETIC("HUD.Dpad.PosType"), 0) == ANCHOR_RIGHT) {
-            if (CVarGetInteger(CVAR_COSMETIC("HUD.Dpad.UseMargins"), 0) != 0) {
-                X_Margins_DPad_Items = Right_HUD_Margin;
-            };
-            ItemIconPos[4][0] = OTRGetDimensionFromRightEdge(CVarGetInteger(CVAR_COSMETIC("HUD.Dpad.PosX"), 0) +
-                                                             X_Margins_DPad_Items + DPad_ItemsOffset[0][0]);
-            ItemIconPos[5][0] = OTRGetDimensionFromRightEdge(CVarGetInteger(CVAR_COSMETIC("HUD.Dpad.PosX"), 0) +
-                                                             X_Margins_DPad_Items + DPad_ItemsOffset[1][0]);
-            ItemIconPos[6][0] = OTRGetDimensionFromRightEdge(CVarGetInteger(CVAR_COSMETIC("HUD.Dpad.PosX"), 0) +
-                                                             X_Margins_DPad_Items + DPad_ItemsOffset[2][0]);
-            ItemIconPos[7][0] = OTRGetDimensionFromRightEdge(CVarGetInteger(CVAR_COSMETIC("HUD.Dpad.PosX"), 0) +
-                                                             X_Margins_DPad_Items + DPad_ItemsOffset[3][0]);
-        } else if (CVarGetInteger(CVAR_COSMETIC("HUD.Dpad.PosType"), 0) == ANCHOR_NONE) {
-            ItemIconPos[4][0] = CVarGetInteger(CVAR_COSMETIC("HUD.Dpad.PosX"), 0) + DPad_ItemsOffset[0][0];
-            ItemIconPos[5][0] = CVarGetInteger(CVAR_COSMETIC("HUD.Dpad.PosX"), 0) + DPad_ItemsOffset[1][0];
-            ItemIconPos[6][0] = CVarGetInteger(CVAR_COSMETIC("HUD.Dpad.PosX"), 0) + DPad_ItemsOffset[2][0];
-            ItemIconPos[7][0] = CVarGetInteger(CVAR_COSMETIC("HUD.Dpad.PosX"), 0) + DPad_ItemsOffset[3][0];
-        } else if (CVarGetInteger(CVAR_COSMETIC("HUD.Dpad.PosType"), 0) == HIDDEN) {
-            ItemIconPos[4][0] = -9999;
-            ItemIconPos[5][0] = -9999;
-            ItemIconPos[6][0] = -9999;
-            ItemIconPos[7][0] = -9999;
-        }
-    } else {
-        ItemIconPos[4][0] = OTRGetDimensionFromRightEdge(ItemIconPos_ori[4][0]);
-        ItemIconPos[5][0] = OTRGetDimensionFromRightEdge(ItemIconPos_ori[5][0]);
-        ItemIconPos[6][0] = OTRGetDimensionFromRightEdge(ItemIconPos_ori[6][0]);
-        ItemIconPos[7][0] = OTRGetDimensionFromRightEdge(ItemIconPos_ori[7][0]);
-        ItemIconPos[4][1] = ItemIconPos_ori[4][1];
-        ItemIconPos[5][1] = ItemIconPos_ori[5][1];
-        ItemIconPos[6][1] = ItemIconPos_ori[6][1];
-        ItemIconPos[7][1] = ItemIconPos_ori[7][1];
-    }
+                                        { C_RIGHT_BUTTON_X + X_Margins_CR, C_RIGHT_BUTTON_Y + Y_Margins_CR } };
+    s16 ItemIconPos[4][2];
     // B Button
-    if (CVarGetInteger(CVAR_COSMETIC("HUD.BButton.PosType"), 0) != ORIGINAL_LOCATION) {
-        ItemIconPos[0][1] = CVarGetInteger(CVAR_COSMETIC("HUD.BButton.PosY"), 0) + Y_Margins_BtnB;
-        if (CVarGetInteger(CVAR_COSMETIC("HUD.BButton.PosType"), 0) == ANCHOR_LEFT) {
-            if (CVarGetInteger(CVAR_COSMETIC("HUD.BButton.UseMargins"), 0) != 0) {
-                X_Margins_BtnB = Left_HUD_Margin;
-            };
-            ItemIconPos[0][0] =
-                OTRGetDimensionFromLeftEdge(CVarGetInteger(CVAR_COSMETIC("HUD.BButton.PosX"), 0) + X_Margins_BtnB);
-        } else if (CVarGetInteger(CVAR_COSMETIC("HUD.BButton.PosType"), 0) == ANCHOR_RIGHT) {
-            if (CVarGetInteger(CVAR_COSMETIC("HUD.BButton.UseMargins"), 0) != 0) {
-                X_Margins_BtnB = Right_HUD_Margin;
-            };
-            ItemIconPos[0][0] =
-                OTRGetDimensionFromRightEdge(CVarGetInteger(CVAR_COSMETIC("HUD.BButton.PosX"), 0) + X_Margins_BtnB);
-        } else if (CVarGetInteger(CVAR_COSMETIC("HUD.BButton.PosType"), 0) == ANCHOR_NONE) {
-            ItemIconPos[0][0] = CVarGetInteger(CVAR_COSMETIC("HUD.BButton.PosX"), 0);
-        } else if (CVarGetInteger(CVAR_COSMETIC("HUD.BButton.PosType"), 0) == HIDDEN) {
-            ItemIconPos[0][0] = -9999;
-        }
-    } else {
+    
         ItemIconPos[0][0] = OTRGetRectDimensionFromRightEdge(ItemIconPos_ori[0][0]);
         ItemIconPos[0][1] = ItemIconPos_ori[0][1];
-    }
+    
     // C button Left
-    if (CVarGetInteger(CVAR_COSMETIC("HUD.CLeftButton.PosType"), 0) != ORIGINAL_LOCATION) {
-        ItemIconPos[1][1] = CVarGetInteger(CVAR_COSMETIC("HUD.CLeftButton.PosY"), 0) + Y_Margins_CL;
-        if (CVarGetInteger(CVAR_COSMETIC("HUD.CLeftButton.PosType"), 0) == ANCHOR_LEFT) {
-            if (CVarGetInteger(CVAR_COSMETIC("HUD.CLeftButton.UseMargins"), 0) != 0) {
-                X_Margins_CL = Left_HUD_Margin;
-            };
-            ItemIconPos[1][0] =
-                OTRGetDimensionFromLeftEdge(CVarGetInteger(CVAR_COSMETIC("HUD.CLeftButton.PosX"), 0) + X_Margins_CL);
-        } else if (CVarGetInteger(CVAR_COSMETIC("HUD.CLeftButton.PosType"), 0) == ANCHOR_RIGHT) {
-            if (CVarGetInteger(CVAR_COSMETIC("HUD.CLeftButton.UseMargins"), 0) != 0) {
-                X_Margins_CL = Right_HUD_Margin;
-            };
-            ItemIconPos[1][0] =
-                OTRGetDimensionFromRightEdge(CVarGetInteger(CVAR_COSMETIC("HUD.CLeftButton.PosX"), 0) + X_Margins_CL);
-        } else if (CVarGetInteger(CVAR_COSMETIC("HUD.CLeftButton.PosType"), 0) == ANCHOR_NONE) {
-            ItemIconPos[1][0] = CVarGetInteger(CVAR_COSMETIC("HUD.CLeftButton.PosX"), 0);
-        } else if (CVarGetInteger(CVAR_COSMETIC("HUD.CLeftButton.PosType"), 0) == HIDDEN) {
-            ItemIconPos[1][0] = -9999;
-        }
-    } else {
+    
         ItemIconPos[1][0] = OTRGetRectDimensionFromRightEdge(ItemIconPos_ori[1][0]);
         ItemIconPos[1][1] = ItemIconPos_ori[1][1];
-    }
+    
     // C Button down
-    if (CVarGetInteger(CVAR_COSMETIC("HUD.CDownButton.PosType"), 0) != ORIGINAL_LOCATION) {
-        ItemIconPos[2][1] = CVarGetInteger(CVAR_COSMETIC("HUD.CDownButton.PosY"), 0) + Y_Margins_CD;
-        if (CVarGetInteger(CVAR_COSMETIC("HUD.CDownButton.PosType"), 0) == ANCHOR_LEFT) {
-            if (CVarGetInteger(CVAR_COSMETIC("HUD.CDownButton.UseMargins"), 0) != 0) {
-                X_Margins_CD = Left_HUD_Margin;
-            };
-            ItemIconPos[2][0] =
-                OTRGetDimensionFromLeftEdge(CVarGetInteger(CVAR_COSMETIC("HUD.CDownButton.PosX"), 0) + X_Margins_CD);
-        } else if (CVarGetInteger(CVAR_COSMETIC("HUD.CDownButton.PosType"), 0) == ANCHOR_RIGHT) {
-            if (CVarGetInteger(CVAR_COSMETIC("HUD.CDownButton.UseMargins"), 0) != 0) {
-                X_Margins_CD = Right_HUD_Margin;
-            };
-            ItemIconPos[2][0] =
-                OTRGetDimensionFromRightEdge(CVarGetInteger(CVAR_COSMETIC("HUD.CDownButton.PosX"), 0) + X_Margins_CD);
-        } else if (CVarGetInteger(CVAR_COSMETIC("HUD.CDownButton.PosType"), 0) == ANCHOR_NONE) {
-            ItemIconPos[2][0] = CVarGetInteger(CVAR_COSMETIC("HUD.CDownButton.PosX"), 0);
-        } else if (CVarGetInteger(CVAR_COSMETIC("HUD.CDownButton.PosType"), 0) == HIDDEN) {
-            ItemIconPos[2][0] = -9999;
-        }
-    } else {
+    
         ItemIconPos[2][0] = OTRGetRectDimensionFromRightEdge(ItemIconPos_ori[2][0]);
         ItemIconPos[2][1] = ItemIconPos_ori[2][1];
-    }
+    
     // C button Right
-    if (CVarGetInteger(CVAR_COSMETIC("HUD.CRightButton.PosType"), 0) != ORIGINAL_LOCATION) {
-        ItemIconPos[3][1] = CVarGetInteger(CVAR_COSMETIC("HUD.CRightButton.PosY"), 0) + Y_Margins_CR;
-        if (CVarGetInteger(CVAR_COSMETIC("HUD.CRightButton.PosType"), 0) == ANCHOR_LEFT) {
-            if (CVarGetInteger(CVAR_COSMETIC("HUD.CRightButton.UseMargins"), 0) != 0) {
-                X_Margins_CR = Left_HUD_Margin;
-            };
-            ItemIconPos[3][0] =
-                OTRGetDimensionFromLeftEdge(CVarGetInteger(CVAR_COSMETIC("HUD.CRightButton.PosX"), 0) + X_Margins_CR);
-        } else if (CVarGetInteger(CVAR_COSMETIC("HUD.CRightButton.PosType"), 0) == ANCHOR_RIGHT) {
-            if (CVarGetInteger(CVAR_COSMETIC("HUD.CRightButton.UseMargins"), 0) != 0) {
-                X_Margins_CR = Right_HUD_Margin;
-            };
-            ItemIconPos[3][0] =
-                OTRGetDimensionFromRightEdge(CVarGetInteger(CVAR_COSMETIC("HUD.CRightButton.PosX"), 0) + X_Margins_CR);
-        } else if (CVarGetInteger(CVAR_COSMETIC("HUD.CRightButton.PosType"), 0) == ANCHOR_NONE) {
-            ItemIconPos[3][0] = CVarGetInteger(CVAR_COSMETIC("HUD.CRightButton.PosX"), 0);
-        } else if (CVarGetInteger(CVAR_COSMETIC("HUD.CRightButton.PosType"), 0) == HIDDEN) {
-            ItemIconPos[3][0] = -9999;
-        }
-    } else {
+    
         ItemIconPos[3][0] = OTRGetRectDimensionFromRightEdge(ItemIconPos_ori[3][0]);
         ItemIconPos[3][1] = ItemIconPos_ori[3][1];
-    }
+    
 
     gDPLoadTextureBlock(OVERLAY_DISP++, texture, G_IM_FMT_RGBA, G_IM_SIZ_32b, 32, 32, 0, G_TX_NOMIRROR | G_TX_WRAP,
                         G_TX_NOMIRROR | G_TX_WRAP, G_TX_NOMASK, G_TX_NOMASK, G_TX_NOLOD, G_TX_NOLOD);
@@ -4324,11 +3369,6 @@ const char* _gAmmoDigit0Tex[] = { gAmmoDigit0Tex, gAmmoDigit1Tex, gAmmoDigit2Tex
                                   gAmmoDigit4Tex, gAmmoDigit5Tex, gAmmoDigit6Tex,         gAmmoDigit7Tex,
                                   gAmmoDigit8Tex, gAmmoDigit9Tex, gUnusedAmmoDigitHalfTex };
 
-static int16_t gItemAmmoX[] = { B_BUTTON_X + 2, C_LEFT_BUTTON_X + 1, C_DOWN_BUTTON_X + 1, C_RIGHT_BUTTON_X + 1,
-                                DPAD_UP_X,      DPAD_DOWN_X,         DPAD_LEFT_X,         DPAD_RIGHT_X };
-static int16_t gItemAmmoY[] = { B_BUTTON_Y + 18, C_LEFT_BUTTON_Y + 17, C_DOWN_BUTTON_Y + 17, C_RIGHT_BUTTON_Y + 17,
-                                DPAD_UP_Y + 11,  DPAD_DOWN_Y + 11,     DPAD_LEFT_Y + 11,     DPAD_RIGHT_Y + 11 };
-
 void Interface_DrawAmmoCount(PlayState* play, s16 button, s16 alpha) {
     s16 i;
     s16 ammo;
@@ -4340,233 +3380,60 @@ void Interface_DrawAmmoCount(PlayState* play, s16 button, s16 alpha) {
     s16 Y_Margins_CD;
     s16 X_Margins_BtnB;
     s16 Y_Margins_BtnB;
-    s16 X_Margins_DPad_Items;
-    s16 Y_Margins_DPad_Items;
-    if (CVarGetInteger(CVAR_COSMETIC("HUD.BButton.UseMargins"), 0) != 0) {
-        if (CVarGetInteger(CVAR_COSMETIC("HUD.BButton.PosType"), 0) == ORIGINAL_LOCATION) {
-            X_Margins_BtnB = Right_HUD_Margin;
-        };
-        Y_Margins_BtnB = (Top_HUD_Margin * -1);
-    } else {
+    
         X_Margins_BtnB = 0;
         Y_Margins_BtnB = 0;
-    }
-    if (CVarGetInteger(CVAR_COSMETIC("HUD.CLeftButton.UseMargins"), 0) != 0) {
-        if (CVarGetInteger(CVAR_COSMETIC("HUD.CLeftButton.PosType"), 0) == ORIGINAL_LOCATION) {
-            X_Margins_CL = Right_HUD_Margin;
-        };
-        Y_Margins_CL = (Top_HUD_Margin * -1);
-    } else {
+    
+    
         X_Margins_CL = 0;
         Y_Margins_CL = 0;
-    }
-    if (CVarGetInteger(CVAR_COSMETIC("HUD.CRightButton.UseMargins"), 0) != 0) {
-        if (CVarGetInteger(CVAR_COSMETIC("HUD.CRightButton.PosType"), 0) == ORIGINAL_LOCATION) {
-            X_Margins_CR = Right_HUD_Margin;
-        };
-        Y_Margins_CR = (Top_HUD_Margin * -1);
-    } else {
+    
+    
         X_Margins_CR = 0;
         Y_Margins_CR = 0;
-    }
-    if (CVarGetInteger(CVAR_COSMETIC("HUD.CDownButton.UseMargins"), 0) != 0) {
-        if (CVarGetInteger(CVAR_COSMETIC("HUD.CDownButton.PosType"), 0) == ORIGINAL_LOCATION) {
-            X_Margins_CD = Right_HUD_Margin;
-        };
-        Y_Margins_CD = (Top_HUD_Margin * -1);
-    } else {
+    
+    
         X_Margins_CD = 0;
         Y_Margins_CD = 0;
-    }
-    if (CVarGetInteger(CVAR_COSMETIC("HUD.Dpad.UseMargins"), 0) != 0) {
-        if (CVarGetInteger(CVAR_COSMETIC("HUD.Dpad.PosType"), 0) == ORIGINAL_LOCATION) {
-            X_Margins_DPad_Items = Right_HUD_Margin;
-        };
-        Y_Margins_DPad_Items = (Top_HUD_Margin * -1);
-    } else {
-        X_Margins_DPad_Items = 0;
-        Y_Margins_DPad_Items = 0;
-    }
-    const s16 ItemIconPos_ori[8][2] = {
+    
+    
+    const s16 ItemIconPos_ori[4][2] = {
         { R_ITEM_AMMO_X(0) + X_Margins_BtnB, R_ITEM_AMMO_Y(0) + Y_Margins_BtnB }, // Bow on Epona?
         { R_ITEM_AMMO_X(1) + X_Margins_CL, R_ITEM_AMMO_Y(1) + Y_Margins_CL },
         { R_ITEM_AMMO_X(2) + X_Margins_CD, R_ITEM_AMMO_Y(2) + Y_Margins_CD },
-        { R_ITEM_AMMO_X(3) + X_Margins_CR, R_ITEM_AMMO_Y(3) + Y_Margins_CR },
-        { DPAD_UP_X + X_Margins_DPad_Items, DPAD_UP_Y + 11 + Y_Margins_DPad_Items },
-        { DPAD_DOWN_X + X_Margins_DPad_Items, DPAD_DOWN_Y + 11 + Y_Margins_DPad_Items },
-        { DPAD_LEFT_X + X_Margins_DPad_Items, DPAD_LEFT_Y + 11 + Y_Margins_DPad_Items },
-        { DPAD_RIGHT_X + X_Margins_DPad_Items, DPAD_RIGHT_Y + 11 + Y_Margins_DPad_Items }
+        { R_ITEM_AMMO_X(3) + X_Margins_CR, R_ITEM_AMMO_Y(3) + Y_Margins_CR }
     };
-    s16 ItemIconPos[8][2]; //(X,Y)
-    s16 DPad_ItemsOffset[4][2] = {
-        { 7, 3 },   // Up
-        { 7, 35 },  // Down
-        { -9, 19 }, // Left
-        { 23, 19 }, // Right
-    };              //(X,Y) Used with custom position to place it properly.
-    // DPadItems
-    if (CVarGetInteger(CVAR_COSMETIC("HUD.Dpad.PosType"), 0) != ORIGINAL_LOCATION) {
-        ItemIconPos[4][1] =
-            CVarGetInteger(CVAR_COSMETIC("HUD.Dpad.PosY"), 0) + Y_Margins_DPad_Items + DPad_ItemsOffset[0][1]; // Up
-        ItemIconPos[5][1] =
-            CVarGetInteger(CVAR_COSMETIC("HUD.Dpad.PosY"), 0) + Y_Margins_DPad_Items + DPad_ItemsOffset[1][1]; // Down
-        ItemIconPos[6][1] =
-            CVarGetInteger(CVAR_COSMETIC("HUD.Dpad.PosY"), 0) + Y_Margins_DPad_Items + DPad_ItemsOffset[2][1]; // Left
-        ItemIconPos[7][1] =
-            CVarGetInteger(CVAR_COSMETIC("HUD.Dpad.PosY"), 0) + Y_Margins_DPad_Items + DPad_ItemsOffset[3][1]; // Right
-        if (CVarGetInteger(CVAR_COSMETIC("HUD.Dpad.PosType"), 0) == ANCHOR_LEFT) {
-            if (CVarGetInteger(CVAR_COSMETIC("HUD.Dpad.UseMargins"), 0) != 0) {
-                X_Margins_DPad_Items = Left_HUD_Margin;
-            };
-            ItemIconPos[4][0] = OTRGetDimensionFromLeftEdge(CVarGetInteger(CVAR_COSMETIC("HUD.Dpad.PosX"), 0) +
-                                                            X_Margins_DPad_Items + DPad_ItemsOffset[0][0]);
-            ItemIconPos[5][0] = OTRGetDimensionFromLeftEdge(CVarGetInteger(CVAR_COSMETIC("HUD.Dpad.PosX"), 0) +
-                                                            X_Margins_DPad_Items + DPad_ItemsOffset[1][0]);
-            ItemIconPos[6][0] = OTRGetDimensionFromLeftEdge(CVarGetInteger(CVAR_COSMETIC("HUD.Dpad.PosX"), 0) +
-                                                            X_Margins_DPad_Items + DPad_ItemsOffset[2][0]);
-            ItemIconPos[7][0] = OTRGetDimensionFromLeftEdge(CVarGetInteger(CVAR_COSMETIC("HUD.Dpad.PosX"), 0) +
-                                                            X_Margins_DPad_Items + DPad_ItemsOffset[3][0]);
-        } else if (CVarGetInteger(CVAR_COSMETIC("HUD.Dpad.PosType"), 0) == ANCHOR_RIGHT) {
-            if (CVarGetInteger(CVAR_COSMETIC("HUD.Dpad.UseMargins"), 0) != 0) {
-                X_Margins_DPad_Items = Right_HUD_Margin;
-            };
-            ItemIconPos[4][0] = OTRGetDimensionFromRightEdge(CVarGetInteger(CVAR_COSMETIC("HUD.Dpad.PosX"), 0) +
-                                                             X_Margins_DPad_Items + DPad_ItemsOffset[0][0]);
-            ItemIconPos[5][0] = OTRGetDimensionFromRightEdge(CVarGetInteger(CVAR_COSMETIC("HUD.Dpad.PosX"), 0) +
-                                                             X_Margins_DPad_Items + DPad_ItemsOffset[1][0]);
-            ItemIconPos[6][0] = OTRGetDimensionFromRightEdge(CVarGetInteger(CVAR_COSMETIC("HUD.Dpad.PosX"), 0) +
-                                                             X_Margins_DPad_Items + DPad_ItemsOffset[2][0]);
-            ItemIconPos[7][0] = OTRGetDimensionFromRightEdge(CVarGetInteger(CVAR_COSMETIC("HUD.Dpad.PosX"), 0) +
-                                                             X_Margins_DPad_Items + DPad_ItemsOffset[3][0]);
-        } else if (CVarGetInteger(CVAR_COSMETIC("HUD.Dpad.PosType"), 0) == ANCHOR_NONE) {
-            ItemIconPos[4][0] = CVarGetInteger(CVAR_COSMETIC("HUD.Dpad.PosX"), 0) + DPad_ItemsOffset[0][0];
-            ItemIconPos[5][0] = CVarGetInteger(CVAR_COSMETIC("HUD.Dpad.PosX"), 0) + DPad_ItemsOffset[1][0];
-            ItemIconPos[6][0] = CVarGetInteger(CVAR_COSMETIC("HUD.Dpad.PosX"), 0) + DPad_ItemsOffset[2][0];
-            ItemIconPos[7][0] = CVarGetInteger(CVAR_COSMETIC("HUD.Dpad.PosX"), 0) + DPad_ItemsOffset[3][0];
-        } else if (CVarGetInteger(CVAR_COSMETIC("HUD.Dpad.PosType"), 0) == HIDDEN) {
-            ItemIconPos[4][0] = -9999;
-            ItemIconPos[5][0] = -9999;
-            ItemIconPos[6][0] = -9999;
-            ItemIconPos[7][0] = -9999;
-        }
-    } else {
-        ItemIconPos[4][0] = OTRGetDimensionFromRightEdge(ItemIconPos_ori[4][0]);
-        ItemIconPos[5][0] = OTRGetDimensionFromRightEdge(ItemIconPos_ori[5][0]);
-        ItemIconPos[6][0] = OTRGetDimensionFromRightEdge(ItemIconPos_ori[6][0]);
-        ItemIconPos[7][0] = OTRGetDimensionFromRightEdge(ItemIconPos_ori[7][0]);
-        ItemIconPos[4][1] = ItemIconPos_ori[4][1];
-        ItemIconPos[5][1] = ItemIconPos_ori[5][1];
-        ItemIconPos[6][1] = ItemIconPos_ori[6][1];
-        ItemIconPos[7][1] = ItemIconPos_ori[7][1];
-    }
+    s16 ItemIconPos[4][2];
     // B Button
     s16 PosX_adjust = 1;
     s16 PosY_adjust = 17;
-    if (CVarGetInteger(CVAR_COSMETIC("HUD.BButton.PosType"), 0) != ORIGINAL_LOCATION) {
-        ItemIconPos[0][1] = CVarGetInteger(CVAR_COSMETIC("HUD.BButton.PosY"), 0) + Y_Margins_BtnB + PosY_adjust;
-        if (CVarGetInteger(CVAR_COSMETIC("HUD.BButton.PosType"), 0) == ANCHOR_LEFT) {
-            if (CVarGetInteger(CVAR_COSMETIC("HUD.BButton.UseMargins"), 0) != 0) {
-                X_Margins_BtnB = Left_HUD_Margin;
-            };
-            ItemIconPos[0][0] = OTRGetDimensionFromLeftEdge(CVarGetInteger(CVAR_COSMETIC("HUD.BButton.PosX"), 0) +
-                                                            X_Margins_BtnB + PosX_adjust);
-        } else if (CVarGetInteger(CVAR_COSMETIC("HUD.BButton.PosType"), 0) == ANCHOR_RIGHT) {
-            if (CVarGetInteger(CVAR_COSMETIC("HUD.BButton.UseMargins"), 0) != 0) {
-                X_Margins_BtnB = Right_HUD_Margin;
-            };
-            ItemIconPos[0][0] = OTRGetDimensionFromRightEdge(CVarGetInteger(CVAR_COSMETIC("HUD.BButton.PosX"), 0) +
-                                                             X_Margins_BtnB + PosX_adjust);
-        } else if (CVarGetInteger(CVAR_COSMETIC("HUD.BButton.PosType"), 0) == ANCHOR_NONE) {
-            ItemIconPos[0][0] = CVarGetInteger(CVAR_COSMETIC("HUD.BButton.PosX"), 0) + PosX_adjust;
-        } else if (CVarGetInteger(CVAR_COSMETIC("HUD.BButton.PosType"), 0) == HIDDEN) {
-            ItemIconPos[0][0] = -9999;
-        }
-    } else {
+    
         ItemIconPos[0][0] = OTRGetRectDimensionFromRightEdge(ItemIconPos_ori[0][0]);
         ItemIconPos[0][1] = ItemIconPos_ori[0][1];
-    }
+    
     // C button Left
-    if (CVarGetInteger(CVAR_COSMETIC("HUD.CLeftButton.PosType"), 0) != ORIGINAL_LOCATION) {
-        ItemIconPos[1][1] = CVarGetInteger(CVAR_COSMETIC("HUD.CLeftButton.PosY"), 0) + Y_Margins_CL + PosY_adjust;
-        if (CVarGetInteger(CVAR_COSMETIC("HUD.CLeftButton.PosType"), 0) == ANCHOR_LEFT) {
-            if (CVarGetInteger(CVAR_COSMETIC("HUD.CLeftButton.UseMargins"), 0) != 0) {
-                X_Margins_CL = Left_HUD_Margin;
-            };
-            ItemIconPos[1][0] = OTRGetDimensionFromLeftEdge(CVarGetInteger(CVAR_COSMETIC("HUD.CLeftButton.PosX"), 0) +
-                                                            X_Margins_CL + PosX_adjust);
-        } else if (CVarGetInteger(CVAR_COSMETIC("HUD.CLeftButton.PosType"), 0) == ANCHOR_RIGHT) {
-            if (CVarGetInteger(CVAR_COSMETIC("HUD.CLeftButton.UseMargins"), 0) != 0) {
-                X_Margins_CL = Right_HUD_Margin;
-            };
-            ItemIconPos[1][0] = OTRGetDimensionFromRightEdge(CVarGetInteger(CVAR_COSMETIC("HUD.CLeftButton.PosX"), 0) +
-                                                             X_Margins_CL + PosX_adjust);
-        } else if (CVarGetInteger(CVAR_COSMETIC("HUD.CLeftButton.PosType"), 0) == ANCHOR_NONE) {
-            ItemIconPos[1][0] = CVarGetInteger(CVAR_COSMETIC("HUD.CLeftButton.PosX"), 0) + PosX_adjust;
-        } else if (CVarGetInteger(CVAR_COSMETIC("HUD.CLeftButton.PosType"), 0) == HIDDEN) {
-            ItemIconPos[1][0] = -9999;
-        }
-    } else {
+    
         ItemIconPos[1][0] = OTRGetRectDimensionFromRightEdge(ItemIconPos_ori[1][0]);
         ItemIconPos[1][1] = ItemIconPos_ori[1][1];
-    }
+    
     // C Button down
-    if (CVarGetInteger(CVAR_COSMETIC("HUD.CDownButton.PosType"), 0) != ORIGINAL_LOCATION) {
-        ItemIconPos[2][1] = CVarGetInteger(CVAR_COSMETIC("HUD.CDownButton.PosY"), 0) + Y_Margins_CD + PosY_adjust;
-        if (CVarGetInteger(CVAR_COSMETIC("HUD.CDownButton.PosType"), 0) == ANCHOR_LEFT) {
-            if (CVarGetInteger(CVAR_COSMETIC("HUD.CDownButton.UseMargins"), 0) != 0) {
-                X_Margins_CD = Left_HUD_Margin;
-            };
-            ItemIconPos[2][0] = OTRGetDimensionFromLeftEdge(CVarGetInteger(CVAR_COSMETIC("HUD.CDownButton.PosX"), 0) +
-                                                            X_Margins_CD + PosX_adjust);
-        } else if (CVarGetInteger(CVAR_COSMETIC("HUD.CDownButton.PosType"), 0) == ANCHOR_RIGHT) {
-            if (CVarGetInteger(CVAR_COSMETIC("HUD.CDownButton.UseMargins"), 0) != 0) {
-                X_Margins_CD = Right_HUD_Margin;
-            };
-            ItemIconPos[2][0] = OTRGetDimensionFromRightEdge(CVarGetInteger(CVAR_COSMETIC("HUD.CDownButton.PosX"), 0) +
-                                                             X_Margins_CD + PosX_adjust);
-        } else if (CVarGetInteger(CVAR_COSMETIC("HUD.CDownButton.PosType"), 0) == ANCHOR_NONE) {
-            ItemIconPos[2][0] = CVarGetInteger(CVAR_COSMETIC("HUD.CDownButton.PosX"), 0) + PosX_adjust;
-        } else if (CVarGetInteger(CVAR_COSMETIC("HUD.CDownButton.PosType"), 0) == HIDDEN) {
-            ItemIconPos[2][0] = -9999;
-        }
-    } else {
+    
         ItemIconPos[2][0] = OTRGetRectDimensionFromRightEdge(ItemIconPos_ori[2][0]);
         ItemIconPos[2][1] = ItemIconPos_ori[2][1];
-    }
+    
     // C button Right
-    if (CVarGetInteger(CVAR_COSMETIC("HUD.CRightButton.PosType"), 0) != ORIGINAL_LOCATION) {
-        ItemIconPos[3][1] = CVarGetInteger(CVAR_COSMETIC("HUD.CRightButton.PosY"), 0) + Y_Margins_CR + PosY_adjust;
-        if (CVarGetInteger(CVAR_COSMETIC("HUD.CRightButton.PosType"), 0) == ANCHOR_LEFT) {
-            if (CVarGetInteger(CVAR_COSMETIC("HUD.CRightButton.UseMargins"), 0) != 0) {
-                X_Margins_CR = Left_HUD_Margin;
-            };
-            ItemIconPos[3][0] = OTRGetDimensionFromLeftEdge(CVarGetInteger(CVAR_COSMETIC("HUD.CRightButton.PosX"), 0) +
-                                                            X_Margins_CR + PosX_adjust);
-        } else if (CVarGetInteger(CVAR_COSMETIC("HUD.CRightButton.PosType"), 0) == ANCHOR_RIGHT) {
-            if (CVarGetInteger(CVAR_COSMETIC("HUD.CRightButton.UseMargins"), 0) != 0) {
-                X_Margins_CR = Right_HUD_Margin;
-            };
-            ItemIconPos[3][0] = OTRGetDimensionFromRightEdge(CVarGetInteger(CVAR_COSMETIC("HUD.CRightButton.PosX"), 0) +
-                                                             X_Margins_CR + PosX_adjust);
-        } else if (CVarGetInteger(CVAR_COSMETIC("HUD.CRightButton.PosType"), 0) == ANCHOR_NONE) {
-            ItemIconPos[3][0] = CVarGetInteger(CVAR_COSMETIC("HUD.CRightButton.PosX"), 0) + PosX_adjust;
-        } else if (CVarGetInteger(CVAR_COSMETIC("HUD.CRightButton.PosType"), 0) == HIDDEN) {
-            ItemIconPos[3][0] = -9999;
-        }
-    } else {
+    
         ItemIconPos[3][0] = OTRGetRectDimensionFromRightEdge(ItemIconPos_ori[3][0]);
         ItemIconPos[3][1] = ItemIconPos_ori[3][1];
-    }
+    
 
     OPEN_DISPS(play->state.gfxCtx);
 
     i = gSaveContext.equips.buttonItems[button];
 
-    if (GameInteractor_Should(VB_DRAW_AMMO_COUNT,
-                              ((i == ITEM_STICK) || (i == ITEM_NUT) || (i == ITEM_BOMB) || (i == ITEM_BOW) ||
+    if ((((i == ITEM_STICK) || (i == ITEM_NUT) || (i == ITEM_BOMB) || (i == ITEM_BOW) ||
                                ((i >= ITEM_BOW_ARROW_FIRE) && (i <= ITEM_BOW_ARROW_LIGHT)) || (i == ITEM_SLINGSHOT) ||
-                               (i == ITEM_BOMBCHU) || (i == ITEM_BEAN)),
-                              &i)) {
+                               (i == ITEM_BOMBCHU) || (i == ITEM_BEAN)))) {
         if ((i >= ITEM_BOW_ARROW_FIRE) && (i <= ITEM_BOW_ARROW_LIGHT)) {
             i = ITEM_BOW;
         }
@@ -4589,7 +3456,7 @@ void Interface_DrawAmmoCount(PlayState* play, s16 button, s16 alpha) {
                    ((i == ITEM_SLINGSHOT) && (AMMO(i) == CUR_CAPACITY(UPG_BULLET_BAG))) ||
                    ((i == ITEM_STICK) && (AMMO(i) == CUR_CAPACITY(UPG_STICKS))) ||
                    ((i == ITEM_NUT) && (AMMO(i) == CUR_CAPACITY(UPG_NUTS))) || ((i == ITEM_BOMBCHU) && (ammo == 50)) ||
-                   ((i == ITEM_BEAN) && (ammo == 15)) || GameInteractor_Should(VB_COLOR_AMMO_GREEN, false, i)) {
+                   ((i == ITEM_BEAN) && (ammo == 15)) || (false)) {
             gDPSetPrimColor(OVERLAY_DISP++, 0, 0, 120, 255, 0, alpha);
         }
 
@@ -4766,31 +3633,19 @@ void Interface_Draw(PlayState* play) {
     static s16 rupeeDigitsFirst[] = { 1, 0, 0, 0 };
     static s16 rupeeDigitsCount[] = { 2, 3, 3, 3 };
 
-    // courtesy of https://github.com/TestRunnerSRL/OoT-Randomizer/blob/Dev/ASM/c/hud_colors.c
     static Color_RGB8 rupeeWalletColors[4] = {
         { 0xC8, 0xFF, 0x64 }, // Base Wallet (Green)
         { 0x82, 0x82, 0xFF }, // Adult's Wallet (Blue)
         { 0xFF, 0x64, 0x64 }, // Giant's Wallet (Red)
-        { 0xFF, 0x5A, 0xFF }, // Tycoon's Wallet (Purple). Only used in rando shopsanity.
+        { 0xFF, 0x64, 0x64 }, // Defensive fallback for an invalid wallet upgrade value
     };
     Color_RGB8 rColor;
 
     Color_RGB8 keyCountColor = { 200, 230, 255 };
-    if (CVarGetInteger(CVAR_COSMETIC("HUD.KeyCount.Changed"), 0)) {
-        keyCountColor = CVarGetColor24(CVAR_COSMETIC("HUD.KeyCount.Value"), keyCountColor);
-    }
-
-    Color_RGB8 dPadColor = { 255, 255, 255 };
-    if (CVarGetInteger(CVAR_COSMETIC("HUD.Dpad.Changed"), 0)) {
-        dPadColor = CVarGetColor24(CVAR_COSMETIC("HUD.Dpad.Value"), dPadColor);
-    }
+    
 
     Color_RGB8 aButtonColor = { 90, 90, 255 };
-    if (CVarGetInteger(CVAR_COSMETIC("HUD.AButton.Changed"), 0)) {
-        aButtonColor = CVarGetColor24(CVAR_COSMETIC("HUD.AButton.Value"), aButtonColor);
-    } else if (CVarGetInteger(CVAR_COSMETIC("DefaultColorScheme"), COLORSCHEME_N64) == COLORSCHEME_GAMECUBE) {
-        aButtonColor = (Color_RGB8){ 0, 200, 50 };
-    }
+    
 
     static s16 spoilingItemEntrances[] = { ENTR_LOST_WOODS_2, ENTR_ZORAS_DOMAIN_3, ENTR_ZORAS_DOMAIN_3 };
     static f32 D_80125B54[] = { -40.0f, -35.0f }; // unused
@@ -4810,7 +3665,6 @@ void Interface_Draw(PlayState* play) {
     s16 svar4;
     s16 svar5;
     s16 timerId;
-    bool fullUi = !CVarGetInteger(CVAR_ENHANCEMENT("MinimalUI"), 0) || !R_MINIMAP_DISABLED || play->pauseCtx.state != 0;
     // #region SOH [NTSC]
     s32 languageOffset = gSaveContext.language;
 
@@ -4818,10 +3672,6 @@ void Interface_Draw(PlayState* play) {
         languageOffset = LANGUAGE_ENG;
     }
     // #endregion
-
-    if (GameInteractor_NoUIActive()) {
-        return;
-    }
 
     OPEN_DISPS(play->state.gfxCtx);
 
@@ -4833,103 +3683,37 @@ void Interface_Draw(PlayState* play) {
     if (pauseCtx->debugState == 0) {
         Interface_InitVertices(play);
         func_8008A994(interfaceCtx);
-        if (fullUi || gSaveContext.health != gSaveContext.healthCapacity) {
-            HealthMeter_Draw(play);
-        }
+        HealthMeter_Draw(play);
 
         Gfx_SetupDL_39Overlay(play->state.gfxCtx);
 
-        if (fullUi) {
-            s16 PosX_RC;
-            s16 PosY_RC;
-            if (GameInteractor_Should(VB_RENDER_RUPEE_COUNTER, true)) {
+        s16 PosX_RC;
+        s16 PosY_RC;
+            
                 // Rupee Icon
-                if (CVarGetInteger(CVAR_ENHANCEMENT("DynamicWalletIcon"), 0)) {
-                    switch (CUR_UPG_VALUE(UPG_WALLET)) {
-                        case 0:
-                            if (CVarGetInteger(CVAR_COSMETIC("Consumable.GreenRupee.Changed"), 0)) {
-                                rColor =
-                                    CVarGetColor24(CVAR_COSMETIC("Consumable.GreenRupee.Value"), rupeeWalletColors[0]);
-                            } else {
-                                rColor = rupeeWalletColors[0];
-                            }
-                            break;
-                        case 1:
-                            if (CVarGetInteger(CVAR_COSMETIC("Consumable.BlueRupee.Changed"), 0)) {
-                                rColor =
-                                    CVarGetColor24(CVAR_COSMETIC("Consumable.BlueRupee.Value"), rupeeWalletColors[1]);
-                            } else {
-                                rColor = rupeeWalletColors[1];
-                            }
-                            break;
-                        case 2:
-                            if (CVarGetInteger(CVAR_COSMETIC("Consumable.RedRupee.Changed"), 0)) {
-                                rColor =
-                                    CVarGetColor24(CVAR_COSMETIC("Consumable.RedRupee.Value"), rupeeWalletColors[2]);
-                            } else {
-                                rColor = rupeeWalletColors[2];
-                            }
-                            break;
-                        case 3:
-                            if (CVarGetInteger(CVAR_COSMETIC("Consumable.PurpleRupee.Changed"), 0)) {
-                                rColor =
-                                    CVarGetColor24(CVAR_COSMETIC("Consumable.PurpleRupee.Value"), rupeeWalletColors[3]);
-                            } else {
-                                rColor = rupeeWalletColors[3];
-                            }
-                            break;
-                    }
-                } else {
-                    if (CVarGetInteger(CVAR_COSMETIC("Consumable.GreenRupee.Changed"), rupeeWalletColors)) {
-                        rColor = CVarGetColor24(CVAR_COSMETIC("Consumable.GreenRupee.Value"), rupeeWalletColors[0]);
-                    } else {
-                        rColor = rupeeWalletColors[0];
-                    }
-                }
+                
+                    rColor = rupeeWalletColors[0];
+                
 
                 // Rupee icon & counter
                 s16 X_Margins_RC;
                 s16 Y_Margins_RC;
-                if (CVarGetInteger(CVAR_COSMETIC("HUD.Rupees.UseMargins"), 0) != 0) {
-                    if (CVarGetInteger(CVAR_COSMETIC("HUD.Rupees.PosType"), 0) == ORIGINAL_LOCATION) {
-                        X_Margins_RC = Left_HUD_Margin;
-                    };
-                    Y_Margins_RC = Bottom_HUD_Margin;
-                } else {
+                
                     X_Margins_RC = 0;
                     Y_Margins_RC = 0;
-                }
+                
                 s16 PosX_RC_ori = OTRGetRectDimensionFromLeftEdge(26 + X_Margins_RC);
                 s16 PosY_RC_ori = 206 + Y_Margins_RC;
-                if (CVarGetInteger(CVAR_COSMETIC("HUD.Rupees.PosType"), 0) != ORIGINAL_LOCATION) {
-                    PosY_RC = CVarGetInteger(CVAR_COSMETIC("HUD.Rupees.PosY"), 0) + Y_Margins_RC;
-                    if (CVarGetInteger(CVAR_COSMETIC("HUD.Rupees.PosType"), 0) == ANCHOR_LEFT) {
-                        if (CVarGetInteger(CVAR_COSMETIC("HUD.Rupees.UseMargins"), 0) != 0) {
-                            X_Margins_RC = Left_HUD_Margin;
-                        };
-                        PosX_RC = OTRGetDimensionFromLeftEdge(CVarGetInteger(CVAR_COSMETIC("HUD.Rupees.PosX"), 0) +
-                                                              X_Margins_RC);
-                    } else if (CVarGetInteger(CVAR_COSMETIC("HUD.Rupees.PosType"), 0) == ANCHOR_RIGHT) {
-                        if (CVarGetInteger(CVAR_COSMETIC("HUD.Rupees.UseMargins"), 0) != 0) {
-                            X_Margins_RC = Right_HUD_Margin;
-                        };
-                        PosX_RC = OTRGetDimensionFromRightEdge(CVarGetInteger(CVAR_COSMETIC("HUD.Rupees.PosX"), 0) +
-                                                               X_Margins_RC);
-                    } else if (CVarGetInteger(CVAR_COSMETIC("HUD.Rupees.PosType"), 0) == ANCHOR_NONE) {
-                        PosX_RC = CVarGetInteger(CVAR_COSMETIC("HUD.Rupees.PosX"), 0);
-                    } else if (CVarGetInteger(CVAR_COSMETIC("HUD.Rupees.PosType"), 0) == HIDDEN) {
-                        PosX_RC = -9999;
-                    }
-                } else {
+                
                     PosY_RC = PosY_RC_ori;
                     PosX_RC = PosX_RC_ori;
-                }
+                
                 gDPSetPrimColor(OVERLAY_DISP++, 0, 0, rColor.r, rColor.g, rColor.b, interfaceCtx->magicAlpha);
                 OVERLAY_DISP = Gfx_TextureIA8(OVERLAY_DISP, gRupeeCounterIconTex, 16, 16, PosX_RC, PosY_RC, 16, 16,
                                               1 << 10, 1 << 10);
-            }
+            
 
-            if (GameInteractor_Should(VB_RENDER_KEY_COUNTER, true)) {
+            
                 switch (play->sceneNum) {
                     case SCENE_FOREST_TEMPLE:
                     case SCENE_FIRE_TEMPLE:
@@ -4948,42 +3732,18 @@ void Interface_Draw(PlayState* play) {
                         if (gSaveContext.inventory.dungeonKeys[gSaveContext.mapIndex] >= 0) {
                             s16 X_Margins_SKC;
                             s16 Y_Margins_SKC;
-                            if (CVarGetInteger(CVAR_COSMETIC("HUD.SmallKey.UseMargins"), 0) != 0) {
-                                if (CVarGetInteger(CVAR_COSMETIC("HUD.SmallKey.PosType"), 0) == ORIGINAL_LOCATION) {
-                                    X_Margins_SKC = Left_HUD_Margin;
-                                };
-                                Y_Margins_SKC = Bottom_HUD_Margin;
-                            } else {
+                            
                                 X_Margins_SKC = 0;
                                 Y_Margins_SKC = 0;
-                            }
+                            
                             s16 PosX_SKC_ori = OTRGetRectDimensionFromLeftEdge(26 + X_Margins_SKC);
                             s16 PosY_SKC_ori = 190 + Y_Margins_SKC;
                             s16 PosX_SKC;
                             s16 PosY_SKC;
-                            if (CVarGetInteger(CVAR_COSMETIC("HUD.SmallKey.PosType"), 0) != ORIGINAL_LOCATION) {
-                                PosY_SKC = CVarGetInteger(CVAR_COSMETIC("HUD.SmallKey.PosY"), 0) + Y_Margins_SKC;
-                                if (CVarGetInteger(CVAR_COSMETIC("HUD.SmallKey.PosType"), 0) == ANCHOR_LEFT) {
-                                    if (CVarGetInteger(CVAR_COSMETIC("HUD.SmallKey.UseMargins"), 0) != 0) {
-                                        X_Margins_SKC = Left_HUD_Margin;
-                                    };
-                                    PosX_SKC = OTRGetDimensionFromLeftEdge(
-                                        CVarGetInteger(CVAR_COSMETIC("HUD.SmallKey.PosX"), 0) + X_Margins_SKC);
-                                } else if (CVarGetInteger(CVAR_COSMETIC("HUD.SmallKey.PosType"), 0) == ANCHOR_RIGHT) {
-                                    if (CVarGetInteger(CVAR_COSMETIC("HUD.SmallKey.UseMargins"), 0) != 0) {
-                                        X_Margins_SKC = Right_HUD_Margin;
-                                    };
-                                    PosX_SKC = OTRGetDimensionFromRightEdge(
-                                        CVarGetInteger(CVAR_COSMETIC("HUD.SmallKey.PosX"), 0) + X_Margins_SKC);
-                                } else if (CVarGetInteger(CVAR_COSMETIC("HUD.SmallKey.PosType"), 0) == ANCHOR_NONE) {
-                                    PosX_SKC = CVarGetInteger(CVAR_COSMETIC("HUD.SmallKey.PosX"), 0);
-                                } else if (CVarGetInteger(CVAR_COSMETIC("HUD.SmallKey.PosType"), 0) == HIDDEN) {
-                                    PosX_SKC = -9999;
-                                }
-                            } else {
+                            
                                 PosY_SKC = PosY_SKC_ori;
                                 PosX_SKC = PosX_SKC_ori;
-                            }
+                            
                             // Small Key Icon
                             gDPPipeSync(OVERLAY_DISP++);
 
@@ -5024,9 +3784,9 @@ void Interface_Draw(PlayState* play) {
                     default:
                         break;
                 }
-            }
+            
 
-            if (GameInteractor_Should(VB_RENDER_RUPEE_COUNTER, true)) {
+            
                 // Rupee Counter
                 gDPPipeSync(OVERLAY_DISP++);
 
@@ -5065,45 +3825,19 @@ void Interface_Draw(PlayState* play) {
                     OVERLAY_DISP = Gfx_TextureI8(OVERLAY_DISP, ((u8*)digitTextures[interfaceCtx->counterDigits[svar2]]),
                                                  8, 16, PosX_RC + svar3, PosY_RC, 8, 16, 1 << 10, 1 << 10);
                 }
-            }
-        } else {
-            // Make sure item counts have black backgrounds
-            gDPSetPrimColor(OVERLAY_DISP++, 0, 0, 0, 0, 0, interfaceCtx->magicAlpha);
-            gDPSetEnvColor(OVERLAY_DISP++, 0, 0, 0, 0);
-        }
+            
 
-        if (CVarGetInteger(CVAR_ENHANCEMENT("DrawLineupTick"), 0)) {
-            Interface_DrawLineupTick(play);
-        }
-
-        if (fullUi || gSaveContext.magicState > MAGIC_STATE_IDLE) {
-            Interface_DrawMagicBar(play);
-        }
+        Interface_DrawMagicBar(play);
 
         Minimap_Draw(play);
 
         if ((R_PAUSE_MENU_MODE != 2) && (R_PAUSE_MENU_MODE != 3)) {
-            if (CVarGetInteger(CVAR_ENHANCEMENT("MirroredWorld"), 0)) {
-                gSPMatrix(OVERLAY_DISP++, interfaceCtx->view.projectionFlippedPtr,
-                          G_MTX_NOPUSH | G_MTX_LOAD | G_MTX_PROJECTION);
-            }
             func_8002C124(&play->actorCtx.targetCtx, play); // Draw Z-Target
-            if (CVarGetInteger(CVAR_ENHANCEMENT("MirroredWorld"), 0)) {
-                gSPMatrix(OVERLAY_DISP++, interfaceCtx->view.projectionPtr,
-                          G_MTX_NOPUSH | G_MTX_LOAD | G_MTX_PROJECTION);
-            }
-
-            // Render enemy health bar after Z-target to leverage set variables
-            if (CVarGetInteger(CVAR_ENHANCEMENT("EnemyHealthBar"), 0)) {
-                Interface_DrawEnemyHealthBar(&play->actorCtx.targetCtx, play);
-            }
         }
 
         Gfx_SetupDL_39Overlay(play->state.gfxCtx);
 
-        if (fullUi) {
-            Interface_DrawItemButtons(play);
-        }
+        Interface_DrawItemButtons(play);
 
         gDPPipeSync(OVERLAY_DISP++);
         gDPSetPrimColor(OVERLAY_DISP++, 0, 0, 255, 255, 255, interfaceCtx->bAlpha);
@@ -5112,16 +3846,10 @@ void Interface_Draw(PlayState* play) {
         if (!(interfaceCtx->unk_1FA)) {
             // B Button Icon & Ammo Count
             if (gSaveContext.equips.buttonItems[0] != ITEM_NONE) {
-                if (fullUi) {
-                    Interface_DrawItemIconTexture(play, gItemIcons[gSaveContext.equips.buttonItems[0]], 0);
-                }
+                Interface_DrawItemIconTexture(play, gItemIcons[gSaveContext.equips.buttonItems[0]], 0);
 
                 if ((player->stateFlags1 & PLAYER_STATE1_ON_HORSE) || (play->shootingGalleryStatus > 1) ||
                     ((play->sceneNum == SCENE_BOMBCHU_BOWLING_ALLEY) && Flags_GetSwitch(play, 0x38))) {
-
-                    if (!fullUi) {
-                        Interface_DrawItemIconTexture(play, gItemIcons[gSaveContext.equips.buttonItems[0]], 0);
-                    }
 
                     gDPPipeSync(OVERLAY_DISP++);
                     gDPSetCombineLERP(OVERLAY_DISP++, PRIMITIVE, ENVIRONMENT, TEXEL0, ENVIRONMENT, TEXEL0, 0, PRIMITIVE,
@@ -5148,38 +3876,14 @@ void Interface_Draw(PlayState* play) {
             s16 BbtnPosY;
             s16 X_Margins_BtnB_label;
             s16 Y_Margins_BtnB_label;
-            if (CVarGetInteger(CVAR_COSMETIC("HUD.BButton.UseMargins"), 0) != 0) {
-                if (CVarGetInteger(CVAR_COSMETIC("HUD.BButton.PosType"), 0) == ORIGINAL_LOCATION) {
-                    X_Margins_BtnB_label = Right_HUD_Margin;
-                };
-                Y_Margins_BtnB_label = (Top_HUD_Margin * -1);
-            } else {
+            
                 X_Margins_BtnB_label = 0;
                 Y_Margins_BtnB_label = 0;
-            }
-            if (CVarGetInteger(CVAR_COSMETIC("HUD.BButton.PosType"), 0) != ORIGINAL_LOCATION) {
-                BbtnPosY = CVarGetInteger(CVAR_COSMETIC("HUD.BButton.PosY"), 0) + Y_Margins_BtnB_label + PosY_adjust;
-                if (CVarGetInteger(CVAR_COSMETIC("HUD.BButton.PosType"), 0) == ANCHOR_LEFT) {
-                    if (CVarGetInteger(CVAR_COSMETIC("HUD.BButton.UseMargins"), 0) != 0) {
-                        X_Margins_BtnB_label = Left_HUD_Margin;
-                    };
-                    BbtnPosX = OTRGetDimensionFromLeftEdge(CVarGetInteger(CVAR_COSMETIC("HUD.BButton.PosX"), 0) +
-                                                           X_Margins_BtnB_label + PosX_adjust);
-                } else if (CVarGetInteger(CVAR_COSMETIC("HUD.BButton.PosType"), 0) == ANCHOR_RIGHT) {
-                    if (CVarGetInteger(CVAR_COSMETIC("HUD.BButton.UseMargins"), 0) != 0) {
-                        X_Margins_BtnB_label = Right_HUD_Margin;
-                    };
-                    BbtnPosX = OTRGetDimensionFromRightEdge(CVarGetInteger(CVAR_COSMETIC("HUD.BButton.PosX"), 0) +
-                                                            X_Margins_BtnB_label + PosX_adjust);
-                } else if (CVarGetInteger(CVAR_COSMETIC("HUD.BButton.PosType"), 0) == ANCHOR_NONE) {
-                    BbtnPosX = CVarGetInteger(CVAR_COSMETIC("HUD.BButton.PosX"), 0) + PosX_adjust;
-                } else if (CVarGetInteger(CVAR_COSMETIC("HUD.BButton.PosType"), 0) == HIDDEN) {
-                    BbtnPosX = -9999;
-                }
-            } else {
+            
+            
                 BbtnPosX = OTRGetRectDimensionFromRightEdge(R_B_LABEL_X(languageOffset) + X_Margins_BtnB_label);
                 BbtnPosY = R_B_LABEL_Y(languageOffset) + Y_Margins_BtnB_label;
-            }
+            
             gDPPipeSync(OVERLAY_DISP++);
             gDPSetCombineLERP(OVERLAY_DISP++, PRIMITIVE, ENVIRONMENT, TEXEL0, ENVIRONMENT, TEXEL0, 0, PRIMITIVE, 0,
                               PRIMITIVE, ENVIRONMENT, TEXEL0, ENVIRONMENT, TEXEL0, 0, PRIMITIVE, 0);
@@ -5234,117 +3938,14 @@ void Interface_Draw(PlayState* play) {
             Interface_DrawAmmoCount(play, 3, interfaceCtx->cRightAlpha);
         }
 
-        if (CVarGetInteger(CVAR_ENHANCEMENT("DpadEquips"), 0) != 0) {
-            // DPad is only greyed-out when all 4 DPad directions are too
-            uint16_t dpadAlpha =
-                MAX(MAX(MAX(interfaceCtx->dpadUpAlpha, interfaceCtx->dpadDownAlpha), interfaceCtx->dpadLeftAlpha),
-                    interfaceCtx->dpadRightAlpha);
-
-            // Draw DPad
-            s16 DpadPosX;
-            s16 DpadPosY;
-            s16 X_Margins_Dpad;
-            s16 Y_Margins_Dpad;
-            if (CVarGetInteger(CVAR_COSMETIC("HUD.Dpad.UseMargins"), 0) != 0) {
-                if (CVarGetInteger(CVAR_COSMETIC("HUD.Dpad.PosType"), 0) == ORIGINAL_LOCATION) {
-                    X_Margins_Dpad = Right_HUD_Margin;
-                };
-                Y_Margins_Dpad = (Top_HUD_Margin * -1);
-            } else {
-                Y_Margins_Dpad = 0;
-                X_Margins_Dpad = 0;
-            }
-            if (CVarGetInteger(CVAR_COSMETIC("HUD.Dpad.PosType"), 0) != ORIGINAL_LOCATION) {
-                DpadPosY = CVarGetInteger(CVAR_COSMETIC("HUD.Dpad.PosY"), 0) + Y_Margins_Dpad;
-                if (CVarGetInteger(CVAR_COSMETIC("HUD.Dpad.PosType"), 0) == ANCHOR_LEFT) {
-                    if (CVarGetInteger(CVAR_COSMETIC("HUD.Dpad.UseMargins"), 0) != 0) {
-                        X_Margins_Dpad = Left_HUD_Margin;
-                    };
-                    DpadPosX =
-                        OTRGetDimensionFromLeftEdge(CVarGetInteger(CVAR_COSMETIC("HUD.Dpad.PosX"), 0) + X_Margins_Dpad);
-                } else if (CVarGetInteger(CVAR_COSMETIC("HUD.Dpad.PosType"), 0) == ANCHOR_RIGHT) {
-                    if (CVarGetInteger(CVAR_COSMETIC("HUD.Dpad.UseMargins"), 0) != 0) {
-                        X_Margins_Dpad = Right_HUD_Margin;
-                    };
-                    DpadPosX = OTRGetDimensionFromRightEdge(CVarGetInteger(CVAR_COSMETIC("HUD.Dpad.PosX"), 0) +
-                                                            X_Margins_Dpad);
-                } else if (CVarGetInteger(CVAR_COSMETIC("HUD.Dpad.PosType"), 0) == ANCHOR_NONE) {
-                    DpadPosX = CVarGetInteger(CVAR_COSMETIC("HUD.Dpad.PosX"), 0);
-                } else if (CVarGetInteger(CVAR_COSMETIC("HUD.Dpad.PosType"), 0) == HIDDEN) {
-                    DpadPosX = -9999;
-                }
-            } else {
-                DpadPosX = OTRGetRectDimensionFromRightEdge(DPAD_X + X_Margins_Dpad);
-                DpadPosY = DPAD_Y + Y_Margins_Dpad;
-            }
-
-            gDPSetCombineMode(OVERLAY_DISP++, G_CC_MODULATEIA_PRIM, G_CC_MODULATEIA_PRIM);
-
-            gDPSetPrimColor(OVERLAY_DISP++, 0, 0, dPadColor.r, dPadColor.g, dPadColor.b, dpadAlpha);
-            if (fullUi) {
-                gDPLoadTextureBlock(OVERLAY_DISP++, gDPadTex, G_IM_FMT_IA, G_IM_SIZ_16b, 32, 32, 0,
-                                    G_TX_NOMIRROR | G_TX_WRAP, G_TX_NOMIRROR | G_TX_WRAP, G_TX_NOMASK, G_TX_NOMASK,
-                                    G_TX_NOLOD, G_TX_NOLOD);
-                gSPWideTextureRectangle(OVERLAY_DISP++, DpadPosX << 2, DpadPosY << 2, (DpadPosX + 32) << 2,
-                                        (DpadPosY + 32) << 2, G_TX_RENDERTILE, 0, 0, (1 << 10), (1 << 10));
-            }
-
-            // DPad-Up Button Icon & Ammo Count
-            if (gSaveContext.equips.buttonItems[4] < 0xF0) {
-                gDPSetPrimColor(OVERLAY_DISP++, 0, 0, 255, 255, 255, interfaceCtx->dpadUpAlpha);
-                gDPSetCombineMode(OVERLAY_DISP++, G_CC_MODULATERGBA_PRIM, G_CC_MODULATERGBA_PRIM);
-                Interface_DrawItemIconTexture(play, gItemIcons[gSaveContext.equips.buttonItems[4]], 4);
-                gDPPipeSync(OVERLAY_DISP++);
-                gDPSetCombineLERP(OVERLAY_DISP++, PRIMITIVE, ENVIRONMENT, TEXEL0, ENVIRONMENT, TEXEL0, 0, PRIMITIVE, 0,
-                                  PRIMITIVE, ENVIRONMENT, TEXEL0, ENVIRONMENT, TEXEL0, 0, PRIMITIVE, 0);
-                Interface_DrawAmmoCount(play, 4, interfaceCtx->dpadUpAlpha);
-            }
-
-            // DPad-Down Button Icon & Ammo Count
-            if (gSaveContext.equips.buttonItems[5] < 0xF0) {
-                gDPSetPrimColor(OVERLAY_DISP++, 0, 0, 255, 255, 255, interfaceCtx->dpadDownAlpha);
-                gDPSetCombineMode(OVERLAY_DISP++, G_CC_MODULATERGBA_PRIM, G_CC_MODULATERGBA_PRIM);
-                Interface_DrawItemIconTexture(play, gItemIcons[gSaveContext.equips.buttonItems[5]], 5);
-                gDPPipeSync(OVERLAY_DISP++);
-                gDPSetCombineLERP(OVERLAY_DISP++, PRIMITIVE, ENVIRONMENT, TEXEL0, ENVIRONMENT, TEXEL0, 0, PRIMITIVE, 0,
-                                  PRIMITIVE, ENVIRONMENT, TEXEL0, ENVIRONMENT, TEXEL0, 0, PRIMITIVE, 0);
-                Interface_DrawAmmoCount(play, 5, interfaceCtx->dpadDownAlpha);
-            }
-
-            // DPad-Left Button Icon & Ammo Count
-            if (gSaveContext.equips.buttonItems[6] < 0xF0) {
-                gDPSetPrimColor(OVERLAY_DISP++, 0, 0, 255, 255, 255, interfaceCtx->dpadLeftAlpha);
-                gDPSetCombineMode(OVERLAY_DISP++, G_CC_MODULATERGBA_PRIM, G_CC_MODULATERGBA_PRIM);
-                Interface_DrawItemIconTexture(play, gItemIcons[gSaveContext.equips.buttonItems[6]], 6);
-                gDPPipeSync(OVERLAY_DISP++);
-                gDPSetCombineLERP(OVERLAY_DISP++, PRIMITIVE, ENVIRONMENT, TEXEL0, ENVIRONMENT, TEXEL0, 0, PRIMITIVE, 0,
-                                  PRIMITIVE, ENVIRONMENT, TEXEL0, ENVIRONMENT, TEXEL0, 0, PRIMITIVE, 0);
-                Interface_DrawAmmoCount(play, 6, interfaceCtx->dpadLeftAlpha);
-            }
-
-            // DPad-Right Button Icon & Ammo Count
-            if (gSaveContext.equips.buttonItems[7] < 0xF0) {
-                gDPSetPrimColor(OVERLAY_DISP++, 0, 0, 255, 255, 255, interfaceCtx->dpadRightAlpha);
-                gDPSetCombineMode(OVERLAY_DISP++, G_CC_MODULATERGBA_PRIM, G_CC_MODULATERGBA_PRIM);
-                Interface_DrawItemIconTexture(play, gItemIcons[gSaveContext.equips.buttonItems[7]], 7);
-                gDPPipeSync(OVERLAY_DISP++);
-                gDPSetCombineLERP(OVERLAY_DISP++, PRIMITIVE, ENVIRONMENT, TEXEL0, ENVIRONMENT, TEXEL0, 0, PRIMITIVE, 0,
-                                  PRIMITIVE, ENVIRONMENT, TEXEL0, ENVIRONMENT, TEXEL0, 0, PRIMITIVE, 0);
-                Interface_DrawAmmoCount(play, 7, interfaceCtx->dpadRightAlpha);
-            }
-        }
-
         // A Button
         Gfx_SetupDL_42Overlay(play->state.gfxCtx);
         s16 X_Margins_BtnA;
         s16 Y_Margins_BtnA;
-        if (CVarGetInteger(CVAR_COSMETIC("HUD.AButton.UseMargins"), 0) != 0) {
-            X_Margins_BtnA = Right_HUD_Margin;
-            Y_Margins_BtnA = (Top_HUD_Margin * -1);
-        } else {
+        
             X_Margins_BtnA = 0;
             Y_Margins_BtnA = 0;
-        }
+        
         s16 PosX_BtnA_ori = OTRGetDimensionFromRightEdge(R_A_BTN_X + X_Margins_BtnA);
         s16 PosY_BtnA_ori = R_A_BTN_Y + Y_Margins_BtnA;
         const f32 rAIconX_ori = OTRGetDimensionFromRightEdge(R_A_ICON_X + X_Margins_BtnA);
@@ -5353,44 +3954,16 @@ void Interface_Draw(PlayState* play) {
         s16 PosY_BtnA;
         s16 rAIconX;
         s16 rAIconY;
-        if (CVarGetInteger(CVAR_COSMETIC("HUD.AButton.PosType"), 0) != ORIGINAL_LOCATION) {
-            PosY_BtnA = CVarGetInteger(CVAR_COSMETIC("HUD.AButton.PosY"), 0) + Y_Margins_BtnA;
-            rAIconY = 98.0f - PosY_BtnA;
-            if (CVarGetInteger(CVAR_COSMETIC("HUD.AButton.PosType"), 0) == ANCHOR_LEFT) {
-                if (CVarGetInteger(CVAR_COSMETIC("HUD.AButton.UseMargins"), 0) != 0) {
-                    X_Margins_BtnA = Left_HUD_Margin;
-                };
-                PosX_BtnA =
-                    OTRGetDimensionFromLeftEdge(CVarGetInteger(CVAR_COSMETIC("HUD.AButton.PosX"), 0) + X_Margins_BtnA);
-                rAIconX =
-                    OTRGetDimensionFromLeftEdge(CVarGetInteger(CVAR_COSMETIC("HUD.AButton.PosX"), 0) + X_Margins_BtnA);
-            } else if (CVarGetInteger(CVAR_COSMETIC("HUD.AButton.PosType"), 0) == ANCHOR_RIGHT) {
-                if (CVarGetInteger(CVAR_COSMETIC("HUD.AButton.UseMargins"), 0) != 0) {
-                    X_Margins_BtnA = Right_HUD_Margin;
-                };
-                PosX_BtnA =
-                    OTRGetDimensionFromRightEdge(CVarGetInteger(CVAR_COSMETIC("HUD.AButton.PosX"), 0) + X_Margins_BtnA);
-                rAIconX =
-                    OTRGetDimensionFromRightEdge(CVarGetInteger(CVAR_COSMETIC("HUD.AButton.PosX"), 0) + X_Margins_BtnA);
-            } else if (CVarGetInteger(CVAR_COSMETIC("HUD.AButton.PosType"), 0) == ANCHOR_NONE) {
-                PosX_BtnA = CVarGetInteger(CVAR_COSMETIC("HUD.AButton.PosX"), 0);
-                rAIconX = CVarGetInteger(CVAR_COSMETIC("HUD.AButton.PosX"), 0);
-            } else if (CVarGetInteger(CVAR_COSMETIC("HUD.AButton.PosType"), 0) == HIDDEN) {
-                PosX_BtnA = -9999;
-                rAIconX = -9999;
-            }
-        } else {
+        
             PosY_BtnA = PosY_BtnA_ori;
             PosX_BtnA = PosX_BtnA_ori;
             rAIconY = rAIconY_ori;
             rAIconX = rAIconX_ori;
-        }
+        
         gSPClearGeometryMode(OVERLAY_DISP++, G_CULL_BOTH);
         gDPSetCombineMode(OVERLAY_DISP++, G_CC_MODULATEIA_PRIM, G_CC_MODULATEIA_PRIM);
         gDPSetPrimColor(OVERLAY_DISP++, 0, 0, aButtonColor.r, aButtonColor.g, aButtonColor.b, interfaceCtx->aAlpha);
-        if (fullUi) {
-            Interface_DrawActionButton(play, PosX_BtnA, PosY_BtnA);
-        }
+        Interface_DrawActionButton(play, PosX_BtnA, PosY_BtnA);
         gDPPipeSync(OVERLAY_DISP++);
         gSPSetGeometryMode(OVERLAY_DISP++, G_CULL_BACK);
         gDPSetCombineLERP(OVERLAY_DISP++, PRIMITIVE, ENVIRONMENT, TEXEL0, ENVIRONMENT, TEXEL0, 0, PRIMITIVE, 0,
@@ -5468,7 +4041,7 @@ void Interface_Draw(PlayState* play) {
         if ((play->pauseCtx.state == 0) && (play->pauseCtx.debugState == 0)) {
             if (gSaveContext.minigameState != 1) {
                 // Carrots rendering if the action corresponds to riding a horse
-                if (interfaceCtx->unk_1EE == 8 && !CVarGetInteger(CVAR_CHEAT("InfiniteEponaBoost"), 0)) {
+                if (interfaceCtx->unk_1EE == 8) {
                     // Load Carrot Icon
                     gDPLoadTextureBlock(OVERLAY_DISP++, gCarrotIconTex, G_IM_FMT_RGBA, G_IM_SIZ_32b, 16, 16, 0,
                                         G_TX_NOMIRROR | G_TX_WRAP, G_TX_NOMIRROR | G_TX_WRAP, G_TX_NOMASK, G_TX_NOMASK,
@@ -5478,26 +4051,7 @@ void Interface_Draw(PlayState* play) {
                     s16 CarrotsPosX = ZREG(14);
                     s16 CarrotsPosY = ZREG(15);
                     s16 CarrotsMargins_X = 0;
-                    if (CVarGetInteger(CVAR_COSMETIC("HUD.Carrots.PosType"), 0) != ORIGINAL_LOCATION) {
-                        CarrotsPosY = CVarGetInteger(CVAR_COSMETIC("HUD.Carrots.PosY"), 0);
-                        if (CVarGetInteger(CVAR_COSMETIC("HUD.Carrots.PosType"), 0) == ANCHOR_LEFT) {
-                            if (CVarGetInteger(CVAR_COSMETIC("HUD.Carrots.UseMargins"), 0) != 0) {
-                                CarrotsMargins_X = Left_HUD_Margin;
-                            };
-                            CarrotsPosX = OTRGetDimensionFromLeftEdge(
-                                CVarGetInteger(CVAR_COSMETIC("HUD.Carrots.PosX"), 0) + CarrotsMargins_X);
-                        } else if (CVarGetInteger(CVAR_COSMETIC("HUD.Carrots.PosType"), 0) == ANCHOR_RIGHT) {
-                            if (CVarGetInteger(CVAR_COSMETIC("HUD.Carrots.UseMargins"), 0) != 0) {
-                                CarrotsMargins_X = Right_HUD_Margin;
-                            };
-                            CarrotsPosX = OTRGetDimensionFromRightEdge(
-                                CVarGetInteger(CVAR_COSMETIC("HUD.Carrots.PosX"), 0) + CarrotsMargins_X);
-                        } else if (CVarGetInteger(CVAR_COSMETIC("HUD.Carrots.PosType"), 0) == ANCHOR_NONE) {
-                            CarrotsPosX = CVarGetInteger(CVAR_COSMETIC("HUD.Carrots.PosX"), 0);
-                        } else if (CVarGetInteger(CVAR_COSMETIC("HUD.Carrots.PosType"), 0) == HIDDEN) {
-                            CarrotsPosX = -9999;
-                        }
-                    }
+                    
                     for (svar1 = 1, svar5 = CarrotsPosX; svar1 < 7; svar1++, svar5 += 16) {
                         // Carrot Color (based on availability)
                         if ((interfaceCtx->numHorseBoosts == 0) || (interfaceCtx->numHorseBoosts < svar1)) {
@@ -5513,37 +4067,13 @@ void Interface_Draw(PlayState* play) {
             } else {
                 // Score for the Horseback Archery
                 s32 X_Margins_Archery;
-                if (CVarGetInteger(CVAR_COSMETIC("HUD.ArcheryScore.UseMargins"), 0) != 0) {
-                    if (CVarGetInteger(CVAR_COSMETIC("HUD.ArcheryScore.PosType"), 0) == ORIGINAL_LOCATION) {
-                        X_Margins_Archery = Right_HUD_Margin;
-                    };
-                } else {
+                
                     X_Margins_Archery = 0;
-                }
+                
                 s16 ArcheryPos_Y = ZREG(15);
                 s16 ArcheryPos_X = OTRGetRectDimensionFromRightEdge(WREG(32) + X_Margins_Archery);
 
-                if (CVarGetInteger(CVAR_COSMETIC("HUD.ArcheryScore.PosType"), 0) != ORIGINAL_LOCATION) {
-                    ArcheryPos_Y = CVarGetInteger(CVAR_COSMETIC("HUD.ArcheryScore.PosY"), 0);
-                    if (CVarGetInteger(CVAR_COSMETIC("HUD.ArcheryScore.PosType"), 0) == ANCHOR_LEFT) {
-                        if (CVarGetInteger(CVAR_COSMETIC("HUD.ArcheryScore.UseMargins"), 0) != 0) {
-                            X_Margins_Archery = Left_HUD_Margin;
-                        };
-                        ArcheryPos_X = OTRGetRectDimensionFromLeftEdge(
-                            CVarGetInteger(CVAR_COSMETIC("HUD.ArcheryScore.PosX"), 0) + X_Margins_Archery);
-                    } else if (CVarGetInteger(CVAR_COSMETIC("HUD.ArcheryScore.PosType"), 0) == ANCHOR_RIGHT) {
-                        if (CVarGetInteger(CVAR_COSMETIC("HUD.ArcheryScore.UseMargins"), 0) != 0) {
-                            X_Margins_Archery = Right_HUD_Margin;
-                        };
-                        ArcheryPos_X = OTRGetRectDimensionFromRightEdge(
-                            CVarGetInteger(CVAR_COSMETIC("HUD.ArcheryScore.PosX"), 0) + X_Margins_Archery);
-                    } else if (CVarGetInteger(CVAR_COSMETIC("HUD.ArcheryScore.PosType"), 0) == ANCHOR_NONE) {
-                        ArcheryPos_X =
-                            CVarGetInteger(CVAR_COSMETIC("HUD.ArcheryScore.PosX"), 0) + 204 + X_Margins_Archery;
-                    } else if (CVarGetInteger(CVAR_COSMETIC("HUD.ArcheryScore.PosType"), 0) == HIDDEN) {
-                        ArcheryPos_X = -9999;
-                    }
-                }
+                
 
                 gDPSetPrimColor(OVERLAY_DISP++, 0, 0, 255, 255, 255, interfaceCtx->bAlpha);
 
@@ -5599,7 +4129,7 @@ void Interface_Draw(PlayState* play) {
             }
 
             // Revert any spoiling trade quest items
-            if (GameInteractor_Should(VB_REVERT_SPOILING_ITEMS, true)) {
+            
                 for (svar1 = 0; svar1 < ARRAY_COUNT(gSpoilingItems); svar1++) {
                     if (INV_CONTENT(ITEM_TRADE_ADULT) == gSpoilingItems[svar1]) {
                         gSaveContext.eventInf[0] &= 0x7F80;
@@ -5615,7 +4145,7 @@ void Interface_Draw(PlayState* play) {
                         }
                     }
                 }
-            }
+            
         }
 
         if ((play->pauseCtx.state == 0) && (play->pauseCtx.debugState == 0) &&
@@ -5973,35 +4503,12 @@ void Interface_Draw(PlayState* play) {
                 gDPSetPrimColor(OVERLAY_DISP++, 0, 0, 255, 255, 255, 255);
                 gDPSetEnvColor(OVERLAY_DISP++, 0, 0, 0, 0);
                 s32 X_Margins_Timer;
-                if (CVarGetInteger(CVAR_COSMETIC("HUD.Timers.UseMargins"), 0) != 0) {
-                    if (CVarGetInteger(CVAR_COSMETIC("HUD.Timers.PosType"), 0) == ORIGINAL_LOCATION) {
-                        X_Margins_Timer = Left_HUD_Margin;
-                    };
-                } else {
+                
                     X_Margins_Timer = 0;
-                }
+                
                 svar5 = OTRGetRectDimensionFromLeftEdge(gSaveContext.timerX[timerId] + X_Margins_Timer);
                 svar2 = gSaveContext.timerY[timerId];
-                if (CVarGetInteger(CVAR_COSMETIC("HUD.Timers.PosType"), 0) != ORIGINAL_LOCATION) {
-                    svar2 = (CVarGetInteger(CVAR_COSMETIC("HUD.Timers.PosY"), 0));
-                    if (CVarGetInteger(CVAR_COSMETIC("HUD.Timers.PosType"), 0) == ANCHOR_LEFT) {
-                        if (CVarGetInteger(CVAR_COSMETIC("HUD.Timers.UseMargins"), 0) != 0) {
-                            X_Margins_Timer = Left_HUD_Margin;
-                        };
-                        svar5 = OTRGetRectDimensionFromLeftEdge(CVarGetInteger(CVAR_COSMETIC("HUD.Timers.PosX"), 0) +
-                                                                X_Margins_Timer);
-                    } else if (CVarGetInteger(CVAR_COSMETIC("HUD.Timers.PosType"), 0) == ANCHOR_RIGHT) {
-                        if (CVarGetInteger(CVAR_COSMETIC("HUD.Timers.UseMargins"), 0) != 0) {
-                            X_Margins_Timer = Right_HUD_Margin;
-                        };
-                        svar5 = OTRGetRectDimensionFromRightEdge(CVarGetInteger(CVAR_COSMETIC("HUD.Timers.PosX"), 0) +
-                                                                 X_Margins_Timer);
-                    } else if (CVarGetInteger(CVAR_COSMETIC("HUD.Timers.PosType"), 0) == ANCHOR_NONE) {
-                        svar5 = CVarGetInteger(CVAR_COSMETIC("HUD.Timers.PosX"), 0) + 204 + X_Margins_Timer;
-                    } else if (CVarGetInteger(CVAR_COSMETIC("HUD.Timers.PosType"), 0) == HIDDEN) {
-                        svar5 = -9999;
-                    }
-                }
+                
 
                 OVERLAY_DISP =
                     Gfx_TextureIA8(OVERLAY_DISP, gClockIconTex, 16, 16, svar5, svar2 + 2, 16, 16, 1 << 10, 1 << 10);
@@ -6053,112 +4560,6 @@ void Interface_Draw(PlayState* play) {
     CLOSE_DISPS(play->state.gfxCtx);
 }
 
-void Interface_DrawTotalGameplayTimer(PlayState* play) {
-    // Draw timer based on the Gameplay Stats total time.
-    if (GameInteractor_Should(VB_SHOW_GAMEPLAY_TIMER,
-                              CVarGetInteger(CVAR_GAMEPLAY_STATS("ShowIngameTimer"), 0) && gSaveContext.fileNum >= 0 &&
-                                  gSaveContext.fileNum <= 2,
-                              play)) {
-        s32 X_Margins_Timer = 0;
-        if (CVarGetInteger(CVAR_COSMETIC("HUD.IGT.UseMargins"), 0) != 0) {
-            if (CVarGetInteger(CVAR_COSMETIC("HUD.IGT.PosType"), 0) == ORIGINAL_LOCATION) {
-                X_Margins_Timer = Left_HUD_Margin;
-            };
-        }
-        s32 rectLeftOri = OTRGetRectDimensionFromLeftEdge(24 + X_Margins_Timer);
-        s32 rectTopOri = 73;
-        if (CVarGetInteger(CVAR_COSMETIC("HUD.IGT.PosType"), 0) != ORIGINAL_LOCATION) {
-            rectTopOri = (CVarGetInteger(CVAR_COSMETIC("HUD.IGT.PosY"), 0));
-            if (CVarGetInteger(CVAR_COSMETIC("HUD.IGT.PosType"), 0) == ANCHOR_LEFT) {
-                if (CVarGetInteger(CVAR_COSMETIC("HUD.IGT.UseMargins"), 0) != 0) {
-                    X_Margins_Timer = Left_HUD_Margin;
-                };
-                rectLeftOri =
-                    OTRGetRectDimensionFromLeftEdge(CVarGetInteger(CVAR_COSMETIC("HUD.IGT.PosX"), 0) + X_Margins_Timer);
-            } else if (CVarGetInteger(CVAR_COSMETIC("HUD.IGT.PosType"), 0) == ANCHOR_RIGHT) {
-                if (CVarGetInteger(CVAR_COSMETIC("HUD.IGT.UseMargins"), 0) != 0) {
-                    X_Margins_Timer = Right_HUD_Margin;
-                };
-                rectLeftOri = OTRGetRectDimensionFromRightEdge(CVarGetInteger(CVAR_COSMETIC("HUD.IGT.PosX"), 0) +
-                                                               X_Margins_Timer);
-            } else if (CVarGetInteger(CVAR_COSMETIC("HUD.IGT.PosType"), 0) == ANCHOR_NONE) {
-                rectLeftOri = CVarGetInteger(CVAR_COSMETIC("HUD.IGT.PosX"), 0) + 204 + X_Margins_Timer;
-            } else if (CVarGetInteger(CVAR_COSMETIC("HUD.IGT.PosType"), 0) == HIDDEN) {
-                rectLeftOri = -9999;
-            }
-        }
-
-        s32 rectLeft;
-        s32 rectTop;
-        s32 rectWidth = 8;
-        s32 rectHeightOri = 16;
-        s32 rectHeight;
-
-        OPEN_DISPS(play->state.gfxCtx);
-
-        gDPSetCombineLERP(OVERLAY_DISP++, 0, 0, 0, PRIMITIVE, TEXEL0, 0, PRIMITIVE, 0, 0, 0, 0, PRIMITIVE, TEXEL0, 0,
-                          PRIMITIVE, 0);
-
-        gDPSetOtherMode(OVERLAY_DISP++,
-                        G_AD_DISABLE | G_CD_DISABLE | G_CK_NONE | G_TC_FILT | G_TF_BILERP | G_TT_IA16 | G_TL_TILE |
-                            G_TD_CLAMP | G_TP_NONE | G_CYC_1CYCLE | G_PM_NPRIMITIVE,
-                        G_AC_NONE | G_ZS_PRIM | G_RM_XLU_SURF | G_RM_XLU_SURF2);
-
-        char* totalTimeText = GameplayStats_GetCurrentTime();
-        size_t textLength = strlen(totalTimeText);
-        uint16_t textureIndex = 0;
-
-        for (size_t i = 0; i < textLength; i++) {
-            if (totalTimeText[i] == ':' || totalTimeText[i] == '.') {
-                textureIndex = 10;
-            } else {
-                textureIndex = totalTimeText[i] - 48;
-            }
-
-            rectLeft = rectLeftOri + (i * 8);
-            rectTop = rectTopOri;
-            rectHeight = rectHeightOri;
-
-            // Load correct digit (or : symbol)
-            gDPLoadTextureBlock(OVERLAY_DISP++, ((u8*)digitTextures[textureIndex]), G_IM_FMT_I, G_IM_SIZ_8b, rectWidth,
-                                rectHeight, 0, G_TX_NOMIRROR | G_TX_WRAP, G_TX_NOMIRROR | G_TX_WRAP, G_TX_NOMASK,
-                                G_TX_NOMASK, G_TX_NOLOD, G_TX_NOLOD);
-
-            // Create dot image from the colon image.
-            if (totalTimeText[i] == '.') {
-                rectHeight = rectHeight / 2;
-                rectTop += 5;
-                rectLeft -= 1;
-            }
-
-            // Draw text shadow
-            gDPSetPrimColor(OVERLAY_DISP++, 0, 0, 0, 0, 0, 255);
-            gDPSetEnvColor(OVERLAY_DISP++, 255, 255, 255, 255);
-            gSPWideTextureRectangle(OVERLAY_DISP++, rectLeft << 2, rectTop << 2, (rectLeft + rectWidth) << 2,
-                                    (rectTop + rectHeight) << 2, G_TX_RENDERTILE, 0, 0, 1 << 10, 1 << 10);
-
-            // Draw regular text. Change color based on if the timer is paused, running or the game is completed.
-            if (gSaveContext.ship.stats.gameComplete) {
-                gDPSetPrimColor(OVERLAY_DISP++, 0, 0, 120, 255, 0, 255);
-            } else if (IS_BOSS_RUSH && gSaveContext.ship.quest.data.bossRush.isPaused &&
-                       !gSaveContext.ship.stats.rtaTiming) {
-                gDPSetPrimColor(OVERLAY_DISP++, 0, 0, 150, 150, 150, 255);
-            } else {
-                gDPSetPrimColor(OVERLAY_DISP++, 0, 0, 255, 255, 255, 255);
-            }
-
-            // Offset text so underlaying shadow is to the bottom right of the text.
-            rectLeft -= 1;
-            rectTop -= 1;
-
-            gSPWideTextureRectangle(OVERLAY_DISP++, rectLeft << 2, rectTop << 2, (rectLeft + rectWidth) << 2,
-                                    (rectTop + rectHeight) << 2, G_TX_RENDERTILE, 0, 0, 1 << 10, 1 << 10);
-        }
-        free(totalTimeText);
-
-        CLOSE_DISPS(play->state.gfxCtx);
-    }
-}
 
 void Interface_Update(PlayState* play) {
     static u8 D_80125B60 = 0;
@@ -6171,12 +4572,11 @@ void Interface_Update(PlayState* play) {
     u16 action;
     Input* debugInput = &play->state.input[2];
 
-    Top_HUD_Margin = CVarGetInteger(CVAR_COSMETIC("HUD.Margin.T"), 0);
-    Left_HUD_Margin = CVarGetInteger(CVAR_COSMETIC("HUD.Margin.L"), 0);
-    Right_HUD_Margin = CVarGetInteger(CVAR_COSMETIC("HUD.Margin.R"), 0);
-    Bottom_HUD_Margin = CVarGetInteger(CVAR_COSMETIC("HUD.Margin.B"), 0);
+    Top_HUD_Margin = (0);
+    Left_HUD_Margin = (0);
+    Right_HUD_Margin = (0);
+    Bottom_HUD_Margin = (0);
 
-    GameInteractor_ExecuteOnInterfaceUpdate();
 
     bool isPal = ResourceMgr_GetGameRegion(0) == GAME_REGION_PAL;
 
@@ -6332,13 +4732,11 @@ void Interface_Update(PlayState* play) {
     sEnvHazard = Player_GetEnvironmentalHazard(play);
 
     if (sEnvHazard == PLAYER_ENV_HAZARD_HOTROOM) {
-        if (CUR_EQUIP_VALUE(EQUIP_TYPE_TUNIC) == EQUIP_VALUE_TUNIC_GORON ||
-            CVarGetInteger(CVAR_CHEAT("SuperTunic"), 0) != 0) {
+        if (CUR_EQUIP_VALUE(EQUIP_TYPE_TUNIC) == EQUIP_VALUE_TUNIC_GORON) {
             sEnvHazard = PLAYER_ENV_HAZARD_NONE;
         }
     } else if ((Player_GetEnvironmentalHazard(play) >= 2) && (Player_GetEnvironmentalHazard(play) < 5)) {
-        if (CUR_EQUIP_VALUE(EQUIP_TYPE_TUNIC) == EQUIP_VALUE_TUNIC_ZORA ||
-            CVarGetInteger(CVAR_CHEAT("SuperTunic"), 0) != 0) {
+        if (CUR_EQUIP_VALUE(EQUIP_TYPE_TUNIC) == EQUIP_VALUE_TUNIC_ZORA) {
             sEnvHazard = PLAYER_ENV_HAZARD_NONE;
         }
     }
@@ -6395,7 +4793,6 @@ void Interface_Update(PlayState* play) {
                     tempSaleItem = getItemID;
                 }
             }
-            GameInteractor_ExecuteOnSaleEndHooks(ItemTable_RetrieveEntry(tempSaleMod, tempSaleItem));
         }
     }
 
@@ -6572,70 +4969,4 @@ void Interface_Update(PlayState* play) {
             gSaveContext.sunsSongState = SUNSSONG_SPECIAL;
         }
     }
-}
-
-void Interface_DrawTextCharacter(GraphicsContext* gfx, int16_t x, int16_t y, void* texture, uint16_t colorR,
-                                 uint16_t colorG, uint16_t colorB, uint16_t colorA, float textScale,
-                                 uint8_t textShadow) {
-
-    int32_t scale = R_TEXT_CHAR_SCALE * textScale;
-    int32_t sCharTexSize = (scale / 100.0f) * 16.0f;
-    int32_t sCharTexScale = 1024.0f / (scale / 100.0f);
-
-    OPEN_DISPS(gfx);
-
-    gDPPipeSync(POLY_OPA_DISP++);
-
-    gDPLoadTextureBlock_4b(POLY_OPA_DISP++, texture, G_IM_FMT_I, FONT_CHAR_TEX_WIDTH, FONT_CHAR_TEX_HEIGHT, 0,
-                           G_TX_NOMIRROR | G_TX_CLAMP, G_TX_NOMIRROR | G_TX_CLAMP, G_TX_NOMASK, G_TX_NOMASK, G_TX_NOLOD,
-                           G_TX_NOLOD);
-
-    if (textShadow) {
-        // Draw drop shadow
-        gDPSetPrimColor(POLY_OPA_DISP++, 0, 0, 0, 0, 0, colorA);
-        gSPTextureRectangle(POLY_OPA_DISP++, (x + R_TEXT_DROP_SHADOW_OFFSET) << 2, (y + R_TEXT_DROP_SHADOW_OFFSET) << 2,
-                            (x + R_TEXT_DROP_SHADOW_OFFSET + sCharTexSize) << 2,
-                            (y + R_TEXT_DROP_SHADOW_OFFSET + sCharTexSize) << 2, G_TX_RENDERTILE, 0, 0, sCharTexScale,
-                            sCharTexScale);
-    }
-
-    gDPPipeSync(POLY_OPA_DISP++);
-
-    // Draw normal text
-    gDPSetPrimColor(POLY_OPA_DISP++, 0, 0, colorR, colorG, colorB, colorA);
-    gSPTextureRectangle(POLY_OPA_DISP++, x << 2, y << 2, (x + sCharTexSize) << 2, (y + sCharTexSize) << 2,
-                        G_TX_RENDERTILE, 0, 0, sCharTexScale, sCharTexScale);
-
-    CLOSE_DISPS(gfx);
-}
-
-uint16_t Interface_DrawTextLine(GraphicsContext* gfx, char text[], int16_t x, int16_t y, uint16_t colorR,
-                                uint16_t colorG, uint16_t colorB, uint16_t colorA, float textScale,
-                                uint8_t textShadow) {
-
-    uint16_t textureIndex;
-    uint16_t kerningOffset = 0;
-    uint16_t lineOffset = 0;
-    void* texture;
-    const char* processedText = Interface_ReplaceSpecialCharacters(text);
-    uint8_t textLength = strlen(processedText);
-
-    for (uint16_t i = 0; i < textLength; i++) {
-        if (processedText[i] == '\n') {
-            lineOffset += 15 * textScale;
-            kerningOffset = 0;
-        } else {
-            textureIndex = processedText[i] - 32;
-
-            if (textureIndex != 0) {
-                texture = Ship_GetCharFontTexture(processedText[i]);
-                Interface_DrawTextCharacter(gfx, x + kerningOffset, y + lineOffset, texture, colorR, colorG, colorB,
-                                            colorA, textScale, textShadow);
-            }
-            kerningOffset +=
-                (uint16_t)(Ship_GetCharFontWidth(processedText[i]) * (R_TEXT_CHAR_SCALE / 100.0f) * textScale);
-        }
-    }
-
-    return kerningOffset;
 }

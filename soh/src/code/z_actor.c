@@ -10,11 +10,6 @@
 #include "soh/ObjectExtension/ObjectExtension.h"
 #include "soh/ObjectExtension/ActorListIndex.h"
 #include "soh/frame_interpolation.h"
-#include "soh/Enhancements/cosmetics/cosmeticsTypes.h"
-#include "soh/Enhancements/game-interactor/GameInteractor.h"
-#include "soh/Enhancements/game-interactor/GameInteractor_Hooks.h"
-#include "soh/Enhancements/nametag.h"
-
 #include "soh/ActorDB.h"
 #include "soh/OTRGlobals.h"
 
@@ -355,63 +350,35 @@ void func_8002BE98(TargetContext* targetCtx, s32 actorCategory, PlayState* play)
 }
 
 void func_8002BF60(TargetContext* targetCtx, Actor* actor, s32 actorCategory, PlayState* play) {
-    if (CVarGetInteger(CVAR_COSMETIC("Navi.IdlePrimary.Changed"), 0)) {
-        sNaviColorList[ACTORCAT_PLAYER].inner =
-            CVarGetColor(CVAR_COSMETIC("Navi.IdlePrimary.Value"), defaultIdlePrimaryColor);
-    } else {
+    
         sNaviColorList[ACTORCAT_PLAYER].inner = defaultIdlePrimaryColor;
-    }
-    if (CVarGetInteger(CVAR_COSMETIC("Navi.IdleSecondary.Changed"), 0)) {
-        sNaviColorList[ACTORCAT_PLAYER].outer =
-            CVarGetColor(CVAR_COSMETIC("Navi.IdleSecondary.Value"), defaultIdleSecondaryColor);
-    } else {
+    
+    
         sNaviColorList[ACTORCAT_PLAYER].outer = defaultIdleSecondaryColor;
-    }
+    
 
-    if (CVarGetInteger(CVAR_COSMETIC("Navi.NPCPrimary.Changed"), 0)) {
-        sNaviColorList[ACTORCAT_NPC].inner =
-            CVarGetColor(CVAR_COSMETIC("Navi.NPCPrimary.Value"), defaultNPCPrimaryColor);
-    } else {
+    
         sNaviColorList[ACTORCAT_NPC].inner = defaultNPCPrimaryColor;
-    }
-    if (CVarGetInteger(CVAR_COSMETIC("Navi.NPCSecondary.Changed"), 0)) {
-        sNaviColorList[ACTORCAT_NPC].outer =
-            CVarGetColor(CVAR_COSMETIC("Navi.NPCSecondary.Value"), defaultNPCSecondaryColor);
-    } else {
+    
+    
         sNaviColorList[ACTORCAT_NPC].outer = defaultNPCSecondaryColor;
-    }
+    
 
-    if (CVarGetInteger(CVAR_COSMETIC("Navi.EnemyPrimary.Changed"), 0)) {
-        sNaviColorList[ACTORCAT_ENEMY].inner =
-            CVarGetColor(CVAR_COSMETIC("Navi.EnemyPrimary.Value"), defaultEnemyPrimaryColor);
-        sNaviColorList[ACTORCAT_BOSS].inner =
-            CVarGetColor(CVAR_COSMETIC("Navi.EnemyPrimary.Value"), defaultEnemyPrimaryColor);
-    } else {
+    
         sNaviColorList[ACTORCAT_ENEMY].inner = defaultEnemyPrimaryColor;
         sNaviColorList[ACTORCAT_BOSS].inner = defaultEnemyPrimaryColor;
-    }
-    if (CVarGetInteger(CVAR_COSMETIC("Navi.EnemySecondary.Changed"), 0)) {
-        sNaviColorList[ACTORCAT_ENEMY].outer =
-            CVarGetColor(CVAR_COSMETIC("Navi.EnemySecondary.Value"), defaultEnemySecondaryColor);
-        sNaviColorList[ACTORCAT_BOSS].outer =
-            CVarGetColor(CVAR_COSMETIC("Navi.EnemySecondary.Value"), defaultEnemySecondaryColor);
-    } else {
+    
+    
         sNaviColorList[ACTORCAT_ENEMY].outer = defaultEnemySecondaryColor;
         sNaviColorList[ACTORCAT_BOSS].outer = defaultEnemySecondaryColor;
-    }
+    
 
-    if (CVarGetInteger(CVAR_COSMETIC("Navi.PropsPrimary.Changed"), 0)) {
-        sNaviColorList[ACTORCAT_PROP].inner =
-            CVarGetColor(CVAR_COSMETIC("Navi.PropsPrimary.Value"), defaultPropsPrimaryColor);
-    } else {
+    
         sNaviColorList[ACTORCAT_PROP].inner = defaultPropsPrimaryColor;
-    }
-    if (CVarGetInteger(CVAR_COSMETIC("Navi.PropsSecondary.Changed"), 0)) {
-        sNaviColorList[ACTORCAT_PROP].outer =
-            CVarGetColor(CVAR_COSMETIC("Navi.PropsSecondary.Value"), defaultPropsSecondaryColor);
-    } else {
+    
+    
         sNaviColorList[ACTORCAT_PROP].outer = defaultPropsSecondaryColor;
-    }
+    
 
     NaviColor* naviColor = &sNaviColorList[actorCategory];
     targetCtx->naviRefPos.x = actor->focus.pos.x;
@@ -681,7 +648,6 @@ void Flags_SetSwitch(PlayState* play, s32 flag) {
     }
     if (previouslyOff) {
         LUSLOG_INFO("Switch Flag Set - %#x", flag);
-        GameInteractor_ExecuteOnSceneFlagSet(play->sceneNum, FLAG_SCENE_SWITCH, flag);
     }
 }
 
@@ -697,7 +663,6 @@ void Flags_UnsetSwitch(PlayState* play, s32 flag) {
     }
     if (previouslyOn) {
         LUSLOG_INFO("Switch Flag Unset - %#x", flag);
-        GameInteractor_ExecuteOnSceneFlagUnset(play->sceneNum, FLAG_SCENE_SWITCH, flag);
     }
 }
 
@@ -749,7 +714,6 @@ void Flags_SetTreasure(PlayState* play, s32 flag) {
     play->actorCtx.flags.chest |= (1 << flag);
     if (previouslyOff) {
         LUSLOG_INFO("Treasure Flag Set - %#x", flag);
-        GameInteractor_ExecuteOnSceneFlagSet(play->sceneNum, FLAG_SCENE_TREASURE, flag);
     }
 }
 
@@ -768,7 +732,6 @@ void Flags_SetClear(PlayState* play, s32 flag) {
     play->actorCtx.flags.clear |= (1 << flag);
     if (previouslyOff) {
         LUSLOG_INFO("Clear Flag Set - %#x", flag);
-        GameInteractor_ExecuteOnSceneFlagSet(play->sceneNum, FLAG_SCENE_CLEAR, flag);
     }
 }
 
@@ -780,7 +743,6 @@ void Flags_UnsetClear(PlayState* play, s32 flag) {
     play->actorCtx.flags.clear &= ~(1 << flag);
     if (previouslyOn) {
         LUSLOG_INFO("Clear Flag Unset - %#x", flag);
-        GameInteractor_ExecuteOnSceneFlagUnset(play->sceneNum, FLAG_SCENE_CLEAR, flag);
     }
 }
 
@@ -830,7 +792,6 @@ void Flags_SetCollectible(PlayState* play, s32 flag) {
     }
     if (previouslyOff) {
         LUSLOG_INFO("Collectible Flag Set - %#x", flag);
-        GameInteractor_ExecuteOnSceneFlagSet(play->sceneNum, FLAG_SCENE_COLLECTIBLE, flag);
     }
 }
 
@@ -1098,15 +1059,9 @@ void TitleCard_InitPlaceName(PlayState* play, TitleCardContext* titleCtx, void* 
 
 void TitleCard_Update(PlayState* play, TitleCardContext* titleCtx) {
     Color_RGB8 TitleCard_Colors = { 255, 255, 255 };
-    if (titleCtx->isBossCard && CVarGetInteger(CVAR_COSMETIC("HUD.TitleCard.Boss.Changed"), 0) == 1) {
-        TitleCard_Colors = CVarGetColor24(CVAR_COSMETIC("HUD.TitleCard.Boss.Value"), TitleCard_Colors);
-    } else if (!titleCtx->isBossCard && CVarGetInteger(CVAR_COSMETIC("HUD.TitleCard.Map.Changed"), 0) == 1) {
-        TitleCard_Colors = CVarGetColor24(CVAR_COSMETIC("HUD.TitleCard.Map.Value"), TitleCard_Colors);
-    }
 
     if (DECR(titleCtx->delayTimer) == 0) {
         if (titleCtx->durationTimer == 80) {
-            GameInteractor_ExecuteOnPresentTitleCard();
         }
 
         if (DECR(titleCtx->durationTimer) == 0) {
@@ -1133,40 +1088,8 @@ void TitleCard_Draw(PlayState* play, TitleCardContext* titleCtx) {
     if (titleCtx->alpha != 0) {
         width = titleCtx->width;
         height = titleCtx->height;
-        s16 TitleCard_PosX_Modifier = (titleCtx->isBossCard ? CVarGetInteger(CVAR_COSMETIC("TitleCard.Boss.PosX"), 0)
-                                                            : CVarGetInteger(CVAR_COSMETIC("TitleCard.Map.PosX"), 0));
-        s16 TitleCard_PosY_Modifier = (titleCtx->isBossCard ? CVarGetInteger(CVAR_COSMETIC("TitleCard.Boss.PosY"), 0)
-                                                            : CVarGetInteger(CVAR_COSMETIC("TitleCard.Map.PosY"), 0));
-        s16 TitleCard_PosType_Checker =
-            (titleCtx->isBossCard ? CVarGetInteger(CVAR_COSMETIC("TitleCard.Boss.PosType"), 0)
-                                  : CVarGetInteger(CVAR_COSMETIC("TitleCard.Map.PosType"), 0));
-        s16 TitleCard_Margin_Checker =
-            (titleCtx->isBossCard ? CVarGetInteger(CVAR_COSMETIC("TitleCard.Boss.UseMargins"), 0)
-                                  : CVarGetInteger(CVAR_COSMETIC("TitleCard.Map.UseMargins"), 0));
-        s16 TitleCard_MarginX = 0;
-        s16 TitleCard_PosX = titleCtx->x;
-        s16 TitleCard_PosY = titleCtx->y;
-        if (TitleCard_PosType_Checker != 0) {
-            TitleCard_PosY = TitleCard_PosY_Modifier;
-            if (TitleCard_PosType_Checker == ANCHOR_LEFT) {
-                if (TitleCard_Margin_Checker != 0) {
-                    TitleCard_MarginX = CVarGetInteger(CVAR_COSMETIC("HUD.Margin.L"), 0) * -1;
-                };
-                TitleCard_PosX = OTRGetDimensionFromLeftEdge(TitleCard_PosX_Modifier + TitleCard_MarginX) - 11;
-            } else if (TitleCard_PosType_Checker == ANCHOR_RIGHT) {
-                if (TitleCard_Margin_Checker != 0) {
-                    TitleCard_MarginX = CVarGetInteger(CVAR_COSMETIC("HUD.Margin.R"), 0);
-                };
-                TitleCard_PosX = OTRGetDimensionFromRightEdge(TitleCard_PosX_Modifier + TitleCard_MarginX);
-            } else if (TitleCard_PosType_Checker == ANCHOR_NONE) {
-                TitleCard_PosX = TitleCard_PosX_Modifier;
-            } else if (TitleCard_PosType_Checker == HIDDEN) {
-                TitleCard_PosX = -9999;
-            }
-        }
-
-        titleX = (TitleCard_PosX * 4) - (width * 2);
-        titleY = (TitleCard_PosY * 4) - (height * 2);
+        titleX = (titleCtx->x * 4) - (width * 2);
+        titleY = (titleCtx->y * 4) - (height * 2);
         doubleWidth = width * 2;
 
         OPEN_DISPS(play->state.gfxCtx);
@@ -1199,7 +1122,6 @@ s32 func_8002D53C(PlayState* play, TitleCardContext* titleCtx) {
 }
 
 void Actor_Kill(Actor* actor) {
-    GameInteractor_ExecuteOnActorKill(actor);
     actor->draw = NULL;
     actor->update = NULL;
     actor->flags &= ~ACTOR_FLAG_ATTENTION_ENABLED;
@@ -1256,15 +1178,8 @@ void Actor_Init(Actor* actor, PlayState* play) {
     if (Object_IsLoaded(&play->objectCtx, actor->objBankIndex)) {
         Actor_SetObjectDependency(play, actor);
 
-        if (GameInteractor_ShouldActorInit(actor)) {
-            actor->init(actor, play);
-            actor->init = NULL;
-
-            GameInteractor_ExecuteOnActorInit(actor);
-        } else {
-            actor->init = NULL;
-            Actor_Kill(actor);
-        }
+        actor->init(actor, play);
+        actor->init = NULL;
     }
 }
 
@@ -1277,7 +1192,6 @@ void Actor_Destroy(Actor* actor, PlayState* play) {
         osSyncPrintf("Ａｃｔｏｒクラス デストラクトがありません [%s]\n" VT_RST, ActorDB_Retrieve(actor->id)->name);
     }
 
-    NameTag_RemoveAllForActor(actor);
 }
 
 void Actor_UpdatePos(Actor* actor) {
@@ -1289,16 +1203,8 @@ void Actor_UpdatePos(Actor* actor) {
 }
 
 void Actor_UpdateVelocityXZGravity(Actor* actor) {
-    Player* player = GET_PLAYER(gPlayState);
-    uint8_t inCutscene = player->stateFlags1 & PLAYER_STATE1_CLIMBING_LADDER ||
-                         player->stateFlags1 & PLAYER_STATE1_IN_CUTSCENE ||
-                         player->stateFlags2 & PLAYER_STATE2_CRAWLING;
-    f32 speedModifier = 1.0f;
-    if (actor->id == ACTOR_PLAYER && !inCutscene) {
-        speedModifier = GameInteractor_MovementSpeedMultiplier();
-    }
-    actor->velocity.x = Math_SinS(actor->world.rot.y) * actor->speedXZ * speedModifier;
-    actor->velocity.z = Math_CosS(actor->world.rot.y) * actor->speedXZ * speedModifier;
+    actor->velocity.x = Math_SinS(actor->world.rot.y) * actor->speedXZ;
+    actor->velocity.z = Math_CosS(actor->world.rot.y) * actor->speedXZ;
 
     actor->velocity.y += actor->gravity;
     if (actor->velocity.y < actor->minVelocityY) {
@@ -2106,7 +2012,6 @@ s32 GiveItemEntryFromActorWithFixedRange(Actor* actor, PlayState* play, GetItemE
     return GiveItemEntryFromActor(actor, play, getItemEntry, 50.0f, 10.0f);
 }
 
-// If you're doing something for randomizer, you're probably looking for GiveItemEntryFromActor
 s32 Actor_OfferGetItem(Actor* actor, PlayState* play, s32 getItemId, f32 xzRange, f32 yRange) {
     Player* player = GET_PLAYER(play);
 
@@ -2135,7 +2040,6 @@ s32 Actor_OfferGetItem(Actor* actor, PlayState* play, s32 getItemId, f32 xzRange
     return false;
 }
 
-// If you're doing something for randomizer, you're probably looking for GiveItemEntryFromActorWithFixedRange
 void Actor_OfferGetItemNearby(Actor* actor, PlayState* play, s32 getItemId) {
     Actor_OfferGetItem(actor, play, getItemId, 50.0f, 10.0f);
 }
@@ -2237,7 +2141,7 @@ void Player_PlaySfx(Actor* actor, u16 sfxId) {
         Audio_PlaySoundGeneral(sfxId, &actor->projectedPos, 4, &gSfxDefaultFreqAndVolScale, &gSfxDefaultFreqAndVolScale,
                                &gSfxDefaultReverb);
     } else {
-        freqMultiplier = CVarGetFloat(CVAR_AUDIO("LinkVoiceFreqMultiplier"), 1.0);
+        freqMultiplier = 1.0f;
         if (freqMultiplier <= 0) {
             freqMultiplier = 1;
         }
@@ -2248,7 +2152,6 @@ void Player_PlaySfx(Actor* actor, u16 sfxId) {
     }
 
     if (actor->id == ACTOR_PLAYER) {
-        GameInteractor_ExecuteOnPlayerSfx(sfxId);
     }
 }
 
@@ -2379,18 +2282,14 @@ void Actor_DrawFaroresWindPointer(PlayState* play) {
             D_8015BC14 = 60;
             D_8015BC18 = 1.0f;
         } else if (D_8015BC14) {
-            D_8015BC14 -= CVarGetInteger(CVAR_ENHANCEMENT("FastFarores"), 0) ? 5 : 1;
+            D_8015BC14--;
         } else if (D_8015BC18 > 0.0f) {
             static Vec3f effectVel = { 0.0f, -0.05f, 0.0f };
             static Vec3f effectAccel = { 0.0f, -0.025f, 0.0f };
             Color_RGBA8 effectPrimCol = { 255, 255, 255, 0 };
             Color_RGBA8 effectEnvCol = { 100, 200, 0, 0 };
-            if (CVarGetInteger(CVAR_COSMETIC("Magic.FaroresSecondary.Changed"), 0)) {
-                effectEnvCol = CVarGetColor(CVAR_COSMETIC("Magic.FaroresSecondary.Value"), effectEnvCol);
-            }
-            if (CVarGetInteger(CVAR_COSMETIC("Magic.FaroresPrimary.Changed"), 0)) {
-                effectPrimCol = CVarGetColor(CVAR_COSMETIC("Magic.FaroresPrimary.Value"), effectPrimCol);
-            }
+            
+            
             Vec3f* curPos = &gSaveContext.respawn[RESPAWN_MODE_TOP].pos;
             Vec3f* nextPos = &gSaveContext.respawn[RESPAWN_MODE_DOWN].pos;
             f32 prevNum = D_8015BC18;
@@ -2487,12 +2386,8 @@ void Actor_DrawFaroresWindPointer(PlayState* play) {
             gDPPipeSync(POLY_XLU_DISP++);
             Color_RGB8 Spell_env = { 100, 200, 0 };
             Color_RGB8 Spell_col = { 255, 255, 200 };
-            if (CVarGetInteger(CVAR_COSMETIC("Magic.FaroresSecondary.Changed"), 0)) {
-                Spell_env = CVarGetColor24(CVAR_COSMETIC("Magic.FaroresSecondary.Value"), Spell_env);
-            }
-            if (CVarGetInteger(CVAR_COSMETIC("Magic.FaroresPrimary.Changed"), 0)) {
-                Spell_col = CVarGetColor24(CVAR_COSMETIC("Magic.FaroresPrimary.Value"), Spell_col);
-            }
+            
+            
             gDPSetPrimColor(POLY_XLU_DISP++, 128, 128, Spell_col.r, Spell_col.g, Spell_col.b, alpha);
             gDPSetEnvColor(POLY_XLU_DISP++, Spell_env.r, Spell_env.g, Spell_env.b, 255);
 
@@ -2592,7 +2487,6 @@ void Actor_UpdateAll(PlayState* play, ActorContext* actorCtx) {
             // #endregion
         }
         play->numSetupActors = 0;
-        GameInteractor_ExecuteOnSceneSpawnActors();
     }
 
     if (actorCtx->unk_02 != 0) {
@@ -2631,15 +2525,8 @@ void Actor_UpdateAll(PlayState* play, ActorContext* actorCtx) {
                 if (Object_IsLoaded(&play->objectCtx, actor->objBankIndex)) {
                     Actor_SetObjectDependency(play, actor);
 
-                    if (GameInteractor_ShouldActorInit(actor)) {
-                        actor->init(actor, play);
-                        actor->init = NULL;
-
-                        GameInteractor_ExecuteOnActorInit(actor);
-                    } else {
-                        actor->init = NULL;
-                        Actor_Kill(actor);
-                    }
+                    actor->init(actor, play);
+                    actor->init = NULL;
                 }
                 actor = actor->next;
             } else if (!Object_IsLoaded(&play->objectCtx, actor->objBankIndex)) {
@@ -2682,10 +2569,7 @@ void Actor_UpdateAll(PlayState* play, ActorContext* actorCtx) {
                     if (actor->colorFilterTimer != 0) {
                         actor->colorFilterTimer--;
                     }
-                    if (GameInteractor_ShouldActorUpdate(actor)) {
-                        actor->update(actor, play);
-                        GameInteractor_ExecuteOnActorUpdate(actor);
-                    }
+                    actor->update(actor, play);
                     func_8003F8EC(play, &play->colCtx.dyna, actor);
                 }
 
@@ -2959,28 +2843,26 @@ s32 func_800314D4(PlayState* play, Actor* actor, Vec3f* arg2, f32 arg3) {
     return false;
 }
 
-// #region SOH [Enhancements] Allows us to increase the draw and update distance independently,
-// mostly a modified version of the function above and additional tweaks for some specfic actors
+// PC actor culling extends the original draw/update distance and accounts for widescreen viewports.
 s32 Ship_CalcShouldDrawAndUpdate(PlayState* play, Actor* actor, Vec3f* projectedPos, f32 projectedW, bool* shouldDraw,
                                  bool* shouldUpdate) {
     f32 clampedProjectedW;
 
-    // Check if the actor passes its original/vanilla culling requirements
+    // Keep the original culling result when it already includes the actor.
     if (func_800314D4(play, actor, projectedPos, projectedW)) {
         *shouldUpdate = true;
         *shouldDraw = true;
         return true;
     }
 
-    // Skip cutscne actors that depend on culling to hide from camera pans
+    // Skip cutscene actors that depend on culling to hide from camera pans.
     if (actor->id == ACTOR_EN_VIEWER) {
         return false;
     }
 
     s32 multiplier = 5;
 
-    // Some actors have a really short forward value, so we need to add to it before the multiplier to increase the
-    // final strength of the forward culling
+    // Short forward zones need a base extension before the maximum-distance multiplier is applied.
     f32 adder = (actor->uncullZoneForward < 500) ? 1000.0f : 0.0f;
 
     if ((projectedPos->z > -actor->uncullZoneScale) &&
@@ -2997,29 +2879,6 @@ s32 Ship_CalcShouldDrawAndUpdate(PlayState* play, Actor* actor, Vec3f* projected
             (((projectedPos->y + actor->uncullZoneDownward) * clampedProjectedW) > -1.0f) &&
             (((projectedPos->y - actor->uncullZoneScale) * clampedProjectedW) < 1.0f)) {
 
-            if (CVarGetInteger(CVAR_ENHANCEMENT("ExtendedCullingExcludeGlitchActors"), 0)) {
-                // These actors are safe to draw without impacting glitches
-                if ((actor->id == ACTOR_OBJ_BOMBIWA || actor->id == ACTOR_OBJ_HAMISHI ||
-                     actor->id == ACTOR_EN_ISHI) || // Boulders (hookshot through collision)
-                    actor->id == ACTOR_EN_GS ||     // Gossip stones (text delay)
-                    actor->id == ACTOR_EN_GE1 ||    // White gerudos (gate clip/archery room transition)
-                    actor->id == ACTOR_EN_KZ ||     // King Zora (unfreeze glitch)
-                    actor->id == ACTOR_EN_DU ||     // Darunia (Fire temple BK skip)
-                    actor->id == ACTOR_DOOR_WARP1   // Blue warps (wrong warps)
-                ) {
-                    *shouldDraw = true;
-                    return true;
-                }
-
-                // Skip these actors entirely as their draw funcs impacts glitches
-                if ((actor->id == ACTOR_EN_SW &&
-                     (((actor->params & 0xE000) >> 0xD) == 1 ||
-                      ((actor->params & 0xE000) >> 0xD) == 2)) // Gold Skulltulas (hitbox at 0,0)
-                ) {
-                    return false;
-                }
-            }
-
             *shouldDraw = true;
             *shouldUpdate = true;
             return true;
@@ -3028,7 +2887,6 @@ s32 Ship_CalcShouldDrawAndUpdate(PlayState* play, Actor* actor, Vec3f* projected
 
     return false;
 }
-// #endregion
 
 void func_800315AC(PlayState* play, ActorContext* actorCtx) {
     s32 invisibleActorCounter;
@@ -3065,7 +2923,7 @@ void func_800315AC(PlayState* play, ActorContext* actorCtx) {
                 }
             }
 
-            // #region SOH [Enhancement] Extended culling updates
+            // Extended PC culling updates.
             bool shipShouldDraw = false;
             bool shipShouldUpdate = false;
             if ((HREG(64) != 1) || ((HREG(65) != -1) && (HREG(65) != HREG(66))) || (HREG(70) == 0)) {
@@ -3085,7 +2943,6 @@ void func_800315AC(PlayState* play, ActorContext* actorCtx) {
                 if ((actor->init == NULL) && (actor->draw != NULL) &&
                     ((actor->flags & (ACTOR_FLAG_DRAW_CULLING_DISABLED | ACTOR_FLAG_INSIDE_CULLING_VOLUME)) ||
                      shipShouldDraw)) {
-                    // #endregion
                     if ((actor->flags & ACTOR_FLAG_REACT_TO_LENS) &&
                         ((play->roomCtx.curRoom.lensMode == LENS_MODE_HIDE_ACTORS) || play->actorCtx.lensActive ||
                          (actor->room != play->roomCtx.curRoom.num))) {
@@ -3325,7 +3182,7 @@ Actor* Actor_Spawn(ActorContext* actorCtx, PlayState* play, s16 actorId, f32 pos
 
     objBankIndex = Object_GetIndex(&gPlayState->objectCtx, dbEntry->objectId);
 
-    if (objBankIndex < 0 && (!gMapLoading || CVarGetInteger(CVAR_ENHANCEMENT("RandomizedEnemies"), 0))) {
+    if (objBankIndex < 0 && !gMapLoading) {
         objBankIndex = 0;
     }
 
@@ -3391,7 +3248,6 @@ Actor* Actor_Spawn(ActorContext* actorCtx, PlayState* play, s16 actorId, f32 pos
     Actor_Init(actor, play);
     gSegments[6] = temp;
 
-    GameInteractor_ExecuteOnActorSpawn(actor);
 
     return actor;
 }
@@ -3402,16 +3258,6 @@ Actor* Actor_SpawnAsChild(ActorContext* actorCtx, Actor* parent, PlayState* play
 
     if (spawnedActor == NULL) {
         return NULL;
-    }
-
-    // The following enemies break when the parent actor isn't the same as what would happen in authentic gameplay.
-    // As such, don't assign a parent to them at all when spawned with Enemy Randomizer.
-    // Gohma (z_boss_goma.c) and the falling platform spawning Stalfos in
-    // Forest Temple (z_bg_mori_bigst.c) that normally rely on this behaviour are changed when
-    // Enemy Rando is on so they still work properly even without assigning a parent.
-    if (CVarGetInteger(CVAR_ENHANCEMENT("RandomizedEnemies"), 0) &&
-        (spawnedActor->id == ACTOR_EN_FLOORMAS || spawnedActor->id == ACTOR_EN_PEEHAT)) {
-        return spawnedActor;
     }
 
     parent->child = spawnedActor;
@@ -3456,10 +3302,10 @@ Actor* Actor_SpawnEntry(ActorContext* actorCtx, ActorEntry* actorEntry, PlayStat
     gMapLoading = 1;
     Actor* ret;
 
-    if (GameInteractor_Should(VB_SPAWN_ACTOR_ENTRY, true, actorCtx, actorEntry, play, &ret)) {
+    
         ret = Actor_Spawn(actorCtx, play, actorEntry->id, actorEntry->pos.x, actorEntry->pos.y, actorEntry->pos.z,
                           actorEntry->rot.x, actorEntry->rot.y, actorEntry->rot.z, actorEntry->params);
-    }
+    
 
     gMapLoading = 0;
 
@@ -3474,7 +3320,6 @@ Actor* Actor_Delete(ActorContext* actorCtx, Actor* actor, PlayState* play) {
     player = GET_PLAYER(play);
 
     // Execute before actor memory is freed
-    GameInteractor_ExecuteOnActorDestroy(actor);
 
     if ((player != NULL) && (actor == player->focusActor)) {
         Player_ReleaseLockOn(player);
@@ -3549,12 +3394,9 @@ void func_800328D4(PlayState* play, ActorContext* actorCtx, Player* player, u32 
 
             // This block below is for determining the closest actor to player in determining the volume
             // used while playing enemy bgm music
-            if (GameInteractor_Should(
-                    VB_DETECT_BGM_ENEMY,
-                    (actorCategory == ACTORCAT_ENEMY) &&
+            if (((actorCategory == ACTORCAT_ENEMY) &&
                         CHECK_FLAG_ALL(actor->flags, ACTOR_FLAG_ATTENTION_ENABLED | ACTOR_FLAG_HOSTILE) &&
-                        (actor->xyzDistToPlayerSq < SQ(500.0f)) && (actor->xyzDistToPlayerSq < sbgmEnemyDistSq),
-                    actor, &sbgmEnemyDistSq, (int32_t)actorCategory)) {
+                        (actor->xyzDistToPlayerSq < SQ(500.0f)) && (actor->xyzDistToPlayerSq < sbgmEnemyDistSq))) {
                 actorCtx->targetCtx.bgmEnemy = actor;
                 sbgmEnemyDistSq = actor->xyzDistToPlayerSq;
             }
@@ -3755,13 +3597,13 @@ s32 BodyBreak_SpawnParts(Actor* actor, BodyBreak* bodyBreak, PlayState* play, s1
         Matrix_Scale(1.0f / actor->scale.x, 1.0f / actor->scale.y, 1.0f / actor->scale.z, MTXMODE_APPLY);
         Matrix_Get(&bodyBreak->matrices[bodyBreak->count]);
 
-        if (1) {
+        
             if (bodyBreak->objectIds[bodyBreak->count] >= 0) {
                 objBankIndex = bodyBreak->objectIds[bodyBreak->count];
             } else {
                 objBankIndex = actor->objBankIndex;
             }
-        }
+        
 
         mtx = &bodyBreak->matrices[bodyBreak->count];
 
@@ -4916,7 +4758,6 @@ void Flags_SetEventChkInf(s32 flag) {
     gSaveContext.eventChkInf[flag >> 4] |= (1 << (flag & 0xF));
     if (previouslyOff) {
         LUSLOG_INFO("EventChkInf Flag Set - %#x", flag);
-        GameInteractor_ExecuteOnFlagSet(FLAG_EVENT_CHECK_INF, flag);
     }
 }
 
@@ -4928,7 +4769,6 @@ void Flags_UnsetEventChkInf(s32 flag) {
     gSaveContext.eventChkInf[flag >> 4] &= ~(1 << (flag & 0xF));
     if (previouslyOn) {
         LUSLOG_INFO("EventChkInf Flag Unset - %#x", flag);
-        GameInteractor_ExecuteOnFlagUnset(FLAG_EVENT_CHECK_INF, flag);
     }
 }
 
@@ -4947,7 +4787,6 @@ void Flags_SetItemGetInf(s32 flag) {
     gSaveContext.itemGetInf[flag >> 4] |= (1 << (flag & 0xF));
     if (previouslyOff) {
         LUSLOG_INFO("ItemGetInf Flag Set - %#x", flag);
-        GameInteractor_ExecuteOnFlagSet(FLAG_ITEM_GET_INF, flag);
     }
 }
 
@@ -4959,7 +4798,6 @@ void Flags_UnsetItemGetInf(s32 flag) {
     gSaveContext.itemGetInf[flag >> 4] &= ~(1 << (flag & 0xF));
     if (previouslyOn) {
         LUSLOG_INFO("ItemGetInf Flag Unset - %#x", flag);
-        GameInteractor_ExecuteOnFlagUnset(FLAG_ITEM_GET_INF, flag);
     }
 }
 
@@ -4978,7 +4816,6 @@ void Flags_SetInfTable(s32 flag) {
     gSaveContext.infTable[flag >> 4] |= (1 << (flag & 0xF));
     if (previouslyOff) {
         LUSLOG_INFO("InfTable Flag Set - %#x", flag);
-        GameInteractor_ExecuteOnFlagSet(FLAG_INF_TABLE, flag);
     }
 }
 
@@ -4990,7 +4827,6 @@ void Flags_UnsetInfTable(s32 flag) {
     gSaveContext.infTable[flag >> 4] &= ~(1 << (flag & 0xF));
     if (previouslyOn) {
         LUSLOG_INFO("InfTable Flag Unset - %#x", flag);
-        GameInteractor_ExecuteOnFlagUnset(FLAG_INF_TABLE, flag);
     }
 }
 
@@ -5009,7 +4845,6 @@ void Flags_SetEventInf(s32 flag) {
     gSaveContext.eventInf[flag >> 4] |= (1 << (flag & 0xF));
     if (previouslyOff) {
         LUSLOG_INFO("EventInf Flag Set - %#x", flag);
-        GameInteractor_ExecuteOnFlagSet(FLAG_EVENT_INF, flag);
     }
 }
 
@@ -5021,7 +4856,6 @@ void Flags_UnsetEventInf(s32 flag) {
     gSaveContext.eventInf[flag >> 4] &= ~(1 << (flag & 0xF));
     if (previouslyOn) {
         LUSLOG_INFO("EventInf Flag Unset - %#x", flag);
-        GameInteractor_ExecuteOnFlagUnset(FLAG_EVENT_INF, flag);
     }
 }
 

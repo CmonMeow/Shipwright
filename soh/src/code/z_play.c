@@ -3,12 +3,10 @@
 
 #include <string.h>
 
-#include "soh/Enhancements/gameconsole.h"
+#include "soh/Enhancements/debugger/colViewer.h"
 #include "soh/frame_interpolation.h"
 #include <overlays/actors/ovl_En_Niw/z_en_niw.h>
 #include <overlays/misc/ovl_kaleido_scope/z_kaleido_scope.h>
-#include "soh/Enhancements/enhancementTypes.h"
-#include "soh/Enhancements/game-interactor/GameInteractor_Hooks.h"
 #include "soh/OTRGlobals.h"
 #include "soh/ResourceManagerHelpers.h"
 #include "soh/SaveManager.h"
@@ -35,8 +33,6 @@ Input* D_8012D1F8 = NULL;
 
 PlayState* gPlayState;
 s16 firstInit = 0;
-s16 gEnPartnerId;
-
 void Play_SpawnScene(PlayState* play, s32 sceneId, s32 spawn);
 
 // This macro prints the number "1" with a file and line number if R_ENABLE_PLAY_LOGS is enabled.
@@ -48,9 +44,6 @@ void Play_SpawnScene(PlayState* play, s32 sceneId, s32 spawn);
             LOG_NUM("1", 1 /*, "../z_play.c", line */); \
         }                                               \
     } while (0)
-
-void enableBetaQuest();
-void disableBetaQuest();
 
 void OTRPlay_SpawnScene(PlayState* play, s32 sceneId, s32 spawn);
 
@@ -201,7 +194,6 @@ void Play_Destroy(GameState* thisx) {
     PlayState* play = (PlayState*)thisx;
     Player* player = GET_PLAYER(play);
 
-    GameInteractor_ExecuteOnPlayDestroy();
 
     play->state.gfxCtx->callback = NULL;
     play->state.gfxCtx->callbackParam = 0;
@@ -241,8 +233,6 @@ void Play_Destroy(GameState* thisx) {
     ZeldaArena_Cleanup();
 
     Fault_RemoveClient(&D_801614B8);
-
-    disableBetaQuest();
 
     gPlayState = NULL;
 }
@@ -337,8 +327,6 @@ void Play_Init(GameState* thisx) {
     u8 baseSceneLayer;
     s32 pad[2];
 
-    enableBetaQuest();
-
     // Properly initialize the frame counter so it doesn't use garbage data
     if (!firstInit) {
         play->gameplayFrames = 0;
@@ -350,7 +338,7 @@ void Play_Init(GameState* thisx) {
         gSaveContext.entranceIndex = 0;
         play->state.running = false;
         SET_NEXT_GAMESTATE(&play->state, Opening_Init, OpeningContext);
-        GameInteractor_ExecuteOnExitGame(gSaveContext.fileNum);
+        SaveManager_ThreadPoolWait();
         return;
     }
 
@@ -474,7 +462,6 @@ void Play_Init(GameState* thisx) {
             gSaveContext.dogIsLost = true;
 
             if (Inventory_ReplaceItem(play, ITEM_WEIRD_EGG, ITEM_CHICKEN) || Inventory_HatchPocketCucco(play)) {
-                GameInteractor_ExecuteOnCuccoOrChickenHatch();
                 Message_StartTextbox(play, 0x3066, NULL);
             }
 
@@ -533,20 +520,10 @@ void Play_Init(GameState* thisx) {
 
     Fault_AddClient(&D_801614B8, ZeldaArena_Display, NULL, NULL);
 
-    // In order to keep masks equipped on first load, we need to pre-set the age reqs for the item and slot
-    if (CVarGetInteger(CVAR_ENHANCEMENT("AdultMasks"), 0) || CVarGetInteger(CVAR_CHEAT("TimelessEquipment"), 0)) {
-        for (int i = ITEM_MASK_KEATON; i <= ITEM_MASK_TRUTH; i += 1) {
-            gItemAgeReqs[i] = AGE_REQ_NONE;
-        }
-        if (INV_CONTENT(ITEM_TRADE_CHILD) >= ITEM_MASK_KEATON && INV_CONTENT(ITEM_TRADE_CHILD) <= ITEM_MASK_TRUTH) {
-            gSlotAgeReqs[SLOT_TRADE_CHILD] = AGE_REQ_NONE;
-        }
-    } else {
-        for (int i = ITEM_MASK_KEATON; i <= ITEM_MASK_TRUTH; i += 1) {
-            gItemAgeReqs[i] = AGE_REQ_CHILD;
-        }
-        gSlotAgeReqs[SLOT_TRADE_CHILD] = AGE_REQ_CHILD;
+    for (int i = ITEM_MASK_KEATON; i <= ITEM_MASK_TRUTH; i += 1) {
+        gItemAgeReqs[i] = AGE_REQ_CHILD;
     }
+    gSlotAgeReqs[SLOT_TRADE_CHILD] = AGE_REQ_CHILD;
 
     // Handle Rocs Feather requirement
     gItemAgeReqs[ITEM_ROCS_FEATHER] = AGE_REQ_NONE;
@@ -597,35 +574,6 @@ void Play_Init(GameState* thisx) {
     AnimationContext_Update(play, &play->animationCtx);
     gSaveContext.respawnFlag = 0;
 
-    // #region SOH [Stats]
-    if (gSaveContext.ship.stats.sceneNum != gPlayState->sceneNum) {
-        u16 idx = gSaveContext.ship.stats.tsIdx;
-        gSaveContext.ship.stats.sceneTimestamps[idx].sceneTime = gSaveContext.ship.stats.sceneTimer / 2;
-        gSaveContext.ship.stats.sceneTimestamps[idx].roomTime = gSaveContext.ship.stats.roomTimer / 2;
-        gSaveContext.ship.stats.sceneTimestamps[idx].scene = gSaveContext.ship.stats.sceneNum;
-        gSaveContext.ship.stats.sceneTimestamps[idx].room = gSaveContext.ship.stats.roomNum;
-        gSaveContext.ship.stats.sceneTimestamps[idx].isRoom =
-            gPlayState->sceneNum == gSaveContext.ship.stats.sceneTimestamps[idx].scene &&
-            gPlayState->roomCtx.curRoom.num != gSaveContext.ship.stats.sceneTimestamps[idx].room;
-        gSaveContext.ship.stats.tsIdx++;
-        gSaveContext.ship.stats.sceneTimer = 0;
-        gSaveContext.ship.stats.roomTimer = 0;
-    } else if (gSaveContext.ship.stats.roomNum != gPlayState->roomCtx.curRoom.num) {
-        u16 idx = gSaveContext.ship.stats.tsIdx;
-        gSaveContext.ship.stats.sceneTimestamps[idx].roomTime = gSaveContext.ship.stats.roomTimer / 2;
-        gSaveContext.ship.stats.sceneTimestamps[idx].scene = gSaveContext.ship.stats.sceneNum;
-        gSaveContext.ship.stats.sceneTimestamps[idx].room = gSaveContext.ship.stats.roomNum;
-        gSaveContext.ship.stats.sceneTimestamps[idx].isRoom =
-            gPlayState->sceneNum == gSaveContext.ship.stats.sceneTimestamps[idx].scene &&
-            gPlayState->roomCtx.curRoom.num != gSaveContext.ship.stats.sceneTimestamps[idx].room;
-        gSaveContext.ship.stats.tsIdx++;
-        gSaveContext.ship.stats.roomTimer = 0;
-    }
-
-    gSaveContext.ship.stats.sceneNum = gPlayState->sceneNum;
-    gSaveContext.ship.stats.roomNum = gPlayState->roomCtx.curRoom.num;
-    // #endregion
-
 #if 0
     if (R_USE_DEBUG_CUTSCENE) {
         static u64 sDebugCutsceneScriptBuf[0xA00];
@@ -638,12 +586,6 @@ void Play_Init(GameState* thisx) {
         DmaMgr_DmaRomToRam(0x03FEB000, gDebugCutsceneScript, sizeof(sDebugCutsceneScriptBuf));
     }
 #endif
-
-    if (CVarGetInteger(CVAR_ENHANCEMENT("IvanCoopModeEnabled"), 0)) {
-        Actor_Spawn(&play->actorCtx, play, gEnPartnerId, GET_PLAYER(play)->actor.world.pos.x,
-                    GET_PLAYER(play)->actor.world.pos.y + Player_GetHeight(GET_PLAYER(play)) + 5.0f,
-                    GET_PLAYER(play)->actor.world.pos.z, 0, 0, 0, 1);
-    }
 
     // nextEntranceIndex was not initialized, so the previous value was carried over during soft resets.
     gPlayState->nextEntranceIndex = gSaveContext.entranceIndex;
@@ -682,10 +624,6 @@ void Play_Update(PlayState* play) {
         // ActorOverlayTable_LogPrint();
     }
 
-    if (CVarGetInteger(CVAR_SETTING("FreeLook.Enabled"), 0) && Player_InCsMode(play)) {
-        play->manualCamera = false;
-    }
-
     gSegments[4] = VIRTUAL_TO_PHYSICAL(play->objectCtx.status[play->objectCtx.mainKeepIndex].segment);
     gSegments[5] = VIRTUAL_TO_PHYSICAL(play->objectCtx.status[play->objectCtx.subKeepIndex].segment);
     gSegments[2] = VIRTUAL_TO_PHYSICAL(play->sceneSegment);
@@ -694,60 +632,6 @@ void Play_Update(PlayState* play) {
         if ((play->transitionMode == TRANS_MODE_OFF) && (play->transitionTrigger != TRANS_TRIGGER_OFF)) {
             play->transitionMode = TRANS_MODE_SETUP;
         }
-
-        // #region SOH [Stats] Gameplay stats: Count button presses
-        if (!gSaveContext.ship.stats.gameComplete) {
-            if (CHECK_BTN_ALL(input[0].press.button, BTN_A)) {
-                gSaveContext.ship.stats.count[COUNT_BUTTON_PRESSES_A]++;
-            }
-            if (CHECK_BTN_ALL(input[0].press.button, BTN_B)) {
-                gSaveContext.ship.stats.count[COUNT_BUTTON_PRESSES_B]++;
-            }
-            if (CHECK_BTN_ALL(input[0].press.button, BTN_CUP)) {
-                gSaveContext.ship.stats.count[COUNT_BUTTON_PRESSES_CUP]++;
-            }
-            if (CHECK_BTN_ALL(input[0].press.button, BTN_CRIGHT)) {
-                gSaveContext.ship.stats.count[COUNT_BUTTON_PRESSES_CRIGHT]++;
-            }
-            if (CHECK_BTN_ALL(input[0].press.button, BTN_CLEFT)) {
-                gSaveContext.ship.stats.count[COUNT_BUTTON_PRESSES_CLEFT]++;
-            }
-            if (CHECK_BTN_ALL(input[0].press.button, BTN_CDOWN)) {
-                gSaveContext.ship.stats.count[COUNT_BUTTON_PRESSES_CDOWN]++;
-            }
-            if (CHECK_BTN_ALL(input[0].press.button, BTN_DUP)) {
-                gSaveContext.ship.stats.count[COUNT_BUTTON_PRESSES_DUP]++;
-            }
-            if (CHECK_BTN_ALL(input[0].press.button, BTN_DRIGHT)) {
-                gSaveContext.ship.stats.count[COUNT_BUTTON_PRESSES_DRIGHT]++;
-            }
-            if (CHECK_BTN_ALL(input[0].press.button, BTN_DDOWN)) {
-                gSaveContext.ship.stats.count[COUNT_BUTTON_PRESSES_DDOWN]++;
-            }
-            if (CHECK_BTN_ALL(input[0].press.button, BTN_DLEFT)) {
-                gSaveContext.ship.stats.count[COUNT_BUTTON_PRESSES_DLEFT]++;
-            }
-            if (CHECK_BTN_ALL(input[0].press.button, BTN_L)) {
-                gSaveContext.ship.stats.count[COUNT_BUTTON_PRESSES_L]++;
-            }
-            if (CHECK_BTN_ALL(input[0].press.button, BTN_R)) {
-                gSaveContext.ship.stats.count[COUNT_BUTTON_PRESSES_R]++;
-            }
-            if (CHECK_BTN_ALL(input[0].press.button, BTN_Z)) {
-                gSaveContext.ship.stats.count[COUNT_BUTTON_PRESSES_Z]++;
-            }
-            if (CHECK_BTN_ALL(input[0].press.button, BTN_START)) {
-                gSaveContext.ship.stats.count[COUNT_BUTTON_PRESSES_START]++;
-            }
-
-            // Start RTA timing on first non-c-up input after intro cutscene
-            if (!gSaveContext.ship.stats.firstInput && !Player_InCsMode(play) &&
-                ((input[0].press.button && input[0].press.button != 0x8) || input[0].rel.stick_x != 0 ||
-                 input[0].rel.stick_y != 0)) {
-                gSaveContext.ship.stats.firstInput = GetUnixTimestamp();
-            }
-        }
-        // #endregion
 
         if (gTrnsnUnkState != 0) {
             switch (gTrnsnUnkState) {
@@ -912,7 +796,6 @@ void Play_Update(PlayState* play) {
                             }
 
                             // Transition end for standard transitions
-                            GameInteractor_ExecuteOnTransitionEndHooks(play->sceneNum);
                         }
 
                         play->transitionTrigger = TRANS_TRIGGER_OFF;
@@ -1030,7 +913,6 @@ void Play_Update(PlayState* play) {
                             play->transitionMode = TRANS_MODE_OFF;
 
                             // Transition end for sandstorm effect (delayed until effect is finished)
-                            GameInteractor_ExecuteOnTransitionEndHooks(play->sceneNum);
                         }
                     } else {
                         if (play->envCtx.sandstormEnvA == 255) {
@@ -1069,7 +951,6 @@ void Play_Update(PlayState* play) {
                             play->transitionMode = TRANS_MODE_OFF;
 
                             // Transition end for sandstorm effect (delayed until effect is finished)
-                            GameInteractor_ExecuteOnTransitionEndHooks(play->sceneNum);
                         }
                     }
                     break;
@@ -1126,31 +1007,16 @@ void Play_Update(PlayState* play) {
                 play->gameplayFrames++;
                 func_800AA178(true);
 
-                // Gameplay stat tracking
-                if (!gSaveContext.ship.stats.gameComplete &&
-                    (!IS_BOSS_RUSH || !gSaveContext.ship.quest.data.bossRush.isPaused)) {
-                    gSaveContext.ship.stats.playTimer++;
-                    gSaveContext.ship.stats.sceneTimer++;
-                    gSaveContext.ship.stats.roomTimer++;
-
-                    if (CVarGetInteger(CVAR_ENHANCEMENT("MMBunnyHood"), BUNNY_HOOD_VANILLA) != BUNNY_HOOD_VANILLA &&
-                        Player_GetMask(play) == PLAYER_MASK_BUNNY) {
-                        gSaveContext.ship.stats.count[COUNT_TIME_BUNNY_HOOD]++;
-                    }
-                }
-
                 if (play->actorCtx.freezeFlashTimer && (play->actorCtx.freezeFlashTimer-- < 5)) {
-                    if (GameInteractor_Should(VB_FLASH_SCREEN_FOR_FINISHING_BLOW, true)) {
-                        osSyncPrintf("FINISH=%d\n", play->actorCtx.freezeFlashTimer);
+                    osSyncPrintf("FINISH=%d\n", play->actorCtx.freezeFlashTimer);
 
-                        if ((play->actorCtx.freezeFlashTimer > 0) && ((play->actorCtx.freezeFlashTimer % 2) != 0)) {
-                            play->envCtx.fillScreen = true;
-                            play->envCtx.screenFillColor[0] = play->envCtx.screenFillColor[1] =
-                                play->envCtx.screenFillColor[2] = 150;
-                            play->envCtx.screenFillColor[3] = 80;
-                        } else {
-                            play->envCtx.fillScreen = false;
-                        }
+                    if ((play->actorCtx.freezeFlashTimer > 0) && ((play->actorCtx.freezeFlashTimer % 2) != 0)) {
+                        play->envCtx.fillScreen = true;
+                        play->envCtx.screenFillColor[0] = play->envCtx.screenFillColor[1] =
+                            play->envCtx.screenFillColor[2] = 150;
+                        play->envCtx.screenFillColor[3] = 80;
+                    } else {
+                        play->envCtx.fillScreen = false;
                     }
                 } else {
                     PLAY_LOG(3606);
@@ -1263,7 +1129,6 @@ void Play_Update(PlayState* play) {
 skip:
     PLAY_LOG(3801);
 
-    GameInteractor_ExecuteOnCameraState(play);
 
     if (!isPaused || gDbgCamEnabled) {
         s32 i;
@@ -1354,24 +1219,12 @@ void Play_Draw(PlayState* play) {
     Gfx_SetupFrame(gfxCtx, 0, 0, 0);
 
     if ((HREG(80) != 10) || (HREG(82) != 0)) {
-        GameInteractor_ExecuteOnPlayDrawBegin();
 
         POLY_OPA_DISP = Play_SetFog(play, POLY_OPA_DISP);
         POLY_XLU_DISP = Play_SetFog(play, POLY_XLU_DISP);
 
         func_800AA460(&play->view, play->view.fovy, play->view.zNear, play->lightCtx.fogFar);
         func_800AAA50(&play->view, 15);
-
-        // Flip the projections and invert culling for the OPA and XLU display buffers
-        // These manage the world and effects when we are not drawing kaleido
-        if (R_PAUSE_MENU_MODE <= 1 && CVarGetInteger(CVAR_ENHANCEMENT("MirroredWorld"), 0)) {
-            gSPSetExtraGeometryMode(POLY_OPA_DISP++, G_EX_INVERT_CULLING);
-            gSPSetExtraGeometryMode(POLY_XLU_DISP++, G_EX_INVERT_CULLING);
-            gSPMatrix(POLY_OPA_DISP++, play->view.projectionFlippedPtr, G_MTX_NOPUSH | G_MTX_LOAD | G_MTX_PROJECTION);
-            gSPMatrix(POLY_XLU_DISP++, play->view.projectionFlippedPtr, G_MTX_NOPUSH | G_MTX_LOAD | G_MTX_PROJECTION);
-            gSPMatrix(POLY_OPA_DISP++, play->view.viewingPtr, G_MTX_NOPUSH | G_MTX_MUL | G_MTX_PROJECTION);
-            gSPMatrix(POLY_XLU_DISP++, play->view.viewingPtr, G_MTX_NOPUSH | G_MTX_MUL | G_MTX_PROJECTION);
-        }
 
         // The billboard matrix temporarily stores the viewing matrix
         Matrix_MtxToMtxF(&play->view.viewing, &play->billboardMtxF);
@@ -1605,20 +1458,13 @@ void Play_Draw(PlayState* play) {
             }
         }
 
-        // Draw Enhancements that need to be placed in the world. This happens before the PostWorldDraw
-        // so that they aren't drawn when the pause menu is up (e.g. collision viewer, actor name tags)
-        GameInteractor_ExecuteOnPlayDrawEnd();
+        DrawColViewer();
 
     Play_Draw_DrawOverlayElements:
         if ((HREG(80) != 10) || (HREG(89) != 0)) {
             Play_DrawOverlayElements(play);
         }
 
-        // Reset the inverted culling
-        if (CVarGetInteger(CVAR_ENHANCEMENT("MirroredWorld"), 0)) {
-            gSPClearExtraGeometryMode(POLY_OPA_DISP++, G_EX_INVERT_CULLING);
-            gSPClearExtraGeometryMode(POLY_XLU_DISP++, G_EX_INVERT_CULLING);
-        }
     }
 
 Play_Draw_skip:
@@ -1636,7 +1482,6 @@ Play_Draw_skip:
 
     CLOSE_DISPS(gfxCtx);
 
-    Interface_DrawTotalGameplayTimer(play);
 }
 
 time_t Play_GetRealTime() {
@@ -1653,11 +1498,6 @@ time_t Play_GetRealTime() {
 
 void Play_Main(GameState* thisx) {
     PlayState* play = (PlayState*)thisx;
-
-    if (play->envCtx.unk_EE[2] == 0 && CVarGetInteger(CVAR_GENERAL("LetItSnow"), 0)) {
-        play->envCtx.unk_EE[3] = 64;
-        Actor_Spawn(&gPlayState->actorCtx, gPlayState, ACTOR_OBJECT_KANKYO, 0, 0, 0, 0, 0, 0, 3);
-    }
 
     D_8012D1F8 = &play->state.input[0];
 
@@ -1694,17 +1534,6 @@ void Play_Main(GameState* thisx) {
 
     PLAY_LOG(4587);
 
-    if (CVarGetInteger(CVAR_CHEAT("TimeSync"), 0)) {
-        const int maxRealDaySeconds = 86400;
-        const int maxInGameDayTicks = 65536;
-
-        int secs = (int)Play_GetRealTime();
-        float percent = (float)secs / (float)maxRealDaySeconds;
-
-        int newIngameTime = maxInGameDayTicks * percent;
-
-        gSaveContext.dayTime = newIngameTime;
-    }
 }
 
 u8 PlayerGrounded(Player* player) {
@@ -1816,13 +1645,6 @@ void Play_InitScene(PlayState* play, s32 spawn) {
 }
 
 void Play_SpawnScene(PlayState* play, s32 sceneId, s32 spawn) {
-    uint8_t mqMode = CVarGetInteger(CVAR_GENERAL("BetterDebugWarpScreenMQMode"), WARP_MODE_OVERRIDE_OFF);
-    int16_t mqModeScene = CVarGetInteger(CVAR_GENERAL("BetterDebugWarpScreenMQModeScene"), -1);
-    if (mqMode != WARP_MODE_OVERRIDE_OFF && sceneId != mqModeScene) {
-        CVarClear(CVAR_GENERAL("BetterDebugWarpScreenMQMode"));
-        CVarClear(CVAR_GENERAL("BetterDebugWarpScreenMQModeScene"));
-    }
-
     OTRPlay_SpawnScene(play, sceneId, spawn);
 }
 

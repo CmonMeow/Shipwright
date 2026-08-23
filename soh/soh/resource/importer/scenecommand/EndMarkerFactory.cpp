@@ -11,9 +11,7 @@ std::shared_ptr<Ship::IResource> EndMarkerFactory::ReadResource(std::shared_ptr<
 
     ReadCommandId(endMarker, reader);
 
-    if (CVarGetInteger(CVAR_DEVELOPER_TOOLS("ResourceLogging"), 0)) {
-        LogEndMarkerAsXML(endMarker);
-    }
+    
 
     return endMarker;
 }

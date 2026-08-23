@@ -7,10 +7,6 @@
 #include "textures/parameter_static/parameter_static.h"
 #include "textures/message_static/message_static.h"
 #include "textures/message_texture_static/message_texture_static.h"
-#include "soh/Enhancements/cosmetics/CosmeticsEditor.h"
-#include "soh/Enhancements/cosmetics/cosmeticsTypes.h"
-#include "soh/Enhancements/game-interactor/GameInteractor.h"
-#include "soh/Enhancements/game-interactor/GameInteractor_Hooks.h"
 #include "soh/OTRGlobals.h"
 #include "soh/SaveManager.h"
 #include "soh/ResourceManagerHelpers.h"
@@ -109,31 +105,17 @@ void Message_ResetOcarinaNoteState(void) {
     sOcarinaNoteABtnEnv = (Color_RGB8){ 10, 10, 10 };
     sOcarinaNoteCBtnPrim = (Color_RGB8){ 255, 255, 50 };
     sOcarinaNoteCBtnEnv = (Color_RGB8){ 10, 10, 10 };
-    if (CVarGetInteger(CVAR_COSMETIC("HUD.AButton.Changed"), 0)) {
-        sOcarinaNoteABtnPrim = CVarGetColor24(CVAR_COSMETIC("HUD.AButton.Value"), sOcarinaNoteABtnPrim);
-    } else if (CVarGetInteger(CVAR_COSMETIC("DefaultColorScheme"), COLORSCHEME_N64) == COLORSCHEME_GAMECUBE) {
-        sOcarinaNoteABtnPrim = (Color_RGB8){ 80, 255, 150 };
-    }
-    if (CVarGetInteger(CVAR_COSMETIC("HUD.CButtons.Changed"), 0)) {
-        sOcarinaNoteCBtnPrim = CVarGetColor24(CVAR_COSMETIC("HUD.CButtons.Value"), sOcarinaNoteCBtnPrim);
-    }
+    
+    
 
     sOcarinaNoteCUpBtnPrim = sOcarinaNoteCBtnPrim;
     sOcarinaNoteCDownBtnPrim = sOcarinaNoteCBtnPrim;
     sOcarinaNoteCLeftBtnPrim = sOcarinaNoteCBtnPrim;
     sOcarinaNoteCRightBtnPrim = sOcarinaNoteCBtnPrim;
-    if (CVarGetInteger(CVAR_COSMETIC("HUD.CUpButton.Changed"), 0)) {
-        sOcarinaNoteCUpBtnPrim = CVarGetColor24(CVAR_COSMETIC("HUD.CUpButton.Value"), sOcarinaNoteCUpBtnPrim);
-    }
-    if (CVarGetInteger(CVAR_COSMETIC("HUD.CDownButton.Changed"), 0)) {
-        sOcarinaNoteCDownBtnPrim = CVarGetColor24(CVAR_COSMETIC("HUD.CDownButton.Value"), sOcarinaNoteCDownBtnPrim);
-    }
-    if (CVarGetInteger(CVAR_COSMETIC("HUD.CLeftButton.Changed"), 0)) {
-        sOcarinaNoteCLeftBtnPrim = CVarGetColor24(CVAR_COSMETIC("HUD.CLeftButton.Value"), sOcarinaNoteCLeftBtnPrim);
-    }
-    if (CVarGetInteger(CVAR_COSMETIC("HUD.CRightButton.Changed"), 0)) {
-        sOcarinaNoteCRightBtnPrim = CVarGetColor24(CVAR_COSMETIC("HUD.CRightButton.Value"), sOcarinaNoteCRightBtnPrim);
-    }
+    
+    
+    
+    
 }
 
 void Message_UpdateOcarinaGame(PlayState* play) {
@@ -160,23 +142,20 @@ void Message_UpdateOcarinaGame(PlayState* play) {
 u8 Message_ShouldAdvance(PlayState* play) {
     Input* input = &play->state.input[0];
 
-    bool isB_Held = CVarGetInteger(CVAR_ENHANCEMENT("SkipText"), 0) != 0 ? CHECK_BTN_ALL(input->cur.button, BTN_B)
-                                                                         : CHECK_BTN_ALL(input->press.button, BTN_B);
-
-    if (CHECK_BTN_ALL(input->press.button, BTN_A) || isB_Held || CHECK_BTN_ALL(input->press.button, BTN_CUP)) {
+    if (CHECK_BTN_ALL(input->press.button, BTN_A) || CHECK_BTN_ALL(input->press.button, BTN_B) ||
+        CHECK_BTN_ALL(input->press.button, BTN_CUP)) {
         Audio_PlaySoundGeneral(NA_SE_SY_MESSAGE_PASS, &gSfxDefaultPos, 4, &gSfxDefaultFreqAndVolScale,
                                &gSfxDefaultFreqAndVolScale, &gSfxDefaultReverb);
     }
-    return CHECK_BTN_ALL(input->press.button, BTN_A) || isB_Held || CHECK_BTN_ALL(input->press.button, BTN_CUP);
+    return CHECK_BTN_ALL(input->press.button, BTN_A) || CHECK_BTN_ALL(input->press.button, BTN_B) ||
+           CHECK_BTN_ALL(input->press.button, BTN_CUP);
 }
 
 u8 Message_ShouldAdvanceSilent(PlayState* play) {
     Input* input = &play->state.input[0];
 
-    bool isB_Held = CVarGetInteger(CVAR_ENHANCEMENT("SkipText"), 0) != 0 ? CHECK_BTN_ALL(input->cur.button, BTN_B)
-                                                                         : CHECK_BTN_ALL(input->press.button, BTN_B);
-
-    return CHECK_BTN_ALL(input->press.button, BTN_A) || isB_Held || CHECK_BTN_ALL(input->press.button, BTN_CUP);
+    return CHECK_BTN_ALL(input->press.button, BTN_A) || CHECK_BTN_ALL(input->press.button, BTN_B) ||
+           CHECK_BTN_ALL(input->press.button, BTN_CUP);
 }
 
 /**
@@ -199,9 +178,8 @@ void Message_HandleChoiceSelection(PlayState* play, u8 numChoices) {
     static s16 sAnalogStickHeld = false;
     MessageContext* msgCtx = &play->msgCtx;
     Input* input = &play->state.input[0];
-    bool dpad = CVarGetInteger(CVAR_SETTING("DpadInText"), 0);
 
-    if ((input->rel.stick_y >= 30 && !sAnalogStickHeld) || (dpad && CHECK_BTN_ALL(input->press.button, BTN_DUP))) {
+    if ((input->rel.stick_y >= 30 && !sAnalogStickHeld)) {
         sAnalogStickHeld = true;
         msgCtx->choiceIndex--;
         if (msgCtx->choiceIndex > 128) {
@@ -210,8 +188,7 @@ void Message_HandleChoiceSelection(PlayState* play, u8 numChoices) {
             Audio_PlaySoundGeneral(NA_SE_SY_CURSOR, &gSfxDefaultPos, 4, &gSfxDefaultFreqAndVolScale,
                                    &gSfxDefaultFreqAndVolScale, &gSfxDefaultReverb);
         }
-    } else if ((input->rel.stick_y <= -30 && !sAnalogStickHeld) ||
-               (dpad && CHECK_BTN_ALL(input->press.button, BTN_DDOWN))) {
+    } else if ((input->rel.stick_y <= -30 && !sAnalogStickHeld)) {
         sAnalogStickHeld = true;
         msgCtx->choiceIndex++;
         if (msgCtx->choiceIndex > numChoices) {
@@ -414,81 +391,6 @@ void Message_FindCreditsMessage(PlayState* play, u16 textId) {
     }
 }
 
-#pragma region[SoH] Cosmetics
-
-#define MESSAGE_COSMETICS_HANDLE_COLOR(id)                                                                       \
-    if (CVarGetInteger(CVAR_COSMETIC("Message." id ".Changed"), 0)) {                                            \
-        Color_RGBA8 color =                                                                                      \
-            CVarGetColor(CVAR_COSMETIC("Message." id ".Value"), CosmeticsEditor_GetDefaultValue("Message." id)); \
-        msgCtx->textColorR = color.r;                                                                            \
-        msgCtx->textColorG = color.g;                                                                            \
-        msgCtx->textColorB = color.b;                                                                            \
-    }
-
-void Cosmetics_MaybeSetTextColor(MessageContext* msgCtx, u16 colorParameter) {
-    switch (colorParameter) {
-        case MSGCOL_RED:
-            if (msgCtx->textBoxType == TEXTBOX_TYPE_WOODEN) {
-                MESSAGE_COSMETICS_HANDLE_COLOR("Red.Wooden")
-            } else {
-                MESSAGE_COSMETICS_HANDLE_COLOR("Red.Normal")
-            }
-            break;
-        case MSGCOL_ADJUSTABLE:
-            if (msgCtx->textBoxType == TEXTBOX_TYPE_WOODEN) {
-                MESSAGE_COSMETICS_HANDLE_COLOR("Adjustable.Wooden")
-            } else {
-                MESSAGE_COSMETICS_HANDLE_COLOR("Adjustable.Normal")
-            }
-            break;
-        case MSGCOL_BLUE:
-            if (msgCtx->textBoxType == TEXTBOX_TYPE_WOODEN) {
-                MESSAGE_COSMETICS_HANDLE_COLOR("Blue.Wooden")
-            } else {
-                MESSAGE_COSMETICS_HANDLE_COLOR("Blue.Normal")
-            }
-            break;
-        case MSGCOL_LIGHTBLUE:
-            if (msgCtx->textBoxType == TEXTBOX_TYPE_WOODEN) {
-                MESSAGE_COSMETICS_HANDLE_COLOR("LightBlue.Wooden")
-            } else if (msgCtx->textBoxType == TEXTBOX_TYPE_NONE_NO_SHADOW) {
-                MESSAGE_COSMETICS_HANDLE_COLOR("LightBlue.NoneNoShadow")
-            } else {
-                MESSAGE_COSMETICS_HANDLE_COLOR("LightBlue.Normal")
-            }
-            break;
-        case MSGCOL_PURPLE:
-            if (msgCtx->textBoxType == TEXTBOX_TYPE_WOODEN) {
-                MESSAGE_COSMETICS_HANDLE_COLOR("Purple.Wooden")
-            } else {
-                MESSAGE_COSMETICS_HANDLE_COLOR("Purple.Normal")
-            }
-            break;
-        case MSGCOL_YELLOW:
-            if (msgCtx->textBoxType == TEXTBOX_TYPE_WOODEN) {
-                MESSAGE_COSMETICS_HANDLE_COLOR("Yellow.Wooden")
-            } else {
-                MESSAGE_COSMETICS_HANDLE_COLOR("Yellow.Normal")
-            }
-            break;
-        case MSGCOL_BLACK:
-            MESSAGE_COSMETICS_HANDLE_COLOR("Black")
-            break;
-        case MSGCOL_DEFAULT:
-        default:
-            if (msgCtx->textBoxType == TEXTBOX_TYPE_NONE_NO_SHADOW) {
-                MESSAGE_COSMETICS_HANDLE_COLOR("Default.NoneNoShadow")
-            } else {
-                MESSAGE_COSMETICS_HANDLE_COLOR("Default.Normal")
-            }
-            break;
-    }
-}
-
-#undef MESSAGE_COSMETICS_HANDLE_COLOR
-
-#pragma endregion
-
 void Message_SetTextColor(MessageContext* msgCtx, u16 colorParameter) {
     switch (colorParameter) {
         case MSGCOL_RED:
@@ -573,11 +475,10 @@ void Message_SetTextColor(MessageContext* msgCtx, u16 colorParameter) {
             }
             break;
     }
-    Cosmetics_MaybeSetTextColor(msgCtx, colorParameter);
 }
 
 void Message_DrawTextboxIcon(PlayState* play, Gfx** p, s16 x, s16 y) {
-    // SoH [Cosmetics] The following Color_RGB8 were originally static
+    // These colors are shared with the PC renderer.
     Color_RGB8 sIconPrimColors[2] = {
         { 0, 80, 200 },
         { 50, 130, 255 },
@@ -586,18 +487,7 @@ void Message_DrawTextboxIcon(PlayState* play, Gfx** p, s16 x, s16 y) {
         { 0, 0, 0 },
         { 0, 130, 255 },
     };
-    if (CVarGetInteger(CVAR_COSMETIC("HUD.AButton.Changed"), 0)) {
-        Color_RGB8 color = CVarGetColor24(CVAR_COSMETIC("HUD.AButton.Value"), (Color_RGB8){ 50, 130, 255 });
-        sIconPrimColors[0].r = color.r - 50;
-        sIconPrimColors[0].g = color.g - 50;
-        sIconPrimColors[0].b = color.b - 50;
-        sIconPrimColors[1] = color;
-        sIconEnvColors[1] = color;
-    } else if (CVarGetInteger(CVAR_COSMETIC("DefaultColorScheme"), COLORSCHEME_N64) == COLORSCHEME_GAMECUBE) {
-        sIconPrimColors[0] = (Color_RGB8){ 0, 200, 80 };
-        sIconPrimColors[1] = (Color_RGB8){ 50, 255, 130 };
-        sIconEnvColors[1] = (Color_RGB8){ 50, 255, 130 };
-    }
+    
     static Color_RGB8 sIconPrim = { 0, 80, 200 };
     static s16 sIconFlashTimer = 12;
     static s16 sIconFlashColorIdx = 0;
@@ -853,7 +743,7 @@ u16 Message_DrawItemIcon(PlayState* play, u16 itemId, Gfx** p, u16 i) {
     // Invalidate icon texture as it may have changed from the last time a text box had an icon
     gSPInvalidateTexCache(gfx++, (uintptr_t)msgCtx->textboxSegment + MESSAGE_STATIC_TEX_SIZE);
 
-    if (GameInteractor_Should(VB_DRAW_ITEM_ICON, itemId < ITEM_CUSTOM, &gfx)) {
+    if ((itemId < ITEM_CUSTOM)) {
         if (itemId >= ITEM_MEDALLION_FOREST) {
             gDPLoadTextureBlock(gfx++, (uintptr_t)msgCtx->textboxSegment + MESSAGE_STATIC_TEX_SIZE, G_IM_FMT_RGBA,
                                 G_IM_SIZ_32b, 24, 24, 0, G_TX_NOMIRROR | G_TX_WRAP, G_TX_NOMIRROR | G_TX_WRAP,
@@ -953,7 +843,6 @@ void Message_DrawTextJPN(PlayState* play, Gfx** gfxP) {
     u16 i;
     u16 charTexIdx;
     Gfx* gfx = *gfxP;
-    int gTextSpeed, gSlowTextSpeed;
 
     play->msgCtx.textPosX = R_TEXT_INIT_XPOS;
     play->msgCtx.textPosY = R_TEXT_INIT_YPOS;
@@ -966,9 +855,6 @@ void Message_DrawTextJPN(PlayState* play, Gfx** gfxP) {
 
     msgCtx->unk_E3D0 = 0;
     charTexIdx = 0;
-
-    gTextSpeed = CVarGetInteger(CVAR_ENHANCEMENT("TextSpeed"), 1);
-    gSlowTextSpeed = CVarGetInteger(CVAR_ENHANCEMENT("SlowTextSpeed"), gTextSpeed);
 
     for (i = 0; i < msgCtx->textDrawPos; i++) {
         character = msgCtx->msgBufDecodedWide[i];
@@ -988,7 +874,7 @@ void Message_DrawTextJPN(PlayState* play, Gfx** gfxP) {
                 Message_SetTextColor(msgCtx, msgCtx->msgBufDecodedWide[++i]);
                 break;
             case MESSAGE_SPACE_JPN:
-                msgCtx->textPosX += CVarGetInteger(CVAR_ENHANCEMENT("TextSpacing"), 6);
+                msgCtx->textPosX += 6;
                 break;
             case MESSAGE_BOX_BREAK_JPN:
                 if (msgCtx->msgMode == MSGMODE_TEXT_DISPLAYING) {
@@ -1009,11 +895,6 @@ void Message_DrawTextJPN(PlayState* play, Gfx** gfxP) {
                 msgCtx->textPosX += msgCtx->msgBufDecodedWide[++i];
                 break;
             case MESSAGE_TEXTID_JPN:
-                // #region SOH [General] Fixes softlock for higher text speeds
-                if (gTextSpeed > 1) {
-                    msgCtx->textDrawPos = i + 1;
-                }
-                // #endregion
                 msgCtx->textboxEndType = TEXTBOX_ENDTYPE_HAS_NEXT;
                 if (msgCtx->msgMode == MSGMODE_TEXT_DISPLAYING) {
                     Audio_PlaySoundGeneral(0, &gSfxDefaultPos, 4, &gSfxDefaultFreqAndVolScale,
@@ -1024,7 +905,7 @@ void Message_DrawTextJPN(PlayState* play, Gfx** gfxP) {
                 *gfxP = gfx;
                 return;
             case MESSAGE_QUICKTEXT_ENABLE_JPN:
-                if ((i + 1 == msgCtx->textDrawPos || (gTextSpeed > 1 && i + gTextSpeed >= msgCtx->textDrawPos)) &&
+                if ((i + 1 == msgCtx->textDrawPos) &&
                     (msgCtx->msgMode == MSGMODE_TEXT_DISPLAYING ||
                      (msgCtx->msgMode >= MSGMODE_OCARINA_STARTING &&
                       msgCtx->msgMode < MSGMODE_SCARECROW_LONG_RECORDING_START))) {
@@ -1140,7 +1021,7 @@ void Message_DrawTextJPN(PlayState* play, Gfx** gfxP) {
                 msgCtx->textDelay = msgCtx->msgBufDecodedWide[++i];
                 break;
             case MESSAGE_UNSKIPPABLE_JPN:
-                msgCtx->textUnskippable = CVarGetInteger(CVAR_ENHANCEMENT("SkipText"), 0) != 1;
+                msgCtx->textUnskippable = true;
                 break;
             case MESSAGE_TWO_CHOICE_JPN:
                 msgCtx->textboxEndType = TEXTBOX_ENDTYPE_2_CHOICE;
@@ -1179,11 +1060,6 @@ void Message_DrawTextJPN(PlayState* play, Gfx** gfxP) {
                 *gfxP = gfx;
                 return;
             case MESSAGE_OCARINA_JPN:
-                // #region SOH [General] Fixes softlock for higher text speeds
-                if (gTextSpeed > 1) {
-                    msgCtx->textDrawPos = i + 1;
-                }
-                // #endregion
                 if (i + 1 == msgCtx->textDrawPos) {
                     Message_HandleOcarina(play);
                     *gfxP = gfx;
@@ -1275,17 +1151,17 @@ void Message_DrawTextJPN(PlayState* play, Gfx** gfxP) {
     }
 
     if (msgCtx->textDelay == 0) {
-        msgCtx->textDrawPos = i + gTextSpeed;
+        msgCtx->textDrawPos = i + 1;
         if (msgCtx->textDrawPos > msgCtx->decodedTextLen) {
             msgCtx->textDrawPos = msgCtx->decodedTextLen + 1;
         }
     } else if (msgCtx->textDelayTimer == 0) {
         msgCtx->textDrawPos = i + 1;
         msgCtx->textDelayTimer = msgCtx->textDelay;
-    } else if (msgCtx->textDelayTimer <= gSlowTextSpeed) {
+    } else if (msgCtx->textDelayTimer <= 1) {
         msgCtx->textDelayTimer = 0;
     } else {
-        msgCtx->textDelayTimer -= gSlowTextSpeed;
+        msgCtx->textDelayTimer--;
     }
     *gfxP = gfx;
 }
@@ -1302,7 +1178,6 @@ void Message_DrawText(PlayState* play, Gfx** gfxP) {
     u16 i;
     u16 sfxHi;
     u16 charTexIdx;
-    int gTextSpeed, gSlowTextSpeed;
     Font* font = &play->msgCtx.font;
     Gfx* gfx = *gfxP;
 
@@ -1320,13 +1195,8 @@ void Message_DrawText(PlayState* play, Gfx** gfxP) {
         msgCtx->textColorR = msgCtx->textColorG = msgCtx->textColorB = 255;
     }
 
-    Cosmetics_MaybeSetTextColor(msgCtx, MSGCOL_DEFAULT);
-
     msgCtx->unk_E3D0 = 0;
     charTexIdx = 0;
-
-    gTextSpeed = CVarGetInteger(CVAR_ENHANCEMENT("TextSpeed"), 1);
-    gSlowTextSpeed = CVarGetInteger(CVAR_ENHANCEMENT("SlowTextSpeed"), gTextSpeed);
 
     for (i = 0; i < msgCtx->textDrawPos; i++) {
         character = msgCtx->msgBufDecoded[i];
@@ -1346,7 +1216,7 @@ void Message_DrawText(PlayState* play, Gfx** gfxP) {
                 Message_SetTextColor(msgCtx, msgCtx->msgBufDecoded[++i] & 0xF);
                 break;
             case ' ':
-                msgCtx->textPosX += CVarGetInteger(CVAR_ENHANCEMENT("TextSpacing"), 6);
+                msgCtx->textPosX += 6;
                 break;
             case MESSAGE_BOX_BREAK:
                 if (msgCtx->msgMode == MSGMODE_TEXT_DISPLAYING) {
@@ -1377,7 +1247,7 @@ void Message_DrawText(PlayState* play, Gfx** gfxP) {
                 *gfxP = gfx;
                 return;
             case MESSAGE_QUICKTEXT_ENABLE:
-                if ((i + 1 == msgCtx->textDrawPos || (gTextSpeed > 1 && i + gTextSpeed >= msgCtx->textDrawPos)) &&
+                if ((i + 1 == msgCtx->textDrawPos) &&
                     (msgCtx->msgMode == MSGMODE_TEXT_DISPLAYING ||
                      (msgCtx->msgMode >= MSGMODE_OCARINA_STARTING &&
                       msgCtx->msgMode < MSGMODE_SCARECROW_LONG_RECORDING_START))) {
@@ -1511,7 +1381,7 @@ void Message_DrawText(PlayState* play, Gfx** gfxP) {
                 msgCtx->textDelay = msgCtx->msgBufDecoded[++i];
                 break;
             case MESSAGE_UNSKIPPABLE:
-                msgCtx->textUnskippable = CVarGetInteger(CVAR_ENHANCEMENT("SkipText"), 0) != 1;
+                msgCtx->textUnskippable = true;
                 break;
             case MESSAGE_TWO_CHOICE:
                 msgCtx->textboxEndType = TEXTBOX_ENDTYPE_2_CHOICE;
@@ -1550,11 +1420,6 @@ void Message_DrawText(PlayState* play, Gfx** gfxP) {
                 *gfxP = gfx;
                 return;
             case MESSAGE_OCARINA:
-                // #region SOH [General] Fixes softlock for higher text speeds
-                if (gTextSpeed > 1) {
-                    msgCtx->textDrawPos = i + 1;
-                }
-                // #endregion
                 if (i + 1 == msgCtx->textDrawPos) {
                     Message_HandleOcarina(play);
                     *gfxP = gfx;
@@ -1623,14 +1488,14 @@ void Message_DrawText(PlayState* play, Gfx** gfxP) {
         }
     }
     if (msgCtx->textDelay == 0) {
-        msgCtx->textDrawPos = i + gTextSpeed;
+        msgCtx->textDrawPos = i + 1;
     } else if (msgCtx->textDelayTimer == 0) {
         msgCtx->textDrawPos = i + 1;
         msgCtx->textDelayTimer = msgCtx->textDelay;
-    } else if (msgCtx->textDelayTimer <= gSlowTextSpeed) {
+    } else if (msgCtx->textDelayTimer <= 1) {
         msgCtx->textDelayTimer = 0;
     } else {
-        msgCtx->textDelayTimer -= gSlowTextSpeed;
+        msgCtx->textDelayTimer--;
     }
     *gfxP = gfx;
 }
@@ -1929,23 +1794,6 @@ void Message_DecodeJPN(PlayState* play) {
     while (true) {
         curChar = msgCtx->msgBufDecodedWide[decodedBufPos] = font->msgBufWide[msgCtx->msgBufPos];
 
-        // #region SOH - Don't require input for credits textboxes in randomizer
-        if (CVarGetInteger(CVAR_ENHANCEMENT("NoInputForCredits"), 0) &&
-            (msgCtx->textId == 0x706F || msgCtx->textId == 0x7091 || msgCtx->textId == 0x7092 ||
-             msgCtx->textId == 0x7093 || msgCtx->textId == 0x7094 || msgCtx->textId == 0x7095)) {
-            if (curChar == MESSAGE_BOX_BREAK_JPN) {
-                curChar = msgCtx->msgBufDecodedWide[decodedBufPos] = font->msgBufWide[msgCtx->msgBufPos] =
-                    MESSAGE_BOX_BREAK_DELAYED_JPN;
-            } else if (curChar == MESSAGE_END_JPN) {
-                // use fade instead of fade2, as fade2 is unimplemented in JP
-                curChar = msgCtx->msgBufDecodedWide[decodedBufPos] = font->msgBufWide[msgCtx->msgBufPos] =
-                    MESSAGE_FADE_JPN;
-                curChar = msgCtx->msgBufDecodedWide[++decodedBufPos] = font->msgBufWide[++msgCtx->msgBufPos] =
-                    MESSAGE_END_JPN;
-            }
-        }
-        // #endregion
-
         if (curChar == MESSAGE_BOX_BREAK_JPN || curChar == MESSAGE_TEXTID_JPN ||
             curChar == MESSAGE_BOX_BREAK_DELAYED_JPN || curChar == MESSAGE_EVENT_JPN || curChar == MESSAGE_END_JPN) {
             msgCtx->msgMode = MSGMODE_TEXT_DISPLAYING;
@@ -2220,8 +2068,7 @@ void Message_DecodeJPN(PlayState* play) {
             }
         } else if (curChar == MESSAGE_ITEM_ICON_JPN) {
             msgCtx->msgBufDecodedWide[++decodedBufPos] = font->msgBufWide[msgCtx->msgBufPos + 1];
-            if (GameInteractor_Should(VB_LOAD_ITEM_ICON, (uint8_t)font->msgBuf[msgCtx->msgBufPos + 1] < ITEM_CUSTOM,
-                                      sDisplayNextMessageAsEnglish)) {
+            if (((uint8_t)font->msgBuf[msgCtx->msgBufPos + 1] < ITEM_CUSTOM)) {
                 Message_LoadItemIcon(play, font->msgBufWide[msgCtx->msgBufPos + 1], R_TEXTBOX_Y + 10);
             }
         } else if (curChar == MESSAGE_BACKGROUND_JPN) {
@@ -2311,21 +2158,6 @@ void Message_Decode(PlayState* play) {
 
     while (true) {
         phi_s1 = temp_s2 = msgCtx->msgBufDecoded[decodedBufPos] = font->msgBuf[msgCtx->msgBufPos];
-
-        // Don't require input for credits textboxes in randomizer
-        if (CVarGetInteger(CVAR_ENHANCEMENT("NoInputForCredits"), 0) &&
-            (msgCtx->textId == 0x706F || msgCtx->textId == 0x7091 || msgCtx->textId == 0x7092 ||
-             msgCtx->textId == 0x7093 || msgCtx->textId == 0x7094 || msgCtx->textId == 0x7095)) {
-            if (temp_s2 == MESSAGE_BOX_BREAK) {
-                phi_s1 = temp_s2 = msgCtx->msgBufDecoded[decodedBufPos] = font->msgBuf[msgCtx->msgBufPos] =
-                    MESSAGE_BOX_BREAK_DELAYED;
-            } else if (temp_s2 == MESSAGE_END) {
-                phi_s1 = temp_s2 = msgCtx->msgBufDecoded[decodedBufPos] = font->msgBuf[msgCtx->msgBufPos] =
-                    MESSAGE_FADE2;
-                phi_s1 = temp_s2 = msgCtx->msgBufDecoded[++decodedBufPos] = font->msgBuf[++msgCtx->msgBufPos] =
-                    MESSAGE_END;
-            }
-        }
 
         if (temp_s2 == MESSAGE_BOX_BREAK || temp_s2 == MESSAGE_TEXTID || temp_s2 == MESSAGE_BOX_BREAK_DELAYED ||
             temp_s2 == MESSAGE_EVENT || temp_s2 == MESSAGE_END) {
@@ -2653,8 +2485,7 @@ void Message_Decode(PlayState* play) {
             msgCtx->msgBufDecoded[++decodedBufPos] = font->msgBuf[msgCtx->msgBufPos + 1];
             osSyncPrintf("ITEM_NO=(%d) (%d)\n", msgCtx->msgBufDecoded[decodedBufPos],
                          font->msgBuf[msgCtx->msgBufPos + 1]);
-            if (GameInteractor_Should(VB_LOAD_ITEM_ICON, (uint8_t)font->msgBuf[msgCtx->msgBufPos + 1] < ITEM_CUSTOM,
-                                      sDisplayNextMessageAsEnglish)) {
+            if (((uint8_t)font->msgBuf[msgCtx->msgBufPos + 1] < ITEM_CUSTOM)) {
                 Message_LoadItemIcon(play, font->msgBuf[msgCtx->msgBufPos + 1], R_TEXTBOX_Y + 10);
             }
         } else if (temp_s2 == MESSAGE_BACKGROUND) {
@@ -2718,7 +2549,6 @@ void Message_OpenText(PlayState* play, u16 textId) {
     s16 textBoxType;
 
     bool loadFromMessageTable = true;
-    GameInteractor_ExecuteOnOpenText(&textId, &loadFromMessageTable);
 
     sDisplayNextMessageAsEnglish = false;
 
@@ -2808,26 +2638,6 @@ void Message_OpenText(PlayState* play, u16 textId) {
         // DmaMgr_SendRequest1(font->msgBuf, (uintptr_t)(_staff_message_data_staticSegmentRomStart + 4 +
         // font->msgOffset), font->msgLength, __FILE__, __LINE__);
 
-    } else if (CVarGetInteger(CVAR_ENHANCEMENT("AskToEquip"), 0) &&
-               (((LINK_IS_ADULT || CVarGetInteger(CVAR_CHEAT("TimelessEquipment"), 0)) &&
-                 // 0C = Biggoron, 4B = Giant's, 4E = Mirror Shield, 50-51 = Tunics
-                 (textId == 0x0C || textId == 0x4B || textId == 0x4E || textId == 0x50 || textId == 0x51)) ||
-                ((!LINK_IS_ADULT || CVarGetInteger(CVAR_CHEAT("TimelessEquipment"), 0)) &&
-                 // 4C = Deku Shield, A4 = Kokiri Sword
-                 (textId == 0x4C || textId == 0xA4)) ||
-                // 4D == Hylian Shield
-                textId == 0x4D)) {
-        // NTSC TODO: Translate EquipNow Message
-        Message_FindMessage(play, textId);
-        if (gSaveContext.language == LANGUAGE_JPN) {
-            sDisplayNextMessageAsEnglish = true;
-            if (!sTextIsCredits) {
-                R_TEXT_CHAR_SCALE = 75;
-                R_TEXT_LINE_SPACING = 12;
-                R_TEXT_INIT_XPOS = 65;
-            }
-        }
-        msgCtx->msgLength = font->msgLength = GetEquipNowMessage(font->msgBuf, font->msgOffset, sizeof(font->msgBuf));
     } else {
         if (gSaveContext.language == LANGUAGE_JPN) {
             Message_FindMessageJPN(play, textId);
@@ -3175,7 +2985,7 @@ void Message_DrawMain(PlayState* play, Gfx** p) {
         gOcarinaBtnIconCLeftTex, gOcarinaBtnIconCUpTex,
     };
 
-    // SoH [Cosmetics] The following Color_RGB8 were originally static
+    // These colors are shared with the PC renderer.
     Color_RGB8 sOcarinaNoteAPrimColors[2] = {
         { 80, 150, 255 },
         { 100, 200, 255 },
@@ -3184,18 +2994,7 @@ void Message_DrawMain(PlayState* play, Gfx** p) {
         { 10, 10, 10 },
         { 50, 50, 255 },
     };
-    if (CVarGetInteger(CVAR_COSMETIC("HUD.AButton.Changed"), 0)) {
-        Color_RGB8 color = CVarGetColor24(CVAR_COSMETIC("HUD.AButton.Value"), (Color_RGB8){ 100, 200, 255 });
-        sOcarinaNoteAPrimColors[0].r = (color.r / 255.0f) * 95;
-        sOcarinaNoteAPrimColors[0].g = (color.g / 255.0f) * 95;
-        sOcarinaNoteAPrimColors[0].b = (color.b / 255.0f) * 95;
-        sOcarinaNoteAPrimColors[1] = color;
-        sOcarinaNoteAEnvColors[1] = color;
-    } else if (CVarGetInteger(CVAR_COSMETIC("DefaultColorScheme"), COLORSCHEME_N64) == COLORSCHEME_GAMECUBE) {
-        sOcarinaNoteAPrimColors[0] = (Color_RGB8){ 80, 255, 150 };
-        sOcarinaNoteAPrimColors[1] = (Color_RGB8){ 100, 255, 200 };
-        sOcarinaNoteAEnvColors[1] = (Color_RGB8){ 50, 255, 50 };
-    }
+    
 
     Color_RGB8 sOcarinaNoteCPrimColors[2] = {
         { 255, 255, 50 },
@@ -3205,14 +3004,7 @@ void Message_DrawMain(PlayState* play, Gfx** p) {
         { 10, 10, 10 },
         { 110, 110, 50 },
     };
-    if (CVarGetInteger(CVAR_COSMETIC("HUD.CButtons.Changed"), 0)) {
-        Color_RGB8 color = CVarGetColor24(CVAR_COSMETIC("HUD.CButtons.Value"), (Color_RGB8){ 100, 200, 255 });
-        sOcarinaNoteCPrimColors[0] = color;
-        sOcarinaNoteCPrimColors[1] = color;
-        sOcarinaNoteCEnvColors[1].r = (color.r / 255.0f) * 95;
-        sOcarinaNoteCEnvColors[1].g = (color.g / 255.0f) * 95;
-        sOcarinaNoteCEnvColors[1].b = (color.b / 255.0f) * 95;
-    }
+    
 
     Color_RGB8 sOcarinaNoteCUpPrimColors[2] = {
         { 255, 255, 50 },
@@ -3222,14 +3014,7 @@ void Message_DrawMain(PlayState* play, Gfx** p) {
         { 10, 10, 10 },
         { 110, 110, 50 },
     };
-    if (CVarGetInteger(CVAR_COSMETIC("HUD.CUpButton.Changed"), 0)) {
-        Color_RGB8 color = CVarGetColor24(CVAR_COSMETIC("HUD.CUpButton.Value"), (Color_RGB8){ 100, 200, 255 });
-        sOcarinaNoteCUpPrimColors[0] = color;
-        sOcarinaNoteCUpPrimColors[1] = color;
-        sOcarinaNoteCUpEnvColors[1].r = (color.r / 255.0f) * 95;
-        sOcarinaNoteCUpEnvColors[1].g = (color.g / 255.0f) * 95;
-        sOcarinaNoteCUpEnvColors[1].b = (color.b / 255.0f) * 95;
-    }
+    
 
     Color_RGB8 sOcarinaNoteCDownPrimColors[2] = {
         { 255, 255, 50 },
@@ -3239,14 +3024,7 @@ void Message_DrawMain(PlayState* play, Gfx** p) {
         { 10, 10, 10 },
         { 110, 110, 50 },
     };
-    if (CVarGetInteger(CVAR_COSMETIC("HUD.CDownButton.Changed"), 0)) {
-        Color_RGB8 color = CVarGetColor24(CVAR_COSMETIC("HUD.CDownButton.Value"), (Color_RGB8){ 100, 200, 255 });
-        sOcarinaNoteCDownPrimColors[0] = color;
-        sOcarinaNoteCDownPrimColors[1] = color;
-        sOcarinaNoteCDownEnvColors[1].r = (color.r / 255.0f) * 95;
-        sOcarinaNoteCDownEnvColors[1].g = (color.g / 255.0f) * 95;
-        sOcarinaNoteCDownEnvColors[1].b = (color.b / 255.0f) * 95;
-    }
+    
 
     Color_RGB8 sOcarinaNoteCLeftPrimColors[2] = {
         { 255, 255, 50 },
@@ -3256,14 +3034,7 @@ void Message_DrawMain(PlayState* play, Gfx** p) {
         { 10, 10, 10 },
         { 110, 110, 50 },
     };
-    if (CVarGetInteger(CVAR_COSMETIC("HUD.CLeftButton.Changed"), 0)) {
-        Color_RGB8 color = CVarGetColor24(CVAR_COSMETIC("HUD.CLeftButton.Value"), (Color_RGB8){ 100, 200, 255 });
-        sOcarinaNoteCLeftPrimColors[0] = color;
-        sOcarinaNoteCLeftPrimColors[1] = color;
-        sOcarinaNoteCLeftEnvColors[1].r = (color.r / 255.0f) * 95;
-        sOcarinaNoteCLeftEnvColors[1].g = (color.g / 255.0f) * 95;
-        sOcarinaNoteCLeftEnvColors[1].b = (color.b / 255.0f) * 95;
-    }
+    
 
     Color_RGB8 sOcarinaNoteCRightPrimColors[2] = {
         { 255, 255, 50 },
@@ -3273,14 +3044,7 @@ void Message_DrawMain(PlayState* play, Gfx** p) {
         { 10, 10, 10 },
         { 110, 110, 50 },
     };
-    if (CVarGetInteger(CVAR_COSMETIC("HUD.CRightButton.Changed"), 0)) {
-        Color_RGB8 color = CVarGetColor24(CVAR_COSMETIC("HUD.CRightButton.Value"), (Color_RGB8){ 100, 200, 255 });
-        sOcarinaNoteCRightPrimColors[0] = color;
-        sOcarinaNoteCRightPrimColors[1] = color;
-        sOcarinaNoteCRightEnvColors[1].r = (color.r / 255.0f) * 95;
-        sOcarinaNoteCRightEnvColors[1].g = (color.g / 255.0f) * 95;
-        sOcarinaNoteCRightEnvColors[1].b = (color.b / 255.0f) * 95;
-    }
+    
 
     static s16 sOcarinaNoteFlashTimer = 12;
     static s16 sOcarinaNoteFlashColorIdx = 1;
@@ -3347,9 +3111,7 @@ void Message_DrawMain(PlayState* play, Gfx** p) {
         gDPSetCombineLERP(gfx++, 0, 0, 0, PRIMITIVE, TEXEL0, 0, PRIMITIVE, 0, 0, 0, 0, PRIMITIVE, TEXEL0, 0, PRIMITIVE,
                           0);
 
-        bool isB_Held = CVarGetInteger(CVAR_ENHANCEMENT("SkipText"), 0) != 0
-                            ? CHECK_BTN_ALL(play->state.input[0].cur.button, BTN_B)
-                            : CHECK_BTN_ALL(play->state.input[0].press.button, BTN_B);
+        bool isB_Held = CHECK_BTN_ALL(play->state.input[0].press.button, BTN_B);
 
         switch (msgCtx->msgMode) {
             case MSGMODE_TEXT_START:
@@ -3664,22 +3426,14 @@ void Message_DrawMain(PlayState* play, Gfx** p) {
                 }
                 break;
             case MSGMODE_SETUP_DISPLAY_SONG_PLAYED:
-                if (CVarGetInteger(CVAR_ENHANCEMENT("FastOcarinaPlayback"), 0) == 0 ||
-                    play->msgCtx.lastPlayedSong == OCARINA_SONG_TIME ||
-                    play->msgCtx.lastPlayedSong == OCARINA_SONG_STORMS ||
-                    play->msgCtx.lastPlayedSong == OCARINA_SONG_SUNS) {
-                    if (gSaveContext.language == LANGUAGE_JPN && !sDisplayNextMessageAsEnglish) {
-                        Message_DrawTextJPN(play, &gfx);
-                    } else {
-                        Message_DrawText(play, &gfx);
-                    }
-                    Audio_OcaSetInstrument(1);
-                    Audio_OcaSetInstrument(1);
-                    Audio_OcaSetSongPlayback(msgCtx->lastPlayedSong + 1, 1);
+                if (gSaveContext.language == LANGUAGE_JPN && !sDisplayNextMessageAsEnglish) {
+                    Message_DrawTextJPN(play, &gfx);
                 } else {
-                    Audio_OcaSetInstrument(1);
-                    Audio_OcaSetInstrument(1);
+                    Message_DrawText(play, &gfx);
                 }
+                Audio_OcaSetInstrument(1);
+                Audio_OcaSetInstrument(1);
+                Audio_OcaSetSongPlayback(msgCtx->lastPlayedSong + 1, 1);
                 if (msgCtx->lastPlayedSong != OCARINA_SONG_SCARECROW) {
                     Audio_PlayFanfare(sOcarinaSongFanfares[msgCtx->lastPlayedSong]);
                     Audio_SetSoundBanksMute(0x20);
@@ -3727,14 +3481,7 @@ void Message_DrawMain(PlayState* play, Gfx** p) {
                 Message_Decode(play);
                 msgCtx->msgMode = MSGMODE_DISPLAY_SONG_PLAYED_TEXT;
 
-                if (CVarGetInteger(CVAR_ENHANCEMENT("FastOcarinaPlayback"), 0) == 0 ||
-                    play->msgCtx.lastPlayedSong == OCARINA_SONG_TIME ||
-                    play->msgCtx.lastPlayedSong == OCARINA_SONG_STORMS ||
-                    play->msgCtx.lastPlayedSong == OCARINA_SONG_SUNS) {
-                    msgCtx->stateTimer = 20;
-                } else {
-                    msgCtx->stateTimer = 1;
-                }
+                msgCtx->stateTimer = 20;
 
                 if (gSaveContext.language == LANGUAGE_JPN && !sDisplayNextMessageAsEnglish) {
                     Message_DrawTextJPN(play, &gfx);
@@ -3815,7 +3562,6 @@ void Message_DrawMain(PlayState* play, Gfx** p) {
                         osSyncPrintf(VT_RST);
                         osSyncPrintf("→  OCARINA_MODE=%d\n", play->msgCtx.ocarinaMode);
                     }
-                    GameInteractor_ExecuteOnOcarinaSongAction();
                 }
                 break;
             case MSGMODE_DISPLAY_SONG_PLAYED:
@@ -3862,9 +3608,9 @@ void Message_DrawMain(PlayState* play, Gfx** p) {
 
                     u8 songItemId = ITEM_SONG_MINUET + gOcarinaSongItemMap[msgCtx->ocarinaStaff->state];
 
-                    if (GameInteractor_Should(VB_GIVE_ITEM_SONG, true, songItemId)) {
+                    
                         Item_Give(play, songItemId);
-                    }
+                    
 
                     osSyncPrintf(VT_FGCOL(YELLOW));
                     // "z_message.c Song Acquired"
@@ -4309,7 +4055,7 @@ void Message_DrawMain(PlayState* play, Gfx** p) {
  * the last value being saved in a static variable.
  */
 void Message_DrawDebugVariableChanged(s16* var, GraphicsContext* gfxCtx) {
-    if (!CVarGetInteger(CVAR_DEVELOPER_TOOLS("DebugEnabled"), 0)) {
+    if (!(0)) {
         return;
     }
 
@@ -4377,9 +4123,7 @@ void Message_Draw(PlayState* play) {
         POLY_OPA_DISP = plusOne;
     }
     plusOne = Graph_GfxPlusOne(polyOpaP = POLY_OPA_DISP);
-    if (!GameInteractor_NoUIActive()) {
-        gSPDisplayList(OVERLAY_DISP++, plusOne);
-    }
+    gSPDisplayList(OVERLAY_DISP++, plusOne);
     Message_DrawMain(play, &plusOne);
     gSPEndDisplayList(plusOne++);
     Graph_BranchDlist(polyOpaP, plusOne);
@@ -4450,11 +4194,8 @@ void Message_Update(PlayState* play) {
         return;
     }
 
-    GameInteractor_ExecuteOnDialogMessage();
 
-    bool isB_Held = CVarGetInteger(CVAR_ENHANCEMENT("SkipText"), 0) != 0
-                        ? CHECK_BTN_ALL(input->cur.button, BTN_B) && !sTextboxSkipped
-                        : CHECK_BTN_ALL(input->press.button, BTN_B);
+    bool isB_Held = CHECK_BTN_ALL(input->press.button, BTN_B);
 
     switch (msgCtx->msgMode) {
         case MSGMODE_TEXT_START:
@@ -4681,10 +4422,10 @@ void Message_Update(PlayState* play) {
             }
             if ((s32)(gSaveContext.inventory.questItems & 0xF0000000) == 0x40000000) {
                 gSaveContext.inventory.questItems ^= 0x40000000;
-                if (GameInteractor_Should(VB_HEARTS_INCREASE_WITH_CONTAINERS, true)) {
+                
                     gSaveContext.healthCapacity += FULL_HEART_HEALTH;
                     gSaveContext.health += FULL_HEART_HEALTH;
-                }
+                
             }
             if (msgCtx->ocarinaAction != OCARINA_ACTION_CHECK_NOWARP_DONE) {
                 if (sLastPlayedSong == OCARINA_SONG_SARIAS) {

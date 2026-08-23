@@ -8,8 +8,6 @@
 #include "overlays/actors/ovl_En_Elf/z_en_elf.h"
 #include "overlays/actors/ovl_Door_Warp1/z_door_warp1.h"
 #include "objects/object_sa/object_sa.h"
-#include "soh/Enhancements/game-interactor/GameInteractor_Hooks.h"
-
 #include "vt.h"
 
 #define FLAGS ACTOR_FLAG_UPDATE_CULLING_DISABLED
@@ -239,9 +237,9 @@ void func_8098E8C8(DemoSa* this, PlayState* play) {
     f32 posZ = player->actor.world.pos.z;
 
     Actor_SpawnAsChild(&play->actorCtx, &this->actor, play, ACTOR_DEMO_EFFECT, posX, posY, posZ, 0, 0, 0, 0xB);
-    if (GameInteractor_Should(VB_GIVE_ITEM_FOREST_MEDALLION, true)) {
+    
         Item_Give(play, ITEM_MEDALLION_FOREST);
-    }
+    
 }
 
 void func_8098E944(DemoSa* this, PlayState* play) {
@@ -257,9 +255,9 @@ void func_8098E960(DemoSa* this, PlayState* play) {
         this->action = 1;
         play->csCtx.segment = D_8099010C;
         gSaveContext.cutsceneTrigger = 2;
-        if (GameInteractor_Should(VB_GIVE_ITEM_FOREST_MEDALLION, true)) {
+        
             Item_Give(play, ITEM_MEDALLION_FOREST);
-        }
+        
         player->actor.world.rot.y = player->actor.shape.rot.y = this->actor.world.rot.y + 0x8000;
     }
 }

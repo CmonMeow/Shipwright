@@ -15,9 +15,7 @@ SetSpecialObjectsFactory::ReadResource(std::shared_ptr<Ship::ResourceInitData> i
     setSpecialObjects->specialObjects.elfMessage = reader->ReadInt8();
     setSpecialObjects->specialObjects.globalObject = reader->ReadInt16();
 
-    if (CVarGetInteger(CVAR_DEVELOPER_TOOLS("ResourceLogging"), 0)) {
-        LogSpecialObjectsAsXML(setSpecialObjects);
-    }
+    
 
     return setSpecialObjects;
 }

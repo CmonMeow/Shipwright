@@ -1,8 +1,6 @@
 #include "z_bg_spot18_basket.h"
 #include "objects/object_spot18_obj/object_spot18_obj.h"
 #include "vt.h"
-#include "soh/Enhancements/game-interactor/GameInteractor_Hooks.h"
-
 #define FLAGS ACTOR_FLAG_UPDATE_CULLING_DISABLED
 
 void BgSpot18Basket_Init(Actor* thisx, PlayState* play);
@@ -297,7 +295,7 @@ void func_808B7F74(BgSpot18Basket* this) {
     shapeRotY = this->dyna.actor.shape.rot.y;
     this->actionFunc = func_808B7FC0;
 
-    if (GameInteractor_Should(VB_WIN_GORON_POT, (shapeRotY < -0x2E93) || (shapeRotY >= 0x7C19))) {
+    if (((shapeRotY < -0x2E93) || (shapeRotY >= 0x7C19))) {
         this->unk_218 = 2;
     } else if (shapeRotY < 0x26C2) {
         this->unk_218 = 1;

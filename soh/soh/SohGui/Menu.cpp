@@ -1,4 +1,5 @@
 #include "Menu.h"
+#include "soh/cvar_prefixes.h"
 #include "UIWidgets.hpp"
 #include "soh/OTRGlobals.h"
 #include <ship/window/gui/GuiMenuBar.h>
@@ -656,6 +657,12 @@ void Menu::DrawElement() {
     ImGui::PushFont(OTRGlobals::Instance->fontStandardLargest);
     ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(10.0f, 8.0f));
     std::string headerIndex = CVarGetString(headerCvar, "Settings");
+    bool repairedSelection = false;
+    if (!menuEntries.contains(headerIndex)) {
+        headerIndex = menuOrder.front();
+        CVarSetString(headerCvar, headerIndex.c_str());
+        repairedSelection = true;
+    }
     ImVec2 pos = window->DC.CursorPos;
     float centerX = pos.x + windowWidth / 2 - (style.ItemSpacing.x * (menuEntries.size() + 1));
     std::vector<ImVec2> headerSizes;
@@ -825,16 +832,23 @@ void Menu::DrawElement() {
         sidebarWidth = menuSize.x * 0.15f;
     }
 
-    const char* sidebarCvar = menuEntries.at(headerIndex).sidebarCvar;
+    auto& activeMenuEntry = menuEntries.at(headerIndex);
+    sidebar = &activeMenuEntry.sidebars;
+    const char* sidebarCvar = activeMenuEntry.sidebarCvar;
 
     std::string sectionIndex = CVarGetString(sidebarCvar, "");
     if (!sidebar->contains(sectionIndex)) {
-        sectionIndex = menuEntries.at(headerIndex).sidebarOrder.at(0);
+        sectionIndex = activeMenuEntry.sidebarOrder.at(0);
+        CVarSetString(sidebarCvar, sectionIndex.c_str());
+        repairedSelection = true;
+    }
+    if (repairedSelection) {
+        CVarSave();
     }
     float sectionCenterX = pos.x + (sidebarWidth / 2);
     float topY = pos.y;
     ImGui::SetNextWindowSizeConstraints({ sidebarWidth, 0 }, { sidebarWidth, columnHeight });
-    ImGui::BeginChild((menuEntries.at(headerIndex).label + " Section").c_str(), { sidebarWidth, columnHeight * 3 },
+    ImGui::BeginChild((activeMenuEntry.label + " Section").c_str(), { sidebarWidth, columnHeight * 3 },
                       ImGuiChildFlags_AutoResizeY | ImGuiChildFlags_AlwaysAutoResize, ImGuiWindowFlags_NoTitleBar);
     for (auto& sidebarLabel : menuEntries.at(headerIndex).sidebarOrder) {
         std::string nextIndex = "";

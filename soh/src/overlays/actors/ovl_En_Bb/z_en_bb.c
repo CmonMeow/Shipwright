@@ -7,7 +7,6 @@
 #include "z_en_bb.h"
 #include "objects/gameplay_keep/gameplay_keep.h"
 #include "objects/object_Bb/object_Bb.h"
-#include "soh/Enhancements/game-interactor/GameInteractor_Hooks.h"
 #include "soh/ResourceManagerHelpers.h"
 
 #define FLAGS                                                                                 \
@@ -469,7 +468,6 @@ void EnBb_SetupDeath(EnBb* this, PlayState* play) {
     this->action = BB_KILL;
     EnBb_SetupAction(this, EnBb_Death);
 
-    GameInteractor_ExecuteOnEnemyDefeat(&this->actor);
 }
 
 void EnBb_Death(EnBb* this, PlayState* play) {

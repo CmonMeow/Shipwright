@@ -6,8 +6,6 @@
 
 #include "z_bg_haka.h"
 #include "objects/object_haka/object_haka.h"
-#include "soh/Enhancements/game-interactor/GameInteractor_Hooks.h"
-
 #define FLAGS 0
 
 void BgHaka_Init(Actor* thisx, PlayState* play);
@@ -70,8 +68,7 @@ void func_8087B7E8(BgHaka* this, PlayState* play) {
     Player* player = GET_PLAYER(play);
 
     if (this->dyna.unk_150 != 0.0f) {
-        if (play->sceneNum == SCENE_GRAVEYARD && !LINK_IS_ADULT && IS_DAY &&
-            !CVarGetInteger(CVAR_ENHANCEMENT("DayGravePull"), 0)) {
+        if (play->sceneNum == SCENE_GRAVEYARD && !LINK_IS_ADULT && IS_DAY) {
             this->dyna.unk_150 = 0.0f;
             player->stateFlags2 &= ~PLAYER_STATE2_MOVING_DYNAPOLY;
             if (!Play_InCsMode(play)) {
@@ -118,7 +115,7 @@ void func_8087B938(BgHaka* this, PlayState* play) {
 
         if (this->dyna.actor.params == 1) {
             Sfx_PlaySfxCentered(NA_SE_SY_CORRECT_CHIME);
-        } else if (GameInteractor_Should(VB_HAKA_SPAWN_POE, !IS_DAY && play->sceneNum == SCENE_GRAVEYARD, this, play)) {
+        } else if ((!IS_DAY && play->sceneNum == SCENE_GRAVEYARD)) {
             Actor_Spawn(&play->actorCtx, play, ACTOR_EN_POH, this->dyna.actor.home.pos.x, this->dyna.actor.home.pos.y,
                         this->dyna.actor.home.pos.z, 0, this->dyna.actor.shape.rot.y, 0, 1);
         }

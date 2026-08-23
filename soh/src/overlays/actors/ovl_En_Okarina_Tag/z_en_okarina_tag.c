@@ -8,8 +8,6 @@
 #include "scenes/misc/hakaana_ouke/hakaana_ouke_scene.h"
 #include "scenes/overworld/spot02/spot02_scene.h"
 #include "vt.h"
-#include "soh/Enhancements/game-interactor/GameInteractor_Hooks.h"
-
 #define FLAGS (ACTOR_FLAG_UPDATE_CULLING_DISABLED | ACTOR_FLAG_UPDATE_DURING_OCARINA)
 
 void EnOkarinaTag_Init(Actor* thisx, PlayState* play);
@@ -78,8 +76,7 @@ void EnOkarinaTag_Init(Actor* thisx, PlayState* play) {
     osSyncPrintf(VT_FGCOL(GREEN) "☆☆☆☆☆ 当り？\t\t ☆☆☆☆☆ %d\n" VT_RST, this->unk_158);
     osSyncPrintf("\n\n");
 
-    if (GameInteractor_Should(VB_OKARINA_TAG_COMPLETED,
-                              (this->switchFlag >= 0) && (Flags_GetSwitch(play, this->switchFlag)), this)) {
+    if (((this->switchFlag >= 0) && (Flags_GetSwitch(play, this->switchFlag)))) {
         Actor_Kill(&this->actor);
     } else {
         switch (this->type) {
@@ -113,8 +110,7 @@ void func_80ABEF2C(EnOkarinaTag* this, PlayState* play) {
 
     player = GET_PLAYER(play);
     this->unk_15A++;
-    if (GameInteractor_Should(VB_OKARINA_TAG_COMPLETED,
-                              (this->switchFlag >= 0) && (Flags_GetSwitch(play, this->switchFlag)), this)) {
+    if (((this->switchFlag >= 0) && (Flags_GetSwitch(play, this->switchFlag)))) {
         this->actor.flags &= ~ACTOR_FLAG_ATTENTION_ENABLED;
     } else {
         if ((this->ocarinaSong != 6) || (gSaveContext.scarecrowSpawnSongSet)) {
@@ -149,7 +145,7 @@ void func_80ABF0CC(EnOkarinaTag* this, PlayState* play) {
         this->actionFunc = func_80ABEF2C;
     } else {
         if (play->msgCtx.ocarinaMode == OCARINA_MODE_03) {
-            if (GameInteractor_Should(VB_OKARINA_TAG_COMPLETE, this->switchFlag >= 0, this)) {
+            if ((this->switchFlag >= 0)) {
                 Flags_SetSwitch(play, this->switchFlag);
             }
             if (play->sceneNum == SCENE_WATER_TEMPLE) {
@@ -168,7 +164,7 @@ void func_80ABF0CC(EnOkarinaTag* this, PlayState* play) {
                 (play->msgCtx.ocarinaMode == OCARINA_MODE_07) || (play->msgCtx.ocarinaMode == OCARINA_MODE_08) ||
                 (play->msgCtx.ocarinaMode == OCARINA_MODE_09) || (play->msgCtx.ocarinaMode == OCARINA_MODE_0A) ||
                 (play->msgCtx.ocarinaMode == OCARINA_MODE_0D)) {
-                if (GameInteractor_Should(VB_OKARINA_TAG_COMPLETE, this->switchFlag >= 0, this)) {
+                if ((this->switchFlag >= 0)) {
                     Flags_SetSwitch(play, this->switchFlag);
                 }
                 play->msgCtx.ocarinaMode = OCARINA_MODE_04;
@@ -191,12 +187,10 @@ void func_80ABF28C(EnOkarinaTag* this, PlayState* play) {
 
     this->unk_15A++;
     if ((this->ocarinaSong != 6) || (gSaveContext.scarecrowSpawnSongSet)) {
-        if (GameInteractor_Should(VB_OKARINA_TAG_COMPLETED,
-                                  (this->switchFlag >= 0) && (Flags_GetSwitch(play, this->switchFlag)), this)) {
+        if (((this->switchFlag >= 0) && (Flags_GetSwitch(play, this->switchFlag)))) {
             this->actor.flags &= ~ACTOR_FLAG_ATTENTION_ENABLED;
         } else if (((this->type != 4) ||
-                    GameInteractor_Should(VB_BE_ELIGIBLE_TO_OPEN_DOT,
-                                          !Flags_GetEventChkInf(EVENTCHKINF_OPENED_THE_DOOR_OF_TIME), this)) &&
+                    (!Flags_GetEventChkInf(EVENTCHKINF_OPENED_THE_DOOR_OF_TIME))) &&
                    ((this->type != 6) || !Flags_GetEventChkInf(EVENTCHKINF_DESTROYED_ROYAL_FAMILY_TOMB)) &&
                    (this->actor.xzDistToPlayer < (90.0f + this->interactRange)) &&
                    (fabsf(player->actor.world.pos.y - this->actor.world.pos.y) < 80.0f)) {
@@ -239,7 +233,7 @@ void func_80ABF4C8(EnOkarinaTag* this, PlayState* play) {
         this->actionFunc = func_80ABF28C;
     } else if (play->msgCtx.ocarinaMode == OCARINA_MODE_03) {
         Sfx_PlaySfxCentered(NA_SE_SY_CORRECT_CHIME);
-        if (GameInteractor_Should(VB_OKARINA_TAG_COMPLETE, this->switchFlag >= 0, this)) {
+        if ((this->switchFlag >= 0)) {
             Flags_SetSwitch(play, this->switchFlag);
         }
         switch (this->type) {
@@ -248,24 +242,24 @@ void func_80ABF4C8(EnOkarinaTag* this, PlayState* play) {
                 Flags_SetEventChkInf(EVENTCHKINF_OPENED_ZORAS_DOMAIN);
                 break;
             case 2: // Kakariko Windmill
-                if (GameInteractor_Should(VB_PLAY_DRAIN_WELL_CS, true, this)) {
+                
                     play->csCtx.segment = D_80ABF9D0;
                     gSaveContext.cutsceneTrigger = 1;
-                }
+                
                 func_800F574C(1.18921f, 0x5A);
                 break;
             case 4: // Door of Time
-                if (GameInteractor_Should(VB_PLAY_DOOR_OF_TIME_CS, true, this)) {
+                
                     play->csCtx.segment = D_80ABFB40;
                     gSaveContext.cutsceneTrigger = 1;
-                }
+                
                 break;
             case 6: // Royal Family Tomb
-                if (GameInteractor_Should(VB_PLAY_ROYAL_FAMILY_TOMB_CS, true, this)) {
+                
                     play->csCtx.segment = LINK_IS_ADULT ? SEGMENTED_TO_VIRTUAL(&spot02_scene_Cs_003C80)
                                                         : SEGMENTED_TO_VIRTUAL(&spot02_scene_Cs_005020);
                     gSaveContext.cutsceneTrigger = 1;
-                }
+                
                 Flags_SetEventChkInf(EVENTCHKINF_DESTROYED_ROYAL_FAMILY_TOMB);
                 Sfx_PlaySfxCentered(NA_SE_SY_CORRECT_CHIME);
                 break;
@@ -316,7 +310,7 @@ void func_80ABF7CC(EnOkarinaTag* this, PlayState* play) {
 
     if ((Message_GetState(&play->msgCtx) == TEXT_STATE_EVENT) && Message_ShouldAdvance(play)) {
         Message_CloseTextbox(play);
-        if (GameInteractor_Should(VB_PLAY_SUNS_SONG_CS, !CHECK_QUEST_ITEM(QUEST_SONG_SUN), this)) {
+        if ((!CHECK_QUEST_ITEM(QUEST_SONG_SUN))) {
             play->csCtx.segment = SEGMENTED_TO_VIRTUAL(&gSunSongGraveSunSongTeachCs);
             gSaveContext.cutsceneTrigger = 1;
         }

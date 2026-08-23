@@ -7,8 +7,6 @@
 #include "z_bg_treemouth.h"
 #include "objects/object_spot04_objects/object_spot04_objects.h"
 #include "overlays/effects/ovl_Effect_Ss_Hahen/z_eff_ss_hahen.h"
-#include "soh/Enhancements/game-interactor/GameInteractor_Hooks.h"
-
 #define FLAGS (ACTOR_FLAG_UPDATE_CULLING_DISABLED | ACTOR_FLAG_DRAW_CULLING_DISABLED)
 
 void BgTreemouth_Init(Actor* thisx, PlayState* play);
@@ -154,11 +152,11 @@ void func_808BC8B8(BgTreemouth* this, PlayState* play) {
                 }
             } else if (Actor_IsFacingAndNearPlayer(&this->dyna.actor, 1658.0f, 0x4E20)) {
                 Flags_SetEventChkInf(EVENTCHKINF_MET_DEKU_TREE);
-                if (GameInteractor_Should(VB_PLAY_DEKU_TREE_INTRO_CS, true, this)) {
+                
                     play->csCtx.segment = D_808BCE20;
                     gSaveContext.cutsceneTrigger = 1;
                     BgTreemouth_SetupAction(this, func_808BC9EC);
-                }
+                
             }
         }
     } else {

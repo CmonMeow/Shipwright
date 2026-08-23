@@ -7,7 +7,6 @@
 #include "z_en_po_field.h"
 #include "objects/gameplay_keep/gameplay_keep.h"
 #include "objects/object_po_field/object_po_field.h"
-#include "soh/Enhancements/game-interactor/GameInteractor_Hooks.h"
 #include "soh/ResourceManagerHelpers.h"
 
 #include <string.h>
@@ -580,7 +579,6 @@ void EnPoField_Death(EnPoField* this, PlayState* play) {
                              0, 0, 255, 1, 9, 1);
         if (this->actionTimer == 1) {
             Audio_PlayActorSound2(&this->actor, NA_SE_EN_EXTINCT);
-            GameInteractor_ExecuteOnEnemyDefeat(&this->actor);
         }
     } else if (this->actionTimer == 28) {
         EnPoField_SetupSoulIdle(this, play);
@@ -712,11 +710,11 @@ void EnPoField_SoulInteract(EnPoField* this, PlayState* play) {
                     if (this->actor.params == 0) {
                         Item_Give(play, ITEM_POE);
                         this->actor.textId = 0x5008;
-                    } else if (GameInteractor_Should(VB_BOTTLE_BIG_POE, true, this)) {
+                    } else 
                         this->actor.textId = 0x508F;
                         Item_Give(play, ITEM_BIG_POE);
                         Flags_SetSwitch(play, sEnPoFieldSpawnSwitchFlags[this->spawnFlagIndex]);
-                    }
+                    
                 } else {
                     Audio_PlayActorSound2(&this->actor, NA_SE_EN_PO_LAUGH);
                     this->actor.textId = 0x5006;

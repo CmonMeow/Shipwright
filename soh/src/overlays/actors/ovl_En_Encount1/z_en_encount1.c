@@ -1,8 +1,6 @@
 #include "z_en_encount1.h"
 #include "vt.h"
 #include "overlays/actors/ovl_En_Tite/z_en_tite.h"
-#include "soh/Enhancements/game-interactor/GameInteractor_Hooks.h"
-
 #define FLAGS (ACTOR_FLAG_UPDATE_CULLING_DISABLED | ACTOR_FLAG_LOCK_ON_DISABLED)
 
 void EnEncount1_Init(Actor* thisx, PlayState* play);
@@ -170,10 +168,6 @@ void EnEncount1_SpawnLeevers(EnEncount1* this, PlayState* play) {
                     break;
                 }
             }
-            int32_t modifiedSpawnRate = CVarGetInteger(CVAR_ENHANCEMENT("LeeverSpawnRate"), 0);
-            if (modifiedSpawnRate) {
-                this->timer = 20 * modifiedSpawnRate;
-            }
         }
     }
 }
@@ -242,16 +236,8 @@ void EnEncount1_SpawnStalchildOrWolfos(EnEncount1* this, PlayState* play) {
 
     this->outOfRangeTimer = 0;
     spawnPos = this->actor.world.pos;
-    // In authentic gameplay, the game checks how many Stalchildren were spawned and only spawns new ones
-    // when the old ones are despawned and a timer is reached.
-    // With Enemy Randomizer on, this will keep spawning enemies based on the timer and the total amount of existing
-    // enemies because it's much more difficult tracking how many enemies specifically spawned by this spawner have
-    // been spawned and/or killed.
-    int8_t enemyCount = play->actorCtx.actorLists[ACTORCAT_ENEMY].length;
-    if ((this->curNumSpawn < this->maxCurSpawns && this->totalNumSpawn < this->maxTotalSpawns) ||
-        (CVarGetInteger(CVAR_ENHANCEMENT("RandomizedEnemies"), 0) && enemyCount < 15)) {
-        while ((this->curNumSpawn < this->maxCurSpawns && this->totalNumSpawn < this->maxTotalSpawns) ||
-               (CVarGetInteger(CVAR_ENHANCEMENT("RandomizedEnemies"), 0) && enemyCount < 15)) {
+    if (this->curNumSpawn < this->maxCurSpawns && this->totalNumSpawn < this->maxTotalSpawns) {
+        while (this->curNumSpawn < this->maxCurSpawns && this->totalNumSpawn < this->maxTotalSpawns) {
             if (play->sceneNum == SCENE_HYRULE_FIELD) {
                 if ((player->floorSfxOffset == 0) || (player->actor.floorBgId != BGCHECK_SCENE) ||
                     !(player->actor.bgCheckFlags & 1) || (player->stateFlags1 & PLAYER_STATE1_IN_WATER)) {
@@ -284,8 +270,7 @@ void EnEncount1_SpawnStalchildOrWolfos(EnEncount1* this, PlayState* play) {
                 }
                 if ((player->actor.yDistToWater != BGCHECK_Y_MIN) &&
                     (floorY < (player->actor.world.pos.y +
-                               player->actor.yDistToWater *
-                                   (CVarGetInteger(CVAR_ENHANCEMENT("EnemySpawnsOverWaterboxes"), 0) ? 1 : -1)))) {
+                               player->actor.yDistToWater * -1))) {
                     break;
                 }
                 spawnPos.y = floorY;
@@ -307,8 +292,7 @@ void EnEncount1_SpawnStalchildOrWolfos(EnEncount1* this, PlayState* play) {
                 this->killCount++;
             }
 
-            if (!GameInteractor_Should(VB_ENCOUNT1_SPAWN_STALCHILD_OR_WOLFOS, true, this, play, spawnId, spawnPos,
-                                       spawnParams)) {
+            if (!(true)) {
                 continue;
             }
 

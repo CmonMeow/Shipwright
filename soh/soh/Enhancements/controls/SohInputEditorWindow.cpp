@@ -14,13 +14,6 @@
 
 using namespace UIWidgets;
 
-static WidgetInfo freeLook;
-static WidgetInfo mouseControl;
-static WidgetInfo mouseAutoCapture;
-static WidgetInfo rightStickOcarina;
-static WidgetInfo dpadOcarina;
-static WidgetInfo dpadPause;
-static WidgetInfo dpadText;
 
 namespace SohGui {
 extern std::shared_ptr<SohMenu> mSohMenu;
@@ -39,9 +32,6 @@ void SohInputEditorWindow::InitElement() {
     mButtonsBitmasks = { BTN_A, BTN_B, BTN_START, BTN_L, BTN_R, BTN_Z, BTN_CUP, BTN_CDOWN, BTN_CLEFT, BTN_CRIGHT };
     mDpadBitmasks = { BTN_DUP, BTN_DDOWN, BTN_DLEFT, BTN_DRIGHT };
     mModifierButtonsBitmasks = { BTN_CUSTOM_MODIFIER1, BTN_CUSTOM_MODIFIER2 };
-    mCustomOcarinaButtonsBitmasks = { BTN_CUSTOM_OCARINA_NOTE_D4, BTN_CUSTOM_OCARINA_NOTE_F4,
-                                      BTN_CUSTOM_OCARINA_NOTE_A4, BTN_CUSTOM_OCARINA_NOTE_B4,
-                                      BTN_CUSTOM_OCARINA_NOTE_D5 };
 
     addButtonName(BTN_A, "A");
     addButtonName(BTN_B, "B");
@@ -1080,8 +1070,7 @@ void SohInputEditorWindow::DrawLEDSection(uint8_t port) {
             // todo: clean this up, probably just hardcode to LED_COLOR_SOURCE_GAME and use SoH options only here
             if (mapping->GetColorSource() == LED_COLOR_SOURCE_GAME) {
                 static std::vector<const char*> ledSources = {
-                    "Original Tunic Colors",          "Cosmetics Tunic Colors",          "Health Colors",
-                    "Original Navi Targeting Colors", "Cosmetics Navi Targeting Colors", "Custom"
+                    "Original Tunic Colors", "Health Colors", "Original Navi Targeting Colors", "Custom"
                 };
                 CVarCombobox(
                     "Source", CVAR_SETTING("LEDColorSource"), ledSources,
@@ -1090,8 +1079,7 @@ void SohInputEditorWindow::DrawLEDSection(uint8_t port) {
                         .DefaultIndex(LED_SOURCE_TUNIC_ORIGINAL)
                         .Tooltip("Health\n- Red when health critical (13-20% depending on max health)\n- Yellow when "
                                  "health < 40%. Green otherwise.\n\n"
-                                 "Tunics: colors will mirror currently equipped tunic, whether original or the current "
-                                 "values in Cosmetics Editor.\n\n"
+                                 "Tunics: colors mirror the currently equipped tunic.\n\n"
                                  "Custom: single, solid color"));
                 if (CVarGetInteger(CVAR_SETTING("LEDColorSource"), 1) == LED_SOURCE_CUSTOM) {
                     UIWidgets::Spacer(3);
@@ -1294,203 +1282,6 @@ void SohInputEditorWindow::addButtonName(N64ButtonMask mask, const char* name) {
     buttonNames[mask] = std::prev(buttons.end());
 }
 
-// Draw a button mapping setting consisting of a padded label and button dropdown.
-// excludedButtons indicates which buttons are unavailable to choose from.
-void SohInputEditorWindow::DrawMapping(CustomButtonMap& mapping, float labelWidth, N64ButtonMask excludedButtons) {
-    N64ButtonMask currentButton = CVarGetInteger(mapping.cVarName, mapping.defaultBtn);
-
-    const char* preview;
-    if (buttonNames.contains(currentButton)) {
-        preview = buttonNames[currentButton]->second;
-    } else {
-        preview = "Unknown";
-    }
-
-    ImVec2 cursorPos = ImGui::GetCursorPos();
-    ImVec2 textSize = ImGui::CalcTextSize(mapping.label);
-    ImGui::SetCursorPosY(cursorPos.y + textSize.y / 4);
-    ImGui::SetCursorPosX(cursorPos.x + abs(textSize.x - labelWidth));
-    ImGui::Text("%s", mapping.label);
-    ImGui::SameLine();
-    ImGui::SetCursorPosY(cursorPos.y);
-
-    ImGui::SetNextItemWidth(ImGui::GetFontSize() * 8);
-    if (ImGui::BeginCombo(StringHelper::Sprintf("##%s", mapping.cVarName).c_str(), preview)) {
-        for (auto i = buttons.begin(); i != buttons.end(); i++) {
-            if ((i->first & excludedButtons) != 0) {
-                continue;
-            }
-            if (ImGui::Selectable(i->second, i->first == currentButton)) {
-                CVarSetInteger(mapping.cVarName, i->first);
-                Ship::Context::GetInstance()->GetWindow()->GetGui()->SaveConsoleVariablesNextFrame();
-            }
-        }
-        ImGui::EndCombo();
-    }
-}
-
-void SohInputEditorWindow::DrawOcarinaControlPanel() {
-    ImVec2 cursor = ImGui::GetCursorPos();
-    ImGui::SetCursorPos(ImVec2(cursor.x, cursor.y + 5));
-
-    CheckboxOptions checkOpt = CheckboxOptions().Color(THEME_COLOR);
-    SohGui::mSohMenu->MenuDrawItem(dpadOcarina, ImGui::GetContentRegionAvail().x, THEME_COLOR);
-    SohGui::mSohMenu->MenuDrawItem(rightStickOcarina, ImGui::GetContentRegionAvail().x, THEME_COLOR);
-    CVarCheckbox("Customize Ocarina Controls", CVAR_SETTING("CustomOcarina.Enabled"), checkOpt);
-
-    if (!CVarGetInteger(CVAR_SETTING("CustomOcarina.Enabled"), 0)) {
-        ImGui::BeginDisabled();
-    }
-
-    ImGui::AlignTextToFramePadding();
-    ImGui::BulletText("Notes");
-    DrawButtonLine("A (D4)", 0, BTN_CUSTOM_OCARINA_NOTE_D4);
-    DrawButtonLine(ICON_FA_ARROW_DOWN " (F4)", 0, BTN_CUSTOM_OCARINA_NOTE_F4);
-    DrawButtonLine(ICON_FA_ARROW_RIGHT " (A4)", 0, BTN_CUSTOM_OCARINA_NOTE_A4);
-    DrawButtonLine(ICON_FA_ARROW_LEFT " (B4)", 0, BTN_CUSTOM_OCARINA_NOTE_B4);
-    DrawButtonLine(ICON_FA_ARROW_UP " (D5)", 0, BTN_CUSTOM_OCARINA_NOTE_D5);
-
-    ImGui::AlignTextToFramePadding();
-    ImGui::BulletText("Disable song detection");
-    DrawButtonLine(ICON_FA_BAN "##DisableSongDetection", 0, BTN_CUSTOM_OCARINA_DISABLE_SONGS);
-
-    ImGui::AlignTextToFramePadding();
-    ImGui::BulletText("Pitch");
-    DrawButtonLine(ICON_FA_ARROW_UP "##Pitch", 0, BTN_CUSTOM_OCARINA_PITCH_UP);
-    DrawButtonLine(ICON_FA_ARROW_DOWN "##Pitch", 0, BTN_CUSTOM_OCARINA_PITCH_DOWN);
-
-    if (!CVarGetInteger(CVAR_SETTING("CustomOcarina.Enabled"), 0)) {
-        ImGui::EndDisabled();
-    }
-}
-
-void SohInputEditorWindow::DrawCameraControlPanel() {
-    ImVec2 cursor = ImGui::GetCursorPos();
-    ImGui::SetCursorPos(ImVec2(cursor.x + 5, cursor.y + 5));
-    SohGui::mSohMenu->MenuDrawItem(mouseControl, ImGui::GetContentRegionAvail().x, THEME_COLOR);
-    cursor = ImGui::GetCursorPos();
-    ImGui::SetCursorPos(ImVec2(cursor.x + 5, cursor.y + 5));
-    SohGui::mSohMenu->MenuDrawItem(mouseAutoCapture, ImGui::GetContentRegionAvail().x, THEME_COLOR);
-
-    Ship::GuiWindow::BeginGroupPanel("Aiming/First-Person Camera", ImGui::GetContentRegionAvail());
-    CVarCheckbox("Right Stick Aiming", CVAR_SETTING("Controls.RightStickAim"),
-                 CheckboxOptions()
-                     .Color(THEME_COLOR)
-                     .Tooltip("Allows for aiming with the right stick in:\n-First-Person/C-Up view\n-Weapon Aiming"));
-    CVarCheckbox("Allow moving while in first-person mode", CVAR_SETTING("MoveInFirstPerson"),
-                 CheckboxOptions({ { .disabled = !CVarGetInteger(CVAR_SETTING("Controls.RightStickAim"), 0),
-                                     .disabledTooltip = "Forced off because Right Stick Aiming is disabled." } })
-                     .Color(THEME_COLOR)
-                     .Tooltip("Changes the left stick to move the player while in first-person mode"));
-    CVarCheckbox("Invert Aiming X Axis", CVAR_SETTING("Controls.InvertAimingXAxis"),
-                 CheckboxOptions()
-                     .Color(THEME_COLOR)
-                     .Tooltip("Inverts the Camera X Axis in:\n-First-Person/C-Up view\n-Weapon Aiming"));
-    CVarCheckbox("Invert Aiming Y Axis", CVAR_SETTING("Controls.InvertAimingYAxis"),
-                 CheckboxOptions()
-                     .Color(THEME_COLOR)
-                     .DefaultValue(true)
-                     .Tooltip("Inverts the Camera Y Axis in:\n-First-Person/C-Up view\n-Weapon Aiming"));
-    CVarCheckbox("Invert Shield Aiming X Axis", CVAR_SETTING("Controls.InvertShieldAimingXAxis"),
-                 CheckboxOptions().Color(THEME_COLOR).DefaultValue(true).Tooltip("Inverts the Shield Aiming X Axis"));
-    CVarCheckbox("Invert Shield Aiming Y Axis", CVAR_SETTING("Controls.InvertShieldAimingYAxis"),
-                 CheckboxOptions().Color(THEME_COLOR).Tooltip("Inverts the Shield Aiming Y Axis"));
-    CVarCheckbox("Invert Z-Weapon Aiming Y Axis", CVAR_SETTING("Controls.InvertZAimingYAxis"),
-                 CheckboxOptions()
-                     .Color(THEME_COLOR)
-                     .DefaultValue(true)
-                     .Tooltip("Inverts the Camera Y Axis in:\n-Z-Weapon Aiming"));
-    CVarCheckbox("Disable Auto-Centering in First-Person View", CVAR_SETTING("DisableFirstPersonAutoCenterView"),
-                 CheckboxOptions()
-                     .Color(THEME_COLOR)
-                     .Tooltip("Prevents the C-Up view from auto-centering, allowing for Gyro Aiming"));
-    if (CVarCheckbox("Enable Custom Aiming/First-Person sensitivity",
-                     CVAR_SETTING("FirstPersonCameraSensitivity.Enabled"), CheckboxOptions().Color(THEME_COLOR))) {
-        if (!CVarGetInteger(CVAR_SETTING("FirstPersonCameraSensitivity.Enabled"), 0)) {
-            CVarClear(CVAR_SETTING("FirstPersonCameraSensitivity.X"));
-            CVarClear(CVAR_SETTING("FirstPersonCameraSensitivity.Y"));
-            Ship::Context::GetInstance()->GetWindow()->GetGui()->SaveConsoleVariablesNextFrame();
-        }
-    }
-    if (CVarGetInteger(CVAR_SETTING("FirstPersonCameraSensitivity.Enabled"), 0)) {
-        CVarSliderFloat("Aiming/First-Person Horizontal Sensitivity: %.0f %%",
-                        CVAR_SETTING("FirstPersonCameraSensitivity.X"),
-                        FloatSliderOptions()
-                            .Color(THEME_COLOR)
-                            .IsPercentage()
-                            .Min(0.01f)
-                            .Max(5.0f)
-                            .DefaultValue(1.0f)
-                            .ShowButtons(true));
-        CVarSliderFloat("Aiming/First-Person Vertical Sensitivity: %.0f %%",
-                        CVAR_SETTING("FirstPersonCameraSensitivity.Y"),
-                        FloatSliderOptions()
-                            .Color(THEME_COLOR)
-                            .IsPercentage()
-                            .Min(0.01f)
-                            .Max(5.0f)
-                            .DefaultValue(1.0f)
-                            .ShowButtons(true));
-    }
-    Ship::GuiWindow::EndGroupPanel(0);
-
-    cursor = ImGui::GetCursorPos();
-    ImGui::SetCursorPos(ImVec2(cursor.x + 5, cursor.y + 5));
-    Ship::GuiWindow::BeginGroupPanel("Third-Person Camera", ImGui::GetContentRegionAvail());
-
-    SohGui::mSohMenu->MenuDrawItem(freeLook, ImGui::GetContentRegionAvail().x, THEME_COLOR);
-    CVarCheckbox("Invert Camera X Axis", CVAR_SETTING("FreeLook.InvertXAxis"),
-                 CheckboxOptions().Color(THEME_COLOR).Tooltip("Inverts the Camera X Axis in:\n-Free look"));
-    CVarCheckbox(
-        "Invert Camera Y Axis", CVAR_SETTING("FreeLook.InvertYAxis"),
-        CheckboxOptions().Color(THEME_COLOR).DefaultValue(true).Tooltip("Inverts the Camera Y Axis in:\n-Free look"));
-    CVarSliderFloat("Third-Person Horizontal Sensitivity: %.0f %%", CVAR_SETTING("FreeLook.CameraSensitivity.X"),
-                    FloatSliderOptions()
-                        .Color(THEME_COLOR)
-                        .IsPercentage()
-                        .Min(0.01f)
-                        .Max(5.0f)
-                        .DefaultValue(1.0f)
-                        .ShowButtons(true));
-    CVarSliderFloat("Third-Person Vertical Sensitivity: %.0f %%", CVAR_SETTING("FreeLook.CameraSensitivity.Y"),
-                    FloatSliderOptions()
-                        .Color(THEME_COLOR)
-                        .IsPercentage()
-                        .Min(0.01f)
-                        .Max(5.0f)
-                        .DefaultValue(1.0f)
-                        .ShowButtons(true));
-    CVarSliderInt("Camera Distance: %d", CVAR_SETTING("FreeLook.MaxCameraDistance"),
-                  IntSliderOptions().Color(THEME_COLOR).Min(100).Max(900).DefaultValue(185).ShowButtons(true));
-    CVarSliderInt("Camera Transition Speed: %d", CVAR_SETTING("FreeLook.TransitionSpeed"),
-                  IntSliderOptions().Color(THEME_COLOR).Min(0).Max(900).DefaultValue(25).ShowButtons(true));
-    Ship::GuiWindow::EndGroupPanel(0);
-}
-
-void SohInputEditorWindow::DrawDpadControlPanel() {
-    ImVec2 cursor = ImGui::GetCursorPos();
-    ImGui::SetCursorPos(ImVec2(cursor.x + 5, cursor.y + 5));
-    Ship::GuiWindow::BeginGroupPanel("D-Pad Options", ImGui::GetContentRegionAvail());
-    SohGui::mSohMenu->MenuDrawItem(dpadPause, ImGui::GetContentRegionAvail().x, THEME_COLOR);
-    SohGui::mSohMenu->MenuDrawItem(dpadText, ImGui::GetContentRegionAvail().x, THEME_COLOR);
-
-    if (!CVarGetInteger(CVAR_SETTING("DPadOnPause"), 0) && !CVarGetInteger(CVAR_SETTING("DpadInText"), 0)) {
-        ImGui::BeginDisabled();
-    }
-
-    CVarCheckbox("D-pad hold change", CVAR_SETTING("DpadHoldChange"),
-                 CheckboxOptions()
-                     .Color(THEME_COLOR)
-                     .DefaultValue(true)
-                     .Tooltip("The cursor will only move a single space no matter how long a D-pad direction is held"));
-
-    if (!CVarGetInteger(CVAR_SETTING("DPadOnPause"), 0) && !CVarGetInteger(CVAR_SETTING("DpadInText"), 0)) {
-        ImGui::EndDisabled();
-    }
-
-    Ship::GuiWindow::EndGroupPanel(0);
-}
-
 void SohInputEditorWindow::DrawDeviceToggles(uint8_t portIndex) {
     ImGui::PushItemFlag(ImGuiItemFlags_Disabled, true);
 
@@ -1603,30 +1394,6 @@ void SohInputEditorWindow::DrawLinkTab() {
             DrawButtonLine("M2", portIndex, BTN_CUSTOM_MODIFIER2);
         }
 
-        if (ImGui::CollapsingHeader("Ocarina Controls")) {
-            DrawOcarinaControlPanel();
-        }
-
-        if (ImGui::CollapsingHeader("Camera Controls")) {
-            ImGui::PopStyleColor();
-            ImGui::PopStyleColor();
-            ImGui::PopStyleColor();
-            DrawCameraControlPanel();
-            ImGui::PushStyleColor(ImGuiCol_Header, ImVec4(0.133f, 0.133f, 0.133f, 1.0f));
-            ImGui::PushStyleColor(ImGuiCol_HeaderHovered, ImVec4(0.0f, 0.0f, 0.0f, 1.0f));
-            ImGui::PushStyleColor(ImGuiCol_HeaderActive, ImVec4(0.0f, 0.0f, 0.0f, 1.0f));
-        }
-
-        if (ImGui::CollapsingHeader("D-Pad Controls")) {
-            ImGui::PopStyleColor();
-            ImGui::PopStyleColor();
-            ImGui::PopStyleColor();
-            DrawDpadControlPanel();
-            ImGui::PushStyleColor(ImGuiCol_Header, ImVec4(0.133f, 0.133f, 0.133f, 1.0f));
-            ImGui::PushStyleColor(ImGuiCol_HeaderHovered, ImVec4(0.0f, 0.0f, 0.0f, 1.0f));
-            ImGui::PushStyleColor(ImGuiCol_HeaderActive, ImVec4(0.0f, 0.0f, 0.0f, 1.0f));
-        }
-
         ImGui::PopStyleColor();
         ImGui::PopStyleColor();
         ImGui::PopStyleColor();
@@ -1635,10 +1402,7 @@ void SohInputEditorWindow::DrawLinkTab() {
 }
 
 void SohInputEditorWindow::DrawIvanTab() {
-    if (CVarGetInteger(CVAR_DEVELOPER_TOOLS("DebugEnabled"), 0)) {
-        DrawDebugPortTab(1, "Ivan (P2)");
-        return;
-    }
+    
 
     uint8_t portIndex = 1;
     if (ImGui::BeginTabItem(StringHelper::Sprintf("Ivan (P2)###port%d", portIndex).c_str())) {
@@ -1838,82 +1602,9 @@ void SohInputEditorWindow::DrawElement() {
     ImGui::BeginTabBar("##ControllerConfigPortTabs");
     DrawLinkTab();
     DrawIvanTab();
-    if (CVarGetInteger(CVAR_DEVELOPER_TOOLS("DebugEnabled"), 0)) {
-        DrawDebugPortTab(2);
-        DrawDebugPortTab(3);
-    }
+    
     ImGui::EndTabBar();
     ImGui::PopStyleColor(3);
     ImGui::PopFont();
 }
 
-void RegisterInputEditorWidgets() {
-    dpadOcarina = { .name = "Dpad Ocarina Playback", .type = WidgetType::WIDGET_CVAR_CHECKBOX };
-    dpadOcarina.CVar(CVAR_SETTING("CustomOcarina.Dpad")).Options(CheckboxOptions().Color(THEME_COLOR));
-    SohGui::mSohMenu->AddSearchWidget({ dpadOcarina, "Settings", "Controls", "Ocarina Controls", "" });
-
-    freeLook = { .name = "Free Look", .type = WidgetType::WIDGET_CVAR_CHECKBOX };
-    freeLook.CVar(CVAR_SETTING("FreeLook.Enabled"))
-        .Options(
-            CheckboxOptions()
-                .Color(THEME_COLOR)
-                .Tooltip(
-                    "Enables free look camera control\nNote: You must remap C buttons off of the right stick in the "
-                    "controller config menu, and map the camera stick to the right stick.\n"
-                    "Doesn't work in areas were the game locks the camera.\n"
-                    "Scene reload may be necessary to enable."));
-    SohGui::mSohMenu->AddSearchWidget({ freeLook, "Settings", "Controls", "Camera Controls" });
-
-    mouseControl = { .name = "Enable Mouse Controls", .type = WidgetType::WIDGET_CVAR_CHECKBOX };
-    mouseControl.CVar(CVAR_SETTING("EnableMouse"))
-        .Callback([](WidgetInfo& info) {
-            bool enabled =
-                CVarGetInteger(CVAR_SETTING("EnableMouse"), 0) && CVarGetInteger(CVAR_SETTING("AutoCaptureMouse"), 1);
-            auto wnd = std::dynamic_pointer_cast<Fast::Fast3dWindow>(Ship::Context::GetInstance()->GetWindow());
-            wnd->SetAutoCaptureMouse(enabled);
-        })
-        .Options(
-            CheckboxOptions()
-                .Color(THEME_COLOR)
-                .Tooltip("Allows for using the mouse to control the camera (must enable Free Look), "
-                         "aim with the shield, and perform quickspin attacks (quickly rotate the mouse then press B)\n"
-                         "Press F2 to toggle mouse capture manually."));
-    SohGui::mSohMenu->AddSearchWidget({ mouseControl, "Settings", "Controls", "Camera Controls" });
-
-    mouseAutoCapture = { .name = "Auto Capture Mouse Input", .type = WidgetType::WIDGET_CVAR_CHECKBOX };
-    mouseAutoCapture.CVar(CVAR_SETTING("AutoCaptureMouse"))
-        .Callback([](WidgetInfo& info) {
-            bool enabled =
-                CVarGetInteger(CVAR_SETTING("EnableMouse"), 0) && CVarGetInteger(CVAR_SETTING("AutoCaptureMouse"), 1);
-            auto wnd = std::dynamic_pointer_cast<Fast::Fast3dWindow>(Ship::Context::GetInstance()->GetWindow());
-            wnd->SetAutoCaptureMouse(enabled);
-        })
-        .Options(CheckboxOptions()
-                     .Color(THEME_COLOR)
-                     .Tooltip("When Mouse Controls are enabled, this toggles whether the program will automatically "
-                              "hide the cursor "
-                              "and capture mouse input when closing the menu."));
-    SohGui::mSohMenu->AddSearchWidget({ mouseAutoCapture, "Settings", "Controls", "Camera Controls" });
-
-    rightStickOcarina = { .name = "Right Stick Ocarina Playback", .type = WidgetType::WIDGET_CVAR_CHECKBOX };
-    rightStickOcarina.CVar(CVAR_SETTING("CustomOcarina.RightStick")).Options(CheckboxOptions().Color(THEME_COLOR));
-    SohGui::mSohMenu->AddSearchWidget({ rightStickOcarina, "Settings", "Controls", "Ocarina Controls" });
-
-    dpadPause = { .name = "D-pad Support on Pause Screen", .type = WidgetType::WIDGET_CVAR_CHECKBOX };
-    dpadPause.CVar(CVAR_SETTING("DPadOnPause"))
-        .Options(CheckboxOptions()
-                     .Color(THEME_COLOR)
-                     .Tooltip("Navigate Pause with the D-pad\nIf used with \"D-pad as Equip Items\", you must hold "
-                              "C-Up to equip instead of navigate"));
-    SohGui::mSohMenu->AddSearchWidget({ dpadPause, "Settings", "Controls", "Dpad Controls" });
-
-    dpadText = { .name = "D-pad Support in Text Boxes", .type = WidgetType::WIDGET_CVAR_CHECKBOX };
-    dpadText.CVar(CVAR_SETTING("DpadInText"))
-        .Options(CheckboxOptions()
-                     .Color(THEME_COLOR)
-                     .Tooltip("Navigate choices in text boxes, shop item selection, and the file select / name entry "
-                              "screens with the D-pad"));
-    SohGui::mSohMenu->AddSearchWidget({ dpadText, "Settings", "Controls", "Dpad Controls" });
-}
-
-static RegisterMenuInitFunc menuInitFunc(RegisterInputEditorWidgets);

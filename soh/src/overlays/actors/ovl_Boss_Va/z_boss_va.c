@@ -16,9 +16,6 @@
 
 #include "soh/OTRGlobals.h"
 #include "soh/frame_interpolation.h"
-#include "soh/Enhancements/game-interactor/GameInteractor.h"
-#include "soh/Enhancements/game-interactor/GameInteractor_Hooks.h"
-
 #define FLAGS                                                                                 \
     (ACTOR_FLAG_ATTENTION_ENABLED | ACTOR_FLAG_HOSTILE | ACTOR_FLAG_UPDATE_CULLING_DISABLED | \
      ACTOR_FLAG_DRAW_CULLING_DISABLED)
@@ -642,16 +639,16 @@ void BossVa_Init(Actor* thisx, PlayState* play2) {
                 if (Flags_GetEventChkInf(EVENTCHKINF_USED_JABU_JABUS_BELLY_BLUE_WARP)) {
                     warpId = ACTOR_DOOR_WARP1;
                 }
-                if (GameInteractor_Should(VB_SPAWN_BLUE_WARP, true, this)) {
+                
                     Actor_Spawn(&play->actorCtx, play, warpId, this->actor.world.pos.x, this->actor.world.pos.y,
                                 this->actor.world.pos.z, 0, 0, 0,
                                 0); //! params could be WARP_DUNGEON_CHILD however this can also spawn Ru1
-                }
+                
 
-                if (GameInteractor_Should(VB_SPAWN_HEART_CONTAINER, true)) {
+                
                     Actor_Spawn(&play->actorCtx, play, ACTOR_ITEM_B_HEART, this->actor.world.pos.x + 160.0f,
                                 this->actor.world.pos.y, this->actor.world.pos.z, 0, 0, 0, 0);
-                }
+                
                 sDoorState = 100;
                 Actor_Kill(&this->actor);
             } else {
@@ -1402,7 +1399,6 @@ void BossVa_BodyPhase4(BossVa* this, PlayState* play) {
                         if (sFightPhase >= PHASE_DEATH) {
                             BossVa_SetupBodyDeath(this, play);
                             Enemy_StartFinishingBlow(play, &this->actor);
-                            GameInteractor_ExecuteOnBossDefeat(&this->actor);
                             return;
                         }
                         this->actor.speedXZ = -10.0f;
@@ -1655,10 +1651,10 @@ void BossVa_BodyDeath(BossVa* this, PlayState* play) {
                 Player_SetCsActionWithHaltedActors(play, &this->actor, 7);
                 sCsState++;
 
-                if (GameInteractor_Should(VB_SPAWN_HEART_CONTAINER, true)) {
+                
                     Actor_Spawn(&play->actorCtx, play, ACTOR_ITEM_B_HEART, this->actor.world.pos.x,
                                 this->actor.world.pos.y, this->actor.world.pos.z, 0, 0, 0, 0);
-                }
+                
 
                 for (i = 2, sp7C = 2; i > 0; i--) {
                     if (Math_Vec3f_DistXYZ(&sWarpPos[i], &player->actor.world.pos) <
@@ -1667,10 +1663,10 @@ void BossVa_BodyDeath(BossVa* this, PlayState* play) {
                     }
                 }
 
-                if (GameInteractor_Should(VB_SPAWN_BLUE_WARP, true, this)) {
+                
                     Actor_Spawn(&play->actorCtx, play, ACTOR_EN_RU1, sWarpPos[sp7C].x, sWarpPos[sp7C].y,
                                 sWarpPos[sp7C].z, 0, 0, 0, 0);
-                }
+                
             }
         case DEATH_FINISH:
             Rand_CenteredFloat(0.5f);

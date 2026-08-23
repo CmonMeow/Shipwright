@@ -7,7 +7,6 @@
 #include "z_en_rr.h"
 #include "objects/object_rr/object_rr.h"
 #include "vt.h"
-#include "soh/Enhancements/game-interactor/GameInteractor_Hooks.h"
 #include <assert.h>
 
 #define FLAGS                                                                                 \
@@ -385,7 +384,6 @@ void EnRr_SetupDeath(EnRr* this) {
     this->actionFunc = EnRr_Death;
     Audio_PlayActorSound2(&this->actor, NA_SE_EN_LIKE_DEAD);
     this->actor.flags &= ~ACTOR_FLAG_ATTENTION_ENABLED;
-    GameInteractor_ExecuteOnEnemyDefeat(&this->actor);
 }
 
 void EnRr_SetupStunned(EnRr* this) {
@@ -507,7 +505,7 @@ void EnRr_CollisionCheck(EnRr* this, PlayState* play) {
             this->collider2.base.ocFlags1 &= ~OC1_HIT;
             // "catch"
             osSyncPrintf(VT_FGCOL(GREEN) "キャッチ(%d)！！" VT_RST "\n", this->frameCount);
-            if (GameInteractor_Should(VB_LIKE_LIKE_GRAB_PLAYER, true, this) && play->grabPlayer(play, player)) {
+            if ((true) && play->grabPlayer(play, player)) {
                 player->actor.parent = &this->actor;
                 this->stopScroll = false;
                 EnRr_SetupGrabPlayer(this, player);

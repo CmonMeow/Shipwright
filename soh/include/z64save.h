@@ -4,16 +4,10 @@
 #include <libultraship/libultra.h>
 #include "z64math.h"
 #include "z64audio.h"
-#include "soh/Enhancements/gameplaystats.h"
-#include "soh/Enhancements/boss-rush/BossRush.h"
 
 #define FULL_HEART_HEALTH 0x10
 #define STARTING_HEALTH (3 * FULL_HEART_HEALTH)
 #define MAX_HEALTH (20 * FULL_HEART_HEALTH)
-
-// Gameplay statistics retain one entry per scene/entrance ID.
-#define SAVEFILE_ENTRANCES_DISCOVERED_IDX_COUNT 256
-#define SAVEFILE_SCENES_DISCOVERED_IDX_COUNT 256
 
 typedef enum {
     /* 0x0 */ MAGIC_STATE_IDLE, // Regular gameplay
@@ -42,8 +36,8 @@ typedef enum {
 #define MAGIC_DOUBLE_METER (2 * MAGIC_NORMAL_METER)
 
 typedef struct {
-    /* 0x00 */ u8 buttonItems[8]; // SOH [Enhancements] Changed from 4 to 8 to support Dpad equips
-    /* 0x04 */ u8 cButtonSlots[7]; // SOH [Enhancements] Changed from 3 to 7 to support Dpad equips
+    /* 0x00 */ u8 buttonItems[4];
+    /* 0x04 */ u8 cButtonSlots[3];
     /* 0x08 */ u16 equipment; // a mask where each nibble corresponds to a type of equipment `EquipmentType`, and each nibble is a piece `EquipValue*`
 } ItemEquips; // size = 0x0A
 
@@ -59,48 +53,10 @@ typedef struct {
     /* 0x5C */ s16 gsTokens;
 } Inventory; // size = 0x5E
 
-typedef struct {
-    u16 scene;
-    u8 room;
-    u32 sceneTime;
-    u32 roomTime;
-    u8 isRoom;
-} SceneTimestamp;
-
 typedef enum { // Pre-existing IDs for save sections in base code
     SECTION_ID_BASE,
-    SECTION_ID_STATS,
-    SECTION_ID_ENTRANCES,
-    SECTION_ID_SCENES,
-    SECTION_ID_TRACKER_DATA,
     SECTION_ID_MAX
 } SaveFuncIDs;
-
-typedef struct {
-    /*      */ char buildVersion[50];
-    /*      */ s16 buildVersionMajor;
-    /*      */ s16 buildVersionMinor;
-    /*      */ s16 buildVersionPatch;
-    /*      */ u8 heartPieces;
-    /*      */ u8 heartContainers;
-    /*      */ u8 dungeonKeys[19];
-    /*      */ u32 playTimer;
-    /*      */ u32 pauseTimer;
-    /*      */ u32 sceneTimer;
-    /*      */ u32 roomTimer;
-    /*      */ s16 sceneNum;
-    /*      */ s8 roomNum;
-    /*      */ bool gameComplete;
-    /*      */ u32 itemTimestamp[TIMESTAMP_MAX];
-    /*      */ SceneTimestamp sceneTimestamps[8191];
-    /*      */ u32 tsIdx;
-    /*      */ u32 count[COUNT_MAX];
-    /*      */ u32 entrancesDiscovered[SAVEFILE_ENTRANCES_DISCOVERED_IDX_COUNT];
-    /*      */ u32 scenesDiscovered[SAVEFILE_SCENES_DISCOVERED_IDX_COUNT];
-    /*      */ bool rtaTiming;
-    /*      */ uint64_t firstInput;
-    /*      */ uint64_t fileCreatedAt;
-} SohStats;
 
 typedef struct {
     /* 0x00 */ u32 chest;
@@ -194,24 +150,13 @@ typedef enum TimerId {
 
 #pragma region SoH
 
-typedef struct ShipBossRushSaveContextData {
-    u32 isPaused;
-    u8 options[BR_OPTIONS_MAX];
-} ShipBossRushSaveContextData;
-
-typedef union ShipQuestSpecificSaveContextData {
-    ShipBossRushSaveContextData bossRush;
-} ShipQuestSpecificSaveContextData;
-
 typedef struct ShipQuestSaveContextData {
     u8 id;
-    ShipQuestSpecificSaveContextData data;
 } ShipQuestSaveContextData;
 
 typedef struct ShipSaveContextData {
     u16 pendingSale;
     u16 pendingSaleMod;
-    SohStats stats;
     FaroresWindData backupFW;
     ShipQuestSaveContextData quest;
     u8 maskMemory;
@@ -297,7 +242,7 @@ typedef struct {
     /* 0x13DE */ char unk_13DE[0x0002];
     /* 0x13E0 */ u8 seqId;
     /* 0x13E1 */ u8 natureAmbienceId;
-    /* 0x13E2 */ u8 buttonStatus[9]; // SOH [Enhancements] Changed from 5 to 9 to support Dpad equips
+    /* 0x13E2 */ u8 buttonStatus[5];
     /* 0x13E7 */ u8 forceRisingButtonAlphas; // alpha related
     /* 0x13E8 */ u16 unk_13E8; // alpha type?
     /* 0x13EA */ u16 unk_13EA; // also alpha type?
@@ -339,12 +284,10 @@ typedef struct {
 typedef enum {
     /* 00 */ QUEST_NORMAL,
     /* 01 */ QUEST_MASTER,
-    /* 02 */ QUEST_BOSSRUSH,
 } Quest;
 
 #define IS_VANILLA (gSaveContext.ship.quest.id == QUEST_NORMAL)
 #define IS_MASTER_QUEST (gSaveContext.ship.quest.id == QUEST_MASTER)
-#define IS_BOSS_RUSH (gSaveContext.ship.quest.id == QUEST_BOSSRUSH)
 
 typedef enum {
     /* 0x00 */ BTN_ENABLED,

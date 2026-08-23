@@ -11,12 +11,6 @@
 
 typedef CONTROLLERBUTTONS_T N64ButtonMask;
 
-typedef struct {
-    const char* label;
-    const char* cVarName;
-    N64ButtonMask defaultBtn;
-} CustomButtonMap;
-
 class SohInputEditorWindow final : public Ship::GuiWindow {
   public:
     using GuiWindow::GuiWindow;
@@ -63,10 +57,6 @@ class SohInputEditorWindow final : public Ship::GuiWindow {
     std::list<std::pair<N64ButtonMask, const char*>> buttons;
     std::unordered_map<N64ButtonMask, decltype(buttons)::iterator> buttonNames;
     void addButtonName(N64ButtonMask mask, const char* name);
-    void DrawMapping(CustomButtonMap& mapping, float labelWidth, N64ButtonMask excludedButtons);
-    void DrawOcarinaControlPanel();
-    void DrawCameraControlPanel();
-    void DrawDpadControlPanel();
 
     int32_t mGameInputBlockTimer;
     int32_t mMappingInputBlockTimer;
@@ -92,7 +82,6 @@ class SohInputEditorWindow final : public Ship::GuiWindow {
     std::set<N64ButtonMask> mButtonsBitmasks;
     std::set<N64ButtonMask> mDpadBitmasks;
     std::set<N64ButtonMask> mModifierButtonsBitmasks;
-    std::set<N64ButtonMask> mCustomOcarinaButtonsBitmasks;
     bool mInputEditorPopupOpen;
     void DrawSetDefaultsButton(uint8_t portIndex);
     void DrawClearAllButton(uint8_t portIndex);

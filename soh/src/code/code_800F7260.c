@@ -2,7 +2,6 @@
 #include "global.h"
 #include "vt.h"
 
-#include "soh/Enhancements/audio/AudioEditor.h"
 
 typedef struct {
     /* 0x00 */ u16 sfxId;
@@ -220,11 +219,6 @@ void Audio_ProcessSoundRequest(void) {
     evictIndex = 0x80;
     if (req->sfxId == 0) {
         return;
-    }
-    u16 newSfxId = AudioEditor_GetReplacementSeq(req->sfxId);
-    if (req->sfxId != newSfxId) {
-        gAudioContext.seqReplaced[SEQ_PLAYER_SFX] = 1;
-        req->sfxId = newSfxId;
     }
     bankId = SFX_BANK(req->sfxId);
     if ((1 << bankId) & D_801333F0) {

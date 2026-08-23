@@ -2,7 +2,6 @@
 <Project DefaultTargets="Build" ToolsVersion="18.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <PreferredToolArchitecture>x64</PreferredToolArchitecture>
-    <TrackFileAccess>false</TrackFileAccess>
   </PropertyGroup>
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|x64">
@@ -85,12 +84,12 @@
       <TreatWChar_tAsBuiltInType></TreatWChar_tAsBuiltInType>
       <UseFullPaths>false</UseFullPaths>
       <UseStandardPreprocessor>true</UseStandardPreprocessor>
-      <PreprocessorDefinitions>%(PreprocessorDefinitions);_DEBUG;_CRT_SECURE_NO_WARNINGS;ENABLE_OPENGL;INCLUDE_GAME_PRINTF;F3DEX_GBI_2;UNICODE;_UNICODE;SPDLOG_ACTIVE_LEVEL=SPDLOG_LEVEL_TRACE;LOG_LEVEL_GAME_PRINTS=6;STORMLIB_NO_AUTO_LINK;NOMINMAX;CVAR_PREFIX_RANDOMIZER_ENHANCEMENT="gRandoEnhancements";CVAR_PREFIX_RANDOMIZER_SETTING="gRandoSettings";CVAR_PREFIX_COSMETIC="gCosmetics";CVAR_PREFIX_AUDIO="gAudioEditor";CVAR_PREFIX_CHEAT="gCheats";CVAR_PREFIX_ENHANCEMENT="gEnhancements";CVAR_PREFIX_SETTING="gSettings";CVAR_PREFIX_WINDOW="gOpenWindows";CVAR_PREFIX_TRACKER="gTrackers";CVAR_PREFIX_DEVELOPER_TOOLS="gDeveloperTools";CVAR_PREFIX_GENERAL="gGeneral";CVAR_PREFIX_REMOTE="gRemote";CVAR_PREFIX_GAMEPLAY_STATS="gGameplayStats";CVAR_PREFIX_TIME_DISPLAY="gTimeDisplay";CVAR_VSYNC_ENABLED="gSettings.VsyncEnabled";CVAR_Z_FIGHTING_MODE="gSettings.ZFightingMode";CVAR_INTERNAL_RESOLUTION="gSettings.InternalResolution";CVAR_MSAA_VALUE="gSettings.MSAAValue";CVAR_SDL_WINDOWED_FULLSCREEN="gSettings.SdlWindowedFullscreen";CVAR_TEXTURE_FILTER="gSettings.TextureFilter";CVAR_IMGUI_CONTROLLER_NAV="gSettings.ControlNav";CVAR_CONSOLE_WINDOW_OPEN="gOpenWindows.Console";CVAR_CONTROLLER_CONFIGURATION_WINDOW_OPEN="gControllerConfigurationEnabled";CVAR_CONTROLLER_DISCONNECTED_WINDOW_OPEN="gOpenWindows.ControllerDisconnected";CVAR_CONTROLLER_REORDERING_WINDOW_OPEN="gOpenWindows.ControllerReordering";CVAR_GFX_DEBUGGER_WINDOW_OPEN="gOpenWindows.GfxDebugger";CVAR_STATS_WINDOW_OPEN="gOpenWindows.Stats";CVAR_ENABLE_MULTI_VIEWPORTS="gSettings.EnableMultiViewports";CVAR_LOW_RES_MODE="gSettings.LowResMode";CVAR_SIMULATED_INPUT_LAG="gSettings.SimulatedInputLag";CVAR_GAME_OVERLAY_FONT="gSettings.OverlayFont";CVAR_MENU_BAR_OPEN="gSettings.OpenMenuBar";CVAR_PREFIX_CONTROLLERS="gSettings.Controllers";CVAR_PREFIX_ADVANCED_RESOLUTION="gSettings.AdvancedResolution";CVAR_AUDIO_CHANNELS_SETTING="gAudioChannelsSetting";CVAR_ALLOW_BACKGROUND_INPUTS="gAllowBackgroundInputs";CONTROLLERBUTTONS_T=uint32_t;INCLUDE_MPQ_SUPPORT;GLEW_STATIC;TINYXML2_DEBUG;_FILE_OFFSET_BITS=64;SPDLOG_COMPILED_LIB;SPDLOG_FMT_EXTERNAL;CMAKE_INTDIR="Debug"</PreprocessorDefinitions>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);_DEBUG;_CRT_SECURE_NO_WARNINGS;ENABLE_OPENGL;INCLUDE_GAME_PRINTF;F3DEX_GBI_2;UNICODE;_UNICODE;SPDLOG_ACTIVE_LEVEL=SPDLOG_LEVEL_TRACE;LOG_LEVEL_GAME_PRINTS=6;STORMLIB_NO_AUTO_LINK;NOMINMAX;CVAR_PREFIX_SETTING="gSettings";CVAR_PREFIX_WINDOW="gOpenWindows";CVAR_PREFIX_GENERAL="gGeneral";CVAR_VSYNC_ENABLED="gSettings.VsyncEnabled";CVAR_Z_FIGHTING_MODE="gSettings.ZFightingMode";CVAR_INTERNAL_RESOLUTION="gSettings.InternalResolution";CVAR_MSAA_VALUE="gSettings.MSAAValue";CVAR_SDL_WINDOWED_FULLSCREEN="gSettings.SdlWindowedFullscreen";CVAR_TEXTURE_FILTER="gSettings.TextureFilter";CVAR_IMGUI_CONTROLLER_NAV="gSettings.ControlNav";CVAR_CONSOLE_WINDOW_OPEN="gOpenWindows.Console";CVAR_CONTROLLER_CONFIGURATION_WINDOW_OPEN="gControllerConfigurationEnabled";CVAR_CONTROLLER_DISCONNECTED_WINDOW_OPEN="gOpenWindows.ControllerDisconnected";CVAR_CONTROLLER_REORDERING_WINDOW_OPEN="gOpenWindows.ControllerReordering";CVAR_GFX_DEBUGGER_WINDOW_OPEN="gOpenWindows.GfxDebugger";CVAR_STATS_WINDOW_OPEN="gOpenWindows.Stats";CVAR_ENABLE_MULTI_VIEWPORTS="gSettings.EnableMultiViewports";CVAR_LOW_RES_MODE="gSettings.LowResMode";CVAR_SIMULATED_INPUT_LAG="gSettings.SimulatedInputLag";CVAR_GAME_OVERLAY_FONT="gSettings.OverlayFont";CVAR_MENU_BAR_OPEN="gSettings.OpenMenuBar";CVAR_PREFIX_CONTROLLERS="gSettings.Controllers";CVAR_PREFIX_ADVANCED_RESOLUTION="gSettings.AdvancedResolution";CVAR_AUDIO_CHANNELS_SETTING="gAudioChannelsSetting";CVAR_ALLOW_BACKGROUND_INPUTS="gAllowBackgroundInputs";CONTROLLERBUTTONS_T=uint32_t;INCLUDE_MPQ_SUPPORT;GLEW_STATIC;TINYXML2_DEBUG;_FILE_OFFSET_BITS=64;SPDLOG_COMPILED_LIB;SPDLOG_FMT_EXTERNAL;CMAKE_INTDIR="Debug"</PreprocessorDefinitions>
       <ObjectFileName>$(IntDir)</ObjectFileName>
       <ScanSourceForModuleDependencies>false</ScanSourceForModuleDependencies>
     </ClCompile>
     <ResourceCompile>
-      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_DEBUG;_CRT_SECURE_NO_WARNINGS;ENABLE_OPENGL;INCLUDE_GAME_PRINTF;F3DEX_GBI_2;UNICODE;_UNICODE;SPDLOG_ACTIVE_LEVEL=SPDLOG_LEVEL_TRACE;LOG_LEVEL_GAME_PRINTS=6;STORMLIB_NO_AUTO_LINK;NOMINMAX;CVAR_PREFIX_RANDOMIZER_ENHANCEMENT=\"gRandoEnhancements\";CVAR_PREFIX_RANDOMIZER_SETTING=\"gRandoSettings\";CVAR_PREFIX_COSMETIC=\"gCosmetics\";CVAR_PREFIX_AUDIO=\"gAudioEditor\";CVAR_PREFIX_CHEAT=\"gCheats\";CVAR_PREFIX_ENHANCEMENT=\"gEnhancements\";CVAR_PREFIX_SETTING=\"gSettings\";CVAR_PREFIX_WINDOW=\"gOpenWindows\";CVAR_PREFIX_TRACKER=\"gTrackers\";CVAR_PREFIX_DEVELOPER_TOOLS=\"gDeveloperTools\";CVAR_PREFIX_GENERAL=\"gGeneral\";CVAR_PREFIX_REMOTE=\"gRemote\";CVAR_PREFIX_GAMEPLAY_STATS=\"gGameplayStats\";CVAR_PREFIX_TIME_DISPLAY=\"gTimeDisplay\";CVAR_VSYNC_ENABLED=\"gSettings.VsyncEnabled\";CVAR_Z_FIGHTING_MODE=\"gSettings.ZFightingMode\";CVAR_INTERNAL_RESOLUTION=\"gSettings.InternalResolution\";CVAR_MSAA_VALUE=\"gSettings.MSAAValue\";CVAR_SDL_WINDOWED_FULLSCREEN=\"gSettings.SdlWindowedFullscreen\";CVAR_TEXTURE_FILTER=\"gSettings.TextureFilter\";CVAR_IMGUI_CONTROLLER_NAV=\"gSettings.ControlNav\";CVAR_CONSOLE_WINDOW_OPEN=\"gOpenWindows.Console\";CVAR_CONTROLLER_CONFIGURATION_WINDOW_OPEN=\"gControllerConfigurationEnabled\";CVAR_CONTROLLER_DISCONNECTED_WINDOW_OPEN=\"gOpenWindows.ControllerDisconnected\";CVAR_CONTROLLER_REORDERING_WINDOW_OPEN=\"gOpenWindows.ControllerReordering\";CVAR_GFX_DEBUGGER_WINDOW_OPEN=\"gOpenWindows.GfxDebugger\";CVAR_STATS_WINDOW_OPEN=\"gOpenWindows.Stats\";CVAR_ENABLE_MULTI_VIEWPORTS=\"gSettings.EnableMultiViewports\";CVAR_LOW_RES_MODE=\"gSettings.LowResMode\";CVAR_SIMULATED_INPUT_LAG=\"gSettings.SimulatedInputLag\";CVAR_GAME_OVERLAY_FONT=\"gSettings.OverlayFont\";CVAR_MENU_BAR_OPEN=\"gSettings.OpenMenuBar\";CVAR_PREFIX_CONTROLLERS=\"gSettings.Controllers\";CVAR_PREFIX_ADVANCED_RESOLUTION=\"gSettings.AdvancedResolution\";CVAR_AUDIO_CHANNELS_SETTING=\"gAudioChannelsSetting\";CVAR_ALLOW_BACKGROUND_INPUTS=\"gAllowBackgroundInputs\";CONTROLLERBUTTONS_T=uint32_t;INCLUDE_MPQ_SUPPORT;GLEW_STATIC;TINYXML2_DEBUG;_FILE_OFFSET_BITS=64;SPDLOG_COMPILED_LIB;SPDLOG_FMT_EXTERNAL;CMAKE_INTDIR=\"Debug\"</PreprocessorDefinitions>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_DEBUG;_CRT_SECURE_NO_WARNINGS;ENABLE_OPENGL;INCLUDE_GAME_PRINTF;F3DEX_GBI_2;UNICODE;_UNICODE;SPDLOG_ACTIVE_LEVEL=SPDLOG_LEVEL_TRACE;LOG_LEVEL_GAME_PRINTS=6;STORMLIB_NO_AUTO_LINK;NOMINMAX;CVAR_PREFIX_SETTING=\"gSettings\";CVAR_PREFIX_WINDOW=\"gOpenWindows\";CVAR_PREFIX_GENERAL=\"gGeneral\";CVAR_VSYNC_ENABLED=\"gSettings.VsyncEnabled\";CVAR_Z_FIGHTING_MODE=\"gSettings.ZFightingMode\";CVAR_INTERNAL_RESOLUTION=\"gSettings.InternalResolution\";CVAR_MSAA_VALUE=\"gSettings.MSAAValue\";CVAR_SDL_WINDOWED_FULLSCREEN=\"gSettings.SdlWindowedFullscreen\";CVAR_TEXTURE_FILTER=\"gSettings.TextureFilter\";CVAR_IMGUI_CONTROLLER_NAV=\"gSettings.ControlNav\";CVAR_CONSOLE_WINDOW_OPEN=\"gOpenWindows.Console\";CVAR_CONTROLLER_CONFIGURATION_WINDOW_OPEN=\"gControllerConfigurationEnabled\";CVAR_CONTROLLER_DISCONNECTED_WINDOW_OPEN=\"gOpenWindows.ControllerDisconnected\";CVAR_CONTROLLER_REORDERING_WINDOW_OPEN=\"gOpenWindows.ControllerReordering\";CVAR_GFX_DEBUGGER_WINDOW_OPEN=\"gOpenWindows.GfxDebugger\";CVAR_STATS_WINDOW_OPEN=\"gOpenWindows.Stats\";CVAR_ENABLE_MULTI_VIEWPORTS=\"gSettings.EnableMultiViewports\";CVAR_LOW_RES_MODE=\"gSettings.LowResMode\";CVAR_SIMULATED_INPUT_LAG=\"gSettings.SimulatedInputLag\";CVAR_GAME_OVERLAY_FONT=\"gSettings.OverlayFont\";CVAR_MENU_BAR_OPEN=\"gSettings.OpenMenuBar\";CVAR_PREFIX_CONTROLLERS=\"gSettings.Controllers\";CVAR_PREFIX_ADVANCED_RESOLUTION=\"gSettings.AdvancedResolution\";CVAR_AUDIO_CHANNELS_SETTING=\"gAudioChannelsSetting\";CVAR_ALLOW_BACKGROUND_INPUTS=\"gAllowBackgroundInputs\";CONTROLLERBUTTONS_T=uint32_t;INCLUDE_MPQ_SUPPORT;GLEW_STATIC;TINYXML2_DEBUG;_FILE_OFFSET_BITS=64;SPDLOG_COMPILED_LIB;SPDLOG_FMT_EXTERNAL;CMAKE_INTDIR=\"Debug\"</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>C:\Users\CmonMeow\Desktop\Shipwright\soh\assets;C:\Users\CmonMeow\Desktop\Shipwright\soh\include;C:\Users\CmonMeow\Desktop\Shipwright\soh\src;C:\Users\CmonMeow\Desktop\Shipwright\soh\..\libultraship\include;C:\Users\CmonMeow\Desktop\Shipwright\soh\..\ZAPDTR\ZAPD\resource\type;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\dr_libs-src;C:\Users\CmonMeow\Desktop\Shipwright\soh\.;C:\Users\CmonMeow\Desktop\Shipwright\libultraship\src;C:\Users\CmonMeow\Desktop\Shipwright\libultraship\src\..\include;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\imgui-src;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\imgui-src\backends;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stb;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\threadpool-src\include;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\prism-src;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\prism-src\lib;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\prism-src\src;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\vcpkg\installed\x64-windows-static\include;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\vcpkg\installed\x64-windows-static\include\SDL2;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\vcpkg\installed\x64-windows-static\include\opus;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
     <Midl>
@@ -184,12 +183,12 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
       <UseFullPaths>false</UseFullPaths>
       <UseStandardPreprocessor>true</UseStandardPreprocessor>
       <WarningLevel>Level3</WarningLevel>
-      <PreprocessorDefinitions>%(PreprocessorDefinitions);NDEBUG;INCLUDE_GAME_PRINTF;F3DEX_GBI_2;UNICODE;_UNICODE;SPDLOG_ACTIVE_LEVEL=SPDLOG_LEVEL_TRACE;LOG_LEVEL_GAME_PRINTS=6;STORMLIB_NO_AUTO_LINK;_CRT_SECURE_NO_WARNINGS;NOMINMAX;CVAR_PREFIX_RANDOMIZER_ENHANCEMENT="gRandoEnhancements";CVAR_PREFIX_RANDOMIZER_SETTING="gRandoSettings";CVAR_PREFIX_COSMETIC="gCosmetics";CVAR_PREFIX_AUDIO="gAudioEditor";CVAR_PREFIX_CHEAT="gCheats";CVAR_PREFIX_ENHANCEMENT="gEnhancements";CVAR_PREFIX_SETTING="gSettings";CVAR_PREFIX_WINDOW="gOpenWindows";CVAR_PREFIX_TRACKER="gTrackers";CVAR_PREFIX_DEVELOPER_TOOLS="gDeveloperTools";CVAR_PREFIX_GENERAL="gGeneral";CVAR_PREFIX_REMOTE="gRemote";CVAR_PREFIX_GAMEPLAY_STATS="gGameplayStats";CVAR_PREFIX_TIME_DISPLAY="gTimeDisplay";CVAR_VSYNC_ENABLED="gSettings.VsyncEnabled";CVAR_Z_FIGHTING_MODE="gSettings.ZFightingMode";CVAR_INTERNAL_RESOLUTION="gSettings.InternalResolution";CVAR_MSAA_VALUE="gSettings.MSAAValue";CVAR_SDL_WINDOWED_FULLSCREEN="gSettings.SdlWindowedFullscreen";CVAR_TEXTURE_FILTER="gSettings.TextureFilter";CVAR_IMGUI_CONTROLLER_NAV="gSettings.ControlNav";CVAR_CONSOLE_WINDOW_OPEN="gOpenWindows.Console";CVAR_CONTROLLER_CONFIGURATION_WINDOW_OPEN="gControllerConfigurationEnabled";CVAR_CONTROLLER_DISCONNECTED_WINDOW_OPEN="gOpenWindows.ControllerDisconnected";CVAR_CONTROLLER_REORDERING_WINDOW_OPEN="gOpenWindows.ControllerReordering";CVAR_GFX_DEBUGGER_WINDOW_OPEN="gOpenWindows.GfxDebugger";CVAR_STATS_WINDOW_OPEN="gOpenWindows.Stats";CVAR_ENABLE_MULTI_VIEWPORTS="gSettings.EnableMultiViewports";CVAR_LOW_RES_MODE="gSettings.LowResMode";CVAR_SIMULATED_INPUT_LAG="gSettings.SimulatedInputLag";CVAR_GAME_OVERLAY_FONT="gSettings.OverlayFont";CVAR_MENU_BAR_OPEN="gSettings.OpenMenuBar";CVAR_PREFIX_CONTROLLERS="gSettings.Controllers";CVAR_PREFIX_ADVANCED_RESOLUTION="gSettings.AdvancedResolution";CVAR_AUDIO_CHANNELS_SETTING="gAudioChannelsSetting";CVAR_ALLOW_BACKGROUND_INPUTS="gAllowBackgroundInputs";CONTROLLERBUTTONS_T=uint32_t;INCLUDE_MPQ_SUPPORT;GLEW_STATIC;_FILE_OFFSET_BITS=64;SPDLOG_COMPILED_LIB;SPDLOG_FMT_EXTERNAL;CMAKE_INTDIR="Release"</PreprocessorDefinitions>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);NDEBUG;INCLUDE_GAME_PRINTF;F3DEX_GBI_2;UNICODE;_UNICODE;SPDLOG_ACTIVE_LEVEL=SPDLOG_LEVEL_TRACE;LOG_LEVEL_GAME_PRINTS=6;STORMLIB_NO_AUTO_LINK;_CRT_SECURE_NO_WARNINGS;NOMINMAX;CVAR_PREFIX_SETTING="gSettings";CVAR_PREFIX_WINDOW="gOpenWindows";CVAR_PREFIX_GENERAL="gGeneral";CVAR_VSYNC_ENABLED="gSettings.VsyncEnabled";CVAR_Z_FIGHTING_MODE="gSettings.ZFightingMode";CVAR_INTERNAL_RESOLUTION="gSettings.InternalResolution";CVAR_MSAA_VALUE="gSettings.MSAAValue";CVAR_SDL_WINDOWED_FULLSCREEN="gSettings.SdlWindowedFullscreen";CVAR_TEXTURE_FILTER="gSettings.TextureFilter";CVAR_IMGUI_CONTROLLER_NAV="gSettings.ControlNav";CVAR_CONSOLE_WINDOW_OPEN="gOpenWindows.Console";CVAR_CONTROLLER_CONFIGURATION_WINDOW_OPEN="gControllerConfigurationEnabled";CVAR_CONTROLLER_DISCONNECTED_WINDOW_OPEN="gOpenWindows.ControllerDisconnected";CVAR_CONTROLLER_REORDERING_WINDOW_OPEN="gOpenWindows.ControllerReordering";CVAR_GFX_DEBUGGER_WINDOW_OPEN="gOpenWindows.GfxDebugger";CVAR_STATS_WINDOW_OPEN="gOpenWindows.Stats";CVAR_ENABLE_MULTI_VIEWPORTS="gSettings.EnableMultiViewports";CVAR_LOW_RES_MODE="gSettings.LowResMode";CVAR_SIMULATED_INPUT_LAG="gSettings.SimulatedInputLag";CVAR_GAME_OVERLAY_FONT="gSettings.OverlayFont";CVAR_MENU_BAR_OPEN="gSettings.OpenMenuBar";CVAR_PREFIX_CONTROLLERS="gSettings.Controllers";CVAR_PREFIX_ADVANCED_RESOLUTION="gSettings.AdvancedResolution";CVAR_AUDIO_CHANNELS_SETTING="gAudioChannelsSetting";CVAR_ALLOW_BACKGROUND_INPUTS="gAllowBackgroundInputs";CONTROLLERBUTTONS_T=uint32_t;INCLUDE_MPQ_SUPPORT;GLEW_STATIC;_FILE_OFFSET_BITS=64;SPDLOG_COMPILED_LIB;SPDLOG_FMT_EXTERNAL;CMAKE_INTDIR="Release"</PreprocessorDefinitions>
       <ObjectFileName>$(IntDir)</ObjectFileName>
       <ScanSourceForModuleDependencies>false</ScanSourceForModuleDependencies>
     </ClCompile>
     <ResourceCompile>
-      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;NDEBUG;INCLUDE_GAME_PRINTF;F3DEX_GBI_2;UNICODE;_UNICODE;SPDLOG_ACTIVE_LEVEL=SPDLOG_LEVEL_TRACE;LOG_LEVEL_GAME_PRINTS=6;STORMLIB_NO_AUTO_LINK;_CRT_SECURE_NO_WARNINGS;NOMINMAX;CVAR_PREFIX_RANDOMIZER_ENHANCEMENT=\"gRandoEnhancements\";CVAR_PREFIX_RANDOMIZER_SETTING=\"gRandoSettings\";CVAR_PREFIX_COSMETIC=\"gCosmetics\";CVAR_PREFIX_AUDIO=\"gAudioEditor\";CVAR_PREFIX_CHEAT=\"gCheats\";CVAR_PREFIX_ENHANCEMENT=\"gEnhancements\";CVAR_PREFIX_SETTING=\"gSettings\";CVAR_PREFIX_WINDOW=\"gOpenWindows\";CVAR_PREFIX_TRACKER=\"gTrackers\";CVAR_PREFIX_DEVELOPER_TOOLS=\"gDeveloperTools\";CVAR_PREFIX_GENERAL=\"gGeneral\";CVAR_PREFIX_REMOTE=\"gRemote\";CVAR_PREFIX_GAMEPLAY_STATS=\"gGameplayStats\";CVAR_PREFIX_TIME_DISPLAY=\"gTimeDisplay\";CVAR_VSYNC_ENABLED=\"gSettings.VsyncEnabled\";CVAR_Z_FIGHTING_MODE=\"gSettings.ZFightingMode\";CVAR_INTERNAL_RESOLUTION=\"gSettings.InternalResolution\";CVAR_MSAA_VALUE=\"gSettings.MSAAValue\";CVAR_SDL_WINDOWED_FULLSCREEN=\"gSettings.SdlWindowedFullscreen\";CVAR_TEXTURE_FILTER=\"gSettings.TextureFilter\";CVAR_IMGUI_CONTROLLER_NAV=\"gSettings.ControlNav\";CVAR_CONSOLE_WINDOW_OPEN=\"gOpenWindows.Console\";CVAR_CONTROLLER_CONFIGURATION_WINDOW_OPEN=\"gControllerConfigurationEnabled\";CVAR_CONTROLLER_DISCONNECTED_WINDOW_OPEN=\"gOpenWindows.ControllerDisconnected\";CVAR_CONTROLLER_REORDERING_WINDOW_OPEN=\"gOpenWindows.ControllerReordering\";CVAR_GFX_DEBUGGER_WINDOW_OPEN=\"gOpenWindows.GfxDebugger\";CVAR_STATS_WINDOW_OPEN=\"gOpenWindows.Stats\";CVAR_ENABLE_MULTI_VIEWPORTS=\"gSettings.EnableMultiViewports\";CVAR_LOW_RES_MODE=\"gSettings.LowResMode\";CVAR_SIMULATED_INPUT_LAG=\"gSettings.SimulatedInputLag\";CVAR_GAME_OVERLAY_FONT=\"gSettings.OverlayFont\";CVAR_MENU_BAR_OPEN=\"gSettings.OpenMenuBar\";CVAR_PREFIX_CONTROLLERS=\"gSettings.Controllers\";CVAR_PREFIX_ADVANCED_RESOLUTION=\"gSettings.AdvancedResolution\";CVAR_AUDIO_CHANNELS_SETTING=\"gAudioChannelsSetting\";CVAR_ALLOW_BACKGROUND_INPUTS=\"gAllowBackgroundInputs\";CONTROLLERBUTTONS_T=uint32_t;INCLUDE_MPQ_SUPPORT;GLEW_STATIC;_FILE_OFFSET_BITS=64;SPDLOG_COMPILED_LIB;SPDLOG_FMT_EXTERNAL;CMAKE_INTDIR=\"Release\"</PreprocessorDefinitions>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;NDEBUG;INCLUDE_GAME_PRINTF;F3DEX_GBI_2;UNICODE;_UNICODE;SPDLOG_ACTIVE_LEVEL=SPDLOG_LEVEL_TRACE;LOG_LEVEL_GAME_PRINTS=6;STORMLIB_NO_AUTO_LINK;_CRT_SECURE_NO_WARNINGS;NOMINMAX;CVAR_PREFIX_SETTING=\"gSettings\";CVAR_PREFIX_WINDOW=\"gOpenWindows\";CVAR_PREFIX_GENERAL=\"gGeneral\";CVAR_VSYNC_ENABLED=\"gSettings.VsyncEnabled\";CVAR_Z_FIGHTING_MODE=\"gSettings.ZFightingMode\";CVAR_INTERNAL_RESOLUTION=\"gSettings.InternalResolution\";CVAR_MSAA_VALUE=\"gSettings.MSAAValue\";CVAR_SDL_WINDOWED_FULLSCREEN=\"gSettings.SdlWindowedFullscreen\";CVAR_TEXTURE_FILTER=\"gSettings.TextureFilter\";CVAR_IMGUI_CONTROLLER_NAV=\"gSettings.ControlNav\";CVAR_CONSOLE_WINDOW_OPEN=\"gOpenWindows.Console\";CVAR_CONTROLLER_CONFIGURATION_WINDOW_OPEN=\"gControllerConfigurationEnabled\";CVAR_CONTROLLER_DISCONNECTED_WINDOW_OPEN=\"gOpenWindows.ControllerDisconnected\";CVAR_CONTROLLER_REORDERING_WINDOW_OPEN=\"gOpenWindows.ControllerReordering\";CVAR_GFX_DEBUGGER_WINDOW_OPEN=\"gOpenWindows.GfxDebugger\";CVAR_STATS_WINDOW_OPEN=\"gOpenWindows.Stats\";CVAR_ENABLE_MULTI_VIEWPORTS=\"gSettings.EnableMultiViewports\";CVAR_LOW_RES_MODE=\"gSettings.LowResMode\";CVAR_SIMULATED_INPUT_LAG=\"gSettings.SimulatedInputLag\";CVAR_GAME_OVERLAY_FONT=\"gSettings.OverlayFont\";CVAR_MENU_BAR_OPEN=\"gSettings.OpenMenuBar\";CVAR_PREFIX_CONTROLLERS=\"gSettings.Controllers\";CVAR_PREFIX_ADVANCED_RESOLUTION=\"gSettings.AdvancedResolution\";CVAR_AUDIO_CHANNELS_SETTING=\"gAudioChannelsSetting\";CVAR_ALLOW_BACKGROUND_INPUTS=\"gAllowBackgroundInputs\";CONTROLLERBUTTONS_T=uint32_t;INCLUDE_MPQ_SUPPORT;GLEW_STATIC;_FILE_OFFSET_BITS=64;SPDLOG_COMPILED_LIB;SPDLOG_FMT_EXTERNAL;CMAKE_INTDIR=\"Release\"</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>C:\Users\CmonMeow\Desktop\Shipwright\soh\assets;C:\Users\CmonMeow\Desktop\Shipwright\soh\include;C:\Users\CmonMeow\Desktop\Shipwright\soh\src;C:\Users\CmonMeow\Desktop\Shipwright\soh\..\libultraship\include;C:\Users\CmonMeow\Desktop\Shipwright\soh\..\ZAPDTR\ZAPD\resource\type;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\dr_libs-src;C:\Users\CmonMeow\Desktop\Shipwright\soh\.;C:\Users\CmonMeow\Desktop\Shipwright\libultraship\src;C:\Users\CmonMeow\Desktop\Shipwright\libultraship\src\..\include;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\imgui-src;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\imgui-src\backends;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stormlib-src\src;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\stb;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\threadpool-src\include;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\prism-src;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\prism-src\lib;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\prism-src\src;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\vcpkg\installed\x64-windows-static\include;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\vcpkg\installed\x64-windows-static\include\SDL2;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\vcpkg\installed\x64-windows-static\include\opus;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
     <Midl>
@@ -344,256 +343,17 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
     <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\ActorDB.h" />
     <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\CrashHandlerExt.cpp" />
     <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\CrashHandlerExt.h" />
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\ArrowCycle.cpp" />
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\AssignableTunicsAndBoots.cpp" />
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\Cheats\DekuStick.cpp" />
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\Cheats\EasyFrameAdvance.cpp" />
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\Cheats\EasyISG.cpp" />
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\Cheats\EasyQPA.cpp" />
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\Cheats\FreezeTime.cpp" />
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\Cheats\GSTargetable.cpp" />
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\Cheats\Infinite\Ammo.cpp" />
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\Cheats\Infinite\Health.cpp" />
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\Cheats\Infinite\Magic.cpp" />
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\Cheats\Infinite\Money.cpp" />
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\Cheats\Infinite\NayrusLove.cpp" />
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\Cheats\MoonJump.cpp" />
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\Cheats\NoKeeseGuayTarget.cpp" />
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\Cheats\NoRedeadFreeze.cpp" />
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\Cheats\UnrestrictedItems.cpp" />
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\Difficulty\AlwaysWinGoronPot.cpp" />
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\Difficulty\BonkDamage.cpp" />
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\Difficulty\CuccosToReturn.cpp" />
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\Difficulty\DampeFire.cpp" />
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\Difficulty\HyperEnemies.cpp" />
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\Difficulty\PermanentLosses.cpp" />
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\Difficulty\SwitchTimerMultiplier.cpp" />
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\Difficulty\TreesDropSticks.cpp" />
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\DisableJabuWobble.cpp" />
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\DisableKokiriDrawDistance.cpp" />
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\DisableSandstorm.cpp" />
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\ExtraModes\BounceOffWalls.cpp" />
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\ExtraModes\HurtContainer.cpp" />
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\ExtraModes\MirroredWorld.cpp" />
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\ExtraModes\RupeeDash.cpp" />
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\ExtraModes\ShadowTag.cpp" />
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\ExtraTraps.cpp" />
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\FileSelectEnhancements.cpp" />
-    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\FileSelectEnhancements.h" />
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\Fixes\BrokenGiantsKnife.cpp" />
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\Fixes\DekuNutUpgradeFix.cpp" />
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\Fixes\DirtPathFix.cpp" />
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\Fixes\FixKokiriForestQuestState.cpp" />
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\Fixes\FixTwoHandedIdleAnim.cpp" />
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\Fixes\FloorSwitches.cpp" />
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\Fixes\GoronCityDoorFix.cpp" />
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\Fixes\HammerHandFix.cpp" />
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\GameplayStats\BossDefeatTimestamps.cpp" />
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\GameplayStats\EnemyDefeatCounts.cpp" />
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\Graphics\AgeDependentEquipment.cpp" />
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\Graphics\Disable2DBackgrounds.cpp" />
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\Graphics\DisableFixedCamera.cpp" />
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\Graphics\DisableLinkSpinWithGoronPot.cpp" />
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\Graphics\ToTMedallions.cpp" />
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\Graphics\VisualAgony.cpp" />
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\InjectItemCounts.cpp" />
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\ItemUnequip.cpp" />
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\Items\AdditionalReticles.cpp" />
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\Items\BetterBombchuShopping.cpp" />
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\Items\HookshotReticle.cpp" />
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\MaskSelect.cpp" />
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\NoSkulltulaFreeze.cpp" />
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\Presets\Presets.cpp" />
-    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\Presets\Presets.h" />
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\QoL\Autosave.cpp" />
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\QoL\DaytimeGS.cpp" />
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\QoL\OpenAllHours.cpp" />
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\QoL\PauseWarp.cpp" />
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\QoL\ResetNaviTimer.cpp" />
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\RebottleBlueFire.cpp" />
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\RemoteBombchu.cpp" />
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\RemoveSpinAttackDarkness.cpp" />
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\ResetGameplayFrames.cpp" />
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\ResetHotKey.cpp" />
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\Restorations\BottleAdventure.cpp" />
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\Restorations\GraveHoleJumps.cpp" />
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\Restorations\N64WeirdFrames\N64WeirdFrames.cpp" />
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\Restorations\N64WeirdFrames\WeirdAnimation.cpp" />
-    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\Restorations\N64WeirdFrames\WeirdAnimation.h" />
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\Restorations\PauseBufferInputs.cpp" />
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\Restorations\WideShutterDoorRanges.cpp" />
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\ReworkedTargeting.cpp" />
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\SkipAmyPuzzle.cpp" />
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\SunlightArrows.cpp" />
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\TimeDisplay\TimeDisplay.cpp" />
-    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\TimeDisplay\TimeDisplay.h" />
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\TimeSavers\CrawlSpeed.cpp" />
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\TimeSavers\DampeAllNight.cpp" />
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\TimeSavers\FasterBeanSkulltula.cpp" />
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\TimeSavers\FasterBottleEmpty.cpp" />
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\TimeSavers\FasterHeavyBlockLift.cpp" />
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\TimeSavers\FasterPauseMenu.cpp" />
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\TimeSavers\FasterRupeeAccumulator.cpp" />
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\TimeSavers\FasterShadowShip.cpp" />
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\TimeSavers\MarketSneak.cpp" />
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\TimeSavers\QuitFishingAtDoor.cpp" />
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\TimeSavers\SkipCutscene\SkipIntro.cpp" />
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\TimeSavers\SkipCutscene\SkipOwlTravel.cpp" />
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\TimeSavers\SkipCutscene\Story\SkipBlueWarp.cpp" />
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\TimeSavers\SkipCutscene\Story\SkipDekuTreeIntro.cpp" />
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\TimeSavers\SkipCutscene\Story\SkipLostWoodsBridge.cpp" />
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\TimeSavers\SkipCutscene\Story\SkipToGivingZeldasLetter.cpp" />
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\TimeSavers\SkipCutscene\Story\SkipZeldaFleeingCastle.cpp" />
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\TimeSavers\SkipMiscInteractions\MoveJabuJabuElevator.cpp" />
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\TimeSavers\SkipMiscInteractions\MoveMidoInKokiriForest.cpp" />
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\TimeSavers\SkipMiscInteractions\SkipChildRutoInteractions.cpp" />
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\TimeSavers\SkipWaterGateDelay.cpp" />
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\UnsheatheWithoutSlashing.cpp" />
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\Warping.cpp" />
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\audio\AudioCollection.cpp" />
-    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\audio\AudioCollection.h" />
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\audio\AudioEditor.cpp" />
-    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\audio\AudioEditor.h" />
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\audio\AudioHooks.cpp" />
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\audio\EnemyBGMDisable.cpp" />
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\audio\LeeverEnemyBGM.cpp" />
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\bootcommands.c" />
-    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\bootcommands.h" />
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\boss-rush\BossRush.cpp" />
-    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\boss-rush\BossRush.h" />
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\controls\InputViewer.cpp" />
-    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\controls\InputViewer.h" />
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\controls\Mouse.cpp" />
-    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\controls\Mouse.h" />
     <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\controls\SohInputEditorWindow.cpp" />
     <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\controls\SohInputEditorWindow.h" />
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\cosmetics\A11yNoScreenFlashForFinishingBlow.cpp" />
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\cosmetics\CosmeticsEditor.cpp" />
-    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\cosmetics\CosmeticsEditor.h" />
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\cosmetics\CustomLogoTitle.cpp" />
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\cosmetics\CustomSkeletons.cpp" />
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\cosmetics\FileSelectMoreInfo.cpp" />
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\cosmetics\TimeFlowFileSelect.cpp" />
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\cosmetics\authenticGfxPatches.cpp" />
-    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\cosmetics\authenticGfxPatches.h" />
-    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\cosmetics\cosmeticsTypes.h" />
-    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\custom-message\CustomMessageInterfaceAddon.h" />
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\custom-message\CustomMessageManager.cpp">
-      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(AdditionalOptions) /utf-8</AdditionalOptions>
-      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /utf-8</AdditionalOptions>
-    </ClCompile>
-    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\custom-message\CustomMessageManager.h" />
-    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\custom-message\CustomMessageTypes.h" />
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\customequipment.cpp" />
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\debugconsole.cpp" />
-    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\debugconsole.h" />
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\debugger\MessageViewer.cpp" />
-    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\debugger\MessageViewer.h" />
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\debugger\SohConsoleWindow.cpp" />
-    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\debugger\SohConsoleWindow.h" />
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\debugger\SohGfxDebuggerWindow.cpp" />
-    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\debugger\SohGfxDebuggerWindow.h" />
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\debugger\SohStatsWindow.cpp" />
-    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\debugger\SohStatsWindow.h" />
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\debugger\actorViewer.cpp" />
-    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\debugger\actorViewer.h" />
     <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\debugger\colViewer.cpp" />
     <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\debugger\colViewer.h" />
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\debugger\debugSaveEditor.cpp" />
-    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\debugger\debugSaveEditor.h" />
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\debugger\dlViewer.cpp" />
-    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\debugger\dlViewer.h" />
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\debugger\hookDebugger.cpp" />
-    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\debugger\hookDebugger.h" />
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\debugger\performanceTimer.cpp" />
-    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\debugger\performanceTimer.h" />
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\debugger\valueViewer.cpp" />
-    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\debugger\valueViewer.h" />
-    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\enhancementTypes.h" />
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\game-interactor\GameInteractionEffect.cpp" />
-    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\game-interactor\GameInteractionEffect.h" />
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\game-interactor\GameInteractor.cpp" />
-    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\game-interactor\GameInteractor.h" />
-    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\game-interactor\GameInteractor_HookTable.h" />
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\game-interactor\GameInteractor_Hooks.cpp" />
-    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\game-interactor\GameInteractor_Hooks.h" />
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\game-interactor\GameInteractor_RawAction.cpp" />
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\game-interactor\GameInteractor_State.cpp" />
-    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\game-interactor\vanilla-behavior\GIVanillaBehavior.h" />
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\gameconsole.c" />
-    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\gameconsole.h" />
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\gameplaystats.cpp" />
-    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\gameplaystats.h" />
-    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\gameplaystatswindow.h" />
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\item-tables\ItemTableManager.cpp" />
-    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\item-tables\ItemTableManager.h" />
-    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\item-tables\ItemTableTypes.h" />
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\mod_menu.cpp" />
-    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\mod_menu.h" />
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\mods.cpp" />
-    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\mods.h" />
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\nametag.cpp" />
-    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\nametag.h" />
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\savestates.cpp" />
-    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\savestates.h" />
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\speechsynthesizer\SAPISpeechSynthesizer.cpp" />
-    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\speechsynthesizer\SAPISpeechSynthesizer.h" />
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\speechsynthesizer\SpeechLogger.cpp" />
-    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\speechsynthesizer\SpeechLogger.h" />
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\speechsynthesizer\SpeechSynthesizer.cpp" />
-    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\speechsynthesizer\SpeechSynthesizer.h" />
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\timesaver_hook_handlers.cpp" />
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\timesplits\TimeSplits.cpp" />
-    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\timesplits\TimeSplits.h" />
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\tts\tts.cpp">
-      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(AdditionalOptions) /utf-8</AdditionalOptions>
-      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /utf-8</AdditionalOptions>
-    </ClCompile>
     <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Extractor\Extract.cpp" />
     <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Extractor\Extract.h" />
     <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Extractor\FastCrc32C.c" />
     <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Extractor\portable-file-dialogs.h" />
     <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\GameVersions.h" />
     <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\GbiWrap.cpp" />
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Network\Anchor\Anchor.cpp" />
-    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Network\Anchor\Anchor.h" />
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Network\Anchor\AnchorRoomWindow.cpp" />
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Network\Anchor\DummyPlayer.cpp" />
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Network\Anchor\HookHandlers.cpp" />
-    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Network\Anchor\JsonConversions.hpp" />
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Network\Anchor\Menu.cpp">
-      <ObjectFileName>$(IntDir)soh/Network/Anchor/Menu.cpp.obj</ObjectFileName>
-    </ClCompile>
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Network\Anchor\Packets\AllClientState.cpp" />
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Network\Anchor\Packets\DamagePlayer.cpp" />
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Network\Anchor\Packets\DisableAnchor.cpp" />
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Network\Anchor\Packets\EntranceDiscovered.cpp" />
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Network\Anchor\Packets\GameComplete.cpp" />
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Network\Anchor\Packets\GiveItem.cpp" />
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Network\Anchor\Packets\Handshake.cpp" />
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Network\Anchor\Packets\OcarinaSfx.cpp" />
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Network\Anchor\Packets\PlayerSfx.cpp" />
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Network\Anchor\Packets\PlayerUpdate.cpp" />
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Network\Anchor\Packets\RequestTeamState.cpp" />
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Network\Anchor\Packets\RequestTeleport.cpp" />
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Network\Anchor\Packets\ServerMessage.cpp" />
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Network\Anchor\Packets\SetFlag.cpp" />
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Network\Anchor\Packets\TeleportTo.cpp" />
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Network\Anchor\Packets\UnsetFlag.cpp" />
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Network\Anchor\Packets\UpdateBeansCount.cpp" />
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Network\Anchor\Packets\UpdateClientState.cpp" />
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Network\Anchor\Packets\UpdateDungeonItems.cpp" />
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Network\Anchor\Packets\UpdateRoomState.cpp" />
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Network\Anchor\Packets\UpdateTeamState.cpp" />
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Network\CrowdControl\CrowdControl.cpp" />
-    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Network\CrowdControl\CrowdControl.h" />
-    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Network\CrowdControl\CrowdControlTypes.h" />
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Network\Network.cpp" />
-    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Network\Network.h" />
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Network\Sail\Sail.cpp" />
-    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Network\Sail\Sail.h" />
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Notification\Notification.cpp" />
-    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Notification\Notification.h" />
+    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\ItemTableTypes.h" />
     <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\OTRAudio.h" />
     <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\OTRGlobals.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(AdditionalOptions) /utf-8</AdditionalOptions>
@@ -602,22 +362,17 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
     <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\OTRGlobals.h" />
     <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\ObjectExtension\ActorListIndex.cpp" />
     <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\ObjectExtension\ActorListIndex.h" />
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\ObjectExtension\ActorMaximumHealth.cpp" />
-    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\ObjectExtension\ActorMaximumHealth.h" />
     <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\ObjectExtension\ObjectExtension.cpp" />
     <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\ObjectExtension\ObjectExtension.h" />
     <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\ResourceManagerHelpers.cpp" />
     <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\ResourceManagerHelpers.h" />
     <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SaveManager.cpp" />
     <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SaveManager.h" />
-    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\ShipInit.hpp" />
     <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\ShipUtils.cpp" />
     <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\ShipUtils.h" />
     <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SohGui\ImGuiUtils.cpp" />
     <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SohGui\ImGuiUtils.h" />
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SohGui\Menu.cpp">
-      <ObjectFileName>$(IntDir)soh/SohGui/Menu.cpp.obj</ObjectFileName>
-    </ClCompile>
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SohGui\Menu.cpp" />
     <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SohGui\Menu.h" />
     <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SohGui\MenuTypes.h" />
     <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SohGui\ResolutionEditor.cpp" />
@@ -626,16 +381,11 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
     <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SohGui\SohGui.hpp" />
     <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SohGui\SohMenu.cpp" />
     <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SohGui\SohMenu.h" />
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SohGui\SohMenuDevTools.cpp" />
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SohGui\SohMenuEnhancements.cpp" />
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SohGui\SohMenuNetwork.cpp" />
     <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SohGui\SohMenuSettings.cpp" />
     <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SohGui\SohModals.cpp" />
     <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SohGui\SohModals.h" />
     <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SohGui\UIWidgets.cpp" />
     <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SohGui\UIWidgets.hpp" />
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\config\ConfigUpdaters.cpp" />
-    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\config\ConfigUpdaters.h" />
     <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\cvar_prefixes.h" />
     <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\frame_interpolation.cpp" />
     <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\frame_interpolation.h" />
@@ -816,8 +566,6 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
     <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\z_message_OTR.cpp" />
     <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\z_play_otr.cpp" />
     <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\z_scene_otr.cpp" />
-    <None Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\savestates_extern.inc">
-    </None>
     <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\src\boot\boot_main.c">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(AdditionalOptions) /w</AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
@@ -3169,11 +2917,6 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
     </ClCompile>
     <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\src\overlays\actors\ovl_En_Part\z_en_part.h" />
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\src\overlays\actors\ovl_En_Partner\z_en_partner.c">
-      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(AdditionalOptions) /w</AdditionalOptions>
-      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
-    </ClCompile>
-    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\src\overlays\actors\ovl_En_Partner\z_en_partner.h" />
     <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\src\overlays\actors\ovl_En_Peehat\z_en_peehat.c">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(AdditionalOptions) /w</AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
@@ -4076,7 +3819,7 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
   <PropertyGroup>
     <TrackFileAccess>false</TrackFileAccess>
     <MinimalRebuildFromTracking>false</MinimalRebuildFromTracking>
-    <TLogLocation>$(ProjectDir)soh.dir\Release\fresh.tlog\</TLogLocation>
+    <TLogLocation>$(ProjectDir)soh.dir\Release\fresh38.tlog\</TLogLocation>
   </PropertyGroup>
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

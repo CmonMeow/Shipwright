@@ -32,9 +32,7 @@ std::shared_ptr<Ship::IResource> SetLightListFactory::ReadResource(std::shared_p
         setLightList->lightList.push_back(light);
     }
 
-    if (CVarGetInteger(CVAR_DEVELOPER_TOOLS("ResourceLogging"), 0)) {
-        LogLightListAsXML(setLightList);
-    }
+    
 
     return setLightList;
 }

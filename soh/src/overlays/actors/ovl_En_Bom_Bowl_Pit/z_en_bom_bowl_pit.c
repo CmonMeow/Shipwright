@@ -2,8 +2,6 @@
 #include "vt.h"
 #include "overlays/actors/ovl_En_Bom_Chu/z_en_bom_chu.h"
 #include "overlays/actors/ovl_En_Ex_Item/z_en_ex_item.h"
-#include "soh/Enhancements/game-interactor/GameInteractor_Hooks.h"
-
 #define FLAGS ACTOR_FLAG_UPDATE_CULLING_DISABLED
 
 void EnBomBowlPit_Init(Actor* thisx, PlayState* play);
@@ -185,15 +183,15 @@ void EnBomBowlPit_GivePrize(EnBomBowlPit* this, PlayState* play) {
 
     player->stateFlags1 &= ~PLAYER_STATE1_IN_CUTSCENE;
     this->actor.parent = NULL;
-    if (GameInteractor_Should(VB_GIVE_ITEM_FROM_BOMBCHU_BOWLING, true, this)) {
+    
         Actor_OfferGetItem(&this->actor, play, this->getItemId, 2000.0f, 1000.0f);
-    }
+    
     player->stateFlags1 |= PLAYER_STATE1_IN_CUTSCENE;
     this->actionFunc = EnBomBowlPit_WaitTillPrizeGiven;
 }
 
 void EnBomBowlPit_WaitTillPrizeGiven(EnBomBowlPit* this, PlayState* play) {
-    if (Actor_HasParent(&this->actor, play) || !GameInteractor_Should(VB_GIVE_ITEM_FROM_BOMBCHU_BOWLING, true, this)) {
+    if (Actor_HasParent(&this->actor, play) || !(true)) {
         this->actionFunc = EnBomBowlPit_Reset;
     } else {
         Actor_OfferGetItem(&this->actor, play, this->getItemId, 2000.0f, 1000.0f);

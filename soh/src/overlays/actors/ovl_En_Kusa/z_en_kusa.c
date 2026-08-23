@@ -10,8 +10,6 @@
 #include "objects/gameplay_field_keep/gameplay_field_keep.h"
 #include "objects/object_kusa/object_kusa.h"
 #include "vt.h"
-#include "soh/Enhancements/game-interactor/GameInteractor_Hooks.h"
-
 #define FLAGS (ACTOR_FLAG_UPDATE_CULLING_DISABLED | ACTOR_FLAG_THROW_ONLY)
 
 void EnKusa_Init(Actor* thisx, PlayState* play);
@@ -127,7 +125,7 @@ s32 EnKusa_SnapToFloor(EnKusa* this, PlayState* play, f32 yOffset) {
 void EnKusa_DropCollectible(EnKusa* this, PlayState* play) {
     s16 dropParams;
 
-    if (!GameInteractor_Should(VB_GRASS_DROP_ITEM, true, this)) {
+    if (!(true)) {
         return;
     }
 
@@ -142,10 +140,7 @@ void EnKusa_DropCollectible(EnKusa* this, PlayState* play) {
             Item_DropCollectibleRandom(play, NULL, &this->actor.world.pos, dropParams << 4);
             break;
         case ENKUSA_TYPE_1:
-            if (CVarGetInteger(CVAR_ENHANCEMENT("NoRandomDrops"), 0)) {
-            } else if (CVarGetInteger(CVAR_ENHANCEMENT("NoHeartDrops"), 0)) {
-                Item_DropCollectible(play, &this->actor.world.pos, ITEM00_SEEDS);
-            } else if (Rand_ZeroOne() < 0.5f) {
+            if (Rand_ZeroOne() < 0.5f) {
                 Item_DropCollectible(play, &this->actor.world.pos, ITEM00_SEEDS);
             } else {
                 Item_DropCollectible(play, &this->actor.world.pos, ITEM00_HEART);
@@ -291,7 +286,7 @@ void EnKusa_WaitObject(EnKusa* this, PlayState* play) {
             EnKusa_SetupMain(this);
         }
 
-        if (!GameInteractor_Should(VB_GRASS_SETUP_DRAW, true, this)) {
+        if (!(true)) {
             return;
         }
 
@@ -317,7 +312,6 @@ void EnKusa_Main(EnKusa* this, PlayState* play) {
         EnKusa_SpawnFragments(this, play);
         EnKusa_DropCollectible(this, play);
         SoundSource_PlaySfxAtFixedWorldPos(play, &this->actor.world.pos, 20, NA_SE_EV_PLANT_BROKEN);
-        gSaveContext.ship.stats.count[COUNT_BUSHES_CUT]++;
 
         if ((this->actor.params >> 4) & 1) {
             EnKusa_SpawnBugs(this, play);
@@ -386,7 +380,6 @@ void EnKusa_Fall(EnKusa* this, PlayState* play) {
     if (this->actor.bgCheckFlags & 0xB) {
         if (!(this->actor.bgCheckFlags & 0x20)) {
             SoundSource_PlaySfxAtFixedWorldPos(play, &this->actor.world.pos, 20, NA_SE_EV_PLANT_BROKEN);
-            gSaveContext.ship.stats.count[COUNT_BUSHES_CUT]++;
         }
         EnKusa_SpawnFragments(this, play);
         EnKusa_DropCollectible(this, play);

@@ -22,9 +22,7 @@ std::shared_ptr<Ship::IResource> SetPathwaysFactory::ReadResource(std::shared_pt
         setPathways->pathFileNames.push_back(pathFileName);
     }
 
-    if (CVarGetInteger(CVAR_DEVELOPER_TOOLS("ResourceLogging"), 0)) {
-        LogPathwaysAsXML(setPathways);
-    }
+    
 
     return setPathways;
 }

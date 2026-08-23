@@ -1,6 +1,5 @@
 #include "z_en_rd.h"
 #include "objects/object_rd/object_rd.h"
-#include "soh/Enhancements/game-interactor/GameInteractor_Hooks.h"
 #include "soh/ResourceManagerHelpers.h"
 
 #define FLAGS                                                                                 \
@@ -254,18 +253,10 @@ void func_80AE2744(EnRd* this, PlayState* play) {
         this->unk_305 = 0;
 
         if (this->actor.xzDistToPlayer <= 150.0f && func_8002DDE4(play)) {
-            // Add a height check to redeads/gibdos freeze when Enemy Randomizer is on.
-            // Without the height check, redeads/gibdos can freeze the player from insane distances in
-            // vertical rooms (like the first room in Deku Tree), making these rooms nearly unplayable.
-            s8 enemyRandoCCActive = CVarGetInteger(CVAR_ENHANCEMENT("RandomizedEnemies"), 0) ||
-                                    (CVarGetInteger(CVAR_REMOTE_CROWD_CONTROL("Enabled"), 0));
-            if (!enemyRandoCCActive ||
-                (enemyRandoCCActive && this->actor.yDistToPlayer <= 100.0f && this->actor.yDistToPlayer >= -100.0f)) {
-                if ((this->actor.params != 2) && (this->unk_305 == 0)) {
-                    func_80AE37BC(this);
-                } else {
-                    func_80AE392C(this);
-                }
+            if ((this->actor.params != 2) && (this->unk_305 == 0)) {
+                func_80AE37BC(this);
+            } else {
+                func_80AE392C(this);
             }
         }
     }
@@ -344,7 +335,7 @@ void func_80AE2C1C(EnRd* this, PlayState* play) {
             !(player->stateFlags2 & PLAYER_STATE2_GRABBED_BY_ENEMY)) {
             if (this->unk_306 == 0) {
                 if (!(this->unk_312 & PLAYER_STATE2_GRABBED_BY_ENEMY) &&
-                    GameInteractor_Should(VB_REDEAD_GIBDO_FREEZE_LINK, true, this)) {
+                    (true)) {
                     player->actor.freezeTimer = 40;
                     Player_SetAutoLockOnActor(play, &this->actor);
                     GET_PLAYER(play)->autoLockOnActor = &this->actor;
@@ -575,7 +566,7 @@ void func_80AE3834(EnRd* this, PlayState* play) {
     s16 temp_v0 = this->actor.yawTowardsPlayer - this->actor.shape.rot.y - this->unk_30E - this->unk_310;
 
     if (ABS(temp_v0) < 0x2008) {
-        if (!(this->unk_312 & 0x80) && GameInteractor_Should(VB_REDEAD_GIBDO_FREEZE_LINK, true, this)) {
+        if (!(this->unk_312 & 0x80) && (true)) {
             player->actor.freezeTimer = 60;
             func_800AA000(this->actor.xzDistToPlayer, 0xFF, 0x14, 0x96);
             Player_SetAutoLockOnActor(play, &this->actor);
@@ -660,7 +651,6 @@ void func_80AE3C20(EnRd* this) {
     this->actor.speedXZ = 0.0f;
     Audio_PlayActorSound2(&this->actor, NA_SE_EN_REDEAD_DEAD);
     EnRd_SetupAction(this, func_80AE3C98);
-    GameInteractor_ExecuteOnEnemyDefeat(&this->actor);
 }
 
 void func_80AE3C98(EnRd* this, PlayState* play) {
@@ -673,10 +663,7 @@ void func_80AE3C98(EnRd* this, PlayState* play) {
 
     if (SkelAnime_Update(&this->skelAnime)) {
         if (this->unk_30C == 0) {
-            s8 enemyRandoCCActive = CVarGetInteger(CVAR_ENHANCEMENT("RandomizedEnemies"), 0) ||
-                                    (CVarGetInteger(CVAR_REMOTE_CROWD_CONTROL("Enabled"), 0));
-            // Don't set this flag in Enemy Rando as it can overlap with other objects using the same flag.
-            if (!Flags_GetSwitch(play, this->unk_312 & 0x7F) && !enemyRandoCCActive) {
+            if (!Flags_GetSwitch(play, this->unk_312 & 0x7F)) {
                 Flags_SetSwitch(play, this->unk_312 & 0x7F);
             }
             if (this->unk_314 != 0) {

@@ -7,9 +7,6 @@
 #include "z_en_kakasi2.h"
 #include "vt.h"
 #include "objects/object_ka/object_ka.h"
-#include "soh/Enhancements/game-interactor/GameInteractor.h"
-#include "soh/Enhancements/game-interactor/GameInteractor_Hooks.h"
-
 #define FLAGS                                                                                               \
     (ACTOR_FLAG_ATTENTION_ENABLED | ACTOR_FLAG_UPDATE_CULLING_DISABLED | ACTOR_FLAG_DRAW_CULLING_DISABLED | \
      ACTOR_FLAG_UPDATE_DURING_OCARINA | ACTOR_FLAG_LOCK_ON_DISABLED)
@@ -121,7 +118,7 @@ void func_80A90264(EnKakasi2* this, PlayState* play) {
 
     this->unk_194++;
 
-    if ((BREG(1) != 0) || GameInteractor_Should(VB_SKIP_SCARECROWS_SONG, false) &&
+    if ((BREG(1) != 0) || (false) &&
                               (this->actor.xzDistToPlayer < this->maxSpawnDistance.x) &&
                               (fabsf(player->actor.world.pos.y - this->actor.world.pos.y) < this->maxSpawnDistance.y)) {
         this->actor.draw = func_80A90948;

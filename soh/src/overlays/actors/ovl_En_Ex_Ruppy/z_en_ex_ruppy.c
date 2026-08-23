@@ -377,52 +377,40 @@ void EnExRuppy_Draw(Actor* thisx, PlayState* play) {
     static void* rupeeTextures[] = {
         gRupeeGreenTex, gRupeeBlueTex, gRupeeRedTex, gRupeePinkTex, gRupeeOrangeTex,
     };
-    // The pink/orange rupee textures are authentically reversed, so the GID models should be gold/purple respectively
-    static void* rupeeTexturesNew[] = {
-        GID_RUPEE_GREEN, GID_RUPEE_BLUE, GID_RUPEE_RED, GID_RUPEE_GOLD, GID_RUPEE_PURPLE,
-    };
     s32 pad;
     EnExRuppy* this = (EnExRuppy*)thisx;
 
     if (!this->invisible) {
         OPEN_DISPS(play->state.gfxCtx);
 
-        if (CVarGetInteger(CVAR_ENHANCEMENT("NewDrops"), 0)) {
-            func_8002EBCC(&this->actor, play, 0);
-            func_8002ED80(&this->actor, play, 0);
-
-            // purple/gold rupees need less scaling
-            f32 mtxScale = this->colorIdx >= 3 ? 17.5f : 25.0f;
-            Matrix_Scale(mtxScale, mtxScale, mtxScale, MTXMODE_APPLY);
-            GetItem_Draw(play, rupeeTexturesNew[this->colorIdx]);
-        } else {
+        {
             Color_RGB8 rupeeColor;
             u8 shouldColor = 0;
             switch (this->colorIdx) {
                 case 0:
                     rupeeColor =
-                        CVarGetColor24(CVAR_COSMETIC("Consumable.GreenRupee.Value"), (Color_RGB8){ 255, 255, 255 });
-                    shouldColor = CVarGetInteger(CVAR_COSMETIC("Consumable.GreenRupee.Changed"), 0);
+                        ((Color_RGB8){ 255, 255, 255 });
+                    shouldColor = (0);
                     break;
                 case 1:
                     rupeeColor =
-                        CVarGetColor24(CVAR_COSMETIC("Consumable.BlueRupee.Value"), (Color_RGB8){ 255, 255, 255 });
-                    shouldColor = CVarGetInteger(CVAR_COSMETIC("Consumable.BlueRupee.Changed"), 0);
+                        ((Color_RGB8){ 255, 255, 255 });
+                    shouldColor = (0);
                     break;
                 case 2:
                     rupeeColor =
-                        CVarGetColor24(CVAR_COSMETIC("Consumable.RedRupee.Value"), (Color_RGB8){ 255, 255, 255 });
-                    shouldColor = CVarGetInteger(CVAR_COSMETIC("Consumable.RedRupee.Changed"), 0);
+                        ((Color_RGB8){ 255, 255, 255 });
+                    shouldColor = (0);
                     break;
                 case 4: // orange rupee texture corresponds to the purple rupee (authentic bug)
                     rupeeColor =
-                        CVarGetColor24(CVAR_COSMETIC("Consumable.PurpleRupee.Value"), (Color_RGB8){ 255, 255, 255 });
-                    shouldColor = CVarGetInteger(CVAR_COSMETIC("Consumable.PurpleRupee.Changed"), 0);
+                        ((Color_RGB8){ 255, 255, 255 });
+                    shouldColor = (0);
                     break;
                 case 3: // pink rupee texture corresponds to the gold rupee (authentic bug)
                     rupeeColor =
-                        CVarGetColor24(CVAR_COSMETIC("Consumable.GoldRupee.Value"), (Color_RGB8){ 255, 255, 255 });
-                    shouldColor = CVarGetInteger(CVAR_COSMETIC("Consumable.GoldRupee.Changed"), 0);
+                        ((Color_RGB8){ 255, 255, 255 });
+                    shouldColor = (0);
                     break;
             }
 

@@ -8,8 +8,6 @@
 #include "objects/object_ds/object_ds.h"
 #include "soh/OTRGlobals.h"
 #include "soh/ResourceManagerHelpers.h"
-#include "soh/Enhancements/game-interactor/GameInteractor_Hooks.h"
-
 #define FLAGS (ACTOR_FLAG_ATTENTION_ENABLED | ACTOR_FLAG_FRIENDLY)
 
 void EnDs_Init(Actor* thisx, PlayState* play);
@@ -92,7 +90,7 @@ void EnDs_DisplayOddPotionText(EnDs* this, PlayState* play) {
 }
 
 void EnDs_GiveOddPotion(EnDs* this, PlayState* play) {
-    if (Actor_HasParent(&this->actor, play) || !GameInteractor_Should(VB_TRADE_ODD_MUSHROOM, true, this)) {
+    if (Actor_HasParent(&this->actor, play) || !(true)) {
         this->actor.parent = NULL;
         this->actionFunc = EnDs_DisplayOddPotionText;
         gSaveContext.subTimerState = SUBTIMER_STATE_OFF;
@@ -106,9 +104,9 @@ void EnDs_TalkAfterBrewOddPotion(EnDs* this, PlayState* play) {
         Message_CloseTextbox(play);
         this->actionFunc = EnDs_GiveOddPotion;
         u32 itemId = GI_ODD_POTION;
-        if (GameInteractor_Should(VB_TRADE_ODD_MUSHROOM, true, this)) {
+        
             Actor_OfferGetItem(&this->actor, play, itemId, 10000.0f, 50.0f);
-        }
+        
     }
 }
 
@@ -129,7 +127,7 @@ void EnDs_BrewOddPotion2(EnDs* this, PlayState* play) {
         this->brewTimer -= 1;
     } else {
         this->actionFunc = EnDs_BrewOddPotion3;
-        this->brewTimer = GameInteractor_Should(VB_PLAY_EYEDROP_CREATION_ANIM, true, this) ? 60 : 0;
+        this->brewTimer = (true) ? 60 : 0;
         Flags_UnsetSwitch(play, 0x3F);
     }
 }
@@ -139,7 +137,7 @@ void EnDs_BrewOddPotion1(EnDs* this, PlayState* play) {
         this->brewTimer -= 1;
     } else {
         this->actionFunc = EnDs_BrewOddPotion2;
-        this->brewTimer = GameInteractor_Should(VB_PLAY_EYEDROP_CREATION_ANIM, true, this) ? 20 : 0;
+        this->brewTimer = (true) ? 20 : 0;
     }
 
     Math_StepToF(&this->unk_1E4, 1.0f, 0.01f);
@@ -153,7 +151,7 @@ void EnDs_OfferOddPotion(EnDs* this, PlayState* play) {
         switch (play->msgCtx.choiceIndex) {
             case 0: // yes
                 this->actionFunc = EnDs_BrewOddPotion1;
-                this->brewTimer = GameInteractor_Should(VB_PLAY_EYEDROP_CREATION_ANIM, true, this) ? 60 : 0;
+                this->brewTimer = (true) ? 60 : 0;
                 Flags_SetSwitch(play, 0x3F);
                 play->msgCtx.msgMode = MSGMODE_PAUSED;
                 player->exchangeItemId = EXCH_ITEM_NONE;
@@ -166,9 +164,9 @@ void EnDs_OfferOddPotion(EnDs* this, PlayState* play) {
 }
 
 s32 EnDs_CheckRupeesAndBottle() {
-    if (GameInteractor_Should(VB_GRANNY_SAY_INSUFFICIENT_RUPEES, gSaveContext.rupees < 100, NULL)) {
+    if ((gSaveContext.rupees < 100)) {
         return 0;
-    } else if (GameInteractor_Should(VB_NEED_BOTTLE_FOR_GRANNYS_ITEM, Inventory_HasEmptyBottle() == 0)) {
+    } else if ((Inventory_HasEmptyBottle() == 0)) {
         return 1;
     } else {
         return 2;
@@ -197,18 +195,18 @@ void EnDs_OfferBluePotion(EnDs* this, PlayState* play) {
                         this->actionFunc = EnDs_TalkNoEmptyBottle;
                         return;
                     case 2: // have 100 rupees and empty bottle
-                        if (GameInteractor_Should(VB_GRANNY_TAKE_MONEY, true, this)) {
+                        
                             Rupees_ChangeBy(-100);
-                        }
+                        
                         this->actor.flags &= ~ACTOR_FLAG_TALK_OFFER_AUTO_ACCEPTED;
 
-                        if (GameInteractor_Should(VB_GIVE_ITEM_FROM_GRANNYS_SHOP, true, this)) {
+                        
                             GetItemEntry itemEntry = ItemTable_Retrieve(GI_POTION_BLUE);
                             Actor_OfferGetItem(&this->actor, play, GI_POTION_BLUE, 10000.0f, 50.0f);
                             gSaveContext.ship.pendingSale = itemEntry.itemId;
                             gSaveContext.ship.pendingSaleMod = itemEntry.modIndex;
                             this->actionFunc = EnDs_GiveBluePotion;
-                        }
+                        
 
                         return;
                 }
@@ -230,8 +228,7 @@ void EnDs_Wait(EnDs* this, PlayState* play) {
                                    &gSfxDefaultFreqAndVolScale, &gSfxDefaultReverb);
             player->actor.textId = 0x504A;
             this->actionFunc = EnDs_OfferOddPotion;
-        } else if (GameInteractor_Should(VB_OFFER_BLUE_POTION, Flags_GetItemGetInf(ITEMGETINF_30),
-                                         this)) { // Traded odd mushroom
+        } else if ((Flags_GetItemGetInf(ITEMGETINF_30))) { // Traded odd mushroom
             player->actor.textId = 0x500C;
             this->actionFunc = EnDs_OfferBluePotion;
         } else {

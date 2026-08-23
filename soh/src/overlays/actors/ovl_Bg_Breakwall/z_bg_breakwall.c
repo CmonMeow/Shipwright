@@ -9,9 +9,6 @@
 #include "objects/object_bwall/object_bwall.h"
 #include "objects/object_kingdodongo/object_kingdodongo.h"
 #include "soh/OTRGlobals.h"
-#include "soh/Enhancements/game-interactor/GameInteractor.h"
-#include "soh/Enhancements/game-interactor/GameInteractor_Hooks.h"
-
 #define FLAGS ACTOR_FLAG_UPDATE_CULLING_DISABLED
 
 typedef struct {
@@ -62,27 +59,6 @@ static ColliderQuadInit sQuadInit = {
     { { { 0.0f, 0.0f, 0.0f }, { 0.0f, 0.0f, 0.0f }, { 0.0f, 0.0f, 0.0f }, { 0.0f, 0.0f, 0.0f } } },
 };
 
-// Replacement quad used for "Blue Fire Arrows" enhancement
-static ColliderQuadInit sIceArrowQuadInit = {
-    {
-        COLTYPE_NONE,
-        AT_NONE,
-        AC_ON | AC_TYPE_PLAYER | AC_TYPE_OTHER,
-        OC1_NONE,
-        OC2_TYPE_2,
-        COLSHAPE_QUAD,
-    },
-    {
-        ELEMTYPE_UNK0,
-        { 0x00000048, 0x00, 0x00 },
-        { 0x00001048, 0x00, 0x00 },
-        TOUCH_NONE,
-        BUMP_ON,
-        OCELEM_NONE,
-    },
-    { { { 0.0f, 0.0f, 0.0f }, { 0.0f, 0.0f, 0.0f }, { 0.0f, 0.0f, 0.0f }, { 0.0f, 0.0f, 0.0f } } },
-};
-
 static BombableWallInfo sBombableWallInfo[] = {
     { &object_bwall_Col_000118, object_bwall_DL_000040, 0 },
     { &object_bwall_Col_000118, object_bwall_DL_000040, 0 },
@@ -124,7 +100,7 @@ void BgBreakwall_Init(Actor* thisx, PlayState* play) {
         ActorShape_Init(&this->dyna.actor.shape, 0.0f, NULL, 0.0f);
 
             Collider_InitQuad(play, &this->collider);
-            Collider_SetQuad(play, &this->collider, &this->dyna.actor, &sIceArrowQuadInit);
+            Collider_SetQuad(play, &this->collider, &this->dyna.actor, &sQuadInit);
     } else {
         this->dyna.actor.world.pos.y -= 40.0f;
     }
@@ -251,18 +227,7 @@ void BgBreakwall_WaitForObject(BgBreakwall* this, PlayState* play) {
  * despawn itself.
  */
 void BgBreakwall_Wait(BgBreakwall* this, PlayState* play) {
-    bool blueFireArrowHit = false;
-    
-        if (this->collider.base.acFlags & AC_HIT) {
-            if ((this->collider.base.ac != NULL) && (this->collider.base.ac->id == ACTOR_EN_ARROW)) {
-
-                if (this->collider.base.ac->child != NULL && this->collider.base.ac->child->id == ACTOR_ARROW_ICE) {
-                    blueFireArrowHit = true;
-                }
-            }
-        }
-
-    if (GameInteractor_Should(VB_BG_BREAKWALL_BREAK, this->collider.base.acFlags & 2 || blueFireArrowHit)) {
+    if (this->collider.base.acFlags & AC_HIT) {
         Vec3f effectPos;
         s32 wallType = ((this->dyna.actor.params >> 13) & 3) & 0xFF;
 
@@ -287,12 +252,11 @@ void BgBreakwall_Wait(BgBreakwall* this, PlayState* play) {
 
         if ((wallType == BWALL_DC_ENTRANCE) && (!Flags_GetEventChkInf(EVENTCHKINF_ENTERED_DODONGOS_CAVERN))) {
             Flags_SetEventChkInf(EVENTCHKINF_ENTERED_DODONGOS_CAVERN);
-            if (GameInteractor_Should(VB_PLAY_ENTRANCE_CS, true, EVENTCHKINF_ENTERED_DODONGOS_CAVERN,
-                                      gSaveContext.entranceIndex)) {
+            
                 Cutscene_SetSegment(play, gDcOpeningCs);
                 gSaveContext.cutsceneTrigger = 1;
                 Player_SetCsActionWithHaltedActors(play, NULL, 0x31);
-            }
+            
             Audio_PlaySoundGeneral(NA_SE_SY_CORRECT_CHIME, &gSfxDefaultPos, 4, &gSfxDefaultFreqAndVolScale,
                                    &gSfxDefaultFreqAndVolScale, &gSfxDefaultReverb);
         }

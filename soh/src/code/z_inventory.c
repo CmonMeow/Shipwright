@@ -1,5 +1,4 @@
 #include "global.h"
-#include "soh/Enhancements/game-interactor/GameInteractor_Hooks.h"
 #include "textures/icon_item_static/icon_item_static.h"
 #include "textures/icon_item_24_static/icon_item_24_static.h"
 #include "textures/parameter_static/parameter_static.h"
@@ -29,7 +28,7 @@ u16 gUpgradeCapacities[][4] = {
     { 0, 20, 30, 40 },     // Bomb Bags
     { 0, 0, 0, 0 },        // Unused (Scale)
     { 0, 0, 0, 0 },        // Unused (Strength)
-    { 99, 200, 500, 999 }, // Wallets
+    { 99, 200, 500, 500 }, // Wallets (fourth value is a defensive fallback)
     { 0, 30, 40, 50 },     // Deku Seed Bullet Bags
     { 0, 10, 20, 30 },     // Deku Stick Upgrades
     { 0, 20, 30, 40 },     // Deku Nut Upgrades
@@ -219,7 +218,6 @@ void Inventory_ChangeEquipment(s16 equipment, u16 value) {
     gSaveContext.equips.equipment &= gEquipNegMasks[equipment];
     gSaveContext.equips.equipment |= value << gEquipShifts[equipment];
 
-    GameInteractor_ExecuteOnLinkEquipmentChange();
 }
 
 u8 Inventory_DeleteEquipment(PlayState* play, s16 equipment) {
@@ -240,7 +238,6 @@ u8 Inventory_DeleteEquipment(PlayState* play, s16 equipment) {
             gSaveContext.equips.equipment |= EQUIP_VALUE_TUNIC_KOKIRI << (EQUIP_TYPE_TUNIC * 4);
         }
 
-        GameInteractor_ExecuteOnEquipmentDelete(equipment, equipValue);
 
         if (equipment == EQUIP_TYPE_SWORD) {
             gSaveContext.equips.buttonItems[0] = ITEM_NONE;

@@ -8,8 +8,6 @@
 #include "objects/object_ru1/object_ru1.h"
 #include "vt.h"
 #include "soh/ResourceManagerHelpers.h"
-#include "soh/Enhancements/game-interactor/GameInteractor_Hooks.h"
-
 #define FLAGS (ACTOR_FLAG_ATTENTION_ENABLED | ACTOR_FLAG_UPDATE_CULLING_DISABLED | ACTOR_FLAG_CAN_PRESS_SWITCHES)
 
 void EnRu1_Init(Actor* thisx, PlayState* play);
@@ -772,7 +770,7 @@ void func_80AEC320(EnRu1* this, PlayState* play) {
         this->action = 7;
         EnRu1_SetMouthIndex(this, 1);
     } else if (Flags_GetInfTable(INFTABLE_147) && !Flags_GetInfTable(INFTABLE_140) &&
-               GameInteractor_Should(VB_RUTO_BE_CONSIDERED_NOT_KIDNAPPED, !Flags_GetInfTable(INFTABLE_145), this)) {
+               (!Flags_GetInfTable(INFTABLE_145))) {
         if (!func_80AEB020(this, play)) {
             func_80AEB264(this, &gRutoChildWait2Anim, 0, 0, 0);
             actorRoom = this->actor.room;
@@ -861,13 +859,10 @@ void func_80AEC780(EnRu1* this, PlayState* play) {
     s32 pad;
     Player* player = GET_PLAYER(play);
 
-    if (GameInteractor_Should(
-            VB_PLAY_CHILD_RUTO_INTRO,
-            (func_80AEC5FC(this, play)) && (!Play_InCsMode(play)) &&
+    if (((func_80AEC5FC(this, play)) && (!Play_InCsMode(play)) &&
                 (!(player->stateFlags1 &
                    (PLAYER_STATE1_HANGING_OFF_LEDGE | PLAYER_STATE1_CLIMBING_LEDGE | PLAYER_STATE1_CLIMBING_LADDER))) &&
-                (player->actor.bgCheckFlags & 1),
-            this)) {
+                (player->actor.bgCheckFlags & 1))) {
 
         play->csCtx.segment = &D_80AF0880;
         gSaveContext.cutsceneTrigger = 1;
@@ -1182,7 +1177,7 @@ void func_80AED44C(EnRu1* this, PlayState* play) {
     s8 actorRoom;
 
     if (Flags_GetInfTable(INFTABLE_RUTO_IN_JJ_MEET_RUTO) &&
-        GameInteractor_Should(VB_RUTO_BE_CONSIDERED_NOT_KIDNAPPED, !Flags_GetInfTable(INFTABLE_145), this) &&
+        (!Flags_GetInfTable(INFTABLE_145)) &&
         !Flags_GetInfTable(INFTABLE_140) && !Flags_GetInfTable(INFTABLE_147)) {
         if (!func_80AEB020(this, play)) {
             func_80AEB264(this, &gRutoChildWait2Anim, 0, 0, 0);
@@ -1549,11 +1544,9 @@ s32 func_80AEE394(EnRu1* this, PlayState* play) {
         colCtx = &play->colCtx;
         floorBgId = this->actor.floorBgId; // necessary match, can't move this out of this block unfortunately
         dynaPolyActor = DynaPoly_GetActor(colCtx, floorBgId);
-        if (GameInteractor_Should(VB_RUTO_RUN_TO_SAPPHIRE,
-                                  dynaPolyActor != NULL && dynaPolyActor->actor.id == ACTOR_BG_BDAN_OBJECTS &&
+        if ((dynaPolyActor != NULL && dynaPolyActor->actor.id == ACTOR_BG_BDAN_OBJECTS &&
                                       dynaPolyActor->actor.params == 0 && !Player_InCsMode(play) &&
-                                      play->msgCtx.msgLength == 0,
-                                  this, dynaPolyActor)) {
+                                      play->msgCtx.msgLength == 0)) {
             func_80AEE02C(this);
             play->csCtx.segment = &D_80AF10A4;
             gSaveContext.cutsceneTrigger = 1;
@@ -1613,10 +1606,8 @@ s32 func_80AEE6D0(EnRu1* this, PlayState* play) {
     s32 pad;
     s8 curRoomNum = play->roomCtx.curRoom.num;
 
-    if (GameInteractor_Should(VB_RUTO_WANT_TO_BE_TOSSED_TO_SAPPHIRE,
-                              !Flags_GetInfTable(INFTABLE_RUTO_IN_JJ_WANTS_TO_BE_TOSSED_TO_SAPPHIRE) &&
-                                  (func_80AEB124(play) != 0),
-                              this)) {
+    if ((!Flags_GetInfTable(INFTABLE_RUTO_IN_JJ_WANTS_TO_BE_TOSSED_TO_SAPPHIRE) &&
+                                  (func_80AEB124(play) != 0))) {
         if (!Player_InCsMode(play)) {
             Animation_Change(&this->skelAnime, &gRutoChildSeesSapphireAnim, 1.0f, 0,
                              Animation_GetLastFrame(&gRutoChildSquirmAnim), ANIMMODE_LOOP, -8.0f);
@@ -2196,7 +2187,7 @@ void func_80AEFF94(EnRu1* this, PlayState* play) {
     s8 actorRoom;
 
     if (Flags_GetInfTable(INFTABLE_RUTO_IN_JJ_MEET_RUTO) && Flags_GetInfTable(INFTABLE_140) &&
-        GameInteractor_Should(VB_RUTO_BE_CONSIDERED_NOT_KIDNAPPED, !Flags_GetInfTable(INFTABLE_145), this) &&
+        (!Flags_GetInfTable(INFTABLE_145)) &&
         (!(func_80AEB020(this, play)))) {
         func_80AEB264(this, &gRutoChildWait2Anim, 0, 0, 0);
         actorRoom = this->actor.room;

@@ -8,8 +8,6 @@
 #include "objects/object_zl4/object_zl4.h"
 #include "scenes/indoors/nakaniwa/nakaniwa_scene.h"
 #include "soh/ResourceManagerHelpers.h"
-#include "soh/Enhancements/game-interactor/GameInteractor_Hooks.h"
-
 #define FLAGS (ACTOR_FLAG_ATTENTION_ENABLED | ACTOR_FLAG_FRIENDLY | ACTOR_FLAG_UPDATE_CULLING_DISABLED)
 
 typedef enum {
@@ -1109,16 +1107,16 @@ s32 EnZl4_CsMakePlan(EnZl4* this, PlayState* play) {
                 Camera_ChangeSetting(GET_ACTIVE_CAM(play), 1);
                 this->talkState = 7;
                 play->talkWithPlayer(play, &this->actor);
-                if (GameInteractor_Should(VB_GIVE_ITEM_ZELDAS_LETTER, true)) {
+                
                     Actor_OfferGetItem(&this->actor, play, GI_LETTER_ZELDA, fabsf(this->actor.xzDistToPlayer) + 1.0f,
                                        fabsf(this->actor.yDistToPlayer) + 1.0f);
-                }
+                
                 play->msgCtx.stateTimer = 4;
                 play->msgCtx.msgMode = MSGMODE_TEXT_CLOSING;
             }
             break;
         case 7:
-            if (Actor_HasParent(&this->actor, play) || !GameInteractor_Should(VB_GIVE_ITEM_ZELDAS_LETTER, true)) {
+            if (Actor_HasParent(&this->actor, play) || !(true)) {
                 Animation_ChangeByInfo(&this->skelAnime, sAnimationInfo, ZL4_ANIM_0);
                 this->talkState++;
             } else {

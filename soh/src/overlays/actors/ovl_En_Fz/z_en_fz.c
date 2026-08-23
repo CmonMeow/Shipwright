@@ -1,8 +1,6 @@
 #include "z_en_fz.h"
 #include "objects/object_fz/object_fz.h"
 #include "soh/frame_interpolation.h"
-#include "soh/Enhancements/game-interactor/GameInteractor_Hooks.h"
-
 #define FLAGS                                                                                 \
     (ACTOR_FLAG_ATTENTION_ENABLED | ACTOR_FLAG_HOSTILE | ACTOR_FLAG_UPDATE_CULLING_DISABLED | \
      ACTOR_FLAG_HOOKSHOT_PULLS_PLAYER)
@@ -365,7 +363,6 @@ void EnFz_ApplyDamage(EnFz* this, PlayState* play) {
                         vec.z = this->actor.world.pos.z;
                         EnFz_Damaged(this, play, &vec, 30, 10.0f);
                         EnFz_SetupDespawn(this, play);
-                        GameInteractor_ExecuteOnEnemyDefeat(&this->actor);
                     }
                 }
             } else {
@@ -720,11 +717,6 @@ void EnFz_Draw(Actor* thisx, PlayState* play) {
     s32 index;
 
     index = (6 - this->actor.colChkInfo.health) >> 1;
-
-    // SOH [Enhancement] - With enemy health scaling, the Freezards health could cause an index out of bounds for the
-    // displayLists, so we need to recompute the index based on the scaled health (using the maximum health value) and
-    // clamp the final result for safety.
-    GameInteractor_Should(VB_FREEZARD_SCALE_HEALTH_WITH_SIZE, false, this, &index);
 
     OPEN_DISPS(play->state.gfxCtx);
 

@@ -5,9 +5,6 @@
 #include "objects/object_bg/object_bg.h"
 #include "soh/OTRGlobals.h"
 #include "soh/ResourceManagerHelpers.h"
-#include "soh/Enhancements/game-interactor/GameInteractor.h"
-#include "soh/Enhancements/game-interactor/GameInteractor_Hooks.h"
-
 #define FLAGS                                                                                  \
     (ACTOR_FLAG_ATTENTION_ENABLED | ACTOR_FLAG_FRIENDLY | ACTOR_FLAG_UPDATE_CULLING_DISABLED | \
      ACTOR_FLAG_DRAW_CULLING_DISABLED | ACTOR_FLAG_LOCK_ON_DISABLED)
@@ -75,13 +72,6 @@ void EnBomBowlMan_Init(Actor* thisx, PlayState* play2) {
     Actor_SetScale(&this->actor, 0.013f);
 
     for (i = 0; i < 2; i++) {
-        if (CVarGetInteger(CVAR_ENHANCEMENT("CustomizeBombchuBowling"), 0) &&
-            CVarGetInteger(i == 0 ? CVAR_ENHANCEMENT("BombchuBowlingNoSmallCucco")
-                                  : CVAR_ENHANCEMENT("BombchuBowlingNoBigCucco"),
-                           0)) {
-            continue;
-        }
-
         cucco = (EnSyatekiNiw*)Actor_Spawn(&play->actorCtx, play, ACTOR_EN_SYATEKI_NIW, cuccoSpawnPos[i].x,
                                            cuccoSpawnPos[i].y, cuccoSpawnPos[i].z, 0, 0, 0, 1);
 
@@ -150,8 +140,7 @@ void EnBomBowMan_BlinkAwake(EnBomBowlMan* this, PlayState* play) {
     if (frameCount == 30.0f) {
         this->dialogState = TEXT_STATE_EVENT;
 
-        if (GameInteractor_Should(VB_BE_ABLE_TO_PLAY_BOMBCHU_BOWLING,
-                                  (Flags_GetEventChkInf(EVENTCHKINF_USED_DODONGOS_CAVERN_BLUE_WARP)) || BREG(2))) {
+        if (((Flags_GetEventChkInf(EVENTCHKINF_USED_DODONGOS_CAVERN_BLUE_WARP)) || BREG(2))) {
             this->actor.textId = 0xBF;
         } else {
             this->actor.textId = 0x7058;
@@ -164,7 +153,6 @@ void EnBomBowMan_BlinkAwake(EnBomBowlMan* this, PlayState* play) {
         this->eyeTextureIndex = 2;
         this->blinkCount++;
         if (this->blinkCount >= 3) {
-            // we're still making it in here when rando'd
             this->actionFunc = EnBomBowMan_CheckBeatenDC;
         }
     }
@@ -313,11 +301,7 @@ void EnBomBowlMan_HandlePlayChoice(EnBomBowlMan* this, PlayState* play) {
                     Rupees_ChangeBy(-30);
                     this->minigamePlayStatus = 1;
                     this->wallStatus[0] = this->wallStatus[1] = 0;
-                    if (CVarGetInteger(CVAR_ENHANCEMENT("CustomizeBombchuBowling"), 0)) {
-                        play->bombchuBowlingStatus = CVarGetInteger(CVAR_ENHANCEMENT("BombchuBowlingAmmo"), 10);
-                    } else {
-                        play->bombchuBowlingStatus = 10;
-                    }
+                    play->bombchuBowlingStatus = 10;
                     Flags_SetSwitch(play, 0x38);
 
                     if (!this->startedPlaying && !this->playingAgain) {

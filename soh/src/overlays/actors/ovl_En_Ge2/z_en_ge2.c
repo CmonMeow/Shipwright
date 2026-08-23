@@ -7,7 +7,6 @@
 #include "z_en_ge2.h"
 #include "vt.h"
 #include "objects/object_gla/object_gla.h"
-#include "soh/Enhancements/game-interactor/GameInteractor_Hooks.h"
 #include <assert.h>
 #include "soh/ResourceManagerHelpers.h"
 
@@ -140,14 +139,14 @@ void EnGe2_Init(Actor* thisx, PlayState* play) {
     switch (this->actor.params & 0xFF) {
         case GE2_TYPE_PATROLLING:
             EnGe2_ChangeAction(this, GE2_ACTION_WALK);
-            if (GameInteractor_Should(VB_GERUDOS_BE_FRIENDLY, EnGe2_CheckCarpentersFreed())) {
+            if ((EnGe2_CheckCarpentersFreed())) {
                 this->actor.update = EnGe2_UpdateFriendly;
                 this->actor.targetMode = 6;
             }
             break;
         case GE2_TYPE_STATIONARY:
             EnGe2_ChangeAction(this, GE2_ACTION_STAND);
-            if (GameInteractor_Should(VB_GERUDOS_BE_FRIENDLY, EnGe2_CheckCarpentersFreed())) {
+            if ((EnGe2_CheckCarpentersFreed())) {
                 this->actor.update = EnGe2_UpdateFriendly;
                 this->actor.targetMode = 6;
             }
@@ -431,7 +430,7 @@ void EnGe2_LookAtPlayer(EnGe2* this, PlayState* play) {
 
 void EnGe2_SetActionAfterTalk(EnGe2* this, PlayState* play) {
     if (Actor_TextboxIsClosing(&this->actor, play)) {
-        if (GameInteractor_Should(VB_GERUDO_GUARD_SET_ACTION_AFTER_TALK, true, this)) {
+        
             switch (this->actor.params & 0xFF) {
                 case GE2_TYPE_PATROLLING:
                     EnGe2_ChangeAction(this, GE2_ACTION_ABOUTTURN);
@@ -445,7 +444,7 @@ void EnGe2_SetActionAfterTalk(EnGe2* this, PlayState* play) {
             }
             this->actor.update = EnGe2_UpdateFriendly;
             this->actor.flags &= ~ACTOR_FLAG_TALK_OFFER_AUTO_ACCEPTED;
-        }
+        
     }
     EnGe2_TurnToFacePlayer(this, play);
 }
@@ -455,7 +454,7 @@ void EnGe2_WaitLookAtPlayer(EnGe2* this, PlayState* play) {
 }
 
 void EnGe2_WaitTillCardGiven(EnGe2* this, PlayState* play) {
-    if (Actor_HasParent(&this->actor, play) || !GameInteractor_Should(VB_GIVE_ITEM_GERUDO_MEMBERSHIP_CARD, true)) {
+    if (Actor_HasParent(&this->actor, play) || !(true)) {
         this->actor.parent = NULL;
         this->actionFunc = EnGe2_SetActionAfterTalk;
     } else {
@@ -468,9 +467,9 @@ void EnGe2_GiveCard(EnGe2* this, PlayState* play) {
         Message_CloseTextbox(play);
         this->actor.flags &= ~ACTOR_FLAG_TALK_OFFER_AUTO_ACCEPTED;
         this->actionFunc = EnGe2_WaitTillCardGiven;
-        if (GameInteractor_Should(VB_GIVE_ITEM_GERUDO_MEMBERSHIP_CARD, true)) {
+        
             Actor_OfferGetItem(&this->actor, play, GI_GERUDO_CARD, 10000.0f, 50.0f);
-        }
+        
     }
 }
 
@@ -599,7 +598,7 @@ void EnGe2_Update(Actor* thisx, PlayState* play) {
     }
     EnGe2_MoveAndBlink(this, play);
 
-    if (GameInteractor_Should(VB_GERUDOS_BE_FRIENDLY, EnGe2_CheckCarpentersFreed()) &&
+    if ((EnGe2_CheckCarpentersFreed()) &&
         !(this->stateFlags & GE2_STATE_KO)) {
         this->actor.update = EnGe2_UpdateFriendly;
         this->actor.targetMode = 6;
@@ -625,7 +624,7 @@ void EnGe2_UpdateStunned(Actor* thisx, PlayState* play2) {
     }
     CollisionCheck_SetAC(play, &play->colChkCtx, &this->collider.base);
 
-    if (GameInteractor_Should(VB_GERUDOS_BE_FRIENDLY, EnGe2_CheckCarpentersFreed())) {
+    if ((EnGe2_CheckCarpentersFreed())) {
         this->actor.update = EnGe2_UpdateFriendly;
         this->actor.targetMode = 6;
         this->actor.colorFilterTimer = 0;

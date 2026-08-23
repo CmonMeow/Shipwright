@@ -27,11 +27,6 @@ void KaleidoSetup_Update(PlayState* play) {
 
             gSaveContext.unk_13EE = gSaveContext.unk_13EA;
 
-            if (CHECK_BTN_ALL(input->cur.button, BTN_L))
-                CVarSetInteger(CVAR_GENERAL("PauseMenuAnimatedLinkTriforce"), 1);
-            else
-                CVarSetInteger(CVAR_GENERAL("PauseMenuAnimatedLinkTriforce"), 0);
-
             WREG(16) = -175;
             WREG(17) = 155;
 
@@ -121,7 +116,6 @@ void KaleidoSetup_Init(PlayState* play) {
     pauseCtx->ocarinaSongIdx = -1;
     pauseCtx->cursorSpecialPos = 0;
 
-    pauseCtx->randoQuestMode = 0;
 
     View_Init(&pauseCtx->view, play->state.gfxCtx);
 }

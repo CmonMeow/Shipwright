@@ -2,7 +2,6 @@
 #include "global.h"
 #include "soh/mixer.h"
 
-#include "soh/Enhancements/audio/AudioEditor.h"
 
 typedef struct {
     u8 unk_0;
@@ -372,23 +371,7 @@ extern f32 D_80130F24;
 extern f32 D_80130F28;
 
 void Audio_QueueSeqCmd(u32 cmd) {
-    u8 op = cmd >> 28;
-    if (op == 0 || op == 2 || op == 12) {
-        u8 seqId = cmd & 0xFF;
-        u8 playerIdx = GET_PLAYER_IDX(cmd);
-        u16 newSeqId = AudioEditor_GetReplacementSeq(seqId);
-        gAudioContext.seqReplaced[playerIdx] = (seqId != newSeqId);
-        gAudioContext.seqToPlay[playerIdx] = newSeqId;
-        cmd |= (seqId & 0xFF);
-    }
-
     sAudioSeqCmds[sSeqCmdWrPos++] = cmd;
-}
-
-void Audio_QueuePreviewSeqCmd(u16 seqId) {
-    gAudioContext.seqReplaced[0] = 1;
-    gAudioContext.seqToPlay[0] = seqId;
-    sAudioSeqCmds[sSeqCmdWrPos++] = 1;
 }
 
 void Audio_ProcessSeqCmds(void) {

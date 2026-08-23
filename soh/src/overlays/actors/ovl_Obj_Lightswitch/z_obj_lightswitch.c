@@ -8,8 +8,6 @@
 #include "vt.h"
 #include "overlays/actors/ovl_Obj_Oshihiki/z_obj_oshihiki.h"
 #include "objects/object_lightswitch/object_lightswitch.h"
-#include "soh/Enhancements/game-interactor/GameInteractor_Hooks.h"
-
 #define FLAGS ACTOR_FLAG_UPDATE_CULLING_DISABLED
 
 typedef enum {
@@ -297,15 +295,13 @@ void ObjLightswitch_On(ObjLightswitch* this, PlayState* play) {
             }
             break;
         case OBJLIGHTSWITCH_TYPE_1:
-            if (GameInteractor_Should(VB_LIGHTSWITCH_OFF,
-                                      this->collider.base.acFlags & AC_HIT && !(this->prevFrameACflags & AC_HIT),
-                                      this)) {
+            if ((this->collider.base.acFlags & AC_HIT && !(this->prevFrameACflags & AC_HIT))) {
                 ObjLightswitch_SetupTurnOff(this);
                 ObjLightswitch_ClearSwitchFlag(this, play);
             }
             break;
         case OBJLIGHTSWITCH_TYPE_2:
-            if (GameInteractor_Should(VB_LIGHTSWITCH_OFF, !(this->collider.base.acFlags & AC_HIT), this)) {
+            if ((!(this->collider.base.acFlags & AC_HIT))) {
                 if (this->timer >= 7) {
                     ObjLightswitch_SetupTurnOff(this);
                     ObjLightswitch_ClearSwitchFlag(this, play);

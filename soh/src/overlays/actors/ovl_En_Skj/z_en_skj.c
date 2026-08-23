@@ -1,8 +1,6 @@
 #include "z_en_skj.h"
 #include "overlays/actors/ovl_En_Skjneedle/z_en_skjneedle.h"
 #include "objects/object_skj/object_skj.h"
-#include "soh/Enhancements/enhancementTypes.h"
-#include "soh/Enhancements/game-interactor/GameInteractor_Hooks.h"
 #include "soh/ResourceManagerHelpers.h"
 
 #define FLAGS                                                                                 \
@@ -404,9 +402,7 @@ void EnSkj_Init(Actor* thisx, PlayState* play2) {
         default:
             this->actor.params = type;
             if (((this->actor.params != 0) && (this->actor.params != 1)) && (this->actor.params != 2)) {
-                if (INV_CONTENT(ITEM_TRADE_ADULT) < ITEM_SAW &&
-                    CVarGetInteger(CVAR_ENHANCEMENT("RandomizedEnemies"), ENEMY_RANDOMIZER_OFF) ==
-                        ENEMY_RANDOMIZER_OFF) {
+                if (INV_CONTENT(ITEM_TRADE_ADULT) < ITEM_SAW) {
                     Actor_Kill(&this->actor);
                     return;
                 }
@@ -742,7 +738,6 @@ void EnSkj_SariasSongKidIdle(EnSkj* this, PlayState* play) {
 void EnSkj_SetupDie(EnSkj* this) {
     EnSkj_ChangeAnim(this, SKJ_ANIM_DIE);
     EnSkj_SetupAction(this, SKJ_ACTION_WAIT_FOR_DEATH_ANIM);
-    GameInteractor_ExecuteOnEnemyDefeat(&this->actor);
 }
 
 void EnSkj_WaitForDeathAnim(EnSkj* this, PlayState* play) {
@@ -1044,10 +1039,10 @@ void EnSkj_SariaSongTalk(EnSkj* this, PlayState* play) {
             EnSkj_SetupWaitInRange(this);
         } else {
             func_80AFFE24(this);
-            if (GameInteractor_Should(VB_GIVE_ITEM_FROM_SKULL_KID_SARIAS_SONG, true, this)) {
+            
                 Actor_OfferGetItem(&this->actor, play, GI_HEART_PIECE, EnSkj_GetItemXzRange(this),
                                    EnSkj_GetItemYRange(this));
-            }
+            
         }
     }
 }
@@ -1058,14 +1053,14 @@ void func_80AFFE24(EnSkj* this) {
 
 void func_80AFFE44(EnSkj* this, PlayState* play) {
     if (Actor_HasParent(&this->actor, play) ||
-        !GameInteractor_Should(VB_GIVE_ITEM_FROM_SKULL_KID_SARIAS_SONG, true, this)) {
+        !(true)) {
         this->actor.parent = NULL;
         EnSkj_SetupPostSariasSong(this);
     } else {
-        if (GameInteractor_Should(VB_GIVE_ITEM_FROM_SKULL_KID_SARIAS_SONG, true, this)) {
+        
             Actor_OfferGetItem(&this->actor, play, GI_HEART_PIECE, EnSkj_GetItemXzRange(this),
                                EnSkj_GetItemYRange(this));
-        }
+        
     }
 }
 
@@ -1075,7 +1070,7 @@ void EnSkj_SetupPostSariasSong(EnSkj* this) {
 
 void EnSkj_ChangeModeAfterSong(EnSkj* this, PlayState* play) {
     if ((Message_GetState(&play->msgCtx) == TEXT_STATE_DONE) && Message_ShouldAdvance(play) ||
-        !GameInteractor_Should(VB_GIVE_ITEM_FROM_SKULL_KID_SARIAS_SONG, true, this)) {
+        !(true)) {
         Flags_SetItemGetInf(ITEMGETINF_16);
         EnSkj_SetNaviId(this);
         EnSkj_SetupWaitInRange(this);
@@ -1415,20 +1410,11 @@ void EnSkj_StartOcarinaMinigame(EnSkj* this, PlayState* play) {
     EnSkj_TurnPlayer(this, player);
 
     if (dialogState == TEXT_STATE_CLOSING) {
-        // #region SOH [Enhancement]
-        if (CVarGetInteger(CVAR_ENHANCEMENT("InstantOcarinaGameWin"), 0) &&
-            CVarGetInteger(CVAR_ENHANCEMENT("CustomizeOcarinaGame"), 0)) {
-            play->msgCtx.ocarinaMode = OCARINA_MODE_0F;
+        func_8010BD58(play, OCARINA_ACTION_MEMORY_GAME);
+        if (sOcarinaMinigameSkullKids[SKULL_KID_LEFT].skullkid != NULL) {
+            sOcarinaMinigameSkullKids[SKULL_KID_LEFT].skullkid->minigameState = SKULL_KID_OCARINA_PLAY_NOTES;
             this->songFailTimer = 160;
             this->actionFunc = EnSkj_WaitForPlayback;
-            // #endregion
-        } else {
-            func_8010BD58(play, OCARINA_ACTION_MEMORY_GAME);
-            if (sOcarinaMinigameSkullKids[SKULL_KID_LEFT].skullkid != NULL) {
-                sOcarinaMinigameSkullKids[SKULL_KID_LEFT].skullkid->minigameState = SKULL_KID_OCARINA_PLAY_NOTES;
-                this->songFailTimer = 160;
-                this->actionFunc = EnSkj_WaitForPlayback;
-            }
         }
     }
 }
@@ -1478,14 +1464,7 @@ void EnSkj_WaitForPlayback(EnSkj* this, PlayState* play) {
                 break;
             case MSGMODE_MEMORY_GAME_PLAYER_PLAYING:
                 if (this->songFailTimer != 0) {
-                    // #region SOH [Enhancement]
-                    if (CVarGetInteger(CVAR_ENHANCEMENT("OcarinaUnlimitedFailTime"), 0) == 1 &&
-                        CVarGetInteger(CVAR_ENHANCEMENT("CustomizeOcarinaGame"), 0) == 1) {
-                        // don't decrement timer
-                        // #endregion
-                    } else {
-                        this->songFailTimer--;
-                    }
+                    this->songFailTimer--;
                 } else { // took too long, game failed
                     Sfx_PlaySfxCentered(NA_SE_SY_OCARINA_ERROR);
                     Message_CloseTextbox(play);
@@ -1552,9 +1531,9 @@ void EnSkj_WaitForOfferResponse(EnSkj* this, PlayState* play) {
 
 void EnSkj_WonOcarinaMiniGame(EnSkj* this, PlayState* play) {
     if (D_80B01EA0) {
-        if (GameInteractor_Should(VB_GIVE_ITEM_FROM_OCARINA_MEMORY_GAME, true, this)) {
+        
             this->actionFunc = EnSkj_WaitToGiveReward;
-        }
+        
     } else {
         func_8002F2CC(&this->actor, play, 26.0f);
     }

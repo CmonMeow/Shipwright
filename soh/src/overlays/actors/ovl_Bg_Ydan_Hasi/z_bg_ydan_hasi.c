@@ -6,8 +6,6 @@
 
 #include "z_bg_ydan_hasi.h"
 #include "objects/object_ydan_objects/object_ydan_objects.h"
-#include "soh/Enhancements/game-interactor/GameInteractor_Hooks.h"
-
 #define FLAGS (ACTOR_FLAG_UPDATE_CULLING_DISABLED | ACTOR_FLAG_DRAW_CULLING_DISABLED)
 
 void BgYdanHasi_Init(Actor* thisx, PlayState* play);
@@ -127,7 +125,7 @@ void BgYdanHasi_MoveWater(BgYdanHasi* this, PlayState* play) {
 }
 
 void BgYdanHasi_DecWaterTimer(BgYdanHasi* this, PlayState* play) {
-    if (GameInteractor_Should(VB_SWITCH_TIMER_TICK, this->timer != 0, this, &this->timer)) {
+    if ((this->timer != 0)) {
         this->timer--;
     }
 
@@ -147,7 +145,7 @@ void BgYdanHasi_SetupThreeBlocks(BgYdanHasi* this, PlayState* play) {
 }
 
 void BgYdanHasi_UpdateThreeBlocks(BgYdanHasi* this, PlayState* play) {
-    if (GameInteractor_Should(VB_SWITCH_TIMER_TICK, this->timer != 0, this, &this->timer)) {
+    if ((this->timer != 0)) {
         this->timer--;
     }
 

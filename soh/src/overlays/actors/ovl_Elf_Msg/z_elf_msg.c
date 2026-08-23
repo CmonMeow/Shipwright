@@ -7,8 +7,6 @@
 #include "z_elf_msg.h"
 #include "vt.h"
 #include "overlays/actors/ovl_En_Elf/z_en_elf.h"
-#include "soh/Enhancements/game-interactor/GameInteractor_Hooks.h"
-
 #define FLAGS ACTOR_FLAG_UPDATE_CULLING_DISABLED
 
 void ElfMsg_Init(Actor* thisx, PlayState* play);
@@ -126,10 +124,10 @@ void ElfMsg_CallNaviCuboid(ElfMsg* this, PlayState* play) {
         (this->actor.world.pos.y <= player->actor.world.pos.y) &&
         ((player->actor.world.pos.y - this->actor.world.pos.y) < (100.0f * this->actor.scale.y)) &&
         (fabsf(player->actor.world.pos.z - this->actor.world.pos.z) < (100.0f * this->actor.scale.z))) {
-        if (GameInteractor_Should(VB_NAVI_TALK, true, this)) {
+        
             player->naviTextId = ElfMsg_GetMessageId(this);
             navi->elfMsg = this;
-        }
+        
     }
 }
 
@@ -148,10 +146,10 @@ void ElfMsg_CallNaviCylinder(ElfMsg* this, PlayState* play) {
     if (ElfMsg_WithinXZDistance(&player->actor.world.pos, &this->actor.world.pos, this->actor.scale.x * 100.0f) &&
         (this->actor.world.pos.y <= player->actor.world.pos.y) &&
         ((player->actor.world.pos.y - this->actor.world.pos.y) < (100.0f * this->actor.scale.y))) {
-        if (GameInteractor_Should(VB_NAVI_TALK, true, this)) {
+        
             player->naviTextId = ElfMsg_GetMessageId(this);
             navi->elfMsg = this;
-        }
+        
     }
 }
 

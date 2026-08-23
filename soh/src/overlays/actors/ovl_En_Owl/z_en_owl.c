@@ -11,8 +11,6 @@
 #include "vt.h"
 #include <assert.h>
 #include "soh/ResourceManagerHelpers.h"
-#include "soh/Enhancements/game-interactor/GameInteractor_Hooks.h"
-
 #define FLAGS (ACTOR_FLAG_ATTENTION_ENABLED | ACTOR_FLAG_FRIENDLY | ACTOR_FLAG_UPDATE_CULLING_DISABLED)
 
 void EnOwl_Init(Actor* thisx, PlayState* play);
@@ -284,7 +282,7 @@ s32 EnOwl_CheckInitTalk(EnOwl* this, PlayState* play, u16 textId, f32 targetDist
     } else {
         this->actor.textId = textId;
         distCheck = (flags & 2) ? 200.0f : 1000.0f;
-        if (GameInteractor_Should(VB_OWL_INTERACTION, this->actor.xzDistToPlayer < targetDist, this)) {
+        if ((this->actor.xzDistToPlayer < targetDist)) {
             this->actor.flags |= ACTOR_FLAG_TALK_OFFER_AUTO_ACCEPTED;
             func_8002F1C4(&this->actor, play, targetDist, distCheck, 0);
         }
@@ -940,7 +938,7 @@ void func_80ACC00C(EnOwl* this, PlayState* play) {
             osSyncPrintf(VT_FGCOL(CYAN));
             osSyncPrintf("%dのフクロウ\n", owlType); // "%d owl"
             osSyncPrintf(VT_RST);
-            if (GameInteractor_Should(VB_PLAY_OWL_TRAVEL_CS, true, owlType)) {
+            
                 switch (owlType) {
                     case 7:
                         osSyncPrintf(VT_FGCOL(CYAN));
@@ -958,7 +956,7 @@ void func_80ACC00C(EnOwl* this, PlayState* play) {
                         assert(0);
                         break;
                 }
-            }
+            
 
             Sfx_PlaySfxCentered(NA_SE_SY_TRE_BOX_APPEAR);
             gSaveContext.cutsceneTrigger = 1;

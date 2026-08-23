@@ -28,9 +28,7 @@ std::shared_ptr<Ship::IResource> SetActorListFactory::ReadResource(std::shared_p
         setActorList->actorList.push_back(entry);
     }
 
-    if (CVarGetInteger(CVAR_DEVELOPER_TOOLS("ResourceLogging"), 0)) {
-        LogActorListAsXML(setActorList);
-    }
+    
 
     return setActorList;
 }

@@ -33,8 +33,6 @@
 
 #include "soh/OTRGlobals.h"
 #include "soh/ResourceManagerHelpers.h"
-#include "soh/Enhancements/game-interactor/GameInteractor_Hooks.h"
-
 u16 D_8011E1C0 = 0;
 u16 D_8011E1C4 = 0;
 
@@ -155,20 +153,6 @@ void func_80064558(PlayState* play, CutsceneContext* csCtx) {
 
 void func_800645A0(PlayState* play, CutsceneContext* csCtx) {
     Input* input = &play->state.input[0];
-
-    if (CVarGetInteger(CVAR_DEVELOPER_TOOLS("DebugEnabled"), 0) && CHECK_BTN_ALL(input->press.button, BTN_DLEFT) &&
-        (csCtx->state == CS_STATE_IDLE) && (gSaveContext.sceneSetupIndex >= 4)) {
-        D_8015FCC8 = 0;
-        gSaveContext.cutsceneIndex = 0xFFFD;
-        gSaveContext.cutsceneTrigger = 1;
-    }
-
-    if (CVarGetInteger(CVAR_DEVELOPER_TOOLS("DebugEnabled"), 0) && CHECK_BTN_ALL(input->press.button, BTN_DUP) &&
-        (csCtx->state == CS_STATE_IDLE) && (gSaveContext.sceneSetupIndex >= 4) && !gDbgCamEnabled) {
-        D_8015FCC8 = 1;
-        gSaveContext.cutsceneIndex = 0xFFFD;
-        gSaveContext.cutsceneTrigger = 1;
-    }
 
     if ((gSaveContext.cutsceneTrigger != 0) && (play->transitionTrigger == TRANS_TRIGGER_START)) {
         gSaveContext.cutsceneTrigger = 0;
@@ -497,16 +481,13 @@ void Cutscene_Command_Terminator(PlayState* play, CutsceneContext* csCtx, CsCmdB
 
     bool shouldSkipCommand = false;
 
-    if (cmd->base == 8 && !GameInteractor_Should(VB_PLAY_PULL_MASTER_SWORD_CS, true)) {
+    if (cmd->base == 8 && !(true)) {
         shouldSkipCommand = true;
     }
 
-    if (cmd->base == 24 && !GameInteractor_Should(VB_PLAY_DROP_FISH_FOR_JABU_CS, true)) {
+    if (cmd->base == 24 && !(true)) {
         shouldSkipCommand = true;
     }
-
-    bool debugCsSkip = (CHECK_BTN_ALL(play->state.input[0].press.button, BTN_START) &&
-                        (gSaveContext.fileNum != 0xFEDC) && CVarGetInteger(CVAR_DEVELOPER_TOOLS("DebugEnabled"), 0));
 
     if ((gSaveContext.gameMode != GAMEMODE_NORMAL) && (gSaveContext.gameMode != GAMEMODE_END_CREDITS) &&
         (play->sceneNum != SCENE_HYRULE_FIELD) && (csCtx->frames > 20) &&
@@ -519,55 +500,9 @@ void Cutscene_Command_Terminator(PlayState* play, CutsceneContext* csCtx, CsCmdB
         temp = 1;
     }
 
-    bool playCutscene = false;
-    if ((!CVarGetInteger(CVAR_ENHANCEMENT("CreditsFix"), 1) || ResourceMgr_GetGameRegion(0) == GAME_REGION_NTSC) &&
-        (cmd->startFrame == csCtx->frames)) {
-        playCutscene = true;
-    } else if (CVarGetInteger(CVAR_ENHANCEMENT("CreditsFix"), 1)) {
-        u16 delay = 0;
+    bool playCutscene = cmd->startFrame == csCtx->frames;
 
-        // HACK:  Align visual timing with audio during credits sequence
-        switch (cmd->base) {
-            case 55: // Gerudo fortress (second scene of credits roll)
-                delay = 20;
-                break;
-            case 56: // Kakariko village
-                delay = 40;
-                break;
-            case 57: // Death mountain trail
-                delay = 20;
-                break;
-            case 58: // Goron city
-                delay = 20;
-                break;
-            case 59: // Lake hylia
-                delay = 20;
-                break;
-            case 62: // Kokiri forest (houses)
-                delay = 40;
-                break;
-            case 63: // Kokiri forest (deku tree)
-                delay = 40;
-                break;
-            case 74: // First gorons dancing
-                delay = 100;
-                break;
-            case 75: // Magic carpet guy and old shop keepers
-                delay = 180;
-                break;
-            case 77: // Sad mido and king zora (plays after scene 78)
-                delay = 100;
-                break;
-            case 78: // Second gorons dancing
-                delay = 160;
-                break;
-        }
-        if (cmd->startFrame + delay == csCtx->frames) {
-            playCutscene = true;
-        }
-    }
-
-    if (playCutscene || (temp != 0) || ((csCtx->frames > 20) && (shouldSkipCommand || debugCsSkip))) {
+    if (playCutscene || (temp != 0) || ((csCtx->frames > 20) && shouldSkipCommand)) {
 
         csCtx->state = CS_STATE_UNSKIPPABLE_EXEC;
         Audio_SetCutsceneFlag(0);
@@ -625,16 +560,9 @@ void Cutscene_Command_Terminator(PlayState* play, CutsceneContext* csCtx, CsCmdB
                 play->transitionType = TRANS_TYPE_INSTANT;
                 break;
             case 8:
-                if (CVarGetInteger(CVAR_ENHANCEMENT("BetterFarore"), 0)) {
-                    FaroresWindData tempFW = gSaveContext.ship.backupFW;
-                    gSaveContext.ship.backupFW = gSaveContext.fw;
-                    gSaveContext.fw = tempFW;
-                } else {
-                    gSaveContext.fw.set = 0;
-                    gSaveContext.respawn[RESPAWN_MODE_TOP].data = 0;
-                }
-                if (GameInteractor_Should(VB_PLAY_PULL_MASTER_SWORD_CS,
-                                          !Flags_GetEventChkInf(EVENTCHKINF_PULLED_MASTER_SWORD_FROM_PEDESTAL))) {
+                gSaveContext.fw.set = 0;
+                gSaveContext.respawn[RESPAWN_MODE_TOP].data = 0;
+                if ((!Flags_GetEventChkInf(EVENTCHKINF_PULLED_MASTER_SWORD_FROM_PEDESTAL))) {
                     Flags_SetEventChkInf(EVENTCHKINF_PULLED_MASTER_SWORD_FROM_PEDESTAL);
                     play->nextEntranceIndex = ENTR_CUTSCENE_MAP_0;
                     play->transitionTrigger = TRANS_TRIGGER_START;
@@ -726,9 +654,9 @@ void Cutscene_Command_Terminator(PlayState* play, CutsceneContext* csCtx, CsCmdB
                 play->transitionType = TRANS_TYPE_FADE_WHITE;
                 break;
             case 22:
-                if (GameInteractor_Should(VB_GIVE_ITEM_SONG, true, ITEM_SONG_REQUIEM)) {
+                
                     Item_Give(play, ITEM_SONG_REQUIEM);
-                }
+                
                 play->nextEntranceIndex = ENTR_DESERT_COLOSSUS_EAST_EXIT;
                 play->transitionTrigger = TRANS_TRIGGER_START;
                 gSaveContext.cutsceneIndex = 0xFFF0;
@@ -780,9 +708,9 @@ void Cutscene_Command_Terminator(PlayState* play, CutsceneContext* csCtx, CsCmdB
                 play->nextEntranceIndex = ENTR_CHAMBER_OF_THE_SAGES_0;
                 play->transitionTrigger = TRANS_TRIGGER_START;
                 play->transitionType = TRANS_TYPE_FADE_WHITE;
-                if (GameInteractor_Should(VB_GIVE_ITEM_FIRE_MEDALLION, true)) {
+                
                     Item_Give(play, ITEM_MEDALLION_FIRE);
-                }
+                
                 gSaveContext.chamberCutsceneNum = 1;
                 break;
             case 31:
@@ -862,9 +790,9 @@ void Cutscene_Command_Terminator(PlayState* play, CutsceneContext* csCtx, CsCmdB
                 play->transitionType = TRANS_TYPE_FADE_BLACK_FAST;
                 break;
             case 47:
-                if (GameInteractor_Should(VB_GIVE_ITEM_SONG, true, ITEM_SONG_NOCTURNE)) {
+                
                     Item_Give(play, ITEM_SONG_NOCTURNE);
-                }
+                
                 Flags_SetEventChkInf(EVENTCHKINF_LEARNED_NOCTURNE_OF_SHADOW);
                 play->nextEntranceIndex = ENTR_KAKARIKO_VILLAGE_FRONT_GATE;
                 play->transitionTrigger = TRANS_TRIGGER_START;
@@ -1668,12 +1596,6 @@ void Cutscene_ProcessCommands(PlayState* play, CutsceneContext* csCtx, u8* cutsc
         return;
     }
 
-    if (CVarGetInteger(CVAR_DEVELOPER_TOOLS("DebugEnabled"), 0) &&
-        CHECK_BTN_ALL(play->state.input[0].press.button, BTN_DRIGHT)) {
-        csCtx->state = CS_STATE_UNSKIPPABLE_INIT;
-        return;
-    }
-
     for (i = 0; i < totalEntries; i++) {
         memcpy(&cmdType, cutscenePtr, sizeof(CutsceneData));
         cutscenePtr += sizeof(CutsceneData);
@@ -2142,7 +2064,7 @@ void Cutscene_HandleEntranceTriggers(PlayState* play) {
     for (i = 0; i < ARRAY_COUNT(sEntranceCutsceneTable); i++) {
         entranceCutscene = &sEntranceCutsceneTable[i];
         requiredAge = entranceCutscene->ageRestriction;
-        if (GameInteractor_Should(VB_ALLOW_ENTRANCE_CS_FOR_EITHER_AGE, requiredAge == 2, entranceCutscene->entrance)) {
+        if ((requiredAge == 2)) {
             requiredAge = gSaveContext.linkAge;
         }
 
@@ -2151,11 +2073,11 @@ void Cutscene_HandleEntranceTriggers(PlayState* play) {
             (gSaveContext.cutsceneIndex < 0xFFF0) && ((u8)gSaveContext.linkAge == requiredAge) &&
             (gSaveContext.respawnFlag <= 0)) {
             Flags_SetEventChkInf(entranceCutscene->flag);
-            if (GameInteractor_Should(VB_PLAY_ENTRANCE_CS, true, entranceCutscene->flag, entranceCutscene->entrance)) {
+            
                 Cutscene_SetSegment(play, entranceCutscene->segAddr);
                 gSaveContext.cutsceneTrigger = 2;
                 gSaveContext.showTitleCard = false;
-            }
+            
             break;
         }
     }
@@ -2166,7 +2088,7 @@ void Cutscene_HandleConditionalTriggers(PlayState* play) {
     LUSLOG_INFO("Cutscene_HandleConditionalTriggers - entranceIndex: %#x cutsceneIndex: %#x",
                 gSaveContext.entranceIndex, gSaveContext.cutsceneIndex);
 
-    if (!GameInteractor_Should(VB_PLAY_TRANSITION_CS, true)) {
+    if (!(true)) {
         return;
     }
 
@@ -2177,8 +2099,7 @@ void Cutscene_HandleConditionalTriggers(PlayState* play) {
             Flags_SetEventChkInf(EVENTCHKINF_LEARNED_REQUIEM_OF_SPIRIT);
             gSaveContext.entranceIndex = ENTR_DESERT_COLOSSUS_EAST_EXIT;
             gSaveContext.cutsceneIndex = 0xFFF0;
-        } else if (GameInteractor_Should(VB_BE_ELIGIBLE_FOR_NOCTURNE_OF_SHADOW,
-                                         ((gSaveContext.entranceIndex == ENTR_KAKARIKO_VILLAGE_FRONT_GATE) &&
+        } else if ((((gSaveContext.entranceIndex == ENTR_KAKARIKO_VILLAGE_FRONT_GATE) &&
                                           LINK_IS_ADULT &&
                                           Flags_GetEventChkInf(EVENTCHKINF_USED_FOREST_TEMPLE_BLUE_WARP) &&
                                           Flags_GetEventChkInf(EVENTCHKINF_USED_FIRE_TEMPLE_BLUE_WARP) &&
@@ -2189,14 +2110,12 @@ void Cutscene_HandleConditionalTriggers(PlayState* play) {
         } else if ((gSaveContext.entranceIndex == ENTR_LOST_WOODS_BRIDGE_EAST_EXIT) &&
                    !Flags_GetEventChkInf(EVENTCHKINF_SPOKE_TO_SARIA_ON_BRIDGE)) {
             Flags_SetEventChkInf(EVENTCHKINF_SPOKE_TO_SARIA_ON_BRIDGE);
-            if (GameInteractor_Should(VB_GIVE_ITEM_FAIRY_OCARINA, true)) {
+            
                 Item_Give(play, ITEM_OCARINA_FAIRY);
-            }
+            
             gSaveContext.entranceIndex = ENTR_LOST_WOODS_SOUTH_EXIT;
             gSaveContext.cutsceneIndex = 0xFFF0;
-        } else if (GameInteractor_Should(
-                       VB_BE_ELIGIBLE_FOR_LIGHT_ARROWS,
-                       (CHECK_QUEST_ITEM(QUEST_MEDALLION_SPIRIT) && CHECK_QUEST_ITEM(QUEST_MEDALLION_SHADOW) &&
+        } else if (((CHECK_QUEST_ITEM(QUEST_MEDALLION_SPIRIT) && CHECK_QUEST_ITEM(QUEST_MEDALLION_SHADOW) &&
                         LINK_IS_ADULT &&
                         !Flags_GetEventChkInf(EVENTCHKINF_RETURNED_TO_TEMPLE_OF_TIME_WITH_ALL_MEDALLIONS) &&
                         (gEntranceTable[((void)0, gSaveContext.entranceIndex)].scene == SCENE_TEMPLE_OF_TIME)))) {

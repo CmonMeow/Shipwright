@@ -8,8 +8,6 @@
 #include "objects/object_js/object_js.h"
 #include "soh/OTRGlobals.h"
 #include "soh/ResourceManagerHelpers.h"
-#include "soh/Enhancements/game-interactor/GameInteractor_Hooks.h"
-
 #define FLAGS (ACTOR_FLAG_ATTENTION_ENABLED | ACTOR_FLAG_FRIENDLY)
 
 void EnJs_Init(Actor* thisx, PlayState* play);
@@ -145,12 +143,12 @@ void func_80A891C4(EnJs* this, PlayState* play) {
     if (Message_GetState(&play->msgCtx) == TEXT_STATE_CHOICE && Message_ShouldAdvance(play)) {
         switch (play->msgCtx.choiceIndex) {
             case 0: // yes
-                if (GameInteractor_Should(VB_CHECK_RANDO_PRICE_OF_CARPET_SALESMAN, gSaveContext.rupees < 200, this)) {
+                if (gSaveContext.rupees < 200) {
                     Message_ContinueTextbox(play, 0x6075);
                     func_80A89008(this);
                 } else {
-                    if (!GameInteractor_Should(VB_GIVE_ITEM_FROM_CARPET_SALESMAN, false, this)) {
-                        if (GameInteractor_Should(VB_GIVE_BOMBCHUS_FROM_CARPET_SALESMAN, true, this) ||
+                    if (!(false)) {
+                        if ((true) ||
                             Actor_HasParent(&this->actor, play)) {
                             Rupees_ChangeBy(-200);
                             En_Js_SetupAction(this, func_80A89160);

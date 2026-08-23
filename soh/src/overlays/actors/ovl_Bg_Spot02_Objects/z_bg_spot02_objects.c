@@ -6,8 +6,6 @@
 
 #include "z_bg_spot02_objects.h"
 #include "objects/object_spot02_objects/object_spot02_objects.h"
-#include "soh/Enhancements/game-interactor/GameInteractor_Hooks.h"
-
 #define FLAGS (ACTOR_FLAG_UPDATE_CULLING_DISABLED | ACTOR_FLAG_DRAW_CULLING_DISABLED)
 
 void BgSpot02Objects_Init(Actor* thisx, PlayState* play);
@@ -130,10 +128,8 @@ void func_808AC908(BgSpot02Objects* this, PlayState* play) {
     static Vec3f zeroVec = { 0.0f, 0.0f, 0.0f };
     Vec3f pos;
 
-    if (GameInteractor_Should(VB_PLAY_ROYAL_FAMILY_TOMB_EXPLODE,
-                              play->csCtx.state != 0 && play->csCtx.npcActions[3] != NULL &&
-                                  play->csCtx.npcActions[3]->action == 2,
-                              this)) {
+    if ((play->csCtx.state != 0 && play->csCtx.npcActions[3] != NULL &&
+                                  play->csCtx.npcActions[3]->action == 2)) {
         Audio_PlayActorSound2(&this->dyna.actor, NA_SE_EV_GRAVE_EXPLOSION);
         Flags_SetEventChkInf(EVENTCHKINF_DESTROYED_ROYAL_FAMILY_TOMB);
         this->timer = 25;
@@ -148,8 +144,7 @@ void func_808AC908(BgSpot02Objects* this, PlayState* play) {
 void func_808ACA08(BgSpot02Objects* this, PlayState* play) {
     Player* player = GET_PLAYER(play);
 
-    // The visual effects play the same way whether in rando or not, we just don't want
-    // to play the damage animation on link.
+    // Play the collapse effects.
     if (this->timer != 0) {
         this->timer--;
     }
@@ -162,8 +157,7 @@ void func_808ACA08(BgSpot02Objects* this, PlayState* play) {
         Actor_Kill(&this->dyna.actor);
     }
 
-    // This shouldn't execute in rando even without the check since we never
-    // enter the cutscene context.
+    // Play Link's damage reaction at the cutscene frame.
     if (play->csCtx.frames == 402) {
         if (!LINK_IS_ADULT) {
             Player_PlaySfx(&player->actor, NA_SE_VO_LI_DEMO_DAMAGE_KID);

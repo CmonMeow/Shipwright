@@ -2,8 +2,6 @@
 #include "vt.h"
 
 #include <string.h>
-#include "soh/Enhancements/game-interactor/GameInteractor.h"
-#include "soh/Enhancements/game-interactor/GameInteractor_Hooks.h"
 #include "soh/OTRGlobals.h"
 #include "soh/SaveManager.h"
 #include "soh/ResourceManagerHelpers.h"
@@ -12,8 +10,6 @@
 #define NUM_COWS 10
 
 void Save_LoadFile(void);
-
-void BossRush_InitSave(void);
 
 /**
  *  Initialize new save.
@@ -34,11 +30,6 @@ void Sram_InitNewSave(void) {
  */
 void Sram_InitDebugSave(void) {
     Save_InitFile(true);
-}
-
-void Sram_InitBossRushSave(void) {
-    Save_InitFile(false);
-    BossRush_InitSave();
 }
 
 static s16 sDungeonEntrances[] = {
@@ -141,16 +132,13 @@ void Sram_OpenSave() {
             break;
     }
 
-    if (!CVarGetInteger(CVAR_ENHANCEMENT("PersistentMasks"), 0)) {
-        gSaveContext.ship.maskMemory = PLAYER_MASK_NONE;
-    }
+    gSaveContext.ship.maskMemory = PLAYER_MASK_NONE;
 
     osSyncPrintf("scene_no = %d\n", gSaveContext.entranceIndex);
     osSyncPrintf(VT_RST);
 
     if (gSaveContext.health < STARTING_HEALTH) {
-        gSaveContext.health =
-            CVarGetInteger(CVAR_ENHANCEMENT("FullHealthSpawn"), 0) ? gSaveContext.healthCapacity : STARTING_HEALTH;
+        gSaveContext.health = STARTING_HEALTH;
     }
 
     if (gSaveContext.scarecrowLongSongSet) {
@@ -204,7 +192,7 @@ void Sram_OpenSave() {
         gSaveContext.equips.equipment |= EQUIP_VALUE_SWORD_MASTER << (EQUIP_TYPE_SWORD * 4);
     }
 
-    if (GameInteractor_Should(VB_REVERT_SPOILING_ITEMS, true)) {
+    
         for (i = 0; i < ARRAY_COUNT(gSpoilingItems); i++) {
             if (INV_CONTENT(ITEM_TRADE_ADULT) == gSpoilingItems[i]) {
                 INV_CONTENT(gSpoilingItemReverts[i]) = gSpoilingItemReverts[i];
@@ -216,7 +204,7 @@ void Sram_OpenSave() {
                 }
             }
         }
-    }
+    
 
     gSaveContext.magicLevel = 0;
 }
@@ -227,11 +215,7 @@ void Sram_InitSave(FileChooseContext* fileChooseCtx) {
     u16* ptr;
     u16 checksum;
 
-    if (fileChooseCtx->buttonIndex != 0 || !CVarGetInteger(CVAR_DEVELOPER_TOOLS("DebugEnabled"), 0)) {
-        Sram_InitNewSave();
-    } else {
-        Sram_InitDebugSave();
-    }
+    Sram_InitNewSave();
 
     gSaveContext.entranceIndex = ENTR_LINKS_HOUSE_CHILD_SPAWN;
     gSaveContext.linkAge = 1;
@@ -242,10 +226,6 @@ void Sram_InitSave(FileChooseContext* fileChooseCtx) {
     } else { // GAME_REGION_NTSC
         gSaveContext.ship.filenameLanguage =
             (gSaveContext.language == LANGUAGE_JPN) ? NAME_LANGUAGE_NTSC_JPN : NAME_LANGUAGE_NTSC_ENG;
-    }
-
-    if ((fileChooseCtx->buttonIndex == 0 && CVarGetInteger(CVAR_DEVELOPER_TOOLS("DebugEnabled"), 0))) {
-        gSaveContext.cutsceneIndex = 0;
     }
 
     for (offset = 0; offset < 8; offset++) {

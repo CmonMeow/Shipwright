@@ -173,9 +173,7 @@ std::shared_ptr<Ship::IResource> SetMeshFactory::ReadResource(std::shared_ptr<Sh
                      setMesh->meshHeader.base.type);
     }
 
-    if (CVarGetInteger(CVAR_DEVELOPER_TOOLS("ResourceLogging"), 0)) {
-        LogMeshAsXML(setMesh);
-    }
+    
 
     return setMesh;
 }

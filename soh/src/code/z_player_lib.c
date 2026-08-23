@@ -5,9 +5,6 @@
 #include "objects/object_link_child/object_link_child.h"
 #include "objects/object_triforce_spot/object_triforce_spot.h"
 #include "overlays/actors/ovl_Demo_Effect/z_demo_effect.h"
-
-#include "soh/Enhancements/game-interactor/GameInteractor.h"
-#include "soh/Enhancements/game-interactor/GameInteractor_Hooks.h"
 #include "soh/ResourceManagerHelpers.h"
 
 #include <stdlib.h>
@@ -494,12 +491,6 @@ void Player_SetBootData(PlayState* play, Player* this) {
     }
 }
 
-// Custom method used to determine if we're using a custom model for link
-uint8_t Player_IsCustomLinkModel() {
-    return (LINK_IS_ADULT && ResourceGetIsCustomByName(gLinkAdultSkel)) ||
-           (LINK_IS_CHILD && ResourceGetIsCustomByName(gLinkChildSkel));
-}
-
 s32 Player_InBlockingCsMode(PlayState* play, Player* this) {
     return (this->stateFlags1 & (PLAYER_STATE1_DEAD | PLAYER_STATE1_IN_CUTSCENE)) || (this->csAction != 0) ||
            (play->transitionTrigger == TRANS_TRIGGER_START) || (this->stateFlags1 & PLAYER_STATE1_LOADING) ||
@@ -542,32 +533,15 @@ s32 Player_ActionToModelGroup(Player* this, s32 actionParam) {
 void Player_SetModelsForHoldingShield(Player* this) {
     if ((this->stateFlags1 & PLAYER_STATE1_SHIELDING) &&
         ((this->itemAction < 0) || (this->itemAction == this->heldItemAction))) {
-        if ((CVarGetInteger(CVAR_CHEAT("ShieldTwoHanded"), 0) && (this->heldItemAction != PLAYER_IA_DEKU_STICK) ||
-             !Player_HoldsTwoHandedWeapon(this)) &&
-            !Player_IsChildWithHylianShield(this)) {
+        if (!Player_HoldsTwoHandedWeapon(this) && !Player_IsChildWithHylianShield(this)) {
             this->rightHandType = PLAYER_MODELTYPE_RH_SHIELD;
-            if (LINK_IS_CHILD && (CVarGetInteger(CVAR_ENHANCEMENT("EquipmentAlwaysVisible"), 0)) &&
-                (this->currentShield == PLAYER_SHIELD_MIRROR)) {
-                this->rightHandDLists = &sPlayerDListGroups[PLAYER_MODELTYPE_RH_SHIELD][0];
-            } else if (LINK_IS_ADULT && (CVarGetInteger(CVAR_ENHANCEMENT("EquipmentAlwaysVisible"), 0)) &&
-                       (this->currentShield == PLAYER_SHIELD_DEKU)) {
-                this->rightHandDLists = &sPlayerDListGroups[PLAYER_MODELTYPE_RH_SHIELD][1];
-            } else {
-                this->rightHandDLists = &sPlayerDListGroups[PLAYER_MODELTYPE_RH_SHIELD][gSaveContext.linkAge];
-            }
+            this->rightHandDLists = &sPlayerDListGroups[PLAYER_MODELTYPE_RH_SHIELD][gSaveContext.linkAge];
             if (this->sheathType == PLAYER_MODELTYPE_SHEATH_18) {
                 this->sheathType = PLAYER_MODELTYPE_SHEATH_16;
             } else if (this->sheathType == PLAYER_MODELTYPE_SHEATH_19) {
                 this->sheathType = PLAYER_MODELTYPE_SHEATH_17;
             }
             this->sheathDLists = &sPlayerDListGroups[this->sheathType][gSaveContext.linkAge];
-            if ((CVarGetInteger(CVAR_ENHANCEMENT("EquipmentAlwaysVisible"), 0)) && LINK_IS_CHILD &&
-                gSaveContext.equips.buttonItems[0] != ITEM_SWORD_KOKIRI) {
-                this->sheathDLists = &sPlayerDListGroups[this->sheathType][0];
-            } else if ((CVarGetInteger(CVAR_ENHANCEMENT("EquipmentAlwaysVisible"), 0)) && LINK_IS_ADULT &&
-                       gSaveContext.equips.buttonItems[0] == ITEM_SWORD_KOKIRI) {
-                this->sheathDLists = &sPlayerDListGroups[this->sheathType][1];
-            }
             this->modelAnimType = PLAYER_ANIMTYPE_2;
             this->itemAction = -1;
         }
@@ -579,77 +553,18 @@ void Player_SetModels(Player* this, s32 modelGroup) {
     this->leftHandType = gPlayerModelTypes[modelGroup][PLAYER_MODELGROUPENTRY_LEFT_HAND];
     this->leftHandDLists = &sPlayerDListGroups[this->leftHandType][gSaveContext.linkAge];
 
-    if (CVarGetInteger(CVAR_ENHANCEMENT("EquipmentAlwaysVisible"), 0)) {
-        if (LINK_IS_CHILD &&
-            (this->leftHandType == PLAYER_MODELTYPE_LH_HAMMER ||
-             ((this->leftHandType == PLAYER_MODELTYPE_LH_SWORD || this->leftHandType == PLAYER_MODELTYPE_LH_BGS) &&
-              (gSaveContext.equips.buttonItems[0] != ITEM_SWORD_KOKIRI)))) {
-            this->leftHandDLists = &sPlayerDListGroups[this->leftHandType][0];
-        }
-
-        if (LINK_IS_ADULT && (this->leftHandType == PLAYER_MODELTYPE_LH_BOOMERANG ||
-                              (this->leftHandType == PLAYER_MODELTYPE_LH_SWORD &&
-                               gSaveContext.equips.buttonItems[0] == ITEM_SWORD_KOKIRI))) {
-            this->leftHandDLists = &sPlayerDListGroups[this->leftHandType][1];
-        }
-    }
-
     // Right hand
     this->rightHandType = gPlayerModelTypes[modelGroup][PLAYER_MODELGROUPENTRY_RIGHT_HAND];
     this->rightHandDLists = &sPlayerDListGroups[this->rightHandType][gSaveContext.linkAge];
-
-    this->rightHandType = gPlayerModelTypes[modelGroup][PLAYER_MODELGROUPENTRY_RIGHT_HAND];
-    this->rightHandDLists = &sPlayerDListGroups[this->rightHandType][gSaveContext.linkAge];
-
-    if (CVarGetInteger(CVAR_ENHANCEMENT("EquipmentAlwaysVisible"), 0)) {
-        if (LINK_IS_CHILD &&
-            (this->rightHandType == PLAYER_MODELTYPE_RH_HOOKSHOT ||
-             (this->rightHandType == PLAYER_MODELTYPE_RH_SHIELD && this->currentShield == PLAYER_SHIELD_MIRROR))) {
-            this->rightHandDLists = &sPlayerDListGroups[this->rightHandType][0];
-        }
-        if (LINK_IS_ADULT &&
-            (this->rightHandType == PLAYER_MODELTYPE_RH_SHIELD && this->currentShield == PLAYER_SHIELD_DEKU)) {
-            this->rightHandDLists = &sPlayerDListGroups[this->rightHandType][1];
-        }
-    }
-    if ((CVarGetInteger(CVAR_ENHANCEMENT("BowSlingshotAmmoFix"), 0) ||
-         CVarGetInteger(CVAR_ENHANCEMENT("EquipmentAlwaysVisible"), 0)) &&
-        this->rightHandType == 11) { // If holding Bow/Slingshot
-        this->rightHandDLists = &sPlayerDListGroups[this->rightHandType][Player_HoldsSlingshot(this)];
-    }
 
     // Sheath
     this->sheathType = gPlayerModelTypes[modelGroup][PLAYER_MODELGROUPENTRY_SHEATH];
     this->sheathDLists = &sPlayerDListGroups[this->sheathType][gSaveContext.linkAge];
 
-    if (CVarGetInteger(CVAR_ENHANCEMENT("EquipmentAlwaysVisible"), 0)) {
-        if (LINK_IS_CHILD && (this->currentShield == PLAYER_SHIELD_HYLIAN &&
-                                  ((gSaveContext.equips.buttonItems[0] == ITEM_SWORD_MASTER) ||
-                                   (gSaveContext.equips.buttonItems[0] == ITEM_SWORD_BGS)) ||
-                              (this->currentShield == PLAYER_SHIELD_MIRROR) &&
-                                  (gSaveContext.equips.buttonItems[0] != ITEM_SWORD_KOKIRI))) {
-            this->sheathDLists = &sPlayerDListGroups[this->sheathType][0];
-        } else if (LINK_IS_CHILD && this->currentShield == PLAYER_SHIELD_MIRROR &&
-                   gSaveContext.equips.buttonItems[0] == ITEM_SWORD_KOKIRI &&
-                   this->sheathType == PLAYER_MODELTYPE_SHEATH_18) {
-            this->sheathDLists = &sPlayerDListGroups[this->sheathType][0];
-        } else if (LINK_IS_ADULT && (this->currentShield == PLAYER_SHIELD_DEKU &&
-                                     gSaveContext.equips.buttonItems[0] != ITEM_SWORD_MASTER) ||
-                   (gSaveContext.equips.buttonItems[0] == ITEM_SWORD_MASTER &&
-                    this->sheathType == PLAYER_MODELTYPE_SHEATH_18 && this->currentShield == PLAYER_SHIELD_DEKU)) {
-            this->sheathDLists = &sPlayerDListGroups[this->sheathType][1];
-        } else if (LINK_IS_CHILD && this->sheathType == PLAYER_MODELTYPE_SHEATH_17 &&
-                   ((gSaveContext.equips.buttonItems[0] == ITEM_SWORD_MASTER) ||
-                    (gSaveContext.equips.buttonItems[0] == ITEM_SWORD_BGS))) {
-            this->sheathDLists = &sPlayerDListGroups[this->sheathType][0];
-        }
-    }
-
     // Waist
     this->waistDLists = &sPlayerDListGroups[gPlayerModelTypes[modelGroup][4]][gSaveContext.linkAge];
 
     Player_SetModelsForHoldingShield(this);
-    GameInteractor_ExecuteOnPlayerSetModels(this, modelGroup);
 }
 
 void Player_SetModelGroup(Player* this, s32 modelGroup) {
@@ -774,12 +689,7 @@ s32 Player_IsBurningStickInRange(PlayState* play, Vec3f* pos, f32 xzRange, f32 y
 s32 Player_GetStrength(void) {
     s32 strengthUpgrade = CUR_UPG_VALUE(UPG_STRENGTH);
 
-    if (CVarGetInteger(CVAR_ENHANCEMENT("ToggleStrength"), 0) &&
-        CVarGetInteger(CVAR_ENHANCEMENT("StrengthDisabled"), 0)) {
-        return PLAYER_STR_NONE;
-    }
-
-    if (CVarGetInteger(CVAR_CHEAT("TimelessEquipment"), 0) || LINK_IS_ADULT) {
+    if (LINK_IS_ADULT) {
         return strengthUpgrade;
     } else if (strengthUpgrade != 0) {
         return PLAYER_STR_BRACELET;
@@ -942,13 +852,11 @@ s32 Player_GetEnvironmentalHazard(PlayState* play) {
 
         if ((triggerEntry->flag != 0) && !(gSaveContext.textTriggerFlags & triggerEntry->flag) &&
             (((envHazard == (PLAYER_ENV_HAZARD_HOTROOM - 1)) &&
-              (this->currentTunic != PLAYER_TUNIC_GORON && CVarGetInteger(CVAR_CHEAT("SuperTunic"), 0) == 0 &&
-               CVarGetInteger(CVAR_ENHANCEMENT("DisableTunicWarningText"), 0) == 0)) ||
+              (this->currentTunic != PLAYER_TUNIC_GORON)) ||
              (((envHazard == (PLAYER_ENV_HAZARD_UNDERWATER_FLOOR - 1)) ||
                (envHazard == (PLAYER_ENV_HAZARD_UNDERWATER_FREE - 1))) &&
               (this->currentBoots == PLAYER_BOOTS_IRON) &&
-              (this->currentTunic != PLAYER_TUNIC_ZORA && CVarGetInteger(CVAR_CHEAT("SuperTunic"), 0) == 0 &&
-               CVarGetInteger(CVAR_ENHANCEMENT("DisableTunicWarningText"), 0) == 0)))) {
+              (this->currentTunic != PLAYER_TUNIC_ZORA)))) {
             Message_StartTextbox(play, triggerEntry->textId, NULL);
             gSaveContext.textTriggerFlags |= triggerEntry->flag;
         }
@@ -1063,34 +971,19 @@ void Player_DrawImpl(PlayState* play, void** skeleton, Vec3s* jointTable, s32 dL
     gSPSegment(POLY_OPA_DISP++, 0x09, SEGMENTED_TO_VIRTUAL(sMouthTextures[eyeIndex]));
 #endif
 
-    Color_RGB8 sTemp;
     color = &sTunicColors[tunic];
-    if (tunic == PLAYER_TUNIC_KOKIRI && CVarGetInteger(CVAR_COSMETIC("Link.KokiriTunic.Changed"), 0)) {
-        sTemp = CVarGetColor24(CVAR_COSMETIC("Link.KokiriTunic.Value"), sTunicColors[PLAYER_TUNIC_KOKIRI]);
-        color = &sTemp;
-    } else if (tunic == PLAYER_TUNIC_GORON && CVarGetInteger(CVAR_COSMETIC("Link.GoronTunic.Changed"), 0)) {
-        sTemp = CVarGetColor24(CVAR_COSMETIC("Link.GoronTunic.Value"), sTunicColors[PLAYER_TUNIC_GORON]);
-        color = &sTemp;
-    } else if (tunic == PLAYER_TUNIC_ZORA && CVarGetInteger(CVAR_COSMETIC("Link.ZoraTunic.Changed"), 0)) {
-        sTemp = CVarGetColor24(CVAR_COSMETIC("Link.ZoraTunic.Value"), sTunicColors[PLAYER_TUNIC_ZORA]);
-        color = &sTemp;
-    }
 
-    if (GameInteractor_Should(VB_APPLY_TUNIC_COLOR, true, data, color)) {
+    
         gDPSetEnvColor(POLY_OPA_DISP++, color->r, color->g, color->b, 0);
-    }
+    
 
-    // If we have a custom link model, always use the most detailed LOD
-    if (Player_IsCustomLinkModel()) {
-        lod = 0;
-    }
+    lod = 0;
 
     sDListsLodOffset = lod * 2;
 
     SkelAnime_DrawFlexLod(play, skeleton, jointTable, dListCount, overrideLimbDraw, postLimbDraw, data, lod);
 
-    if (((CVarGetInteger(CVAR_ENHANCEMENT("FirstPersonGauntlets"), 0) && LINK_IS_ADULT) ||
-         (overrideLimbDraw != Player_OverrideLimbDrawGameplayFirstPerson)) &&
+    if ((overrideLimbDraw != Player_OverrideLimbDrawGameplayFirstPerson) &&
         (overrideLimbDraw != Player_OverrideLimbDrawGameplayCrawling) &&
         (gSaveContext.gameMode != GAMEMODE_END_CREDITS)) {
         if (LINK_IS_ADULT) {
@@ -1100,15 +993,6 @@ void Player_DrawImpl(PlayState* play, void** skeleton, Vec3s* jointTable, s32 dL
                 gDPPipeSync(POLY_OPA_DISP++);
 
                 color = &sGauntletColors[strengthUpgrade - 2];
-                if (strengthUpgrade == PLAYER_STR_SILVER_G &&
-                    CVarGetInteger(CVAR_COSMETIC("Gloves.SilverGauntlets.Changed"), 0)) {
-                    sTemp = CVarGetColor24(CVAR_COSMETIC("Gloves.SilverGauntlets.Value"), *color);
-                    color = &sTemp;
-                } else if (strengthUpgrade == PLAYER_STR_GOLD_G &&
-                           CVarGetInteger(CVAR_COSMETIC("Gloves.GoldenGauntlets.Changed"), 0)) {
-                    sTemp = CVarGetColor24(CVAR_COSMETIC("Gloves.GoldenGauntlets.Value"), *color);
-                    color = &sTemp;
-                }
                 gDPSetEnvColor(POLY_OPA_DISP++, color->r, color->g, color->b, 0);
 
                 gSPDisplayList(POLY_OPA_DISP++, gLinkAdultLeftGauntletPlate1DL);
@@ -1248,41 +1132,6 @@ s32 Player_OverrideLimbDrawGameplayCommon(PlayState* play, s32 limbIndex, Gfx** 
                                           void* thisx) {
     Player* this = (Player*)thisx;
 
-    if (CVarGetInteger(CVAR_ENHANCEMENT("EquipmentAlwaysVisible"), 0) &&
-        CVarGetInteger(CVAR_ENHANCEMENT("ScaleAdultEquipmentAsChild"), 0) && LINK_IS_CHILD) {
-        if (limbIndex == PLAYER_LIMB_L_HAND) {
-            if ((gSaveContext.equips.buttonItems[0] != ITEM_SWORD_KOKIRI &&
-                 sLeftHandType == PLAYER_MODELTYPE_LH_SWORD) ||
-                (sLeftHandType == PLAYER_MODELTYPE_LH_BGS) || (sLeftHandType == PLAYER_MODELTYPE_LH_HAMMER)) {
-                Matrix_Scale(0.8, 0.8, 0.8, MTXMODE_APPLY);
-            }
-        }
-        if (limbIndex == PLAYER_LIMB_R_HAND) {
-            if ((this->currentShield == PLAYER_SHIELD_MIRROR && sRightHandType == PLAYER_MODELTYPE_RH_SHIELD) ||
-                sRightHandType == PLAYER_MODELTYPE_RH_HOOKSHOT ||
-                (sRightHandType == PLAYER_MODELTYPE_RH_BOW_SLINGSHOT && Player_HoldsBow(this))) {
-                Matrix_Scale(0.8, 0.8, 0.8, MTXMODE_APPLY);
-            }
-        }
-        if (limbIndex == PLAYER_LIMB_SHEATH) {
-            if ((this->currentShield == PLAYER_SHIELD_MIRROR ||
-                 (this->currentShield == PLAYER_SHIELD_HYLIAN &&
-                  (gSaveContext.equips.buttonItems[0] == ITEM_SWORD_MASTER ||
-                   gSaveContext.equips.buttonItems[0] == ITEM_SWORD_BGS))) &&
-                ((this->sheathType == PLAYER_MODELTYPE_SHEATH_16) || (this->sheathType == PLAYER_MODELTYPE_SHEATH_17) ||
-                 (this->sheathType == PLAYER_MODELTYPE_SHEATH_18) ||
-                 (this->sheathType == PLAYER_MODELTYPE_SHEATH_19))) {
-                Matrix_Translate(218, -100, 62, MTXMODE_APPLY);
-                Matrix_Scale(0.8, 0.8, 0.8, MTXMODE_APPLY);
-            }
-            if ((this->currentShield == PLAYER_SHIELD_DEKU && gSaveContext.equips.buttonItems[0] != ITEM_SWORD_KOKIRI &&
-                 (this->sheathType == PLAYER_MODELTYPE_SHEATH_16 || this->sheathType == PLAYER_MODELTYPE_SHEATH_17))) {
-                Matrix_Translate(218, -100, 62, MTXMODE_APPLY);
-                Matrix_Scale(0.8, 0.8, 0.8, MTXMODE_APPLY);
-            }
-        }
-    }
-
     if (limbIndex == PLAYER_LIMB_ROOT) {
         sLeftHandType = this->leftHandType;
         sRightHandType = this->rightHandType;
@@ -1314,25 +1163,12 @@ s32 Player_OverrideLimbDrawGameplayCommon(PlayState* play, s32 limbIndex, Gfx** 
         }
 
         if (limbIndex == PLAYER_LIMB_HEAD) {
-            if (CVarGetInteger(CVAR_COSMETIC("Link.HeadScale.Changed"), 0)) {
-                f32 scale = CVarGetFloat(CVAR_COSMETIC("Link.HeadScale.Value"), 1.0f);
-                Matrix_Scale(scale, scale, scale, MTXMODE_APPLY);
-                if (scale > 1.2f) {
-                    Matrix_Translate(-((LINK_IS_ADULT ? 320.0f : 200.0f) * scale), 0.0f, 0.0f, MTXMODE_APPLY);
-                } else if (scale < 1.0f) {
-                    Matrix_Translate((LINK_IS_ADULT ? 3600.0f : 2900.0f) * ABS(scale - 1.0f), 0.0f, 0.0f,
-                                     MTXMODE_APPLY);
-                }
-            }
+            
             rot->x += this->headLimbRot.z;
             rot->y -= this->headLimbRot.y;
             rot->z += this->headLimbRot.x;
         } else if (limbIndex == PLAYER_LIMB_L_HAND) {
-            if (CVarGetInteger(CVAR_COSMETIC("Link.SwordScale.Changed"), 0)) {
-                f32 scale = CVarGetFloat(CVAR_COSMETIC("Link.SwordScale.Value"), 1.0f);
-                Matrix_Scale(scale, scale, scale, MTXMODE_APPLY);
-                Matrix_Translate(-((LINK_IS_ADULT ? 320.0f : 200.0f) * scale), 0.0f, 0.0f, MTXMODE_APPLY);
-            }
+            
         } else if (limbIndex == PLAYER_LIMB_UPPER) {
             if (this->upperLimbYawSecondary != 0) {
                 Matrix_RotateZ(0x44C * (M_PI / 0x8000), MTXMODE_APPLY);
@@ -1404,11 +1240,7 @@ s32 Player_OverrideLimbDrawGameplayDefault(PlayState* play, s32 limbIndex, Gfx**
                     (gSaveContext.equips.buttonItems[0] != ITEM_SWORD_KOKIRI)) {
                     dLists += PLAYER_SHIELD_MAX * 4;
                 }
-            } else if (!CVarGetInteger(CVAR_ENHANCEMENT("EquipmentAlwaysVisible"), 0) ||
-                       (CVarGetInteger(CVAR_ENHANCEMENT("EquipmentAlwaysVisible"), 0) &&
-                        ((gSaveContext.equips.buttonItems[0] != ITEM_SWORD_MASTER &&
-                          gSaveContext.equips.buttonItems[0] != ITEM_SWORD_BGS) &&
-                         this->currentShield == PLAYER_SHIELD_DEKU))) {
+            } else {
                 if (!LINK_IS_ADULT &&
                     ((this->sheathType == PLAYER_MODELTYPE_SHEATH_16) ||
                      (this->sheathType == PLAYER_MODELTYPE_SHEATH_17)) &&
@@ -1425,17 +1257,8 @@ s32 Player_OverrideLimbDrawGameplayDefault(PlayState* play, s32 limbIndex, Gfx**
 
         } else if (limbIndex == PLAYER_LIMB_WAIST) {
 
-            if (!Player_IsCustomLinkModel()) {
-                *dList = ResourceMgr_LoadGfxByName(
-                    this->waistDLists[sDListsLodOffset]); // NOTE: This needs to be disabled when using custom
-                                                          // characters - they're not going to have LODs anyways...
-            }
+            *dList = ResourceMgr_LoadGfxByName(this->waistDLists[sDListsLodOffset]);
         }
-    }
-
-    if (GameInteractor_InvisibleLinkActive()) {
-        this->actor.shape.shadowDraw = NULL;
-        *dList = NULL;
     }
 
     return false;
@@ -1451,29 +1274,14 @@ s32 Player_OverrideLimbDrawGameplayFirstPerson(PlayState* play, s32 limbIndex, G
         } else if (limbIndex == PLAYER_LIMB_L_FOREARM) {
             *dList = sFirstPersonLeftForearmDLs[gSaveContext.linkAge];
         } else if (limbIndex == PLAYER_LIMB_L_HAND) {
-            s32 handOutDlIndex = gSaveContext.linkAge;
-            if ((CVarGetInteger(CVAR_ENHANCEMENT("BowSlingshotAmmoFix"), 0) ||
-                 CVarGetInteger(CVAR_ENHANCEMENT("EquipmentAlwaysVisible"), 0)) &&
-                LINK_IS_ADULT && Player_HoldsSlingshot(this)) {
-                handOutDlIndex = 1;
-            }
-            *dList = sFirstPersonLeftHandDLs[handOutDlIndex];
+            *dList = sFirstPersonLeftHandDLs[gSaveContext.linkAge];
         } else if (limbIndex == PLAYER_LIMB_R_SHOULDER) {
             *dList = sFirstPersonRightShoulderDLs[gSaveContext.linkAge];
         } else if (limbIndex == PLAYER_LIMB_R_FOREARM) {
             *dList = sFirstPersonForearmDLs[gSaveContext.linkAge];
         } else if (limbIndex == PLAYER_LIMB_R_HAND) {
-            s32 firstPersonWeaponIndex = gSaveContext.linkAge;
-            if (CVarGetInteger(CVAR_ENHANCEMENT("BowSlingshotAmmoFix"), 0) ||
-                CVarGetInteger(CVAR_ENHANCEMENT("EquipmentAlwaysVisible"), 0)) {
-                if (Player_HoldsBow(this)) {
-                    firstPersonWeaponIndex = 0;
-                } else if (Player_HoldsSlingshot(this)) {
-                    firstPersonWeaponIndex = 1;
-                }
-            }
             *dList = Player_HoldsHookshot(this) ? gLinkAdultRightHandHoldingHookshotFarDL
-                                                : sFirstPersonRightHandHoldingWeaponDLs[firstPersonWeaponIndex];
+                                                : sFirstPersonRightHandHoldingWeaponDLs[gSaveContext.linkAge];
         } else {
             *dList = NULL;
         }
@@ -1560,8 +1368,7 @@ void func_800906D4(PlayState* play, Player* this, Vec3f* newTipPos) {
     Matrix_MultVec3f(&D_801260A4[2], &newBasePos[2]);
 
     if (func_80090480(play, NULL, &this->meleeWeaponInfo[0], &newTipPos[0], &newBasePos[0]) &&
-        !(this->stateFlags1 & PLAYER_STATE1_SHIELDING) &&
-        !CVarGetInteger(CVAR_ENHANCEMENT("DisableLinkSwordTrail"), 0)) {
+        !(this->stateFlags1 & PLAYER_STATE1_SHIELDING)) {
         EffectBlure_AddVertex(Effect_GetByIndex(this->meleeWeaponEffectIndex), &this->meleeWeaponInfo[0].tip,
                               &this->meleeWeaponInfo[0].base);
     }
@@ -1576,45 +1383,31 @@ void func_800906D4(PlayState* play, Player* this, Vec3f* newTipPos) {
 void Player_DrawGetItemIceTrap(PlayState* play, Player* this, Vec3f* refPos, s32 drawIdPlusOne, f32 height) {
     OPEN_DISPS(play->state.gfxCtx);
 
-    if (CVarGetInteger(CVAR_GENERAL("LetItSnow"), 0)) {
-        Gfx_SetupDL_25Opa(play->state.gfxCtx);
+    if (iceTrapScale < 0.01) {
+        iceTrapScale += 0.001f;
+    } else if (iceTrapScale < 0.8f) {
+        iceTrapScale += 0.2f;
+    }
+    gSPSegment(POLY_XLU_DISP++, 0x08,
+               Gfx_TwoTexScrollEx(play->state.gfxCtx, 0, 0, (0 - play->gameplayFrames) % 128, 32, 32, 1, 0,
+                                  (play->gameplayFrames * -2) % 128, 32, 32, 0, -1, 0, -2));
 
-        Matrix_Scale(0.2f, 0.2f, 0.2f, MTXMODE_APPLY);
-        gSPMatrix(POLY_OPA_DISP++, MATRIX_NEWMTX(play->state.gfxCtx), G_MTX_MODELVIEW | G_MTX_LOAD);
+    Matrix_Translate(0.0f, -40.0f, 0.0f, MTXMODE_APPLY);
+    Matrix_Scale(iceTrapScale, iceTrapScale, iceTrapScale, MTXMODE_APPLY);
+    gSPMatrix(POLY_XLU_DISP++, MATRIX_NEWMTX(play->state.gfxCtx), G_MTX_NOPUSH | G_MTX_LOAD | G_MTX_MODELVIEW);
+    gDPSetEnvColor(POLY_XLU_DISP++, 0, 50, 100, 255);
+    gSPDisplayList(POLY_XLU_DISP++, gEffIceFragment3DL);
 
-        gDPSetGrayscaleColor(POLY_OPA_DISP++, 75, 75, 75, 255);
-        gSPGrayscale(POLY_OPA_DISP++, true);
-
-        gSPDisplayList(POLY_OPA_DISP++, (Gfx*)gSilverRockDL);
-
-        gSPGrayscale(POLY_OPA_DISP++, false);
+    // Reset matrix for the fake item model because we're animating the size of the ice block around it before this.
+    Matrix_Translate(refPos->x + (3.3f * Math_SinS(this->actor.shape.rot.y)), refPos->y + height,
+                     refPos->z + ((3.3f + (IREG(90) / 10.0f)) * Math_CosS(this->actor.shape.rot.y)), MTXMODE_NEW);
+    Matrix_RotateZYX(0, play->gameplayFrames * 1000, 0, MTXMODE_APPLY);
+    Matrix_Scale(0.2f, 0.2f, 0.2f, MTXMODE_APPLY);
+    // Draw fake item model.
+    if (this->getItemEntry.drawFunc != NULL) {
+        this->getItemEntry.drawFunc(play, &this->getItemEntry);
     } else {
-        if (iceTrapScale < 0.01) {
-            iceTrapScale += 0.001f;
-        } else if (iceTrapScale < 0.8f) {
-            iceTrapScale += 0.2f;
-        }
-        gSPSegment(POLY_XLU_DISP++, 0x08,
-                   Gfx_TwoTexScrollEx(play->state.gfxCtx, 0, 0, (0 - play->gameplayFrames) % 128, 32, 32, 1, 0,
-                                      (play->gameplayFrames * -2) % 128, 32, 32, 0, -1, 0, -2));
-
-        Matrix_Translate(0.0f, -40.0f, 0.0f, MTXMODE_APPLY);
-        Matrix_Scale(iceTrapScale, iceTrapScale, iceTrapScale, MTXMODE_APPLY);
-        gSPMatrix(POLY_XLU_DISP++, MATRIX_NEWMTX(play->state.gfxCtx), G_MTX_NOPUSH | G_MTX_LOAD | G_MTX_MODELVIEW);
-        gDPSetEnvColor(POLY_XLU_DISP++, 0, 50, 100, 255);
-        gSPDisplayList(POLY_XLU_DISP++, gEffIceFragment3DL);
-
-        // Reset matrix for the fake item model because we're animating the size of the ice block around it before this.
-        Matrix_Translate(refPos->x + (3.3f * Math_SinS(this->actor.shape.rot.y)), refPos->y + height,
-                         refPos->z + ((3.3f + (IREG(90) / 10.0f)) * Math_CosS(this->actor.shape.rot.y)), MTXMODE_NEW);
-        Matrix_RotateZYX(0, play->gameplayFrames * 1000, 0, MTXMODE_APPLY);
-        Matrix_Scale(0.2f, 0.2f, 0.2f, MTXMODE_APPLY);
-        // Draw fake item model.
-        if (this->getItemEntry.drawFunc != NULL) {
-            this->getItemEntry.drawFunc(play, &this->getItemEntry);
-        } else {
-            GetItem_Draw(play, drawIdPlusOne - 1);
-        }
+        GetItem_Draw(play, drawIdPlusOne - 1);
     }
 
     CLOSE_DISPS(play->state.gfxCtx);
@@ -1697,10 +1490,10 @@ void Player_DrawHookshotReticle(PlayState* play, Player* this, f32 hookshotRange
         Matrix_Scale(sp60, sp60, sp60, MTXMODE_APPLY);
 
         gSPMatrix(OVERLAY_DISP++, MATRIX_NEWMTX(play->state.gfxCtx), G_MTX_NOPUSH | G_MTX_LOAD | G_MTX_MODELVIEW);
-        if (GameInteractor_Should(VB_TARGETABLE_HOOKSHOT_RETICLE, true, colPoly, bgId)) {
+        
             gSPSegment(OVERLAY_DISP++, 0x06, play->objectCtx.status[this->actor.objBankIndex].segment);
             gSPDisplayList(OVERLAY_DISP++, gLinkAdultHookshotReticleDL);
-        }
+        
 
         CLOSE_DISPS(play->state.gfxCtx);
     }
@@ -1710,11 +1503,6 @@ Vec3f D_801260D4 = { 1100.0f, -700.0f, 0.0f };
 
 f32 sMeleeWeaponLengths[] = {
     0.0f, 4000.0f, 3000.0f, 5500.0f, 0.0f, 2500.0f,
-};
-
-f32 sSwordTypes[] = {
-    TRAIL_TYPE_REST,           TRAIL_TYPE_MASTER_SWORD, TRAIL_TYPE_KOKIRI_SWORD,
-    TRAIL_TYPE_BIGGORON_SWORD, TRAIL_TYPE_REST,         TRAIL_TYPE_HAMMER,
 };
 
 Gfx* sBottleDLists[] = { gLinkAdultBottleDL, gLinkChildBottleDL };
@@ -1779,7 +1567,6 @@ void Player_PostLimbDrawGameplay(PlayState* play, s32 limbIndex, Gfx** dList, Ve
                 D_80126080.x = this->unk_85C * 5000.0f;
                 func_80090A28(this, sp124);
                 if (this->meleeWeaponState != 0) {
-                    EffectBlure_ChangeType(Effect_GetByIndex(this->meleeWeaponEffectIndex), TRAIL_TYPE_STICK);
                     func_800906D4(play, this, sp124);
                 } else {
                     Math_Vec3f_Copy(&this->meleeWeaponInfo[0].tip, &sp124[0]);
@@ -1801,8 +1588,6 @@ void Player_PostLimbDrawGameplay(PlayState* play, s32 limbIndex, Gfx** dList, Ve
                 D_80126080.x = 1500.0f;
             } else {
                 D_80126080.x = sMeleeWeaponLengths[Player_GetMeleeWeaponHeld(this)];
-                EffectBlure_ChangeType(Effect_GetByIndex(this->meleeWeaponEffectIndex),
-                                       sSwordTypes[Player_GetMeleeWeaponHeld(this)]);
             }
 
             func_80090A28(this, spE4);
@@ -1851,12 +1636,7 @@ void Player_PostLimbDrawGameplay(PlayState* play, s32 limbIndex, Gfx** dList, Ve
             Matrix_Get(&this->shieldMf);
         } else if ((this->rightHandType == PLAYER_MODELTYPE_RH_BOW_SLINGSHOT) ||
                    (this->rightHandType == PLAYER_MODELTYPE_RH_BOW_SLINGSHOT_2)) {
-            s32 stringModelToUse = gSaveContext.linkAge;
-            if (CVarGetInteger(CVAR_ENHANCEMENT("BowSlingshotAmmoFix"), 0) ||
-                CVarGetInteger(CVAR_ENHANCEMENT("EquipmentAlwaysVisible"), 0)) {
-                stringModelToUse = Player_HoldsSlingshot(this);
-            }
-            BowStringData* stringData = &sBowStringData[stringModelToUse];
+            BowStringData* stringData = &sBowStringData[gSaveContext.linkAge];
 
             OPEN_DISPS(play->state.gfxCtx);
 
@@ -1901,7 +1681,7 @@ void Player_PostLimbDrawGameplay(PlayState* play, s32 limbIndex, Gfx** dList, Ve
         }
 
         if (this->actor.scale.y >= 0.0f) {
-            if (GameInteractor_Should(VB_DRAW_ADDITIONAL_RETICLES, (this->heldItemAction == PLAYER_IA_HOOKSHOT) ||
+            if (((this->heldItemAction == PLAYER_IA_HOOKSHOT) ||
                                                                        (this->heldItemAction == PLAYER_IA_LONGSHOT))) {
                 Matrix_MultVec3f(&D_80126184, &this->unk_3C8);
 
@@ -1918,9 +1698,7 @@ void Player_PostLimbDrawGameplay(PlayState* play, s32 limbIndex, Gfx** dList, Ve
                     if (func_8002DD78(this) != 0) {
                         Matrix_Translate(500.0f, 300.0f, 0.0f, MTXMODE_APPLY);
                         Player_DrawHookshotReticle(
-                            play, this,
-                            ((this->heldItemAction == PLAYER_IA_HOOKSHOT) ? 38600.0f : 77600.0f) *
-                                CVarGetFloat(CVAR_CHEAT("HookshotReachMultiplier"), 1.0f));
+                            play, this, (this->heldItemAction == PLAYER_IA_HOOKSHOT) ? 38600.0f : 77600.0f);
                     }
                 }
             }
@@ -2034,9 +1812,6 @@ s32 Player_OverrideLimbDrawPause(PlayState* play, s32 limbIndex, Gfx** dList, Ve
     } else if (limbIndex == PLAYER_LIMB_WAIST) {
         type = gPlayerModelTypes[modelGroup][PLAYER_MODELGROUPENTRY_WAIST];
 
-        if (Player_IsCustomLinkModel()) {
-            return 0;
-        }
     } else {
         return 0;
     }
@@ -2045,23 +1820,6 @@ s32 Player_OverrideLimbDrawPause(PlayState* play, s32 limbIndex, Gfx** dList, Ve
     *dList = dLists[dListOffset];
 
     return 0;
-}
-
-#include <overlays/actors/ovl_Demo_Effect/z_demo_effect.h>
-void DemoEffect_DrawTriforceSpot(Actor* thisx, PlayState* play);
-
-void Pause_DrawTriforceSpot(PlayState* play, s32 showLightColumn) {
-    static DemoEffect triforce;
-    static s16 rotation = 0;
-
-    triforce.triforceSpot.crystalLightOpacity = 244;
-    triforce.triforceSpot.triforceSpotOpacity = 249;
-    triforce.triforceSpot.lightColumnOpacity = showLightColumn ? 244 : 0;
-    triforce.triforceSpot.rotation = rotation;
-
-    DemoEffect_DrawTriforceSpot(&triforce, play);
-
-    rotation += 0x03E8;
 }
 
 void Player_DrawPauseImpl(PlayState* play, void* gameplayKeep, void* linkObject, SkelAnime* skelAnime, Vec3f* pos,
@@ -2079,8 +1837,6 @@ void Player_DrawPauseImpl(PlayState* play, void* gameplayKeep, void* linkObject,
     Mtx* perspMtx = Graph_Alloc(play->state.gfxCtx, sizeof(Mtx));
     Mtx* lookAtMtx = Graph_Alloc(play->state.gfxCtx, sizeof(Mtx));
 
-    u8 mirrorWorldActive = CVarGetInteger(CVAR_ENHANCEMENT("MirroredWorld"), 0);
-
     OPEN_DISPS(play->state.gfxCtx);
 
     opaRef = POLY_OPA_DISP;
@@ -2091,11 +1847,6 @@ void Player_DrawPauseImpl(PlayState* play, void* gameplayKeep, void* linkObject,
 
     gSPDisplayList(WORK_DISP++, POLY_OPA_DISP);
     gSPDisplayList(WORK_DISP++, POLY_XLU_DISP);
-
-    if (mirrorWorldActive) {
-        gSPSetExtraGeometryMode(POLY_OPA_DISP++, G_EX_INVERT_CULLING);
-        gSPSetExtraGeometryMode(POLY_XLU_DISP++, G_EX_INVERT_CULLING);
-    }
 
     gSPSegment(POLY_OPA_DISP++, 0x00, NULL);
 
@@ -2110,11 +1861,11 @@ void Player_DrawPauseImpl(PlayState* play, void* gameplayKeep, void* linkObject,
                     G_AC_NONE | G_ZS_PIXEL | G_RM_NOOP | G_RM_NOOP2);
 
     // Also matches if some of the previous graphics commands are moved inside this block too. Possible macro?
-    if (1) {
+    
         s32 pad[2];
 
         gSPLoadGeometryMode(POLY_OPA_DISP++, G_ZBUFFER | G_SHADE | G_CULL_BACK | G_LIGHTING | G_SHADING_SMOOTH);
-    }
+    
 
     gDPSetScissor(POLY_OPA_DISP++, G_SC_NON_INTERLACE, 0, 0, width, height);
     gSPClipRatio(POLY_OPA_DISP++, FRUSTRATIO_1);
@@ -2153,12 +1904,8 @@ void Player_DrawPauseImpl(PlayState* play, void* gameplayKeep, void* linkObject,
     playerSwordAndShield[0] = sword;
     playerSwordAndShield[1] = shield;
 
-    Matrix_SetTranslateRotateYXZ(
-        pos->x - ((CVarGetInteger(CVAR_ENHANCEMENT("PauseMenuAnimatedLink"), 0) && LINK_AGE_IN_YEARS == YEARS_ADULT)
-                      ? 25
-                      : 0),
-        pos->y - (CVarGetInteger(CVAR_GENERAL("PauseMenuAnimatedLinkTriforce"), 0) ? 16 : 0), pos->z, rot);
-    Matrix_Scale(scale * (mirrorWorldActive ? -1 : 1), scale, scale, MTXMODE_APPLY);
+    Matrix_SetTranslateRotateYXZ(pos->x, pos->y, pos->z, rot);
+    Matrix_Scale(scale, scale, scale, MTXMODE_APPLY);
 
     gSPSegment(POLY_OPA_DISP++, 0x04, gameplayKeep);
     gSPSegment(POLY_OPA_DISP++, 0x06, linkObject);
@@ -2176,19 +1923,6 @@ void Player_DrawPauseImpl(PlayState* play, void* gameplayKeep, void* linkObject,
     Player_DrawImpl(play, skelAnime->skeleton, skelAnime->jointTable, skelAnime->dListCount, 0, tunic, boots, 0,
                     Player_OverrideLimbDrawPause, NULL, &playerSwordAndShield);
 
-    if (CVarGetInteger(CVAR_GENERAL("PauseMenuAnimatedLinkTriforce"), 0)) {
-        Matrix_SetTranslateRotateYXZ(pos->x - (LINK_AGE_IN_YEARS == YEARS_ADULT ? 25 : 0),
-                                     pos->y + 280 + (LINK_AGE_IN_YEARS == YEARS_ADULT ? 48 : 0), pos->z, rot);
-        Matrix_Scale(scale * (mirrorWorldActive ? -1 : 1), scale * 1, scale * 1, MTXMODE_APPLY);
-
-        Pause_DrawTriforceSpot(play, 1);
-    }
-
-    if (mirrorWorldActive) {
-        gSPClearExtraGeometryMode(POLY_OPA_DISP++, G_EX_INVERT_CULLING);
-        gSPClearExtraGeometryMode(POLY_XLU_DISP++, G_EX_INVERT_CULLING);
-    }
-
     gSPEndDisplayList(POLY_OPA_DISP++);
     gSPEndDisplayList(POLY_XLU_DISP++);
 
@@ -2200,60 +1934,16 @@ void Player_DrawPauseImpl(PlayState* play, void* gameplayKeep, void* linkObject,
 
 void Player_DrawPause(PlayState* play, u8* segment, SkelAnime* skelAnime, Vec3f* pos, Vec3s* rot, f32 scale, s32 sword,
                       s32 tunic, s32 shield, s32 boots) {
-    Input* p1Input = &play->state.input[0];
     Vec3f eye = { 0.0f, 0.0f, -400.0f };
     Vec3f at = { 0.0f, 0.0f, 0.0f };
     Vec3s* destTable;
     Vec3s* srcTable;
     s32 i;
-    bool canswitchrnd = false;
 
     gSegments[4] = VIRTUAL_TO_PHYSICAL(segment + 0x3800);
     gSegments[6] = VIRTUAL_TO_PHYSICAL(segment + 0x8800);
 
-    uintptr_t* PauseMenuAnimSet[4] = { // IDLE                       // Two Handed                       // No shield //
-                                       // Kid Hylian Shield
-                                       gPlayerAnim_link_normal_wait, gPlayerAnim_link_fighter_wait_long,
-                                       gPlayerAnim_link_normal_wait_free, gPlayerAnim_link_normal_wait_free
-    };
-
-    if (CVarGetInteger(CVAR_ENHANCEMENT("PauseMenuAnimatedLink"), 0) ||
-        CVarGetInteger(CVAR_GENERAL("PauseMenuAnimatedLinkTriforce"), 0)) {
-        uintptr_t anim = 0; // Initialise anim
-
-        s16 EquipedStance;
-        if (CUR_EQUIP_VALUE(EQUIP_TYPE_SWORD) >= EQUIP_VALUE_SWORD_BIGGORON) {
-            EquipedStance = 1;
-        } else if (CUR_EQUIP_VALUE(EQUIP_TYPE_SHIELD) == EQUIP_VALUE_SWORD_NONE) {
-            EquipedStance = 2;
-        } else if (CUR_EQUIP_VALUE(EQUIP_TYPE_SHIELD) == EQUIP_VALUE_SWORD_MASTER && LINK_AGE_IN_YEARS == YEARS_CHILD) {
-            EquipedStance = 3;
-        } else {
-            // Link is idle so revert to 0
-            EquipedStance = 0;
-        }
-
-        if (!CVarGetInteger(CVAR_GENERAL("PauseMenuAnimatedLinkTriforce"), 0)) {
-            anim = PauseMenuAnimSet[EquipedStance];
-        } else {
-            anim = gPlayerAnim_link_magic_kaze2;
-            sword = 0;
-            shield = 0;
-        }
-
-        if (skelAnime->animation != anim) {
-            LinkAnimation_Change(play, skelAnime, anim, 1.0f, 0.0f, Animation_GetLastFrame(anim), ANIMMODE_LOOP, -6.0f);
-        }
-
-        LinkAnimation_Update(play, skelAnime);
-
-        if (!LINK_IS_ADULT) {
-            // Link is placed too far up by default when animating
-            at.y += 60;
-        }
-    } else {
-
-        if (!LINK_IS_ADULT) {
+    if (!LINK_IS_ADULT) {
             if (shield == PLAYER_SHIELD_DEKU) {
                 srcTable = gLinkPauseChildDekuShieldJointTable;
             } else {
@@ -2267,16 +1957,15 @@ void Player_DrawPause(PlayState* play, u8* segment, SkelAnime* skelAnime, Vec3f*
             } else {
                 srcTable = gLinkPauseAdultJointTable;
             }
-        }
-
-        srcTable = ResourceMgr_LoadArrayByNameAsVec3s(srcTable);
-        Vec3s* ogSrcTable = srcTable;
-        destTable = skelAnime->jointTable;
-        for (i = 0; i < skelAnime->limbCount; i++) {
-            *destTable++ = *srcTable++;
-        }
-        free(ogSrcTable);
     }
+
+    srcTable = ResourceMgr_LoadArrayByNameAsVec3s(srcTable);
+    Vec3s* ogSrcTable = srcTable;
+    destTable = skelAnime->jointTable;
+    for (i = 0; i < skelAnime->limbCount; i++) {
+        *destTable++ = *srcTable++;
+    }
+    free(ogSrcTable);
 
     Player_DrawPauseImpl(play, segment + 0x3800, segment + 0x8800, skelAnime, pos, rot, scale, sword, tunic, shield,
                          boots, PAUSE_EQUIP_PLAYER_WIDTH, PAUSE_EQUIP_PLAYER_HEIGHT, &eye, &at, 60.0f,

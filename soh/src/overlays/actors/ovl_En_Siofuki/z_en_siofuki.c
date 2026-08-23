@@ -6,8 +6,6 @@
 
 #include "z_en_siofuki.h"
 #include "objects/object_siofuki/object_siofuki.h"
-#include "soh/Enhancements/game-interactor/GameInteractor_Hooks.h"
-
 #define FLAGS (ACTOR_FLAG_UPDATE_CULLING_DISABLED | ACTOR_FLAG_DRAW_CULLING_DISABLED)
 
 void EnSiofuki_Init(Actor* thisx, PlayState* play);
@@ -189,9 +187,9 @@ void func_80AFC218(EnSiofuki* this, PlayState* play) {
     func_80AFBE8C(this, play);
     func_80AFC1D0(this, play);
 
-    if (GameInteractor_Should(VB_SWITCH_TIMER_TICK, true, this, &this->timer)) {
+    
         this->timer--;
-    }
+    
 
     if (this->timer < 0) {
         Flags_UnsetSwitch(play, ((u16)this->dyna.actor.params >> 6) & 0x3F);

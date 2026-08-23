@@ -6,8 +6,6 @@
 
 #include "z_en_wonder_talk2.h"
 #include "vt.h"
-#include "soh/Enhancements/game-interactor/GameInteractor_Hooks.h"
-
 #define FLAGS (ACTOR_FLAG_ATTENTION_ENABLED | ACTOR_FLAG_FRIENDLY | ACTOR_FLAG_LOCK_ON_DISABLED)
 
 void EnWonderTalk2_Init(Actor* thisx, PlayState* play);
@@ -195,9 +193,9 @@ void func_80B3A3D4(EnWonderTalk2* this, PlayState* play) {
                 this->unk_15A = true;
             }
             this->actor.flags &= ~(ACTOR_FLAG_ATTENTION_ENABLED | ACTOR_FLAG_UPDATE_CULLING_DISABLED);
-            if (GameInteractor_Should(VB_WONDER_TALK, true, this)) {
+            
                 Player_SetCsActionWithHaltedActors(play, NULL, 7);
-            }
+            
             this->unk_156 = true;
             this->actionFunc = func_80B3A4F8;
             break;
@@ -255,10 +253,10 @@ void func_80B3A4F8(EnWonderTalk2* this, PlayState* play) {
             }
             this->unk_158 = 0;
             if (!this->unk_156) {
-                if (GameInteractor_Should(VB_WONDER_TALK, true, this)) {
+                
                     Message_StartTextbox(play, this->actor.textId, NULL);
                     Player_SetCsActionWithHaltedActors(play, NULL, 8);
-                }
+                
                 this->actor.flags |= ACTOR_FLAG_ATTENTION_ENABLED | ACTOR_FLAG_UPDATE_CULLING_DISABLED;
                 this->actionFunc = func_80B3A3D4;
             }

@@ -8,7 +8,6 @@
 #include "vt.h"
 #include "overlays/actors/ovl_En_Encount1/z_en_encount1.h"
 #include "objects/object_wf/object_wf.h"
-#include "soh/Enhancements/game-interactor/GameInteractor_Hooks.h"
 #include "soh/ResourceManagerHelpers.h"
 
 #define FLAGS (ACTOR_FLAG_ATTENTION_ENABLED | ACTOR_FLAG_HOSTILE | ACTOR_FLAG_UPDATE_CULLING_DISABLED)
@@ -389,10 +388,7 @@ void EnWf_WaitToAppear(EnWf* this, PlayState* play) {
             this->actionTimer = 5;
             this->actor.flags |= ACTOR_FLAG_ATTENTION_ENABLED;
 
-            // Disable miniboss music with Enemy Randomizer because the music would keep
-            // playing if the enemy was never defeated, which is common with Enemy Randomizer.
-            if ((this->actor.params != WOLFOS_NORMAL) && (this->switchFlag != 0xFF) &&
-                !CVarGetInteger(CVAR_ENHANCEMENT("RandomizedEnemies"), 0)) {
+            if ((this->actor.params != WOLFOS_NORMAL) && (this->switchFlag != 0xFF)) {
                 func_800F5ACC(NA_BGM_MINI_BOSS);
             }
         }
@@ -1200,7 +1196,6 @@ void EnWf_SetupDie(EnWf* this) {
     this->actionTimer = this->skelAnime.animLength;
     Audio_PlayActorSound2(&this->actor, NA_SE_EN_WOLFOS_DEAD);
     EnWf_SetupAction(this, EnWf_Die);
-    GameInteractor_ExecuteOnEnemyDefeat(&this->actor);
 }
 
 void EnWf_Die(EnWf* this, PlayState* play) {

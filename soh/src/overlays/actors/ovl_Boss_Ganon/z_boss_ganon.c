@@ -12,8 +12,6 @@
 
 #include "soh/frame_interpolation.h"
 #include "soh/OTRGlobals.h"
-#include "soh/Enhancements/game-interactor/GameInteractor_Hooks.h"
-
 #include <string.h>
 
 #define FLAGS                                                                                 \
@@ -572,7 +570,7 @@ void BossGanon_IntroCutscene(BossGanon* this, PlayState* play) {
             Play_ChangeCameraStatus(play, this->csCamIndex, CAM_STAT_ACTIVE);
             this->csCamFov = 60.0f;
 
-            if (Flags_GetEventChkInf(EVENTCHKINF_BEGAN_GANONDORF_BATTLE) || IS_BOSS_RUSH) {
+            if (Flags_GetEventChkInf(EVENTCHKINF_BEGAN_GANONDORF_BATTLE)) {
                 // watched cutscene already, skip most of it
                 this->csState = 17;
                 this->csTimer = 0;
@@ -583,9 +581,9 @@ void BossGanon_IntroCutscene(BossGanon* this, PlayState* play) {
                 BossGanon_SetIntroCsCamera(this, 11);
                 this->unk_198 = 2;
                 this->timers[2] = 110;
-                if (GameInteractor_Should(VB_GANON_HEAL_BEFORE_FIGHT, true)) {
+                
                     gSaveContext.healthAccumulator = MAX_HEALTH;
-                }
+                
                 Audio_QueueSeqCmd(NA_BGM_STOP);
             } else {
                 this->useOpenHand = true;
@@ -905,9 +903,7 @@ void BossGanon_IntroCutscene(BossGanon* this, PlayState* play) {
                     this->csTimer = 0;
                     this->csCamFov = 60.0f;
                     BossGanon_SetIntroCsCamera(this, 12);
-                    if (!IS_BOSS_RUSH) {
-                        Message_StartTextbox(play, 0x70CB, NULL);
-                    }
+                    Message_StartTextbox(play, 0x70CB, NULL);
                 }
             }
             break;
@@ -929,9 +925,7 @@ void BossGanon_IntroCutscene(BossGanon* this, PlayState* play) {
 
             this->csState = 19;
             this->csTimer = 0;
-            if (!IS_BOSS_RUSH) {
-                Message_StartTextbox(play, 0x70CC, NULL);
-            }
+            Message_StartTextbox(play, 0x70CC, NULL);
             Animation_MorphToPlayOnce(&this->skelAnime, &gGanondorfRaiseHandStartAnim, -5.0f);
             this->triforceType = GDF_TRIFORCE_DORF;
             this->fwork[GDF_TRIFORCE_SCALE] = 10.0f;
@@ -972,19 +966,6 @@ void BossGanon_IntroCutscene(BossGanon* this, PlayState* play) {
             }
 
             if ((this->csTimer > 80) && (Message_GetState(&play->msgCtx) == TEXT_STATE_NONE)) {
-                // In rando, skip past dark waves section straight to title card phase of the cutscene.
-                if (IS_BOSS_RUSH) {
-                    this->timers[2] = 30;
-                    this->csCamAt.x = this->unk_1FC.x - 10.0f;
-                    this->csCamAt.y = this->unk_1FC.y + 30.0f;
-                    this->csCamAt.z = this->unk_1FC.z;
-                    this->fwork[GDF_VORTEX_ALPHA] = 0.0f;
-                    this->fwork[GDF_VORTEX_SCALE] = 0.0f;
-                    this->csState = 22;
-                    this->csTimer = 0;
-                    break;
-                }
-
                 this->csState = 20;
                 this->csTimer = 0;
 
@@ -1272,16 +1253,8 @@ void BossGanon_DeathAndTowerCutscene(BossGanon* this, PlayState* play) {
             this->actor.shape.yOffset = -7000.0f;
 
             this->actor.shape.rot.y = 0;
-            // Skip Ganondorf dying and go straight to next scene.
-            // The cutscene skip met a mixed reaction, so until we figure out a better way of doing it,
-            // it will stay not-skipped outside of Boss Rush (originally implemented for randomizer).
-            if (!IS_BOSS_RUSH) {
-                this->csState = 1;
-                this->csTimer = 0;
-            } else {
-                this->csState = 9;
-                this->csTimer = 170;
-            }
+            this->csState = 1;
+            this->csTimer = 0;
             this->useOpenHand = true;
             // fallthrough
         case 1:
@@ -1549,16 +1522,7 @@ void BossGanon_DeathAndTowerCutscene(BossGanon* this, PlayState* play) {
             sBossGanonZelda = (EnZl3*)Actor_SpawnAsChild(&play->actorCtx, &this->actor, play, ACTOR_EN_ZL3, 0.0f,
                                                          6000.0f, 0.0f, 0, 0, 0, 0x2000);
 
-            if (!IS_BOSS_RUSH) {
-                this->csState = 101;
-            } else {
-                this->skelAnime.playSpeed = 1.0f;
-                sBossGanonZelda->actor.world.pos.x = -472.0f;
-                sBossGanonZelda->actor.world.pos.y = 4102.0f;
-                sBossGanonZelda->actor.world.pos.z = -200.0f;
-                sBossGanonZelda->unk_3C8 = 3;
-                this->csState = 104;
-            }
+            this->csState = 101;
 
             player->actor.world.pos.x = -472.0f;
             player->actor.world.pos.y = 4102.0f;
@@ -1676,11 +1640,6 @@ void BossGanon_DeathAndTowerCutscene(BossGanon* this, PlayState* play) {
             }
             // fallthrough
         case 104:
-            // In rando, fade out the white here as the earlier part is skipped.
-            if (IS_BOSS_RUSH) {
-                Math_ApproachZeroF(&this->whiteFillAlpha, 1.0f, 10.0f);
-            }
-
             this->csCamEye.x = -432.0f;
             this->csCamEye.y = 4147.0f;
             this->csCamEye.z = -200.0f;
@@ -1698,16 +1657,7 @@ void BossGanon_DeathAndTowerCutscene(BossGanon* this, PlayState* play) {
             }
 
             if (this->csTimer == 50) {
-                // In rando, skip the rest of the cutscene after the crystal around Zelda dissapears.
-                if (!IS_BOSS_RUSH) {
-                    sBossGanonZelda->unk_3C8 = 4;
-                } else {
-                    this->csState = 108;
-                    this->csTimer = 0;
-                    sBossGanonZelda->unk_3C8 = 7;
-                    Audio_QueueSeqCmd(SEQ_PLAYER_BGM_MAIN << 24 | NA_BGM_ESCAPE);
-                    break;
-                }
+                sBossGanonZelda->unk_3C8 = 4;
             }
 
             if (this->csTimer == 100) {
@@ -2799,7 +2749,6 @@ void BossGanon_UpdateDamage(BossGanon* this, PlayState* play) {
                     Sfx_PlaySfxAtPos(&sZeroVec, NA_SE_EN_LAST_DAMAGE);
                     Audio_QueueSeqCmd(0x100100FF);
                     this->screenFlashTimer = 4;
-                    GameInteractor_ExecuteOnBossDefeat(&this->actor);
                 } else {
                     Audio_PlayActorSound2(&this->actor, NA_SE_EN_GANON_DAMAGE2);
                     Audio_PlayActorSound2(&this->actor, NA_SE_EN_GANON_CUTBODY);

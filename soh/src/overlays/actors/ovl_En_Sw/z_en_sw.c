@@ -1,6 +1,5 @@
 #include "z_en_sw.h"
 #include "objects/object_st/object_st.h"
-#include "soh/Enhancements/game-interactor/GameInteractor_Hooks.h"
 #include "soh/ResourceManagerHelpers.h"
 
 #define FLAGS (ACTOR_FLAG_ATTENTION_ENABLED | ACTOR_FLAG_HOSTILE | ACTOR_FLAG_UPDATE_CULLING_DISABLED)
@@ -338,9 +337,6 @@ s32 func_80B0C9F0(EnSw* this, PlayState* play) {
             }
             Enemy_StartFinishingBlow(play, &this->actor);
             if (((this->actor.params & 0xE000) >> 0xD) != 0) {
-                if (CVarGetInteger(CVAR_ENHANCEMENT("GSCutscene"), 0)) {
-                    OnePointCutscene_Init(play, 2200, 90, &this->actor, MAIN_CAM);
-                }
                 this->skelAnime.playSpeed = 8.0f;
                 if ((play->state.frames & 1) == 0) {
                     this->unk_420 = 0.1f;
@@ -361,7 +357,6 @@ s32 func_80B0C9F0(EnSw* this, PlayState* play) {
                 this->actionFunc = func_80B0DB00;
             }
 
-            GameInteractor_ExecuteOnEnemyDefeat(&this->actor);
 
             Audio_PlayActorSound2(&this->actor, NA_SE_EN_STALWALL_DEAD);
             return true;
@@ -555,9 +550,7 @@ void func_80B0D590(EnSw* this, PlayState* play) {
             this->collider.elements[0].info.ocElemFlags = 1;
         }
 
-        Math_ApproachF(&this->actor.scale.x,
-                       !IS_DAY || CVarGetInteger(CVAR_ENHANCEMENT("NightGSAlwaysSpawn"), 0) ? 0.02f : 0.0f, 0.2f,
-                       0.01f);
+        Math_ApproachF(&this->actor.scale.x, !IS_DAY ? 0.02f : 0.0f, 0.2f, 0.01f);
         Actor_SetScale(&this->actor, this->actor.scale.x);
     }
 

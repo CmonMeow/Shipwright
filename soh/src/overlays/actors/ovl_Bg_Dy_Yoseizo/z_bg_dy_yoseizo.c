@@ -12,8 +12,6 @@
 #include "scenes/indoors/daiyousei_izumi/daiyousei_izumi_scene.h"
 #include "soh/frame_interpolation.h"
 #include "soh/ResourceManagerHelpers.h"
-#include "soh/Enhancements/game-interactor/GameInteractor_Hooks.h"
-
 #define FLAGS (ACTOR_FLAG_UPDATE_CULLING_DISABLED | ACTOR_FLAG_DRAW_CULLING_DISABLED | ACTOR_FLAG_UPDATE_DURING_OCARINA)
 
 typedef enum {
@@ -199,7 +197,7 @@ void BgDyYoseizo_CheckMagicAcquired(BgDyYoseizo* this, PlayState* play) {
             }
         }
 
-        if (!GameInteractor_Should(VB_BE_ELIGIBLE_FOR_GREAT_FAIRY_REWARD, isEligible, this)) {
+        if (!(isEligible)) {
             Actor_Kill(&this->actor);
             return;
         }

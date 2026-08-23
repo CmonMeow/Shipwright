@@ -7,9 +7,6 @@
 #include "z_en_arrow.h"
 #include "objects/gameplay_keep/gameplay_keep.h"
 #include "objects/object_gi_nuts/object_gi_nuts.h"
-
-#include "soh/Enhancements/game-interactor/GameInteractor_Hooks.h"
-
 #define FLAGS (ACTOR_FLAG_UPDATE_CULLING_DISABLED | ACTOR_FLAG_DRAW_CULLING_DISABLED)
 
 void EnArrow_Init(Actor* thisx, PlayState* play);
@@ -66,19 +63,19 @@ void EnArrow_SetupAction(EnArrow* this, EnArrowActionFunc actionFunc) {
 void EnArrow_Init(Actor* thisx, PlayState* play) {
     static EffectBlureInit2 blureNormal = {
         0, 4, 0, { 0, 255, 200, 255 },   { 0, 255, 255, 255 }, { 0, 255, 200, 0 }, { 0, 255, 255, 0 }, 16,
-        0, 1, 0, { 255, 255, 170, 255 }, { 0, 150, 0, 0 },     TRAIL_TYPE_REST,
+        0, 1, 0, { 255, 255, 170, 255 }, { 0, 150, 0, 0 },
     };
     static EffectBlureInit2 blureFire = {
         0, 4, 0, { 0, 255, 200, 255 }, { 0, 255, 255, 255 }, { 0, 255, 200, 0 }, { 0, 255, 255, 0 }, 16,
-        0, 1, 0, { 255, 200, 0, 255 }, { 255, 0, 0, 0 },     TRAIL_TYPE_REST,
+        0, 1, 0, { 255, 200, 0, 255 }, { 255, 0, 0, 0 },
     };
     static EffectBlureInit2 blureIce = {
         0, 4, 0, { 0, 255, 200, 255 },   { 0, 255, 255, 255 }, { 0, 255, 200, 0 }, { 0, 255, 255, 0 }, 16,
-        0, 1, 0, { 170, 255, 255, 255 }, { 0, 100, 255, 0 },   TRAIL_TYPE_REST,
+        0, 1, 0, { 170, 255, 255, 255 }, { 0, 100, 255, 0 },
     };
     static EffectBlureInit2 blureLight = {
         0, 4, 0, { 0, 255, 200, 255 },   { 0, 255, 255, 255 }, { 0, 255, 200, 0 }, { 0, 255, 255, 0 }, 16,
-        0, 1, 0, { 255, 255, 170, 255 }, { 255, 255, 0, 0 },   TRAIL_TYPE_REST,
+        0, 1, 0, { 255, 255, 170, 255 }, { 255, 255, 0, 0 },
     };
     static u32 dmgFlags[] = {
         0x00000800, 0x00000020, 0x00000020, 0x00000800, 0x00001000,
@@ -86,56 +83,33 @@ void EnArrow_Init(Actor* thisx, PlayState* play) {
     };
     EnArrow* this = (EnArrow*)thisx;
 
-    if (CVarGetInteger(CVAR_COSMETIC("Arrows.NormalPrimary.Changed"), 0)) {
-        blureNormal.altEnvColor =
-            CVarGetColor(CVAR_COSMETIC("Arrows.NormalPrimary.Value"), (Color_RGBA8){ 0, 150, 0, 0 });
-    } else {
+    
         blureNormal.altEnvColor = (Color_RGBA8){ 0, 150, 0, 0 };
-    }
-    if (CVarGetInteger(CVAR_COSMETIC("Arrows.NormalSecondary.Changed"), 0)) {
-        blureNormal.altPrimColor =
-            CVarGetColor(CVAR_COSMETIC("Arrows.NormalSecondary.Value"), (Color_RGBA8){ 255, 255, 170, 255 });
-    } else {
+    
+    
         blureNormal.altPrimColor = (Color_RGBA8){ 255, 255, 170, 255 };
-    }
+    
 
-    if (CVarGetInteger(CVAR_COSMETIC("Arrows.FirePrimary.Changed"), 0)) {
-        blureFire.altEnvColor =
-            CVarGetColor(CVAR_COSMETIC("Arrows.FirePrimary.Value"), (Color_RGBA8){ 255, 200, 0, 0 });
-    } else {
+    
         blureFire.altEnvColor = (Color_RGBA8){ 255, 200, 0, 0 };
-    }
-    if (CVarGetInteger(CVAR_COSMETIC("Arrows.FireSecondary.Changed"), 0)) {
-        blureFire.altPrimColor =
-            CVarGetColor(CVAR_COSMETIC("Arrows.FireSecondary.Value"), (Color_RGBA8){ 255, 0, 0, 255 });
-    } else {
+    
+    
         blureFire.altPrimColor = (Color_RGBA8){ 255, 0, 0, 255 };
-    }
+    
 
-    if (CVarGetInteger(CVAR_COSMETIC("Arrows.IcePrimary.Changed"), 0)) {
-        blureIce.altEnvColor = CVarGetColor(CVAR_COSMETIC("Arrows.IcePrimary.Value"), (Color_RGBA8){ 0, 0, 255, 255 });
-    } else {
+    
         blureIce.altEnvColor = (Color_RGBA8){ 0, 0, 255, 255 };
-    }
-    if (CVarGetInteger(CVAR_COSMETIC("Arrows.IceSecondary.Changed"), 0)) {
-        blureIce.altPrimColor =
-            CVarGetColor(CVAR_COSMETIC("Arrows.IceSecondary.Value"), (Color_RGBA8){ 170, 255, 255, 0 });
-    } else {
+    
+    
         blureIce.altPrimColor = (Color_RGBA8){ 170, 255, 255, 0 };
-    }
+    
 
-    if (CVarGetInteger(CVAR_COSMETIC("Arrows.LightPrimary.Changed"), 0)) {
-        blureLight.altEnvColor =
-            CVarGetColor(CVAR_COSMETIC("Arrows.LightPrimary.Value"), (Color_RGBA8){ 255, 255, 0, 255 });
-    } else {
+    
         blureLight.altEnvColor = (Color_RGBA8){ 255, 255, 0, 255 };
-    }
-    if (CVarGetInteger(CVAR_COSMETIC("Arrows.LightSecondary.Changed"), 0)) {
-        blureLight.altPrimColor =
-            CVarGetColor(CVAR_COSMETIC("Arrows.LightSecondary.Value"), (Color_RGBA8){ 255, 255, 170, 0 });
-    } else {
+    
+    
         blureLight.altPrimColor = (Color_RGBA8){ 255, 255, 170, 0 };
-    }
+    
 
     Actor_ProcessInitChain(&this->actor, sInitChain);
 
@@ -229,7 +203,6 @@ void EnArrow_Shoot(EnArrow* this, PlayState* play) {
             case ARROW_FIRE:
             case ARROW_ICE:
             case ARROW_LIGHT:
-                GameInteractor_Should(VB_EN_ARROW_MAGIC_CONSUMPTION, true, this);
                 Player_PlaySfx(&player->actor, NA_SE_IT_MAGIC_ARROW_SHOT);
                 break;
         }

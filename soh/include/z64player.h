@@ -3,7 +3,7 @@
 
 #include "z64actor.h"
 #include "alignment.h"
-#include "soh/Enhancements/item-tables/ItemTableTypes.h"
+#include "soh/ItemTableTypes.h"
 
 struct Player;
 
@@ -947,12 +947,6 @@ typedef struct Player {
     /*        */ PendingFlag pendingFlag;
     /*        */ GetItemEntry getItemEntry;
     // #endregion
-    // #region SOH [Enhancements]
-    // Upstream TODO: Rename this to make it more obvious it is apart of an enhancement
-    /*        */ u8 boomerangQuickRecall; // Has the player pressed the boomerang button while it's in the air still?
-    /*        */ u8 ivanFloating;
-    /*        */ u8 ivanDamageMultiplier;
-    // #endregion
-} Player; // size = 0xA94
+} Player;
 
 #endif

@@ -23,8 +23,6 @@
 #include "objects/object_menkuri_objects/object_menkuri_objects.h"
 #include "objects/object_demo_kekkai/object_demo_kekkai.h"
 #include "objects/object_ouke_haka/object_ouke_haka.h"
-#include "soh/Enhancements/game-interactor/GameInteractor_Hooks.h"
-
 #define FLAGS ACTOR_FLAG_UPDATE_CULLING_DISABLED
 
 void DoorShutter_Init(Actor* thisx, PlayState* play);
@@ -273,7 +271,7 @@ void DoorShutter_Init(Actor* thisx, PlayState* play2) {
     DoorShutter_SetupAction(this, DoorShutter_SetupType);
     this->unk_16B = phi_a3;
     if (this->doorType == SHUTTER_KEY_LOCKED || this->doorType == SHUTTER_BOSS) {
-        if (GameInteractor_Should(VB_LOCK_BOSS_DOOR, !Flags_GetSwitch(play, this->dyna.actor.params & 0x3F), this)) {
+        if ((!Flags_GetSwitch(play, this->dyna.actor.params & 0x3F))) {
             this->unk_16E = 10;
         }
         Actor_SetFocus(&this->dyna.actor, 60.0f);
@@ -335,7 +333,7 @@ f32 func_80996840(PlayState* play, DoorShutter* this, f32 arg2, f32 arg3, f32 ar
     sp28.y = player->actor.world.pos.y + arg2;
     sp28.z = player->actor.world.pos.z;
     Actor_WorldToActorCoords(&this->dyna.actor, &sp1C, &sp28);
-    if (GameInteractor_Should(VB_BE_NEAR_DOOR_SHUTTER, arg3 < fabsf(sp1C.x) || arg4 < fabsf(sp1C.y), this, &sp1C)) {
+    if ((arg3 < fabsf(sp1C.x) || arg4 < fabsf(sp1C.y))) {
         return FLT_MAX;
     } else {
         return sp1C.z;
@@ -367,11 +365,11 @@ void func_80996A54(DoorShutter* this, PlayState* play) {
     if (Flags_GetClear(play, this->dyna.actor.room) || Flags_GetTempClear(play, this->dyna.actor.room)) {
         Flags_SetClear(play, this->dyna.actor.room);
         DoorShutter_SetupAction(this, func_80997150);
-        if (GameInteractor_Should(VB_PLAY_ONEPOINT_ACTOR_CS, true, this)) {
+        
             OnePointCutscene_Attention(play, &this->dyna.actor);
             OnePointCutscene_Attention(play, &GET_PLAYER(play)->actor);
             this->unk_16F = -100;
-        }
+        
     } else if (func_809968D4(this, play) != 0) {
         Player* player = GET_PLAYER(play);
 
@@ -391,7 +389,6 @@ void func_80996B0C(DoorShutter* this, PlayState* play) {
             if (this->doorType != SHUTTER_BOSS) {
                 gSaveContext.inventory.dungeonKeys[gSaveContext.mapIndex]--;
                 Audio_PlayActorSound2(&this->dyna.actor, NA_SE_EV_CHAIN_KEY_UNLOCK);
-                GameInteractor_ExecuteOnDungeonKeyUsedHooks(gSaveContext.mapIndex);
             } else {
                 Audio_PlayActorSound2(&this->dyna.actor, NA_SE_EV_CHAIN_KEY_UNLOCK_B);
             }
@@ -487,10 +484,10 @@ void func_80996EE8(DoorShutter* this, PlayState* play) {
     if (func_80996E08(this, play, 1.0f)) {
         if (Flags_GetSwitch(play, this->dyna.actor.params & 0x3F)) {
             DoorShutter_SetupAction(this, func_80997150);
-            if (GameInteractor_Should(VB_PLAY_ONEPOINT_ACTOR_CS, true, this)) {
+            
                 OnePointCutscene_Attention(play, &this->dyna.actor);
                 this->unk_16F = -100;
-            }
+            
         } else if (func_809968D4(this, play)) {
             Player* player = GET_PLAYER(play);
             // Jabu navi text for switch doors is different

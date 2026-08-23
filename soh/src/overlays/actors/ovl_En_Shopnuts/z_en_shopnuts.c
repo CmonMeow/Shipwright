@@ -2,8 +2,6 @@
 #include "objects/object_shopnuts/object_shopnuts.h"
 #include "overlays/actors/ovl_En_Dns/z_en_dns.h"
 #include "soh/ResourceManagerHelpers.h"
-#include "soh/Enhancements/game-interactor/GameInteractor_Hooks.h"
-
 #define FLAGS (ACTOR_FLAG_ATTENTION_ENABLED | ACTOR_FLAG_HOSTILE)
 
 void EnShopnuts_Init(Actor* thisx, PlayState* play);
@@ -72,14 +70,11 @@ void EnShopnuts_Init(Actor* thisx, PlayState* play) {
     CollisionCheck_SetInfo(&this->actor.colChkInfo, NULL, &sColChkInfoInit);
     Collider_UpdateCylinder(&this->actor, &this->collider);
 
-    if (GameInteractor_Should(
-            VB_BUSINESS_SCRUB_DESPAWN,
-            ((this->actor.params == DNS_TYPE_HEART_PIECE) &&
+    if ((((this->actor.params == DNS_TYPE_HEART_PIECE) &&
              (Flags_GetItemGetInf(ITEMGETINF_DEKU_SCRUB_HEART_PIECE))) ||
                 ((this->actor.params == DNS_TYPE_DEKU_STICK_UPGRADE) &&
                  (Flags_GetInfTable(INFTABLE_BOUGHT_STICK_UPGRADE))) ||
-                ((this->actor.params == DNS_TYPE_DEKU_NUT_UPGRADE) && (Flags_GetInfTable(INFTABLE_BOUGHT_NUT_UPGRADE))),
-            this)) {
+                ((this->actor.params == DNS_TYPE_DEKU_NUT_UPGRADE) && (Flags_GetInfTable(INFTABLE_BOUGHT_NUT_UPGRADE))))) {
         Actor_Kill(&this->actor);
     } else {
         EnShopnuts_SetupWait(this);

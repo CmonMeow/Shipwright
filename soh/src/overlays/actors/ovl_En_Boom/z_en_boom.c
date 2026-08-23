@@ -89,8 +89,6 @@ void EnBoom_Init(Actor* thisx, PlayState* play) {
     blure.elemDuration = 8;
     blure.unkFlag = 0;
     blure.calcMode = 0;
-    blure.trailType = TRAIL_TYPE_BOOMERANG;
-
     Effect_Add(play, &this->effectIndex, EFFECT_BLURE1, 0, 0, &blure);
 
     Collider_InitQuad(play, &this->collider);
@@ -168,12 +166,12 @@ void EnBoom_Fly(EnBoom* this, PlayState* play) {
 
     // Decrement the return timer and check if it's 0. If it is, check if Link can catch it and handle accordingly.
     // Otherwise handle grabbing and colliding.
-    if (DECR(this->returnTimer) == 0 || player->boomerangQuickRecall) {
+    if (DECR(this->returnTimer) == 0) {
         distFromLink = Math_Vec3f_DistXYZ(&this->actor.world.pos, &player->actor.focus.pos);
         this->moveTo = &player->actor;
 
         // If the boomerang is less than 40 units away from Link, he can catch it.
-        if (distFromLink < 40.0f || player->boomerangQuickRecall) {
+        if (distFromLink < 40.0f) {
             target = this->grabbed;
             if (target != NULL) {
                 Math_Vec3f_Copy(&target->world.pos, &player->actor.world.pos);
@@ -189,7 +187,6 @@ void EnBoom_Fly(EnBoom* this, PlayState* play) {
             }
             // Set player flags and kill the boomerang beacause Link caught it.
             player->stateFlags1 &= ~PLAYER_STATE1_BOOMERANG_THROWN;
-            player->boomerangQuickRecall = false;
             Actor_Kill(&this->actor);
         }
     } else {

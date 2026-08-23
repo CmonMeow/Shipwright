@@ -8,8 +8,6 @@
 #include "objects/object_mamenoki/object_mamenoki.h"
 #include "objects/gameplay_keep/gameplay_keep.h"
 #include "vt.h"
-#include "soh/Enhancements/game-interactor/GameInteractor_Hooks.h"
-
 #define FLAGS ACTOR_FLAG_IGNORE_POINTLIGHTS
 
 void ObjBean_Init(Actor* thisx, PlayState* play);
@@ -551,9 +549,9 @@ void ObjBean_WaitForBean(ObjBean* this, PlayState* play) {
 void func_80B8FE00(ObjBean* this) {
     this->actionFunc = func_80B8FE3C;
     ObjBean_SetDrawMode(this, BEAN_STATE_DRAW_LEAVES);
-    if (GameInteractor_Should(VB_PLAY_BEAN_PLANTING_CS, true)) {
+    
         this->timer = 60;
-    }
+    
 }
 
 // Link is looking at the soft soil
@@ -702,11 +700,11 @@ void ObjBean_GrowWaterPhase3(ObjBean* this, PlayState* play) {
             itemDropPos.x = this->dyna.actor.world.pos.x;
             itemDropPos.y = this->dyna.actor.world.pos.y - 25.0f;
             itemDropPos.z = this->dyna.actor.world.pos.z;
-            if (GameInteractor_Should(VB_SPAWN_BEAN_STALK_FAIRIES, true, this)) {
+            
                 for (i = 0; i < 3; i++) {
                     Item_DropCollectible(play, &itemDropPos, ITEM00_FLEXIBLE);
                 }
-            }
+            
             this->stateFlags |= BEAN_STATE_BEEN_WATERED;
             Audio_PlayActorSound2(&this->dyna.actor, NA_SE_EV_BUTTERFRY_TO_FAIRY);
             Sfx_PlaySfxCentered(NA_SE_SY_TRE_BOX_APPEAR);

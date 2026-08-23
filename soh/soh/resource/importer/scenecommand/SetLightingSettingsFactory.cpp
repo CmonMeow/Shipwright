@@ -46,9 +46,7 @@ SetLightingSettingsFactory::ReadResource(std::shared_ptr<Ship::ResourceInitData>
         setLightingSettings->settings.push_back(lightSettings);
     }
 
-    if (CVarGetInteger(CVAR_DEVELOPER_TOOLS("ResourceLogging"), 0)) {
-        LogLightingSettingsAsXML(setLightingSettings);
-    }
+    
 
     return setLightingSettings;
 }

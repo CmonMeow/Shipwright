@@ -5,8 +5,6 @@
 #include "scenes/overworld/spot05/spot05_scene.h"
 #include "soh/OTRGlobals.h"
 #include "soh/ResourceManagerHelpers.h"
-#include "soh/Enhancements/game-interactor/GameInteractor_Hooks.h"
-
 #define FLAGS                                                                                  \
     (ACTOR_FLAG_ATTENTION_ENABLED | ACTOR_FLAG_FRIENDLY | ACTOR_FLAG_UPDATE_CULLING_DISABLED | \
      ACTOR_FLAG_UPDATE_DURING_OCARINA)
@@ -394,10 +392,10 @@ s32 func_80AF5DFC(EnSa* this, PlayState* play) {
         return 1;
     }
     if (play->sceneNum == SCENE_SACRED_FOREST_MEADOW && (Flags_GetEventChkInf(EVENTCHKINF_OBTAINED_ZELDAS_LETTER))) {
-        return GameInteractor_Should(VB_BE_ELIGIBLE_FOR_SARIAS_SONG, !CHECK_QUEST_ITEM(QUEST_SONG_SARIA)) ? 5 : 2;
+        return (!CHECK_QUEST_ITEM(QUEST_SONG_SARIA)) ? 5 : 2;
     }
     if (play->sceneNum == SCENE_KOKIRI_FOREST && !CHECK_QUEST_ITEM(QUEST_KOKIRI_EMERALD)) {
-        if (GameInteractor_Should(VB_NOT_BE_GREETED_BY_SARIA, Flags_GetInfTable(INFTABLE_GREETED_BY_SARIA))) {
+        if ((Flags_GetInfTable(INFTABLE_GREETED_BY_SARIA))) {
             return 1;
         }
         return 4;
@@ -630,11 +628,11 @@ void func_80AF683C(EnSa* this, PlayState* play) {
         // SOH [General] This flag was previously unused, but was named accordingly so we will make use of it. (Normally
         // we should opt for soh_inf)
         Flags_SetEventChkInf(EVENTCHKINF_LEARNED_SARIAS_SONG);
-        if (GameInteractor_Should(VB_PLAY_SARIAS_SONG_CS, true, this)) {
+        
             play->csCtx.segment = SEGMENTED_TO_VIRTUAL(spot05_scene_Cs_005730);
             gSaveContext.cutsceneTrigger = 1;
             this->actionFunc = func_80AF68E4;
-        }
+        
     }
 }
 
@@ -712,9 +710,9 @@ void func_80AF68E4(EnSa* this, PlayState* play) {
 
 void func_80AF6B20(EnSa* this, PlayState* play) {
     if (play->sceneNum == SCENE_SACRED_FOREST_MEADOW) {
-        if (GameInteractor_Should(VB_GIVE_ITEM_SONG, true, ITEM_SONG_SARIA)) {
+        
             Item_Give(play, ITEM_SONG_SARIA);
-        }
+        
         EnSa_ChangeAnim(this, ENSA_ANIM1_6);
     }
 
@@ -742,7 +740,7 @@ void EnSa_Update(Actor* thisx, PlayState* play) {
         EnSa_ChangeAnim(this, ENSA_ANIM1_6);
     }
 
-    if (GameInteractor_Should(VB_FADE_KOKIRI, this->actionFunc != func_80AF68E4, this)) {
+    if ((this->actionFunc != func_80AF68E4)) {
         this->alpha = Actor_UpdateAlphaByDistance(&this->actor, play, this->alpha, 400.0f);
     } else {
         this->alpha = 255;

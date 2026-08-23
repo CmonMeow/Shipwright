@@ -4,7 +4,6 @@
 
 #include "global.h"
 #include "vt.h"
-#include "soh/Enhancements/game-interactor/GameInteractor_Hooks.h"
 #include <string.h>
 #include <assert.h>
 
@@ -256,7 +255,7 @@ s32 swapAndConvertJPEG(void* data) {
 
 void Room_DrawBackground2D(Gfx** gfxP, void* tex, void* tlut, u16 width, u16 height, u8 fmt, u8 siz, u16 tlutMode,
                            u16 tlutCount, f32 offsetX, f32 offsetY) {
-    if (!GameInteractor_Should(VB_DRAW_2D_BACKGROUND, true)) {
+    if (!(true)) {
         return;
     }
     Gfx* gfx = *gfxP;
@@ -276,7 +275,7 @@ void Room_DrawBackground2D(Gfx** gfxP, void* tex, void* tlut, u16 width, u16 hei
     bg->b.imageFmt = fmt;
     bg->b.imageSiz = siz;
     bg->b.imagePal = 0;
-    bg->b.imageFlip = CVarGetInteger(CVAR_ENHANCEMENT("MirroredWorld"), 0) ? G_BG_FLAG_FLIPS : 0;
+    bg->b.imageFlip = 0;
 
     // When an alt resource exists for the background, we need to unload the original asset
     // to clear the cache so the alt asset will be loaded instead
@@ -413,7 +412,7 @@ BgImage* func_80096A74(PolygonType1* polygon1, PlayState* play) {
 
     camera = GET_ACTIVE_CAM(play);
     camId = camera->camDataIdx;
-    if (GameInteractor_Should(VB_SHOULD_LOAD_BG_IMAGE, true, &camId)) {
+    
         // jfifid
         camId2 = func_80041C10(&play->colCtx, camId, BGCHECK_SCENE)[2].y;
         if (camId2 >= 0) {
@@ -434,7 +433,7 @@ BgImage* func_80096A74(PolygonType1* polygon1, PlayState* play) {
         // "z_room.c: Data consistent with camera id does not exist camid=%d"
         osSyncPrintf(VT_COL(RED, WHITE) "z_room.c:カメラＩＤに一致するデータが存在しません camid=%d\n" VT_RST, camId);
         LOG_HUNGUP_THREAD();
-    }
+    
 
     return NULL;
 }
@@ -647,14 +646,4 @@ void func_80097534(PlayState* play, RoomContext* roomCtx) {
         Map_SavePlayerInitialInfo(play);
     }
     Audio_SetEnvReverb(play->roomCtx.curRoom.echo);
-    u8 idx = gSaveContext.ship.stats.tsIdx;
-    gSaveContext.ship.stats.sceneTimestamps[idx].scene = gSaveContext.ship.stats.sceneNum;
-    gSaveContext.ship.stats.sceneTimestamps[idx].room = gSaveContext.ship.stats.roomNum;
-    gSaveContext.ship.stats.sceneTimestamps[idx].roomTime = gSaveContext.ship.stats.roomTimer / 2;
-    gSaveContext.ship.stats.sceneTimestamps[idx].isRoom =
-        gPlayState->sceneNum == gSaveContext.ship.stats.sceneTimestamps[idx].scene &&
-        gPlayState->roomCtx.curRoom.num != gSaveContext.ship.stats.sceneTimestamps[idx].room;
-    gSaveContext.ship.stats.tsIdx++;
-    gSaveContext.ship.stats.roomNum = roomCtx->curRoom.num;
-    gSaveContext.ship.stats.roomTimer = 0;
 }

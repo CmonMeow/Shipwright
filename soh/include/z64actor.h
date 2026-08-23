@@ -6,7 +6,7 @@
 #include "z64math.h"
 #include "z64collision_check.h"
 #include "z64bgcheck.h"
-#include "soh/Enhancements/item-tables/ItemTableTypes.h"
+#include "soh/ItemTableTypes.h"
 #include "z64actor_enum.h"
 
 #define ACTOR_NUMBER_MAX 2000

@@ -15,8 +15,6 @@
 #include "objects/object_cob/object_cob.h"
 #include "objects/object_os_anime/object_os_anime.h"
 #include "soh/ResourceManagerHelpers.h"
-#include "soh/Enhancements/game-interactor/GameInteractor_Hooks.h"
-
 #define FLAGS (ACTOR_FLAG_ATTENTION_ENABLED | ACTOR_FLAG_FRIENDLY | ACTOR_FLAG_UPDATE_CULLING_DISABLED)
 
 void EnHy_Init(Actor* thisx, PlayState* play);
@@ -440,8 +438,7 @@ u16 func_80A6F810(PlayState* play, Actor* thisx) {
 
                 if (followingDog != 0) {
                     this->unk_215 = false;
-                    return ((followingDog == 1) || (CVarGetInteger(CVAR_ENHANCEMENT("AllDogsRichard"), 0))) ? 0x709F
-                                                                                                            : 0x709E;
+                    return (followingDog == 1) ? 0x709F : 0x709E;
                 } else {
                     return 0x709D;
                 }
@@ -675,10 +672,10 @@ s16 func_80A70058(PlayState* play, Actor* thisx) {
                     gSaveContext.dogParams = 0;
                     break;
                 case 0x709F:
-                    if (GameInteractor_Should(VB_GIVE_ITEM_FROM_LOST_DOG, true, this)) {
+                    
                         func_80A6F7CC(this, play, Flags_GetInfTable(INFTABLE_191) ? GI_RUPEE_BLUE : GI_HEART_PIECE);
                         this->actionFunc = func_80A714C4;
-                    }
+                    
                     break;
             }
             return NPC_TALK_STATE_IDLE;

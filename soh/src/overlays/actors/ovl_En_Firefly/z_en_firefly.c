@@ -7,7 +7,6 @@
 #include "z_en_firefly.h"
 #include "objects/object_firefly/object_firefly.h"
 #include "overlays/actors/ovl_Obj_Syokudai/z_obj_syokudai.h"
-#include "soh/Enhancements/game-interactor/GameInteractor_Hooks.h"
 #include "soh/ResourceManagerHelpers.h"
 
 #define FLAGS \
@@ -228,7 +227,6 @@ void EnFirefly_SetupDie(EnFirefly* this) {
     this->actor.speedXZ = 0.0f;
     this->actionFunc = EnFirefly_Die;
 
-    GameInteractor_ExecuteOnEnemyDefeat(&this->actor);
 }
 
 void EnFirefly_SetupRebound(EnFirefly* this) {
@@ -416,7 +414,7 @@ void EnFirefly_FlyIdle(EnFirefly* this, PlayState* play) {
         Math_SmoothStepToS(&this->actor.shape.rot.y, this->actor.wallYaw, 2, 0xC00, 0x300);
     }
     if ((this->timer == 0) && (this->actor.xzDistToPlayer < 200.0f) && (Player_GetMask(play) != PLAYER_MASK_SKULL) &&
-        GameInteractor_Should(VB_KEESE_DO_DIVE_ATTACK, true, this)) {
+        (true)) {
         EnFirefly_SetupDiveAttack(this);
     }
 }
@@ -495,7 +493,7 @@ void EnFirefly_DiveAttack(EnFirefly* this, PlayState* play) {
         Math_ScaledStepToS(&this->actor.shape.rot.x, this->targetPitch, 0x100);
     }
     if ((this->timer == 0) || (Player_GetMask(play) == PLAYER_MASK_SKULL) ||
-        GameInteractor_Should(VB_KEESE_FORCE_FLY_AWAY, false, this)) {
+        (false)) {
         EnFirefly_SetupFlyAway(this);
     }
 }
@@ -742,10 +740,10 @@ void EnFirefly_PostLimbDraw(PlayState* play, s32 limbIndex, Gfx** dList, Vec3s* 
     static Color_RGBA8 fireAuraEnvColor = { 255, 50, 0, 0 };
     static Color_RGBA8 iceAuraPrimColor = { 100, 200, 255, 255 };
     static Color_RGBA8 iceAuraEnvColor = { 0, 0, 255, 0 };
-    Color_RGBA8 customFireAuraPrimColor = CVarGetColor(CVAR_COSMETIC("NPC.FireKeesePrimary.Value"), fireAuraPrimColor);
-    Color_RGBA8 customFireAuraEnvColor = CVarGetColor(CVAR_COSMETIC("NPC.FireKeeseSecondary.Value"), fireAuraEnvColor);
-    Color_RGBA8 customIceAuraPrimColor = CVarGetColor(CVAR_COSMETIC("NPC.IceKeesePrimary.Value"), iceAuraPrimColor);
-    Color_RGBA8 customIceAuraEnvColor = CVarGetColor(CVAR_COSMETIC("NPC.IceKeeseSecondary.Value"), iceAuraEnvColor);
+    Color_RGBA8 customFireAuraPrimColor = (fireAuraPrimColor);
+    Color_RGBA8 customFireAuraEnvColor = (fireAuraEnvColor);
+    Color_RGBA8 customIceAuraPrimColor = (iceAuraPrimColor);
+    Color_RGBA8 customIceAuraEnvColor = (iceAuraEnvColor);
     static Vec3f effVelocity = { 0.0f, 0.5f, 0.0f };
     static Vec3f effAccel = { 0.0f, 0.5f, 0.0f };
     static Vec3f limbSrc = { 0.0f, 0.0f, 0.0f };
@@ -785,27 +783,19 @@ void EnFirefly_PostLimbDraw(PlayState* play, s32 limbIndex, Gfx** dList, Vec3s* 
                 }
 
                 if (this->auraType == KEESE_AURA_FIRE) {
-                    if (CVarGetInteger(CVAR_COSMETIC("NPC.FireKeesePrimary.Changed"), 0)) {
-                        effPrimColor = &customFireAuraPrimColor;
-                    } else {
+                    
                         effPrimColor = &fireAuraPrimColor;
-                    }
-                    if (CVarGetInteger(CVAR_COSMETIC("NPC.FireKeeseSecondary.Changed"), 0)) {
-                        effEnvColor = &customFireAuraEnvColor;
-                    } else {
+                    
+                    
                         effEnvColor = &fireAuraEnvColor;
-                    }
+                    
                 } else {
-                    if (CVarGetInteger(CVAR_COSMETIC("NPC.IceKeesePrimary.Changed"), 0)) {
-                        effPrimColor = &customIceAuraPrimColor;
-                    } else {
+                    
                         effPrimColor = &iceAuraPrimColor;
-                    }
-                    if (CVarGetInteger(CVAR_COSMETIC("NPC.IceKeeseSecondary.Changed"), 0)) {
-                        effEnvColor = &customIceAuraEnvColor;
-                    } else {
+                    
+                    
                         effEnvColor = &iceAuraEnvColor;
-                    }
+                    
                 }
 
                 func_8002843C(play, &effPos, &effVelocity, &effAccel, effPrimColor, effEnvColor, 250, effScaleStep,

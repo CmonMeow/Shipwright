@@ -6,9 +6,6 @@
 
 #include "z_bg_haka_ship.h"
 #include "objects/object_haka_objects/object_haka_objects.h"
-
-#include "soh/Enhancements/game-interactor/GameInteractor_Hooks.h"
-
 #define FLAGS (ACTOR_FLAG_UPDATE_CULLING_DISABLED | ACTOR_FLAG_DRAW_CULLING_DISABLED)
 
 void BgHakaShip_Init(Actor* thisx, PlayState* play);
@@ -135,9 +132,9 @@ void BgHakaShip_Move(BgHakaShip* this, PlayState* play) {
         this->dyna.actor.speedXZ = 0.0f;
         Message_StartTextbox(play, 0x5071, NULL);
         this->actionFunc = BgHakaShip_SetupCrash;
-    } else if (GameInteractor_Should(VB_SHADOW_SHIP_SET_SPEED, true, this, play)) {
+    } else 
         Math_StepToF(&this->dyna.actor.speedXZ, 4.0f, 0.2f);
-    }
+    
     child = this->dyna.actor.child;
     if (child != NULL && child->update != NULL) {
         child->shape.rot.z += ((655.0f / 13.0f) * this->dyna.actor.speedXZ);

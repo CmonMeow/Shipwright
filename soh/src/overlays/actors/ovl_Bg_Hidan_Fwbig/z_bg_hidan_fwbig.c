@@ -8,8 +8,6 @@
 #include "z_bg_hidan_fwbig.h"
 #include "objects/gameplay_keep/gameplay_keep.h"
 #include "objects/object_hidan_objects/object_hidan_objects.h"
-#include "soh/Enhancements/game-interactor/GameInteractor_Hooks.h"
-
 #define FLAGS ACTOR_FLAG_UPDATE_CULLING_DISABLED
 
 typedef enum {
@@ -166,7 +164,7 @@ void BgHidanFwbig_Lower(BgHidanFwbig* this, PlayState* play) {
 }
 
 void BgHidanFwbig_WaitForTimer(BgHidanFwbig* this, PlayState* play) {
-    if (GameInteractor_Should(VB_SWITCH_TIMER_TICK, this->timer != 0, this, &this->timer)) {
+    if ((this->timer != 0)) {
         this->timer--;
     }
 

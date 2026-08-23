@@ -72,11 +72,6 @@ void EffectBlure_AddVertex(EffectBlure* this, Vec3f* p1, Vec3f* p2) {
     }
 }
 
-// dumb doo doo command to change the type of an object's blur on the fly. Link's Swords with unique trail colors.
-void EffectBlure_ChangeType(EffectBlure* this, int type) {
-    this->trailType = type;
-}
-
 void EffectBlure_AddSpace(EffectBlure* this) {
     EffectBlureElement* elem;
     s32 numElements;
@@ -143,7 +138,6 @@ void EffectBlure_Init1(void* thisx, void* initParamsx) {
         this->elemDuration = initParams->elemDuration;
         this->unkFlag = initParams->unkFlag;
         this->calcMode = initParams->calcMode;
-        this->trailType = initParams->trailType;
         this->flags = 0;
         this->addAngleChange = 0;
         this->addAngle = 0;
@@ -192,7 +186,6 @@ void EffectBlure_Init2(void* thisx, void* initParamsx) {
         this->mode4Param = initParams->mode4Param;
         this->altPrimColor = initParams->altPrimColor;
         this->altEnvColor = initParams->altEnvColor;
-        this->trailType = initParams->trailType;
     }
 }
 
@@ -202,126 +195,6 @@ void EffectBlure_Destroy(void* thisx) {
 s32 EffectBlure_Update(void* thisx) {
     EffectBlure* this = (EffectBlure*)thisx;
     s32 i;
-    Color_RGBA8 color;
-    static u8 changed = 0;
-    u8 reset = 0;
-
-    switch (this->trailType) {
-        case TRAIL_TYPE_BOOMERANG:
-            if (CVarGetInteger(CVAR_COSMETIC("Trails.Boomerang.Changed"), 0)) {
-                color = CVarGetColor(CVAR_COSMETIC("Trails.Boomerang.Value"), (Color_RGBA8){ 255, 255, 100, 255 });
-                changed = 1;
-            } else if (changed) {
-                color = (Color_RGBA8){ 255, 255, 100, 255 };
-                reset = 1;
-            }
-            break;
-        case TRAIL_TYPE_BOMBCHU:
-            if (CVarGetInteger(CVAR_COSMETIC("Trails.Bombchu.Changed"), 0)) {
-                color = CVarGetColor(CVAR_COSMETIC("Trails.Bombchu.Value"), (Color_RGBA8){ 250, 0, 0, 255 });
-                this->p1StartColor.r = color.r;
-                this->p2StartColor.r = color.r * 0.8f;
-                this->p1EndColor.r = color.r * 0.6f;
-                this->p2EndColor.r = color.r * 0.4f;
-                this->p1StartColor.g = color.g;
-                this->p2StartColor.g = color.g * 0.8f;
-                this->p1EndColor.g = color.g * 0.6f;
-                this->p2EndColor.g = color.g * 0.4f;
-                this->p1StartColor.b = color.b;
-                this->p2StartColor.b = color.b * 0.8f;
-                this->p1EndColor.b = color.b * 0.6f;
-                this->p2EndColor.b = color.b * 0.4f;
-            } else if (changed) {
-                color = (Color_RGBA8){ 250, 0, 0, 255 };
-                this->p1StartColor.r = color.r;
-                this->p2StartColor.r = color.r * 0.8f;
-                this->p1EndColor.r = color.r * 0.6f;
-                this->p2EndColor.r = color.r * 0.4f;
-                this->p1StartColor.g = color.g;
-                this->p2StartColor.g = color.g * 0.8f;
-                this->p1EndColor.g = color.g * 0.6f;
-                this->p2EndColor.g = color.g * 0.4f;
-                this->p1StartColor.b = color.b;
-                this->p2StartColor.b = color.b * 0.8f;
-                this->p1EndColor.b = color.b * 0.6f;
-                this->p2EndColor.b = color.b * 0.4f;
-            }
-            break;
-        case TRAIL_TYPE_KOKIRI_SWORD:
-            if (CVarGetInteger(CVAR_COSMETIC("Trails.KokiriSword.Changed"), 0)) {
-                color = CVarGetColor(CVAR_COSMETIC("Trails.KokiriSword.Value"), (Color_RGBA8){ 255, 255, 255, 255 });
-                changed = 1;
-            } else if (changed) {
-                color = (Color_RGBA8){ 255, 255, 255, 255 };
-                reset = 1;
-            }
-            break;
-        case TRAIL_TYPE_MASTER_SWORD:
-            if (CVarGetInteger(CVAR_COSMETIC("Trails.MasterSword.Changed"), 0)) {
-                color = CVarGetColor(CVAR_COSMETIC("Trails.MasterSword.Value"), (Color_RGBA8){ 255, 255, 255, 255 });
-                changed = 1;
-            } else if (changed) {
-                color = (Color_RGBA8){ 255, 255, 255, 255 };
-                reset = 1;
-            }
-            break;
-        case TRAIL_TYPE_BIGGORON_SWORD:
-            if (CVarGetInteger(CVAR_COSMETIC("Trails.BiggoronSword.Changed"), 0)) {
-                color = CVarGetColor(CVAR_COSMETIC("Trails.BiggoronSword.Value"), (Color_RGBA8){ 255, 255, 255, 255 });
-                changed = 1;
-            } else if (changed) {
-                color = (Color_RGBA8){ 255, 255, 255, 255 };
-                reset = 1;
-            }
-            break;
-        case TRAIL_TYPE_STICK:
-            if (CVarGetInteger(CVAR_COSMETIC("Trails.Stick.Changed"), 0)) {
-                color = CVarGetColor(CVAR_COSMETIC("Trails.Stick.Value"), (Color_RGBA8){ 255, 255, 255, 255 });
-                changed = 1;
-            } else if (changed) {
-                color = (Color_RGBA8){ 255, 255, 255, 255 };
-                reset = 1;
-            }
-            break;
-        case TRAIL_TYPE_HAMMER:
-            if (CVarGetInteger(CVAR_COSMETIC("Trails.Hammer.Changed"), 0)) {
-                color = CVarGetColor(CVAR_COSMETIC("Trails.Hammer.Value"), (Color_RGBA8){ 255, 255, 255, 255 });
-                changed = 1;
-            } else if (changed) {
-                color = (Color_RGBA8){ 255, 255, 255, 255 };
-                reset = 1;
-            }
-            break;
-        default: // don't do anything
-            break;
-    }
-
-    // We cant just straight up assign the colors because we need to preserve the alpha channel
-    if (changed) {
-        this->p1StartColor.r = color.r;
-        this->p2StartColor.r = color.r;
-        this->p1EndColor.r = color.r;
-        this->p2EndColor.r = color.r;
-        this->p1StartColor.g = color.g;
-        this->p2StartColor.g = color.g;
-        this->p1EndColor.g = color.g;
-        this->p2EndColor.g = color.g;
-        this->p1StartColor.b = color.b;
-        this->p2StartColor.b = color.b;
-        this->p1EndColor.b = color.b;
-        this->p2EndColor.b = color.b;
-    }
-    if (reset) {
-        changed = 0;
-    }
-
-    // Don't override boomerang and bombchu trail durations
-    if (this->trailType != TRAIL_TYPE_BOOMERANG && this->trailType != TRAIL_TYPE_BOMBCHU) {
-        if (CVarGetInteger(CVAR_COSMETIC("Trails.Duration.Changed"), 0)) {
-            this->elemDuration = CVarGetInteger(CVAR_COSMETIC("Trails.Duration.Value"), 4);
-        }
-    }
-
     if (this == NULL) {
         return 0;
     }

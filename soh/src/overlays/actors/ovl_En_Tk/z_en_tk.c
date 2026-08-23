@@ -9,8 +9,6 @@
 #include "objects/object_tk/object_tk.h"
 #include "soh/frame_interpolation.h"
 #include "soh/ResourceManagerHelpers.h"
-#include "soh/Enhancements/game-interactor/GameInteractor_Hooks.h"
-
 #define FLAGS (ACTOR_FLAG_ATTENTION_ENABLED | ACTOR_FLAG_FRIENDLY)
 
 void EnTk_Init(Actor* thisx, PlayState* play);
@@ -495,10 +493,8 @@ void EnTk_Init(Actor* thisx, PlayState* play) {
 
     CollisionCheck_SetInfo2(&this->actor.colChkInfo, NULL, &sColChkInfoInit);
 
-    if (GameInteractor_Should(VB_DAMPE_IN_GRAVEYARD_DESPAWN,
-                              gSaveContext.dayTime <= 0xC000 || gSaveContext.dayTime >= 0xE000 || LINK_IS_ADULT ||
-                                  play->sceneNum != SCENE_GRAVEYARD,
-                              this)) {
+    if ((gSaveContext.dayTime <= 0xC000 || gSaveContext.dayTime >= 0xE000 || LINK_IS_ADULT ||
+                                  play->sceneNum != SCENE_GRAVEYARD)) {
         Actor_Kill(&this->actor);
         return;
     }
@@ -590,11 +586,7 @@ void EnTk_Dig(EnTk* this, PlayState* play) {
     Vec3f rewardPos;
     s32 rewardParams[] = {
         ITEM00_RUPEE_GREEN, ITEM00_RUPEE_BLUE, ITEM00_RUPEE_RED, ITEM00_RUPEE_PURPLE,
-        // #region SOH [General] Typically this heart piece would have no collectible flag set when it's picked up, but
-        // for both randomizer and gGravediggingTourFix we want to set one, and rely on it instead of the ItemGetInf
-        // flag that is set when the heart is spawned
-        ((COLLECTFLAG_GRAVEDIGGING_HEART_PIECE & 0x3F) << 8) | ITEM00_HEART_PIECE,
-        // #endregion
+        ITEM00_HEART_PIECE,
     };
 
     EnTk_DigEff(this);
@@ -605,7 +597,7 @@ void EnTk_Dig(EnTk* this, PlayState* play) {
 
         this->rewardTimer = 0;
 
-        if (GameInteractor_Should(VB_BE_VALID_GRAVEDIGGING_SPOT, this->validDigHere == 1, this)) {
+        if ((this->validDigHere == 1)) {
             rewardOrigin.x = 0.0f;
             rewardOrigin.y = 0.0f;
             rewardOrigin.z = -40.0f;
@@ -619,13 +611,12 @@ void EnTk_Dig(EnTk* this, PlayState* play) {
 
             this->currentReward = EnTk_ChooseReward(this);
 
-            if (GameInteractor_Should(VB_BE_DAMPE_GRAVEDIGGING_GRAND_PRIZE, this->currentReward == 3, this)) {
+            if ((this->currentReward == 3)) {
                 /*
                  * Upgrade the purple rupee reward to the heart piece if this
                  * is the first grand prize dig.
                  */
-                if (GameInteractor_Should(VB_DAMPE_GRAVEDIGGING_GRAND_PRIZE_BE_HEART_PIECE,
-                                          !Flags_GetItemGetInf(ITEMGETINF_1C), this)) {
+                if ((!Flags_GetItemGetInf(ITEMGETINF_1C))) {
                     Flags_SetItemGetInf(ITEMGETINF_1C);
                     this->currentReward = 4;
                 }

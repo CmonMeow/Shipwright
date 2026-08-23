@@ -1902,10 +1902,6 @@ s32 BgCheck_CheckWallImpl(CollisionContext* colCtx, u16 xpFlags, Vec3f* posResul
     s32 bgId2;
     f32 nx, ny, nz; // unit normal of polygon
 
-    if (CVarGetInteger(CVAR_CHEAT("NoClip"), 0) && actor != NULL && actor->id == ACTOR_PLAYER) {
-        return false;
-    }
-
     result = false;
     *outBgId = BGCHECK_SCENE;
     *outPoly = NULL;
@@ -4021,11 +4017,7 @@ u32 func_80041D94(CollisionContext* colCtx, CollisionPoly* poly, s32 bgId) {
  * SurfaceType Get Wall Flags
  */
 s32 func_80041DB8(CollisionContext* colCtx, CollisionPoly* poly, s32 bgId) {
-    if (CVarGetInteger(CVAR_CHEAT("ClimbEverything"), 0) != 0) {
-        return (1 << 3) | D_80119D90[func_80041D94(colCtx, poly, bgId)];
-    } else {
-        return D_80119D90[func_80041D94(colCtx, poly, bgId)];
-    }
+    return D_80119D90[func_80041D94(colCtx, poly, bgId)];
 }
 
 /**
@@ -4118,7 +4110,7 @@ u32 SurfaceType_GetEcho(CollisionContext* colCtx, CollisionPoly* poly, s32 bgId)
  * SurfaceType Is Hookshot Surface
  */
 u32 SurfaceType_IsHookshotSurface(CollisionContext* colCtx, CollisionPoly* poly, s32 bgId) {
-    return CVarGetInteger(CVAR_CHEAT("HookshotEverything"), 0) || SurfaceType_GetData(colCtx, poly, bgId, 1) >> 17 & 1;
+    return SurfaceType_GetData(colCtx, poly, bgId, 1) >> 17 & 1;
 }
 
 /**

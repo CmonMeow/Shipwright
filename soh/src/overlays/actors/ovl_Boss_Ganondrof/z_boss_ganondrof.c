@@ -12,8 +12,6 @@
 #include "overlays/effects/ovl_Effect_Ss_Hahen/z_eff_ss_hahen.h"
 #include "overlays/actors/ovl_Door_Warp1/z_door_warp1.h"
 #include "soh/OTRGlobals.h"
-#include "soh/Enhancements/game-interactor/GameInteractor_Hooks.h"
-
 #define FLAGS                                                                                 \
     (ACTOR_FLAG_ATTENTION_ENABLED | ACTOR_FLAG_HOSTILE | ACTOR_FLAG_UPDATE_CULLING_DISABLED | \
      ACTOR_FLAG_DRAW_CULLING_DISABLED)
@@ -236,14 +234,14 @@ void BossGanondrof_Init(Actor* thisx, PlayState* play) {
     this->actor.flags &= ~ACTOR_FLAG_ATTENTION_ENABLED;
     if (Flags_GetClear(play, play->roomCtx.curRoom.num)) {
         Actor_Kill(&this->actor);
-        if (GameInteractor_Should(VB_SPAWN_BLUE_WARP, true, this)) {
+        
             Actor_Spawn(&play->actorCtx, play, ACTOR_DOOR_WARP1, GND_BOSSROOM_CENTER_X, GND_BOSSROOM_CENTER_Y,
                         GND_BOSSROOM_CENTER_Z, 0, 0, 0, WARP_DUNGEON_ADULT);
-        }
-        if (GameInteractor_Should(VB_SPAWN_HEART_CONTAINER, true)) {
+        
+        
             Actor_Spawn(&play->actorCtx, play, ACTOR_ITEM_B_HEART, 200.0f + GND_BOSSROOM_CENTER_X,
                         GND_BOSSROOM_CENTER_Y, GND_BOSSROOM_CENTER_Z, 0, 0, 0, 0);
-        }
+        
     } else {
         Actor_SpawnAsChild(&play->actorCtx, &this->actor, play, ACTOR_EN_FHG, this->actor.world.pos.x,
                            this->actor.world.pos.y, this->actor.world.pos.z, 0, 0, 0, this->actor.params);
@@ -950,14 +948,14 @@ void BossGanondrof_Death(BossGanondrof* this, PlayState* play) {
         case DEATH_THROES:
             switch (this->work[GND_ACTION_STATE]) {
                 case DEATH_SPASM:
-                    if (GameInteractor_Should(VB_PHANTOM_GANON_DEATH_SCENE, true, this)) {
+                    
                         if (Animation_OnFrame(&this->skelAnime, this->fwork[GND_END_FRAME])) {
                             this->fwork[GND_END_FRAME] = Animation_GetLastFrame(&gPhantomGanonAirDamageAnim);
                             Animation_Change(&this->skelAnime, &gPhantomGanonAirDamageAnim, 0.5f, 0.0f,
                                              this->fwork[GND_END_FRAME], ANIMMODE_ONCE_INTERP, 0.0f);
                             this->work[GND_ACTION_STATE] = DEATH_LIMP;
                         }
-                    }
+                    
                     break;
                 case DEATH_LIMP:
                     if (Animation_OnFrame(&this->skelAnime, this->fwork[GND_END_FRAME])) {
@@ -969,7 +967,7 @@ void BossGanondrof_Death(BossGanondrof* this, PlayState* play) {
                     bodyDecayLevel = 1;
                     break;
             }
-            if (GameInteractor_Should(VB_PHANTOM_GANON_DEATH_SCENE, true, this)) {
+            
                 Math_ApproachS(&this->actor.shape.rot.y, this->work[GND_VARIANCE_TIMER] * -100, 5, 0xBB8);
                 Math_ApproachF(&this->cameraNextEye.z, this->targetPos.z + 60.0f, 0.02f, 0.5f);
                 Math_ApproachF(&this->actor.world.pos.y, GND_BOSSROOM_CENTER_Y + 133.0f, 0.05f, 100.0f);
@@ -988,7 +986,7 @@ void BossGanondrof_Death(BossGanondrof* this, PlayState* play) {
                     holdCamera = true;
                     bodyDecayLevel = 1;
                 }
-            }
+            
             break;
         case DEATH_WARP:
             if (this->timers[1] == 1) {
@@ -1065,10 +1063,10 @@ void BossGanondrof_Death(BossGanondrof* this, PlayState* play) {
             bodyDecayLevel = 10;
             if (this->timers[0] == 150) {
                 Audio_QueueSeqCmd(SEQ_PLAYER_BGM_MAIN << 24 | NA_BGM_BOSS_CLEAR);
-                if (GameInteractor_Should(VB_SPAWN_BLUE_WARP, true, this)) {
+                
                     Actor_Spawn(&play->actorCtx, play, ACTOR_DOOR_WARP1, GND_BOSSROOM_CENTER_X, GND_BOSSROOM_CENTER_Y,
                                 GND_BOSSROOM_CENTER_Z, 0, 0, 0, WARP_DUNGEON_ADULT);
-                }
+                
             }
 
             Math_ApproachZeroF(&this->cameraEye.y, 0.05f, 1.0f); // GND_BOSSROOM_CENTER_Y + 33.0f
@@ -1084,10 +1082,10 @@ void BossGanondrof_Death(BossGanondrof* this, PlayState* play) {
                 this->deathCamera = 0;
                 func_80064534(play, &play->csCtx);
                 Player_SetCsActionWithHaltedActors(play, &this->actor, 7);
-                if (GameInteractor_Should(VB_SPAWN_HEART_CONTAINER, true)) {
+                
                     Actor_Spawn(&play->actorCtx, play, ACTOR_ITEM_B_HEART, GND_BOSSROOM_CENTER_X, GND_BOSSROOM_CENTER_Y,
                                 GND_BOSSROOM_CENTER_Z + 200.0f, 0, 0, 0, 0);
-                }
+                
                 this->actor.child = &horse->actor;
                 this->killActor = true;
                 horse->killActor = true;
@@ -1226,7 +1224,6 @@ void BossGanondrof_CollisionCheck(BossGanondrof* this, PlayState* play) {
                         if ((s8)this->actor.colChkInfo.health <= 0) {
                             BossGanondrof_SetupDeath(this, play);
                             Enemy_StartFinishingBlow(play, &this->actor);
-                            GameInteractor_ExecuteOnBossDefeat(&this->actor);
                             return;
                         }
                     }

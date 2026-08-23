@@ -124,10 +124,6 @@ source_group("include" FILES ${Header_Files__include})
 file(GLOB_RECURSE soh__ RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} "soh/*.c" "soh/*.cpp" "soh/*.h" "soh/*.hpp")
 
 
-# Add specific files that don't match the pattern
-list(APPEND soh__ ${CMAKE_CURRENT_SOURCE_DIR}/soh/Enhancements/savestates_extern.inc)
-list(APPEND soh__ ${CMAKE_CURRENT_SOURCE_DIR}/soh/Enhancements/speechsynthesizer/DarwinSpeechSynthesizer.mm)
-
 # Create source groups that match the real file directory paths
 foreach(source IN LISTS soh__)
     get_filename_component(source_path "${source}" PATH)
@@ -138,28 +134,8 @@ endforeach()
 # Fix UTF-8 issues for MSVC
 if (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
     set_source_files_properties(soh/OTRGlobals.cpp PROPERTIES COMPILE_FLAGS "/utf-8")
-    set_source_files_properties(soh/Enhancements/tts/tts.cpp PROPERTIES COMPILE_FLAGS "/utf-8")
     set_source_files_properties(soh/Enhancements/custom-message/CustomMessageManager.cpp PROPERTIES COMPILE_FLAGS "/utf-8")
     set_source_files_properties(soh/Enhancements/custom-message/CustomMessageManager.h PROPERTIES COMPILE_FLAGS "/utf-8")
-endif()
-
-# handle Network removals
-if (!BUILD_REMOTE_CONTROL)
-    list(FILTER soh__ EXCLUDE REGEX "soh/Enhancements/crowd-control/")
-endif()
-
-# handle speechsynthesizer removals
-if (CMAKE_SYSTEM_NAME STREQUAL "Windows")
-    list(FILTER soh__ EXCLUDE REGEX "soh/Enhancements/speechsynthesizer/Darwin")
-elseif (CMAKE_SYSTEM_NAME STREQUAL "Darwin")
-    list(FILTER soh__ EXCLUDE REGEX "soh/Enhancements/speechsynthesizer/SAPI")
-else()
-    list(FILTER soh__ EXCLUDE REGEX "soh/Enhancements/speechsynthesizer/(Darwin|SAPI)")
-endif()
-
-find_library(ESPEAK espeak-ng)
-if (NOT ESPEAK)
-    list(FILTER soh__ EXCLUDE REGEX "soh/Enhancements/speechsynthesizer/ESpeak")
 endif()
 
 # soh/Extractor {{{
@@ -298,21 +274,6 @@ FetchContent_MakeAvailable(dr_libs)
 find_package(SDL2)
 set(SDL2-INCLUDE ${SDL2_INCLUDE_DIRS})
 
-if (BUILD_REMOTE_CONTROL)
-    find_package(SDL2_net)
-
-    if(NOT SDL2_net_FOUND)
-        message(STATUS "SDL2_net not found (it's possible the version installed is too old). Disabling BUILD_REMOTE_CONTROL.")
-        set(BUILD_REMOTE_CONTROL 0)
-    else()
-        set(SDL2-NET-INCLUDE ${SDL_NET_INCLUDE_DIRS})
-    endif()
-endif()
-
-if (ESPEAK)
-    add_compile_definitions(ESPEAK=1)
-endif()
-
 ################################################################################
 # Compile definitions
 ################################################################################
@@ -340,7 +301,6 @@ if (CMAKE_SYSTEM_NAME STREQUAL "Windows")
             "$<$<CONFIG:Release>:"
                 "NDEBUG;"
             ">"
-            "$<$<BOOL:${BUILD_REMOTE_CONTROL}>:ENABLE_REMOTE_CONTROL>"
             "INCLUDE_GAME_PRINTF;"
             "F3DEX_GBI_2"
             "UNICODE;"
@@ -397,7 +357,6 @@ elseif ("${CMAKE_CXX_COMPILER_ID}" MATCHES "GNU|Clang|AppleClang")
             "NDEBUG;"
         ">"
         "F3DEX_GBI_2;"
-        "$<$<BOOL:${BUILD_REMOTE_CONTROL}>:ENABLE_REMOTE_CONTROL>;"
         "_CONSOLE;"
         "_CRT_SECURE_NO_WARNINGS;"
         "ENABLE_OPENGL;"
@@ -643,7 +602,6 @@ if (CMAKE_SYSTEM_NAME STREQUAL "Windows")
             "glu32;"
             "SDL2::SDL2;"
             "SDL2::SDL2main;"
-            "$<$<BOOL:${BUILD_REMOTE_CONTROL}>:SDL2_net::SDL2_net-static>"
             "glfw;"
             "winmm;"
             "imm32;"
@@ -709,7 +667,6 @@ else()
         "Vorbis::vorbisfile"
         "Opus::opus"
         "Opusfile::Opusfile"
-        "$<$<BOOL:${BUILD_REMOTE_CONTROL}>:SDL2_net::SDL2_net>"
         ${CMAKE_DL_LIBS}
         Threads::Threads
     )

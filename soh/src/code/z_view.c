@@ -432,16 +432,6 @@ s32 func_800AAA9C(View* view) {
         }
         osSyncPrintf("\n");
     }
-    if (CVarGetInteger(CVAR_ENHANCEMENT("MirroredWorld"), 0)) {
-        MtxF flipF;
-        SkinMatrix_Clear(&flipF);
-        flipF.xx = -1.0;
-        MtxF projectionF;
-        Matrix_MtxToMtxF(projection, &projectionF);
-        SkinMatrix_MtxFMtxFMult(&projectionF, &flipF, &projectionF);
-        Matrix_MtxFToMtx(&projectionF, projectionFlipped);
-    }
-
     view->projection = *projection;
 
     View_StepDistortion(view, projection);
@@ -546,17 +536,6 @@ s32 func_800AB2C4(View* view) {
 
     guOrtho(projection, -(f32)gScreenWidth * 0.5f, (f32)gScreenWidth * 0.5f, -(f32)gScreenHeight * 0.5f,
             (f32)gScreenHeight * 0.5f, -30, view->zFar, view->scale);
-
-    // This is for z-targeting
-    if (CVarGetInteger(CVAR_ENHANCEMENT("MirroredWorld"), 0)) {
-        MtxF flipF;
-        SkinMatrix_Clear(&flipF);
-        flipF.xx = -1.0;
-        MtxF projectionF;
-        Matrix_MtxToMtxF(projection, &projectionF);
-        SkinMatrix_MtxFMtxFMult(&projectionF, &flipF, &projectionF);
-        Matrix_MtxFToMtx(&projectionF, projectionFlipped);
-    }
 
     view->projection = *projection;
 

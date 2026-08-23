@@ -14,8 +14,6 @@
 #include "scenes/dungeons/ice_doukutu/ice_doukutu_scene.h"
 #include "vt.h"
 #include "soh/ResourceManagerHelpers.h"
-#include "soh/Enhancements/game-interactor/GameInteractor_Hooks.h"
-
 #define FLAGS ACTOR_FLAG_UPDATE_CULLING_DISABLED
 
 void EnXc_Init(Actor* thisx, PlayState* play);
@@ -293,17 +291,17 @@ s32 EnXc_MinuetCS(EnXc* this, PlayState* play) {
 
         if (z < -2225.0f) {
             if (!Play_InCsMode(play)) {
-                if (GameInteractor_Should(VB_PLAY_MINUET_OF_FOREST_CS, true)) {
+                
                     play->csCtx.segment = SEGMENTED_TO_VIRTUAL(&gMinuetCs);
                     gSaveContext.cutsceneTrigger = 1;
-                }
+                
                 Flags_SetEventChkInf(EVENTCHKINF_LEARNED_MINUET_OF_FOREST);
-                if (GameInteractor_Should(VB_GIVE_ITEM_SONG, true, ITEM_SONG_MINUET)) {
+                
                     Item_Give(play, ITEM_SONG_MINUET);
-                }
-                if (GameInteractor_Should(VB_PLAY_MINUET_OF_FOREST_CS, true)) {
+                
+                
                     return true;
-                }
+                
             }
         }
         return false;
@@ -330,17 +328,17 @@ s32 EnXc_BoleroCS(EnXc* this, PlayState* play) {
         if ((posRot->pos.x > -784.0f) && (posRot->pos.x < -584.0f) && (posRot->pos.y > 447.0f) &&
             (posRot->pos.y < 647.0f) && (posRot->pos.z > -446.0f) && (posRot->pos.z < -246.0f) &&
             !Play_InCsMode(play)) {
-            if (GameInteractor_Should(VB_PLAY_BOLERO_OF_FIRE_CS, true)) {
+            
                 play->csCtx.segment = SEGMENTED_TO_VIRTUAL(&gDeathMountainCraterBoleroCs);
                 gSaveContext.cutsceneTrigger = 1;
-            }
+            
             Flags_SetEventChkInf(EVENTCHKINF_LEARNED_BOLERO_OF_FIRE);
-            if (GameInteractor_Should(VB_GIVE_ITEM_SONG, true, ITEM_SONG_BOLERO)) {
+            
                 Item_Give(play, ITEM_SONG_BOLERO);
-            }
-            if (GameInteractor_Should(VB_PLAY_BOLERO_OF_FIRE_CS, true)) {
+            
+            
                 return true;
-            }
+            
         }
         return false;
     }
@@ -349,8 +347,7 @@ s32 EnXc_BoleroCS(EnXc* this, PlayState* play) {
 
 void EnXc_SetupSerenadeAction(EnXc* this, PlayState* play) {
     // Player is adult and does not have iron boots and has not learned Serenade
-    if (GameInteractor_Should(VB_SHIEK_PREPARE_TO_GIVE_SERENADE_OF_WATER,
-                              (!CHECK_OWNED_EQUIP(EQUIP_TYPE_BOOTS, EQUIP_INV_BOOTS_IRON) &&
+    if (((!CHECK_OWNED_EQUIP(EQUIP_TYPE_BOOTS, EQUIP_INV_BOOTS_IRON) &&
                                !Flags_GetEventChkInf(EVENTCHKINF_LEARNED_SERENADE_OF_WATER)) &&
                                   LINK_IS_ADULT)) {
         this->action = SHEIK_ACTION_SERENADE;
@@ -365,22 +362,21 @@ s32 EnXc_SerenadeCS(EnXc* this, PlayState* play) {
     if (this->actor.params == SHEIK_TYPE_SERENADE) {
         Player* player = GET_PLAYER(play);
         s32 stateFlags = player->stateFlags1;
-        if (GameInteractor_Should(VB_BE_ELIGIBLE_FOR_SERENADE_OF_WATER,
-                                  CHECK_OWNED_EQUIP(EQUIP_TYPE_BOOTS, EQUIP_INV_BOOTS_IRON) &&
+        if ((CHECK_OWNED_EQUIP(EQUIP_TYPE_BOOTS, EQUIP_INV_BOOTS_IRON) &&
                                       !Flags_GetEventChkInf(EVENTCHKINF_LEARNED_SERENADE_OF_WATER)) &&
             !(stateFlags & PLAYER_STATE1_IN_CUTSCENE) && !Play_InCsMode(play)) {
-            if (GameInteractor_Should(VB_PLAY_SERENADE_OF_WATER_CS, true)) {
+            
                 Cutscene_SetSegment(play, &gIceCavernSerenadeCs);
                 gSaveContext.cutsceneTrigger = 1;
-            }
+            
             Flags_SetEventChkInf(EVENTCHKINF_LEARNED_SERENADE_OF_WATER); // Learned Serenade of Water Flag
-            if (GameInteractor_Should(VB_GIVE_ITEM_SONG, true, ITEM_SONG_SERENADE)) {
+            
                 Item_Give(play, ITEM_SONG_SERENADE);
-            }
+            
             osSyncPrintf("ブーツを取った!!!!!!!!!!!!!!!!!!\n");
-            if (GameInteractor_Should(VB_PLAY_SERENADE_OF_WATER_CS, true)) {
+            
                 return true;
-            }
+            
         }
         osSyncPrintf("はやくブーツを取るべし!!!!!!!!!!!!!!!!!!\n");
         return false;
@@ -389,19 +385,6 @@ s32 EnXc_SerenadeCS(EnXc* this, PlayState* play) {
 }
 
 void EnXc_DoNothing(EnXc* this, PlayState* play) {
-}
-
-void SoH_EnXc_RandoStand(EnXc* this, PlayState* play) {
-    // Replaces Ganondorf Light Arrow hint. also stands in ToT
-    if (play->sceneNum == SCENE_TEMPLE_OF_TIME) {
-        EnXc_ChangeAnimation(this, &gSheikArmsCrossedIdleAnim, ANIMMODE_LOOP, 0.0f, false);
-    } else {
-        EnXc_ChangeAnimation(this, &gSheikIdleAnim, ANIMMODE_LOOP, 0.0f, false);
-    }
-    this->action = SHEIK_ACTION_BLOCK_PEDESTAL;
-    this->drawMode = SHEIK_DRAW_DEFAULT;
-    this->unk_30C = 1;
-    Actor_Kill(&this->actor);
 }
 
 void EnXc_SetWalkingSFX(EnXc* this, PlayState* play) {
@@ -2179,22 +2162,21 @@ void EnXc_InitTempleOfTime(EnXc* this, PlayState* play) {
     if (LINK_IS_ADULT) {
         if (!Flags_GetEventChkInf(EVENTCHKINF_SHEIK_SPAWNED_AT_MASTER_SWORD_PEDESTAL)) {
             Flags_SetEventChkInf(EVENTCHKINF_SHEIK_SPAWNED_AT_MASTER_SWORD_PEDESTAL);
-            if (GameInteractor_Should(VB_PLAY_SHIEK_BLOCK_MASTER_SWORD_CS, true)) {
+            
                 play->csCtx.segment = SEGMENTED_TO_VIRTUAL(gTempleOfTimeFirstAdultCs);
                 gSaveContext.cutsceneTrigger = 1;
-            }
+            
             func_80B3EBF0(this, play);
-        } else if (GameInteractor_Should(VB_BE_ELIGIBLE_FOR_PRELUDE_OF_LIGHT,
-                                         !Flags_GetEventChkInf(EVENTCHKINF_LEARNED_PRELUDE_OF_LIGHT) &&
+        } else if ((!Flags_GetEventChkInf(EVENTCHKINF_LEARNED_PRELUDE_OF_LIGHT) &&
                                              Flags_GetEventChkInf(EVENTCHKINF_USED_FOREST_TEMPLE_BLUE_WARP))) {
             Flags_SetEventChkInf(EVENTCHKINF_LEARNED_PRELUDE_OF_LIGHT);
-            if (GameInteractor_Should(VB_GIVE_ITEM_SONG, true, ITEM_SONG_PRELUDE)) {
+            
                 Item_Give(play, ITEM_SONG_PRELUDE);
-            }
-            if (GameInteractor_Should(VB_PLAY_PRELUDE_OF_LIGHT_CS, true)) {
+            
+            
                 play->csCtx.segment = SEGMENTED_TO_VIRTUAL(gTempleOfTimePreludeCs);
                 gSaveContext.cutsceneTrigger = 1;
-            }
+            
             this->action = SHEIK_ACTION_30; // Not sure what this does exactly
         } else if (!Flags_GetEventChkInf(EVENTCHKINF_LEARNED_PRELUDE_OF_LIGHT)) {
             func_80B3C9EC(this);
@@ -2380,9 +2362,6 @@ void EnXc_Init(Actor* thisx, PlayState* play) {
             break;
         case SHEIK_TYPE_0:
             EnXc_DoNothing(this, play);
-            break;
-        case SHEIK_TYPE_RANDO:
-            SoH_EnXc_RandoStand(this, play);
             break;
         default:
             osSyncPrintf(VT_FGCOL(RED) " En_Oa2 の arg_data がおかしい!!!!!!!!!!!!!!!!!!!!!!!!!\n" VT_RST);

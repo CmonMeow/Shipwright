@@ -11,8 +11,6 @@
 #include "objects/object_kw1/object_kw1.h"
 #include "vt.h"
 #include "soh/ResourceManagerHelpers.h"
-#include "soh/Enhancements/game-interactor/GameInteractor_Hooks.h"
-
 #define FLAGS (ACTOR_FLAG_ATTENTION_ENABLED | ACTOR_FLAG_FRIENDLY | ACTOR_FLAG_UPDATE_CULLING_DISABLED)
 
 #define ENKO_TYPE (this->actor.params & 0xFF)
@@ -1051,8 +1049,7 @@ s32 EnKo_CanSpawn(EnKo* this, PlayState* play) {
             }
 
         case SCENE_LOST_WOODS:
-            return GameInteractor_Should(VB_SPAWN_LW_FADO,
-                                         ((INV_CONTENT(ITEM_TRADE_ADULT) == ITEM_ODD_POTION) ? true : false), this);
+            return (((INV_CONTENT(ITEM_TRADE_ADULT) == ITEM_ODD_POTION) ? true : false));
         default:
             return false;
     }
@@ -1108,7 +1105,7 @@ void func_80A98DB4(EnKo* this, PlayState* play) {
     }
 
     Math_SmoothStepToF(&this->modelAlpha,
-                       GameInteractor_Should(VB_FADE_KOKIRI, this->appearDist < dist, this) ? 0.0f : 255.0f, 0.3f,
+                       (this->appearDist < dist) ? 0.0f : 255.0f, 0.3f,
                        40.0f, 1.0f);
     if (this->modelAlpha < 10.0f) {
         this->actor.flags &= ~ACTOR_FLAG_ATTENTION_ENABLED;
@@ -1183,9 +1180,7 @@ void func_80A99048(EnKo* this, PlayState* play) {
         if (ENKO_TYPE == ENKO_TYPE_CHILD_5) {
             this->collider.base.ocFlags1 |= 0x40;
         }
-        if (GameInteractor_Should(VB_KOKIRI_GET_FOREST_QUEST_STATE2, false, this)) {
-            this->forestQuestState = EnKo_GetForestQuestState2(this);
-        }
+        
         Animation_ChangeByInfo(&this->skelAnime, sAnimationInfo, sOsAnimeLookup[ENKO_TYPE][this->forestQuestState]);
         Actor_SetScale(&this->actor, 0.01f);
         func_80A98CD8(this);
@@ -1194,7 +1189,7 @@ void func_80A99048(EnKo* this, PlayState* play) {
         Actor_SpawnAsChild(&play->actorCtx, &this->actor, play, ACTOR_EN_ELF, this->actor.world.pos.x,
                            this->actor.world.pos.y, this->actor.world.pos.z, 0, 0, 0, 3);
         if (ENKO_TYPE == ENKO_TYPE_CHILD_3) {
-            if (!GameInteractor_Should(VB_OPEN_KOKIRI_FOREST, CHECK_QUEST_ITEM(QUEST_KOKIRI_EMERALD), this)) {
+            if (!(CHECK_QUEST_ITEM(QUEST_KOKIRI_EMERALD))) {
                 this->collider.dim.height += 200;
                 this->actionFunc = func_80A995CC;
                 return;
@@ -1230,7 +1225,7 @@ void func_80A99438(EnKo* this, PlayState* play) {
 }
 
 void func_80A99504(EnKo* this, PlayState* play) {
-    if (Actor_HasParent(&this->actor, play) || !GameInteractor_Should(VB_TRADE_ODD_POTION, true, this)) {
+    if (Actor_HasParent(&this->actor, play) || !(true)) {
         this->actor.parent = NULL;
         this->actionFunc = func_80A99560;
     } else {
@@ -1371,10 +1366,7 @@ void EnKo_Draw(Actor* thisx, PlayState* play) {
     Color_RGBA8 tunicColor = sModelInfo[ENKO_TYPE].tunicColor;
     Color_RGBA8 bootsColor = sModelInfo[ENKO_TYPE].bootsColor;
 
-    if (CVarGetInteger(CVAR_COSMETIC("NPC.Kokiri.Changed"), 0)) {
-        tunicColor = CVarGetColor(CVAR_COSMETIC("NPC.Kokiri.Value"), sModelInfo[ENKO_TYPE].tunicColor);
-        bootsColor = CVarGetColor(CVAR_COSMETIC("NPC.Kokiri.Value"), sModelInfo[ENKO_TYPE].bootsColor);
-    }
+    
 
     this->actor.shape.shadowAlpha = this->modelAlpha;
 

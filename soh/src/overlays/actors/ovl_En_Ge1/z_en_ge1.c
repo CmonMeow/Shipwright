@@ -8,8 +8,6 @@
 #include "vt.h"
 #include "objects/object_ge1/object_ge1.h"
 #include "soh/ResourceManagerHelpers.h"
-#include "soh/Enhancements/game-interactor/GameInteractor_Hooks.h"
-
 #define FLAGS (ACTOR_FLAG_ATTENTION_ENABLED | ACTOR_FLAG_FRIENDLY)
 
 #define GE1_STATE_TALKING (1 << 0)
@@ -120,7 +118,7 @@ void EnGe1_Init(Actor* thisx, PlayState* play) {
         case GE1_TYPE_GATE_OPERATOR:
             this->hairstyle = GE1_HAIR_STRAIGHT;
 
-            if (GameInteractor_Should(VB_GERUDOS_BE_FRIENDLY, EnGe1_CheckCarpentersFreed())) {
+            if ((EnGe1_CheckCarpentersFreed())) {
                 this->actionFunc = EnGe1_CheckGate_GateOp;
             } else {
                 this->actionFunc = EnGe1_WatchForPlayerFrontOnly;
@@ -130,7 +128,7 @@ void EnGe1_Init(Actor* thisx, PlayState* play) {
         case GE1_TYPE_NORMAL:
             this->hairstyle = GE1_HAIR_STRAIGHT;
 
-            if (GameInteractor_Should(VB_GERUDOS_BE_FRIENDLY, EnGe1_CheckCarpentersFreed())) {
+            if ((EnGe1_CheckCarpentersFreed())) {
                 this->actionFunc = EnGe1_SetNormalText;
             } else {
                 this->actionFunc = EnGe1_WatchForAndSensePlayer;
@@ -160,7 +158,7 @@ void EnGe1_Init(Actor* thisx, PlayState* play) {
 
             if (gSaveContext.eventInf[0] & 0x100) {
                 this->actionFunc = EnGe1_TalkAfterGame_Archery;
-            } else if (GameInteractor_Should(VB_GERUDOS_BE_FRIENDLY, EnGe1_CheckCarpentersFreed())) {
+            } else if ((EnGe1_CheckCarpentersFreed())) {
                 this->actionFunc = EnGe1_Wait_Archery;
             } else {
                 this->actionFunc = EnGe1_WatchForPlayerFrontOnly;
@@ -170,7 +168,7 @@ void EnGe1_Init(Actor* thisx, PlayState* play) {
         case GE1_TYPE_TRAINING_GROUND_GUARD:
             this->hairstyle = GE1_HAIR_STRAIGHT;
 
-            if (GameInteractor_Should(VB_GERUDOS_BE_FRIENDLY, EnGe1_CheckCarpentersFreed())) {
+            if ((EnGe1_CheckCarpentersFreed())) {
                 this->actionFunc = EnGe1_CheckForCard_GTGGuard;
             } else {
                 this->actionFunc = EnGe1_WatchForPlayerFrontOnly;
@@ -503,7 +501,7 @@ void EnGe1_WaitTillItemGiven_Archery(EnGe1* this, PlayState* play) {
     GetItemEntry getItemEntry = (GetItemEntry)GET_ITEM_NONE;
     s32 getItemId;
 
-    if (!GameInteractor_Should(VB_GIVE_ITEM_FROM_HORSEBACK_ARCHERY, true, this)) {
+    if (!(true)) {
         return;
     }
     if (Actor_HasParent(&this->actor, play)) {
@@ -558,9 +556,9 @@ void EnGe1_BeginGiveItem_Archery(EnGe1* this, PlayState* play) {
         getItemId = GI_HEART_PIECE;
     }
 
-    if (GameInteractor_Should(VB_GIVE_ITEM_FROM_HORSEBACK_ARCHERY, true, this)) {
+    
         Actor_OfferGetItem(&this->actor, play, getItemId, 10000.0f, 50.0f);
-    }
+    
 }
 
 void EnGe1_TalkWinPrize_Archery(EnGe1* this, PlayState* play) {

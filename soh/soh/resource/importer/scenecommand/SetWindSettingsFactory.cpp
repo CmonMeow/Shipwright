@@ -16,9 +16,7 @@ std::shared_ptr<Ship::IResource> SetWindSettingsFactory::ReadResource(std::share
     setWind->settings.windSouth = reader->ReadInt8();
     setWind->settings.windSpeed = reader->ReadUByte();
 
-    if (CVarGetInteger(CVAR_DEVELOPER_TOOLS("ResourceLogging"), 0)) {
-        LogWindSettingsAsXML(setWind);
-    }
+    
 
     return setWind;
 }

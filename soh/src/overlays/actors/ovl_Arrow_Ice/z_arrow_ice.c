@@ -196,13 +196,9 @@ void ArrowIce_Draw(Actor* thisx, PlayState* play) {
     EnArrow* arrow = (EnArrow*)this->actor.parent;
 
     Color_RGB8 primaryColor = { 170, 255, 255 };
-    if (CVarGetInteger(CVAR_COSMETIC("Arrows.IcePrimary.Changed"), 0)) {
-        primaryColor = CVarGetColor24(CVAR_COSMETIC("Arrows.IcePrimary.Value"), primaryColor);
-    }
+    
     Color_RGB8 secondaryColor = { 0, 0, 255 };
-    if (CVarGetInteger(CVAR_COSMETIC("Arrows.IceSecondary.Changed"), 0)) {
-        secondaryColor = CVarGetColor24(CVAR_COSMETIC("Arrows.IceSecondary.Value"), secondaryColor);
-    }
+    
 
     if ((arrow != NULL) && (arrow->actor.update != NULL) && (this->timer < 255)) {
         tranform = (arrow->hitFlags & 2) ? &this->actor : &arrow->actor;

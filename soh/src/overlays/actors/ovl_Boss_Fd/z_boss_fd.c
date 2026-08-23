@@ -14,9 +14,6 @@
 #include "objects/gameplay_keep/gameplay_keep.h"
 
 #include "soh/frame_interpolation.h"
-#include "soh/Enhancements/game-interactor/GameInteractor.h"
-#include "soh/Enhancements/game-interactor/GameInteractor_Hooks.h"
-
 #define FLAGS                                                                                 \
     (ACTOR_FLAG_ATTENTION_ENABLED | ACTOR_FLAG_HOSTILE | ACTOR_FLAG_UPDATE_CULLING_DISABLED | \
      ACTOR_FLAG_DRAW_CULLING_DISABLED)
@@ -228,9 +225,9 @@ void BossFd_Init(Actor* thisx, PlayState* play) {
         Actor_Kill(&this->actor);
         Actor_SpawnAsChild(&play->actorCtx, &this->actor, play, ACTOR_DOOR_WARP1, 0.0f, 100.0f, 0.0f, 0, 0, 0,
                            WARP_DUNGEON_ADULT);
-        if (GameInteractor_Should(VB_SPAWN_HEART_CONTAINER, true)) {
+        
             Actor_Spawn(&play->actorCtx, play, ACTOR_ITEM_B_HEART, 0.0f, 100.0f, 200.0f, 0, 0, 0, 0);
-        }
+        
     } else {
         Actor_SpawnAsChild(&play->actorCtx, &this->actor, play, ACTOR_BOSS_FD2, this->actor.world.pos.x,
                            this->actor.world.pos.y, this->actor.world.pos.z, 0, 0, 0, this->introState);
@@ -921,7 +918,7 @@ void BossFd_Fly(BossFd* this, PlayState* play) {
                 this->actionFunc = BossFd_Wait;
                 this->actor.world.pos.y -= 1000.0f;
             }
-            if (GameInteractor_Should(VB_SPAWN_HEART_CONTAINER, this->timers[0] == 7)) {
+            if ((this->timers[0] == 7)) {
                 Actor_Spawn(&play->actorCtx, play, ACTOR_ITEM_B_HEART, this->actor.world.pos.x, this->actor.world.pos.y,
                             this->actor.world.pos.z, 0, 0, 0, 0);
             }
@@ -1390,7 +1387,7 @@ void BossFd_Update(Actor* thisx, PlayState* play) {
         }
     }
 
-    if (1) { // Needed for matching, and also to define new variables
+     // Needed for matching, and also to define new variables
         Vec3f emberVel = { 0.0f, 0.0f, 0.0f };
         Vec3f emberAccel = { 0.0f, 0.0f, 0.0f };
         Vec3f emberPos;
@@ -1431,7 +1428,7 @@ void BossFd_Update(Actor* thisx, PlayState* play) {
                 }
             }
         }
-    }
+    
     osSyncPrintf("FD MOVE END 1\n");
     BossFd_UpdateEffects(this, play);
     osSyncPrintf("FD MOVE END 2\n");

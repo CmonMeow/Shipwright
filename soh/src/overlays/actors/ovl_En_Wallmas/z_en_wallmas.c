@@ -7,7 +7,6 @@
 #include "z_en_wallmas.h"
 #include "objects/object_wallmaster/object_wallmaster.h"
 #include "objects/gameplay_keep/gameplay_keep.h"
-#include "soh/Enhancements/game-interactor/GameInteractor_Hooks.h"
 #include "soh/ResourceManagerHelpers.h"
 
 #define FLAGS (ACTOR_FLAG_ATTENTION_ENABLED | ACTOR_FLAG_HOSTILE | ACTOR_FLAG_UPDATE_CULLING_DISABLED)
@@ -260,7 +259,6 @@ void EnWallmas_SetupDie(EnWallmas* this, PlayState* play) {
 
     Item_DropCollectibleRandom(play, &this->actor, &this->actor.world.pos, 0xC0);
     this->actionFunc = EnWallmas_Die;
-    GameInteractor_ExecuteOnEnemyDefeat(&this->actor);
 }
 
 void EnWallmas_SetupTakePlayer(EnWallmas* this, PlayState* play) {
@@ -408,9 +406,7 @@ void EnWallmas_ReturnToCeiling(EnWallmas* this, PlayState* play) {
         }
     }
     if (this->actor.params == WMT_SHADOWTAG) {
-        if (!CVarGetInteger(CVAR_ENHANCEMENT("ShadowTag"), 0)) {
-            Actor_Kill(&this->actor);
-        }
+        Actor_Kill(&this->actor);
     }
 }
 
@@ -442,11 +438,7 @@ void EnWallmas_Die(EnWallmas* this, PlayState* play) {
         Actor_Kill(&this->actor);
     }
     if (this->actor.params == WMT_SHADOWTAG) {
-        if (!CVarGetInteger(CVAR_ENHANCEMENT("ShadowTag"), 0)) {
-            Actor_Kill(&this->actor);
-        } else {
-            EnWallmas_Init(this, play);
-        }
+        Actor_Kill(&this->actor);
     }
     this->actor.scale.z = this->actor.scale.x;
     this->actor.scale.y = this->actor.scale.x;

@@ -17,9 +17,7 @@ SetSkyboxSettingsFactory::ReadResource(std::shared_ptr<Ship::ResourceInitData> i
     setSkyboxSettings->settings.weather = reader->ReadInt8();
     setSkyboxSettings->settings.indoors = reader->ReadInt8();
 
-    if (CVarGetInteger(CVAR_DEVELOPER_TOOLS("ResourceLogging"), 0)) {
-        LogSkyboxSettingsAsXML(setSkyboxSettings);
-    }
+    
 
     return setSkyboxSettings;
 }

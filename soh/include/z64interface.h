@@ -22,18 +22,6 @@
 #define C_UP_BUTTON_X 254
 #define C_UP_BUTTON_Y 16
 
-#define DPAD_UP_X 279
-#define DPAD_UP_Y 47
-
-#define DPAD_DOWN_X 279
-#define DPAD_DOWN_Y 79
-
-#define DPAD_LEFT_X 263
-#define DPAD_LEFT_Y 63
-
-#define DPAD_RIGHT_X 295
-#define DPAD_RIGHT_Y 63
-
 #define DPAD_X 271
 #define DPAD_Y 55
 

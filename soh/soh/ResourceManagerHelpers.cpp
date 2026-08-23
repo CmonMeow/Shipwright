@@ -3,7 +3,6 @@
 #include "variables.h"
 #include "z64.h"
 #include "cvar_prefixes.h"
-#include "Enhancements/enhancementTypes.h"
 #include <libultraship/libultraship.h>
 #include <soh/GameVersions.h>
 #include "resource/type/SohResourceType.h"
@@ -80,15 +79,6 @@ extern "C" bool ResourceMgr_IsPalLoaded() {
 }
 
 u32 IsSceneMasterQuest(s16 sceneNum) {
-    u8 mqMode = CVarGetInteger(CVAR_GENERAL("BetterDebugWarpScreenMQMode"), WARP_MODE_OVERRIDE_OFF);
-    if (mqMode == WARP_MODE_OVERRIDE_MQ_AS_VANILLA) {
-        return true;
-    }
-
-    if (mqMode == WARP_MODE_OVERRIDE_VANILLA_AS_MQ) {
-        return false;
-    }
-
     if (OTRGlobals::Instance->HasMasterQuest()) {
         if (!OTRGlobals::Instance->HasOriginal()) {
             return true;

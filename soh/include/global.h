@@ -9,8 +9,6 @@
 #include "variables.h"
 #include "macros.h"
 #include "soh/cvar_prefixes.h"
-#include "soh/Enhancements/gameconsole.h"
-#include "soh/Enhancements/gameplaystats.h"
 #include <libultraship/bridge.h>
 
 #define _AudioseqSegmentRomStart "Audioseq"
@@ -43,5 +41,13 @@
 // TODO: POSIX/BSD Bug, this is a hack to fix the build compilation on any BSD system (Switch, Wii-U, Vita, etc)
 // <sys/types.h> defines quad as a macro, which conflicts with the quad parameter on z_collision_check.c
 #undef quad
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+extern PlayState* gPlayState;
+#ifdef __cplusplus
+}
+#endif
 
 #endif

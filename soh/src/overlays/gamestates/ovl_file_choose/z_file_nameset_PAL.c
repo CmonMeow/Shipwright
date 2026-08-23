@@ -2,7 +2,6 @@
 #include "textures/title_static/title_static.h"
 #include "assets/overlays/ovl_File_Choose/ovl_file_choose.h"
 #include "assets/soh_assets.h"
-#include "soh/Enhancements/game-interactor/GameInteractor_Hooks.h"
 #include "soh/OTRGlobals.h"
 #include "soh/ResourceManagerHelpers.h"
 #include "soh/SaveManager.h"
@@ -106,9 +105,6 @@ s16 D_808125EC[] = {
 s16 D_80812604[] = {
     0x0048, 0x0045, 0x0045, 0x0045, 0x0045, 0x0045, 0x0045, 0x0045, 0x0045, 0x0045, 0x0045,
 };
-
-s16 sLastCharIndex = -1;
-s16 sLastKbdX = -1;
 
 /**
  * Set vertices used by all elements of the name entry screen that are NOT the keyboard.
@@ -377,14 +373,10 @@ void FileChoose_DrawNameEntry(GameState* thisx) {
                     this->newFileNameCharCount = 0;
                     if (this->prevConfigMode == CM_QUEST_MENU) {
                         this->configMode = CM_NAME_ENTRY_TO_QUEST_MENU;
-                    } else if (this->prevConfigMode == CM_RANDOMIZER_SETTINGS_MENU) {
-                        this->configMode = CM_NAME_ENTRY_TO_RANDOMIZER_SETTINGS_MENU;
                     } else {
                         this->configMode = CM_NAME_ENTRY_TO_MAIN;
                     }
                     this->prevConfigMode = CM_NAME_ENTRY;
-                    sLastCharIndex = -1;
-                    CVarSetInteger(CVAR_GENERAL("OnFileSelectNameEntry"), 0);
                 } else {
                     for (i = this->newFileNameCharCount; i < 7; i++) {
                         filename[i] = filename[i + 1];
@@ -462,7 +454,6 @@ void FileChoose_DrawNameEntry(GameState* thisx) {
                             gSaveContext.dayTime = dayTime;
                             this->prevConfigMode = CM_MAIN_MENU;
                             this->configMode = CM_NAME_ENTRY_TO_MAIN;
-                            CVarSetInteger(CVAR_GENERAL("OnFileSelectNameEntry"), 0);
                             this->nameBoxAlpha[this->buttonIndex] = this->nameAlpha[this->buttonIndex] = 200;
                             this->connectorAlpha[this->buttonIndex] = 255;
                             func_800AA000(300.0f, 0xB4, 0x14, 0x64);
@@ -536,12 +527,11 @@ void FileChoose_UpdateKeyboardCursor(GameState* thisx) {
     FileChooseContext* this = (FileChooseContext*)thisx;
     Input* input = &this->state.input[0];
     s16 prevKbdX;
-    bool dpad = CVarGetInteger(CVAR_SETTING("DpadInText"), 0);
 
     this->kbdButton = 99;
 
     if (this->kbdY != 5) {
-        if ((this->stickRelX < -30) || (dpad && CHECK_BTN_ALL(input->press.button, BTN_DLEFT))) {
+        if ((this->stickRelX < -30)) {
             Audio_PlaySoundGeneral(NA_SE_SY_FSEL_CURSOR, &gSfxDefaultPos, 4, &gSfxDefaultFreqAndVolScale,
                                    &gSfxDefaultFreqAndVolScale, &gSfxDefaultReverb);
             this->charIndex--;
@@ -550,7 +540,7 @@ void FileChoose_UpdateKeyboardCursor(GameState* thisx) {
                 this->kbdX = 12;
                 this->charIndex = (this->kbdY * 13) + this->kbdX;
             }
-        } else if ((this->stickRelX > 30) || (dpad && CHECK_BTN_ALL(input->press.button, BTN_DRIGHT))) {
+        } else if ((this->stickRelX > 30)) {
             Audio_PlaySoundGeneral(NA_SE_SY_FSEL_CURSOR, &gSfxDefaultPos, 4, &gSfxDefaultFreqAndVolScale,
                                    &gSfxDefaultFreqAndVolScale, &gSfxDefaultReverb);
             this->charIndex++;
@@ -561,14 +551,14 @@ void FileChoose_UpdateKeyboardCursor(GameState* thisx) {
             }
         }
     } else {
-        if ((this->stickRelX < -30) || (dpad && CHECK_BTN_ALL(input->press.button, BTN_DLEFT))) {
+        if ((this->stickRelX < -30)) {
             Audio_PlaySoundGeneral(NA_SE_SY_FSEL_CURSOR, &gSfxDefaultPos, 4, &gSfxDefaultFreqAndVolScale,
                                    &gSfxDefaultFreqAndVolScale, &gSfxDefaultReverb);
             this->kbdX--;
             if (this->kbdX < 3) {
                 this->kbdX = 4;
             }
-        } else if ((this->stickRelX > 30) || (dpad && CHECK_BTN_ALL(input->press.button, BTN_DRIGHT))) {
+        } else if ((this->stickRelX > 30)) {
             Audio_PlaySoundGeneral(NA_SE_SY_FSEL_CURSOR, &gSfxDefaultPos, 4, &gSfxDefaultFreqAndVolScale,
                                    &gSfxDefaultFreqAndVolScale, &gSfxDefaultReverb);
             this->kbdX++;
@@ -578,7 +568,7 @@ void FileChoose_UpdateKeyboardCursor(GameState* thisx) {
         }
     }
 
-    if ((this->stickRelY > 30) || (dpad && CHECK_BTN_ALL(input->press.button, BTN_DUP))) {
+    if ((this->stickRelY > 30)) {
         Audio_PlaySoundGeneral(NA_SE_SY_FSEL_CURSOR, &gSfxDefaultPos, 4, &gSfxDefaultFreqAndVolScale,
                                &gSfxDefaultFreqAndVolScale, &gSfxDefaultReverb);
         this->kbdY--;
@@ -610,7 +600,7 @@ void FileChoose_UpdateKeyboardCursor(GameState* thisx) {
                 this->charIndex += this->kbdX;
             }
         }
-    } else if ((this->stickRelY < -30) || (dpad && CHECK_BTN_ALL(input->press.button, BTN_DDOWN))) {
+    } else if ((this->stickRelY < -30)) {
         Audio_PlaySoundGeneral(NA_SE_SY_FSEL_CURSOR, &gSfxDefaultPos, 4, &gSfxDefaultFreqAndVolScale,
                                &gSfxDefaultFreqAndVolScale, &gSfxDefaultReverb);
         this->kbdY++;
@@ -650,15 +640,6 @@ void FileChoose_UpdateKeyboardCursor(GameState* thisx) {
     if (this->kbdY == 5) {
         this->kbdButton = this->kbdX;
 
-        if (sLastKbdX != this->kbdX) {
-            GameInteractor_ExecuteOnUpdateFileNameSelection(0xF0 + this->kbdX);
-            sLastKbdX = this->kbdX;
-            sLastCharIndex = -1;
-        }
-    } else if (sLastCharIndex != this->charIndex && this->charIndex < 65) {
-        GameInteractor_ExecuteOnUpdateFileNameSelection(D_808123F0[this->charIndex]);
-        sLastCharIndex = this->charIndex;
-        sLastKbdX = -1;
     }
 }
 
@@ -687,7 +668,6 @@ void FileChoose_StartOptions(GameState* thisx) {
 }
 
 static u8 sSelectedSetting;
-s8 sLastOptionButtonIndex = -1;
 
 /**
  * Update the cursor and appropriate settings for the options menu.
@@ -698,14 +678,12 @@ s8 sLastOptionButtonIndex = -1;
 void FileChoose_UpdateOptionsMenu(GameState* thisx) {
     FileChooseContext* this = (FileChooseContext*)thisx;
     Input* input = &this->state.input[0];
-    bool dpad = CVarGetInteger(CVAR_SETTING("DpadInText"), 0);
 
     if (CHECK_BTN_ALL(input->press.button, BTN_B)) {
         Audio_PlaySoundGeneral(NA_SE_SY_FSEL_DECIDE_L, &gSfxDefaultPos, 4, &gSfxDefaultFreqAndVolScale,
                                &gSfxDefaultFreqAndVolScale, &gSfxDefaultReverb);
         this->prevConfigMode = this->configMode;
         this->configMode = CM_OPTIONS_TO_MAIN;
-        sLastOptionButtonIndex = -1;
         osSyncPrintf("ＳＡＶＥ");
         Save_SaveGlobal();
         CVarSave();
@@ -724,7 +702,7 @@ void FileChoose_UpdateOptionsMenu(GameState* thisx) {
     uint8_t isPalN64 = ResourceMgr_GetGameRegion(versionIndex) == GAME_REGION_PAL &&
                        ResourceMgr_GetGamePlatform(versionIndex) == GAME_PLATFORM_N64;
 
-    if ((this->stickRelX < -30) || (dpad && CHECK_BTN_ALL(input->press.button, BTN_DLEFT))) {
+    if ((this->stickRelX < -30)) {
         Audio_PlaySoundGeneral(NA_SE_SY_FSEL_CURSOR, &gSfxDefaultPos, 4, &gSfxDefaultFreqAndVolScale,
                                &gSfxDefaultFreqAndVolScale, &gSfxDefaultReverb);
 
@@ -746,7 +724,7 @@ void FileChoose_UpdateOptionsMenu(GameState* thisx) {
         } else {
             gSaveContext.zTargetSetting ^= 1;
         }
-    } else if ((this->stickRelX > 30) || (dpad && CHECK_BTN_ALL(input->press.button, BTN_DRIGHT))) {
+    } else if ((this->stickRelX > 30)) {
         Audio_PlaySoundGeneral(NA_SE_SY_FSEL_CURSOR, &gSfxDefaultPos, 4, &gSfxDefaultFreqAndVolScale,
                                &gSfxDefaultFreqAndVolScale, &gSfxDefaultReverb);
 
@@ -772,17 +750,16 @@ void FileChoose_UpdateOptionsMenu(GameState* thisx) {
     // Persist the new language so it is not overridden on the next frame
     if (languageChanged) {
         CVarSetInteger(CVAR_SETTING("Languages"), gSaveContext.language);
-        GameInteractor_ExecuteOnSetGameLanguage();
     }
 
     // NTSC and GC only has two rows and can just flip the setting bit
     // Otherwise for PAL 64, handle the additional change language setting
     if (!isPalN64 &&
-        ((ABS(this->stickRelY) > 30) || (dpad && CHECK_BTN_ANY(input->press.button, BTN_DDOWN | BTN_DUP)))) {
+        ((ABS(this->stickRelY) > 30))) {
         Audio_PlaySoundGeneral(NA_SE_SY_FSEL_CURSOR, &gSfxDefaultPos, 4, &gSfxDefaultFreqAndVolScale,
                                &gSfxDefaultFreqAndVolScale, &gSfxDefaultReverb);
         sSelectedSetting ^= 1;
-    } else if (isPalN64 && ((this->stickRelY > 30) || (dpad && CHECK_BTN_ANY(input->press.button, BTN_DUP)))) {
+    } else if (isPalN64 && ((this->stickRelY > 30))) {
         Audio_PlaySoundGeneral(NA_SE_SY_FSEL_CURSOR, &gSfxDefaultPos, 4, &gSfxDefaultFreqAndVolScale,
                                &gSfxDefaultFreqAndVolScale, &gSfxDefaultReverb);
         sSelectedSetting--;
@@ -790,7 +767,7 @@ void FileChoose_UpdateOptionsMenu(GameState* thisx) {
         if (sSelectedSetting > 0xF0) {
             sSelectedSetting = FS_SETTING_LANGUAGE;
         }
-    } else if (isPalN64 && ((this->stickRelY < -30) || (dpad && CHECK_BTN_ANY(input->press.button, BTN_DDOWN)))) {
+    } else if (isPalN64 && ((this->stickRelY < -30))) {
         Audio_PlaySoundGeneral(NA_SE_SY_FSEL_CURSOR, &gSfxDefaultPos, 4, &gSfxDefaultFreqAndVolScale,
                                &gSfxDefaultFreqAndVolScale, &gSfxDefaultReverb);
         sSelectedSetting++;
@@ -812,26 +789,6 @@ void FileChoose_UpdateOptionsMenu(GameState* thisx) {
         }
     }
 
-    if (sSelectedSetting == FS_SETTING_AUDIO) {
-        if (sLastOptionButtonIndex != gSaveContext.audioSetting) {
-            GameInteractor_ExecuteOnUpdateFileAudioSelection(gSaveContext.audioSetting);
-            sLastOptionButtonIndex = gSaveContext.audioSetting;
-        }
-    } else if (sSelectedSetting == FS_SETTING_TARGET) {
-        // offset to detect switching between modes
-        u8 optionOffset = gSaveContext.zTargetSetting + FS_AUDIO_SURROUND + FS_SETTING_TARGET;
-        if (sLastOptionButtonIndex != optionOffset) {
-            GameInteractor_ExecuteOnUpdateFileTargetSelection(gSaveContext.zTargetSetting);
-            sLastOptionButtonIndex = optionOffset;
-        }
-    } else {
-        // offset to detect switching between modes
-        u8 optionOffset = gSaveContext.language + FS_AUDIO_SURROUND + FS_TARGET_HOLD + FS_SETTING_LANGUAGE;
-        if (sLastOptionButtonIndex != optionOffset) {
-            GameInteractor_ExecuteOnUpdateFileLanguageSelection(gSaveContext.language);
-            sLastOptionButtonIndex = optionOffset;
-        }
-    }
 }
 
 typedef struct {
@@ -880,16 +837,7 @@ void FileChoose_DrawOptionsImpl(GameState* thisx) {
         { 0, 150, 150 },
     };
 
-    if (CVarGetInteger(CVAR_COSMETIC("Title.FileChoose.Changed"), 0)) {
-        Color_RGB8 backgroundColor =
-            CVarGetColor24(CVAR_COSMETIC("Title.FileChoose.Value"), (Color_RGB8){ 100, 150, 255 });
-        cursorPrimColors[1][0] = MIN(backgroundColor.r + 100, 255);
-        cursorPrimColors[1][1] = MIN(backgroundColor.g + 100, 255);
-        cursorPrimColors[1][2] = MIN(backgroundColor.b + 100, 255);
-        cursorEnvColors[1][0] = MIN(backgroundColor.r + 50, 255);
-        cursorEnvColors[1][1] = MIN(backgroundColor.g + 50, 255);
-        cursorEnvColors[1][2] = MIN(backgroundColor.b + 50, 255);
-    }
+    
 
     FileChooseContext* this = (FileChooseContext*)thisx;
     s16 cursorRed;

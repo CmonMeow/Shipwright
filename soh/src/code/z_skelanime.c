@@ -4,8 +4,6 @@
 #include <stdio.h>
 #include <assert.h>
 #include "soh/ResourceManagerHelpers.h"
-#include "soh/Enhancements/game-interactor/GameInteractor_Hooks.h"
-
 #define ANIM_INTERP 1
 
 s32 LinkAnimation_Loop(PlayState* play, SkelAnime* skelAnime);
@@ -885,8 +883,7 @@ void AnimationContext_SetLoadFrame(PlayState* play, LinkAnimationHeader* animati
                                    Vec3s* frameTable) {
     AnimationEntry* entry = AnimationContext_AddEntry(&play->animationCtx, ANIMENTRY_LOADFRAME);
 
-    if (GameInteractor_Should(VB_LOAD_PLAYER_ANIMATION_FRAME, entry != NULL, entry, animation, frame, limbCount,
-                              frameTable)) {
+    if ((entry != NULL)) {
         if (ResourceMgr_OTRSigCheck(animation) != 0)
             animation = ResourceMgr_LoadAnimByName(animation);
 
@@ -1137,7 +1134,6 @@ void SkelAnime_InitLink(PlayState* play, SkelAnime* skelAnime, FlexSkeletonHeade
 
     LinkAnimation_Change(play, skelAnime, animation, 1.0f, 0.0f, 0.0f, ANIMMODE_LOOP, 0.0f);
 
-    GameInteractor_ExecuteOnLinkSkeletonInit();
 }
 
 /**

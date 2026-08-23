@@ -6,8 +6,6 @@
 
 #include "z_en_wood02.h"
 #include "objects/object_wood02/object_wood02.h"
-#include "soh/Enhancements/game-interactor/GameInteractor_Hooks.h"
-
 #define FLAGS 0
 
 void EnWood02_Init(Actor* thisx, PlayState* play);
@@ -160,15 +158,6 @@ void EnWood02_Init(Actor* thisx, PlayState* play2) {
     s32 bgId;
     f32 floorY;
     s16 extraRot;
-
-    // The tree in Kakariko's day scene does not have the same params to spawn the GS
-    // as the night scene, For the always spawn GS enhancement we apply the needed
-    // params to have the GS drop when bonking
-    if ((this->actor.params & 0xFF) == WOOD_TREE_CONICAL_MEDIUM && IS_DAY && play->sceneNum == SCENE_KAKARIKO_VILLAGE &&
-        CVarGetInteger(CVAR_ENHANCEMENT("NightGSAlwaysSpawn"), 0)) {
-        this->actor.params = 0x2001;
-        this->actor.home.rot.z = 0x71;
-    }
 
     spawnType = WOOD_SPAWN_NORMAL;
     actorScale = 1.0f;
@@ -339,11 +328,11 @@ void EnWood02_Update(Actor* thisx, PlayState* play2) {
             dropsSpawnPt = this->actor.world.pos;
             dropsSpawnPt.y += 200.0f;
 
-            if (GameInteractor_Should(VB_TREE_DROP_ITEM, true, this)) {
+            
                 if ((this->unk_14C >= 0) && (this->unk_14C < 0x64)) {
-                    if (GameInteractor_Should(VB_TREE_DROP_COLLECTIBLE, true, this)) {
+                    
                         Item_DropCollectibleRandom(play, &this->actor, &dropsSpawnPt, this->unk_14C << 4);
-                    }
+                    
                 } else if (this->actor.home.rot.z != 0) {
                     this->actor.home.rot.z &= 0x1FFF;
                     this->actor.home.rot.z |= 0xE000;
@@ -351,7 +340,7 @@ void EnWood02_Update(Actor* thisx, PlayState* play2) {
                                 this->actor.world.rot.y, 0, this->actor.home.rot.z);
                     this->actor.home.rot.z = 0;
                 }
-            }
+            
 
             // Spawn falling leaves
             if (this->unk_14C >= -1) {
@@ -385,14 +374,14 @@ void EnWood02_Update(Actor* thisx, PlayState* play2) {
                  (player->linearVelocity != 0.0f)) ||
                 ((player->rideActor != NULL) && (sqrt(this->actor.xyzDistToPlayerSq) < 60.0) &&
                  (player->rideActor->speedXZ != 0.0f))) {
-                if (GameInteractor_Should(VB_BUSH_DROP_ITEM, true, this)) {
+                
                     if ((this->unk_14C >= 0) && (this->unk_14C < 0x64)) {
                         Item_DropCollectibleRandom(play, &this->actor, &this->actor.world.pos,
                                                    ((this->unk_14C << 4) | 0x8000));
                     }
                     this->unk_14C = -0x15;
                     Audio_PlayActorSound2(&this->actor, NA_SE_EV_TREE_SWING);
-                }
+                
             }
         }
     } else { // Leaves
@@ -443,13 +432,11 @@ void EnWood02_Draw(Actor* thisx, PlayState* play) {
     }
 
     Gfx_SetupDL_25Xlu(gfxCtx);
-    if (GameInteractor_Should(VB_TREE_SETUP_DRAW,
-                              (this->actor.params == WOOD_LEAF_GREEN) || (this->actor.params == WOOD_LEAF_YELLOW),
-                              this)) {
+    if (((this->actor.params == WOOD_LEAF_GREEN) || (this->actor.params == WOOD_LEAF_YELLOW))) {
         Gfx_SetupDL_25Opa(gfxCtx);
         gDPSetPrimColor(POLY_OPA_DISP++, 0, 0, red, green, blue, 127);
         Gfx_DrawDListOpa(play, object_wood02_DL_000700);
-    } else if (GameInteractor_Should(VB_TREE_SETUP_DRAW, D_80B3BF70[this->drawType & 0xF] != NULL, this)) {
+    } else if ((D_80B3BF70[this->drawType & 0xF] != NULL)) {
         Gfx_DrawDListOpa(play, D_80B3BF54[this->drawType & 0xF]);
         gDPSetEnvColor(POLY_XLU_DISP++, red, green, blue, 0);
         gSPMatrix(POLY_XLU_DISP++, MATRIX_NEWMTX(gfxCtx), G_MTX_NOPUSH | G_MTX_LOAD | G_MTX_MODELVIEW);

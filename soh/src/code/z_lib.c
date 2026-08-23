@@ -201,10 +201,6 @@ void func_80077D10(f32* arg0, s16* arg1, Input* input) {
     f32 relX = input->rel.stick_x;
     f32 relY = input->rel.stick_y;
 
-    if (CVarGetInteger(CVAR_ENHANCEMENT("MirroredWorld"), 0)) {
-        relX = -input->rel.stick_x;
-    }
-
     *arg0 = sqrtf(SQ(relX) + SQ(relY));
     *arg0 = (60.0f < *arg0) ? 60.0f : *arg0;
 

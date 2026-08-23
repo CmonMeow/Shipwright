@@ -1,9 +1,6 @@
 #include "global.h"
 #include "vt.h"
 #include <string.h>
-
-#include "soh/Enhancements/game-interactor/GameInteractor.h"
-#include "soh/Enhancements/controls/Mouse.h"
 #include "soh/OTRGlobals.h"
 #include "soh/ResourceManagerHelpers.h"
 
@@ -228,30 +225,6 @@ void PadMgr_ProcessInputs(PadMgr* padMgr) {
             case 0:
                 input->cur = *padnow1;
 
-                if (GameInteractor_DisableZTargetingActive()) {
-                    input->cur.button &= ~(BTN_Z);
-                }
-
-                uint32_t emulatedButtons = GameInteractor_GetEmulatedButtons();
-                if (emulatedButtons) {
-                    input->cur.button |= emulatedButtons;
-                    GameInteractor_SetEmulatedButtons(0);
-                }
-
-                if (GameInteractor_ReverseControlsActive()) {
-                    if (input->cur.stick_x == -128) {
-                        input->cur.stick_x = 127;
-                    } else {
-                        input->cur.stick_x *= -1;
-                    }
-
-                    if (input->cur.stick_y == -128) {
-                        input->cur.stick_y = 127;
-                    } else {
-                        input->cur.stick_y *= -1;
-                    }
-                }
-
                 if (!padMgr->ctrlrIsConnected[i]) {
                     padMgr->ctrlrIsConnected[i] = true;
                     osSyncPrintf(VT_FGCOL(YELLOW));
@@ -293,11 +266,10 @@ void PadMgr_ProcessInputs(PadMgr* padMgr) {
         PadUtils_UpdateRelXY(input);
         input->press.stick_x += (s8)(input->cur.stick_x - input->prev.stick_x);
         input->press.stick_y += (s8)(input->cur.stick_y - input->prev.stick_y);
-        // #region SOH [Enhancement]
+        // PC controller right-stick state.
         PadUtils_UpdateRelRXY(input);
         input->press.right_stick_x += (s8)(input->cur.right_stick_x - input->prev.right_stick_x);
         input->press.right_stick_y += (s8)(input->cur.right_stick_y - input->prev.right_stick_y);
-        // #endregion
     }
 
     uint8_t rumble = (padMgr->rumbleEnable[0] > 0);
@@ -318,7 +290,6 @@ void PadMgr_HandleRetraceMsg(PadMgr* padMgr) {
     osRecvMesg(queue, NULL, OS_MESG_BLOCK);
     osContGetReadData(padMgr->pads);
 
-    Mouse_UpdateAll();
 
     for (i = 0; i < __osMaxControllers; i++) {
         padMgr->padStatus[i].status = Controller_ShouldRumble(i);
@@ -393,11 +364,10 @@ void PadMgr_RequestPadData(PadMgr* padMgr, Input* inputs, s32 mode) {
             PadUtils_UpdateRelXY(newInput);
             newInput->press.stick_x += (s8)(newInput->cur.stick_x - newInput->prev.stick_x);
             newInput->press.stick_y += (s8)(newInput->cur.stick_y - newInput->prev.stick_y);
-            // #region SOH [Enhancement]
+            // PC controller right-stick state.
             PadUtils_UpdateRelRXY(newInput);
             newInput->press.right_stick_x += (s8)(newInput->cur.right_stick_x - newInput->prev.right_stick_x);
             newInput->press.right_stick_y += (s8)(newInput->cur.right_stick_y - newInput->prev.right_stick_y);
-            // #endregion
         }
         ogInput++;
         newInput++;

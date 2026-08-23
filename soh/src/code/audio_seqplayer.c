@@ -3,7 +3,6 @@
 #include <libultraship/libultra.h>
 #include "global.h"
 
-#include "soh/Enhancements/audio/AudioEditor.h"
 #include "soh/ResourceManagerHelpers.h"
 
 extern char** sequenceMap;
@@ -1063,12 +1062,7 @@ void AudioSeq_SequenceChannelProcessScript(SequenceChannel* channel) {
                         command = (u8)parameters[0];
 
                         if (seqPlayer->defaultFont != 0xFF) {
-                            if (gAudioContext.seqReplaced[seqPlayer->playerIdx]) {
-                                seqPlayer->seqId = gAudioContext.seqToPlay[seqPlayer->playerIdx];
-                                gAudioContext.seqReplaced[seqPlayer->playerIdx] = 0;
-                            }
-                            u16 seqId = AudioEditor_GetReplacementSeq(seqPlayer->seqId);
-                            SequenceData sDat = ResourceMgr_LoadSeqByName(sequenceMap[seqId]);
+                            SequenceData sDat = ResourceMgr_LoadSeqByName(sequenceMap[seqPlayer->seqId]);
                             command = sDat.fonts[sDat.numFonts - result - 1];
                         }
 
@@ -1178,12 +1172,7 @@ void AudioSeq_SequenceChannelProcessScript(SequenceChannel* channel) {
                         command = (u8)parameters[0];
 
                         if (seqPlayer->defaultFont != 0xFF) {
-                            if (gAudioContext.seqReplaced[seqPlayer->playerIdx]) {
-                                seqPlayer->seqId = gAudioContext.seqToPlay[seqPlayer->playerIdx];
-                                gAudioContext.seqReplaced[seqPlayer->playerIdx] = 0;
-                            }
-                            u16 seqId = AudioEditor_GetReplacementSeq(seqPlayer->seqId);
-                            SequenceData sDat = ResourceMgr_LoadSeqByName(sequenceMap[seqId]);
+                            SequenceData sDat = ResourceMgr_LoadSeqByName(sequenceMap[seqPlayer->seqId]);
 
                             // The game apparantely would sometimes do negative array lookups, the result of which would
                             // get rejected by AudioHeap_SearchCaches, never changing the actual fontid.
