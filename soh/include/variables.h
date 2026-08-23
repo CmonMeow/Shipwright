@@ -84,7 +84,7 @@ extern "C"
 	extern MapData gMapDataTable;
 	extern s16 gSpoilingItems[3];
 	extern s16 gSpoilingItemReverts[3];
-	extern FlexSkeletonHeader* gPlayerSkelHeaders[2];
+	extern FlexSkeletonHeader* gPlayerSkelHeaders;
 	extern u8 gPlayerModelTypes[PLAYER_MODELGROUP_MAX][PLAYER_MODELGROUPENTRY_MAX];
 	extern Gfx* gPlayerLeftHandBgsDLs[];
 	extern Gfx* gPlayerLeftHandOpenDLs[];

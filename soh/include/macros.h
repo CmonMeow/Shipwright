@@ -59,7 +59,6 @@
 // This build keeps the child-world scene variants while always using adult Link.
 #define PLAYER_AGE LINK_AGE_ADULT
 #define PLAYER_IS_ADULT (PLAYER_AGE == LINK_AGE_ADULT)
-#define PLAYER_IS_CHILD (PLAYER_AGE == LINK_AGE_CHILD)
 
 #define YEARS_CHILD 5
 #define YEARS_ADULT 17

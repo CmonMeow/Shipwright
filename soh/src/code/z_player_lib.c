@@ -19,7 +19,7 @@ typedef struct {
     /* 0x04 */ Vec3f pos;
 } BowStringData; // size = 0x10
 
-FlexSkeletonHeader* gPlayerSkelHeaders[] = { &gLinkAdultSkel, &gLinkChildSkel };
+FlexSkeletonHeader* gPlayerSkelHeaders = &gLinkAdultSkel;
 
 s16 sBootData[PLAYER_BOOTS_MAX][17] = {
     { 200, 1000, 300, 700, 550, 270, 600, 350, 800, 600, -100, 600, 590, 750, 125, 200, 130 },
@@ -456,9 +456,6 @@ void Player_SetBootData(PlayState* play, Player* this) {
 
     currentBoots = this->currentBoots;
     if (currentBoots == PLAYER_BOOTS_KOKIRI) {
-        if (!PLAYER_IS_ADULT) {
-            currentBoots = PLAYER_BOOTS_KOKIRI_CHILD;
-        }
     } else if (currentBoots == PLAYER_BOOTS_IRON) {
         if (this->stateFlags1 & PLAYER_STATE1_IN_WATER) {
             currentBoots = PLAYER_BOOTS_IRON_UNDERWATER;
@@ -516,7 +513,7 @@ s32 Player_CheckHostileLockOn(Player* this) {
 }
 
 s32 Player_IsChildWithHylianShield(Player* this) {
-    return PLAYER_AGE != 0 && (this->currentShield == PLAYER_SHIELD_HYLIAN);
+    return false;
 }
 
 s32 Player_ActionToModelGroup(Player* this, s32 actionParam) {
@@ -689,13 +686,7 @@ s32 Player_IsBurningStickInRange(PlayState* play, Vec3f* pos, f32 xzRange, f32 y
 s32 Player_GetStrength(void) {
     s32 strengthUpgrade = CUR_UPG_VALUE(UPG_STRENGTH);
 
-    if (PLAYER_IS_ADULT) {
-        return strengthUpgrade;
-    } else if (strengthUpgrade != 0) {
-        return PLAYER_STR_BRACELET;
-    } else {
-        return PLAYER_STR_NONE;
-    }
+    return strengthUpgrade;
 }
 
 u8 Player_GetMask(PlayState* play) {
@@ -781,7 +772,7 @@ s32 Player_HoldsTwoHandedWeapon(Player* this) {
 }
 
 s32 Player_HoldsBrokenKnife(Player* this) {
-    return (this->heldItemAction == PLAYER_IA_SWORD_BIGGORON) && (gSaveContext.swordHealth <= 0.0f);
+    return false;
 }
 
 s32 Player_ActionToBottle(Player* this, s32 actionParam) {
@@ -986,7 +977,7 @@ void Player_DrawImpl(PlayState* play, void** skeleton, Vec3s* jointTable, s32 dL
     if ((overrideLimbDraw != Player_OverrideLimbDrawGameplayFirstPerson) &&
         (overrideLimbDraw != Player_OverrideLimbDrawGameplayCrawling) &&
         (gSaveContext.gameMode != GAMEMODE_END_CREDITS)) {
-        if (PLAYER_IS_ADULT) {
+        {
             s32 strengthUpgrade = CUR_UPG_VALUE(UPG_STRENGTH);
 
             if (strengthUpgrade >= 2) { // silver or gold gauntlets
@@ -1010,10 +1001,6 @@ void Player_DrawImpl(PlayState* play, void** skeleton, Vec3s* jointTable, s32 dL
 
                 gSPDisplayList(POLY_OPA_DISP++, bootDLists[0]);
                 gSPDisplayList(POLY_OPA_DISP++, bootDLists[1]);
-            }
-        } else {
-            if (Player_GetStrength() > PLAYER_STR_NONE) {
-                gSPDisplayList(POLY_OPA_DISP++, gLinkChildGoronBraceletDL);
             }
         }
     }
@@ -1137,17 +1124,6 @@ s32 Player_OverrideLimbDrawGameplayCommon(PlayState* play, s32 limbIndex, Gfx** 
         sRightHandType = this->rightHandType;
         D_80160000 = &this->meleeWeaponInfo[2].base;
 
-        if (!PLAYER_IS_ADULT) {
-            if (!(this->skelAnime.movementFlags & 4) || (this->skelAnime.movementFlags & 1)) {
-                pos->x *= 0.64f;
-                pos->z *= 0.64f;
-            }
-
-            if (!(this->skelAnime.movementFlags & 4) || (this->skelAnime.movementFlags & 2)) {
-                pos->y *= 0.64f;
-            }
-        }
-
         pos->y -= this->unk_6C4;
 
         if (this->unk_6C2 != 0) {
@@ -1163,12 +1139,12 @@ s32 Player_OverrideLimbDrawGameplayCommon(PlayState* play, s32 limbIndex, Gfx** 
         }
 
         if (limbIndex == PLAYER_LIMB_HEAD) {
-            
+
             rot->x += this->headLimbRot.z;
             rot->y -= this->headLimbRot.y;
             rot->z += this->headLimbRot.x;
         } else if (limbIndex == PLAYER_LIMB_L_HAND) {
-            
+
         } else if (limbIndex == PLAYER_LIMB_UPPER) {
             if (this->upperLimbYawSecondary != 0) {
                 Matrix_RotateZ(0x44C * (M_PI / 0x8000), MTXMODE_APPLY);
@@ -1236,17 +1212,8 @@ s32 Player_OverrideLimbDrawGameplayDefault(PlayState* play, s32 limbIndex, Gfx**
 
             if ((this->sheathType == PLAYER_MODELTYPE_SHEATH_18) || (this->sheathType == PLAYER_MODELTYPE_SHEATH_19)) {
                 dLists += this->currentShield * 4;
-                if (!PLAYER_IS_ADULT && (this->currentShield < PLAYER_SHIELD_HYLIAN) &&
-                    (gSaveContext.equips.buttonItems[0] != ITEM_SWORD_KOKIRI)) {
-                    dLists += PLAYER_SHIELD_MAX * 4;
-                }
+            
             } else {
-                if (!PLAYER_IS_ADULT &&
-                    ((this->sheathType == PLAYER_MODELTYPE_SHEATH_16) ||
-                     (this->sheathType == PLAYER_MODELTYPE_SHEATH_17)) &&
-                    (gSaveContext.equips.buttonItems[0] != ITEM_SWORD_KOKIRI)) {
-                    dLists = &sSheathWithSwordDLs[PLAYER_SHIELD_MAX * 4];
-                }
             }
 
             if (dLists[sDListsLodOffset] != NULL) {
@@ -1665,9 +1632,6 @@ void Player_PostLimbDrawGameplay(PlayState* play, s32 limbIndex, Gfx** dList, Ve
 
             Matrix_Scale(1.0f, this->unk_858, 1.0f, MTXMODE_APPLY);
 
-            if (!PLAYER_IS_ADULT) {
-                Matrix_RotateZ(this->unk_858 * -0.2f, MTXMODE_APPLY);
-            }
 
             gSPMatrix(POLY_XLU_DISP++, MATRIX_NEWMTX(play->state.gfxCtx), G_MTX_NOPUSH | G_MTX_LOAD | G_MTX_MODELVIEW);
             gSPDisplayList(POLY_XLU_DISP++, stringData->dList);
@@ -1757,7 +1721,7 @@ u32 func_80091738(PlayState* play, u8* segment, SkelAnime* skelAnime) {
     gSegments[4] = VIRTUAL_TO_PHYSICAL(segment + 0x3800);
     gSegments[6] = VIRTUAL_TO_PHYSICAL(segment + 0x8800);
 
-    SkelAnime_InitLink(play, skelAnime, gPlayerSkelHeaders[PLAYER_AGE], &gPlayerAnim_link_normal_wait, 9, ptr,
+    SkelAnime_InitLink(play, skelAnime, gPlayerSkelHeaders, &gPlayerAnim_link_normal_wait, 9, ptr,
                        ptr, PLAYER_LIMB_MAX);
 
     return size + 0x8800 + 0x90;
@@ -1779,11 +1743,6 @@ s32 Player_OverrideLimbDrawPause(PlayState* play, s32 limbIndex, Gfx** dList, Ve
     s32 dListOffset = 0;
     Gfx** dLists;
     size_t ptrSize = sizeof(uint32_t);
-
-    if ((modelGroup == PLAYER_MODELGROUP_SWORD_AND_SHIELD) && !PLAYER_IS_ADULT &&
-        (playerSwordAndShield[1] == PLAYER_SHIELD_HYLIAN)) {
-        modelGroup = PLAYER_MODELGROUP_CHILD_HYLIAN_SHIELD;
-    }
 
     if (limbIndex == PLAYER_LIMB_L_HAND) {
         type = gPlayerModelTypes[modelGroup][PLAYER_MODELGROUPENTRY_LEFT_HAND];
@@ -1943,20 +1902,12 @@ void Player_DrawPause(PlayState* play, u8* segment, SkelAnime* skelAnime, Vec3f*
     gSegments[4] = VIRTUAL_TO_PHYSICAL(segment + 0x3800);
     gSegments[6] = VIRTUAL_TO_PHYSICAL(segment + 0x8800);
 
-    if (!PLAYER_IS_ADULT) {
-            if (shield == PLAYER_SHIELD_DEKU) {
-                srcTable = gLinkPauseChildDekuShieldJointTable;
-            } else {
-                srcTable = gLinkPauseChildJointTable;
-            }
-        } else {
-            if (sword == PLAYER_SWORD_BIGGORON) {
-                srcTable = gLinkPauseAdultBgsJointTable;
-            } else if (shield != PLAYER_SHIELD_NONE) {
-                srcTable = gLinkPauseAdultShieldJointTable;
-            } else {
-                srcTable = gLinkPauseAdultJointTable;
-            }
+    if (sword == PLAYER_SWORD_BIGGORON) {
+        srcTable = gLinkPauseAdultBgsJointTable;
+    } else if (shield != PLAYER_SHIELD_NONE) {
+        srcTable = gLinkPauseAdultShieldJointTable;
+    } else {
+        srcTable = gLinkPauseAdultJointTable;
     }
 
     srcTable = ResourceMgr_LoadArrayByNameAsVec3s(srcTable);

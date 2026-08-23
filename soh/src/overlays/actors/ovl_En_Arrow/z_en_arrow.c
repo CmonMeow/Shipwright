@@ -277,9 +277,8 @@ void EnArrow_Fly(EnArrow* this, PlayState* play) {
     Vec3f sp60;
     Vec3f sp54;
 
-    if (DECR(this->timer) == 0) {
-        Actor_Kill(&this->actor);
-        return;
+    if (this->timer > 0) {
+        this->timer--;
     }
 
     if (this->timer < 7.2000003f) {

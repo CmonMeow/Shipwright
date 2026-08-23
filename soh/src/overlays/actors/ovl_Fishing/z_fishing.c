@@ -845,11 +845,9 @@ void Fishing_Init(Actor* thisx, PlayState* play2) {
     Actor_ProcessInitChain(thisx, sInitChain);
     ActorShape_Init(&thisx->shape, 0.0f, NULL, 0.0f);
 
-    if (KREG(5) != 0) {
-        sLinkAge = LINK_AGE_CHILD;
-    } else {
-        sLinkAge = gSaveContext.linkAge;
-    }
+    // The pond uses its adult rules even though the surrounding world is
+    // intentionally loaded with child-age scene variants.
+    sLinkAge = LINK_AGE_ADULT;
 
     if (thisx->params < EN_FISH_PARAM) {
         sReelLock = 0;
