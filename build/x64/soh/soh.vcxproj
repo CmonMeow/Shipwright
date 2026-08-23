@@ -3819,7 +3819,7 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
   <PropertyGroup>
     <TrackFileAccess>false</TrackFileAccess>
     <MinimalRebuildFromTracking>false</MinimalRebuildFromTracking>
-    <TLogLocation>$(ProjectDir)soh.dir\Release\fresh38.tlog\</TLogLocation>
+    <TLogLocation>$(ProjectDir)soh.dir\Release\fresh39.tlog\</TLogLocation>
   </PropertyGroup>
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

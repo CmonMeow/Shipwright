@@ -3365,121 +3365,6 @@ void Interface_DrawItemIconTexture(PlayState* play, void* texture, s16 button) {
     CLOSE_DISPS(play->state.gfxCtx);
 }
 
-const char* _gAmmoDigit0Tex[] = { gAmmoDigit0Tex, gAmmoDigit1Tex, gAmmoDigit2Tex,         gAmmoDigit3Tex,
-                                  gAmmoDigit4Tex, gAmmoDigit5Tex, gAmmoDigit6Tex,         gAmmoDigit7Tex,
-                                  gAmmoDigit8Tex, gAmmoDigit9Tex, gUnusedAmmoDigitHalfTex };
-
-void Interface_DrawAmmoCount(PlayState* play, s16 button, s16 alpha) {
-    s16 i;
-    s16 ammo;
-    s16 X_Margins_CL;
-    s16 X_Margins_CR;
-    s16 X_Margins_CD;
-    s16 Y_Margins_CL;
-    s16 Y_Margins_CR;
-    s16 Y_Margins_CD;
-    s16 X_Margins_BtnB;
-    s16 Y_Margins_BtnB;
-    
-        X_Margins_BtnB = 0;
-        Y_Margins_BtnB = 0;
-    
-    
-        X_Margins_CL = 0;
-        Y_Margins_CL = 0;
-    
-    
-        X_Margins_CR = 0;
-        Y_Margins_CR = 0;
-    
-    
-        X_Margins_CD = 0;
-        Y_Margins_CD = 0;
-    
-    
-    const s16 ItemIconPos_ori[4][2] = {
-        { R_ITEM_AMMO_X(0) + X_Margins_BtnB, R_ITEM_AMMO_Y(0) + Y_Margins_BtnB }, // Bow on Epona?
-        { R_ITEM_AMMO_X(1) + X_Margins_CL, R_ITEM_AMMO_Y(1) + Y_Margins_CL },
-        { R_ITEM_AMMO_X(2) + X_Margins_CD, R_ITEM_AMMO_Y(2) + Y_Margins_CD },
-        { R_ITEM_AMMO_X(3) + X_Margins_CR, R_ITEM_AMMO_Y(3) + Y_Margins_CR }
-    };
-    s16 ItemIconPos[4][2];
-    // B Button
-    s16 PosX_adjust = 1;
-    s16 PosY_adjust = 17;
-    
-        ItemIconPos[0][0] = OTRGetRectDimensionFromRightEdge(ItemIconPos_ori[0][0]);
-        ItemIconPos[0][1] = ItemIconPos_ori[0][1];
-    
-    // C button Left
-    
-        ItemIconPos[1][0] = OTRGetRectDimensionFromRightEdge(ItemIconPos_ori[1][0]);
-        ItemIconPos[1][1] = ItemIconPos_ori[1][1];
-    
-    // C Button down
-    
-        ItemIconPos[2][0] = OTRGetRectDimensionFromRightEdge(ItemIconPos_ori[2][0]);
-        ItemIconPos[2][1] = ItemIconPos_ori[2][1];
-    
-    // C button Right
-    
-        ItemIconPos[3][0] = OTRGetRectDimensionFromRightEdge(ItemIconPos_ori[3][0]);
-        ItemIconPos[3][1] = ItemIconPos_ori[3][1];
-    
-
-    OPEN_DISPS(play->state.gfxCtx);
-
-    i = gSaveContext.equips.buttonItems[button];
-
-    if ((((i == ITEM_STICK) || (i == ITEM_NUT) || (i == ITEM_BOMB) || (i == ITEM_BOW) ||
-                               ((i >= ITEM_BOW_ARROW_FIRE) && (i <= ITEM_BOW_ARROW_LIGHT)) || (i == ITEM_SLINGSHOT) ||
-                               (i == ITEM_BOMBCHU) || (i == ITEM_BEAN)))) {
-        if ((i >= ITEM_BOW_ARROW_FIRE) && (i <= ITEM_BOW_ARROW_LIGHT)) {
-            i = ITEM_BOW;
-        }
-
-        ammo = AMMO(i);
-
-        gDPPipeSync(OVERLAY_DISP++);
-
-        if ((button == 0) && (gSaveContext.minigameState == 1)) {
-            ammo = play->interfaceCtx.hbaAmmo;
-        } else if ((button == 0) && (play->shootingGalleryStatus > 1)) {
-            ammo = play->shootingGalleryStatus - 1;
-        } else if ((button == 0) && (play->sceneNum == SCENE_BOMBCHU_BOWLING_ALLEY) && Flags_GetSwitch(play, 0x38)) {
-            ammo = play->bombchuBowlingStatus;
-            if (ammo < 0) {
-                ammo = 0;
-            }
-        } else if (((i == ITEM_BOW) && (AMMO(i) == CUR_CAPACITY(UPG_QUIVER))) ||
-                   ((i == ITEM_BOMB) && (AMMO(i) == CUR_CAPACITY(UPG_BOMB_BAG))) ||
-                   ((i == ITEM_SLINGSHOT) && (AMMO(i) == CUR_CAPACITY(UPG_BULLET_BAG))) ||
-                   ((i == ITEM_STICK) && (AMMO(i) == CUR_CAPACITY(UPG_STICKS))) ||
-                   ((i == ITEM_NUT) && (AMMO(i) == CUR_CAPACITY(UPG_NUTS))) || ((i == ITEM_BOMBCHU) && (ammo == 50)) ||
-                   ((i == ITEM_BEAN) && (ammo == 15)) || (false)) {
-            gDPSetPrimColor(OVERLAY_DISP++, 0, 0, 120, 255, 0, alpha);
-        }
-
-        if (ammo == 0) {
-            gDPSetPrimColor(OVERLAY_DISP++, 0, 0, 100, 100, 100, alpha);
-        }
-
-        for (i = 0; ammo >= 10; i++) {
-            ammo -= 10;
-        }
-
-        if (i != 0) {
-            OVERLAY_DISP = Gfx_TextureIA8(OVERLAY_DISP, (u8*)_gAmmoDigit0Tex[i], 8, 8, ItemIconPos[button][0],
-                                          ItemIconPos[button][1], 8, 8, 1 << 10, 1 << 10);
-        }
-
-        OVERLAY_DISP = Gfx_TextureIA8(OVERLAY_DISP, (u8*)_gAmmoDigit0Tex[ammo], 8, 8, ItemIconPos[button][0] + 6,
-                                      ItemIconPos[button][1], 8, 8, 1 << 10, 1 << 10);
-    }
-
-    CLOSE_DISPS(play->state.gfxCtx);
-}
-
 void Interface_DrawActionButton(PlayState* play, f32 x, f32 y) {
     InterfaceContext* interfaceCtx = &play->interfaceCtx;
 
@@ -3854,7 +3739,6 @@ void Interface_Draw(PlayState* play) {
                     gDPPipeSync(OVERLAY_DISP++);
                     gDPSetCombineLERP(OVERLAY_DISP++, PRIMITIVE, ENVIRONMENT, TEXEL0, ENVIRONMENT, TEXEL0, 0, PRIMITIVE,
                                       0, PRIMITIVE, ENVIRONMENT, TEXEL0, ENVIRONMENT, TEXEL0, 0, PRIMITIVE, 0);
-                    Interface_DrawAmmoCount(play, 0, interfaceCtx->bAlpha);
                 }
             }
         } else {
@@ -3909,7 +3793,6 @@ void Interface_Draw(PlayState* play) {
             gDPPipeSync(OVERLAY_DISP++);
             gDPSetCombineLERP(OVERLAY_DISP++, PRIMITIVE, ENVIRONMENT, TEXEL0, ENVIRONMENT, TEXEL0, 0, PRIMITIVE, 0,
                               PRIMITIVE, ENVIRONMENT, TEXEL0, ENVIRONMENT, TEXEL0, 0, PRIMITIVE, 0);
-            Interface_DrawAmmoCount(play, 1, interfaceCtx->cLeftAlpha);
         }
 
         gDPPipeSync(OVERLAY_DISP++);
@@ -3922,7 +3805,6 @@ void Interface_Draw(PlayState* play) {
             gDPPipeSync(OVERLAY_DISP++);
             gDPSetCombineLERP(OVERLAY_DISP++, PRIMITIVE, ENVIRONMENT, TEXEL0, ENVIRONMENT, TEXEL0, 0, PRIMITIVE, 0,
                               PRIMITIVE, ENVIRONMENT, TEXEL0, ENVIRONMENT, TEXEL0, 0, PRIMITIVE, 0);
-            Interface_DrawAmmoCount(play, 2, interfaceCtx->cDownAlpha);
         }
 
         gDPPipeSync(OVERLAY_DISP++);
@@ -3935,7 +3817,6 @@ void Interface_Draw(PlayState* play) {
             gDPPipeSync(OVERLAY_DISP++);
             gDPSetCombineLERP(OVERLAY_DISP++, PRIMITIVE, ENVIRONMENT, TEXEL0, ENVIRONMENT, TEXEL0, 0, PRIMITIVE, 0,
                               PRIMITIVE, ENVIRONMENT, TEXEL0, ENVIRONMENT, TEXEL0, 0, PRIMITIVE, 0);
-            Interface_DrawAmmoCount(play, 3, interfaceCtx->cRightAlpha);
         }
 
         // A Button

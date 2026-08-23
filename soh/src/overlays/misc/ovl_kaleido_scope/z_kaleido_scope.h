@@ -40,8 +40,6 @@ Gfx* KaleidoScope_QuadTextureIA4(Gfx* gfx, void* texture, s16 width, s16 height,
 Gfx* KaleidoScope_QuadTextureIA8(Gfx* gfx, void* texture, s16 width, s16 height, u16 point);
 void KaleidoScope_MoveCursorToSpecialPos(PlayState* play, u16 specialPos);
 void KaleidoScope_DrawQuadTextureRGBA32(GraphicsContext* gfxCtx, void* texture, u16 width, u16 height, u16 point);
-void KaleidoScope_ProcessPlayerPreRender();
-void KaleidoScope_SetupPlayerPreRender(PlayState* play);
 void KaleidoScope_DrawCursor(PlayState* play, u16 pageIndex);
 void KaleidoScope_UpdateDungeonMap(PlayState* play);
 

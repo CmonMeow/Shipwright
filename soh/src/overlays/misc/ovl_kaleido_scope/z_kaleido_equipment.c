@@ -53,9 +53,9 @@ void KaleidoScope_DrawEquipmentImage(PlayState* play, void* source, u32 width, u
 
     textureCount = 1;
 
-    // VERTEX Y EXTEND
-    pauseCtx->equipVtx[vtxIndex + 2].v.ob[1] -= 80;
-    pauseCtx->equipVtx[vtxIndex + 3].v.ob[1] -= 80;
+    // Set the lower edge absolutely so repeated draws cannot make the quad drift each frame.
+    pauseCtx->equipVtx[vtxIndex + 2].v.ob[1] = pauseCtx->equipVtx[vtxIndex + 0].v.ob[1] - height;
+    pauseCtx->equipVtx[vtxIndex + 3].v.ob[1] = pauseCtx->equipVtx[vtxIndex + 1].v.ob[1] - height;
 
     for (i = 0; i < textureCount; i++) {
         gSPVertex(POLY_OPA_DISP++, &pauseCtx->equipVtx[vtxIndex], 4, 0);
@@ -612,17 +612,6 @@ void KaleidoScope_DrawEquipment(PlayState* play) {
         }
     }
 
-    KaleidoScope_DrawPlayerWork(play);
-
-    // if ((pauseCtx->unk_1E4 == 7) && (sEquipTimer == 10)) {
-    // KaleidoScope_SetupPlayerPreRender(play);
-    //}
-
-    if ((pauseCtx->unk_1E4 == 7) && (sEquipTimer == 9)) {
-        //! @bug: This function shouldn't take any arguments
-        // KaleidoScope_ProcessPlayerPreRender(play);
-    }
-
     // gSPInvalidateTexCache(POLY_OPA_DISP++, 0);
     gSPInvalidateTexCache(POLY_OPA_DISP++, pauseCtx->iconItemSegment);
     // gSPInvalidateTexCache(POLY_OPA_DISP++, pauseCtx->iconItem24Segment);
@@ -635,8 +624,12 @@ void KaleidoScope_DrawEquipment(PlayState* play) {
     gSPSegment(POLY_OPA_DISP++, 0x0B, play->interfaceCtx.mapSegment);
     // gSPSegment(POLY_OPA_DISP++, 0x0C, pauseCtx->iconItemAltSegment);
 
-    Gfx_SetupDL_42Opa(play->state.gfxCtx);
-    KaleidoScope_DrawEquipmentImage(play, pauseCtx->playerSegment, PAUSE_EQUIP_PLAYER_WIDTH, PAUSE_EQUIP_PLAYER_HEIGHT);
+    if (pauseCtx->pageIndex == PAUSE_EQUIP) {
+        KaleidoScope_DrawPlayerWork(play);
+        Gfx_SetupDL_42Opa(play->state.gfxCtx);
+        KaleidoScope_DrawEquipmentImage(play, pauseCtx->playerSegment, PAUSE_EQUIP_PLAYER_WIDTH,
+                                        PAUSE_EQUIP_PLAYER_HEIGHT);
+    }
 
     if (gUpgradeMasks[0]) {}
 

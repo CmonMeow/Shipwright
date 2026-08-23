@@ -2257,8 +2257,6 @@ void Player_InitExplosiveIA(PlayState* play, Player* this) {
             if (play->bombchuBowlingStatus == 0) {
                 play->bombchuBowlingStatus = -1;
             }
-        } else {
-            Inventory_ChangeAmmo(explosiveInfo->itemId, -1);
         }
 
         this->interactRangeActor = spawnedActor;
@@ -2593,7 +2591,7 @@ s32 func_80834380(PlayState* play, Player* this, s32* itemPtr, s32* typePtr) {
     } else if (play->shootingGalleryStatus != 0) {
         return play->shootingGalleryStatus;
     } else {
-        return AMMO(*itemPtr);
+        return 1;
     }
 }
 
@@ -2933,8 +2931,6 @@ s32 func_808350A4(PlayState* play, Player* this) {
                 play->interfaceCtx.hbaAmmo--;
             } else if (play->shootingGalleryStatus != 0) {
                 play->shootingGalleryStatus--;
-            } else {
-                Inventory_ChangeAmmo(item, -1);
             }
 
             if (play->shootingGalleryStatus == 1) {
@@ -3350,14 +3346,7 @@ void Player_UseItem(PlayState* play, Player* this, s32 item) {
             ((this->actor.bgCheckFlags & 1) &&
              ((itemAction == PLAYER_IA_HOOKSHOT) || (itemAction == PLAYER_IA_LONGSHOT)))) {
 
-            if ((play->bombchuBowlingStatus == 0) &&
-                (((itemAction == PLAYER_IA_DEKU_STICK) && (AMMO(ITEM_STICK) == 0)) ||
-                 ((itemAction == PLAYER_IA_MAGIC_BEAN) && (AMMO(ITEM_BEAN) == 0)) ||
-                  (temp = Player_ActionToExplosive(this, itemAction),
-                  ((temp >= 0) && (AMMO(sExplosiveInfos[temp].itemId) == 0))))) {
-                // Prevent some items from being used if player is out of ammo.
-                Sfx_PlaySfxCentered(NA_SE_SY_ERROR);
-            } else if (itemAction == PLAYER_IA_LENS_OF_TRUTH) {
+            if (itemAction == PLAYER_IA_LENS_OF_TRUTH) {
                 // Handle Lens of Truth
                 if (Magic_RequestChange(play, 0, MAGIC_CONSUME_LENS)) {
                     if (play->actorCtx.lensActive) {
@@ -3371,11 +3360,7 @@ void Player_UseItem(PlayState* play, Player* this, s32 item) {
                 }
             } else if (itemAction == PLAYER_IA_DEKU_NUT) {
                 // Handle Deku Nuts
-                if (AMMO(ITEM_NUT) != 0) {
-                    func_8083C61C(play, this);
-                } else {
-                    Sfx_PlaySfxCentered(NA_SE_SY_ERROR);
-                }
+                func_8083C61C(play, this);
             } else if ((temp = Player_ActionToMagicSpell(this, itemAction)) >= 0) {
                 // Handle magic spells
                 if (((itemAction == PLAYER_IA_FARORES_WIND) && (gSaveContext.respawn[RESPAWN_MODE_TOP].data > 0)) ||
@@ -5910,7 +5895,6 @@ s32 Player_ActionHandler_13(Player* this, PlayState* play) {
                               (this->itemAction == PLAYER_IA_BOTTLE_BUG))) &&
                             ((this->exchangeItemId != EXCH_ITEM_BEAN) || (this->itemAction == PLAYER_IA_MAGIC_BEAN))) {
                             if (this->exchangeItemId == EXCH_ITEM_BEAN) {
-                                Inventory_ChangeAmmo(ITEM_BEAN, -1);
                                 Player_SetupActionPreserveItemAction(play, this, Player_Action_8084279C, 0);
                                 this->stateFlags1 |= PLAYER_STATE1_IN_CUTSCENE;
                                 
@@ -6396,8 +6380,7 @@ s32 Player_ActionHandler_8(Player* this, PlayState* play) {
 }
 
 s32 func_8083C61C(PlayState* play, Player* this) {
-    if ((play->roomCtx.curRoom.behaviorType1 != ROOM_BEHAVIOR_TYPE1_2) && (this->actor.bgCheckFlags & 1) &&
-        (AMMO(ITEM_NUT) != 0)) {
+    if ((play->roomCtx.curRoom.behaviorType1 != ROOM_BEHAVIOR_TYPE1_2) && (this->actor.bgCheckFlags & 1)) {
         Player_SetupAction(play, this, Player_Action_8084E604, 0);
         Player_AnimPlayOnce(play, this, &gPlayerAnim_link_normal_light_bom);
         this->unk_6AD = 0;
@@ -8790,19 +8773,16 @@ void func_80842A28(PlayState* play, Player* this) {
 }
 
 void func_80842A88(PlayState* play, Player* this) {
-    Inventory_ChangeAmmo(ITEM_STICK, -1);
     Player_UseItem(play, this, ITEM_NONE);
 }
 
 s32 func_80842AC4(PlayState* play, Player* this) {
     if ((this->heldItemAction == PLAYER_IA_DEKU_STICK) && (this->unk_85C > 0.5f)) {
 
-        if ((AMMO(ITEM_STICK) != 0)) {
-            EffectSsStick_Spawn(play, &this->bodyPartsPos[PLAYER_BODYPART_R_HAND], this->actor.shape.rot.y + 0x8000);
-            this->unk_85C = 0.5f;
-            func_80842A88(play, this);
-            Player_PlaySfx(this, NA_SE_IT_WOODSTICK_BROKEN);
-        }
+        EffectSsStick_Spawn(play, &this->bodyPartsPos[PLAYER_BODYPART_R_HAND], this->actor.shape.rot.y + 0x8000);
+        this->unk_85C = 0.5f;
+        func_80842A88(play, this);
+        Player_PlaySfx(this, NA_SE_IT_WOODSTICK_BROKEN);
 
         return 1;
     }
@@ -11234,7 +11214,6 @@ void Player_UpdateBurningDekuStick(PlayState* play, Player* this) {
     temp = 1.0f;
     uint8_t vanillaShouldBurnOutCondition = DECR(this->unk_860) == 0;
     if ((vanillaShouldBurnOutCondition)) {
-        Inventory_ChangeAmmo(ITEM_STICK, -1);
         this->unk_860 = 1;
         temp = 0.0f;
         this->unk_85C = temp;
@@ -13625,7 +13604,6 @@ void Player_Action_8084E604(Player* this, PlayState* play) {
     if (LinkAnimation_Update(play, &this->skelAnime)) {
         func_8083A098(this, &gPlayerAnim_link_normal_light_bom_end, play);
     } else if (LinkAnimation_OnFrame(&this->skelAnime, 3.0f)) {
-        Inventory_ChangeAmmo(ITEM_NUT, -1);
         Actor_Spawn(&play->actorCtx, play, ACTOR_EN_ARROW, this->bodyPartsPos[PLAYER_BODYPART_R_HAND].x,
                     this->bodyPartsPos[PLAYER_BODYPART_R_HAND].y, this->bodyPartsPos[PLAYER_BODYPART_R_HAND].z, 4000,
                     this->actor.shape.rot.y, 0, ARROW_NUT);

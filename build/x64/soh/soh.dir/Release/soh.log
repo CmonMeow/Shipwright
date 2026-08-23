@@ -41,11 +41,6 @@ C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\debugger\colViewer.cpp
 C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\debugger\colViewer.cpp(63,28): warning C4244: 'initializing': conversion from 'float' to 'signed char', possible loss of data
 C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\debugger\colViewer.cpp(64,51): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
 C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\debugger\colViewer.cpp(64,28): warning C4244: 'initializing': conversion from 'float' to 'signed char', possible loss of data
-C:\Users\CmonMeow\Desktop\Shipwright\libultraship\include\fast\lus_gbi.h(133,9): warning C4005: 'GIMMCMD': macro redefinition
-  (compiling source file '../../../soh/soh/ResourceManagerHelpers.cpp')
-      C:\Users\CmonMeow\Desktop\Shipwright\libultraship\include\libultraship\libultra\gbi.h(255,9):
-      see previous definition of 'GIMMCMD'
-  
 C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\debugger\colViewer.cpp(441,77): warning C4244: 'argument': conversion from 'int' to 'f32', possible loss of data
 C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\debugger\colViewer.cpp(513,16): warning C4838: conversion from 'int16_t' to 'f32' requires a narrowing conversion
 C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\debugger\colViewer.cpp(513,29): warning C4838: conversion from 'int16_t' to 'f32' requires a narrowing conversion
@@ -75,6 +70,11 @@ C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\debugger\colViewer.cpp
 C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\debugger\colViewer.cpp(519,63): warning C4838: conversion from 'int16_t' to 'f32' requires a narrowing conversion
 C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\debugger\colViewer.cpp(520,16): warning C4838: conversion from 'int16_t' to 'f32' requires a narrowing conversion
 C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\debugger\colViewer.cpp(520,46): warning C4838: conversion from 'int16_t' to 'f32' requires a narrowing conversion
+C:\Users\CmonMeow\Desktop\Shipwright\libultraship\include\fast\lus_gbi.h(133,9): warning C4005: 'GIMMCMD': macro redefinition
+  (compiling source file '../../../soh/soh/ResourceManagerHelpers.cpp')
+      C:\Users\CmonMeow\Desktop\Shipwright\libultraship\include\libultraship\libultra\gbi.h(255,9):
+      see previous definition of 'GIMMCMD'
+  
 C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\ResourceManagerHelpers.cpp(19,107): warning C4267: 'return': conversion from 'size_t' to 'uint32_t', possible loss of data
 C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\ResourceManagerHelpers.cpp(140,28): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
 C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\debugger\colViewer.cpp(559,25): warning C4244: 'argument': conversion from 'double' to 'unsigned __int64', possible loss of data
@@ -278,12 +278,12 @@ C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SaveManager.cpp(543,100): warning C
 C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SaveManager.cpp(875,36): warning C4101: 'e': unreferenced local variable
 C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SaveManager.cpp(903,55): warning C4101: 'ex': unreferenced local variable
 C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SohGui\Menu.cpp(70,25): warning C4244: 'return': conversion from '__int64' to 'uint32_t', possible loss of data
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SohGui\Menu.cpp(97,64): warning C4267: '=': conversion from 'size_t' to 'uint32_t', possible loss of data
 C:\Users\CmonMeow\Desktop\Shipwright\libultraship\include\fast\lus_gbi.h(133,9): warning C4005: 'GIMMCMD': macro redefinition
   (compiling source file '../../../soh/soh/SohGui/ResolutionEditor.cpp')
       C:\Users\CmonMeow\Desktop\Shipwright\libultraship\include\libultraship\libultra\gbi.h(255,9):
       see previous definition of 'GIMMCMD'
   
-C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SohGui\Menu.cpp(97,64): warning C4267: '=': conversion from 'size_t' to 'uint32_t', possible loss of data
 C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SohGui\Menu.cpp(132,34): warning C4244: '=': conversion from 'int32_t' to 'float', possible loss of data
 C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SohGui\Menu.cpp(133,34): warning C4244: '=': conversion from 'int32_t' to 'float', possible loss of data
 C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SohGui\Menu.cpp(134,33): warning C4244: '=': conversion from 'int32_t' to 'float', possible loss of data
@@ -318,7 +318,6 @@ C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\frame_interpolation.cpp(246,20): wa
 C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\frame_interpolation.cpp(250,24): warning C4305: '+=': truncation from 'double' to 'f32'
 C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\frame_interpolation.cpp(252,24): warning C4305: '+=': truncation from 'double' to 'f32'
 C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\frame_interpolation.cpp(732,15): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-  CutsceneFactory.cpp
 C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SohGui\UIWidgets.cpp(31,32): warning C4018: '>=': signed/unsigned mismatch
 C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SohGui\UIWidgets.cpp(923,27): warning C4244: '=': conversion from 'double' to 'uint8_t', possible loss of data
 C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SohGui\UIWidgets.cpp(924,27): warning C4244: '=': conversion from 'double' to 'uint8_t', possible loss of data
@@ -331,16 +330,11 @@ C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SohGui\UIWidgets.cpp(1254,59): warn
 C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SohGui\UIWidgets.cpp(1254,59): warning C4244: 'initializing': conversion from 'float' to 'uint8_t', possible loss of data
 C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SohGui\UIWidgets.cpp(1254,72): warning C4838: conversion from 'float' to 'uint8_t' requires a narrowing conversion
 C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SohGui\UIWidgets.cpp(1254,72): warning C4244: 'initializing': conversion from 'float' to 'uint8_t', possible loss of data
+  CutsceneFactory.cpp
   PathFactory.cpp
 C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\resource\importer\AudioSampleFactory.cpp(80,16): warning C4267: 'return': conversion from 'size_t' to 'long', possible loss of data
 C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\resource\importer\AudioSampleFactory.cpp(289,32): warning C4267: '=': conversion from 'size_t' to 'u32', possible loss of data
 C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\resource\importer\AudioSampleFactory.cpp(294,66): warning C4267: '=': conversion from 'size_t' to 'u32', possible loss of data
-C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\resource\importer\CollisionHeaderFactory.cpp(235,86): warning C4267: '=': conversion from 'size_t' to 'uint16_t', possible loss of data
-C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\resource\importer\CollisionHeaderFactory.cpp(236,86): warning C4267: '=': conversion from 'size_t' to 'uint16_t', possible loss of data
-C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\resource\importer\CollisionHeaderFactory.cpp(237,76): warning C4267: '=': conversion from 'size_t' to 'uint32_t', possible loss of data
-C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\resource\importer\CollisionHeaderFactory.cpp(238,66): warning C4267: '=': conversion from 'size_t' to 'uint32_t', possible loss of data
-C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\resource\importer\CollisionHeaderFactory.cpp(239,68): warning C4267: '=': conversion from 'size_t' to 'int32_t', possible loss of data
-C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\resource\importer\CollisionHeaderFactory.cpp(240,90): warning C4267: '=': conversion from 'size_t' to 'uint16_t', possible loss of data
 C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\resource\importer\AudioSequenceFactory.cpp(26,27): warning C4018: '<': signed/unsigned mismatch
 C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\resource\importer\AudioSequenceFactory.cpp(38,27): warning C4018: '<': signed/unsigned mismatch
 C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\resource\importer\AudioSequenceFactory.cpp(182,51): warning C4244: '=': conversion from 'uint64_t' to 'uint16_t', possible loss of data
@@ -362,11 +356,17 @@ C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\resource\importer\AudioSequenceFact
 C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\resource\importer\AudioSequenceFactory.cpp(357,73): warning C4267: '=': conversion from 'size_t' to 'uint32_t', possible loss of data
 C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\resource\importer\AudioSequenceFactory.cpp(380,25): warning C4244: '=': conversion from 'float' to 'uint16_t', possible loss of data
 C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\resource\importer\AudioSequenceFactory.cpp(387,68): warning C4267: '=': conversion from 'size_t' to 'uint32_t', possible loss of data
-  PlayerAnimationFactory.cpp
-  SceneFactory.cpp
 C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\resource\importer\AudioSoundFontFactory.cpp(267,66): warning C4267: '=': conversion from 'size_t' to 'u8', possible loss of data
 C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\resource\importer\AudioSoundFontFactory.cpp(357,78): warning C4267: '=': conversion from 'size_t' to 'u8', possible loss of data
 C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\resource\importer\AudioSoundFontFactory.cpp(394,63): warning C4267: '=': conversion from 'size_t' to 'u16', possible loss of data
+  PlayerAnimationFactory.cpp
+  SceneFactory.cpp
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\resource\importer\CollisionHeaderFactory.cpp(235,86): warning C4267: '=': conversion from 'size_t' to 'uint16_t', possible loss of data
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\resource\importer\CollisionHeaderFactory.cpp(236,86): warning C4267: '=': conversion from 'size_t' to 'uint16_t', possible loss of data
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\resource\importer\CollisionHeaderFactory.cpp(237,76): warning C4267: '=': conversion from 'size_t' to 'uint32_t', possible loss of data
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\resource\importer\CollisionHeaderFactory.cpp(238,66): warning C4267: '=': conversion from 'size_t' to 'uint32_t', possible loss of data
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\resource\importer\CollisionHeaderFactory.cpp(239,68): warning C4267: '=': conversion from 'size_t' to 'int32_t', possible loss of data
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\resource\importer\CollisionHeaderFactory.cpp(240,90): warning C4267: '=': conversion from 'size_t' to 'uint16_t', possible loss of data
   SkeletonFactory.cpp
   SkeletonLimbFactory.cpp
   TextFactory.cpp
@@ -384,12 +384,12 @@ C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\resource\importer\PathFactory.cpp(8
 C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\resource\importer\PathFactory.cpp(96,38): warning C4267: '=': conversion from 'size_t' to 'uint32_t', possible loss of data
 C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\resource\importer\scenecommand\SetActorListFactory.cpp(62,59): warning C4267: '=': conversion from 'size_t' to 'uint32_t', possible loss of data
   SetEchoSettingsFactory.cpp
+  SetEntranceListFactory.cpp
 C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\resource\importer\SkeletonLimbFactory.cpp(175,68): warning C4267: '=': conversion from 'size_t' to 'uint16_t', possible loss of data
 C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\resource\importer\SkeletonLimbFactory.cpp(180,76): warning C4267: '=': conversion from 'size_t' to 'uint16_t', possible loss of data
-  SetEntranceListFactory.cpp
   SetExitListFactory.cpp
-  SetLightListFactory.cpp
 C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\resource\importer\scenecommand\SetAlternateHeadersFactory.cpp(60,72): warning C4267: '=': conversion from 'size_t' to 'uint32_t', possible loss of data
+  SetLightListFactory.cpp
   SetLightingSettingsFactory.cpp
   SetMeshFactory.cpp
   SetObjectListFactory.cpp
@@ -398,18 +398,18 @@ C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\resource\importer\scenecommand\SetA
   SetRoomListFactory.cpp
   SetSkyboxModifierFactory.cpp
 C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\resource\importer\scenecommand\SetEntranceListFactory.cpp(51,68): warning C4267: '=': conversion from 'size_t' to 'uint32_t', possible loss of data
+  SetSkyboxSettingsFactory.cpp
 C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\resource\importer\scenecommand\SetExitListFactory.cpp(42,52): warning C4267: '=': conversion from 'size_t' to 'uint32_t', possible loss of data
 C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\resource\importer\scenecommand\SetLightListFactory.cpp(76,59): warning C4267: '=': conversion from 'size_t' to 'uint32_t', possible loss of data
-  SetSkyboxSettingsFactory.cpp
   SetSoundSettingsFactory.cpp
   SetSpecialObjectsFactory.cpp
-C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\resource\importer\scenecommand\SetObjectListFactory.cpp(42,60): warning C4267: '=': conversion from 'size_t' to 'uint32_t', possible loss of data
   SetStartPositionListFactory.cpp
   SetTimeSettingsFactory.cpp
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\resource\importer\scenecommand\SetObjectListFactory.cpp(42,60): warning C4267: '=': conversion from 'size_t' to 'uint32_t', possible loss of data
+  SetTransitionActorListFactory.cpp
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\resource\importer\scenecommand\SetRoomListFactory.cpp(58,52): warning C4267: '=': conversion from 'size_t' to 'uint32_t', possible loss of data
 C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\resource\importer\scenecommand\SetMeshFactory.cpp(97,25): warning C4312: 'type cast': conversion from 'uint32_t' to 'void *' of greater size
 C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\resource\importer\scenecommand\SetMeshFactory.cpp(279,25): warning C4312: 'type cast': conversion from 'uint32_t' to 'void *' of greater size
-C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\resource\importer\scenecommand\SetRoomListFactory.cpp(58,52): warning C4267: '=': conversion from 'size_t' to 'uint32_t', possible loss of data
-  SetTransitionActorListFactory.cpp
 C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\resource\importer\scenecommand\SetPathwaysFactory.cpp(51,52): warning C4267: '=': conversion from 'size_t' to 'uint32_t', possible loss of data
   SetWindSettingsFactory.cpp
   PathLogger.cpp
@@ -420,10 +420,10 @@ C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\resource\importer\scenecommand\SetP
   AudioSequence.cpp
   AudioSoundFont.cpp
   Background.cpp
-C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\resource\importer\scenecommand\SetStartPositionListFactory.cpp(64,88): warning C4267: '=': conversion from 'size_t' to 'uint32_t', possible loss of data
   CollisionHeader.cpp
-  Cutscene.cpp
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\resource\importer\scenecommand\SetStartPositionListFactory.cpp(64,88): warning C4267: '=': conversion from 'size_t' to 'uint32_t', possible loss of data
 C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\resource\importer\scenecommand\SetTransitionActorListFactory.cpp(68,99): warning C4267: '=': conversion from 'size_t' to 'uint32_t', possible loss of data
+  Cutscene.cpp
   Path.cpp
   PlayerAnimation.cpp
   Scene.cpp
@@ -469,11 +469,12 @@ C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\z_scene_otr.cpp(502,48): warning C4
   gu_pc.c
   mixer.c
   stubs.c
-C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Extractor\FastCrc32C.c(83,9): warning C4244: '=': conversion from 'unsigned __int64' to 'uint32_t', possible loss of data
 C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\mixer.c(10,9): warning C4068: unknown pragma 'GCC'
 C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\mixer.c(519,9): warning C4068: unknown pragma 'GCC'
 C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\mixer.c(520,9): warning C4068: unknown pragma 'GCC'
 C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\mixer.c(524,9): warning C4068: unknown pragma 'GCC'
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Extractor\FastCrc32C.c(83,9): warning C4244: '=': conversion from 'unsigned __int64' to 'uint32_t', possible loss of data
+C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\stubs.c(234,20): warning C4267: 'function': conversion from 'size_t' to 'uint32_t', possible loss of data
 C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\gu_pc.c(12,33): warning C4244: '=': conversion from 'float' to 'int32_t', possible loss of data
 C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\gu_pc.c(13,37): warning C4244: '=': conversion from 'float' to 'int32_t', possible loss of data
 C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\gu_pc.c(55,18): warning C4133: 'function': incompatible types - from 'Mtx_t' to 'f32 (*)[4]'
@@ -481,7 +482,6 @@ C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\mixer.c(634,34): warning C4133: 'fu
 C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\mixer.c(626,9): warning C4101: 'i': unreferenced local variable
 C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\mixer.c(627,13): warning C4101: 'sample': unreferenced local variable
 C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\framebuffer_effects.c(96,57): warning C4244: 'initializing': conversion from 'float' to 'int16_t', possible loss of data
-C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\stubs.c(234,20): warning C4267: 'function': conversion from 'size_t' to 'uint32_t', possible loss of data
   OTRGlobals.cpp
 C:\Users\CmonMeow\Desktop\Shipwright\libultraship\include\fast\lus_gbi.h(133,9): warning C4005: 'GIMMCMD': macro redefinition
   (compiling source file '../../../soh/soh/OTRGlobals.cpp')
@@ -510,20 +510,20 @@ C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\OTRGlobals.cpp(1957,46): warning C4
 C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\OTRGlobals.cpp(2087,16): warning C4244: 'return': conversion from 'float' to 'uint32_t', possible loss of data
 cl : command line  warning D9025: overriding '/W3' with '/w'
 cl : command line  warning D9025: overriding '/W3' with '/w'
+cl : command line  warning D9025: overriding '/W3' with '/w'
+cl : command line  warning D9025: overriding '/W3' with '/w'
   boot_main.c
-cl : command line  warning D9025: overriding '/W3' with '/w'
-cl : command line  warning D9025: overriding '/W3' with '/w'
-cl : command line  warning D9025: overriding '/W3' with '/w'
-cl : command line  warning D9025: overriding '/W3' with '/w'
-cl : command line  warning D9025: overriding '/W3' with '/w'
-cl : command line  warning D9025: overriding '/W3' with '/w'
-cl : command line  warning D9025: overriding '/W3' with '/w'
-cl : command line  warning D9025: overriding '/W3' with '/w'
-cl : command line  warning D9025: overriding '/W3' with '/w'
-cl : command line  warning D9025: overriding '/W3' with '/w'
-cl : command line  warning D9025: overriding '/W3' with '/w'
   build.c
+cl : command line  warning D9025: overriding '/W3' with '/w'
   idle.c
+cl : command line  warning D9025: overriding '/W3' with '/w'
+cl : command line  warning D9025: overriding '/W3' with '/w'
+cl : command line  warning D9025: overriding '/W3' with '/w'
+cl : command line  warning D9025: overriding '/W3' with '/w'
+cl : command line  warning D9025: overriding '/W3' with '/w'
+cl : command line  warning D9025: overriding '/W3' with '/w'
+cl : command line  warning D9025: overriding '/W3' with '/w'
+cl : command line  warning D9025: overriding '/W3' with '/w'
   is_debug.c
   logutils.c
   stackcheck.c
@@ -631,8 +631,8 @@ cl : command line  warning D9025: overriding '/W3' with '/w'
   z_fbdemo.c
   z_fbdemo_circle.c
   z_fbdemo_fade.c
-  z_fbdemo_triforce.c
   z_fbdemo_wipe1.c
+  z_fbdemo_triforce.c
   z_fcurve_data_skelanime.c
   z_frame_advance.c
   z_game_dlftbls.c
@@ -859,8 +859,8 @@ cl : command line  warning D9025: overriding '/W3' with '/w'
   z_demo_im_cutscene_data.c
   z_demo_kankyo.c
   z_demo_kankyo_cutscene_data1.c
-  z_demo_kankyo_cutscene_data2.c
   z_demo_kankyo_cutscene_data3.c
+  z_demo_kankyo_cutscene_data2.c
   z_demo_kankyo_cutscene_data4.c
   z_demo_kankyo_cutscene_data5.c
   z_demo_kankyo_cutscene_data6.c
@@ -978,8 +978,8 @@ cl : command line  warning D9025: overriding '/W3' with '/w'
   z_en_horse_ganon.c
   z_en_horse_link_child.c
   z_en_horse_normal.c
-  z_en_hs2.c
   z_en_horse_zelda.c
+  z_en_hs2.c
   z_en_hs.c
   z_en_hy.c
   z_en_ice_hono.c
@@ -1047,8 +1047,8 @@ cl : command line  warning D9025: overriding '/W3' with '/w'
   z_en_ru1.c
   z_en_ru1_cutscene_data.c
   z_en_ru2.c
-  z_en_ru2_cutscene_data.c
   z_en_sa.c
+  z_en_ru2_cutscene_data.c
   z_en_sb.c
   z_en_scene_change.c
   z_en_sda.c
@@ -1208,7 +1208,7 @@ cl : command line  warning D9025: overriding '/W3' with '/w'
   z_lmap_mark_data.c
   z_map_mark_data.c
   Generating code
-  1 of 45484 functions (<0.1%) were compiled, the rest were copied from previous compilation.
+  1 of 45482 functions (<0.1%) were compiled, the rest were copied from previous compilation.
     0 functions were new in current compilation
     265 functions had inline decision re-evaluated but remain unchanged
   Finished generating code
