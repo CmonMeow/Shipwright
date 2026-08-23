@@ -340,19 +340,6 @@ void EnElf_Init(Actor* thisx, PlayState* play) {
     colorConfig = 0;
 
     switch (thisx->params) {
-        case FAIRY_NAVI:
-            thisx->room = -1;
-            EnElf_SetupAction(this, func_80A03CF8);
-            func_80A01C38(this, 0);
-            this->fairyFlags |= 4;
-            thisx->update = func_80A053F0;
-            this->elfMsg = NULL;
-            this->unk_2C7 = 0x14;
-
-            if ((gSaveContext.naviTimer >= 25800) || (gSaveContext.naviTimer < 3000)) {
-                gSaveContext.naviTimer = 0;
-            }
-            break;
         case FAIRY_REVIVE_BOTTLE:
             colorConfig = -1;
             EnElf_SetupAction(this, func_80A03610);

@@ -56,9 +56,14 @@
 #define LINK_IS_ADULT (gSaveContext.linkAge == LINK_AGE_ADULT)
 #define LINK_IS_CHILD (gSaveContext.linkAge == LINK_AGE_CHILD)
 
+// This build keeps the child-world scene variants while always using adult Link.
+#define PLAYER_AGE LINK_AGE_ADULT
+#define PLAYER_IS_ADULT (PLAYER_AGE == LINK_AGE_ADULT)
+#define PLAYER_IS_CHILD (PLAYER_AGE == LINK_AGE_CHILD)
+
 #define YEARS_CHILD 5
 #define YEARS_ADULT 17
-#define LINK_AGE_IN_YEARS (!LINK_IS_ADULT ? YEARS_CHILD : YEARS_ADULT)
+#define LINK_AGE_IN_YEARS (PLAYER_IS_ADULT ? YEARS_ADULT : YEARS_CHILD)
 
 #define CLOCK_TIME(hr, min) ((s32)(((hr) * 60 + (min)) * (f32)0x10000 / (24 * 60) + 0.5f))
 

@@ -3,6 +3,60 @@
   "WorkspaceRootPath": "C:\\Users\\CmonMeow\\Desktop\\Shipwright\\build\\x64\\",
   "Documents": [
     {
+      "AbsoluteMoniker": "D:0:0:{9BE9808F-4839-3804-9BD4-6AB6BED0CCA7}|soh\\soh.vcxproj|C:\\Users\\CmonMeow\\Desktop\\Shipwright\\soh\\src\\overlays\\actors\\ovl_player_actor\\z_player.c||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9BE9808F-4839-3804-9BD4-6AB6BED0CCA7}|soh\\soh.vcxproj|C:\\Users\\CmonMeow\\Desktop\\Shipwright\\soh\\src\\overlays\\actors\\ovl_Boss_Ganon\\z_boss_ganon.c||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9BE9808F-4839-3804-9BD4-6AB6BED0CCA7}|soh\\soh.vcxproj|C:\\Users\\CmonMeow\\Desktop\\Shipwright\\soh\\src\\code\\z_message_PAL.c||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9BE9808F-4839-3804-9BD4-6AB6BED0CCA7}|soh\\soh.vcxproj|C:\\Users\\CmonMeow\\Desktop\\Shipwright\\soh\\src\\code\\z_camera.c||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9BE9808F-4839-3804-9BD4-6AB6BED0CCA7}|soh\\soh.vcxproj|C:\\Users\\CmonMeow\\Desktop\\Shipwright\\soh\\src\\code\\audio_synthesis.c||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9BE9808F-4839-3804-9BD4-6AB6BED0CCA7}|soh\\soh.vcxproj|C:\\Users\\CmonMeow\\Desktop\\Shipwright\\soh\\src\\code\\z_sram.c||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9BE9808F-4839-3804-9BD4-6AB6BED0CCA7}|soh\\soh.vcxproj|C:\\Users\\CmonMeow\\Desktop\\Shipwright\\soh\\src\\overlays\\actors\\ovl_Bg_Breakwall\\z_bg_breakwall.c||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9BE9808F-4839-3804-9BD4-6AB6BED0CCA7}|soh\\soh.vcxproj|C:\\Users\\CmonMeow\\Desktop\\Shipwright\\soh\\src\\overlays\\actors\\ovl_Bg_Ice_Shelter\\z_bg_ice_shelter.c||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9BE9808F-4839-3804-9BD4-6AB6BED0CCA7}|soh\\soh.vcxproj|C:\\Users\\CmonMeow\\Desktop\\Shipwright\\soh\\src\\overlays\\actors\\ovl_Boss_Ganon2\\z_boss_ganon2.c||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9BE9808F-4839-3804-9BD4-6AB6BED0CCA7}|soh\\soh.vcxproj|C:\\Users\\CmonMeow\\Desktop\\Shipwright\\soh\\src\\overlays\\actors\\ovl_En_Ge3\\z_en_ge3.c||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9BE9808F-4839-3804-9BD4-6AB6BED0CCA7}|soh\\soh.vcxproj|C:\\Users\\CmonMeow\\Desktop\\Shipwright\\soh\\src\\overlays\\actors\\ovl_Fishing\\z_fishing.c||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9BE9808F-4839-3804-9BD4-6AB6BED0CCA7}|soh\\soh.vcxproj|C:\\Users\\CmonMeow\\Desktop\\Shipwright\\soh\\src\\overlays\\actors\\ovl_Obj_Mure\\z_obj_mure.c||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9BE9808F-4839-3804-9BD4-6AB6BED0CCA7}|soh\\soh.vcxproj|C:\\Users\\CmonMeow\\Desktop\\Shipwright\\soh\\src\\overlays\\effects\\ovl_Effect_Ss_Solder_Srch_Ball\\z_eff_ss_solder_srch_ball.c||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9BE9808F-4839-3804-9BD4-6AB6BED0CCA7}|soh\\soh.vcxproj|C:\\Users\\CmonMeow\\Desktop\\Shipwright\\soh\\include\\z64save.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9BE9808F-4839-3804-9BD4-6AB6BED0CCA7}|soh\\soh.vcxproj|C:\\Users\\CmonMeow\\Desktop\\Shipwright\\soh\\src\\overlays\\actors\\ovl_En_Wood02\\z_en_wood02.c||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9BE9808F-4839-3804-9BD4-6AB6BED0CCA7}|soh\\soh.vcxproj|C:\\Users\\CmonMeow\\Desktop\\Shipwright\\soh\\src\\overlays\\actors\\ovl_Obj_Mure2\\z_obj_mure2.c||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9BE9808F-4839-3804-9BD4-6AB6BED0CCA7}|soh\\soh.vcxproj|C:\\Users\\CmonMeow\\Desktop\\Shipwright\\soh\\soh\\CrashHandlerExt.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9BE9808F-4839-3804-9BD4-6AB6BED0CCA7}|soh\\soh.vcxproj|C:\\Users\\CmonMeow\\Desktop\\Shipwright\\soh\\src\\overlays\\actors\\ovl_Door_Warp1\\z_door_warp1.c||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\CmonMeow\\Desktop\\Shipwright\\soh\\soh\\Enhancements\\ArrowCycle.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
     },
     {
@@ -25,11 +79,72 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 0,
+          "SelectedChildIndex": 7,
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 13,
+              "Title": "z64save.h",
+              "DocumentMoniker": "C:\\Users\\CmonMeow\\Desktop\\Shipwright\\soh\\include\\z64save.h",
+              "RelativeDocumentMoniker": "..\\..\\soh\\include\\z64save.h",
+              "ToolTip": "C:\\Users\\CmonMeow\\Desktop\\Shipwright\\soh\\include\\z64save.h",
+              "RelativeToolTip": "..\\..\\soh\\include\\z64save.h",
+              "ViewState": "AgIAADsBAAAAAAAAAAAAAHwBAAAOAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
+              "WhenOpened": "2026-08-20T06:42:27.07Z",
+              "IsPinned": true
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "z_camera.c",
+              "DocumentMoniker": "C:\\Users\\CmonMeow\\Desktop\\Shipwright\\soh\\src\\code\\z_camera.c",
+              "RelativeDocumentMoniker": "..\\..\\soh\\src\\code\\z_camera.c",
+              "ToolTip": "C:\\Users\\CmonMeow\\Desktop\\Shipwright\\soh\\src\\code\\z_camera.c",
+              "RelativeToolTip": "..\\..\\soh\\src\\code\\z_camera.c",
+              "ViewState": "AgIAAMwGAAAAAAAAAAAswOIGAAAcAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000423|",
+              "WhenOpened": "2026-08-22T18:31:28.773Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "z_sram.c",
+              "DocumentMoniker": "C:\\Users\\CmonMeow\\Desktop\\Shipwright\\soh\\src\\code\\z_sram.c",
+              "RelativeDocumentMoniker": "..\\..\\soh\\src\\code\\z_sram.c",
+              "ToolTip": "C:\\Users\\CmonMeow\\Desktop\\Shipwright\\soh\\src\\code\\z_sram.c",
+              "RelativeToolTip": "..\\..\\soh\\src\\code\\z_sram.c",
+              "ViewState": "AgIAAHMAAAAAAAAAAAAWwIQAAAANAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000423|",
+              "WhenOpened": "2026-08-22T18:19:51.249Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "z_bg_breakwall.c",
+              "DocumentMoniker": "C:\\Users\\CmonMeow\\Desktop\\Shipwright\\soh\\src\\overlays\\actors\\ovl_Bg_Breakwall\\z_bg_breakwall.c",
+              "RelativeDocumentMoniker": "..\\..\\soh\\src\\overlays\\actors\\ovl_Bg_Breakwall\\z_bg_breakwall.c",
+              "ToolTip": "C:\\Users\\CmonMeow\\Desktop\\Shipwright\\soh\\src\\overlays\\actors\\ovl_Bg_Breakwall\\z_bg_breakwall.c",
+              "RelativeToolTip": "..\\..\\soh\\src\\overlays\\actors\\ovl_Bg_Breakwall\\z_bg_breakwall.c",
+              "ViewState": "AgIAAPUAAAAAAAAAAAAAAP0AAAANAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000423|",
+              "WhenOpened": "2026-08-22T18:18:33.939Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "z_bg_ice_shelter.c",
+              "DocumentMoniker": "C:\\Users\\CmonMeow\\Desktop\\Shipwright\\soh\\src\\overlays\\actors\\ovl_Bg_Ice_Shelter\\z_bg_ice_shelter.c",
+              "RelativeDocumentMoniker": "..\\..\\soh\\src\\overlays\\actors\\ovl_Bg_Ice_Shelter\\z_bg_ice_shelter.c",
+              "ToolTip": "C:\\Users\\CmonMeow\\Desktop\\Shipwright\\soh\\src\\overlays\\actors\\ovl_Bg_Ice_Shelter\\z_bg_ice_shelter.c",
+              "RelativeToolTip": "..\\..\\soh\\src\\overlays\\actors\\ovl_Bg_Ice_Shelter\\z_bg_ice_shelter.c",
+              "ViewState": "AgIAABEBAAAAAAAAAAAAAEQBAAAEAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000423|",
+              "WhenOpened": "2026-08-22T18:16:12.129Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 18,
               "Title": "ArrowCycle.cpp",
               "DocumentMoniker": "C:\\Users\\CmonMeow\\Desktop\\Shipwright\\soh\\soh\\Enhancements\\ArrowCycle.cpp",
               "RelativeDocumentMoniker": "..\\..\\soh\\soh\\Enhancements\\ArrowCycle.cpp",
@@ -42,6 +157,43 @@
             {
               "$type": "Document",
               "DocumentIndex": 1,
+              "Title": "z_boss_ganon.c",
+              "DocumentMoniker": "C:\\Users\\CmonMeow\\Desktop\\Shipwright\\soh\\src\\overlays\\actors\\ovl_Boss_Ganon\\z_boss_ganon.c",
+              "RelativeDocumentMoniker": "..\\..\\soh\\src\\overlays\\actors\\ovl_Boss_Ganon\\z_boss_ganon.c",
+              "ToolTip": "C:\\Users\\CmonMeow\\Desktop\\Shipwright\\soh\\src\\overlays\\actors\\ovl_Boss_Ganon\\z_boss_ganon.c",
+              "RelativeToolTip": "..\\..\\soh\\src\\overlays\\actors\\ovl_Boss_Ganon\\z_boss_ganon.c",
+              "ViewState": "AgIAAMUEAAAAAAAAAAAswNoEAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000423|",
+              "WhenOpened": "2026-08-22T18:14:43.748Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "z_player.c",
+              "DocumentMoniker": "C:\\Users\\CmonMeow\\Desktop\\Shipwright\\soh\\src\\overlays\\actors\\ovl_player_actor\\z_player.c",
+              "RelativeDocumentMoniker": "..\\..\\soh\\src\\overlays\\actors\\ovl_player_actor\\z_player.c",
+              "ToolTip": "C:\\Users\\CmonMeow\\Desktop\\Shipwright\\soh\\src\\overlays\\actors\\ovl_player_actor\\z_player.c",
+              "RelativeToolTip": "..\\..\\soh\\src\\overlays\\actors\\ovl_player_actor\\z_player.c",
+              "ViewState": "AgIAACIjAAAAAAAAAAAAAEcjAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000423|",
+              "WhenOpened": "2026-08-22T14:09:05.584Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "z_message_PAL.c",
+              "DocumentMoniker": "C:\\Users\\CmonMeow\\Desktop\\Shipwright\\soh\\src\\code\\z_message_PAL.c",
+              "RelativeDocumentMoniker": "..\\..\\soh\\src\\code\\z_message_PAL.c",
+              "ToolTip": "C:\\Users\\CmonMeow\\Desktop\\Shipwright\\soh\\src\\code\\z_message_PAL.c",
+              "RelativeToolTip": "..\\..\\soh\\src\\code\\z_message_PAL.c",
+              "ViewState": "AgIAAHEEAAAAAAAAAAAswHYEAABJAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000423|",
+              "WhenOpened": "2026-08-22T18:33:27.713Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 19,
               "Title": "AdditionalReticles.cpp",
               "DocumentMoniker": "C:\\Users\\CmonMeow\\Desktop\\Shipwright\\soh\\soh\\Enhancements\\Items\\AdditionalReticles.cpp",
               "RelativeDocumentMoniker": "..\\..\\soh\\soh\\Enhancements\\Items\\AdditionalReticles.cpp",
@@ -53,7 +205,103 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 4,
+              "Title": "audio_synthesis.c",
+              "DocumentMoniker": "C:\\Users\\CmonMeow\\Desktop\\Shipwright\\soh\\src\\code\\audio_synthesis.c",
+              "RelativeDocumentMoniker": "..\\..\\soh\\src\\code\\audio_synthesis.c",
+              "ToolTip": "C:\\Users\\CmonMeow\\Desktop\\Shipwright\\soh\\src\\code\\audio_synthesis.c",
+              "RelativeToolTip": "..\\..\\soh\\src\\code\\audio_synthesis.c",
+              "ViewState": "AgIAAHoCAAAAAAAAAAAswJACAAAXAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000423|",
+              "WhenOpened": "2026-08-22T13:48:40.109Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "z_boss_ganon2.c",
+              "DocumentMoniker": "C:\\Users\\CmonMeow\\Desktop\\Shipwright\\soh\\src\\overlays\\actors\\ovl_Boss_Ganon2\\z_boss_ganon2.c",
+              "RelativeDocumentMoniker": "..\\..\\soh\\src\\overlays\\actors\\ovl_Boss_Ganon2\\z_boss_ganon2.c",
+              "ToolTip": "C:\\Users\\CmonMeow\\Desktop\\Shipwright\\soh\\src\\overlays\\actors\\ovl_Boss_Ganon2\\z_boss_ganon2.c",
+              "RelativeToolTip": "..\\..\\soh\\src\\overlays\\actors\\ovl_Boss_Ganon2\\z_boss_ganon2.c",
+              "ViewState": "AgIAALkFAAAAAAAAAAAWwMwFAAA2AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000423|",
+              "WhenOpened": "2026-08-22T18:13:30.023Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
+              "Title": "z_en_ge3.c",
+              "DocumentMoniker": "C:\\Users\\CmonMeow\\Desktop\\Shipwright\\soh\\src\\overlays\\actors\\ovl_En_Ge3\\z_en_ge3.c",
+              "RelativeDocumentMoniker": "..\\..\\soh\\src\\overlays\\actors\\ovl_En_Ge3\\z_en_ge3.c",
+              "ToolTip": "C:\\Users\\CmonMeow\\Desktop\\Shipwright\\soh\\src\\overlays\\actors\\ovl_En_Ge3\\z_en_ge3.c",
+              "RelativeToolTip": "..\\..\\soh\\src\\overlays\\actors\\ovl_En_Ge3\\z_en_ge3.c",
+              "ViewState": "AgIAAOoAAAAAAAAAAAAWwBEBAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000423|",
+              "WhenOpened": "2026-08-22T18:08:10.264Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 10,
+              "Title": "z_fishing.c",
+              "DocumentMoniker": "C:\\Users\\CmonMeow\\Desktop\\Shipwright\\soh\\src\\overlays\\actors\\ovl_Fishing\\z_fishing.c",
+              "RelativeDocumentMoniker": "..\\..\\soh\\src\\overlays\\actors\\ovl_Fishing\\z_fishing.c",
+              "ToolTip": "C:\\Users\\CmonMeow\\Desktop\\Shipwright\\soh\\src\\overlays\\actors\\ovl_Fishing\\z_fishing.c",
+              "RelativeToolTip": "..\\..\\soh\\src\\overlays\\actors\\ovl_Fishing\\z_fishing.c",
+              "ViewState": "AgIAAGALAAAAAAAAAAAswHYLAAAqAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000423|",
+              "WhenOpened": "2026-08-22T18:03:22.234Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 12,
+              "Title": "z_eff_ss_solder_srch_ball.c",
+              "DocumentMoniker": "C:\\Users\\CmonMeow\\Desktop\\Shipwright\\soh\\src\\overlays\\effects\\ovl_Effect_Ss_Solder_Srch_Ball\\z_eff_ss_solder_srch_ball.c",
+              "RelativeDocumentMoniker": "..\\..\\soh\\src\\overlays\\effects\\ovl_Effect_Ss_Solder_Srch_Ball\\z_eff_ss_solder_srch_ball.c",
+              "ToolTip": "C:\\Users\\CmonMeow\\Desktop\\Shipwright\\soh\\src\\overlays\\effects\\ovl_Effect_Ss_Solder_Srch_Ball\\z_eff_ss_solder_srch_ball.c",
+              "RelativeToolTip": "..\\..\\soh\\src\\overlays\\effects\\ovl_Effect_Ss_Solder_Srch_Ball\\z_eff_ss_solder_srch_ball.c",
+              "ViewState": "AgIAAMwAAAAAAAAAAAAhwOAAAAAcAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000423|",
+              "WhenOpened": "2026-08-22T17:42:07.793Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 14,
+              "Title": "z_en_wood02.c",
+              "DocumentMoniker": "C:\\Users\\CmonMeow\\Desktop\\Shipwright\\soh\\src\\overlays\\actors\\ovl_En_Wood02\\z_en_wood02.c",
+              "RelativeDocumentMoniker": "..\\..\\soh\\src\\overlays\\actors\\ovl_En_Wood02\\z_en_wood02.c",
+              "ToolTip": "C:\\Users\\CmonMeow\\Desktop\\Shipwright\\soh\\src\\overlays\\actors\\ovl_En_Wood02\\z_en_wood02.c",
+              "RelativeToolTip": "..\\..\\soh\\src\\overlays\\actors\\ovl_En_Wood02\\z_en_wood02.c",
+              "ViewState": "AgIAAFQAAAAAAAAAAAAAAGgAAAAEAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000423|",
+              "WhenOpened": "2026-08-22T17:30:55.646Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 15,
+              "Title": "z_obj_mure2.c",
+              "DocumentMoniker": "C:\\Users\\CmonMeow\\Desktop\\Shipwright\\soh\\src\\overlays\\actors\\ovl_Obj_Mure2\\z_obj_mure2.c",
+              "RelativeDocumentMoniker": "..\\..\\soh\\src\\overlays\\actors\\ovl_Obj_Mure2\\z_obj_mure2.c",
+              "ToolTip": "C:\\Users\\CmonMeow\\Desktop\\Shipwright\\soh\\src\\overlays\\actors\\ovl_Obj_Mure2\\z_obj_mure2.c",
+              "RelativeToolTip": "..\\..\\soh\\src\\overlays\\actors\\ovl_Obj_Mure2\\z_obj_mure2.c",
+              "ViewState": "AgIAAMwAAAAAAAAAAAAAAOAAAAAEAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000423|",
+              "WhenOpened": "2026-08-22T17:29:35.563Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 11,
+              "Title": "z_obj_mure.c",
+              "DocumentMoniker": "C:\\Users\\CmonMeow\\Desktop\\Shipwright\\soh\\src\\overlays\\actors\\ovl_Obj_Mure\\z_obj_mure.c",
+              "RelativeDocumentMoniker": "..\\..\\soh\\src\\overlays\\actors\\ovl_Obj_Mure\\z_obj_mure.c",
+              "ToolTip": "C:\\Users\\CmonMeow\\Desktop\\Shipwright\\soh\\src\\overlays\\actors\\ovl_Obj_Mure\\z_obj_mure.c",
+              "RelativeToolTip": "..\\..\\soh\\src\\overlays\\actors\\ovl_Obj_Mure\\z_obj_mure.c",
+              "ViewState": "AgIAAAEBAAAAAAAAAAAAABQBAAAEAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000423|",
+              "WhenOpened": "2026-08-22T14:21:00.075Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 20,
               "Title": "AssignableTunicsAndBoots.cpp",
               "DocumentMoniker": "C:\\Users\\CmonMeow\\Desktop\\Shipwright\\soh\\soh\\Enhancements\\AssignableTunicsAndBoots.cpp",
               "RelativeDocumentMoniker": "..\\..\\soh\\soh\\Enhancements\\AssignableTunicsAndBoots.cpp",
@@ -65,7 +313,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 21,
               "Title": "AlwaysWinGoronPot.cpp",
               "DocumentMoniker": "C:\\Users\\CmonMeow\\Desktop\\Shipwright\\soh\\soh\\Enhancements\\Difficulty\\AlwaysWinGoronPot.cpp",
               "RelativeDocumentMoniker": "..\\..\\soh\\soh\\Enhancements\\Difficulty\\AlwaysWinGoronPot.cpp",
@@ -77,15 +325,39 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 22,
               "Title": "AgeDependentEquipment.cpp",
               "DocumentMoniker": "C:\\Users\\CmonMeow\\Desktop\\Shipwright\\soh\\soh\\Enhancements\\Graphics\\AgeDependentEquipment.cpp",
               "RelativeDocumentMoniker": "..\\..\\soh\\soh\\Enhancements\\Graphics\\AgeDependentEquipment.cpp",
               "ToolTip": "C:\\Users\\CmonMeow\\Desktop\\Shipwright\\soh\\soh\\Enhancements\\Graphics\\AgeDependentEquipment.cpp",
               "RelativeToolTip": "..\\..\\soh\\soh\\Enhancements\\Graphics\\AgeDependentEquipment.cpp",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAwAAAAwAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
-              "WhenOpened": "2026-08-22T13:48:08.211Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-08-22T13:48:08.211Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 16,
+              "Title": "CrashHandlerExt.cpp",
+              "DocumentMoniker": "C:\\Users\\CmonMeow\\Desktop\\Shipwright\\soh\\soh\\CrashHandlerExt.cpp",
+              "RelativeDocumentMoniker": "..\\..\\soh\\soh\\CrashHandlerExt.cpp",
+              "ToolTip": "C:\\Users\\CmonMeow\\Desktop\\Shipwright\\soh\\soh\\CrashHandlerExt.cpp",
+              "RelativeToolTip": "..\\..\\soh\\soh\\CrashHandlerExt.cpp",
+              "ViewState": "AgIAACAAAAAAAAAAAAAhwCsAAAAJAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
+              "WhenOpened": "2026-08-22T00:46:16.159Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 17,
+              "Title": "z_door_warp1.c",
+              "DocumentMoniker": "C:\\Users\\CmonMeow\\Desktop\\Shipwright\\soh\\src\\overlays\\actors\\ovl_Door_Warp1\\z_door_warp1.c",
+              "RelativeDocumentMoniker": "..\\..\\soh\\src\\overlays\\actors\\ovl_Door_Warp1\\z_door_warp1.c",
+              "ToolTip": "C:\\Users\\CmonMeow\\Desktop\\Shipwright\\soh\\src\\overlays\\actors\\ovl_Door_Warp1\\z_door_warp1.c",
+              "RelativeToolTip": "..\\..\\soh\\src\\overlays\\actors\\ovl_Door_Warp1\\z_door_warp1.c",
+              "ViewState": "AgIAAEkBAAAAAAAAAAAAAG4BAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000423|",
+              "WhenOpened": "2026-08-20T08:27:31.828Z"
             }
           ]
         }

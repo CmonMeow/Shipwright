@@ -2271,28 +2271,6 @@ void Interface_SetDoAction(PlayState* play, u16 action) {
     }
 }
 
-void Interface_SetNaviCall(PlayState* play, u16 naviCallState) {
-    InterfaceContext* interfaceCtx = &play->interfaceCtx;
-
-    if (((naviCallState == 0x1D) || (naviCallState == 0x1E)) && !interfaceCtx->naviCalling &&
-        (play->csCtx.state == CS_STATE_IDLE)) {
-        // clang-format off
-        if (naviCallState == 0x1E) { Audio_PlaySoundGeneral(NA_SE_VO_NAVY_CALL, &gSfxDefaultPos, 4,
-                                                            &gSfxDefaultFreqAndVolScale, &gSfxDefaultFreqAndVolScale, &gSfxDefaultReverb); }
-        // clang-format on
-
-        if (naviCallState == 0x1D) {
-            func_800F4524(&gSfxDefaultPos, NA_SE_VO_NA_HELLO_2, 32);
-        }
-
-        interfaceCtx->naviCalling = 1;
-        sCUpInvisible = 0;
-        sCUpTimer = 10;
-    } else if ((naviCallState == 0x1F) && interfaceCtx->naviCalling) {
-        interfaceCtx->naviCalling = 0;
-    }
-}
-
 void Interface_LoadActionLabelB(PlayState* play, u16 action) {
     InterfaceContext* interfaceCtx = &play->interfaceCtx;
 
@@ -2946,7 +2924,6 @@ void Interface_DrawActionLabel(GraphicsContext* gfxCtx, void* texture) {
 }
 
 void Interface_DrawItemButtons(PlayState* play) {
-    static void* cUpLabelTextures[] = { gNaviCUpENGTex, gNaviCUpENGTex, gNaviCUpENGTex, gNaviCUpJPTex };
     static s16 startButtonLeftPos[] = { 132, 130, 130, 132 };
     InterfaceContext* interfaceCtx = &play->interfaceCtx;
     Player* player = GET_PLAYER(play);
@@ -3051,8 +3028,6 @@ void Interface_DrawItemButtons(PlayState* play) {
     const s16 C_Right_BTN_Pos_ori[] = { C_RIGHT_BUTTON_X + X_Margins_CR, C_RIGHT_BUTTON_Y + Y_Margins_CR };
     const s16 C_Up_BTN_Pos_ori[] = { C_UP_BUTTON_X + X_Margins_CU, C_UP_BUTTON_Y + Y_Margins_CU };
     const s16 C_Down_BTN_Pos_ori[] = { C_DOWN_BUTTON_X + X_Margins_CD, C_DOWN_BUTTON_Y + Y_Margins_CD };
-    s16 LabelX_Navi = 7;
-    s16 LabelY_Navi = 4;
     s16 C_Left_BTN_Pos[2]; //(X,Y)
     s16 C_Right_BTN_Pos[2];
     s16 C_Up_BTN_Pos[2];
@@ -3173,48 +3148,6 @@ void Interface_DrawItemButtons(PlayState* play) {
             gSPVertex(OVERLAY_DISP++, &interfaceCtx->actionVtx[4], 4, 0);
             Interface_DrawActionLabel(play->state.gfxCtx, interfaceCtx->doActionSegment[2]);
             gDPPipeSync(OVERLAY_DISP++);
-        }
-    }
-
-    if (interfaceCtx->naviCalling && (play->pauseCtx.state == 0) && (play->pauseCtx.debugState == 0) &&
-        (play->csCtx.state == CS_STATE_IDLE)) {
-        if (!sCUpInvisible) {
-            // C-Up Button Texture, Color & Label (Navi Text)
-            gDPPipeSync(OVERLAY_DISP++);
-
-            if ((gSaveContext.unk_13EA == 1) || (gSaveContext.unk_13EA == 2) || (gSaveContext.unk_13EA == 5)) {
-                temp = 0;
-            } else if ((player->stateFlags1 & PLAYER_STATE1_CLIMBING_LADDER) ||
-                       (Player_GetEnvironmentalHazard(play) == 4) || (player->stateFlags2 & PLAYER_STATE2_CRAWLING)) {
-                temp = 70;
-            } else {
-                temp = interfaceCtx->healthAlpha;
-            }
-
-            gDPSetPrimColor(OVERLAY_DISP++, 0, 0, cUpButtonColor.r, cUpButtonColor.g, cUpButtonColor.b, temp);
-            gDPSetCombineMode(OVERLAY_DISP++, G_CC_MODULATEIA_PRIM, G_CC_MODULATEIA_PRIM);
-            gSPWideTextureRectangle(OVERLAY_DISP++, C_Up_BTN_Pos[0] << 2, C_Up_BTN_Pos[1] << 2,
-                                    (C_Up_BTN_Pos[0] + 16) << 2, (C_Up_BTN_Pos[1] + 16) << 2, G_TX_RENDERTILE, 0, 0,
-                                    2 << 10, 2 << 10);
-            gDPPipeSync(OVERLAY_DISP++);
-            gDPSetPrimColor(OVERLAY_DISP++, 0, 0, 255, 255, 255, temp);
-            gDPSetEnvColor(OVERLAY_DISP++, 0, 0, 0, 0);
-            gDPSetCombineLERP(OVERLAY_DISP++, PRIMITIVE, ENVIRONMENT, TEXEL0, ENVIRONMENT, TEXEL0, 0, PRIMITIVE, 0,
-                              PRIMITIVE, ENVIRONMENT, TEXEL0, ENVIRONMENT, TEXEL0, 0, PRIMITIVE, 0);
-
-            gDPLoadTextureBlock_4b(OVERLAY_DISP++, cUpLabelTextures[gSaveContext.language], G_IM_FMT_IA, 32, 8, 0,
-                                   G_TX_NOMIRROR | G_TX_WRAP, G_TX_NOMIRROR | G_TX_WRAP, G_TX_NOMASK, G_TX_NOMASK,
-                                   G_TX_NOLOD, G_TX_NOLOD);
-
-            gSPWideTextureRectangle(OVERLAY_DISP++, C_Up_BTN_Pos[0] - LabelX_Navi << 2,
-                                    C_Up_BTN_Pos[1] + LabelY_Navi << 2, (C_Up_BTN_Pos[0] - LabelX_Navi + 32) << 2,
-                                    (C_Up_BTN_Pos[1] + LabelY_Navi + 8) << 2, G_TX_RENDERTILE, 0, 0, 1 << 10, 1 << 10);
-        }
-
-        sCUpTimer--;
-        if (sCUpTimer == 0) {
-            sCUpInvisible ^= 1;
-            sCUpTimer = 10;
         }
     }
 

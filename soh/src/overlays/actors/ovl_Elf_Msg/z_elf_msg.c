@@ -117,18 +117,6 @@ s32 ElfMsg_GetMessageId(ElfMsg* this) {
 }
 
 void ElfMsg_CallNaviCuboid(ElfMsg* this, PlayState* play) {
-    Player* player = GET_PLAYER(play);
-    EnElf* navi = (EnElf*)player->naviActor;
-
-    if ((fabsf(player->actor.world.pos.x - this->actor.world.pos.x) < (100.0f * this->actor.scale.x)) &&
-        (this->actor.world.pos.y <= player->actor.world.pos.y) &&
-        ((player->actor.world.pos.y - this->actor.world.pos.y) < (100.0f * this->actor.scale.y)) &&
-        (fabsf(player->actor.world.pos.z - this->actor.world.pos.z) < (100.0f * this->actor.scale.z))) {
-        
-            player->naviTextId = ElfMsg_GetMessageId(this);
-            navi->elfMsg = this;
-        
-    }
 }
 
 s32 ElfMsg_WithinXZDistance(Vec3f* pos1, Vec3f* pos2, f32 distance) {
@@ -136,21 +124,6 @@ s32 ElfMsg_WithinXZDistance(Vec3f* pos1, Vec3f* pos2, f32 distance) {
 }
 
 void ElfMsg_CallNaviCylinder(ElfMsg* this, PlayState* play) {
-    Player* player = GET_PLAYER(play);
-    EnElf* navi = (EnElf*)player->naviActor;
-
-    // This fixes a crash when using a grotto exit when you never properly entered
-    if (navi == NULL)
-        return;
-
-    if (ElfMsg_WithinXZDistance(&player->actor.world.pos, &this->actor.world.pos, this->actor.scale.x * 100.0f) &&
-        (this->actor.world.pos.y <= player->actor.world.pos.y) &&
-        ((player->actor.world.pos.y - this->actor.world.pos.y) < (100.0f * this->actor.scale.y))) {
-        
-            player->naviTextId = ElfMsg_GetMessageId(this);
-            navi->elfMsg = this;
-        
-    }
 }
 
 void ElfMsg_Update(Actor* thisx, PlayState* play) {

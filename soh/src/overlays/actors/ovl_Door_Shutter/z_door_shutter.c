@@ -371,9 +371,6 @@ void func_80996A54(DoorShutter* this, PlayState* play) {
             this->unk_16F = -100;
         
     } else if (func_809968D4(this, play) != 0) {
-        Player* player = GET_PLAYER(play);
-
-        player->naviTextId = -0x202;
     }
 }
 
@@ -402,11 +399,9 @@ void func_80996B0C(DoorShutter* this, PlayState* play) {
             if (this->unk_16E != 0) {
                 if (this->doorType == SHUTTER_BOSS) {
                     if (!CHECK_DUNGEON_ITEM(DUNGEON_KEY_BOSS, gSaveContext.mapIndex)) {
-                        player->naviTextId = -0x204;
                         return;
                     }
                 } else if (gSaveContext.inventory.dungeonKeys[gSaveContext.mapIndex] <= 0) {
-                    player->naviTextId = -0x203;
                     return;
                 }
                 player->doorTimer = 10;
@@ -489,9 +484,6 @@ void func_80996EE8(DoorShutter* this, PlayState* play) {
                 this->unk_16F = -100;
             
         } else if (func_809968D4(this, play)) {
-            Player* player = GET_PLAYER(play);
-            // Jabu navi text for switch doors is different
-            player->naviTextId = (play->sceneNum == SCENE_JABU_JABU) ? -0x20B : -0x202;
         }
     }
 }

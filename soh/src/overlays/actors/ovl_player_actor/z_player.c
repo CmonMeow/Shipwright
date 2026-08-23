@@ -1922,7 +1922,7 @@ void Player_ApplyAnimMovementScaledByAge(Player* this, s32 movementFlags) {
     SkelAnime_UpdateTranslation(&this->skelAnime, &diff, this->actor.shape.rot.y);
 
     if (movementFlags & 1) {
-        if (!LINK_IS_ADULT) {
+        if (!PLAYER_IS_ADULT) {
             diff.x *= 0.64f;
             diff.z *= 0.64f;
         }
@@ -2573,7 +2573,7 @@ void Player_UpdateItems(Player* this, PlayState* play) {
 
 // Determine projectile type for bow or slingshot
 s32 func_80834380(PlayState* play, Player* this, s32* itemPtr, s32* typePtr) {
-    bool useBow = LINK_IS_ADULT;
+    bool useBow = PLAYER_IS_ADULT;
     if (useBow) {
         *itemPtr = ITEM_BOW;
         if (this->stateFlags1 & PLAYER_STATE1_ON_HORSE) {
@@ -3114,7 +3114,7 @@ s32 Player_UpperAction_CarryActor(Player* this, PlayState* play) {
 }
 
 void func_808357E8(Player* this, Gfx** dLists) {
-    this->leftHandDLists = &dLists[gSaveContext.linkAge];
+    this->leftHandDLists = &dLists[PLAYER_AGE];
 }
 
 s32 func_80835800(Player* this, PlayState* play) {
@@ -3752,7 +3752,7 @@ void Player_UpdateZTargeting(Player* this, PlayState* play) {
 
                         this->focusActor = nextLockOnActor;
                         this->zTargetActiveTimer = 15;
-                        this->stateFlags2 &= ~(PLAYER_STATE2_CAN_ACCEPT_TALK_OFFER | PLAYER_STATE2_NAVI_ALERT);
+                        this->stateFlags2 &= ~PLAYER_STATE2_CAN_ACCEPT_TALK_OFFER;
                     } else {
                         if (!usingHoldTargeting) {
                             Player_ReleaseLockOn(this);
@@ -5257,8 +5257,8 @@ s32 Player_ActionHandler_1(Player* this, PlayState* play) {
                 // are common across the two actors' structs however most other variables are not!
                 door = (EnDoor*)doorActor;
 
-                door->animStyle = (doorDirection < 0.0f) ? (LINK_IS_ADULT ? KNOB_ANIM_ADULT_L : KNOB_ANIM_CHILD_L)
-                                                         : (LINK_IS_ADULT ? KNOB_ANIM_ADULT_R : KNOB_ANIM_CHILD_R);
+                door->animStyle = (doorDirection < 0.0f) ? (PLAYER_IS_ADULT ? KNOB_ANIM_ADULT_L : KNOB_ANIM_CHILD_L)
+                                                         : (PLAYER_IS_ADULT ? KNOB_ANIM_ADULT_R : KNOB_ANIM_CHILD_R);
 
                 if (door->animStyle == KNOB_ANIM_ADULT_L) {
                     sp5C = GET_PLAYER_ANIM(PLAYER_ANIMGROUP_doorA_free, this->modelAnimType);
@@ -5709,7 +5709,7 @@ s32 func_8083AD4C(PlayState* play, Player* this) {
 
     if (this->unk_6AD == 2) {
         if (func_8002DD6C(this)) {
-            camMode = LINK_IS_ADULT ? CAM_MODE_BOWARROW : CAM_MODE_SLINGSHOT;
+            camMode = PLAYER_IS_ADULT ? CAM_MODE_BOWARROW : CAM_MODE_SLINGSHOT;
         } else {
             camMode = CAM_MODE_BOOMERANG;
         }
@@ -5984,7 +5984,6 @@ s32 Player_ActionHandler_Talk(Player* this, PlayState* play) {
     Actor* talkOfferActor = this->talkActor;
     Actor* lockOnActor = this->focusActor;
     Actor* cUpTalkActor = NULL;
-    s32 forceTalkToNavi = false;
     s32 canTalkToLockOnWithCUp;
 
     canTalkToLockOnWithCUp =
@@ -5992,31 +5991,15 @@ s32 Player_ActionHandler_Talk(Player* this, PlayState* play) {
         (CHECK_FLAG_ALL(lockOnActor->flags, ACTOR_FLAG_ATTENTION_ENABLED | ACTOR_FLAG_TALK_WITH_C_UP) ||
          (lockOnActor->naviEnemyId != 0xFF));
 
-    if (canTalkToLockOnWithCUp || (this->naviTextId != 0)) {
-        // If `naviTextId` is negative and outside the 0x2XX range, talk to Navi instantly
-        forceTalkToNavi = (this->naviTextId < 0) && ((ABS(this->naviTextId) & 0xFF00) != 0x200);
-
-        if (forceTalkToNavi || !canTalkToLockOnWithCUp) {
-            // If `lockOnActor` can't be talked to with c-up, the only option left is Navi
-            cUpTalkActor = this->naviActor;
-
-            if (forceTalkToNavi) {
-                // Clearing these pointers guarantees that `cUpTalkActor` will take priority
-                lockOnActor = NULL;
-                talkOfferActor = NULL;
-            }
-        } else {
-            // Navi is not the talk actor, so the only option left for talking with c-up is `lockOnActor`
-            // (though, `lockOnActor` may be NULL at this point).
-            cUpTalkActor = lockOnActor;
-        }
+    if (canTalkToLockOnWithCUp) {
+        cUpTalkActor = lockOnActor;
     }
 
     if (((talkOfferActor != NULL) || (cUpTalkActor != NULL))) {
         if ((lockOnActor == NULL) || (lockOnActor == talkOfferActor) || (lockOnActor == cUpTalkActor)) {
             if (!(this->stateFlags1 & PLAYER_STATE1_CARRYING_ACTOR) ||
                 ((this->heldActor != NULL) &&
-                 (forceTalkToNavi || (talkOfferActor == this->heldActor) || (cUpTalkActor == this->heldActor) ||
+                  ((talkOfferActor == this->heldActor) || (cUpTalkActor == this->heldActor) ||
                   ((talkOfferActor != NULL) && (talkOfferActor->flags & ACTOR_FLAG_TALK_OFFER_AUTO_ACCEPTED))))) {
                 if ((this->actor.bgCheckFlags & 1) || (this->stateFlags1 & PLAYER_STATE1_ON_HORSE) ||
                     (func_808332B8(this) && !(this->stateFlags2 & PLAYER_STATE2_UNDERWATER))) {
@@ -6032,24 +6015,15 @@ s32 Player_ActionHandler_Talk(Player* this, PlayState* play) {
                     }
 
                     if (cUpTalkActor != NULL) {
-                        if (!forceTalkToNavi) {
-                            this->stateFlags2 |= PLAYER_STATE2_NAVI_ALERT;
-                        }
-
-                        if (!CHECK_BTN_ALL(sControlInput->press.button, BTN_CUP) &&
-                            !forceTalkToNavi) {
+                        if (!CHECK_BTN_ALL(sControlInput->press.button, BTN_CUP)) {
                             return 0;
                         }
 
                         talkOfferActor = cUpTalkActor;
                         this->talkActor = NULL;
 
-                        if (forceTalkToNavi || !canTalkToLockOnWithCUp) {
-                            cUpTalkActor->textId = ABS(this->naviTextId);
-                        } else {
-                            if (cUpTalkActor->naviEnemyId != 0xFF) {
-                                cUpTalkActor->textId = cUpTalkActor->naviEnemyId + 0x600;
-                            }
+                        if (cUpTalkActor->naviEnemyId != 0xFF) {
+                            cUpTalkActor->textId = cUpTalkActor->naviEnemyId + 0x600;
                         }
                     }
 
@@ -6091,11 +6065,7 @@ s32 Player_ActionHandler_0(Player* this, PlayState* play) {
         return 1;
     }
 
-    if ((this->focusActor != NULL) &&
-        (CHECK_FLAG_ALL(this->focusActor->flags, ACTOR_FLAG_ATTENTION_ENABLED | ACTOR_FLAG_TALK_WITH_C_UP) ||
-         (this->focusActor->naviEnemyId != 0xFF))) {
-        this->stateFlags2 |= PLAYER_STATE2_NAVI_ALERT;
-    } else if ((this->naviTextId == 0) &&
+    if ((this->focusActor == NULL) &&
                !Player_CheckHostileLockOn(this) && CHECK_BTN_ALL(sControlInput->press.button, BTN_CUP) &&
                (YREG(15) != 0x10) && (YREG(15) != 0x20) && !func_8083B8F4(this, play)) {
         Sfx_PlaySfxCentered(NA_SE_SY_ERROR);
@@ -6286,8 +6256,6 @@ s32 Player_ActionHandler_Roll(Player* this, PlayState* play) {
             return true;
         } else if ((this->putAwayCooldownTimer == 0) && (this->heldItemAction >= PLAYER_IA_SWORD_MASTER)) {
             Player_UseItem(play, this, ITEM_NONE);
-        } else {
-            this->stateFlags2 ^= PLAYER_STATE2_NAVI_ACTIVE;
         }
     }
 
@@ -7191,7 +7159,7 @@ s32 Player_ActionHandler_2(Player* this, PlayState* play) {
             }
 
             if ((this->heldActor == NULL) || Player_HoldsHookshot(this)) {
-                if (((interactedActor->id == ACTOR_BG_TOKI_SWD) && LINK_IS_ADULT)) {
+                if (((interactedActor->id == ACTOR_BG_TOKI_SWD) && PLAYER_IS_ADULT)) {
                     s32 sp24 = this->itemAction;
 
                     this->itemAction = PLAYER_IA_NONE;
@@ -7384,7 +7352,7 @@ s32 Player_TryEnteringCrawlspace(Player* this, PlayState* play, u32 interactWall
     f32 zVertex2;
     s32 i;
 
-    if (!LINK_IS_ADULT && !(this->stateFlags1 & PLAYER_STATE1_IN_WATER) && (interactWallFlags & 0x30)) {
+    if (!PLAYER_IS_ADULT && !(this->stateFlags1 & PLAYER_STATE1_IN_WATER) && (interactWallFlags & 0x30)) {
         if (!(true)) {
             return false;
         }
@@ -9836,7 +9804,7 @@ void Player_Action_80845668(Player* this, PlayState* play) {
                 temp1 *= 0.072f;
             }
 
-            if (!LINK_IS_ADULT) {
+            if (!PLAYER_IS_ADULT) {
                 temp1 += 1.0f;
             }
 
@@ -10326,7 +10294,7 @@ void Player_StartMode_BlueWarp(PlayState* play, Player* this) {
 static u8 D_808546F0[] = { ITEM_SWORD_MASTER, ITEM_SWORD_KOKIRI };
 
 void func_80846720(PlayState* play, Player* this, s32 arg2) {
-    s32 item = D_808546F0[(void)0, gSaveContext.linkAge];
+    s32 item = D_808546F0[(void)0, PLAYER_AGE];
     s32 itemAction = sItemActions[item];
 
     Player_DestroyHookshot(this);
@@ -10353,7 +10321,7 @@ void Player_StartMode_TimeTravel(PlayState* play, Player* this) {
     LinkAnimation_Change(play, &this->skelAnime, this->ageProperties->unk_A0, 2.0f / 3.0f, 0.0f, 0.0f, ANIMMODE_ONCE,
                          0.0f);
     Player_StartAnimMovement(play, this, 0x28F);
-    if (LINK_IS_ADULT) {
+    if (PLAYER_IS_ADULT) {
         func_80846720(play, this, 0);
     }
     this->av2.actionVar2 = 20;
@@ -10408,7 +10376,7 @@ static Vec3s sSkeletonBaseTransl = { -57, 3377, 0 };
 
 void Player_InitCommon(Player* this, PlayState* play, FlexSkeletonHeader* skelHeader) {
     this->getItemEntry = (GetItemEntry)GET_ITEM_NONE;
-    this->ageProperties = &sAgeProperties[gSaveContext.linkAge];
+    this->ageProperties = &sAgeProperties[PLAYER_AGE];
     Actor_ProcessInitChain(&this->actor, sInitChain);
     this->meleeWeaponEffectIndex = TOTAL_EFFECT_COUNT;
     this->yaw = this->actor.world.rot.y;
@@ -10454,7 +10422,6 @@ static void (*sStartModeFuncs[PLAYER_START_MODE_MAX])(PlayState* play, Player* t
     Player_StartMode_MoveForward,     // PLAYER_START_MODE_MOVE_FORWARD
 };
 
-static Vec3f D_80854778 = { 0.0f, 50.0f, 0.0f };
 
 void Player_Init(Actor* thisx, PlayState* play2) {
     Player* this = (Player*)thisx;
@@ -10478,14 +10445,14 @@ void Player_Init(Actor* thisx, PlayState* play2) {
     play->talkWithPlayer = Player_StartTalking;
 
     thisx->room = -1;
-    this->ageProperties = &sAgeProperties[gSaveContext.linkAge];
+    this->ageProperties = &sAgeProperties[PLAYER_AGE];
     this->itemAction = this->heldItemAction = -1;
     this->heldItemId = ITEM_NONE;
 
     Player_UseItem(play, this, ITEM_NONE);
     Player_SetEquipmentData(play, this);
     this->prevBoots = this->currentBoots;
-    Player_InitCommon(this, play, gPlayerSkelHeaders[((void)0, gSaveContext.linkAge)]);
+    Player_InitCommon(this, play, gPlayerSkelHeaders[((void)0, PLAYER_AGE)]);
     // `giObjectSegment` is used for both "get item" objects and title cards. The maximum size for
     // get item objects is 0x2000 (see the assert in func_8083AE40), and the maximum size for
     // title cards is 0x1000 * LANGUAGE_MAX since each title card image includes all languages.
@@ -10557,11 +10524,8 @@ void Player_Init(Actor* thisx, PlayState* play2) {
     
 
     if (startMode != PLAYER_START_MODE_NOTHING) {
-        if ((gSaveContext.gameMode == GAMEMODE_NORMAL) || (gSaveContext.gameMode == GAMEMODE_END_CREDITS)) {
-            this->naviActor = Player_SpawnFairy(play, this, &thisx->world.pos, &D_80854778, FAIRY_NAVI);
-            if (gSaveContext.dogParams != 0) {
-                gSaveContext.dogParams |= 0x8000;
-            }
+        if (gSaveContext.dogParams != 0) {
+            gSaveContext.dogParams |= 0x8000;
         }
     }
 
@@ -10670,7 +10634,7 @@ void Player_UpdateInterface(PlayState* play, Player* this) {
                             (this->getItemId < 0 && !(this->stateFlags1 & PLAYER_STATE1_IN_WATER)))) {
                     if (this->getItemId < 0) {
                         doAction = DO_ACTION_OPEN;
-                    } else if ((interactRangeActor->id == ACTOR_BG_TOKI_SWD) && LINK_IS_ADULT) {
+                    } else if ((interactRangeActor->id == ACTOR_BG_TOKI_SWD) && PLAYER_IS_ADULT) {
                         doAction = DO_ACTION_DROP;
                     } else {
                         doAction = DO_ACTION_GRAB;
@@ -10738,9 +10702,7 @@ void Player_UpdateInterface(PlayState* play, Player* this) {
                     } else if ((play->roomCtx.curRoom.behaviorType1 != ROOM_BEHAVIOR_TYPE1_2) &&
                                Player_IsZTargeting(this) && (controlStickDirection >= PLAYER_STICK_DIR_LEFT)) {
                         doAction = DO_ACTION_JUMP;
-                    } else if ((this->heldItemAction >= PLAYER_IA_SWORD_MASTER) ||
-                               ((this->stateFlags2 & PLAYER_STATE2_NAVI_ACTIVE) &&
-                                (play->actorCtx.targetCtx.arrowPointedActor == NULL))) {
+                    } else if (this->heldItemAction >= PLAYER_IA_SWORD_MASTER) {
                         doAction = DO_ACTION_PUTAWAY;
                     }
                 }
@@ -10758,16 +10720,6 @@ void Player_UpdateInterface(PlayState* play, Player* this) {
 
         Interface_SetDoAction(play, doAction);
 
-        if (this->stateFlags2 & PLAYER_STATE2_NAVI_ALERT) {
-            if (this->focusActor != NULL) {
-                Interface_SetNaviCall(play, 0x1E);
-            } else {
-                Interface_SetNaviCall(play, 0x1D);
-            }
-            Interface_SetNaviCall(play, 0x1E);
-        } else {
-            Interface_SetNaviCall(play, 0x1F);
-        }
     }
 }
 
@@ -11703,8 +11655,8 @@ void Player_UpdateCommon(Player* this, PlayState* play, Input* input) {
 
         func_8083D6EC(play, this);
 
-        if ((this->focusActor == NULL) && (this->naviTextId == 0)) {
-            this->stateFlags2 &= ~(PLAYER_STATE2_CAN_ACCEPT_TALK_OFFER | PLAYER_STATE2_NAVI_ALERT);
+        if (this->focusActor == NULL) {
+                        this->stateFlags2 &= ~PLAYER_STATE2_CAN_ACCEPT_TALK_OFFER;
         }
 
         this->stateFlags1 &= ~(PLAYER_STATE1_SWINGING_BOTTLE | PLAYER_STATE1_READY_TO_FIRE |
@@ -11759,7 +11711,6 @@ void Player_UpdateCommon(Player* this, PlayState* play, Input* input) {
             this->rideActor = NULL;
         }
 
-        this->naviTextId = 0;
 
         if (!(this->stateFlags2 & PLAYER_STATE2_PLAY_FOR_ACTOR)) {
             this->unk_6A8 = NULL;
@@ -13566,10 +13517,6 @@ void Player_Action_8084E3C4(Player* this, PlayState* play) {
 
         if ((this->talkActor != NULL) && (this->talkActor == this->unk_6A8)) {
             Player_StartTalking(play, this->talkActor);
-        } else if (this->naviTextId < 0) {
-            this->talkActor = this->naviActor;
-            this->naviActor->textId = -this->naviTextId;
-            Player_StartTalking(play, this->talkActor);
         } else if (!Player_ActionHandler_13(this, play)) {
             func_8083A098(this, &gPlayerAnim_link_normal_okarina_end, play);
         }
@@ -13666,7 +13613,7 @@ void Player_Action_8084E6D4(Player* this, PlayState* play) {
         }
     } else {
         if (this->av2.actionVar2 == 0) {
-            if (!LINK_IS_ADULT) {
+            if (!PLAYER_IS_ADULT) {
                 Player_ProcessAnimSfxList(this, D_808549E0);
             }
             return;
@@ -13706,12 +13653,12 @@ void Player_Action_8084E9AC(Player* this, PlayState* play) {
             func_8083C0E8(this, play);
         }
     } else {
-        if (LINK_IS_ADULT && LinkAnimation_OnFrame(&this->skelAnime, 158.0f)) {
+        if (PLAYER_IS_ADULT && LinkAnimation_OnFrame(&this->skelAnime, 158.0f)) {
             Player_PlayVoiceSfx(this, NA_SE_VO_LI_SWORD_N);
             return;
         }
 
-        if (!LINK_IS_ADULT) {
+        if (!PLAYER_IS_ADULT) {
             Player_ProcessAnimSfxList(this, D_808549F4);
         } else {
             func_8084E988(this);
@@ -15167,23 +15114,23 @@ void func_80851A50(PlayState* play, Player* this, CsCmdActorCue* cue) {
 
     LinkAnimation_Update(play, &this->skelAnime);
 
-    if ((LINK_IS_ADULT && LinkAnimation_OnFrame(&this->skelAnime, 70.0f)) ||
-        (!LINK_IS_ADULT && LinkAnimation_OnFrame(&this->skelAnime, 87.0f))) {
-        sp2C = &D_808551A4[gSaveContext.linkAge];
+    if ((PLAYER_IS_ADULT && LinkAnimation_OnFrame(&this->skelAnime, 70.0f)) ||
+        (!PLAYER_IS_ADULT && LinkAnimation_OnFrame(&this->skelAnime, 87.0f))) {
+        sp2C = &D_808551A4[PLAYER_AGE];
         this->interactRangeActor->parent = &this->actor;
 
-        if (!LINK_IS_ADULT) {
+        if (!PLAYER_IS_ADULT) {
             dLists = gPlayerLeftHandBgsDLs;
         } else {
             dLists = gPlayerLeftHandClosedDLs;
         }
-        this->leftHandDLists = &dLists[gSaveContext.linkAge];
+        this->leftHandDLists = &dLists[PLAYER_AGE];
 
         Player_PlaySfx(this, sp2C->unk_00);
-        if (!LINK_IS_ADULT) {
+        if (!PLAYER_IS_ADULT) {
             Player_PlayVoiceSfx(this, sp2C->unk_02);
         }
-    } else if (LINK_IS_ADULT) {
+    } else if (PLAYER_IS_ADULT) {
         if (LinkAnimation_OnFrame(&this->skelAnime, 66.0f)) {
             Player_PlayVoiceSfx(this, NA_SE_VO_LI_SWORD_L);
         }
@@ -15508,7 +15455,7 @@ void func_808526EC(PlayState* play, Player* this, CsCmdActorCue* cue) {
     static Vec3f zeroVec = { 0.0f, 0.0f, 0.0f };
     static Color_RGBA8 primColor = { 255, 255, 255, 0 };
     static Color_RGBA8 envColor = { 0, 128, 128, 0 };
-    s32 age = gSaveContext.linkAge;
+    s32 age = PLAYER_AGE;
     Vec3f sparklePos;
     Vec3f sp34;
     Vec3s* ptr;
@@ -15520,7 +15467,7 @@ void func_808526EC(PlayState* play, Player* this, CsCmdActorCue* cue) {
         return;
     }
 
-    ptr = D_80855210[gSaveContext.linkAge];
+    ptr = D_80855210[PLAYER_AGE];
 
     sp34.x = ptr[0].x + Rand_CenteredFloat(ptr[1].x);
     sp34.y = ptr[0].y + Rand_CenteredFloat(ptr[1].y);
@@ -15571,7 +15518,7 @@ void func_80852944(PlayState* play, Player* this, CsCmdActorCue* cue) {
 void func_808529D0(PlayState* play, Player* this, CsCmdActorCue* cue) {
     this->actor.world.pos.x = cue->startPos.x;
     this->actor.world.pos.y = cue->startPos.y;
-    if ((play->sceneNum == SCENE_KOKIRI_FOREST) && !LINK_IS_ADULT) {
+    if ((play->sceneNum == SCENE_KOKIRI_FOREST) && !PLAYER_IS_ADULT) {
         this->actor.world.pos.y -= 1.0f;
     }
     this->actor.world.pos.z = cue->startPos.z;
@@ -15754,7 +15701,7 @@ void Player_StartTalking(PlayState* play, Actor* actor) {
     Player* this = GET_PLAYER(play);
     s32 pad;
 
-    if ((this->talkActor != NULL) || (actor == this->naviActor) ||
+    if ((this->talkActor != NULL) ||
         CHECK_FLAG_ALL(actor->flags, ACTOR_FLAG_ATTENTION_ENABLED | ACTOR_FLAG_TALK_WITH_C_UP)) {
         actor->flags |= ACTOR_FLAG_TALK;
     }
@@ -15791,7 +15738,7 @@ void Player_StartTalking(PlayState* play, Actor* actor) {
                 Player_SetupTalk(play, this);
 
                 if (!Player_CheckHostileLockOn(this)) {
-                    if ((actor != this->naviActor) && (actor->xzDistToPlayer < 40.0f)) {
+                    if (actor->xzDistToPlayer < 40.0f) {
                         Player_AnimPlayOnceAdjusted(play, this, &gPlayerAnim_link_normal_backspace);
                     } else {
                         Player_AnimPlayLoop(play, this, Player_GetIdleAnim(this));
@@ -15814,8 +15761,4 @@ void Player_StartTalking(PlayState* play, Actor* actor) {
         this->stateFlags1 |= PLAYER_STATE1_TALKING | PLAYER_STATE1_IN_CUTSCENE;
     }
 
-    if ((this->naviActor == this->talkActor) && ((this->talkActor->textId & 0xFF00) != 0x200)) {
-        this->naviActor->flags |= ACTOR_FLAG_TALK;
-        func_80835EA4(play, 0xB);
-    }
 }

@@ -203,9 +203,12 @@ void Scene_CommandSpawnList(PlayState* play, SceneCmd* cmd) {
         (ActorEntry*)SEGMENTED_TO_VIRTUAL(cmd->spawnList.segment) + play->setupEntranceList[play->curSpawn].spawn;
     s16 linkObjectId;
 
-    play->linkAgeOnLoad = ((void)0, gSaveContext.linkAge);
+    // The world is permanently loaded with child-age scene variants. Link's
+    // model and gameplay age are selected independently by PLAYER_AGE.
+    gSaveContext.linkAge = LINK_AGE_CHILD;
+    play->linkAgeOnLoad = LINK_AGE_CHILD;
 
-    linkObjectId = gLinkObjectIds[((void)0, gSaveContext.linkAge)];
+    linkObjectId = gLinkObjectIds[PLAYER_AGE];
 
     ActorDB_Retrieve(linkEntry->id)->objectId = linkObjectId;
     Object_Spawn(&play->objectCtx, linkObjectId);

@@ -1,0 +1,14 @@
+{
+    "version": 1,
+    "revision": 0,
+    "rules": [
+        {
+            "primary-output": "soh.dir\\Release\\gfx.obj",
+            "outputs": [
+                "soh.dir\\Release\\gfx.h.obj.dt.module.json",
+                "soh.dir\\Release\\gfx.h.obj.dt.d.json"
+            ],
+            "requires": []
+        }
+    ]
+}

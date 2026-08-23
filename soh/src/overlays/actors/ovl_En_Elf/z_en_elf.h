@@ -45,8 +45,7 @@ typedef struct EnElf {
 } EnElf; // size = 0x02D0
 
 typedef enum {
-    /* 0x00 */ FAIRY_NAVI,
-    /* 0x01 */ FAIRY_REVIVE_BOTTLE,
+    /* 0x01 */ FAIRY_REVIVE_BOTTLE = 1,
     /* 0x02 */ FAIRY_HEAL_TIMED,
     /* 0x03 */ FAIRY_KOKIRI,
     /* 0x04 */ FAIRY_SPAWNER,

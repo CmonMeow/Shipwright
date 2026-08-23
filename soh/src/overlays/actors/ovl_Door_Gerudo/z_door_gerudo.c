@@ -109,9 +109,7 @@ void func_8099485C(DoorGerudo* this, PlayState* play) {
             Player* player = GET_PLAYER(play);
 
             if (gSaveContext.inventory.dungeonKeys[gSaveContext.mapIndex] <= 0) {
-                player->naviTextId = -0x203;
             } else if (!Flags_GetCollectible(play, (this->dyna.actor.params >> 8) & 0x1F)) {
-                player->naviTextId = -0x225;
             } else {
                 player->doorType = PLAYER_DOORTYPE_SLIDING;
                 player->doorDirection = direction;

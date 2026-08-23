@@ -1076,7 +1076,6 @@ void Inventory_UpdateBottleItem(PlayState* play, u8 item, u8 cButton);
 s32 Inventory_ConsumeFairy(PlayState* play);
 bool Inventory_HatchPocketCucco(PlayState* play);
 void Interface_SetDoAction(PlayState* play, u16 action);
-void Interface_SetNaviCall(PlayState* play, u16 naviCallState);
 void Interface_LoadActionLabelB(PlayState* play, u16 action);
 s32 Health_ChangeBy(PlayState* play, s16 healthChange);
 void Rupees_ChangeBy(s16 rupeeChange);

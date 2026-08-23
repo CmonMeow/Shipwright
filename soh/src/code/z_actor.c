@@ -1307,7 +1307,7 @@ f32 Actor_HeightDiff(Actor* actorA, Actor* actorB) {
 f32 Player_GetHeight(Player* player) {
     f32 offset = (player->stateFlags1 & PLAYER_STATE1_ON_HORSE) ? 32.0f : 0.0f;
 
-    if (LINK_IS_ADULT) {
+    if (PLAYER_IS_ADULT) {
         return offset + 68.0f;
     } else {
         return offset + 44.0f;
@@ -2271,7 +2271,7 @@ void Actor_DrawFaroresWindPointer(PlayState* play) {
     params = gSaveContext.respawn[RESPAWN_MODE_TOP].data;
 
     if (params) {
-        f32 yOffset = LINK_IS_ADULT ? 80.0f : 60.0f;
+        f32 yOffset = PLAYER_IS_ADULT ? 80.0f : 60.0f;
         f32 ratio = 1.0f;
         s32 alpha = 255;
         s32 temp = params - 40;
@@ -2533,7 +2533,7 @@ void Actor_UpdateAll(PlayState* play, ActorContext* actorCtx) {
                 Actor_Kill(actor);
                 actor = actor->next;
             } else if ((unkFlag && !(actor->flags & unkFlag)) ||
-                       (!unkFlag && unkCondition && (sp74 != actor) && (actor != player->naviActor) &&
+                       (!unkFlag && unkCondition && (sp74 != actor) &&
                         (actor != player->heldActor) && (&player->actor != actor->parent))) {
                 CollisionCheck_ResetDamage(&actor->colChkInfo);
                 actor = actor->next;
