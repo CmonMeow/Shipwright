@@ -15,8 +15,6 @@ void BgSpot03Taki_Destroy(Actor* thisx, PlayState* play);
 void BgSpot03Taki_Update(Actor* thisx, PlayState* play);
 void BgSpot03Taki_Draw(Actor* thisx, PlayState* play);
 
-void BgSpot03Taki_HandleWaterfallState(BgSpot03Taki* this, PlayState* play);
-
 const ActorInit Bg_Spot03_Taki_InitVars = {
     ACTOR_BG_SPOT03_TAKI,
     ACTORCAT_BG,
@@ -51,16 +49,15 @@ void BgSpot03Taki_Init(Actor* thisx, PlayState* play) {
     s16 pad;
     CollisionHeader* colHeader = NULL;
 
-    this->switchFlag = (this->dyna.actor.params & 0x3F);
     DynaPolyActor_Init(&this->dyna, DPM_UNK);
     CollisionHeader_GetVirtual(&object_spot03_object_Col_000C98, &colHeader);
     this->dyna.bgId = DynaPoly_SetBgActor(play, &play->colCtx.dyna, &this->dyna.actor, colHeader);
     Actor_ProcessInitChain(&this->dyna.actor, sInitChain);
     this->bufferIndex = 0;
-    this->openingAlpha = 255.0f;
+    this->openingAlpha = 0.0f;
     BgSpot03Taki_ApplyOpeningAlpha(this, 0);
     BgSpot03Taki_ApplyOpeningAlpha(this, 1);
-    this->actionFunc = BgSpot03Taki_HandleWaterfallState;
+    func_8003EBF8(play, &play->colCtx.dyna, this->dyna.bgId);
 }
 
 void BgSpot03Taki_Destroy(Actor* thisx, PlayState* play) {
@@ -69,52 +66,7 @@ void BgSpot03Taki_Destroy(Actor* thisx, PlayState* play) {
     DynaPoly_DeleteBgActor(play, &play->colCtx.dyna, this->dyna.bgId);
 }
 
-void BgSpot03Taki_HandleWaterfallState(BgSpot03Taki* this, PlayState* play) {
-    if (this->state == WATERFALL_CLOSED) {
-        if (Flags_GetSwitch(play, this->switchFlag)) {
-            this->state = WATERFALL_OPENING_ANIMATED;
-            this->timer = 40;
-            OnePointCutscene_Init(play, 4100, -99, NULL, MAIN_CAM);
-        }
-    } else if (this->state == WATERFALL_OPENING_IDLE) {
-        this->timer--;
-        if (this->timer < 0) {
-            this->state = WATERFALL_OPENING_ANIMATED;
-        }
-    } else if (this->state == WATERFALL_OPENING_ANIMATED) {
-        if (this->openingAlpha > 0) {
-            this->openingAlpha -= 5;
-            if (this->openingAlpha <= 0.0f) {
-                func_8003EBF8(play, &play->colCtx.dyna, this->dyna.bgId);
-                this->timer = 400;
-                this->state = WATERFALL_OPENED;
-                this->openingAlpha = 0;
-            }
-        }
-    } else if (this->state == WATERFALL_OPENED) {
-        this->timer--;
-        if (this->timer < 0) {
-            this->state = WATERFALL_CLOSING;
-        }
-    } else if (this->state == WATERFALL_CLOSING) {
-        if (this->openingAlpha < 255.0f) {
-            this->openingAlpha += 5.0f;
-            if (this->openingAlpha >= 255.0f) {
-                func_8003EC50(play, &play->colCtx.dyna, this->dyna.bgId);
-                this->state = WATERFALL_CLOSED;
-                this->openingAlpha = 255.0f;
-                Flags_UnsetSwitch(play, this->switchFlag);
-            }
-        }
-    }
-
-    BgSpot03Taki_ApplyOpeningAlpha(this, this->bufferIndex);
-}
-
 void BgSpot03Taki_Update(Actor* thisx, PlayState* play) {
-    BgSpot03Taki* this = (BgSpot03Taki*)thisx;
-
-    this->actionFunc(this, play);
 }
 
 void BgSpot03Taki_Draw(Actor* thisx, PlayState* play) {
@@ -154,9 +106,5 @@ void BgSpot03Taki_Draw(Actor* thisx, PlayState* play) {
 
     this->bufferIndex = this->bufferIndex == 0;
 
-    if (this->state >= WATERFALL_OPENING_IDLE && this->state <= WATERFALL_OPENED) {
-        Audio_PlaySoundWaterfall(&this->dyna.actor.projectedPos, 0.5f);
-    } else {
-        Audio_PlaySoundWaterfall(&this->dyna.actor.projectedPos, 1.0f);
-    }
+    Audio_PlaySoundWaterfall(&this->dyna.actor.projectedPos, 0.5f);
 }

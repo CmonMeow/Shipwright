@@ -1852,9 +1852,6 @@
     <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\src\overlays\actors\ovl_En_Okarina_Tag\z_en_okarina_tag_cutscene_data.c">
       <Filter>src\overlays\actors</Filter>
     </ClCompile>
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\src\overlays\actors\ovl_En_Okuta\z_en_okuta.c">
-      <Filter>src\overlays\actors</Filter>
-    </ClCompile>
     <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\src\overlays\actors\ovl_En_Ossan\z_en_ossan.c">
       <Filter>src\overlays\actors</Filter>
     </ClCompile>
@@ -3802,9 +3799,6 @@
       <Filter>src\overlays\actors</Filter>
     </ClInclude>
     <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\src\overlays\actors\ovl_En_Okarina_Tag\z_en_okarina_tag.h">
-      <Filter>src\overlays\actors</Filter>
-    </ClInclude>
-    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\src\overlays\actors\ovl_En_Okuta\z_en_okuta.h">
       <Filter>src\overlays\actors</Filter>
     </ClInclude>
     <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\src\overlays\actors\ovl_En_Ossan\z_en_ossan.h">

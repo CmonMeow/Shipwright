@@ -50,7 +50,6 @@ typedef struct Fishing {
     /* 0x01D2 */ u8 bubbleTime; // spawn bubbles while >0
     /* 0x01D3 */ u8 isAquariumMessage;
     /* 0x01D4 */ u8 aquariumWaitTimer;
-    /* 0x01D5 */ u8 keepState; // case-switch and keeping or releasing a fish
     /* 0x01D8 */ SkelAnime skelAnime;
     /* 0x021C */ LightNode* lightNode;
     /* 0x0220 */ LightInfo lightInfo;

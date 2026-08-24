@@ -5820,6 +5820,11 @@ s32 Player_ActionHandler_13(Player* this, PlayState* play) {
     GetItemEntry giEntry;
     Actor* talkActor;
 
+    if (this->heldItemAction == PLAYER_IA_FISHING_POLE) {
+        this->unk_6AD = 0;
+        return 0;
+    }
+
     if ((this->unk_6AD != 0) &&
         (func_808332B8(this) || (this->actor.bgCheckFlags & 1) || (this->stateFlags1 & PLAYER_STATE1_ON_HORSE))) {
 
@@ -6045,6 +6050,14 @@ s32 func_8083B8F4(Player* this, PlayState* play) {
 }
 
 s32 Player_ActionHandler_0(Player* this, PlayState* play) {
+    // C-Up is the fishing-pole button in this port. Do not let the same
+    // button press arm or enter the vanilla first-person camera while the
+    // pole is equipped, including during reeling.
+    if (this->heldItemAction == PLAYER_IA_FISHING_POLE) {
+        this->unk_6AD = 0;
+        return 0;
+    }
+
     if (this->unk_6AD != 0) {
         Player_ActionHandler_13(this, play);
         return 1;

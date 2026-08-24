@@ -2351,7 +2351,7 @@ void Fishing_UpdateLure(Fishing* this, PlayState* play) {
         sFishingPlayingState = 2;
         sFishesCaught = 0;
         sPondOwnerTextIdIndex = 0;
-        sLureEquipped = FS_LURE_STOCK;
+        sLureEquipped = sPortableFishing ? FS_LURE_SINKING : FS_LURE_STOCK;
 
         // if prize item won as child or adult, set the sinking lure location.
         if (((sLinkAge == LINK_AGE_CHILD) && (HIGH_SCORE(HS_FISHING) & HS_FISH_PRIZE_CHILD)) ||
@@ -2362,8 +2362,8 @@ void Fishing_UpdateLure(Fishing* this, PlayState* play) {
         D_80B7E148 = 520.0f;
         sRodLineSpooled = 195.0f;
 
-        sRodCastState = sLureEquipped = sLureTimer = D_80B7E0B0 = D_80B7E0B2 = sRodCastTimer = sWiggleAttraction =
-            D_80B7E114 = D_80B7E150 = 0;
+        sRodCastState = sLureTimer = D_80B7E0B0 = D_80B7E0B2 = sRodCastTimer = sWiggleAttraction = D_80B7E114 =
+            D_80B7E150 = 0;
         sLure1Rotate = sReelLinePosStep = sLurePosZOffset = 0.0f;
 
         sLureLineSegPosDelta = zeroVec;
@@ -3995,16 +3995,11 @@ void Fishing_UpdateFish(Actor* thisx, PlayState* play2) {
                 ((sLureBitTimer == 0) && (sLineHooked == 0)) || (sRodPullback == 0) ||
                 (((sLureTimer & 0x7F) == 0) && (Rand_ZeroOne() < 0.05f) && (sLureEquipped != FS_LURE_SINKING) &&
                  (KREG(69) == 0))) {
-                sFishingCaughtTextDelay = 20;
+                // Losing a hooked fish should immediately return control; the
+                // pond-owner failure textbox is unnecessary in portable play.
+                sFishingCaughtTextDelay = 0;
 
-                if ((sLureBitTimer == 0) && (sLineHooked == 0)) {
-                    sFishingCaughtTextId = 0x4081;
-                    if (((sLinkAge == LINK_AGE_CHILD) && (HIGH_SCORE(HS_FISHING) & HS_FISH_PRIZE_CHILD)) ||
-                        ((sLinkAge != LINK_AGE_CHILD) && (HIGH_SCORE(HS_FISHING) & HS_FISH_PRIZE_ADULT))) {
-                        sFishingCaughtTextDelay = 0;
-                    }
-                } else {
-                    sFishingCaughtTextId = 0x4082;
+                if (!((sLureBitTimer == 0) && (sLineHooked == 0))) {
                     func_800A9F6C(0.0f, 1, 3, 1);
                     Audio_QueueSeqCmd(0x1 << 28 | SEQ_PLAYER_BGM_MAIN << 24 | 0x0A00FF);
                 }
@@ -4096,7 +4091,6 @@ void Fishing_UpdateFish(Actor* thisx, PlayState* play2) {
                 // The pond owner also refreshes it while drawing, but portable
                 // fishing has no owner actor to perform that calculation.
                 gSaveContext.minigameScore = (SQ((f32)sFishLengthToWeigh) * 0.0036f) + 0.5f;
-                this->keepState = 0;
             }
 
             this->unk_160 = -0x4000;
@@ -4113,73 +4107,21 @@ void Fishing_UpdateFish(Actor* thisx, PlayState* play2) {
             sRodLineSpooled = 188.0f;
 
             if (this->timerArray[0] <= 50) {
-                if (this->isWild) {
-                    /*
-                     * Wild fishing has no pond owner, aquarium, or retained-fish
-                     * record. Show the measured catch message, then always put
-                     * the fish back in its source water when the player advances.
-                     */
-                    if (((Message_GetState(&play->msgCtx) == TEXT_STATE_CHOICE) ||
-                         (Message_GetState(&play->msgCtx) == TEXT_STATE_NONE)) &&
-                        Message_ShouldAdvance(play)) {
-                        Message_CloseTextbox(play);
+                /*
+                 * Retaining a fish depended on the pond owner, aquarium, and
+                 * record flow. That flow is no longer valid for the portable
+                 * pole, so either legacy dialogue choice now releases the fish.
+                 */
+                if (((Message_GetState(&play->msgCtx) == TEXT_STATE_CHOICE) ||
+                     (Message_GetState(&play->msgCtx) == TEXT_STATE_NONE)) &&
+                    Message_ShouldAdvance(play)) {
+                    Message_CloseTextbox(play);
+                    if (this->isWild) {
                         this->actor.world.pos = this->actor.home.pos;
                         this->actor.prevPos = this->actor.home.pos;
                         this->fishTargetPos = this->actor.home.pos;
-                        sRodCastState = 0;
                     }
-                } else {
-                    switch (this->keepState) {
-                    case 0:
-                        if ((Message_GetState(&play->msgCtx) == TEXT_STATE_CHOICE) ||
-                            (Message_GetState(&play->msgCtx) == TEXT_STATE_NONE)) {
-                            if (Message_ShouldAdvance(play)) {
-                                Message_CloseTextbox(play);
-                                if (play->msgCtx.choiceIndex == 0) {
-                                    if (sFishOnHandLength == 0.0f) {
-                                        sFishOnHandLength = this->fishLength;
-                                        sFishOnHandIsLoach = this->isLoach;
-                                        sLureCaughtWith = sLureEquipped;
-                                        Actor_Kill(&this->actor);
-                                    } else if ((this->isLoach == 0) && (sFishOnHandIsLoach == 0) &&
-                                               ((s16)this->fishLength < (s16)sFishOnHandLength)) {
-                                        this->keepState = 1;
-                                        this->timerArray[0] = 0x3C;
-                                        Message_StartTextbox(play, 0x4098, NULL);
-                                    } else {
-                                        f32 lengthTemp = sFishOnHandLength;
-                                        s16 loachTemp = sFishOnHandIsLoach;
-                                        sFishOnHandLength = this->fishLength;
-                                        sFishOnHandIsLoach = this->isLoach;
-                                        sLureCaughtWith = sLureEquipped;
-                                        this->fishLength = lengthTemp;
-                                        this->isLoach = loachTemp;
-                                    }
-                                }
-                                if (this->keepState == 0) {
-                                    sRodCastState = 0;
-                                }
-                            }
-                        }
-                        break;
-                    case 1:
-                        if ((Message_GetState(&play->msgCtx) == TEXT_STATE_CHOICE) ||
-                            (Message_GetState(&play->msgCtx) == TEXT_STATE_NONE)) {
-                            if (Message_ShouldAdvance(play)) {
-                                Message_CloseTextbox(play);
-                                if (play->msgCtx.choiceIndex != 0) {
-                                    f32 temp1 = sFishOnHandLength;
-                                    s16 temp2 = sFishOnHandIsLoach;
-                                    sFishOnHandLength = this->fishLength;
-                                    sLureCaughtWith = sLureEquipped;
-                                    this->fishLength = temp1;
-                                    this->isLoach = temp2;
-                                }
-                                sRodCastState = 0;
-                            }
-                        }
-                        break;
-                    }
+                    sRodCastState = 0;
                 }
             }
 
@@ -6154,6 +6096,9 @@ void Fishing_DrawPortable(Actor* thisx, PlayState* play) {
     Fishing_UpdateLinePos(sReelLinePos);
     Fishing_UpdateLine(play, &sRodTipPos, sReelLinePos, sReelLineRot, sReelLineUnk);
     Fishing_DrawLureAndLine(play, sReelLinePos, sReelLineRot);
+    if (sLureEquipped == FS_LURE_SINKING) {
+        Fishing_DrawSinkingLure(play);
+    }
 
     sStickAdjXPrev = input->rel.stick_x;
     sStickAdjYPrev = input->rel.stick_y;
