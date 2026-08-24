@@ -148,6 +148,10 @@ typedef enum TimerId {
     /* 2 */ TIMER_ID_MAX
 } TimerId;
 
+// Currency is stored in gold units. One hundred gold units equal one silver.
+#define GOLD_PER_SILVER 100LL
+#define RUPEE_BALANCE_MAX 99999999999LL
+
 #pragma region SoH
 
 typedef struct ShipQuestSaveContextData {
@@ -181,7 +185,7 @@ typedef struct {
     /* 0x0030 */ s16 health; // "now_life"
     /* 0x0032 */ s8 magicLevel; // 0 for no magic/new load, 1 for magic, 2 for double magic
     /* 0x0033 */ s8 magic; // current magic available for use
-    /* 0x0034 */ s16 rupees;
+    /* 0x0034 */ s64 rupees;
     /* 0x0036 */ u16 swordHealth;
     /* 0x0038 */ u16 naviTimer;
     /* 0x003A */ u8 isMagicAcquired;
@@ -232,7 +236,7 @@ typedef struct {
     /* 0x13C7 */ u8 showTitleCard;
     /* 0x13C8 */ s16 nayrusLoveTimer;
     /* 0x13CA */ char unk_13CA[0x0002];
-    /* 0x13CC */ s16 rupeeAccumulator;
+    /* 0x13CC */ s64 rupeeAccumulator;
     /* 0x13CE */ s16 timerState;
     /* 0x13D0 */ s16 timerSeconds;
     /* 0x13D2 */ s16 subTimerState;

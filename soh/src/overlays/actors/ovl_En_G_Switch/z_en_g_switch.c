@@ -27,7 +27,6 @@ void EnGSwitch_Update(Actor* thisx, PlayState* play);
 void EnGSwitch_DrawRupee(Actor* thisx, PlayState* play);
 void EnGSwitch_DrawPot(Actor* thisx, PlayState* play);
 
-void EnGSwitch_SilverRupeeTracker(EnGSwitch* this, PlayState* play);
 void EnGSwitch_SilverRupeeIdle(EnGSwitch* this, PlayState* play);
 void EnGSwitch_WaitForObject(EnGSwitch* this, PlayState* play);
 void EnGSwitch_SilverRupeeCollected(EnGSwitch* this, PlayState* play);
@@ -38,8 +37,6 @@ void EnGSwitch_Kill(EnGSwitch* this, PlayState* play);
 void EnGSwitch_SpawnEffects(EnGSwitch* this, Vec3f* pos, s16 scale, s16 colorIdx);
 void EnGSwitch_UpdateEffects(EnGSwitch* this, PlayState* play);
 void EnGSwitch_DrawEffects(EnGSwitch* this, PlayState* play);
-
-static s16 sCollectedCount = 0;
 
 static ColliderCylinderInit sCylinderInit = {
     {
@@ -92,22 +89,14 @@ void EnGSwitch_Init(Actor* thisx, PlayState* play) {
     osSyncPrintf(VT_FGCOL(YELLOW) "☆☆☆☆☆ セーブ\t     ☆☆☆☆☆ %x\n" VT_RST, this->switchFlag);
     switch (this->type) {
         case ENGSWITCH_SILVER_TRACKER:
-            osSyncPrintf("\n\n");
-            // "parent switch spawn"
-            osSyncPrintf(VT_FGCOL(GREEN) "☆☆☆☆☆ 親スイッチ発生 ☆☆☆☆☆ %x\n" VT_RST, this->actor.params);
-            sCollectedCount = 0;
-            this->silverCount = this->actor.params >> 6;
-            this->silverCount &= 0x3F;
-            // "maximum number of checks"
-            osSyncPrintf(VT_FGCOL(PURPLE) "☆☆☆☆☆ 最大チェック数 ☆☆☆☆☆ %d\n" VT_RST, this->silverCount);
-            osSyncPrintf("\n\n");
-            if (Flags_GetSwitch(play, this->switchFlag)) {
-                // This is a reference to Hokuto no Ken
-                osSyncPrintf(VT_FGCOL(GREEN) "☆☆☆☆☆ Ｙｏｕ ａｒｅ Ｓｈｏｃｋ！  ☆☆☆☆☆ %d\n" VT_RST, this->switchFlag);
-                Actor_Kill(&this->actor);
+            // Silver-rupee puzzles are removed. Open their gate immediately;
+            // the silver pickups themselves remain as ordinary currency.
+            if ((play->sceneNum == SCENE_GERUDO_TRAINING_GROUND) && (this->actor.room == 2)) {
+                Flags_SetTempClear(play, this->actor.room);
             } else {
-                this->actionFunc = EnGSwitch_SilverRupeeTracker;
+                Flags_SetSwitch(play, this->switchFlag);
             }
+            Actor_Kill(&this->actor);
             break;
         case ENGSWITCH_SILVER_RUPEE:
             osSyncPrintf("\n\n");
@@ -119,13 +108,8 @@ void EnGSwitch_Init(Actor* thisx, PlayState* play) {
             Collider_SetCylinder(play, &this->collider, &this->actor, &sCylinderInit);
             this->actor.draw = EnGSwitch_DrawRupee;
             this->actor.shape.yOffset = 700.0f;
-            if (Flags_GetSwitch(play, this->switchFlag)) {
-                osSyncPrintf(VT_FGCOL(GREEN) "☆☆☆☆☆ Ｙｏｕ ａｒｅ Ｓｈｏｃｋ！  ☆☆☆☆☆ %d\n" VT_RST, this->switchFlag);
-                Actor_Kill(&this->actor);
-            } else {
-                Actor_SetScale(&this->actor, 0.03f);
-                this->actionFunc = EnGSwitch_SilverRupeeIdle;
-            }
+            Actor_SetScale(&this->actor, 0.03f);
+            this->actionFunc = EnGSwitch_SilverRupeeIdle;
             break;
         case ENGSWITCH_ARCHERY_POT:
             osSyncPrintf("\n\n");
@@ -208,41 +192,12 @@ void EnGSwitch_WaitForObject(EnGSwitch* this, PlayState* play) {
     }
 }
 
-void EnGSwitch_SilverRupeeTracker(EnGSwitch* this, PlayState* play) {
-    static s8 majorScale[] = { 0, 2, 4, 5, 7, 9, 11, 13, 15, 17 };
-
-    if (this->noteIndex < sCollectedCount) {
-        if (sCollectedCount < 5) {
-            // "sound?"
-            osSyncPrintf(VT_FGCOL(GREEN) "☆☆☆☆☆ 音？ ☆☆☆☆☆ %d\n" VT_RST, this->noteIndex);
-            Audio_PlaySoundTransposed(&gSfxDefaultPos, NA_SE_EV_FIVE_COUNT_LUPY, majorScale[this->noteIndex]);
-            this->noteIndex = sCollectedCount;
-        }
-    }
-    if (sCollectedCount >= this->silverCount) {
-        // "It is now the end of the century."
-        // This another reference to Hokuto no Ken.
-        osSyncPrintf(VT_FGCOL(GREEN) "☆☆☆☆☆ 時はまさに世紀末〜  ☆☆☆☆☆ %d\n" VT_RST, this->switchFlag);
-        // "Last!"
-        osSyncPrintf(VT_FGCOL(GREEN) "☆☆☆☆☆ らすとぉ！          ☆☆☆☆☆ \n" VT_RST);
-        if ((play->sceneNum == SCENE_GERUDO_TRAINING_GROUND) && (this->actor.room == 2)) {
-            Flags_SetTempClear(play, this->actor.room);
-        } else {
-            Sfx_PlaySfxCentered(NA_SE_SY_CORRECT_CHIME);
-            Flags_SetSwitch(play, this->switchFlag);
-        }
-        Sfx_PlaySfxCentered(NA_SE_SY_GET_RUPY);
-        Actor_Kill(&this->actor);
-    }
-}
-
 void EnGSwitch_SilverRupeeIdle(EnGSwitch* this, PlayState* play) {
     Player* player = GET_PLAYER(play);
 
     this->actor.shape.rot.y += 0x800;
     if (this->actor.xyzDistToPlayerSq < 900.0f) {
-        Rupees_ChangeBy(5);
-        sCollectedCount++;
+        Rupees_ChangeBy(100);
         Sfx_PlaySfxCentered(NA_SE_SY_GET_RUPY);
         this->actor.world.pos = player->actor.world.pos;
         this->actor.world.pos.y += 40.0f;
@@ -444,11 +399,6 @@ void EnGSwitch_Update(Actor* thisx, PlayState* play) {
             Collider_UpdateCylinder(&this->actor, &this->collider);
             CollisionCheck_SetAC(play, &play->colChkCtx, &this->collider.base);
         }
-    }
-    if (BREG(0) && (this->type == ENGSWITCH_SILVER_TRACKER)) {
-        DebugDisplay_AddObject(this->actor.world.pos.x, this->actor.world.pos.y, this->actor.world.pos.z,
-                               this->actor.world.rot.x, this->actor.world.rot.y, this->actor.world.rot.z, 1.0f, 1.0f,
-                               1.0f, 255, 0, 0, 255, 4, play->state.gfxCtx);
     }
 }
 

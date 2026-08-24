@@ -16,6 +16,7 @@
 #include "overlays/actors/ovl_En_Elf/z_en_elf.h"
 #include "overlays/actors/ovl_En_Fish/z_en_fish.h"
 #include "overlays/actors/ovl_En_Horse/z_en_horse.h"
+#include "overlays/actors/ovl_Fishing/z_fishing.h"
 #include "overlays/effects/ovl_Effect_Ss_Fhg_Flash/z_eff_ss_fhg_flash.h"
 #include "overlays/misc/ovl_kaleido_scope/z_kaleido_scope.h"
 #include "objects/gameplay_keep/gameplay_keep.h"
@@ -147,6 +148,8 @@ s32 func_80835B60(Player* this, PlayState* play); // Boomerang active
 s32 func_80835C08(Player* this, PlayState* play);
 
 void Player_UseItem(PlayState* play, Player* this, s32 item);
+static Fishing* Player_FindFishingController(PlayState* play);
+static Fishing* Player_EnsureFishingController(PlayState* play, Player* player);
 void func_80839F90(Player* this, PlayState* play);
 s32 func_8083C61C(PlayState* play, Player* this);
 void Player_StartMode_Idle(PlayState* play, Player* this);
@@ -1520,6 +1523,7 @@ static u8 D_80854380[2] = { PLAYER_MWA_SPIN_ATTACK_1H, PLAYER_MWA_SPIN_ATTACK_2H
 static u8 D_80854384[2] = { PLAYER_MWA_BIG_SPIN_1H, PLAYER_MWA_BIG_SPIN_2H };
 
 static u16 sItemButtons[] = { BTN_B, BTN_CLEFT, BTN_CDOWN, BTN_CRIGHT, BTN_CUP };
+static s32 sPendingFishingItem = -1;
 
 static u8 sMagicSpellCosts[] = { 12, 24, 24, 12, 24, 12 };
 
@@ -1743,37 +1747,19 @@ void Player_PlayFloorSfxByAge(Player* this, u16 sfxId) {
 }
 
 void Player_PlaySteppingSfx(Player* this, f32 pitchAdjustment) {
-    s32 sfxId;
-
-    if (this->currentBoots == PLAYER_BOOTS_IRON) {
-        sfxId = NA_SE_PL_WALK_HEAVYBOOTS;
-    } else {
-        sfxId = Player_ApplyFloorAndAgeSfxOffsets(this, NA_SE_PL_WALK_GROUND);
-    }
+    s32 sfxId = Player_ApplyFloorAndAgeSfxOffsets(this, NA_SE_PL_WALK_GROUND);
 
     func_800F4010(&this->actor.projectedPos, sfxId, pitchAdjustment);
 }
 
 void Player_PlayJumpingSfx(Player* this) {
-    s32 sfxId;
-
-    if (this->currentBoots == PLAYER_BOOTS_IRON) {
-        sfxId = NA_SE_PL_JUMP_HEAVYBOOTS;
-    } else {
-        sfxId = Player_ApplyFloorAndAgeSfxOffsets(this, NA_SE_PL_JUMP);
-    }
+    s32 sfxId = Player_ApplyFloorAndAgeSfxOffsets(this, NA_SE_PL_JUMP);
 
     Player_PlaySfx(this, sfxId);
 }
 
 void Player_PlayLandingSfx(Player* this) {
-    s32 sfxId;
-
-    if (this->currentBoots == PLAYER_BOOTS_IRON) {
-        sfxId = NA_SE_PL_LAND_HEAVYBOOTS;
-    } else {
-        sfxId = Player_ApplyFloorAndAgeSfxOffsets(this, NA_SE_PL_LAND);
-    }
+    s32 sfxId = Player_ApplyFloorAndAgeSfxOffsets(this, NA_SE_PL_LAND);
 
     Player_PlaySfx(this, sfxId);
 }
@@ -2043,7 +2029,7 @@ void func_8083328C(PlayState* play, Player* this, LinkAnimationHeader* linkAnim)
 }
 
 int func_808332B8(Player* this) {
-    return (this->stateFlags1 & PLAYER_STATE1_IN_WATER) && (this->currentBoots != PLAYER_BOOTS_IRON);
+    return this->stateFlags1 & PLAYER_STATE1_IN_WATER;
 }
 
 s32 func_808332E4(Player* this) {
@@ -2112,9 +2098,6 @@ void Player_ProcessFidgetAnimSfxList(Player* this, s32 fidgetAnimIndex) {
 LinkAnimationHeader* func_80833438(Player* this) {
     if (this->unk_890 != 0) {
         return GET_PLAYER_ANIM(PLAYER_ANIMGROUP_damage_run, this->modelAnimType);
-    } else if (!(this->stateFlags1 & (PLAYER_STATE1_IN_WATER | PLAYER_STATE1_IN_CUTSCENE)) &&
-               (this->currentBoots == PLAYER_BOOTS_IRON)) {
-        return GET_PLAYER_ANIM(PLAYER_ANIMGROUP_heavy_run, this->modelAnimType);
     } else {
         return GET_PLAYER_ANIM(PLAYER_ANIMGROUP_run, this->modelAnimType);
     }
@@ -2426,7 +2409,7 @@ s32 Player_ItemIsItemAction(s32 item1, s32 itemAction) {
 
 s32 Player_GetItemOnButton(PlayState* play, s32 index) {
     if (index == 4) {
-        return (play->sceneNum == SCENE_FISHING_POND) ? ITEM_FISHING_POLE : ITEM_NONE;
+        return ITEM_FISHING_POLE;
     } else if (index > 4) {
         return ITEM_NONE;
     } else if (play->bombchuBowlingStatus != 0) {
@@ -2498,6 +2481,10 @@ void Player_ProcessItemButtons(Player* this, PlayState* play) {
             }
         } else {
             this->heldItemButton = i;
+            if ((item == ITEM_FISHING_POLE) && (Player_EnsureFishingController(play, this) == NULL)) {
+                Sfx_PlaySfxCentered(NA_SE_SY_ERROR);
+                return;
+            }
             Player_UseItem(play, this, item);
         }
     }
@@ -4815,7 +4802,7 @@ s32 Player_ActionHandler_12(Player* this, PlayState* play) {
                 if ((this->ledgeClimbType < 2) || (this->yDistToLedge > this->ageProperties->unk_10)) {
                     return 0;
                 }
-            } else if ((this->currentBoots != PLAYER_BOOTS_IRON) || (this->ledgeClimbType > 2)) {
+            } else {
                 return 0;
             }
         } else if (!(this->actor.bgCheckFlags & 1) || ((this->ageProperties->unk_14 <= this->yDistToLedge) &&
@@ -6373,6 +6360,32 @@ static BottleSwingInfo sBottleSwingInfo[] = {
     { &gPlayerAnim_link_bottle_fish_miss, &gPlayerAnim_link_bottle_fish_in, 5, 3 },
 };
 
+static Fishing* Player_FindFishingController(PlayState* play) {
+    Actor* actor = play->actorCtx.actorLists[ACTORCAT_NPC].head;
+
+    while (actor != NULL) {
+        if ((actor->id == ACTOR_FISHING) &&
+            ((actor->params == EN_FISH_OWNER) || (actor->params == EN_FISH_PORTABLE))) {
+            return (Fishing*)actor;
+        }
+        actor = actor->next;
+    }
+
+    return NULL;
+}
+
+static Fishing* Player_EnsureFishingController(PlayState* play, Player* player) {
+    Fishing* controller = Player_FindFishingController(play);
+
+    if (controller == NULL) {
+        controller = (Fishing*)Actor_Spawn(&play->actorCtx, play, ACTOR_FISHING, player->actor.world.pos.x,
+                                           player->actor.world.pos.y, player->actor.world.pos.z, 0, 0, 0,
+                                           EN_FISH_PORTABLE);
+    }
+
+    return controller;
+}
+
 s32 func_8083C6B8(PlayState* play, Player* this) {
     if (sUseHeldItem) {
         if (Player_GetBottleHeld(this) >= 0) {
@@ -6394,12 +6407,18 @@ s32 func_8083C6B8(PlayState* play, Player* this) {
 
             rodCheckPos.y += 50.0f;
 
-            if (!(this->actor.bgCheckFlags & 1) || (this->actor.world.pos.z > 1300.0f) ||
+            if (!(this->actor.bgCheckFlags & 1) ||
                 BgCheck_SphVsFirstPoly(&play->colCtx, &rodCheckPos, 20.0f)) {
                 Sfx_PlaySfxCentered(NA_SE_SY_ERROR);
                 return 0;
             }
 
+            if (Player_EnsureFishingController(play, this) == NULL) {
+                Sfx_PlaySfxCentered(NA_SE_SY_ERROR);
+                return 0;
+            }
+
+            sPendingFishingItem = -1;
             Player_SetupAction(play, this, Player_Action_80850C68, 0);
             this->unk_860 = 1;
             Player_ZeroSpeedXZ(this);
@@ -6605,8 +6624,7 @@ void func_8083D0A8(PlayState* play, Player* this, f32 arg2) {
 
 s32 func_8083D12C(PlayState* play, Player* this, Input* arg2) {
     if (!(this->stateFlags1 & PLAYER_STATE1_GETTING_ITEM) && !(this->stateFlags2 & PLAYER_STATE2_UNDERWATER)) {
-        if ((arg2 == NULL) || (CHECK_BTN_ALL(arg2->press.button, BTN_A) && (ABS(this->unk_6C2) < 12000) &&
-                               (this->currentBoots != PLAYER_BOOTS_IRON))) {
+        if ((arg2 == NULL) || (CHECK_BTN_ALL(arg2->press.button, BTN_A) && (ABS(this->unk_6C2) < 12000))) {
 
             Player_SetupAction(play, this, Player_Action_8084DC48, 0);
             Player_AnimPlayOnce(play, this, &gPlayerAnim_link_swimer_swim_deep_start);
@@ -6665,22 +6683,19 @@ void func_8083D330(PlayState* play, Player* this) {
 }
 
 void func_8083D36C(PlayState* play, Player* this) {
-    if ((this->currentBoots != PLAYER_BOOTS_IRON) || !(this->actor.bgCheckFlags & 1)) {
-        func_80832564(play, this);
+    func_80832564(play, this);
 
-        if ((this->currentBoots != PLAYER_BOOTS_IRON) && (this->stateFlags2 & PLAYER_STATE2_UNDERWATER)) {
-            this->stateFlags2 &= ~PLAYER_STATE2_UNDERWATER;
-            func_8083D12C(play, this, 0);
-            this->av1.actionVar1 = 1;
-        } else if (Player_Action_80844A44 == this->actionFunc) {
-            Player_SetupAction(play, this, Player_Action_8084DC48, 0);
-            func_8083D330(play, this);
-        } else {
-            Player_SetupAction(play, this, Player_Action_8084D610, 1);
-            Player_AnimChangeOnceMorph(play, this,
-                                       (this->actor.bgCheckFlags & 1) ? &gPlayerAnim_link_swimer_wait2swim_wait
-                                                                      : &gPlayerAnim_link_swimer_land2swim_wait);
-        }
+    if (this->stateFlags2 & PLAYER_STATE2_UNDERWATER) {
+        this->stateFlags2 &= ~PLAYER_STATE2_UNDERWATER;
+        func_8083D12C(play, this, 0);
+        this->av1.actionVar1 = 1;
+    } else if (Player_Action_80844A44 == this->actionFunc) {
+        Player_SetupAction(play, this, Player_Action_8084DC48, 0);
+        func_8083D330(play, this);
+    } else {
+        Player_SetupAction(play, this, Player_Action_8084D610, 1);
+        Player_AnimChangeOnceMorph(play, this, (this->actor.bgCheckFlags & 1) ? &gPlayerAnim_link_swimer_wait2swim_wait
+                                                                            : &gPlayerAnim_link_swimer_land2swim_wait);
     }
 
     if (!(this->stateFlags1 & PLAYER_STATE1_IN_WATER) || (this->actor.yDistToWater < this->ageProperties->unk_2C)) {
@@ -6715,8 +6730,7 @@ void func_8083D53C(PlayState* play, Player* this) {
     if ((Player_Action_80845668 != this->actionFunc) && (Player_Action_8084BDFC != this->actionFunc)) {
         if (this->ageProperties->unk_2C < this->actor.yDistToWater) {
             if (!(this->stateFlags1 & PLAYER_STATE1_IN_WATER) ||
-                (!((this->currentBoots == PLAYER_BOOTS_IRON) && (this->actor.bgCheckFlags & 1)) &&
-                 (Player_Action_8084E30C != this->actionFunc) && (Player_Action_8084E368 != this->actionFunc) &&
+                ((Player_Action_8084E30C != this->actionFunc) && (Player_Action_8084E368 != this->actionFunc) &&
                  (Player_Action_8084D610 != this->actionFunc) && (Player_Action_8084D84C != this->actionFunc) &&
                  (Player_Action_8084DAB4 != this->actionFunc) && (Player_Action_8084DC48 != this->actionFunc) &&
                  (Player_Action_8084E1EC != this->actionFunc) && (Player_Action_8084D7C4 != this->actionFunc))) {
@@ -6725,7 +6739,7 @@ void func_8083D53C(PlayState* play, Player* this) {
             }
         } else if ((this->stateFlags1 & PLAYER_STATE1_IN_WATER) &&
                    (this->actor.yDistToWater < this->ageProperties->unk_24)) {
-            if ((this->skelAnime.movementFlags == 0) && (this->currentBoots != PLAYER_BOOTS_IRON)) {
+            if (this->skelAnime.movementFlags == 0) {
                 Player_SetupTurnInPlace(play, this, this->actor.shape.rot.y);
             }
             func_8083D0A8(play, this, this->actor.velocity.y);
@@ -6753,27 +6767,13 @@ void func_8083D6EC(PlayState* play, Player* this) {
             } else {
                 temp2 = 1300.0f;
             }
-            if (this->currentBoots == PLAYER_BOOTS_HOVER) {
-                temp1 += temp1;
-            } else if (this->currentBoots == PLAYER_BOOTS_IRON) {
-                temp1 *= 0.3f;
-            }
         } else {
             temp2 = 20000.0f;
-            if (this->currentBoots != PLAYER_BOOTS_HOVER) {
-                temp1 += temp1;
-            } else if ((sFloorType == 7) || (this->currentBoots == PLAYER_BOOTS_IRON)) {
-                temp1 = 0;
-            }
+            temp1 += temp1;
         }
 
-        if (this->currentBoots != PLAYER_BOOTS_HOVER) {
-            temp3 = (temp2 - this->unk_6C4) * 0.02f;
-            temp3 = CLAMP(temp3, 0.0f, 300.0f);
-            if (this->currentBoots == PLAYER_BOOTS_IRON) {
-                temp3 += temp3;
-            }
-        }
+        temp3 = (temp2 - this->unk_6C4) * 0.02f;
+        temp3 = CLAMP(temp3, 0.0f, 300.0f);
 
         this->unk_6C4 += temp3 - temp1;
         this->unk_6C4 = CLAMP(this->unk_6C4, 0.0f, temp2);
@@ -7093,7 +7093,7 @@ s32 Player_ActionHandler_2(Player* this, PlayState* play) {
                     Player_DetachHeldActor(play, this);
                     func_8083AE40(this, giEntry.objectId);
 
-                    if (!(this->stateFlags2 & PLAYER_STATE2_UNDERWATER) || (this->currentBoots == PLAYER_BOOTS_IRON)) {
+                    if (!(this->stateFlags2 & PLAYER_STATE2_UNDERWATER)) {
                         Player_SetupWaitForPutAway(play, this, func_8083A434);
                         Player_AnimPlayOnceAdjusted(play, this, &gPlayerAnim_link_demo_get_itemB);
                         func_80835EA4(play, 9);
@@ -7231,7 +7231,7 @@ s32 Player_ActionHandler_9(Player* this, PlayState* play) {
 
 s32 func_8083EC18(Player* this, PlayState* play, u32 wallFlags) {
     if (this->yDistToLedge >= 79.0f) {
-        if (!(this->stateFlags1 & PLAYER_STATE1_IN_WATER) || (this->currentBoots == PLAYER_BOOTS_IRON) ||
+        if (!(this->stateFlags1 & PLAYER_STATE1_IN_WATER) ||
             (this->actor.yDistToWater < this->ageProperties->unk_2C)) {
             s32 sp8C = (wallFlags & 8) ? 2 : 0;
 
@@ -7695,10 +7695,7 @@ void func_8084029C(Player* this, f32 arg1) {
         arg1 = 7.25f;
     }
 
-    if ((this->currentBoots == PLAYER_BOOTS_HOVER) && !(this->actor.bgCheckFlags & 1) &&
-        (this->hoverBootsTimer != 0)) {
-        func_8002F8F0(&this->actor, NA_SE_PL_HOBBERBOOTS_LV - SFX_FLAG);
-    } else if (func_8084021C(this->unk_868, arg1, 29.0f, 10.0f) || func_8084021C(this->unk_868, arg1, 29.0f, 24.0f)) {
+    if (func_8084021C(this->unk_868, arg1, 29.0f, 10.0f) || func_8084021C(this->unk_868, arg1, 29.0f, 24.0f)) {
         Player_PlaySteppingSfx(this, this->linearVelocity);
         if (this->linearVelocity > 4.0f) {
             this->stateFlags2 |= PLAYER_STATE2_FOOTSTEP;
@@ -10366,9 +10363,15 @@ void Player_Init(Actor* thisx, PlayState* play2) {
     gSaveContext.inventory.equipment |= OWNED_EQUIP_FLAG(EQUIP_TYPE_SWORD, EQUIP_INV_SWORD_MASTER) |
                                         OWNED_EQUIP_FLAG(EQUIP_TYPE_SWORD, EQUIP_INV_SWORD_BIGGORON) |
                                         OWNED_EQUIP_FLAG(EQUIP_TYPE_SHIELD, EQUIP_INV_SHIELD_MIRROR);
-    gSaveContext.equips.equipment &= (u16)~((0xF << (EQUIP_TYPE_SWORD * 4)) | (0xF << (EQUIP_TYPE_SHIELD * 4)));
+    gSaveContext.inventory.equipment &=
+        (u16)~(OWNED_EQUIP_FLAG(EQUIP_TYPE_BOOTS, EQUIP_INV_BOOTS_IRON) |
+               OWNED_EQUIP_FLAG(EQUIP_TYPE_BOOTS, EQUIP_INV_BOOTS_HOVER));
+    gSaveContext.equips.equipment &=
+        (u16)~((0xF << (EQUIP_TYPE_SWORD * 4)) | (0xF << (EQUIP_TYPE_SHIELD * 4)) |
+               (0xF << (EQUIP_TYPE_BOOTS * 4)));
     gSaveContext.equips.equipment |= (EQUIP_VALUE_SWORD_MASTER << (EQUIP_TYPE_SWORD * 4)) |
-                                     (EQUIP_VALUE_SHIELD_MIRROR << (EQUIP_TYPE_SHIELD * 4));
+                                     (EQUIP_VALUE_SHIELD_MIRROR << (EQUIP_TYPE_SHIELD * 4)) |
+                                     (EQUIP_VALUE_BOOTS_KOKIRI << (EQUIP_TYPE_BOOTS * 4));
     gSaveContext.inventory.items[SLOT_BOMB] = ITEM_BOMB;
     gSaveContext.inventory.items[SLOT_BOW] = ITEM_BOW;
     gSaveContext.equips.buttonItems[0] = ITEM_BOMB;
@@ -10656,37 +10659,11 @@ void Player_UpdateInterface(PlayState* play, Player* this) {
     }
 }
 
-/**
- * Updates state related to the Hover Boots.
- * Handles a special case where the Hover Boots are able to activate when standing on certain floor types even if the
- * player is standing on the ground.
- *
- * If the player is not on the ground, regardless of the usage of the Hover Boots, various floor related variables are
- * reset.
- *
- * @return true if not on the ground, false otherwise. Note this is independent of the Hover Boots state.
- */
-s32 Player_UpdateHoverBoots(Player* this) {
-    s32 canHoverOnGround;
-
-    if ((this->currentBoots == PLAYER_BOOTS_HOVER) && (this->hoverBootsTimer != 0)) {
-        this->hoverBootsTimer--;
-    } else {
-        this->hoverBootsTimer = 0;
-    }
-
-    canHoverOnGround = (this->currentBoots == PLAYER_BOOTS_HOVER) &&
-                       ((this->actor.yDistToWater >= 0.0f) || (func_80838144(sFloorType) >= 0) ||
-                        func_8083816C(sFloorType));
-
-    if (canHoverOnGround && (this->actor.bgCheckFlags & 1) && (this->hoverBootsTimer != 0)) {
-        this->actor.bgCheckFlags &= ~1;
-    }
+/** Updates floor state and returns true while the player is airborne. */
+s32 Player_UpdateAirborneState(Player* this) {
+    this->hoverBootsTimer = 0;
 
     if (this->actor.bgCheckFlags & 1) {
-        if (!canHoverOnGround) {
-            this->hoverBootsTimer = 19;
-        }
         return false;
     } else {
         
@@ -10807,8 +10784,7 @@ void Player_ProcessSceneCollision(PlayState* play, Player* this) {
         sConveyorSpeed = SurfaceType_GetConveyorSpeed(&play->colCtx, floorPoly, this->actor.floorBgId);
         if (sConveyorSpeed != 0) {
             sIsFloorConveyor = SurfaceType_IsConveyor(&play->colCtx, floorPoly, this->actor.floorBgId);
-            if (((sIsFloorConveyor == 0) && (this->actor.yDistToWater > 20.0f) &&
-                 (this->currentBoots != PLAYER_BOOTS_IRON)) ||
+            if (((sIsFloorConveyor == 0) && (this->actor.yDistToWater > 20.0f)) ||
                 ((sIsFloorConveyor != 0) && (this->actor.bgCheckFlags & 1))) {
                 sConveyorYaw = SurfaceType_GetConveyorDirection(&play->colCtx, floorPoly, this->actor.floorBgId) << 10;
             } else {
@@ -10948,7 +10924,7 @@ void Player_ProcessSceneCollision(PlayState* play, Player* this) {
             sFloorType = func_80041D4C(&play->colCtx, floorPoly, this->actor.floorBgId);
         
 
-        if (!Player_UpdateHoverBoots(this)) {
+        if (!Player_UpdateAirborneState(this)) {
             f32 floorPolyNormalX;
             f32 invFloorPolyNormalY;
             f32 floorPolyNormalZ;
@@ -10982,7 +10958,7 @@ void Player_ProcessSceneCollision(PlayState* play, Player* this) {
             Player_HandleSlopes(play, this, floorPoly);
         }
     } else {
-        Player_UpdateHoverBoots(this);
+        Player_UpdateAirborneState(this);
     }
 
     if (this->prevFloorType == sFloorType) {
@@ -11382,26 +11358,6 @@ void Player_UpdateCommon(Player* this, PlayState* play, Input* input) {
         f32 temp_f0;
         f32 phi_f12;
 
-        if (this->currentBoots != this->prevBoots) {
-            if (this->currentBoots == PLAYER_BOOTS_IRON) {
-                if (this->stateFlags1 & PLAYER_STATE1_IN_WATER) {
-                    func_80832340(play, this);
-                    if (this->ageProperties->unk_2C < this->actor.yDistToWater) {
-                        this->stateFlags2 |= PLAYER_STATE2_UNDERWATER;
-                    }
-                }
-            } else {
-                if (this->stateFlags1 & PLAYER_STATE1_IN_WATER) {
-                    if ((this->prevBoots == PLAYER_BOOTS_IRON) || (this->actor.bgCheckFlags & 1)) {
-                        func_8083D36C(play, this);
-                        this->stateFlags2 &= ~PLAYER_STATE2_UNDERWATER;
-                    }
-                }
-            }
-
-            this->prevBoots = this->currentBoots;
-        }
-
         if ((this->actor.parent == NULL) && (this->stateFlags1 & PLAYER_STATE1_ON_HORSE)) {
             this->actor.parent = this->rideActor;
             func_8083A360(play, this);
@@ -11433,9 +11389,7 @@ void Player_UpdateCommon(Player* this, PlayState* play, Input* input) {
         }
 
         if (!(this->skelAnime.movementFlags & 0x80)) {
-            if (((this->actor.bgCheckFlags & 1) && (sFloorType == 5) && (this->currentBoots != PLAYER_BOOTS_IRON)) ||
-                ((this->currentBoots == PLAYER_BOOTS_HOVER) &&
-                 !(this->stateFlags1 & (PLAYER_STATE1_IN_WATER | PLAYER_STATE1_IN_CUTSCENE)))) {
+            if ((this->actor.bgCheckFlags & 1) && (sFloorType == 5)) {
                 f32 sp70 = this->linearVelocity;
                 s16 sp6E = this->yaw;
                 s16 yawDiff = this->actor.world.rot.y - sp6E;
@@ -11511,7 +11465,7 @@ void Player_UpdateCommon(Player* this, PlayState* play, Input* input) {
             this->pushedSpeed = 0.0f;
         }
 
-        if ((sConveyorSpeed != 0) && (this->currentBoots != PLAYER_BOOTS_IRON)) {
+        if (sConveyorSpeed != 0) {
             f32 sp48;
 
             sConveyorSpeed--;
@@ -11830,43 +11784,6 @@ void Player_DrawGameplay(PlayState* play, Player* this, s32 lod, Gfx* cullDList,
         Matrix_Pop();
     }
 
-    if ((this->currentBoots == PLAYER_BOOTS_HOVER) &&
-        !(this->actor.bgCheckFlags & 1) && !(this->stateFlags1 & PLAYER_STATE1_ON_HORSE) &&
-        (this->hoverBootsTimer != 0)) {
-        s32 sp5C;
-        s32 hoverBootsTimer = this->hoverBootsTimer;
-
-        if (this->hoverBootsTimer < 19) {
-            if (hoverBootsTimer >= 15) {
-                D_8085486C = (19 - hoverBootsTimer) * 51.0f;
-            } else if (hoverBootsTimer < 19) {
-                sp5C = hoverBootsTimer;
-
-                if (sp5C > 9) {
-                    sp5C = 9;
-                }
-
-                D_8085486C = (-sp5C * 4) + 36;
-                D_8085486C = D_8085486C * D_8085486C;
-                D_8085486C = (s32)((Math_CosS(D_8085486C) * 100.0f) + 100.0f) + 55.0f;
-                D_8085486C = D_8085486C * (sp5C * (1.0f / 9.0f));
-            }
-
-            FrameInterpolation_RecordActorPosRotMatrix();
-            Matrix_SetTranslateRotateYXZ(this->actor.world.pos.x, this->actor.world.pos.y + 2.0f,
-                                         this->actor.world.pos.z, &D_80854864);
-            Matrix_Scale(4.0f, 4.0f, 4.0f, MTXMODE_APPLY);
-
-            gSPMatrix(POLY_XLU_DISP++, MATRIX_NEWMTX(play->state.gfxCtx), G_MTX_NOPUSH | G_MTX_LOAD | G_MTX_MODELVIEW);
-            gSPSegment(POLY_XLU_DISP++, 0x08,
-                       Gfx_TwoTexScrollEx(play->state.gfxCtx, 0, 0, 0, 16, 32, 1, 0, (play->gameplayFrames * -15) % 128,
-                                          16, 32, 0, 0, 0, -15));
-            gDPSetPrimColor(POLY_XLU_DISP++, 0x80, 0x80, 255, 255, 255, D_8085486C);
-            gDPSetEnvColor(POLY_XLU_DISP++, 120, 90, 30, 128);
-            gSPDisplayList(POLY_XLU_DISP++, gHoverBootsCircleDL);
-        }
-    }
-
     CLOSE_DISPS(play->state.gfxCtx);
 }
 
@@ -12074,18 +11991,13 @@ void func_8084B000(Player* this) {
         }
         phi_f18 = -0.1f - phi_f16;
     } else {
-        if (!(this->stateFlags1 & PLAYER_STATE1_DEAD) && (this->currentBoots == PLAYER_BOOTS_IRON) &&
-            (this->actor.velocity.y >= -3.0f)) {
-            phi_f18 = -0.2f;
+        phi_f14 = 2.0f;
+        if (this->actor.velocity.y >= 0.0f) {
+            phi_f16 = 0.0f;
         } else {
-            phi_f14 = 2.0f;
-            if (this->actor.velocity.y >= 0.0f) {
-                phi_f16 = 0.0f;
-            } else {
-                phi_f16 = this->actor.velocity.y * -0.3f;
-            }
-            phi_f18 = phi_f16 + 0.1f;
+            phi_f16 = this->actor.velocity.y * -0.3f;
         }
+        phi_f18 = phi_f16 + 0.1f;
 
         yDistToWater = this->actor.yDistToWater;
         if (yDistToWater > 100.0f) {
@@ -13088,29 +13000,19 @@ void Player_Action_8084D610(Player* this, PlayState* play) {
             this->unk_6AD = 0;
         }
 
-        if (this->currentBoots == PLAYER_BOOTS_IRON) {
-            sp34 = 0.0f;
-            sp32 = this->actor.shape.rot.y;
+        Player_GetMovementSpeedAndYaw(this, &sp34, &sp32, SPEED_MODE_LINEAR, play);
 
-            if (this->actor.bgCheckFlags & 1) {
-                func_8083A098(this, GET_PLAYER_ANIM(PLAYER_ANIMGROUP_short_landing, this->modelAnimType), play);
-                Player_PlayLandingSfx(this);
+        if (sp34 != 0.0f) {
+            s16 temp = this->actor.shape.rot.y - sp32;
+
+            if ((ABS(temp) > 0x6000) && !Math_StepToF(&this->linearVelocity, 0.0f, 1.0f)) {
+                return;
             }
-        } else {
-            Player_GetMovementSpeedAndYaw(this, &sp34, &sp32, SPEED_MODE_LINEAR, play);
 
-            if (sp34 != 0.0f) {
-                s16 temp = this->actor.shape.rot.y - sp32;
-
-                if ((ABS(temp) > 0x6000) && !Math_StepToF(&this->linearVelocity, 0.0f, 1.0f)) {
-                    return;
-                }
-
-                if (Player_IsZTargetingWithHostileUpdate(this)) {
-                    func_8084D5CC(play, this);
-                } else {
-                    func_8084D574(play, this, sp32);
-                }
+            if (Player_IsZTargetingWithHostileUpdate(this)) {
+                func_8084D5CC(play, this);
+            } else {
+                func_8084D574(play, this, sp32);
             }
         }
 
@@ -13146,7 +13048,7 @@ void Player_Action_8084D84C(Player* this, PlayState* play) {
         Player_GetMovementSpeedAndYaw(this, &sp34, &sp32, SPEED_MODE_LINEAR, play);
 
         temp = this->actor.shape.rot.y - sp32;
-        if ((sp34 == 0.0f) || (ABS(temp) > 0x6000) || (this->currentBoots == PLAYER_BOOTS_IRON)) {
+        if ((sp34 == 0.0f) || (ABS(temp) > 0x6000)) {
             func_80838F18(play, this);
         } else if (Player_IsZTargetingWithHostileUpdate(this)) {
             func_8084D5CC(play, this);
@@ -13234,11 +13136,6 @@ void Player_Action_8084DC48(Player* this, PlayState* play) {
     Player_UpdateUpperBody(this, play);
 
     if (!Player_ActionHandler_13(this, play)) {
-        if (this->currentBoots == PLAYER_BOOTS_IRON) {
-            func_80838F18(play, this);
-            return;
-        }
-
         if (this->av1.actionVar1 == 0) {
             if (this->av2.actionVar2 == 0) {
                 if (LinkAnimation_Update(play, &this->skelAnime) ||
@@ -14427,6 +14324,20 @@ void Player_Action_80850AEC(Player* this, PlayState* play) {
 }
 
 void Player_Action_80850C68(Player* this, PlayState* play) {
+    static u16 weaponButtons[] = { BTN_CLEFT, BTN_CDOWN, BTN_CRIGHT };
+    s32 i;
+
+    for (i = 0; i < ARRAY_COUNT(weaponButtons); i++) {
+        if (CHECK_BTN_ALL(sControlInput->press.button, weaponButtons[i])) {
+            // Let the fishing action unwind for one frame before changing
+            // models. Bow setup in particular is not safe while the fishing
+            // skeleton/action is still active.
+            sPendingFishingItem = Player_GetItemOnButton(play, i + 1);
+            this->unk_860 = -1;
+            return;
+        }
+    }
+
     if ((this->av2.actionVar2 != 0) && ((this->unk_858 != 0.0f) || (this->unk_85C != 0.0f))) {
         // 144-byte buffer, declared as a u64 array for 8-byte alignment. LinkAnimation_BlendToMorph will round up
         // the buffer address to the nearest 16-byte alignment before passing it to AnimTaskQueue_AddLoadPlayerFrame,
@@ -14460,6 +14371,12 @@ void Player_Action_80850C68(Player* this, PlayState* play) {
 
     if (this->unk_860 == 0) {
         func_80853080(this, play);
+        if (sPendingFishingItem >= 0) {
+            s32 item = sPendingFishingItem;
+
+            sPendingFishingItem = -1;
+            Player_UseItem(play, this, item);
+        }
     } else if (this->unk_860 == 3) {
         Player_SetupAction(play, this, Player_Action_80850E84, 0);
         Player_AnimChangeOnceMorph(play, this, &gPlayerAnim_link_fishing_fish_catch);

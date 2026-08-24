@@ -61,6 +61,7 @@ typedef struct Fishing {
 #define EN_FISH_OWNER 1      // param for owner of pond. default if params<100
 #define EN_FISH_PARAM 100    // param base for fish in pond.
 #define EN_FISH_AQUARIUM 200 // param for record fish in tank.
+#define EN_FISH_PORTABLE 300 // rod/lure controller used outside the fishing pond
 
 struct VBFishingData {
     Fishing* actor;

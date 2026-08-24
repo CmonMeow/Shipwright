@@ -112,10 +112,9 @@ void func_80ABBBA8(EnNutsball* this, PlayState* play) {
 
     if ((this->actor.bgCheckFlags & 8) || (this->actor.bgCheckFlags & 1) || (this->collider.base.atFlags & AT_HIT) ||
         (this->collider.base.acFlags & AC_HIT) || (this->collider.base.ocFlags1 & OC1_HIT)) {
-        // Checking if the player is using a shield that reflects projectiles
-        // And if so, reflects the projectile on impact
-        if ((player->currentShield == PLAYER_SHIELD_DEKU) ||
-            ((player->currentShield == PLAYER_SHIELD_HYLIAN) && LINK_IS_ADULT)) {
+        // The Mirror Shield is the PC loadout's only shield, so it reflects
+        // Deku Scrub nuts using the original wooden-shield bounce behavior.
+        if (player->currentShield == PLAYER_SHIELD_MIRROR) {
             if ((this->collider.base.atFlags & AT_HIT) && (this->collider.base.atFlags & AT_TYPE_ENEMY) &&
                 (this->collider.base.atFlags & AT_BOUNCED)) {
                 this->collider.base.atFlags &= ~AT_TYPE_ENEMY & ~AT_BOUNCED & ~AT_HIT;

@@ -12,7 +12,7 @@
 
 #include "soh/frame_interpolation.h"
 #define FLAGS ACTOR_FLAG_UPDATE_CULLING_DISABLED
-#define WATER_SURFACE_Y(play) play->colCtx.colHeader->waterBoxes->ySurface
+#define WATER_SURFACE_Y(play) Fishing_GetWaterSurfaceY(play)
 bool getShouldSpawnLoaches();
 
 void Fishing_Init(Actor* thisx, PlayState* play);
@@ -21,6 +21,8 @@ void Fishing_UpdateFish(Actor* thisx, PlayState* play);
 void Fishing_UpdateOwner(Actor* thisx, PlayState* play);
 void Fishing_DrawFish(Actor* thisx, PlayState* play);
 void Fishing_DrawOwner(Actor* thisx, PlayState* play);
+void Fishing_UpdatePortable(Actor* thisx, PlayState* play);
+void Fishing_DrawPortable(Actor* thisx, PlayState* play);
 void Fishing_Reset(void);
 
 typedef struct {
@@ -369,6 +371,11 @@ static s16 sRumbleDelay;
 static s16 sFishingMusicDelay;
 static Fishing* sFishingHookedFish;
 static s16 sFishingPlayingState;
+static bool sPortableFishing;
+static bool sPortableWaterFound;
+static bool sPortableLineInitialized;
+static f32 sPortableWaterSurfaceY;
+static void* sPreviousSpecialEffects;
 static s16 sLureTimer; // AND'd for various effects/checks
 static s16 D_80B7E0B0;
 static s16 D_80B7E0B2;
@@ -429,6 +436,14 @@ static f32 sFishGroupAngle3;
 static FishingEffect sFishingEffects[FISHING_EFFECT_COUNT];
 static Vec3f sStreamSoundProjectedPos;
 static s16 sFishOnHandParams;
+
+static f32 Fishing_GetWaterSurfaceY(PlayState* play) {
+    if (sPortableFishing) {
+        return sPortableWaterSurfaceY;
+    }
+
+    return play->colCtx.colHeader->waterBoxes->ySurface;
+}
 
 void Fishing_SetColliderElement(s32 index, ColliderJntSph* collider, Vec3f* pos, f32 scale) {
     collider->elements[index].dim.worldSphere.center.x = pos->x;
@@ -849,7 +864,31 @@ void Fishing_Init(Actor* thisx, PlayState* play2) {
     // intentionally loaded with child-age scene variants.
     sLinkAge = LINK_AGE_ADULT;
 
-    if (thisx->params < EN_FISH_PARAM) {
+    if (thisx->params == EN_FISH_PORTABLE) {
+        sFishingMain = this;
+        sPortableFishing = true;
+        sPortableWaterFound = false;
+        sPortableLineInitialized = false;
+        sPortableWaterSurfaceY = -32000.0f;
+        sPreviousSpecialEffects = play->specialEffects;
+        play->specialEffects = sFishingEffects;
+
+        for (i = 0; i < FISHING_EFFECT_COUNT; i++) {
+            sFishingEffects[i].type = FS_EFF_NONE;
+        }
+
+        sFishingHookedFish = NULL;
+        sLineHooked = false;
+        sIsOwnersHatHooked = false;
+        sIsRodVisible = true;
+        sFishingPlayingState = 1;
+        sFishingPlayerCinematicState = 0;
+        thisx->room = -1;
+        thisx->flags |= ACTOR_FLAG_DRAW_CULLING_DISABLED;
+        thisx->update = Fishing_UpdatePortable;
+        thisx->draw = Fishing_DrawPortable;
+    } else if (thisx->params < EN_FISH_PARAM) {
+        sPortableFishing = false;
         sReelLock = 0;
         sFishingMain = this;
         Collider_InitJntSph(play, &sFishingMain->collider);
@@ -1039,6 +1078,17 @@ void Fishing_Init(Actor* thisx, PlayState* play2) {
 void Fishing_Destroy(Actor* thisx, PlayState* play2) {
     PlayState* play = play2;
     Fishing* this = (Fishing*)thisx;
+
+    if (thisx->params == EN_FISH_PORTABLE) {
+        if (play->specialEffects == sFishingEffects) {
+            play->specialEffects = sPreviousSpecialEffects;
+        }
+        sPreviousSpecialEffects = NULL;
+        sFishingMain = NULL;
+        sPortableFishing = false;
+        sFishingPlayingState = 0;
+        return;
+    }
 
     SkelAnime_Free(&this->skelAnime, play);
 
@@ -1466,6 +1516,11 @@ void Fishing_UpdateLine(PlayState* play, Vec3f* basePos, Vec3f* pos, Vec3f* rot,
     f32 temp_f18;
     f32 phi_f12;
     f32 phi_f2;
+    CollisionPoly* floorPoly;
+    Vec3f floorCheckPos;
+    s32 floorBgId;
+    f32 floorY;
+    f32 segmentStartY;
 
     if (D_80B7A6A4 != 0) {
         tempPos = *basePos;
@@ -1499,21 +1554,28 @@ void Fishing_UpdateLine(PlayState* play, Vec3f* basePos, Vec3f* pos, Vec3f* rot,
 
     for (i = spooled + 1, k = 0; i < LINE_SEG_COUNT; i++, k++) {
         temp_f18 = 2.0f * D_80B7E148;
+        segmentStartY = pos[i].y;
 
         dx = (pos + i)->x - (pos + i - 1)->x;
         spD8 = (pos + i)->y;
 
         sqDistXZ = SQ((pos + i)->x) + SQ((pos + i)->z);
 
-        if (sqDistXZ > SQ(920.0f)) {
+        if (sPortableFishing) {
+            phi_f12 = WATER_SURFACE_Y(play);
+        } else if (sqDistXZ > SQ(920.0f)) {
             phi_f12 = ((sqrtf(sqDistXZ) - 920.0f) * 0.11f) + WATER_SURFACE_Y(play);
         } else {
             phi_f12 = WATER_SURFACE_Y(play);
         }
 
-        if (sLureEquipped == FS_LURE_SINKING) {
+        if (sPortableFishing && !sPortableWaterFound) {
+            spD8 -= temp_f18;
+        } else if (sLureEquipped == FS_LURE_SINKING) {
             if (spD8 < phi_f12) {
-                phi_f12 = ((sqrtf(sqDistXZ) - 920.0f) * 0.147f) + WATER_SURFACE_Y(play);
+                if (!sPortableFishing) {
+                    phi_f12 = ((sqrtf(sqDistXZ) - 920.0f) * 0.147f) + WATER_SURFACE_Y(play);
+                }
                 if (spD8 > phi_f12) {
                     phi_f2 = (spD8 - phi_f12) * 0.05f;
                     if (phi_f2 > 0.29999998f) {
@@ -1541,7 +1603,7 @@ void Fishing_UpdateLine(PlayState* play, Vec3f* basePos, Vec3f* pos, Vec3f* rot,
             }
         }
 
-        if (Fishing_IsAboveCounter(&pos[i])) {
+        if (!sPortableFishing && Fishing_IsAboveCounter(&pos[i])) {
             spD8 = 42.0f;
         }
 
@@ -1562,6 +1624,28 @@ void Fishing_UpdateLine(PlayState* play, Vec3f* basePos, Vec3f* pos, Vec3f* rot,
         (pos + i)->x = (pos + i - 1)->x + posStep.x;
         (pos + i)->y = (pos + i - 1)->y + posStep.y;
         (pos + i)->z = (pos + i - 1)->z + posStep.z;
+
+        if (sPortableFishing && !sPortableWaterFound) {
+            floorCheckPos = pos[i];
+            floorCheckPos.y = segmentStartY;
+            if (floorCheckPos.y < pos[i].y) {
+                floorCheckPos.y = pos[i].y;
+            }
+            if (floorCheckPos.y < pos[i - 1].y) {
+                floorCheckPos.y = pos[i - 1].y;
+            }
+            floorCheckPos.y += 5.0f;
+            floorY = BgCheck_EntityRaycastFloor4(&play->colCtx, &floorPoly, &floorBgId, &sFishingMain->actor,
+                                                 &floorCheckPos);
+            if ((floorY != BGCHECK_Y_MIN) && (pos[i].y < (floorY + 2.0f))) {
+                pos[i].y = floorY + 2.0f;
+                dx = pos[i].x - pos[i - 1].x;
+                dy = pos[i].y - pos[i - 1].y;
+                dz = pos[i].z - pos[i - 1].z;
+                rot[i - 1].y = Math_Atan2F(dz, dx);
+                rot[i - 1].x = -Math_Atan2F(sqrtf(SQ(dx) + SQ(dz)), dy);
+            }
+        }
     }
 }
 
@@ -2254,7 +2338,7 @@ void Fishing_UpdateLure(Fishing* this, PlayState* play) {
                     Matrix_MultVec3f(&sp90, &sLurePosDelta);
                     sLurePosDelta.y = 15.0f;
                     sLureCastDelta.x = sLureCastDelta.z = 0.0f;
-                    sLureCastDelta.y = -1.0f;
+                    sLureCastDelta.y = sPortableFishing ? -1.75f : -1.0f;
                     D_80B7E148 = 0.0f;
                     D_80B7E0B2 = 5;
                     sRodReelingSpeed = 0.5f;
@@ -2302,7 +2386,7 @@ void Fishing_UpdateLure(Fishing* this, PlayState* play) {
             }
             sRodLineSpooled = 200.0f - (lengthCasted * 200.0f * 0.001f);
 
-            lureXZLen = SQ(sLurePos.x) + SQ(sLurePos.z);
+            lureXZLen = sPortableFishing ? 0.0f : SQ(sLurePos.x) + SQ(sLurePos.z);
             if (lureXZLen > SQ(920.0f)) {
                 if ((KREG(56) != 0) || (sLurePos.y > 160.0f) || (sLurePos.x < 80.0f) || (sLurePos.x > 180.0f) ||
                     (sLurePos.z > 1350.0f) || (sLurePos.z < 1100.0f) || (sLurePos.y < 45.0f)) {
@@ -2432,7 +2516,7 @@ void Fishing_UpdateLure(Fishing* this, PlayState* play) {
             spDC = 0x4000;
             spE4 = WATER_SURFACE_Y(play);
 
-            lureXZLen = SQ(sLurePos.x) + SQ(sLurePos.z);
+            lureXZLen = sPortableFishing ? 0.0f : SQ(sLurePos.x) + SQ(sLurePos.z);
             if (lureXZLen < SQ(920.0f)) {
                 if (sLurePos.y <= (spE4 + 4.0f)) {
                     wiggle = 0.0f;
@@ -2649,7 +2733,7 @@ void Fishing_UpdateLure(Fishing* this, PlayState* play) {
             }
 
             if (CHECK_BTN_ALL(input->cur.button, BTN_A)) {
-                if ((SQ(sLurePos.x) + SQ(sLurePos.z)) > SQ(920.0f)) {
+                if (!sPortableFishing && ((SQ(sLurePos.x) + SQ(sLurePos.z)) > SQ(920.0f))) {
                     sRodLineSpooled += (1.0f + (KREG(65) * 0.1f));
                 } else {
                     sRodLineSpooled += sRodReelingSpeed;
@@ -4755,6 +4839,31 @@ void Fishing_DrawGroupFishes(PlayState* play) {
 
 static u16 sPondOwnerTextIds[] = { 0x4096, 0x408D, 0x408E, 0x408F, 0x4094, 0x4095 };
 
+static void Fishing_StartPlaying(PlayState* play) {
+    // The pole is a normal C-Up item now; do not replace or disable the
+    // player's normal B/C loadout while fishing.
+    play->interfaceCtx.unk_260 = 0;
+    sFishingPlayingState = 1;
+    sOwnerTheftTimer = 20;
+}
+
+static void Fishing_StopCinematic(PlayState* play) {
+    if (sSubCamId != 0) {
+        Camera* mainCam = Play_GetCamera(play, MAIN_CAM);
+
+        mainCam->eye = sCameraEye;
+        mainCam->eyeNext = sCameraEye;
+        mainCam->at = sCameraAt;
+        func_800C08AC(play, sSubCamId, 0);
+        func_80064534(play, &play->csCtx);
+        sSubCamId = 0;
+    }
+
+    sFishingPlayerCinematicState = 0;
+    Environment_EnableUnderwaterLights(play, 0);
+    play->envCtx.adjFogNear = 0;
+}
+
 void Fishing_HandleOwnerDialog(Fishing* this, PlayState* play) {
     switch (this->stateAndTimer) {
         case 0:
@@ -4862,10 +4971,8 @@ void Fishing_HandleOwnerDialog(Fishing* this, PlayState* play) {
             if ((Message_GetState(&play->msgCtx) == TEXT_STATE_EVENT) && Message_ShouldAdvance(play)) {
                 Message_CloseTextbox(play);
 
-                play->interfaceCtx.unk_260 = 1;
                 play->startPlayerFishing(play);
-                sFishingPlayingState = 1;
-                sOwnerTheftTimer = 20;
+                Fishing_StartPlaying(play);
                 this->stateAndTimer = 0;
 
                 if ((HIGH_SCORE(HS_FISHING) & 0xFF0000) < 0xFF0000) {
@@ -5234,29 +5341,35 @@ void Fishing_UpdateOwner(Actor* thisx, PlayState* play2) {
         }
     }
 
+    // C-Up equips the fishing pole directly in this port. A valid cast puts
+    // Link into fishing state before the pond owner has started the minigame,
+    // so start the pond-side rod, lure, and line state here as well.
+    if ((sFishingPlayingState == 0) && (player->heldItemAction == PLAYER_IA_FISHING_POLE) &&
+        (player->unk_860 == 1)) {
+        Fishing_StartPlaying(play);
+    }
+
     Fishing_HandleOwnerDialog(this, play);
 
     sFishingLineScale = 0.0015f;
     sFishingTimePlayed++;
 
-    if ((sFishingPlayingState != 0) && sIsRodVisible) {
+    if ((sFishingPlayingState != 0) && (player->heldItemAction != PLAYER_IA_FISHING_POLE)) {
+        sRodCastState = 0;
+        sRodCastTimer = 0;
+        sLineHooked = false;
+        sFishingHookedFish = NULL;
+        Fishing_StopCinematic(play);
+    }
+
+    if ((sFishingPlayingState != 0) && sIsRodVisible &&
+        (player->heldItemAction == PLAYER_IA_FISHING_POLE)) {
         Fishing_UpdateLure(this, play);
     }
 
     Fishing_UpdateEffects(play->specialEffects, play);
     Fishing_UpdatePondProps(play);
     Fishing_UpdateGroupFishes(play);
-    // can't leave with the rod
-    if ((sFishingPlayingState != 0) && (sFishingPlayerCinematicState == 0) && (player->actor.world.pos.z > 1360.0f) &&
-        (fabsf(player->actor.world.pos.x) < 25.0f)) {
-        player->actor.world.pos.z = 1360.0f;
-        player->actor.speedXZ = 0.0f;
-
-        if (sFishingCinematicTimer == 0) {
-            sFishingPlayerCinematicState = 10;
-        }
-    }
-
     if ((sSinkingLureLocation != 0) &&
         (fabsf(player->actor.world.pos.x - sSinkingLureLocationPos[sSinkingLureLocation - 1].x) < 25.0f) &&
         (fabsf(player->actor.world.pos.y - sSinkingLureLocationPos[sSinkingLureLocation - 1].y) < 10.0f) &&
@@ -5765,6 +5878,134 @@ void Fishing_OwnerPostLimbDraw(PlayState* play, s32 limbIndex, Gfx** dList, Vec3
     }
 }
 
+static void Fishing_UpdatePortableSurface(Fishing* this, PlayState* play) {
+    WaterBox* waterBox;
+    CollisionPoly* floorPoly;
+    s32 floorBgId;
+    f32 waterY = 32000.0f;
+
+    sPortableWaterFound =
+        WaterBox_GetSurface1(play, &play->colCtx, sLurePos.x, sLurePos.z, &waterY, &waterBox) != 0;
+    sPortableWaterSurfaceY = sPortableWaterFound ? waterY : -32000.0f;
+
+    if (!sPortableWaterFound && (sRodCastState != 0)) {
+        Vec3f floorCheckPos = sLurePos;
+        f32 floorY;
+
+        floorCheckPos.y += 1000.0f;
+        floorY = BgCheck_EntityRaycastFloor4(&play->colCtx, &floorPoly, &floorBgId, &this->actor, &floorCheckPos);
+        if ((floorY != BGCHECK_Y_MIN) && (sLurePos.y <= (floorY + 3.0f))) {
+            sLurePos.y = floorY + 3.0f;
+            if (sRodCastState != 3) {
+                sLurePosDelta.x = sLurePosDelta.y = sLurePosDelta.z = 0.0f;
+                sRodCastState = 3;
+                sReelLinePosStep = 0.0f;
+            }
+        }
+    }
+}
+
+static void Fishing_CollidePortableLure(PlayState* play, Vec3f* previousPos) {
+    CollisionPoly* hitPoly;
+    Vec3f hitPos;
+    s32 hitBgId;
+    f32 moveX = sLurePos.x - previousPos->x;
+    f32 moveY = sLurePos.y - previousPos->y;
+    f32 moveZ = sLurePos.z - previousPos->z;
+    f32 moveLength = sqrtf(SQ(moveX) + SQ(moveY) + SQ(moveZ));
+
+    if ((sRodCastState == 0) || (moveLength < 0.001f)) {
+        return;
+    }
+
+    if (BgCheck_EntityLineTest1(&play->colCtx, previousPos, &sLurePos, &hitPos, &hitPoly, true, false, true, false,
+                                &hitBgId)) {
+        f32 backoff = 2.0f / moveLength;
+
+        sLurePos.x = hitPos.x - (moveX * backoff);
+        sLurePos.y = hitPos.y - (moveY * backoff);
+        sLurePos.z = hitPos.z - (moveZ * backoff);
+        sLurePosDelta.x = sLurePosDelta.y = sLurePosDelta.z = 0.0f;
+        sRodCastState = 3;
+        sReelLinePosStep = 0.0f;
+    }
+}
+
+void Fishing_UpdatePortable(Actor* thisx, PlayState* play) {
+    Fishing* this = (Fishing*)thisx;
+    Player* player = GET_PLAYER(play);
+    Vec3f previousLurePos;
+
+    // This actor renders equipment attached to Link, so it must follow Link
+    // instead of remaining at the location of the first cast.
+    thisx->world.pos = player->actor.world.pos;
+    thisx->prevPos = player->actor.prevPos;
+
+    if (player->heldItemAction != PLAYER_IA_FISHING_POLE) {
+        sRodCastState = 0;
+        sRodCastTimer = 0;
+        sLineHooked = false;
+        sFishingHookedFish = NULL;
+        sPortableLineInitialized = false;
+        Fishing_StopCinematic(play);
+        return;
+    }
+
+    Fishing_UpdatePortableSurface(this, play);
+
+    sFishingLineScale = 0.0015f;
+    sFishingTimePlayed++;
+    previousLurePos = sLurePos;
+
+    Fishing_UpdateLure(this, play);
+
+    Fishing_CollidePortableLure(play, &previousLurePos);
+
+    // The lure can cross a floor between frames, especially during the
+    // faster portable cast. Check again after both cast and reel movement.
+    Fishing_UpdatePortableSurface(this, play);
+
+    if (sFishingPlayerCinematicState == 3) {
+        Fishing_StopCinematic(play);
+        player->unk_860 = -5;
+        D_80B7E0B0 = 5;
+    }
+
+    Fishing_UpdateEffects(sFishingEffects, play);
+}
+
+void Fishing_DrawPortable(Actor* thisx, PlayState* play) {
+    Input* input = &play->state.input[0];
+    Player* player = GET_PLAYER(play);
+    s16 i;
+
+    if (player->heldItemAction != PLAYER_IA_FISHING_POLE) {
+        return;
+    }
+
+    Fishing_DrawEffects(sFishingEffects, play);
+    Fishing_DrawRod(play);
+
+    if (!sPortableLineInitialized) {
+        sRodLineSpooled = 194.0f;
+        for (i = 0; i < LINE_SEG_COUNT; i++) {
+            sReelLinePos[i] = sRodTipPos;
+            if (i > (s16)sRodLineSpooled) {
+                sReelLinePos[i].y -= (i - (s16)sRodLineSpooled) * 5.0f;
+            }
+        }
+        sLurePos = sReelLinePos[LINE_SEG_COUNT - 1];
+        sPortableLineInitialized = true;
+    }
+
+    Fishing_UpdateLinePos(sReelLinePos);
+    Fishing_UpdateLine(play, &sRodTipPos, sReelLinePos, sReelLineRot, sReelLineUnk);
+    Fishing_DrawLureAndLine(play, sReelLinePos, sReelLineRot);
+
+    sStickAdjXPrev = input->rel.stick_x;
+    sStickAdjYPrev = input->rel.stick_y;
+}
+
 static void* sFishingOwnerEyeTexs[] = {
     gFishingOwnerEyeOpenTex,
     gFishingOwnerEyeHalfTex,
@@ -5812,7 +6053,8 @@ void Fishing_DrawOwner(Actor* thisx, PlayState* play) {
         }
     }
 
-    if ((sFishingPlayingState != 0) && sIsRodVisible) {
+    if ((sFishingPlayingState != 0) && sIsRodVisible &&
+        (GET_PLAYER(play)->heldItemAction == PLAYER_IA_FISHING_POLE)) {
         Fishing_DrawRod(play);
         Fishing_UpdateLinePos(sReelLinePos);
         Fishing_UpdateLine(play, &sRodTipPos, sReelLinePos, sReelLineRot, sReelLineUnk);

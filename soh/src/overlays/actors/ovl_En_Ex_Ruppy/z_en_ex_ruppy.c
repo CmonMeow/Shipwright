@@ -25,7 +25,7 @@ static s16 sEnExRuppyCollectibleTypes[] = {
 
 // Unused, as the function sets these directly
 static s16 sRupeeValues[] = {
-    1, 5, 20, 500, 50,
+    1, 5, 10, 50, 20,
 };
 
 const ActorInit En_Ex_Ruppy_InitVars = {
@@ -82,15 +82,15 @@ void EnExRuppy_Init(Actor* thisx, PlayState* play) {
                     this->rupeeValue = 5;
                     this->colorIdx = 1;
                 } else if ((temp3 >= 170) && (temp3 < 190)) {
-                    this->rupeeValue = 20;
+                    this->rupeeValue = 10;
                     this->colorIdx = 2;
                 } else if ((temp3 >= 190) && (temp3 < 200)) {
-                    this->rupeeValue = 50;
+                    this->rupeeValue = 20;
                     this->colorIdx = 4;
                 } else {
                     this->unk_160 = 0.02f;
                     Actor_SetScale(&this->actor, this->unk_160);
-                    this->rupeeValue = 500;
+                    this->rupeeValue = 50;
                     this->colorIdx = 3;
                     if (this->actor.parent != NULL) {
                         divingGame = (EnDivingGame*)this->actor.parent;

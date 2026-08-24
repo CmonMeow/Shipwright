@@ -1,0 +1,14 @@
+{
+    "version": 1,
+    "revision": 0,
+    "rules": [
+        {
+            "primary-output": "soh.dir\\Release\\ItemTableTypes.obj",
+            "outputs": [
+                "soh.dir\\Release\\ItemTableTypes.h.obj.dt.module.json",
+                "soh.dir\\Release\\ItemTableTypes.h.obj.dt.d.json"
+            ],
+            "requires": []
+        }
+    ]
+}

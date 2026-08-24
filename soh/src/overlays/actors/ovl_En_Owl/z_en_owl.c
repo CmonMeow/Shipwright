@@ -19,6 +19,8 @@ void EnOwl_Update(Actor* thisx, PlayState* play);
 void EnOwl_Draw(Actor* thisx, PlayState* play);
 void EnOwl_ChangeMode(EnOwl* this, EnOwlActionFunc, OwlFunc, SkelAnime*, AnimationHeader*, f32);
 void EnOwl_WaitDefault(EnOwl* this, PlayState* play);
+void EnOwl_WaitToFlyAway(EnOwl* this, PlayState* play);
+void func_80ACA5C8(EnOwl* this);
 void func_80ACC540(EnOwl* this);
 void EnOwl_WaitOutsideKokiri(EnOwl* this, PlayState* play);
 void EnOwl_WaitHyruleCastle(EnOwl* this, PlayState* play);
@@ -137,102 +139,21 @@ void EnOwl_Init(Actor* thisx, PlayState* play) {
     // "conversation owl %4x no = %d, sv = %d"
     osSyncPrintf(VT_FGCOL(CYAN) " 会話フクロウ %4x no = %d, sv = %d\n" VT_RST, this->actor.params, owlType, switchFlag);
 
-    if ((owlType != OWL_DEFAULT) && (switchFlag < 0x20) && Flags_GetSwitch(play, switchFlag)) {
-        osSyncPrintf("savebitでフクロウ退避\n"); // "Save owl with savebit"
-        Actor_Kill(&this->actor);
-        return;
-    }
-
     this->unk_3EE = 0;
     this->unk_400 = this->actor.world.rot.y;
 
-    switch (owlType) {
-        case OWL_DEFAULT:
-            this->actionFunc = EnOwl_WaitDefault;
-            this->actor.uncullZoneForward = 4000.0f;
-            this->unk_40A = 0;
-            break;
-        case OWL_OUTSIDE_KOKIRI:
-            this->actionFunc = EnOwl_WaitOutsideKokiri;
-            break;
-        case OWL_HYRULE_CASTLE:
-            this->actionFlags |= 2;
-            this->unk_3EE = 0x20;
-            this->actionFunc = EnOwl_WaitHyruleCastle;
-            break;
-        case OWL_KAKARIKO:
-            if (Flags_GetEventChkInf(EVENTCHKINF_OBTAINED_ZELDAS_LETTER)) {
-                // has zelda's letter
-                osSyncPrintf("フクロウ退避\n"); // "Owl evacuation"
-                Actor_Kill(&this->actor);
-                return;
-            }
-
-            this->actionFunc = EnOwl_WaitKakariko;
-            break;
-        case OWL_HYLIA_GERUDO:
-            if (Flags_GetEventChkInf(EVENTCHKINF_OBTAINED_OCARINA_OF_TIME)) {
-                // has ocarina of time
-                osSyncPrintf("フクロウ退避\n"); // "Owl evacuation"
-                Actor_Kill(&this->actor);
-                return;
-            }
-            this->actionFunc = EnOwl_WaitGerudo;
-            break;
-        case OWL_LAKE_HYLIA:
-            this->actionFunc = EnOwl_WaitLakeHylia;
-            break;
-        case OWL_ZORA_RIVER:
-            if ((Flags_GetEventChkInf(EVENTCHKINF_OPENED_ZORAS_DOMAIN)) ||
-                !Flags_GetEventChkInf(EVENTCHKINF_OBTAINED_ZELDAS_LETTER)) {
-                // opened zora's domain or has zelda's letter
-                osSyncPrintf("フクロウ退避\n"); // "Owl evacuation"
-                Actor_Kill(&this->actor);
-                return;
-            }
-
-            this->actionFunc = EnOwl_WaitZoraRiver;
-            break;
-        case OWL_HYLIA_SHORTCUT:
-            this->actionFunc = EnOwl_WaitHyliaShortcut;
-            Flags_UnsetSwitch(play, 0x23);
-            return;
-        case OWL_DEATH_MOUNTAIN:
-            this->actionFunc = EnOwl_WaitDeathMountainShortcut;
-            break;
-        case OWL_DEATH_MOUNTAIN2:
-            this->actionFunc = EnOwl_WaitDeathMountainShortcut;
-            break;
-        case OWL_DESSERT_COLOSSUS:
-            this->actionFunc = func_80ACB3E0;
-            break;
-        case OWL_LOST_WOODS_PRESARIA:
-            if (!CHECK_QUEST_ITEM(QUEST_SONG_LULLABY)) {
-                osSyncPrintf("フクロウ退避\n"); // "Owl evacuation"
-                Actor_Kill(&this->actor);
-                return;
-            }
-            this->actionFunc = EnOwl_WaitLWPreSaria;
-            break;
-        case OWL_LOST_WOODS_POSTSARIA:
-            if (!CHECK_QUEST_ITEM(QUEST_SONG_SARIA)) {
-                osSyncPrintf("フクロウ退避\n"); // "Owl evacuation"
-                Actor_Kill(&this->actor);
-                return;
-            }
-            this->actionFunc = EnOwl_WaitLWPostSaria;
-            break;
-        default:
-            // Outside kokiri forest
-            osSyncPrintf(VT_FGCOL(CYAN));
-            osSyncPrintf("no = %d  \n", owlType);
-            // "Unfinished owl unfinished owl unfinished owl"
-            osSyncPrintf("未完成のフクロウ未完成のフクロウ未完成のフクロウ\n");
-            osSyncPrintf(VT_RST);
-            this->actionFlags |= 2;
-            this->unk_3EE = 0x20;
-            this->actionFunc = EnOwl_WaitOutsideKokiri;
-            break;
+    if (owlType == OWL_DEFAULT) {
+        // OWL_DEFAULT is controlled by scripted cutscenes rather than a
+        // conversation trigger, so retain its existing cutscene behavior.
+        this->actionFunc = EnOwl_WaitDefault;
+        this->actor.uncullZoneForward = 4000.0f;
+        this->unk_40A = 0;
+    } else {
+        // Conversation owls are now ambient encounters. They always spawn,
+        // cannot offer dialogue, and leave when Link enters their old trigger.
+        this->actor.flags &=
+            ~(ACTOR_FLAG_ATTENTION_ENABLED | ACTOR_FLAG_FRIENDLY | ACTOR_FLAG_TALK_OFFER_AUTO_ACCEPTED);
+        this->actionFunc = EnOwl_WaitToFlyAway;
     }
 }
 
@@ -253,6 +174,46 @@ void EnOwl_LookAtLink(EnOwl* this, PlayState* play) {
 
     this->actor.shape.rot.y = this->actor.world.rot.y =
         Math_Vec3f_Yaw(&this->actor.world.pos, &player->actor.world.pos);
+}
+
+void EnOwl_WaitToFlyAway(EnOwl* this, PlayState* play) {
+    s32 owlType = (this->actor.params & 0xFC0) >> 6;
+    f32 triggerDistance = 360.0f;
+
+    if (this->actor.params == 0xFFF) {
+        owlType = OWL_OUTSIDE_KOKIRI;
+    }
+
+    switch (owlType) {
+        case OWL_HYRULE_CASTLE:
+            triggerDistance = 540.0f;
+            break;
+        case OWL_KAKARIKO:
+            triggerDistance = 480.0f;
+            break;
+        case OWL_HYLIA_SHORTCUT:
+        case OWL_DEATH_MOUNTAIN:
+        case OWL_DEATH_MOUNTAIN2:
+            triggerDistance = 120.0f;
+            break;
+        case OWL_LOST_WOODS_PRESARIA:
+            triggerDistance = 190.0f;
+            break;
+        default:
+            break;
+    }
+
+    EnOwl_LookAtLink(this, play);
+
+    if ((this->actor.xzDistToPlayer < triggerDistance) && !Play_InCsMode(play)) {
+        if (Rand_ZeroOne() < 0.5f) {
+            this->actionFlags |= 0x40;
+        } else {
+            this->actionFlags &= ~0x40;
+        }
+
+        func_80ACA5C8(this);
+    }
 }
 
 /**

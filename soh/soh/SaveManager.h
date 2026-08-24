@@ -25,7 +25,7 @@ typedef struct {
     u32 upgrades;
     u8 isMagicAcquired;
     u8 isDoubleMagicAcquired;
-    s16 rupees;
+    s64 rupees;
     s16 gsTokens;
     u8 isDoubleDefenseAcquired;
     s32 filenameLanguage;

@@ -1443,7 +1443,7 @@ u8 Return_Item(u8 itemID, u8 modId, ItemID returnItem) {
  */
 u8 Item_Give(PlayState* play, u8 item) {
     lusprintf(__FILE__, __LINE__, 2, "Item Give - item: %#x", item);
-    static s16 sAmmoRefillCounts[] = { 5, 10, 20, 30, 5, 10, 30, 0, 5, 20, 1, 5, 20, 50, 200, 10 };
+    static s16 sAmmoRefillCounts[] = { 5, 10, 20, 30, 5, 10, 30, 0, 5, 20, 1, 5, 10, 20, 50, 10 };
     s16 i;
     s16 slot;
     s16 temp;
@@ -2353,13 +2353,24 @@ s32 Health_ChangeBy(PlayState* play, s16 healthChange) {
     }
 }
 
-void Rupees_ChangeBy(s16 rupeeChange) {
-    if (gPlayState == NULL) {
-        gSaveContext.rupees += rupeeChange;
+void Rupees_ChangeBy(s64 rupeeChange) {
+    if (rupeeChange > 0) {
+        if (gSaveContext.rupees > RUPEE_BALANCE_MAX - rupeeChange) {
+            gSaveContext.rupees = RUPEE_BALANCE_MAX;
+        } else {
+            gSaveContext.rupees += rupeeChange;
+        }
     } else {
-        gSaveContext.rupeeAccumulator += rupeeChange;
+        if (rupeeChange < -gSaveContext.rupees) {
+            gSaveContext.rupees = 0;
+        } else {
+            gSaveContext.rupees += rupeeChange;
+        }
     }
 
+    // Currency changes are committed atomically so large multiplayer trades
+    // never spend minutes draining through the original one-rupee counter.
+    gSaveContext.rupeeAccumulator = 0;
 }
 
 void Inventory_ChangeAmmo(s16 item, s16 ammoChange) {
@@ -3448,15 +3459,6 @@ void Interface_Draw(PlayState* play) {
     static s16 D_80125B1C[][3] = {
         { 0, 150, 0 }, { 100, 255, 0 }, { 255, 255, 255 }, { 0, 0, 0 }, { 255, 255, 255 },
     };
-    static s16 rupeeDigitsFirst[] = { 1, 0, 0, 0 };
-    static s16 rupeeDigitsCount[] = { 2, 3, 3, 3 };
-
-    static Color_RGB8 rupeeWalletColors[4] = {
-        { 0xC8, 0xFF, 0x64 }, // Base Wallet (Green)
-        { 0x82, 0x82, 0xFF }, // Adult's Wallet (Blue)
-        { 0xFF, 0x64, 0x64 }, // Giant's Wallet (Red)
-        { 0xFF, 0x64, 0x64 }, // Defensive fallback for an invalid wallet upgrade value
-    };
     Color_RGB8 rColor;
 
     Color_RGB8 keyCountColor = { 200, 230, 255 };
@@ -3510,7 +3512,7 @@ void Interface_Draw(PlayState* play) {
             
                 // Rupee Icon
                 
-                    rColor = rupeeWalletColors[0];
+                    rColor = (Color_RGB8){ 200, 220, 255 };
                 
 
                 // Rupee icon & counter
@@ -3608,7 +3610,7 @@ void Interface_Draw(PlayState* play) {
                 // Rupee Counter
                 gDPPipeSync(OVERLAY_DISP++);
 
-                if (gSaveContext.rupees == CUR_CAPACITY(UPG_WALLET)) {
+                if (gSaveContext.rupees == RUPEE_BALANCE_MAX) {
                     gDPSetPrimColor(OVERLAY_DISP++, 0, 0, 120, 255, 0, interfaceCtx->magicAlpha);
                 } else if (gSaveContext.rupees != 0) {
                     gDPSetPrimColor(OVERLAY_DISP++, 0, 0, 255, 255, 255, interfaceCtx->magicAlpha);
@@ -3619,29 +3621,44 @@ void Interface_Draw(PlayState* play) {
                 gDPSetCombineLERP(OVERLAY_DISP++, 0, 0, 0, PRIMITIVE, TEXEL0, 0, PRIMITIVE, 0, 0, 0, 0, PRIMITIVE,
                                   TEXEL0, 0, PRIMITIVE, 0);
 
-                interfaceCtx->counterDigits[0] = interfaceCtx->counterDigits[1] = 0;
-                interfaceCtx->counterDigits[2] = gSaveContext.rupees;
+                {
+                    s64 silver = gSaveContext.rupees / GOLD_PER_SILVER;
+                    s16 gold = (s16)(gSaveContext.rupees % GOLD_PER_SILVER);
+                    s16 silverDigitCount = 1;
+                    s16 drawX = PosX_RC + 16;
+                    s64 divisor = 1;
+                    s64 remainingSilver = silver;
 
-                if ((interfaceCtx->counterDigits[2] > 9999) || (interfaceCtx->counterDigits[2] < 0)) {
-                    interfaceCtx->counterDigits[2] &= 0xDDD;
-                }
+                    while (divisor <= silver / 10) {
+                        divisor *= 10;
+                        silverDigitCount++;
+                    }
 
-                while (interfaceCtx->counterDigits[2] >= 100) {
-                    interfaceCtx->counterDigits[0]++;
-                    interfaceCtx->counterDigits[2] -= 100;
-                }
+                    for (svar1 = 0; svar1 < silverDigitCount; svar1++) {
+                        s16 digit = (s16)(remainingSilver / divisor);
+                        OVERLAY_DISP = Gfx_TextureI8(OVERLAY_DISP, (u8*)digitTextures[digit], 8, 16, drawX, PosY_RC,
+                                                     8, 16, 1 << 10, 1 << 10);
+                        remainingSilver %= divisor;
+                        divisor /= 10;
+                        drawX += 8;
+                    }
 
-                while (interfaceCtx->counterDigits[2] >= 10) {
-                    interfaceCtx->counterDigits[1]++;
-                    interfaceCtx->counterDigits[2] -= 10;
-                }
+                    drawX += 2;
+                    Gfx_SetupDL_39Overlay(play->state.gfxCtx);
+                    gDPSetPrimColor(OVERLAY_DISP++, 0, 0, 255, 200, 40, interfaceCtx->magicAlpha);
+                    OVERLAY_DISP = Gfx_TextureIA8(OVERLAY_DISP, gRupeeCounterIconTex, 16, 16, drawX, PosY_RC, 16, 16,
+                                                  1 << 10, 1 << 10);
+                    drawX += 16;
 
-                svar2 = rupeeDigitsFirst[CUR_UPG_VALUE(UPG_WALLET)];
-                svar5 = rupeeDigitsCount[CUR_UPG_VALUE(UPG_WALLET)];
-
-                for (svar1 = 0, svar3 = 16; svar1 < svar5; svar1++, svar2++, svar3 += 8) {
-                    OVERLAY_DISP = Gfx_TextureI8(OVERLAY_DISP, ((u8*)digitTextures[interfaceCtx->counterDigits[svar2]]),
-                                                 8, 16, PosX_RC + svar3, PosY_RC, 8, 16, 1 << 10, 1 << 10);
+                    gDPPipeSync(OVERLAY_DISP++);
+                    gDPSetPrimColor(OVERLAY_DISP++, 0, 0, 255, 255, 255, interfaceCtx->magicAlpha);
+                    gDPSetCombineLERP(OVERLAY_DISP++, 0, 0, 0, PRIMITIVE, TEXEL0, 0, PRIMITIVE, 0, 0, 0, 0,
+                                      PRIMITIVE, TEXEL0, 0, PRIMITIVE, 0);
+                    OVERLAY_DISP = Gfx_TextureI8(OVERLAY_DISP, (u8*)digitTextures[gold / 10], 8, 16, drawX, PosY_RC,
+                                                 8, 16, 1 << 10, 1 << 10);
+                    drawX += 8;
+                    OVERLAY_DISP = Gfx_TextureI8(OVERLAY_DISP, (u8*)digitTextures[gold % 10], 8, 16, drawX, PosY_RC,
+                                                 8, 16, 1 << 10, 1 << 10);
                 }
             
 
@@ -4563,51 +4580,9 @@ void Interface_Update(PlayState* play) {
         (play->transitionTrigger == TRANS_TRIGGER_OFF) && (play->transitionMode == TRANS_MODE_OFF) &&
         !Play_InCsMode(play)) {}
 
-    if (gSaveContext.rupeeAccumulator != 0) {
-        if (gSaveContext.rupeeAccumulator > 0) {
-            if (gSaveContext.rupees < CUR_CAPACITY(UPG_WALLET)) {
-                gSaveContext.rupeeAccumulator--;
-                gSaveContext.rupees++;
-                Audio_PlaySoundGeneral(NA_SE_SY_RUPY_COUNT, &gSfxDefaultPos, 4, &gSfxDefaultFreqAndVolScale,
-                                       &gSfxDefaultFreqAndVolScale, &gSfxDefaultReverb);
-            } else {
-                // "Rupee Amount MAX = %d"
-                osSyncPrintf("ルピー数ＭＡＸ = %d\n", CUR_CAPACITY(UPG_WALLET));
-                gSaveContext.rupees = CUR_CAPACITY(UPG_WALLET);
-                gSaveContext.rupeeAccumulator = 0;
-            }
-        } else if (gSaveContext.rupees != 0) {
-            if (gSaveContext.rupeeAccumulator <= -50) {
-                gSaveContext.rupeeAccumulator += 10;
-                gSaveContext.rupees -= 10;
-
-                if (gSaveContext.rupees < 0) {
-                    gSaveContext.rupees = 0;
-                }
-
-                Audio_PlaySoundGeneral(NA_SE_SY_RUPY_COUNT, &gSfxDefaultPos, 4, &gSfxDefaultFreqAndVolScale,
-                                       &gSfxDefaultFreqAndVolScale, &gSfxDefaultReverb);
-            } else {
-                gSaveContext.rupeeAccumulator++;
-                gSaveContext.rupees--;
-                Audio_PlaySoundGeneral(NA_SE_SY_RUPY_COUNT, &gSfxDefaultPos, 4, &gSfxDefaultFreqAndVolScale,
-                                       &gSfxDefaultFreqAndVolScale, &gSfxDefaultReverb);
-            }
-        } else {
-            gSaveContext.rupeeAccumulator = 0;
-        }
-        if (gSaveContext.rupeeAccumulator == 0 && gSaveContext.ship.pendingSale != ITEM_NONE) {
-            u16 tempSaleItem = gSaveContext.ship.pendingSale;
-            u16 tempSaleMod = gSaveContext.ship.pendingSaleMod;
-            gSaveContext.ship.pendingSale = ITEM_NONE;
-            gSaveContext.ship.pendingSaleMod = MOD_NONE;
-            if (tempSaleMod == MOD_NONE) {
-                GetItemID getItemID = RetrieveGetItemIDFromItemID(tempSaleItem);
-                if (getItemID != GI_MAX) {
-                    tempSaleItem = getItemID;
-                }
-            }
-        }
+    if (gSaveContext.ship.pendingSale != ITEM_NONE) {
+        gSaveContext.ship.pendingSale = ITEM_NONE;
+        gSaveContext.ship.pendingSaleMod = MOD_NONE;
     }
 
     switch (interfaceCtx->unk_1EC) {

@@ -504,6 +504,10 @@ void Graph_ThreadEntry(void* arg0) {
     while (WindowIsRunning()) {
         RunFrame();
     }
+
+    // The pause save screen is removed. Persist the active file when the PC
+    // window closes while PlayState and the current entrance are still valid.
+    Play_PerformSave(gPlayState);
 }
 
 void* Graph_Alloc(GraphicsContext* gfxCtx, size_t size) {

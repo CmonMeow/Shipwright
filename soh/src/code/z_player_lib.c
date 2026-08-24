@@ -21,13 +21,8 @@ typedef struct {
 
 FlexSkeletonHeader* gPlayerSkelHeaders = &gLinkAdultSkel;
 
-s16 sBootData[PLAYER_BOOTS_MAX][17] = {
+s16 sBootData[1][17] = {
     { 200, 1000, 300, 700, 550, 270, 600, 350, 800, 600, -100, 600, 590, 750, 125, 200, 130 },
-    { 200, 1000, 300, 700, 550, 270, 1000, 0, 800, 300, -160, 600, 590, 750, 125, 200, 130 },
-    { 200, 1000, 300, 700, 550, 270, 600, 600, 800, 550, -100, 600, 540, 270, 25, 0, 130 },
-    { 200, 1000, 300, 700, 380, 400, 0, 300, 800, 500, -100, 600, 590, 750, 125, 200, 130 },
-    { 80, 800, 150, 700, 480, 270, 600, 50, 800, 550, -40, 400, 540, 270, 25, 0, 80 },
-    { 200, 1000, 300, 800, 500, 400, 800, 400, 800, 550, -100, 600, 540, 750, 125, 400, 200 },
 };
 
 // Used to map action params to model groups
@@ -448,23 +443,12 @@ s32 sLeftHandType;
 s32 sRightHandType;
 
 void Player_SetBootData(PlayState* play, Player* this) {
-    s32 currentBoots;
     s16* bootRegs;
 
     REG(27) = 2000;
     REG(48) = 370;
 
-    currentBoots = this->currentBoots;
-    if (currentBoots == PLAYER_BOOTS_KOKIRI) {
-    } else if (currentBoots == PLAYER_BOOTS_IRON) {
-        if (this->stateFlags1 & PLAYER_STATE1_IN_WATER) {
-            currentBoots = PLAYER_BOOTS_IRON_UNDERWATER;
-        }
-        REG(27) = 500;
-        REG(48) = 100;
-    }
-
-    bootRegs = sBootData[currentBoots];
+    bootRegs = sBootData[0];
     REG(19) = bootRegs[0];
     REG(30) = bootRegs[1];
     REG(32) = bootRegs[2];
@@ -590,7 +574,7 @@ void Player_SetEquipmentData(PlayState* play, Player* this) {
     if (this->csAction != 0x56) {
         this->currentShield = SHIELD_EQUIP_TO_PLAYER(CUR_EQUIP_VALUE(EQUIP_TYPE_SHIELD));
         this->currentTunic = TUNIC_EQUIP_TO_PLAYER(CUR_EQUIP_VALUE(EQUIP_TYPE_TUNIC));
-        this->currentBoots = BOOTS_EQUIP_TO_PLAYER(CUR_EQUIP_VALUE(EQUIP_TYPE_BOOTS));
+        this->currentBoots = PLAYER_BOOTS_KOKIRI;
         this->currentSwordItemId = B_BTN_ITEM;
         Player_SetModelGroup(this, Player_ActionToModelGroup(this, this->heldItemAction));
         Player_SetBootData(play, this);
@@ -826,11 +810,8 @@ s32 Player_GetEnvironmentalHazard(PlayState* play) {
 
     if (play->roomCtx.curRoom.behaviorType2 == ROOM_BEHAVIOR_TYPE2_3) { // Room is hot
         envHazard = PLAYER_ENV_HAZARD_HOTROOM - 1;
-    } else if ((this->underwaterTimer > 80) &&
-               ((this->currentBoots == PLAYER_BOOTS_IRON) || (this->underwaterTimer >= 300))) { // Deep underwater
-        envHazard = ((this->currentBoots == PLAYER_BOOTS_IRON) && (this->actor.bgCheckFlags & 1))
-                        ? (PLAYER_ENV_HAZARD_UNDERWATER_FLOOR - 1)
-                        : (PLAYER_ENV_HAZARD_UNDERWATER_FREE - 1);
+    } else if (this->underwaterTimer >= 300) { // Deep underwater
+        envHazard = PLAYER_ENV_HAZARD_UNDERWATER_FREE - 1;
     } else if (this->stateFlags1 & PLAYER_STATE1_IN_WATER) { // Swimming
         envHazard = PLAYER_ENV_HAZARD_SWIMMING - 1;
     } else {
@@ -844,9 +825,7 @@ s32 Player_GetEnvironmentalHazard(PlayState* play) {
         if ((triggerEntry->flag != 0) && !(gSaveContext.textTriggerFlags & triggerEntry->flag) &&
             (((envHazard == (PLAYER_ENV_HAZARD_HOTROOM - 1)) &&
               (this->currentTunic != PLAYER_TUNIC_GORON)) ||
-             (((envHazard == (PLAYER_ENV_HAZARD_UNDERWATER_FLOOR - 1)) ||
-               (envHazard == (PLAYER_ENV_HAZARD_UNDERWATER_FREE - 1))) &&
-              (this->currentBoots == PLAYER_BOOTS_IRON) &&
+             ((envHazard == (PLAYER_ENV_HAZARD_UNDERWATER_FREE - 1)) &&
               (this->currentTunic != PLAYER_TUNIC_ZORA)))) {
             Message_StartTextbox(play, triggerEntry->textId, NULL);
             gSaveContext.textTriggerFlags |= triggerEntry->flag;
@@ -924,11 +903,6 @@ Color_RGB8 sGauntletColors[] = {
     { 96, 6, 2 },
 };
 
-Gfx* sBootDListGroups[][2] = {
-    { gLinkAdultLeftIronBootDL, gLinkAdultRightIronBootDL },   // PLAYER_BOOTS_IRON
-    { gLinkAdultLeftHoverBootDL, gLinkAdultRightHoverBootDL }, // PLAYER_BOOTS_HOVER
-};
-
 void Player_DrawImpl(PlayState* play, void** skeleton, Vec3s* jointTable, s32 dListCount, s32 lod, s32 tunic, s32 boots,
                      s32 face, OverrideLimbDrawOpa overrideLimbDraw, PostLimbDrawOpa postLimbDraw, void* data) {
     Color_RGB8* color;
@@ -996,12 +970,6 @@ void Player_DrawImpl(PlayState* play, void** skeleton, Vec3s* jointTable, s32 dL
                                                     : gLinkAdultRightGauntletPlate3DL);
             }
 
-            if (boots != 0) {
-                Gfx** bootDLists = sBootDListGroups[boots - 1];
-
-                gSPDisplayList(POLY_OPA_DISP++, bootDLists[0]);
-                gSPDisplayList(POLY_OPA_DISP++, bootDLists[1]);
-            }
         }
     }
 

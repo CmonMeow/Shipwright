@@ -1,66 +1,10 @@
 #include "global.h"
 
-s16 sKaleidoSetupKscpPos0[] = { PAUSE_QUEST, PAUSE_EQUIP, PAUSE_ITEM, PAUSE_MAP };
-f32 sKaleidoSetupEyeX0[] = { 0.0f, 64.0f, 0.0f, -64.0f };
-f32 sKaleidoSetupEyeZ0[] = { -64.0f, 0.0f, 64.0f, 0.0f };
-
-s16 sKaleidoSetupKscpPos1[] = { PAUSE_MAP, PAUSE_QUEST, PAUSE_EQUIP, PAUSE_ITEM };
-f32 sKaleidoSetupEyeX1[] = { -64.0f, 0.0f, 64.0f, 0.0f };
-f32 sKaleidoSetupEyeZ1[] = { 0.0f, -64.0f, 0.0f, 64.0f };
-
 void KaleidoSetup_Update(PlayState* play) {
-    PauseContext* pauseCtx = &play->pauseCtx;
-    Input* input = &play->state.input[0];
-
-    if (pauseCtx->state == 0 && pauseCtx->debugState == 0 && play->gameOverCtx.state == GAMEOVER_INACTIVE &&
-        play->transitionTrigger == TRANS_TRIGGER_OFF && play->transitionMode == TRANS_MODE_OFF &&
-        gSaveContext.cutsceneIndex < 0xFFF0 && gSaveContext.nextCutsceneIndex < 0xFFF0 && !Play_InCsMode(play) &&
-        play->shootingGalleryStatus <= 1 && gSaveContext.magicState != MAGIC_STATE_STEP_CAPACITY &&
-        gSaveContext.magicState != MAGIC_STATE_FILL &&
-        (play->sceneNum != SCENE_BOMBCHU_BOWLING_ALLEY || !Flags_GetSwitch(play, 0x38))) {
-
-        if (CHECK_BTN_ALL(input->cur.button, BTN_L) && CHECK_BTN_ALL(input->press.button, BTN_CUP)) {
-            if (BREG(0)) {
-                pauseCtx->debugState = 3;
-            }
-        } else if (CHECK_BTN_ALL(input->press.button, BTN_START)) {
-
-            gSaveContext.unk_13EE = gSaveContext.unk_13EA;
-
-            WREG(16) = -175;
-            WREG(17) = 155;
-
-            pauseCtx->unk_1EA = 0;
-            pauseCtx->unk_1E4 = 1;
-
-            if (ZREG(48) == 0) {
-                pauseCtx->eye.x = sKaleidoSetupEyeX0[pauseCtx->pageIndex];
-                pauseCtx->eye.z = sKaleidoSetupEyeZ0[pauseCtx->pageIndex];
-                pauseCtx->pageIndex = sKaleidoSetupKscpPos0[pauseCtx->pageIndex];
-            } else {
-                pauseCtx->eye.x = sKaleidoSetupEyeX1[pauseCtx->pageIndex];
-                pauseCtx->eye.z = sKaleidoSetupEyeZ1[pauseCtx->pageIndex];
-                pauseCtx->pageIndex = sKaleidoSetupKscpPos1[pauseCtx->pageIndex];
-            }
-
-            pauseCtx->mode = (u16)(pauseCtx->pageIndex * 2) + 1;
-            pauseCtx->state = 1;
-
-            osSyncPrintf("Ｍｏｄｅ=%d  eye.x=%f,  eye.z=%f  kscp_pos=%d\n", pauseCtx->mode, pauseCtx->eye.x,
-                         pauseCtx->eye.z, pauseCtx->pageIndex);
-        }
-
-        if (pauseCtx->state == 1) {
-            WREG(2) = -6240;
-            R_UPDATE_RATE = 2;
-
-            if (ShrinkWindow_GetVal()) {
-                ShrinkWindow_SetVal(0);
-            }
-
-            func_800F64E0(1);
-        }
-    }
+    // The PC-only fixed loadout has no pause inventory or save screen.
+    // Keep the context initialized for code that shares its storage, but do
+    // not allow Start or the old L+C-Up debug shortcut to enter pause states.
+    (void)play;
 }
 
 void KaleidoSetup_Init(PlayState* play) {

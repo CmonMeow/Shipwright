@@ -315,36 +315,28 @@ void EnMk_Update(Actor* thisx, PlayState* play) {
 
     player = GET_PLAYER(play);
 
-    if (this->flags & 8) {
-        if (!(player->stateFlags2 & PLAYER_STATE2_UNDERWATER)) {
-            this->flags &= ~8;
-        }
-    } else {
-        if (player->currentBoots == PLAYER_BOOTS_IRON) {
-            this->flags |= 8;
-        } else if (player->stateFlags2 & PLAYER_STATE2_UNDERWATER) {
-            swimFlag = player->actor.yDistToWater;
+    if (player->stateFlags2 & PLAYER_STATE2_UNDERWATER) {
+        swimFlag = player->actor.yDistToWater;
 
-            if (swimFlag > 0) {
-                if (swimFlag >= 320) {
-                    if (swimFlag >= 355) {
-                        swimFlag = 8;
-                    } else {
-                        swimFlag = 7;
-                    }
-                } else if (swimFlag < 80) {
-                    swimFlag = 1;
+        if (swimFlag > 0) {
+            if (swimFlag >= 320) {
+                if (swimFlag >= 355) {
+                    swimFlag = 8;
                 } else {
-                    swimFlag *= 0.025f;
+                    swimFlag = 7;
                 }
+            } else if (swimFlag < 80) {
+                swimFlag = 1;
+            } else {
+                swimFlag *= 0.025f;
+            }
 
-                if (this->swimFlag < swimFlag) {
-                    this->swimFlag = swimFlag;
+            if (this->swimFlag < swimFlag) {
+                this->swimFlag = swimFlag;
 
-                    if ((!(this->flags & 4)) && (this->swimFlag >= 8)) {
-                        this->flags |= 4;
-                        Sfx_PlaySfxCentered(NA_SE_SY_CORRECT_CHIME);
-                    }
+                if ((!(this->flags & 4)) && (this->swimFlag >= 8)) {
+                    this->flags |= 4;
+                    Sfx_PlaySfxCentered(NA_SE_SY_CORRECT_CHIME);
                 }
             }
         }
