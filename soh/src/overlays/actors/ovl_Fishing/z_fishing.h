@@ -56,12 +56,21 @@ typedef struct Fishing {
     /* 0x0220 */ LightInfo lightInfo;
     /* 0x0230 */ ColliderJntSph collider;
     /* 0x0250 */ ColliderJntSphElement colliderElements[12];
-} Fishing; // size = 0x0550
+    u8 isWild;
+    WaterBox* wildWaterBox;
+    f32 wildWaterSurfaceY;
+    f32 wildMinX;
+    f32 wildMaxX;
+    f32 wildMinZ;
+    f32 wildMaxZ;
+} Fishing;
 
 #define EN_FISH_OWNER 1      // param for owner of pond. default if params<100
 #define EN_FISH_PARAM 100    // param base for fish in pond.
 #define EN_FISH_AQUARIUM 200 // param for record fish in tank.
 #define EN_FISH_PORTABLE 300 // rod/lure controller used outside the fishing pond
+#define EN_FISH_WILD 400     // fish spawned in ordinary scene water boxes
+#define EN_LOACH_WILD 401    // loach spawned in ordinary scene water boxes
 
 struct VBFishingData {
     Fishing* actor;

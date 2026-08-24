@@ -14,6 +14,7 @@
 #define FLAGS ACTOR_FLAG_UPDATE_CULLING_DISABLED
 #define WATER_SURFACE_Y(play) Fishing_GetWaterSurfaceY(play)
 bool getShouldSpawnLoaches();
+extern WaterBox zdWaterBox;
 
 void Fishing_Init(Actor* thisx, PlayState* play);
 void Fishing_Destroy(Actor* thisx, PlayState* play);
@@ -24,6 +25,7 @@ void Fishing_DrawOwner(Actor* thisx, PlayState* play);
 void Fishing_UpdatePortable(Actor* thisx, PlayState* play);
 void Fishing_DrawPortable(Actor* thisx, PlayState* play);
 void Fishing_Reset(void);
+static void Fishing_SpawnWildFish(PlayState* play);
 
 typedef struct {
     /* 0x00 */ u8 isLoach;
@@ -846,6 +848,75 @@ static FishingFishInit sFishInits[] = {
     { 1, { -561, -35, -547 }, 45, 0.0f },  { 1, { 667, -35, 317 }, 43, 0.0f },
 };
 
+static f32 Fishing_GetFishPerception(Fishing* this) {
+    if (this->isWild) {
+        return this->perception;
+    }
+
+    return sFishInits[this->actor.params - EN_FISH_PARAM].perception;
+}
+
+static f32 Fishing_GetRandomFishTargetX(Fishing* this, f32 range) {
+    f32 target = Rand_CenteredFloat(range) + (this->isWild ? this->actor.home.pos.x : 0.0f);
+
+    return this->isWild ? CLAMP(target, this->wildMinX, this->wildMaxX) : target;
+}
+
+static f32 Fishing_GetRandomFishTargetZ(Fishing* this, f32 range) {
+    f32 target = Rand_CenteredFloat(range) + (this->isWild ? this->actor.home.pos.z : 0.0f);
+
+    return this->isWild ? CLAMP(target, this->wildMinZ, this->wildMaxZ) : target;
+}
+
+static void Fishing_SpawnWildFishInWaterBox(PlayState* play, WaterBox* waterBox, bool loach) {
+    f32 width = fabsf(waterBox->xLength);
+    f32 depth = fabsf(waterBox->zLength);
+    f32 minX = (waterBox->xLength >= 0) ? waterBox->xMin : waterBox->xMin + waterBox->xLength;
+    f32 minZ = (waterBox->zLength >= 0) ? waterBox->zMin : waterBox->zMin + waterBox->zLength;
+    f32 marginX = (width > 80.0f) ? 40.0f : width * 0.2f;
+    f32 marginZ = (depth > 80.0f) ? 40.0f : depth * 0.2f;
+    f32 spawnX = minX + marginX + Rand_ZeroFloat(width - (marginX * 2.0f));
+    f32 spawnZ = minZ + marginZ + Rand_ZeroFloat(depth - (marginZ * 2.0f));
+    f32 spawnY = waterBox->ySurface - (loach ? 45.0f : 25.0f);
+    Fishing* fish = (Fishing*)Actor_Spawn(&play->actorCtx, play, ACTOR_FISHING, spawnX, spawnY, spawnZ, 0,
+                                          Rand_ZeroFloat(0x10000), 0, loach ? EN_LOACH_WILD : EN_FISH_WILD);
+
+    if (fish != NULL) {
+        fish->wildWaterBox = waterBox;
+        fish->wildWaterSurfaceY = waterBox->ySurface;
+        fish->wildMinX = minX + marginX;
+        fish->wildMaxX = minX + width - marginX;
+        fish->wildMinZ = minZ + marginZ;
+        fish->wildMaxZ = minZ + depth - marginZ;
+        fish->actor.home.pos = fish->actor.world.pos;
+    }
+}
+
+static void Fishing_SpawnWildFish(PlayState* play) {
+    CollisionHeader* colHeader = play->colCtx.colHeader;
+    s16 i;
+
+    if ((colHeader == NULL) || (colHeader->waterBoxes == NULL)) {
+        return;
+    }
+
+    for (i = 0; i < colHeader->numWaterBoxes; i++) {
+        WaterBox* waterBox = &colHeader->waterBoxes[i];
+
+        if ((waterBox->xLength == 0) || (waterBox->zLength == 0)) {
+            continue;
+        }
+
+        Fishing_SpawnWildFishInWaterBox(play, waterBox, false);
+        Fishing_SpawnWildFishInWaterBox(play, waterBox, true);
+    }
+
+    if (play->sceneNum == SCENE_ZORAS_DOMAIN) {
+        Fishing_SpawnWildFishInWaterBox(play, &zdWaterBox, false);
+        Fishing_SpawnWildFishInWaterBox(play, &zdWaterBox, true);
+    }
+}
+
 static InitChainEntry sInitChain[] = {
     ICHAIN_U8(targetMode, 5, ICHAIN_CONTINUE),
     ICHAIN_F32(targetArrowOffset, 0, ICHAIN_STOP),
@@ -859,6 +930,7 @@ void Fishing_Init(Actor* thisx, PlayState* play2) {
 
     Actor_ProcessInitChain(thisx, sInitChain);
     ActorShape_Init(&thisx->shape, 0.0f, NULL, 0.0f);
+    this->isWild = false;
 
     // The pond uses its adult rules even though the surrounding world is
     // intentionally loaded with child-age scene variants.
@@ -887,6 +959,7 @@ void Fishing_Init(Actor* thisx, PlayState* play2) {
         thisx->flags |= ACTOR_FLAG_DRAW_CULLING_DISABLED;
         thisx->update = Fishing_UpdatePortable;
         thisx->draw = Fishing_DrawPortable;
+        Fishing_SpawnWildFish(play);
     } else if (thisx->params < EN_FISH_PARAM) {
         sPortableFishing = false;
         sReelLock = 0;
@@ -1032,7 +1105,8 @@ void Fishing_Init(Actor* thisx, PlayState* play2) {
                         sFishInits[i].pos.z, 0, Rand_ZeroFloat(0x10000), 0, 100 + i);
         }
     } else {
-        if ((thisx->params < (EN_FISH_PARAM + 15)) || (thisx->params == EN_FISH_AQUARIUM)) {
+        if ((thisx->params < (EN_FISH_PARAM + 15)) || (thisx->params == EN_FISH_AQUARIUM) ||
+            (thisx->params == EN_FISH_WILD)) {
             SkelAnime_InitFlex(play, &this->skelAnime, &gFishingFishSkel, &gFishingFishAnim, NULL, NULL, 0);
             Animation_MorphToLoop(&this->skelAnime, &gFishingFishAnim, 0.0f);
         } else {
@@ -1048,6 +1122,15 @@ void Fishing_Init(Actor* thisx, PlayState* play2) {
             thisx->targetMode = 0;
             thisx->flags |= ACTOR_FLAG_ATTENTION_ENABLED | ACTOR_FLAG_FRIENDLY;
             this->lightNode = LightContext_InsertLight(play, &play->lightCtx, &this->lightInfo);
+        } else if ((thisx->params == EN_FISH_WILD) || (thisx->params == EN_LOACH_WILD)) {
+            this->fishState = 10;
+            this->fishStateNext = 10;
+            this->isWild = true;
+            this->isLoach = thisx->params == EN_LOACH_WILD;
+            this->perception = this->isLoach ? 0.02f : 0.08f;
+            this->fishLength = (this->isLoach ? 42.0f : 34.0f) + Rand_ZeroFloat(18.0f);
+            thisx->room = -1;
+            thisx->flags |= ACTOR_FLAG_UPDATE_CULLING_DISABLED;
         } else {
             this->fishState = 10;
             this->fishStateNext = 10;
@@ -2871,7 +2954,7 @@ void func_80B70ED4(Fishing* this, Input* input) {
                     this->unk_15E = 0;
                     this->timerArray[0] = 0;
                     this->timerArray[2] = (s16)Rand_ZeroFloat(100.0f) + 100;
-                    this->perception = sFishInits[this->actor.params - EN_FISH_PARAM].perception;
+                    this->perception = Fishing_GetFishPerception(this);
                     this->rotationStep = 0.0f;
                 }
 
@@ -2880,7 +2963,7 @@ void func_80B70ED4(Fishing* this, Input* input) {
                     this->unk_15E = 0;
                     this->timerArray[0] = 0;
                     this->timerArray[2] = (s16)Rand_ZeroFloat(100.0f) + 100;
-                    this->perception = sFishInits[this->actor.params - EN_FISH_PARAM].perception;
+                    this->perception = Fishing_GetFishPerception(this);
                     this->rotationStep = 0.0f;
                 }
             }
@@ -3024,6 +3107,16 @@ void Fishing_UpdateFish(Actor* thisx, PlayState* play2) {
     f32 rumbleStrength;
     u16 attempts;
     u8 rumbleStrength8;
+    f32 savedPortableWaterSurfaceY = sPortableWaterSurfaceY;
+    bool savedPortableWaterFound = sPortableWaterFound;
+
+    if (this->isWild) {
+        if (this->wildWaterBox != NULL) {
+            this->wildWaterSurfaceY = this->wildWaterBox->ySurface;
+        }
+        sPortableWaterSurfaceY = this->wildWaterSurfaceY;
+        sPortableWaterFound = true;
+    }
 
     this->actor.uncullZoneForward = 700.0f;
     this->actor.uncullZoneScale = 50.0f;
@@ -3034,7 +3127,8 @@ void Fishing_UpdateFish(Actor* thisx, PlayState* play2) {
         playerSpeedMod = (player->actor.speedXZ * 0.3f) + 0.25f;
     }
 
-    if ((D_80B7E0B0 != 0) || (sSubCamId != 0) || ((player->actor.world.pos.z > 1150.0f) && (this->fishState != 100))) {
+    if ((D_80B7E0B0 != 0) || (sSubCamId != 0) ||
+        (!this->isWild && (player->actor.world.pos.z > 1150.0f) && (this->fishState != 100))) {
         this->actor.flags &= ~ACTOR_FLAG_ATTENTION_ENABLED;
     } else {
         this->actor.flags |= ACTOR_FLAG_ATTENTION_ENABLED;
@@ -3216,7 +3310,7 @@ void Fishing_UpdateFish(Actor* thisx, PlayState* play2) {
                 this->timerArray[1] = 50;
             }
 
-            if (Message_GetState(&play->msgCtx) == TEXT_STATE_NONE) {
+            if (!this->isWild && (Message_GetState(&play->msgCtx) == TEXT_STATE_NONE)) {
                 if ((gSaveContext.dayTime >= 0xC000) && (gSaveContext.dayTime <= 0xC01B)) {
                     this->fishState = 7;
                     this->timerArray[3] = (s16)Rand_ZeroFloat(150.0f) + 200;
@@ -3227,7 +3321,7 @@ void Fishing_UpdateFish(Actor* thisx, PlayState* play2) {
                 }
             }
 
-            if (KREG(15) != 0) {
+            if (!this->isWild && (KREG(15) != 0)) {
                 KREG(15) = 0;
                 this->fishState = 7;
                 this->timerArray[3] = (s16)Rand_ZeroFloat(150.0f) + 2000;
@@ -3244,9 +3338,9 @@ void Fishing_UpdateFish(Actor* thisx, PlayState* play2) {
                 } else {
                     this->fishState = 1;
                     this->timerArray[0] = (s16)Rand_ZeroFloat(30.0f) + 10;
-                    this->fishTargetPos.x = Rand_CenteredFloat(300.0f);
+                    this->fishTargetPos.x = Fishing_GetRandomFishTargetX(this, 300.0f);
                     this->fishTargetPos.y = (WATER_SURFACE_Y(play) - 50.0f) - Rand_ZeroFloat(50.0f);
-                    this->fishTargetPos.z = Rand_CenteredFloat(300.0f);
+                    this->fishTargetPos.z = Fishing_GetRandomFishTargetZ(this, 300.0f);
                     this->unk_190 = 1.0f;
                     this->unk_194 = 2000.0f;
                 }
@@ -3264,9 +3358,9 @@ void Fishing_UpdateFish(Actor* thisx, PlayState* play2) {
                 this->fishState = -1;
                 this->unk_1A4 = 20000;
                 this->unk_1A2 = 20000;
-                this->fishTargetPos.x = 0.0f;
-                this->fishTargetPos.y = -140.0f;
-                this->fishTargetPos.z = 0.0f;
+                this->fishTargetPos.x = this->isWild ? this->actor.home.pos.x : 0.0f;
+                this->fishTargetPos.y = this->isWild ? (WATER_SURFACE_Y(play) - 80.0f) : -140.0f;
+                this->fishTargetPos.z = this->isWild ? this->actor.home.pos.z : 0.0f;
             } else {
                 Math_ApproachF(&this->rotationStep, 4096.0f, 1.0f, 256.0f);
 
@@ -3308,9 +3402,9 @@ void Fishing_UpdateFish(Actor* thisx, PlayState* play2) {
                 Math_ApproachF(&this->rotationStep, 4096.0f, 1.0f, 256.0f);
 
                 if ((play->gameplayFrames % 32) == 0) {
-                    this->fishTargetPos.x = Rand_CenteredFloat(600.0f);
-                    this->fishTargetPos.z = Rand_CenteredFloat(600.0f);
-                    this->fishTargetPos.y = -120.0f;
+                    this->fishTargetPos.x = Fishing_GetRandomFishTargetX(this, 600.0f);
+                    this->fishTargetPos.z = Fishing_GetRandomFishTargetZ(this, 600.0f);
+                    this->fishTargetPos.y = this->isWild ? (WATER_SURFACE_Y(play) - 70.0f) : -120.0f;
                 }
             } else if (distToTarget > 50.0f) {
                 this->unk_190 = 0.8f;
@@ -3332,8 +3426,8 @@ void Fishing_UpdateFish(Actor* thisx, PlayState* play2) {
                 this->fishState = -2;
                 this->actor.world.rot.x = this->actor.shape.rot.x = 0;
                 this->fishTargetPos.y = WATER_SURFACE_Y(play) + 10.0f;
-                this->fishTargetPos.x = Rand_ZeroFloat(50.0f);
-                this->fishTargetPos.z = Rand_ZeroFloat(50.0f);
+                this->fishTargetPos.x = Fishing_GetRandomFishTargetX(this, 50.0f);
+                this->fishTargetPos.z = Fishing_GetRandomFishTargetZ(this, 50.0f);
             }
 
             this->actor.flags &= ~ACTOR_FLAG_ATTENTION_ENABLED;
@@ -3355,8 +3449,8 @@ void Fishing_UpdateFish(Actor* thisx, PlayState* play2) {
                     Math_ApproachZeroF(&this->actor.speedXZ, 1.0f, 0.01f);
 
                     if ((this->actor.speedXZ == 0.0f) || (this->actor.world.pos.y > (WATER_SURFACE_Y(play) - 5.0f))) {
-                        this->fishTargetPos.x = Rand_ZeroFloat(300.0f);
-                        this->fishTargetPos.z = Rand_ZeroFloat(300.0f);
+                        this->fishTargetPos.x = Fishing_GetRandomFishTargetX(this, 300.0f);
+                        this->fishTargetPos.z = Fishing_GetRandomFishTargetZ(this, 300.0f);
                         this->fishTargetPos.y = this->actor.floorHeight + 10.0f;
                         this->fishState = -25;
                         this->rotationStep = 0.0f;
@@ -3998,6 +4092,10 @@ void Fishing_UpdateFish(Actor* thisx, PlayState* play2) {
                     sFishingCaughtTextId = 0x4099;
                 }
 
+                // The catch text reads this score as its displayed weight.
+                // The pond owner also refreshes it while drawing, but portable
+                // fishing has no owner actor to perform that calculation.
+                gSaveContext.minigameScore = (SQ((f32)sFishLengthToWeigh) * 0.0036f) + 0.5f;
                 this->keepState = 0;
             }
 
@@ -4015,7 +4113,23 @@ void Fishing_UpdateFish(Actor* thisx, PlayState* play2) {
             sRodLineSpooled = 188.0f;
 
             if (this->timerArray[0] <= 50) {
-                switch (this->keepState) {
+                if (this->isWild) {
+                    /*
+                     * Wild fishing has no pond owner, aquarium, or retained-fish
+                     * record. Show the measured catch message, then always put
+                     * the fish back in its source water when the player advances.
+                     */
+                    if (((Message_GetState(&play->msgCtx) == TEXT_STATE_CHOICE) ||
+                         (Message_GetState(&play->msgCtx) == TEXT_STATE_NONE)) &&
+                        Message_ShouldAdvance(play)) {
+                        Message_CloseTextbox(play);
+                        this->actor.world.pos = this->actor.home.pos;
+                        this->actor.prevPos = this->actor.home.pos;
+                        this->fishTargetPos = this->actor.home.pos;
+                        sRodCastState = 0;
+                    }
+                } else {
+                    switch (this->keepState) {
                     case 0:
                         if ((Message_GetState(&play->msgCtx) == TEXT_STATE_CHOICE) ||
                             (Message_GetState(&play->msgCtx) == TEXT_STATE_NONE)) {
@@ -4065,6 +4179,7 @@ void Fishing_UpdateFish(Actor* thisx, PlayState* play2) {
                             }
                         }
                         break;
+                    }
                 }
             }
 
@@ -4097,6 +4212,12 @@ void Fishing_UpdateFish(Actor* thisx, PlayState* play2) {
             break;
 
         case 7:
+            if (this->isWild) {
+                this->fishState = 10;
+                this->fishStateNext = 10;
+                break;
+            }
+
             this->lilyTimer = 50;
             rotXYScale = 5;
             this->rotationStep = 12288.0f;
@@ -4263,8 +4384,10 @@ void Fishing_UpdateFish(Actor* thisx, PlayState* play2) {
             if (this->actor.bgCheckFlags & 1) {
                 if (this->actor.world.pos.y > WATER_SURFACE_Y(play)) {
                     this->unk_184 = Rand_ZeroFloat(3.0f) + 3.0f;
-                    this->actor.velocity.x = this->actor.world.pos.x * -0.003f;
-                    this->actor.velocity.z = this->actor.world.pos.z * -0.003f;
+                    this->actor.velocity.x =
+                        (this->actor.world.pos.x - (this->isWild ? this->actor.home.pos.x : 0.0f)) * -0.003f;
+                    this->actor.velocity.z =
+                        (this->actor.world.pos.z - (this->isWild ? this->actor.home.pos.z : 0.0f)) * -0.003f;
 
                     Audio_PlayActorSound2(&this->actor, NA_SE_EV_FISH_LEAP);
                     Fishing_SplashBySize2(this, play);
@@ -4302,6 +4425,17 @@ void Fishing_UpdateFish(Actor* thisx, PlayState* play2) {
         }
     }
 
+    if (this->isWild && ((this->fishState < 2) || (this->fishState > 6))) {
+        if ((this->actor.world.pos.x < this->wildMinX) || (this->actor.world.pos.x > this->wildMaxX) ||
+            (this->actor.world.pos.z < this->wildMinZ) || (this->actor.world.pos.z > this->wildMaxZ)) {
+            this->actor.world.pos.x = CLAMP(this->actor.world.pos.x, this->wildMinX, this->wildMaxX);
+            this->actor.world.pos.z = CLAMP(this->actor.world.pos.z, this->wildMinZ, this->wildMaxZ);
+            this->fishTargetPos = this->actor.home.pos;
+            this->fishState = 10;
+            this->fishStateNext = 10;
+        }
+    }
+
     if (this->bubbleTime != 0) {
         s16 i;
         Vec3f pos;
@@ -4316,6 +4450,11 @@ void Fishing_UpdateFish(Actor* thisx, PlayState* play2) {
             Fishing_SpawnBubble(&this->actor.projectedPos, play->specialEffects, &pos, Rand_ZeroFloat(0.035f) + 0.04f,
                                 0);
         }
+    }
+
+    if (this->isWild) {
+        sPortableWaterSurfaceY = savedPortableWaterSurfaceY;
+        sPortableWaterFound = savedPortableWaterFound;
     }
 }
 
@@ -4857,6 +4996,10 @@ static void Fishing_StopCinematic(PlayState* play) {
         func_800C08AC(play, sSubCamId, 0);
         func_80064534(play, &play->csCtx);
         sSubCamId = 0;
+    } else if (sPortableFishing) {
+        // Portable catches halt actors through the pond catch path but do not
+        // create its sub-camera. Resume the scene explicitly on completion.
+        func_80064534(play, &play->csCtx);
     }
 
     sFishingPlayerCinematicState = 0;
@@ -5955,6 +6098,16 @@ void Fishing_UpdatePortable(Actor* thisx, PlayState* play) {
 
     sFishingLineScale = 0.0015f;
     sFishingTimePlayed++;
+
+    // The pond owner normally starts this message. Portable fishing has no
+    // owner actor, so present the same measured catch text from its controller.
+    if (sFishingCaughtTextDelay != 0) {
+        sFishingCaughtTextDelay--;
+        if (sFishingCaughtTextDelay == 0) {
+            Message_StartTextbox(play, sFishingCaughtTextId, NULL);
+        }
+    }
+
     previousLurePos = sLurePos;
 
     Fishing_UpdateLure(this, play);
@@ -5967,7 +6120,7 @@ void Fishing_UpdatePortable(Actor* thisx, PlayState* play) {
 
     if (sFishingPlayerCinematicState == 3) {
         Fishing_StopCinematic(play);
-        player->unk_860 = -5;
+        player->unk_860 = 0;
         D_80B7E0B0 = 5;
     }
 
