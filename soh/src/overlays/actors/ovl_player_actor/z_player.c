@@ -2562,9 +2562,13 @@ s32 func_80834380(PlayState* play, Player* this, s32* itemPtr, s32* typePtr) {
     if (useBow) {
         *itemPtr = ITEM_BOW;
         if (this->stateFlags1 & PLAYER_STATE1_ON_HORSE) {
-            *typePtr = ARROW_NORMAL_HORSE;
+            *typePtr = ARROW_NORMAL_LIT;
         } else {
             *typePtr = this->heldItemAction - 6;
+            if (*typePtr == ARROW_NORMAL) {
+                // Use the same state and fire damage as a normal arrow that passed through a lit torch.
+                *typePtr = ARROW_NORMAL_LIT;
+            }
         }
     } else {
         *itemPtr = ITEM_SLINGSHOT;

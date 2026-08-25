@@ -3,6 +3,13 @@
 #include <string.h>
 #include <stdio.h>
 
+#ifdef _WIN32
+#include <windows.h>
+#ifdef _MSC_VER
+#pragma comment(lib, "Advapi32.lib")
+#endif
+#endif
+
 #include "textures/title_static/title_static.h"
 #include "textures/parameter_static/parameter_static.h"
 #include <textures/icon_item_static/icon_item_static.h>
@@ -24,6 +31,61 @@
 
 #define MIN_QUEST (ResourceMgr_GameHasOriginal() ? QUEST_NORMAL : QUEST_MASTER)
 #define MAX_QUEST QUEST_MASTER
+
+static u8 FileChoose_EncodeUsernameCharacter(char character, bool isPalName) {
+    if (character >= 'A' && character <= 'Z') {
+        return (isPalName ? 0x0A : 0xAB) + (character - 'A');
+    }
+    if (character >= 'a' && character <= 'z') {
+        return (isPalName ? 0x24 : 0xC5) + (character - 'a');
+    }
+    if (character >= '0' && character <= '9') {
+        return character - '0';
+    }
+    if (character == '-' || character == '_' || character == ' ') {
+        return isPalName ? 0x3F : 0xE4;
+    }
+    if (character == '.') {
+        return isPalName ? 0x40 : 0xEA;
+    }
+    return 0xFF;
+}
+
+static void FileChoose_SetDefaultPlayerName(FileChooseContext* this) {
+    char username[256] = "Link";
+    size_t usernameLength;
+    size_t sourceIndex;
+    size_t nameIndex = 0;
+    bool isPalName = ResourceMgr_GetGameRegion(0) == GAME_REGION_PAL && gSaveContext.language != LANGUAGE_JPN;
+    u8 blank = isPalName ? 0x3E : 0xDF;
+    u8* playerName = (u8*)Save_GetSaveMetaInfo(this->buttonIndex)->playerName;
+
+#ifdef _WIN32
+    DWORD bufferLength = ARRAY_COUNT(username);
+    if (!GetUserNameA(username, &bufferLength) || username[0] == '\0') {
+        strcpy_s(username, ARRAY_COUNT(username), "Link");
+    }
+#endif
+
+    memset(playerName, blank, 8);
+    usernameLength = strlen(username);
+    for (sourceIndex = 0; sourceIndex < usernameLength && nameIndex < 8; sourceIndex++) {
+        u8 encoded = FileChoose_EncodeUsernameCharacter(username[sourceIndex], isPalName);
+        if (encoded != 0xFF) {
+            playerName[nameIndex++] = encoded;
+        }
+    }
+
+    if (nameIndex == 0) {
+        static const char fallbackName[] = "Link";
+        for (sourceIndex = 0; sourceIndex < sizeof(fallbackName) - 1; sourceIndex++) {
+            playerName[nameIndex++] = FileChoose_EncodeUsernameCharacter(fallbackName[sourceIndex], isPalName);
+        }
+    }
+
+    // The name-entry cursor stores the next slot, except that a full name uses slot seven.
+    this->newFileNameCharCount = nameIndex >= 8 ? 7 : (s8)nameIndex;
+}
 
 typedef struct Sprite {
     char tex[512];
@@ -480,13 +542,10 @@ void FileChoose_StartQuestMenu(GameState* thisx) {
 }
 
 void FileChoose_UpdateQuestMenu(GameState* thisx) {
-    static u8 emptyName[] = { 0x3E, 0x3E, 0x3E, 0x3E, 0x3E, 0x3E, 0x3E, 0x3E };
-    static u8 emptyNameNES[] = { 0xDF, 0xDF, 0xDF, 0xDF, 0xDF, 0xDF, 0xDF, 0xDF };
     FileChoose_UpdateStickDirectionPromptAnim(thisx);
     FileChooseContext* this = (FileChooseContext*)thisx;
     Input* input = &this->state.input[0];
     s8 i = 0;
-    void* defaultName;
 
 
     if (ABS(this->stickRelX) > 30) {
@@ -531,18 +590,12 @@ void FileChoose_UpdateQuestMenu(GameState* thisx) {
         this->kbdY = 0;
         this->charIndex = 0;
         this->charBgAlpha = 0;
-        this->newFileNameCharCount = 0;
         this->nameEntryBoxPosX = 120;
         this->nameEntryBoxAlpha = 0;
-        if (ResourceMgr_GetGameRegion(0) == GAME_REGION_PAL && gSaveContext.language != LANGUAGE_JPN) {
-            defaultName = &emptyName;
-        } else if (gSaveContext.language == LANGUAGE_JPN) { // Japanese
-            defaultName = &emptyNameNES;
+        if (gSaveContext.language == LANGUAGE_JPN) {
             this->charPage = FS_CHAR_PAGE_HIRA; // Default to Hiragana Keyboard
-        } else {                                // GAME_REGION_NTSC
-            defaultName = &emptyNameNES;
         }
-        memcpy(Save_GetSaveMetaInfo(this->buttonIndex)->playerName, defaultName, 8);
+        FileChoose_SetDefaultPlayerName(this);
         return;
     }
 

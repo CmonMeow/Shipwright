@@ -1135,6 +1135,12 @@ s32 func_80A98ECC(EnKo* this, PlayState* play) {
 void EnKo_Init(Actor* thisx, PlayState* play) {
     EnKo* this = (EnKo*)thisx;
 
+    // This Kokiri receives an extra-tall collider and blocks the forest exit until the Deku Tree is complete.
+    if (play->sceneNum == SCENE_KOKIRI_FOREST && ENKO_TYPE == ENKO_TYPE_CHILD_3) {
+        Actor_Kill(thisx);
+        return;
+    }
+
     if (ENKO_TYPE >= ENKO_TYPE_CHILD_MAX || !EnKo_IsOsAnimeAvailable(this, play) ||
         !EnKo_AreObjectsAvailable(this, play)) {
         Actor_Kill(thisx);

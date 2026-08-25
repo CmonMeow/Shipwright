@@ -485,10 +485,8 @@ s16 func_80AAAF04(PlayState* play, Actor* thisx) {
 
 u8 EnMd_ShouldSpawn(EnMd* this, PlayState* play) {
     if (play->sceneNum == SCENE_KOKIRI_FOREST) {
-        if (!Flags_GetEventChkInf(EVENTCHKINF_SPOKE_TO_MIDO_AFTER_DEKU_TREES_DEATH) &&
-            !Flags_GetEventChkInf(EVENTCHKINF_OBTAINED_ZELDAS_LETTER)) {
-            return 1;
-        }
+        // Mido's forest placement exists to gate the Deku Tree behind child equipment/progression.
+        return 0;
     }
 
     if (play->sceneNum == SCENE_MIDOS_HOUSE) {
