@@ -8,6 +8,7 @@
 
 #include "overlays/actors/ovl_En_Kanban/z_en_kanban.h"
 #include "objects/object_fish/object_fish.h"
+#include "message_data_fmt.h"
 #include "vt.h"
 
 #include "soh/frame_interpolation.h"
@@ -378,6 +379,34 @@ static bool sPortableWaterFound;
 static bool sPortableLineInitialized;
 static f32 sPortableWaterSurfaceY;
 static void* sPreviousSpecialEffects;
+
+static void Fishing_StopCinematic(PlayState* play);
+
+static void Fishing_StartCatchNotification(PlayState* play) {
+    Font* font;
+    s32 i;
+
+    Message_StartTextbox(play, sFishingCaughtTextId, NULL);
+    font = &play->msgCtx.font;
+
+    // The original catch messages append Keep/Release choices. End the
+    // message at that control code so only the catch and weight are shown.
+    if (gSaveContext.language == LANGUAGE_JPN) {
+        for (i = 0; i < ARRAY_COUNT(font->msgBufWide); i++) {
+            if (font->msgBufWide[i] == MESSAGE_TWO_CHOICE_JPN) {
+                font->msgBufWide[i] = MESSAGE_END_JPN;
+                break;
+            }
+        }
+    } else {
+        for (i = 0; i < ARRAY_COUNT(font->msgBuf); i++) {
+            if ((u8)font->msgBuf[i] == MESSAGE_TWO_CHOICE) {
+                font->msgBuf[i] = MESSAGE_END;
+                break;
+            }
+        }
+    }
+}
 static s16 sLureTimer; // AND'd for various effects/checks
 static s16 D_80B7E0B0;
 static s16 D_80B7E0B2;
@@ -4107,21 +4136,26 @@ void Fishing_UpdateFish(Actor* thisx, PlayState* play2) {
             sRodLineSpooled = 188.0f;
 
             if (this->timerArray[0] <= 50) {
-                /*
-                 * Retaining a fish depended on the pond owner, aquarium, and
-                 * record flow. That flow is no longer valid for the portable
-                 * pole, so either legacy dialogue choice now releases the fish.
-                 */
-                if (((Message_GetState(&play->msgCtx) == TEXT_STATE_CHOICE) ||
+                // Dismissing the weight notification always releases the fish.
+                if (((Message_GetState(&play->msgCtx) == TEXT_STATE_DONE) ||
+                     (Message_GetState(&play->msgCtx) == TEXT_STATE_EVENT) ||
                      (Message_GetState(&play->msgCtx) == TEXT_STATE_NONE)) &&
                     Message_ShouldAdvance(play)) {
                     Message_CloseTextbox(play);
-                    if (this->isWild) {
-                        this->actor.world.pos = this->actor.home.pos;
-                        this->actor.prevPos = this->actor.home.pos;
-                        this->fishTargetPos = this->actor.home.pos;
-                    }
                     sRodCastState = 0;
+                    sRodCastTimer = 0;
+                    sLineHooked = false;
+                    sFishingHookedFish = NULL;
+                    sLureBitTimer = 0;
+                    sFishFightTime = 0;
+                    sRodPullback = 0;
+                    sReelLock = 0;
+                    sReelLinePosStep = 0.0f;
+                    sRodReelingSpeed = 0.5f;
+
+                    Fishing_StopCinematic(play);
+                    Player_FinishFishingCatch(play);
+                    D_80B7E0B0 = 5;
                 }
             }
 
@@ -4367,7 +4401,9 @@ void Fishing_UpdateFish(Actor* thisx, PlayState* play2) {
         }
     }
 
-    if (this->isWild && ((this->fishState < 2) || (this->fishState > 6))) {
+    // A released wild fish gets the same short flop/drop period as a pond
+    // fish before its water-box bounds pull it safely back into the water.
+    if (this->isWild && (this->timerArray[1] == 0) && ((this->fishState < 2) || (this->fishState > 6))) {
         if ((this->actor.world.pos.x < this->wildMinX) || (this->actor.world.pos.x > this->wildMaxX) ||
             (this->actor.world.pos.z < this->wildMinZ) || (this->actor.world.pos.z > this->wildMaxZ)) {
             this->actor.world.pos.x = CLAMP(this->actor.world.pos.x, this->wildMinX, this->wildMaxX);
@@ -4936,12 +4972,7 @@ static void Fishing_StopCinematic(PlayState* play) {
         mainCam->eyeNext = sCameraEye;
         mainCam->at = sCameraAt;
         func_800C08AC(play, sSubCamId, 0);
-        func_80064534(play, &play->csCtx);
         sSubCamId = 0;
-    } else if (sPortableFishing) {
-        // Portable catches halt actors through the pond catch path but do not
-        // create its sub-camera. Resume the scene explicitly on completion.
-        func_80064534(play, &play->csCtx);
     }
 
     sFishingPlayerCinematicState = 0;
@@ -5422,7 +5453,7 @@ void Fishing_UpdateOwner(Actor* thisx, PlayState* play2) {
     if (sFishingCaughtTextDelay != 0) {
         sFishingCaughtTextDelay--;
         if (sFishingCaughtTextDelay == 0) {
-            Message_StartTextbox(play, sFishingCaughtTextId, NULL);
+            Fishing_StartCatchNotification(play);
         }
     }
 
@@ -6046,7 +6077,7 @@ void Fishing_UpdatePortable(Actor* thisx, PlayState* play) {
     if (sFishingCaughtTextDelay != 0) {
         sFishingCaughtTextDelay--;
         if (sFishingCaughtTextDelay == 0) {
-            Message_StartTextbox(play, sFishingCaughtTextId, NULL);
+            Fishing_StartCatchNotification(play);
         }
     }
 

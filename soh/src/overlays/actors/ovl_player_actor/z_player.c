@@ -14397,9 +14397,34 @@ void Player_Action_80850C68(Player* this, PlayState* play) {
 }
 
 void Player_Action_80850E84(Player* this, PlayState* play) {
-    if (LinkAnimation_Update(play, &this->skelAnime) && (this->unk_860 == 0)) {
+    // Once the fishing actor dismisses the catch notification, return to the
+    // normal player action immediately. Requiring the completed-animation
+    // result on this same frame can strand Link in this action, which has no
+    // normal C-button item handler.
+    if (this->unk_860 == 0) {
         func_8083A098(this, &gPlayerAnim_link_fishing_fish_catch_end, play);
+        return;
     }
+
+    LinkAnimation_Update(play, &this->skelAnime);
+}
+
+void Player_FinishFishingCatch(PlayState* play) {
+    Player* this = GET_PLAYER(play);
+
+    // The fishing catch starts the global cutscene context directly rather
+    // than through the normal player cutscene setup. Restore every player-side
+    // gate explicitly so item processing cannot remain disabled afterward.
+    func_8006450C(play, &play->csCtx);
+    this->csAction = 0;
+    this->prevCsAction = 0;
+    this->csActor = NULL;
+    this->cv.haltActorsDuringCsAction = false;
+    this->stateFlags1 &=
+        ~(PLAYER_STATE1_INPUT_DISABLED | PLAYER_STATE1_IN_ITEM_CS | PLAYER_STATE1_IN_CUTSCENE);
+    this->unk_6AD = 0;
+    this->unk_860 = 0;
+    func_80853080(this, play);
 }
 
 static void (*D_80854AA4[])(PlayState*, Player*, void*) = {

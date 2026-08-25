@@ -427,6 +427,7 @@ s32 func_8002DEEC(Player* player);
 void func_8002DF18(PlayState* play, Player* player);
 s32 func_8002DF38(PlayState* play, Actor* actor, u8 csMode);
 s32 Player_SetCsActionWithHaltedActors(PlayState* play, Actor* actor, u8 arg2);
+void Player_FinishFishingCatch(PlayState* play);
 void func_8002DF90(DynaPolyActor* dynaActor);
 void func_8002DFA4(DynaPolyActor* dynaActor, f32 arg1, s16 arg2);
 s32 Player_IsFacingActor(Actor* actor, s16 angle, PlayState* play);
