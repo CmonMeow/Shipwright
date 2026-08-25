@@ -13,18 +13,14 @@ typedef struct EnJj {
     /* 0x0164 */ SkelAnime skelAnime;
     /* 0x01A8 */ Vec3s jointTable[22];
     /* 0x022C */ Vec3s morphTable[22];
-    /* 0x02B0 */ ColliderCylinder collider;
-    /* 0x02FC */ EnJjActionFunc actionFunc;
-    /* 0x0300 */ DynaPolyActor* bodyCollisionActor;
-    /* 0x0304 */ Actor* dust;
-    /* 0x0308 */ s16 mouthOpenAngle;
-    /* 0x030A */ u16 unk_30A;
-    /* 0x030C */ s16 cutsceneCountdownTimer;
-    /* 0x030E */ u8 eyeIndex;
-    /* 0x030F */ u8 blinkTimer;
-    /* 0x0310 */ u8 extraBlinkCounter;
-    /* 0x0311 */ u8 extraBlinkTotal;
-} EnJj; // size = 0x0314
+    /* 0x02B0 */ EnJjActionFunc actionFunc;
+    /* 0x02B8 */ DynaPolyActor* bodyCollisionActor;
+    /* 0x02C0 */ s16 mouthOpenAngle;
+    /* 0x02C2 */ u8 eyeIndex;
+    /* 0x02C3 */ u8 blinkTimer;
+    /* 0x02C4 */ u8 extraBlinkCounter;
+    /* 0x02C5 */ u8 extraBlinkTotal;
+} EnJj;
 
 typedef enum {
     /* -1 */ JABUJABU_MAIN = -1, // Head, drawn body, handles updating

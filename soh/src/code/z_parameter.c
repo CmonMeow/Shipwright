@@ -1483,13 +1483,7 @@ u8 Item_Give(PlayState* play, u8 item) {
 
         return Return_Item(item, MOD_NONE, ITEM_NONE);
     } else if ((item >= ITEM_KOKIRI_EMERALD) && (item <= ITEM_ZORA_SAPPHIRE)) {
-        gSaveContext.inventory.questItems |= gBitFlags[item - ITEM_KOKIRI_EMERALD + QUEST_KOKIRI_EMERALD];
-
-        osSyncPrintf(VT_FGCOL(YELLOW));
-        osSyncPrintf("精霊石 = %x\n", gSaveContext.inventory.questItems); // "Spiritual Stones = %x"
-        osSyncPrintf(VT_RST);
-
-        return Return_Item(item, MOD_NONE, ITEM_NONE);
+        return ITEM_NONE;
     } else if ((item == ITEM_STONE_OF_AGONY) || (item == ITEM_GERUDO_CARD)) {
         gSaveContext.inventory.questItems |= gBitFlags[item - ITEM_STONE_OF_AGONY + QUEST_STONE_OF_AGONY];
 
@@ -1617,12 +1611,6 @@ u8 Item_Give(PlayState* play, u8 item) {
         return Return_Item(item, MOD_NONE, ITEM_NONE);
     } else if (item == ITEM_GAUNTLETS_GOLD) {
         Inventory_ChangeUpgrade(UPG_STRENGTH, 3);
-        return Return_Item(item, MOD_NONE, ITEM_NONE);
-    } else if (item == ITEM_SCALE_SILVER) {
-        Inventory_ChangeUpgrade(UPG_SCALE, 1);
-        return Return_Item(item, MOD_NONE, ITEM_NONE);
-    } else if (item == ITEM_SCALE_GOLDEN) {
-        Inventory_ChangeUpgrade(UPG_SCALE, 2);
         return Return_Item(item, MOD_NONE, ITEM_NONE);
     } else if (item == ITEM_WALLET_ADULT) {
         Inventory_ChangeUpgrade(UPG_WALLET, 1);

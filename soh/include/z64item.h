@@ -111,6 +111,9 @@ typedef enum {
     /* 0x18 */ QUEST_HEART_PIECE
 } QuestItem;
 
+#define QUEST_SPIRITUAL_STONE_MASK \
+    ((1U << QUEST_KOKIRI_EMERALD) | (1U << QUEST_GORON_RUBY) | (1U << QUEST_ZORA_SAPPHIRE))
+
 typedef enum {
     /* 0x00 */ DUNGEON_KEY_BOSS,
     /* 0x01 */ DUNGEON_COMPASS,

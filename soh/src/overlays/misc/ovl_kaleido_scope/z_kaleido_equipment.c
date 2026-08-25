@@ -1,11 +1,11 @@
 #include "z_kaleido_scope.h"
 #include "textures/icon_item_static/icon_item_static.h"
 #include "textures/parameter_static/parameter_static.h"
-static u8 sChildUpgrades[] = { UPG_BULLET_BAG, UPG_BOMB_BAG, UPG_STRENGTH, UPG_SCALE };
-static u8 sAdultUpgrades[] = { UPG_QUIVER, UPG_BOMB_BAG, UPG_STRENGTH, UPG_SCALE };
+static u8 sChildUpgrades[] = { UPG_BULLET_BAG, UPG_BOMB_BAG, UPG_STRENGTH };
+static u8 sAdultUpgrades[] = { UPG_QUIVER, UPG_BOMB_BAG, UPG_STRENGTH };
 
-static u8 sChildUpgradeItemBases[] = { ITEM_BULLET_BAG_30, ITEM_BOMB_BAG_20, ITEM_BRACELET, ITEM_SCALE_SILVER };
-static u8 sAdultUpgradeItemBases[] = { ITEM_QUIVER_30, ITEM_BOMB_BAG_20, ITEM_BRACELET, ITEM_SCALE_SILVER };
+static u8 sChildUpgradeItemBases[] = { ITEM_BULLET_BAG_30, ITEM_BOMB_BAG_20, ITEM_BRACELET };
+static u8 sAdultUpgradeItemBases[] = { ITEM_QUIVER_30, ITEM_BOMB_BAG_20, ITEM_BRACELET };
 
 static u8 sUpgradeItemOffsets[] = { 0x00, 0x03, 0x06, 0x09 };
 
@@ -559,7 +559,7 @@ void KaleidoScope_DrawEquipment(PlayState* play) {
 
     for (rowStart = 0, j = 0, temp = 0, i = 0; i < 4; i++, rowStart += 4, j += 16) {
         gSPVertex(POLY_OPA_DISP++, &pauseCtx->equipVtx[j], 16, 0);
-        if (LINK_AGE_IN_YEARS == YEARS_CHILD) {
+        if (LINK_AGE_IN_YEARS == YEARS_CHILD && i < ARRAY_COUNT(sChildUpgrades)) {
             point = CUR_UPG_VALUE(sChildUpgrades[i]);
             if ((point != 0) && (CUR_UPG_VALUE(sChildUpgrades[i]) != 0)) {
                 if ((sChildUpgradeItemBases[i] + CUR_UPG_VALUE(sChildUpgrades[i]) - 1) == ITEM_GAUNTLETS_SILVER ||
@@ -571,7 +571,7 @@ void KaleidoScope_DrawEquipment(PlayState* play) {
                                                    gItemIcons[sChildUpgradeItemBases[i] + point - 1], 32, 32, 0);
                 gSPGrayscale(POLY_OPA_DISP++, false);
             }
-        } else {
+        } else if (i < ARRAY_COUNT(sAdultUpgrades)) {
             if ((i == 0) &&
                 (CUR_UPG_VALUE(sAdultUpgrades[i]) ==
                  0)) { // If the player doesn't have the bow, load the current slingshot ammo upgrade instead.

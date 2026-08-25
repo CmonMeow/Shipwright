@@ -258,15 +258,6 @@ void KaleidoScope_DrawDebugEditor(PlayState* play) {
         KaleidoScope_DrawDigit(play, spD8[2], spD8[1], 149);
     }
 
-    // Spiritual Stones
-    for (spD8[1] = 210, i = 0; i < 3; i++, spD8[1] += 12) {
-        spD8[2] = 0;
-        if (CHECK_QUEST_ITEM(QUEST_KOKIRI_EMERALD + i)) {
-            spD8[2] = 1;
-        }
-        KaleidoScope_DrawDigit(play, spD8[2], spD8[1], 149);
-    }
-
     // Songs
     for (spD8[1] = 78, i = 0; i < 12; i++, spD8[1] += 12) {
         spD8[2] = 0;

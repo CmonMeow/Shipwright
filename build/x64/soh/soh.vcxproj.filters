@@ -1735,9 +1735,6 @@
     <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\src\overlays\actors\ovl_En_Jj\z_en_jj.c">
       <Filter>src\overlays\actors</Filter>
     </ClCompile>
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\src\overlays\actors\ovl_En_Jj\z_en_jj_cutscene_data.c">
-      <Filter>src\overlays\actors</Filter>
-    </ClCompile>
     <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\src\overlays\actors\ovl_En_Js\z_en_js.c">
       <Filter>src\overlays\actors</Filter>
     </ClCompile>

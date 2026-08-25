@@ -91,6 +91,12 @@ void EnHeishi2_Init(Actor* thisx, PlayState* play) {
     this->type = this->actor.params & 0xFF;
     this->actor.colChkInfo.mass = MASS_IMMOVABLE;
 
+    // Type 5 is the Kakariko guard whose only purpose is gating Death Mountain Trail with Zelda's Letter.
+    if (play->sceneNum == SCENE_KAKARIKO_VILLAGE && this->type == 5) {
+        Actor_Kill(thisx);
+        return;
+    }
+
     if ((this->type == 6) || (this->type == 9)) {
         this->actor.draw = EnHeishi2_DrawKingGuard;
         this->actor.flags &= ~ACTOR_FLAG_ATTENTION_ENABLED;

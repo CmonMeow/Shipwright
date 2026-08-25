@@ -1529,7 +1529,6 @@ Gfx* Play_SetFog(PlayState* play, Gfx* gfx);
 void Play_Destroy(GameState* thisx);
 void Play_Init(GameState* thisx);
 void Play_Main(GameState* thisx);
-u8 CheckStoneCount();
 u8 CheckMedallionCount();
 u8 CheckDungeonCount();
 u8 CheckBridgeRewardCount();

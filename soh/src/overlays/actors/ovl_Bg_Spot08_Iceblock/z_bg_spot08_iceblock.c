@@ -286,16 +286,16 @@ void BgSpot08Iceblock_Init(Actor* thisx, PlayState* play) {
 
     // "spot08 ice floe"
     osSyncPrintf("(spot08 流氷)(arg_data 0x%04x)\n", this->dyna.actor.params);
-    BgSpot08Iceblock_CheckParams(this);
 
-    switch (this->dyna.actor.params & 0x200) {
-        case 0:
-            colHeader = &gZorasFountainIcebergCol;
-            break;
-        case 0x200:
-            colHeader = &gZorasFountainIceRampCol;
-            break;
+    // The 0x200 variant is the adult-world ice ramp that blocks Jabu-Jabu's entrance.
+    if (this->dyna.actor.params & 0x200) {
+        this->dyna.bgId = BG_ACTOR_MAX;
+        Actor_Kill(&this->dyna.actor);
+        return;
     }
+
+    BgSpot08Iceblock_CheckParams(this);
+    colHeader = &gZorasFountainIcebergCol;
 
     switch (this->dyna.actor.params & 0xF) {
         case 2:
@@ -351,7 +351,9 @@ void BgSpot08Iceblock_Init(Actor* thisx, PlayState* play) {
 void BgSpot08Iceblock_Destroy(Actor* thisx, PlayState* play) {
     BgSpot08Iceblock* this = (BgSpot08Iceblock*)thisx;
 
-    DynaPoly_DeleteBgActor(play, &play->colCtx.dyna, this->dyna.bgId);
+    if (this->dyna.bgId != BG_ACTOR_MAX) {
+        DynaPoly_DeleteBgActor(play, &play->colCtx.dyna, this->dyna.bgId);
+    }
 }
 
 void BgSpot08Iceblock_SetupFloatNonrotating(BgSpot08Iceblock* this) {
@@ -430,17 +432,5 @@ void BgSpot08Iceblock_Update(Actor* thisx, PlayState* play) {
 }
 
 void BgSpot08Iceblock_Draw(Actor* thisx, PlayState* play) {
-    Gfx* dList;
-    BgSpot08Iceblock* this = (BgSpot08Iceblock*)thisx;
-
-    switch (this->dyna.actor.params & 0x200) {
-        case 0:
-            dList = gZorasFountainIcebergDL;
-            break;
-        case 0x200:
-            dList = gZorasFountainIceRampDL;
-            break;
-    }
-
-    Gfx_DrawDListOpa(play, dList);
+    Gfx_DrawDListOpa(play, gZorasFountainIcebergDL);
 }

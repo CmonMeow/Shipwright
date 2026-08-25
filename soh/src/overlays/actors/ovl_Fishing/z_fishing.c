@@ -5269,7 +5269,7 @@ void Fishing_HandleOwnerDialog(Fishing* this, PlayState* play) {
                         if (((sFishingRecordLength >= 60.0f) &&
                                                       !(HIGH_SCORE(HS_FISHING) & HS_FISH_PRIZE_ADULT))) {
                             HIGH_SCORE(HS_FISHING) |= HS_FISH_PRIZE_ADULT;
-                            getItemId = GI_SCALE_GOLDEN;
+                            getItemId = GI_RUPEE_PURPLE;
                             sSinkingLureLocation = (u8)Rand_ZeroFloat(3.999f) + 1;
                         }
                     }
@@ -5331,7 +5331,7 @@ void Fishing_HandleOwnerDialog(Fishing* this, PlayState* play) {
             if (Actor_HasParent(&this->actor, play)) {
                 this->stateAndTimer = 24;
             } else {
-                Actor_OfferGetItem(&this->actor, play, GI_SCALE_GOLDEN, 2000.0f, 1000.0f);
+                Actor_OfferGetItem(&this->actor, play, GI_RUPEE_PURPLE, 2000.0f, 1000.0f);
             }
             break;
 

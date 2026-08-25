@@ -6,7 +6,6 @@
 
 #include "z_en_jj.h"
 #include "objects/object_jj/object_jj.h"
-#include "overlays/actors/ovl_Eff_Dust/z_eff_dust.h"
 #include "soh/ResourceManagerHelpers.h"
 
 #define FLAGS (ACTOR_FLAG_UPDATE_CULLING_DISABLED | ACTOR_FLAG_DRAW_CULLING_DISABLED)
@@ -24,10 +23,8 @@ void EnJj_Update(Actor* thisx, PlayState* play);
 void EnJj_Draw(Actor* thisx, PlayState* play);
 
 void EnJj_UpdateStaticCollision(Actor* thisx, PlayState* play);
+void EnJj_OpenMouth(EnJj* this, PlayState* play);
 void EnJj_WaitToOpenMouth(EnJj* this, PlayState* play);
-void EnJj_WaitForFish(EnJj* this, PlayState* play);
-void EnJj_BeginCutscene(EnJj* this, PlayState* play);
-void EnJj_RemoveDust(EnJj* this, PlayState* play);
 
 const ActorInit En_Jj_InitVars = {
     ACTOR_EN_JJ,
@@ -40,32 +37,6 @@ const ActorInit En_Jj_InitVars = {
     (ActorFunc)EnJj_Update,
     (ActorFunc)EnJj_Draw,
     NULL,
-};
-
-static s32 sUnused = 0;
-
-#include "z_en_jj_cutscene_data.c" EARLY
-
-static s32 sUnused2[] = { 0, 0 };
-
-static ColliderCylinderInit sCylinderInit = {
-    {
-        COLTYPE_NONE,
-        AT_NONE,
-        AC_ON | AC_TYPE_PLAYER,
-        OC1_ON | OC1_TYPE_ALL,
-        OC2_TYPE_1,
-        COLSHAPE_CYLINDER,
-    },
-    {
-        ELEMTYPE_UNK0,
-        { 0x00000000, 0x00, 0x00 },
-        { 0x00000004, 0x00, 0x00 },
-        TOUCH_NONE,
-        BUMP_ON,
-        OCELEM_ON,
-    },
-    { 170, 150, 0, { 0, 0, 0 } },
 };
 
 static InitChainEntry sInitChain[] = {
@@ -92,17 +63,12 @@ void EnJj_Init(Actor* thisx, PlayState* play2) {
             SkelAnime_InitFlex(play, &this->skelAnime, &gJabuJabuSkel, &gJabuJabuAnim, this->jointTable,
                                this->morphTable, 22);
             Animation_PlayLoop(&this->skelAnime, &gJabuJabuAnim);
-            this->unk_30A = 0;
             this->eyeIndex = 0;
             this->blinkTimer = 0;
             this->extraBlinkCounter = 0;
             this->extraBlinkTotal = 0;
-
-            if (Flags_GetEventChkInf(EVENTCHKINF_OFFERED_FISH_TO_JABU_JABU)) { // Fish given
-                EnJj_SetupAction(this, EnJj_WaitToOpenMouth);
-            } else {
-                EnJj_SetupAction(this, EnJj_WaitForFish);
-            }
+            this->mouthOpenAngle = 0;
+            EnJj_SetupAction(this, EnJj_WaitToOpenMouth);
 
             this->bodyCollisionActor = (DynaPolyActor*)Actor_SpawnAsChild(
                 &play->actorCtx, &this->dyna.actor, play, ACTOR_EN_JJ, this->dyna.actor.world.pos.x - 10.0f,
@@ -111,8 +77,6 @@ void EnJj_Init(Actor* thisx, PlayState* play2) {
             DynaPolyActor_Init(&this->dyna, 0);
             CollisionHeader_GetVirtual(&gJabuJabuHeadCol, &colHeader);
             this->dyna.bgId = DynaPoly_SetBgActor(play, &play->colCtx.dyna, &this->dyna.actor, colHeader);
-            Collider_InitCylinder(play, &this->collider);
-            Collider_SetCylinder(play, &this->collider, &this->dyna.actor, &sCylinderInit);
             this->dyna.actor.colChkInfo.mass = MASS_IMMOVABLE;
             break;
 
@@ -143,7 +107,6 @@ void EnJj_Destroy(Actor* thisx, PlayState* play) {
     switch (this->dyna.actor.params) {
         case JABUJABU_MAIN:
             DynaPoly_DeleteBgActor(play, &play->colCtx.dyna, this->dyna.bgId);
-            Collider_DestroyCylinder(play, &this->collider);
 
             ResourceMgr_UnregisterSkeleton(&this->skelAnime);
             break;
@@ -191,95 +154,11 @@ void EnJj_OpenMouth(EnJj* this, PlayState* play) {
 }
 
 void EnJj_WaitToOpenMouth(EnJj* this, PlayState* play) {
-    if (this->dyna.actor.xzDistToPlayer < 300.0f) {
-        EnJj_SetupAction(this, EnJj_OpenMouth);
-    }
-}
-
-void EnJj_WaitForFish(EnJj* this, PlayState* play) {
     static Vec3f feedingSpot = { -1589.0f, 53.0f, -43.0f };
-    Player* player = GET_PLAYER(play);
 
-    if ((Math_Vec3f_DistXZ(&feedingSpot, &player->actor.world.pos) < 300.0f) && play->isPlayerDroppingFish(play)) {
-        this->cutsceneCountdownTimer = 100;
-        EnJj_SetupAction(this, EnJj_BeginCutscene);
-    }
-
-    this->collider.dim.pos.x = -1245;
-    this->collider.dim.pos.y = 20;
-    this->collider.dim.pos.z = -48;
-    CollisionCheck_SetOC(play, &play->colChkCtx, &this->collider.base);
-}
-
-void EnJj_BeginCutscene(EnJj* this, PlayState* play) {
-    DynaPolyActor* bodyCollisionActor = this->bodyCollisionActor;
-
-    if (this->cutsceneCountdownTimer > 0) {
-        this->cutsceneCountdownTimer--;
-    } else {
-        EnJj_SetupAction(this, EnJj_RemoveDust);
-        play->csCtx.segment = &D_80A88164;
-        gSaveContext.cutsceneTrigger = 1;
-        func_8003EBF8(play, &play->colCtx.dyna, bodyCollisionActor->bgId);
-        func_8005B1A4(GET_ACTIVE_CAM(play));
+    if (Math_Vec3f_DistXZ(&feedingSpot, &GET_PLAYER(play)->actor.world.pos) < 300.0f) {
         Flags_SetEventChkInf(EVENTCHKINF_OFFERED_FISH_TO_JABU_JABU);
-        Sfx_PlaySfxCentered(NA_SE_SY_CORRECT_CHIME);
-    }
-}
-
-void EnJj_CutsceneUpdate(EnJj* this, PlayState* play) {
-    switch (play->csCtx.npcActions[2]->action) {
-        case 1:
-            if (this->unk_30A & 2) {
-                this->eyeIndex = 0;
-                this->blinkTimer = Rand_S16Offset(20, 20);
-                this->extraBlinkCounter = 0;
-                this->extraBlinkTotal = 0;
-                this->unk_30A ^= 2;
-            }
-            break;
-
-        case 2:
-            this->unk_30A |= 1;
-
-            if (!(this->unk_30A & 8)) {
-                this->dust = Actor_SpawnAsChild(&play->actorCtx, &this->dyna.actor, play, ACTOR_EFF_DUST, -1100.0f,
-                                                105.0f, -27.0f, 0, 0, 0, EFF_DUST_TYPE_0);
-                this->unk_30A |= 8;
-            }
-            break;
-
-        case 3:
-            if (!(this->unk_30A & 2)) {
-                this->eyeIndex = 0;
-                this->blinkTimer = 0;
-                this->extraBlinkCounter = 1;
-                this->extraBlinkTotal = 0;
-                this->unk_30A |= 2;
-            }
-            break;
-    }
-
-    if (this->unk_30A & 1) {
-        Audio_PlayActorSound2(&this->dyna.actor, NA_SE_EV_JABJAB_BREATHE - SFX_FLAG);
-
-        if (this->mouthOpenAngle >= -5200) {
-            this->mouthOpenAngle -= 102;
-        }
-    }
-}
-
-void EnJj_RemoveDust(EnJj* this, PlayState* play) {
-    Actor* dust;
-
-    if (!(this->unk_30A & 4)) {
-        this->unk_30A |= 4;
-        dust = this->dust;
-
-        if (dust != NULL) {
-            Actor_Kill(dust);
-            this->dyna.actor.child = NULL;
-        }
+        EnJj_SetupAction(this, EnJj_OpenMouth);
     }
 }
 
@@ -289,14 +168,10 @@ void EnJj_UpdateStaticCollision(Actor* thisx, PlayState* play) {
 void EnJj_Update(Actor* thisx, PlayState* play) {
     EnJj* this = (EnJj*)thisx;
 
-    if ((play->csCtx.state != CS_STATE_IDLE) && (play->csCtx.npcActions[2] != NULL)) {
-        EnJj_CutsceneUpdate(this, play);
-    } else {
-        this->actionFunc(this, play);
+    this->actionFunc(this, play);
 
-        if (this->skelAnime.curFrame == 41.0f) {
-            Audio_PlayActorSound2(&this->dyna.actor, NA_SE_EV_JABJAB_GROAN);
-        }
+    if (this->skelAnime.curFrame == 41.0f) {
+        Audio_PlayActorSound2(&this->dyna.actor, NA_SE_EV_JABJAB_GROAN);
     }
 
     EnJj_Blink(this);

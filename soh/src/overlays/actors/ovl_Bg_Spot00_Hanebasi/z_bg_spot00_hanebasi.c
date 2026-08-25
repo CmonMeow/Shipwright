@@ -79,11 +79,9 @@ void BgSpot00Hanebasi_Init(Actor* thisx, PlayState* play) {
             this->dyna.actor.shape.rot.x = 0;
         }
 
-        if (gSaveContext.sceneSetupIndex != 6) {
-            if (CHECK_QUEST_ITEM(QUEST_KOKIRI_EMERALD) && CHECK_QUEST_ITEM(QUEST_GORON_RUBY) &&
-                CHECK_QUEST_ITEM(QUEST_ZORA_SAPPHIRE) && !Flags_GetEventChkInf(EVENTCHKINF_ZELDA_FLED_HYRULE_CASTLE)) {
-                this->dyna.actor.shape.rot.x = -0x4000;
-            }
+        if ((gSaveContext.sceneSetupIndex != 6) &&
+            !Flags_GetEventChkInf(EVENTCHKINF_ZELDA_FLED_HYRULE_CASTLE)) {
+            this->dyna.actor.shape.rot.x = -0x4000;
         }
 
         chainPos.y =
@@ -140,9 +138,7 @@ void BgSpot00Hanebasi_Destroy(Actor* thisx, PlayState* play) {
 void BgSpot00Hanebasi_DrawbridgeWait(BgSpot00Hanebasi* this, PlayState* play) {
     BgSpot00Hanebasi* child = (BgSpot00Hanebasi*)this->dyna.actor.child;
 
-    if ((gSaveContext.sceneSetupIndex >= 4) || !CHECK_QUEST_ITEM(QUEST_KOKIRI_EMERALD) ||
-        !CHECK_QUEST_ITEM(QUEST_GORON_RUBY) || !CHECK_QUEST_ITEM(QUEST_ZORA_SAPPHIRE) ||
-        (Flags_GetEventChkInf(EVENTCHKINF_ZELDA_FLED_HYRULE_CASTLE))) {
+    if ((gSaveContext.sceneSetupIndex >= 4) || Flags_GetEventChkInf(EVENTCHKINF_ZELDA_FLED_HYRULE_CASTLE)) {
         if (this->dyna.actor.shape.rot.x != 0) {
             if (Flags_GetEnv(play, 0) || ((gSaveContext.sceneSetupIndex < 4) && IS_DAY)) {
                 this->actionFunc = BgSpot00Hanebasi_DrawbridgeRiseAndFall;
@@ -212,9 +208,7 @@ void BgSpot00Hanebasi_Update(Actor* thisx, PlayState* play) {
 
     if (this->dyna.actor.params == DT_DRAWBRIDGE) {
         if (play->sceneNum == SCENE_HYRULE_FIELD) {
-            if (CHECK_QUEST_ITEM(QUEST_KOKIRI_EMERALD) && CHECK_QUEST_ITEM(QUEST_GORON_RUBY) &&
-                CHECK_QUEST_ITEM(QUEST_ZORA_SAPPHIRE) && !Flags_GetEventChkInf(EVENTCHKINF_ZELDA_FLED_HYRULE_CASTLE) &&
-                LINK_IS_CHILD) {
+            if (!Flags_GetEventChkInf(EVENTCHKINF_ZELDA_FLED_HYRULE_CASTLE) && LINK_IS_CHILD) {
                 Player* player = GET_PLAYER(play);
 
                 if ((player->actor.world.pos.x > -450.0f) && (player->actor.world.pos.x < 450.0f) &&

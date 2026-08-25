@@ -512,8 +512,6 @@ void DoorWarp1_ChildWarpOut(DoorWarp1* this, PlayState* play) {
             if ((!Flags_GetEventChkInf(EVENTCHKINF_USED_DODONGOS_CAVERN_BLUE_WARP))) {
                 Flags_SetEventChkInf(EVENTCHKINF_USED_DODONGOS_CAVERN_BLUE_WARP);
                 
-                    Item_Give(play, ITEM_GORON_RUBY);
-                
                 play->nextEntranceIndex = ENTR_DEATH_MOUNTAIN_TRAIL_BOTTOM_EXIT;
                 gSaveContext.nextCutsceneIndex = 0xFFF1;
             } else {
@@ -524,8 +522,6 @@ void DoorWarp1_ChildWarpOut(DoorWarp1* this, PlayState* play) {
             if ((!Flags_GetEventChkInf(EVENTCHKINF_OBTAINED_KOKIRI_EMERALD_DEKU_TREE_DEAD))) {
                 Flags_SetEventChkInf(EVENTCHKINF_OBTAINED_KOKIRI_EMERALD_DEKU_TREE_DEAD);
                 Flags_SetEventChkInf(EVENTCHKINF_USED_DEKU_TREE_BLUE_WARP);
-                
-                    Item_Give(play, ITEM_KOKIRI_EMERALD);
                 
                 play->nextEntranceIndex = ENTR_KOKIRI_FOREST_0;
                 gSaveContext.nextCutsceneIndex = 0xFFF1;
@@ -624,8 +620,6 @@ void DoorWarp1_RutoWarpOut(DoorWarp1* this, PlayState* play) {
     if (this->warpTimer > sWarpTimerTarget && gSaveContext.nextCutsceneIndex == 0xFFEF) {
         
             Flags_SetEventChkInf(EVENTCHKINF_USED_JABU_JABUS_BELLY_BLUE_WARP);
-            
-                Item_Give(play, ITEM_ZORA_SAPPHIRE);
             
             gSaveContext.nextCutsceneIndex = 0xFFF0;
         

@@ -336,9 +336,8 @@ void EnKz_Init(Actor* thisx, PlayState* play) {
     this->interactInfo.talkState = NPC_TALK_STATE_IDLE;
     Animation_ChangeByInfo(&this->skelanime, sAnimationInfo, ENKZ_ANIM_0);
 
-    if (((Flags_GetEventChkInf(EVENTCHKINF_KING_ZORA_MOVED)))) {
-        EnKz_SetMovedPos(this, play);
-    }
+    EnKz_SetMovedPos(this, play);
+    Flags_SetEventChkInf(EVENTCHKINF_KING_ZORA_MOVED);
 
     if (LINK_IS_ADULT) {
         if (!Flags_GetInfTable(INFTABLE_138)) {

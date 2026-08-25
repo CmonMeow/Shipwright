@@ -22,12 +22,6 @@ typedef struct BgSpot08Iceblock {
     /* 0x0198 */ f32 bobOffset;
 } BgSpot08Iceblock; // size = 0x019C
 
-// Params
-/**
- * 0x200: Shape
- * 0x200 is the ice ramp where Jabu is as child
- */
-
 /**
  * 0x100: Twins
  * 0x100 is the spawned twin platform

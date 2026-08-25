@@ -3692,10 +3692,6 @@ void KaleidoScope_Update(PlayState* play) {
                 pauseCtx->worldMapPoints[2] = 1;
             }
 
-            if (CUR_UPG_VALUE(UPG_SCALE)) {
-                pauseCtx->worldMapPoints[3] = 1;
-            }
-
             if (CHECK_OWNED_EQUIP(EQUIP_TYPE_BOOTS, EQUIP_INV_BOOTS_IRON)) {
                 pauseCtx->worldMapPoints[3] = 2;
             }

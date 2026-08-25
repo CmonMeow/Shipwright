@@ -60,43 +60,37 @@ void EnExRuppy_Init(Actor* thisx, PlayState* play) {
             this->actor.room = -1;
             this->actor.gravity = 0.0f;
 
-            // If you haven't won the diving game before, you will always get 5 rupees
-            if (!Flags_GetEventChkInf(EVENTCHKINF_OBTAINED_SILVER_SCALE)) {
+            temp1 = 200.99f;
+            if (this->actor.parent != NULL) {
+                divingGame = (EnDivingGame*)this->actor.parent;
+                if (divingGame->actor.update != NULL) {
+                    temp2 = divingGame->extraWinCount * 10.0f;
+                    temp1 += temp2;
+                }
+            }
+
+            temp3 = Rand_ZeroFloat(temp1);
+            if ((temp3 >= 0) && (temp3 < 40)) {
+                this->rupeeValue = 1;
+                this->colorIdx = 0;
+            } else if ((temp3 >= 40) && (temp3 < 170)) {
                 this->rupeeValue = 5;
                 this->colorIdx = 1;
+            } else if ((temp3 >= 170) && (temp3 < 190)) {
+                this->rupeeValue = 10;
+                this->colorIdx = 2;
+            } else if ((temp3 >= 190) && (temp3 < 200)) {
+                this->rupeeValue = 20;
+                this->colorIdx = 4;
             } else {
-                temp1 = 200.99f;
+                this->unk_160 = 0.02f;
+                Actor_SetScale(&this->actor, this->unk_160);
+                this->rupeeValue = 50;
+                this->colorIdx = 3;
                 if (this->actor.parent != NULL) {
                     divingGame = (EnDivingGame*)this->actor.parent;
                     if (divingGame->actor.update != NULL) {
-                        temp2 = divingGame->extraWinCount * 10.0f;
-                        temp1 += temp2;
-                    }
-                }
-
-                temp3 = Rand_ZeroFloat(temp1);
-                if ((temp3 >= 0) && (temp3 < 40)) {
-                    this->rupeeValue = 1;
-                    this->colorIdx = 0;
-                } else if ((temp3 >= 40) && (temp3 < 170)) {
-                    this->rupeeValue = 5;
-                    this->colorIdx = 1;
-                } else if ((temp3 >= 170) && (temp3 < 190)) {
-                    this->rupeeValue = 10;
-                    this->colorIdx = 2;
-                } else if ((temp3 >= 190) && (temp3 < 200)) {
-                    this->rupeeValue = 20;
-                    this->colorIdx = 4;
-                } else {
-                    this->unk_160 = 0.02f;
-                    Actor_SetScale(&this->actor, this->unk_160);
-                    this->rupeeValue = 50;
-                    this->colorIdx = 3;
-                    if (this->actor.parent != NULL) {
-                        divingGame = (EnDivingGame*)this->actor.parent;
-                        if (divingGame->actor.update != NULL) {
-                            divingGame->extraWinCount = 0;
-                        }
+                        divingGame->extraWinCount = 0;
                     }
                 }
             }
@@ -233,13 +227,8 @@ void EnExRuppy_EnterWater(EnExRuppy* this, PlayState* play) {
         this->actor.world.pos.x = ((Rand_ZeroOne() - 0.5f) * 300.0f) + -260.0f;
         this->actor.world.pos.y = ((Rand_ZeroOne() - 0.5f) * 200.0f) + 370.0f;
         temp_f2 = this->unk_15A * -50.0f;
-        if (!Flags_GetEventChkInf(EVENTCHKINF_OBTAINED_SILVER_SCALE)) {
-            temp_f2 += -500.0f;
-            this->actor.world.pos.z = ((Rand_ZeroOne() - 0.5f) * 80.0f) + temp_f2;
-        } else {
-            temp_f2 += -300.0f;
-            this->actor.world.pos.z = ((Rand_ZeroOne() - 0.5f) * 60.0f) + temp_f2;
-        }
+        temp_f2 += -300.0f;
+        this->actor.world.pos.z = ((Rand_ZeroOne() - 0.5f) * 60.0f) + temp_f2;
         this->actionFunc = EnExRuppy_Sink;
         this->actor.gravity = -1.0f;
     }

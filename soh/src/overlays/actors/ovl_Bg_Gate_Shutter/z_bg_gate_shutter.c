@@ -45,9 +45,8 @@ void BgGateShutter_Init(Actor* thisx, PlayState* play) {
     this->somePos.x = thisx->world.pos.x;
     this->somePos.y = thisx->world.pos.y;
     this->somePos.z = thisx->world.pos.z;
-    if ((Flags_GetInfTable(INFTABLE_SHOWED_ZELDAS_LETTER_TO_GATE_GUARD) ||
-         Flags_GetEventChkInf(EVENTCHKINF_PULLED_MASTER_SWORD_FROM_PEDESTAL)) &&
-        (play->sceneNum == SCENE_KAKARIKO_VILLAGE)) {
+    // The Death Mountain Trail checkpoint is no longer tied to Zelda's Letter or story progression.
+    if (play->sceneNum == SCENE_KAKARIKO_VILLAGE) {
         thisx->world.pos.x = -89.0f;
         thisx->world.pos.z = -1375.0f;
     }

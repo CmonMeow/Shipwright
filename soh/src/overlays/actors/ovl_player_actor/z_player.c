@@ -10557,7 +10557,7 @@ void func_80847298(Player* this) {
     this->unk_6AE_rotFlags = 0;
 }
 
-static f32 D_80854784[] = { 120.0f, 240.0f, 360.0f };
+#define PLAYER_MAX_DIVE_DEPTH 360.0f
 
 /**
  * Updates the two main interface elements that player is responsible for:
@@ -10641,7 +10641,7 @@ void Player_UpdateInterface(PlayState* play, Player* this) {
                     static u8 sDiveNumberDoActions[] = { DO_ACTION_1, DO_ACTION_2, DO_ACTION_3, DO_ACTION_4,
                                                          DO_ACTION_5, DO_ACTION_6, DO_ACTION_7, DO_ACTION_8 };
 
-                    sp24 = (D_80854784[CUR_UPG_VALUE(UPG_SCALE)] - this->actor.yDistToWater) / 40.0f;
+                    sp24 = (PLAYER_MAX_DIVE_DEPTH - this->actor.yDistToWater) / 40.0f;
                     sp24 = CLAMP(sp24, 0, 7);
                     doAction = sDiveNumberDoActions[sp24];
                 } else if (sp1C && !(this->stateFlags2 & PLAYER_STATE2_UNDERWATER)) {
@@ -13174,7 +13174,7 @@ void Player_Action_8084DC48(Player* this, PlayState* play) {
             this->unk_6C2 = 16000;
 
             if (CHECK_BTN_ALL(sControlInput->cur.button, BTN_A) && !Player_ActionHandler_2(this, play) &&
-                !(this->actor.bgCheckFlags & 1) && (this->actor.yDistToWater < D_80854784[CUR_UPG_VALUE(UPG_SCALE)])) {
+                !(this->actor.bgCheckFlags & 1) && (this->actor.yDistToWater < PLAYER_MAX_DIVE_DEPTH)) {
                 func_8084DBC4(play, this, -2.0f);
             } else {
                 this->av1.actionVar1++;

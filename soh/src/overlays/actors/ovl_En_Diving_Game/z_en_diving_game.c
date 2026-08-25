@@ -28,10 +28,6 @@ void EnDivingGame_SetupUnderwaterViewCs(EnDivingGame* this, PlayState* play);
 void func_809EE780(EnDivingGame* this, PlayState* play);
 void func_809EE800(EnDivingGame* this, PlayState* play);
 void func_809EE8F0(EnDivingGame* this, PlayState* play);
-void func_809EE96C(EnDivingGame* this, PlayState* play);
-void func_809EEA00(EnDivingGame* this, PlayState* play);
-void func_809EEA90(EnDivingGame* this, PlayState* play);
-void func_809EEAF8(EnDivingGame* this, PlayState* play);
 
 const ActorInit En_Diving_Game_InitVars = {
     ACTOR_EN_DIVING_GAME,
@@ -142,33 +138,21 @@ s32 EnDivingGame_HasMinigameFinished(EnDivingGame* this, PlayState* play) {
         this->actionFunc = func_809EE048;
         return true;
     } else {
-        s32 rupeesNeeded = 5;
-
-        if (Flags_GetEventChkInf(EVENTCHKINF_OBTAINED_SILVER_SCALE)) {
-            rupeesNeeded = 10;
-        }
+        s32 rupeesNeeded = 10;
         if (this->grabbedRupeesCounter >= rupeesNeeded) {
             // Won.
             gSaveContext.timerState = TIMER_STATE_OFF;
             this->allRupeesThrown = this->state = this->phase = this->unk_2A2 = this->grabbedRupeesCounter = 0;
-            if (!Flags_GetEventChkInf(EVENTCHKINF_OBTAINED_SILVER_SCALE)) {
-                this->actor.textId = 0x4055;
-            } else {
-                this->actor.textId = 0x405D;
-                if (this->extraWinCount < 100) {
-                    this->extraWinCount++;
-                }
+            this->actor.textId = 0x405D;
+            if (this->extraWinCount < 100) {
+                this->extraWinCount++;
             }
             Message_StartTextbox(play, this->actor.textId, NULL);
             this->unk_292 = TEXT_STATE_EVENT;
             func_800F5B58();
             Audio_PlayFanfare(NA_BGM_SMALL_ITEM_GET);
             Player_SetCsActionWithHaltedActors(play, NULL, 8);
-            if (!Flags_GetEventChkInf(EVENTCHKINF_OBTAINED_SILVER_SCALE)) {
-                this->actionFunc = func_809EE96C;
-            } else {
-                this->actionFunc = func_809EE048;
-            }
+            this->actionFunc = func_809EE048;
             return true;
         }
     }
@@ -195,7 +179,8 @@ void EnDivingGame_Talk(EnDivingGame* this, PlayState* play) {
                         this->actionFunc = EnDivingGame_HandlePlayChoice;
                         break;
                     case ENDIVINGGAME_STATE_AWARDPRIZE:
-                        this->actionFunc = func_809EEA00;
+                        this->state = ENDIVINGGAME_STATE_NOTPLAYING;
+                        this->actionFunc = func_809EDCB0;
                         break;
                     case ENDIVINGGAME_STATE_PLAYING:
                         this->actionFunc = func_809EE8F0;
@@ -210,13 +195,8 @@ void EnDivingGame_Talk(EnDivingGame* this, PlayState* play) {
                 switch (this->state) {
                     case ENDIVINGGAME_STATE_NOTPLAYING:
                         this->unk_292 = TEXT_STATE_CHOICE;
-                        if (!Flags_GetEventChkInf(EVENTCHKINF_OBTAINED_SILVER_SCALE)) {
-                            this->actor.textId = 0x4053;
-                            this->phase = ENDIVINGGAME_PHASE_1;
-                        } else {
-                            this->actor.textId = 0x405C;
-                            this->phase = ENDIVINGGAME_PHASE_2;
-                        }
+                        this->actor.textId = 0x405C;
+                        this->phase = ENDIVINGGAME_PHASE_2;
                         break;
                     case ENDIVINGGAME_STATE_AWARDPRIZE:
                         this->actor.textId = 0x4056;
@@ -252,8 +232,7 @@ void EnDivingGame_HandlePlayChoice(EnDivingGame* this, PlayState* play) {
                 this->allRupeesThrown = this->state = this->phase = this->unk_2A2 = this->grabbedRupeesCounter = 0;
                 break;
         }
-        if (!Flags_GetEventChkInf(EVENTCHKINF_OBTAINED_SILVER_SCALE) || this->actor.textId == 0x85 ||
-            this->actor.textId == 0x2D) {
+        if (this->actor.textId == 0x85 || this->actor.textId == 0x2D) {
             Message_ContinueTextbox(play, this->actor.textId);
             this->unk_292 = TEXT_STATE_EVENT;
             this->actionFunc = func_809EE048;
@@ -312,11 +291,7 @@ void EnDivingGame_SetupRupeeThrow(EnDivingGame* this, PlayState* play) {
     this->unk_2D0.x = -280.0f;
     this->unk_2D0.y = -20.0f;
     this->unk_2D0.z = -240.0f;
-    if (!Flags_GetEventChkInf(EVENTCHKINF_OBTAINED_SILVER_SCALE)) {
-        this->rupeesLeftToThrow = 5;
-    } else {
-        this->rupeesLeftToThrow = 10;
-    }
+    this->rupeesLeftToThrow = 10;
     this->unk_2DC.x = this->unk_2DC.y = this->unk_2DC.z = this->unk_300.x = this->unk_300.y = this->unk_300.z = 0.1f;
     this->camLookAt.x = play->view.lookAt.x;
     this->camLookAt.y = play->view.lookAt.y;
@@ -356,11 +331,7 @@ void EnDivingGame_RupeeThrow(EnDivingGame* this, PlayState* play) {
         this->spawnRuppyTimer = 5;
         EnDivingGame_SpawnRuppy(this, play);
         this->rupeesLeftToThrow--;
-        if (!Flags_GetEventChkInf(EVENTCHKINF_OBTAINED_SILVER_SCALE)) {
-            this->unk_296 = 30;
-        } else {
-            this->unk_296 = 5;
-        }
+        this->unk_296 = 5;
         if (this->rupeesLeftToThrow <= 0) {
             this->rupeesLeftToThrow = 0;
             this->allRupeesThrown = true;
@@ -414,11 +385,7 @@ void func_809EE800(EnDivingGame* this, PlayState* play) {
     SkelAnime_Update(&this->skelAnime);
     if (this->unk_292 == Message_GetState(&play->msgCtx) && Message_ShouldAdvance(play)) {
         Message_CloseTextbox(play);
-        if (!Flags_GetEventChkInf(EVENTCHKINF_OBTAINED_SILVER_SCALE)) {
-            Interface_SetTimer(BREG(2) + 50);
-        } else {
-            Interface_SetTimer(BREG(2) + 50);
-        }
+        Interface_SetTimer(BREG(2) + 50);
         func_800F5ACC(NA_BGM_TIMED_MINI_GAME);
         Player_SetCsActionWithHaltedActors(play, NULL, 7);
         this->actor.textId = 0x405B;
@@ -435,56 +402,6 @@ void func_809EE8F0(EnDivingGame* this, PlayState* play) {
         this->actionFunc = EnDivingGame_Talk;
     } else {
         EnDivingGame_HasMinigameFinished(this, play);
-    }
-}
-
-// EnDivingGame_SayCongratsAndWait ? // EnDivingGame_PlayerWonPhase1
-void func_809EE96C(EnDivingGame* this, PlayState* play) {
-    SkelAnime_Update(&this->skelAnime);
-    if ((this->unk_292 == Message_GetState(&play->msgCtx) && Message_ShouldAdvance(play))) {
-        Message_CloseTextbox(play);
-        Player_SetCsActionWithHaltedActors(play, NULL, 7);
-        this->actor.textId = 0x4056;
-        this->unk_292 = TEXT_STATE_EVENT;
-        this->state = ENDIVINGGAME_STATE_AWARDPRIZE;
-        this->actionFunc = EnDivingGame_Talk;
-    }
-}
-
-void func_809EEA00(EnDivingGame* this, PlayState* play) {
-    SkelAnime_Update(&this->skelAnime);
-    if ((this->unk_292 == Message_GetState(&play->msgCtx) && Message_ShouldAdvance(play))) {
-        Message_CloseTextbox(play);
-        this->actor.parent = NULL;
-        
-            Actor_OfferGetItem(&this->actor, play, GI_SCALE_SILVER, 90.0f, 10.0f);
-        
-        this->actionFunc = func_809EEA90;
-    }
-}
-
-void func_809EEA90(EnDivingGame* this, PlayState* play) {
-    SkelAnime_Update(&this->skelAnime);
-    if (Actor_HasParent(&this->actor, play) ||
-        !(true)) {
-        this->actionFunc = func_809EEAF8;
-    } else {
-        
-            Actor_OfferGetItem(&this->actor, play, GI_SCALE_SILVER, 90.0f, 10.0f);
-        
-    }
-}
-
-// Award the scale?
-void func_809EEAF8(EnDivingGame* this, PlayState* play) {
-    SkelAnime_Update(&this->skelAnime);
-    if ((Message_GetState(&play->msgCtx) == TEXT_STATE_DONE && Message_ShouldAdvance(play)) ||
-        !(true)) {
-        // "Successful completion"
-        osSyncPrintf(VT_FGCOL(GREEN) "☆☆☆☆☆ 正常終了 ☆☆☆☆☆ \n" VT_RST);
-        this->allRupeesThrown = this->state = this->phase = this->unk_2A2 = this->grabbedRupeesCounter = 0;
-        Flags_SetEventChkInf(EVENTCHKINF_OBTAINED_SILVER_SCALE);
-        this->actionFunc = func_809EDCB0;
     }
 }
 

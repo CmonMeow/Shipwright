@@ -381,12 +381,7 @@ void KaleidoScope_DrawQuestStatus(PlayState* play, GraphicsContext* gfxCtx) {
     gDPSetPrimColor(POLY_OPA_DISP++, 0, 0, 255, 255, 255, pauseCtx->alpha);
     gDPSetEnvColor(POLY_OPA_DISP++, 0, 0, 0, 255);
 
-    for (sp218 = 0; sp218 < 3; sp218++, sp21A += 4) {
-        if (CHECK_QUEST_ITEM(sp218 + 0x12)) {
-            gSPVertex(POLY_OPA_DISP++, &pauseCtx->questVtx[sp21A], 4, 0);
-            KaleidoScope_DrawQuadTextureRGBA32(gfxCtx, gItemIcons[ITEM_KOKIRI_EMERALD + sp218], 24, 24, 0);
-        }
-    }
+    sp21A += 12;
 
     gDPPipeSync(POLY_OPA_DISP++);
     gDPSetPrimColor(POLY_OPA_DISP++, 0, 0, 255, 255, 255, pauseCtx->alpha);
