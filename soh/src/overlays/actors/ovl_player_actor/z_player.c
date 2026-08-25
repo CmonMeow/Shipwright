@@ -10375,15 +10375,19 @@ void Player_Init(Actor* thisx, PlayState* play2) {
     // equipment, so these values are reasserted whenever the player is created.
     gSaveContext.inventory.equipment |= OWNED_EQUIP_FLAG(EQUIP_TYPE_SWORD, EQUIP_INV_SWORD_MASTER) |
                                         OWNED_EQUIP_FLAG(EQUIP_TYPE_SWORD, EQUIP_INV_SWORD_BIGGORON) |
-                                        OWNED_EQUIP_FLAG(EQUIP_TYPE_SHIELD, EQUIP_INV_SHIELD_MIRROR);
+                                        OWNED_EQUIP_FLAG(EQUIP_TYPE_SHIELD, EQUIP_INV_SHIELD_MIRROR) |
+                                        OWNED_EQUIP_FLAG(EQUIP_TYPE_TUNIC, EQUIP_INV_TUNIC_KOKIRI);
     gSaveContext.inventory.equipment &=
         (u16)~(OWNED_EQUIP_FLAG(EQUIP_TYPE_BOOTS, EQUIP_INV_BOOTS_IRON) |
-               OWNED_EQUIP_FLAG(EQUIP_TYPE_BOOTS, EQUIP_INV_BOOTS_HOVER));
+               OWNED_EQUIP_FLAG(EQUIP_TYPE_BOOTS, EQUIP_INV_BOOTS_HOVER) |
+               OWNED_EQUIP_FLAG(EQUIP_TYPE_TUNIC, EQUIP_INV_TUNIC_GORON) |
+               OWNED_EQUIP_FLAG(EQUIP_TYPE_TUNIC, EQUIP_INV_TUNIC_ZORA));
     gSaveContext.equips.equipment &=
         (u16)~((0xF << (EQUIP_TYPE_SWORD * 4)) | (0xF << (EQUIP_TYPE_SHIELD * 4)) |
-               (0xF << (EQUIP_TYPE_BOOTS * 4)));
+               (0xF << (EQUIP_TYPE_TUNIC * 4)) | (0xF << (EQUIP_TYPE_BOOTS * 4)));
     gSaveContext.equips.equipment |= (EQUIP_VALUE_SWORD_MASTER << (EQUIP_TYPE_SWORD * 4)) |
                                      (EQUIP_VALUE_SHIELD_MIRROR << (EQUIP_TYPE_SHIELD * 4)) |
+                                     (EQUIP_VALUE_TUNIC_KOKIRI << (EQUIP_TYPE_TUNIC * 4)) |
                                      (EQUIP_VALUE_BOOTS_KOKIRI << (EQUIP_TYPE_BOOTS * 4));
     gSaveContext.inventory.items[SLOT_BOMB] = ITEM_BOMB;
     gSaveContext.inventory.items[SLOT_BOW] = ITEM_BOW;

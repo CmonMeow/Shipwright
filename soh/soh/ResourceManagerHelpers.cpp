@@ -348,6 +348,34 @@ extern "C" void ResourceMgr_PatchGfxByName(const char* path, const char* patchNa
     *gfx = instruction;
 }
 
+extern "C" void ResourceMgr_ReplaceGfxPrimColorByName(const char* path, const char* patchName, uint8_t oldR,
+                                                       uint8_t oldG, uint8_t oldB, uint8_t newR, uint8_t newG,
+                                                       uint8_t newB) {
+    auto res = std::static_pointer_cast<Fast::DisplayList>(
+        Ship::Context::GetInstance()->GetResourceManager()->LoadResource(path));
+
+    if (res == nullptr || res->GetInitData()->IsCustom) {
+        return;
+    }
+
+    for (size_t i = 0; i < res->Instructions.size(); i++) {
+        Gfx* gfx = reinterpret_cast<Gfx*>(&res->Instructions[i]);
+
+        if ((gfx->words.w0 >> 24) == G_SETPRIMCOLOR && _SHIFTR(gfx->words.w1, 24, 8) == oldR &&
+            _SHIFTR(gfx->words.w1, 16, 8) == oldG && _SHIFTR(gfx->words.w1, 8, 8) == oldB) {
+            std::string indexedPatchName = std::string(patchName) + "_" + std::to_string(i);
+
+            if (!originalGfx.contains(path) || !originalGfx[path].contains(indexedPatchName)) {
+                originalGfx[path][indexedPatchName] = { static_cast<int>(i), *gfx, res->Instructions.data(),
+                                                        res->Instructions.size(), false };
+            }
+
+            gfx->words.w1 = _SHIFTL(newR, 24, 8) | _SHIFTL(newG, 16, 8) | _SHIFTL(newB, 8, 8) |
+                            _SHIFTR(gfx->words.w1, 0, 8);
+        }
+    }
+}
+
 extern "C" void ResourceMgr_PatchGfxCopyCommandByName(const char* path, const char* patchName, int destinationIndex,
                                                       int sourceIndex) {
     auto res = std::static_pointer_cast<Fast::DisplayList>(

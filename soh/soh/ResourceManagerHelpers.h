@@ -47,6 +47,8 @@ Gfx* ResourceMgr_LoadGfxByCRC(uint64_t crc);
 Gfx* ResourceMgr_LoadGfxByName(const char* path);
 uint8_t ResourceMgr_FileIsCustomByName(const char* path);
 void ResourceMgr_PatchGfxByName(const char* path, const char* patchName, int index, Gfx instruction);
+void ResourceMgr_ReplaceGfxPrimColorByName(const char* path, const char* patchName, uint8_t oldR, uint8_t oldG,
+                                           uint8_t oldB, uint8_t newR, uint8_t newG, uint8_t newB);
 void ResourceMgr_PatchCustomGfxByName(const char* path, const char* patchName, int index, Gfx instruction);
 void ResourceMgr_UnpatchGfxByName(const char* path, const char* patchName);
 char* ResourceMgr_LoadArrayByNameAsVec3s(const char* path);

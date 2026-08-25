@@ -571,9 +571,39 @@ void func_8008EC70(Player* this) {
 }
 
 void Player_SetEquipmentData(PlayState* play, Player* this) {
+    static bool mirrorShieldColorPatched = false;
+
+    if (!mirrorShieldColorPatched) {
+        static const char* mirrorShieldDLists[] = {
+            gLinkAdultRightHandHoldingMirrorShieldNearDL,
+            gLinkAdultRightHandHoldingMirrorShieldFarDL,
+            gLinkAdultMirrorShieldAndSheathNearDL,
+            gLinkAdultMirrorShieldAndSheathFarDL,
+            gLinkAdultMirrorShieldSwordAndSheathNearDL,
+            gLinkAdultMirrorShieldSwordAndSheathFarDL,
+        };
+        s32 i;
+
+        for (i = 0; i < ARRAY_COUNT(mirrorShieldDLists); i++) {
+            ResourceMgr_ReplaceGfxPrimColorByName(mirrorShieldDLists[i], "PurpleMirrorShield", 215, 0, 0, 59, 0,
+                                                  255);
+        }
+        mirrorShieldColorPatched = true;
+    }
+
     if (this->csAction != 0x56) {
+        // This port has one tunic. Keep legacy save-bit positions reserved for
+        // compatibility, but never retain or equip the removed Goron/Zora
+        // items when loading old saves or receiving a legacy reward.
+        gSaveContext.inventory.equipment &=
+            (u16)~(OWNED_EQUIP_FLAG(EQUIP_TYPE_TUNIC, EQUIP_INV_TUNIC_GORON) |
+                   OWNED_EQUIP_FLAG(EQUIP_TYPE_TUNIC, EQUIP_INV_TUNIC_ZORA));
+        gSaveContext.inventory.equipment |= OWNED_EQUIP_FLAG(EQUIP_TYPE_TUNIC, EQUIP_INV_TUNIC_KOKIRI);
+        gSaveContext.equips.equipment &= (u16)~(0xF << (EQUIP_TYPE_TUNIC * 4));
+        gSaveContext.equips.equipment |= EQUIP_VALUE_TUNIC_KOKIRI << (EQUIP_TYPE_TUNIC * 4);
+
         this->currentShield = SHIELD_EQUIP_TO_PLAYER(CUR_EQUIP_VALUE(EQUIP_TYPE_SHIELD));
-        this->currentTunic = TUNIC_EQUIP_TO_PLAYER(CUR_EQUIP_VALUE(EQUIP_TYPE_TUNIC));
+        this->currentTunic = PLAYER_TUNIC_KOKIRI;
         this->currentBoots = PLAYER_BOOTS_KOKIRI;
         this->currentSwordItemId = B_BTN_ITEM;
         Player_SetModelGroup(this, Player_ActionToModelGroup(this, this->heldItemAction));
@@ -888,9 +918,7 @@ void* sMouthTextures[] = {
 #endif
 
 Color_RGB8 sTunicColors[] = {
-    { 30, 105, 27 },
-    { 100, 20, 0 },
-    { 0, 60, 100 },
+    { 59, 0, 255 },
 };
 
 Color_RGB8 sGauntletColors[] = {
@@ -936,7 +964,7 @@ void Player_DrawImpl(PlayState* play, void** skeleton, Vec3s* jointTable, s32 dL
     gSPSegment(POLY_OPA_DISP++, 0x09, SEGMENTED_TO_VIRTUAL(sMouthTextures[eyeIndex]));
 #endif
 
-    color = &sTunicColors[tunic];
+    color = &sTunicColors[PLAYER_TUNIC_KOKIRI];
 
     
         gDPSetEnvColor(POLY_OPA_DISP++, color->r, color->g, color->b, 0);
