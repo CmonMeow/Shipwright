@@ -122,10 +122,7 @@ CameraModeValue sSetNormal0ModeFirstPersonData[] = {
 };
 
 CameraModeValue sSetNormal0ModeBowArrowData[] = {
-    // Keep the bow visible by placing the rig halfway between the original
-    // head position and the previous full forward offset. Subj3 offsets are
-    // tenths of a world unit; negative local Z points forward here.
-    CAM_FUNCDATA_SUBJ3(-7, 14, 50, 10, 0, -30, -125, 45, 0x2000),
+    CAM_FUNCDATA_SUBJ3(-7, 14, 50, 10, 0, -30, -5, 45, 0x2000),
 };
 
 CameraModeValue sSetNormal0ModeBowArrowZData[] = {

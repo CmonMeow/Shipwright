@@ -7,6 +7,8 @@
 #include "objects/object_fish/object_fish.h"
 #include "soh/ResourceManagerHelpers.h"
 
+extern s32 Ship_IsBowAimHeld(void);
+
 #include <stdlib.h>
 
 typedef struct {
@@ -1295,9 +1297,11 @@ s32 Player_OverrideLimbDrawGameplayDefault(PlayState* play, s32 limbIndex, Gfx**
 s32 Player_OverrideLimbDrawGameplayFirstPerson(PlayState* play, s32 limbIndex, Gfx** dList, Vec3f* pos, Vec3s* rot,
                                                void* thisx) {
     Player* this = (Player*)thisx;
+    s32 pcBowAim = (this == GET_PLAYER(play)) && Ship_IsBowAimHeld() &&
+                   (this->heldItemAction == PLAYER_IA_BOW);
 
     if (!Player_OverrideLimbDrawGameplayCommon(play, limbIndex, dList, pos, rot, thisx)) {
-        if (this->unk_6AD != 2) {
+        if ((this->unk_6AD != 2) && !pcBowAim) {
             *dList = NULL;
         } else if (limbIndex == PLAYER_LIMB_L_FOREARM) {
             *dList = sFirstPersonLeftForearmDLs[PLAYER_AGE];

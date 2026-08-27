@@ -2599,9 +2599,14 @@ void ShipwrightNetworkRuntime::UpdateServerProjectiles() {
                     continue;
                 }
                 float candidateRatio = 0.0f;
+                // The native Link cylinder is radius 12, height 60. Server
+                // target poses can be one 50 ms snapshot behind; at Link's
+                // maximum normal movement that is roughly six world units.
+                // Add exactly that bounded envelope so a visibly intersecting
+                // swept arrow is not lost between target snapshots.
                 if (SegmentVerticalCylinderFirstHit({ previousX, previousY, previousZ },
                                                     { projectile.state.x, projectile.state.y, projectile.state.z },
-                                                    { target.x, target.y, target.z }, 12.0f, 60.0f,
+                                                    { target.x, target.y - 3.0f, target.z }, 18.0f, 66.0f,
                                                     candidateRatio) &&
                     candidateRatio < playerHitRatio) {
                     playerHitRatio = candidateRatio;

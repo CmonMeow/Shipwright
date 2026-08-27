@@ -1,10 +1,10 @@
 Dedicated collision unavailable: using validated client collision witnesses
 Client: send MAGIC_REQUEST_PLAYER to 127.0.0.1:47778
-Server: challenge 633dfef2
-Client: Received challenge 633dfef2
-Client: send MAGIC_CREATE_W_CHALLENGE 633dfef2
+Server: challenge 1e2211ff
+Client: Received challenge 1e2211ff
+Client: send MAGIC_CREATE_W_CHALLENGE 1e2211ff
 Server: create player 1
-Server: MAGIC_CREATE_W_CHALLENGE accepted 633dfef2
+Server: MAGIC_CREATE_W_CHALLENGE accepted 1e2211ff
 Server: old challenges cleared
 NetServer: new player (waiting for ProcessPlayers) - session.playerCount=0, playerId=1, bot=0, name='CmonMeow', |users|=1
 NetServer::ProcessPlayers(): users.card=1, session.playerCount=0, created=1, deleted=0
@@ -12,8 +12,9 @@ Network runtime: server accepted encryption key from 1
 Network runtime: client accepted server encryption key
 Network runtime: player 1 entered scene 73 room 3 at 666.0 -87.0 354.0
 Network runtime: player 1 entered scene 110 room 3 at 0.0 0.0 0.0
+Network runtime: player 1 state sequence 117 changed alive -> dead
+Network runtime: five-second respawn sent to player 1
+Network runtime: player 1 state sequence 118 changed dead -> alive
 NetServer:finishDestroyPlayer (waiting for ProcessPlayers) - session.playerCount=1, playerId=1, |users|=0
-Runtime host summary: chat=1 private=1 state=1 poseEquipment=1 bowString=1 voice=1 actor=1 arrowPitch=1 arrowDamage=0 clientMelee=0 hostMeleeSeen=0 fishCanonical=1 impact=0 aimedPitch=0 stuckPitch=0 stuckPersistent=1 response=1 complete=0
-Runtime client timeout: initial=1 privateSent=1 chat=1 private=1 state=1 voice=1 actor=1 arrowDamage=0 clientMeleeNearMiss=0 clientMelee=0 clientMeleeAck=0 hostMeleeDamage=0 witnessArrow=0 impact=0
-Secure runtime self-test failed: wait=0 host=11 client=21
-Dedicated collision self-test: oot.o2r could not be loaded
+Runtime host summary: chat=1 private=1 state=1 poseEquipment=1 bowString=1 voice=1 actor=1 arrowPitch=1 arrowDamage=1 clientMelee=1 hostMeleeSeen=1 fishCanonical=1 impact=1 aimedPitch=1 stuckPitch=1 stuckPersistent=1 response=1 complete=1
+Secure runtime self-test passed: encrypted state, chat, private E2E text, and voice

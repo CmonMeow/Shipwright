@@ -14,11 +14,51 @@ Vec3f* Camera_Vec3fVecSphGeoAdd(Vec3f* dest, Vec3f* a, VecSph* b);
 extern s32 Ship_ConsumeMouseAimDelta(s32* deltaX, s32* deltaY);
 extern s32 Ship_IsBowAimHeld(void);
 
+static s16 sPathEngineBowAimYaw;
+static s16 sPathEngineBowAimPitch;
+static s32 sPathEngineBowAimActive = false;
+
+static void Camera_PreparePathEngineBowAim(Camera* camera) {
+    Player* player;
+    s32 deltaX;
+    s32 deltaY;
+
+    if ((camera->thisIdx != MAIN_CAM) || (camera->status != CAM_STAT_ACTIVE)) {
+        return;
+    }
+    player = GET_PLAYER(camera->play);
+    if ((player == NULL) || !Ship_IsBowAimHeld() || (player->heldItemAction != PLAYER_IA_BOW)) {
+        sPathEngineBowAimActive = false;
+        return;
+    }
+
+    if (!sPathEngineBowAimActive) {
+        sPathEngineBowAimYaw = BINANG_ROT180(player->actor.shape.rot.y);
+        sPathEngineBowAimPitch = player->actor.focus.rot.x;
+        sPathEngineBowAimActive = true;
+    }
+    if (!Ship_ConsumeMouseAimDelta(&deltaX, &deltaY)) {
+        return;
+    }
+    deltaX = CLAMP(deltaX, -200, 200);
+    deltaY = CLAMP(deltaY, -200, 200);
+    sPathEngineBowAimYaw -= deltaX * 96;
+    sPathEngineBowAimPitch += deltaY * 96;
+    sPathEngineBowAimPitch = CLAMP(sPathEngineBowAimPitch, -0x2800, 0x2800);
+
+    // Feed mouse aim into the same focus rotation consumed by native Subj3.
+    // Subj3 remains solely responsible for eye position, offsets, transition
+    // smoothing and FOV, matching the original game's stable bow camera.
+    player->actor.shape.rot.y = BINANG_ROT180(sPathEngineBowAimYaw);
+    player->actor.focus.rot.y = player->actor.shape.rot.y;
+    player->actor.focus.rot.x = sPathEngineBowAimPitch;
+    camera->playerPosRot.rot.y = player->actor.shape.rot.y;
+}
+
 static void Camera_ApplyPathEngineMouseAim(Camera* camera) {
     static s16 sAimYaw;
     static s16 sAimPitch;
     static s32 sAimActive = false;
-    static s32 sBowAimActive = false;
     VecSph atToEye;
     Player* player;
     s32 bowAim;
@@ -26,8 +66,7 @@ static void Camera_ApplyPathEngineMouseAim(Camera* camera) {
     s32 deltaX;
     s32 deltaY;
 
-    if ((camera->thisIdx != MAIN_CAM) || (camera->status != CAM_STAT_ACTIVE) ||
-        !Ship_ConsumeMouseAimDelta(&deltaX, &deltaY)) {
+    if ((camera->thisIdx != MAIN_CAM) || (camera->status != CAM_STAT_ACTIVE)) {
         if (camera->thisIdx == MAIN_CAM) {
             sAimActive = false;
         }
@@ -36,18 +75,19 @@ static void Camera_ApplyPathEngineMouseAim(Camera* camera) {
 
     player = GET_PLAYER(camera->play);
     bowAim = (player != NULL) && Ship_IsBowAimHeld() && (player->heldItemAction == PLAYER_IA_BOW);
+    if (bowAim) {
+        // Mouse input was consumed before Camera_Subj3; retain its native
+        // camera result instead of replacing eye/at after the update.
+        sAimActive = false;
+        return;
+    }
+    if (!Ship_ConsumeMouseAimDelta(&deltaX, &deltaY)) {
+        return;
+    }
     fishing = (player != NULL) && (player->heldItemAction == PLAYER_IA_FISHING_POLE);
 
     OLib_Vec3fDiffToVecSphGeo(&atToEye, &camera->at, &camera->eye);
-    if (sBowAimActive && !bowAim) {
-        sAimActive = false;
-        sBowAimActive = false;
-    }
-    if (bowAim && !sBowAimActive) {
-        sAimYaw = BINANG_ROT180(player->actor.shape.rot.y);
-        sAimPitch = -player->actor.focus.rot.x;
-        sAimActive = true;
-    } else if (!sAimActive) {
+    if (!sAimActive) {
         sAimYaw = atToEye.yaw;
         sAimPitch = atToEye.pitch;
         sAimActive = true;
@@ -70,38 +110,6 @@ static void Camera_ApplyPathEngineMouseAim(Camera* camera) {
         sAimPitch = 0x2800;
     } else if (sAimPitch < -0x2800) {
         sAimPitch = -0x2800;
-    }
-
-    if (bowAim) {
-        Vec3f anchor = player->actor.world.pos;
-        VecSph eyeOffset;
-        VecSph viewDir;
-
-        player->actor.shape.rot.y = BINANG_ROT180(sAimYaw);
-        player->actor.focus.rot.y = player->actor.shape.rot.y;
-        player->actor.focus.rot.x = -sAimPitch;
-        camera->playerPosRot.rot.y = player->actor.shape.rot.y;
-
-        // Native Subj3 follows the animated head focus and interpolates from
-        // the previous third-person eye. Both introduce visible fore/aft
-        // movement. Build the PC bow view from the actor root every frame so
-        // locomotion and bow animations cannot move the camera into the head.
-        anchor.y += Player_GetHeight(player) * 0.8f;
-        eyeOffset.r = 8.0f;
-        eyeOffset.pitch = 0;
-        eyeOffset.yaw = player->actor.shape.rot.y;
-        Camera_Vec3fVecSphGeoAdd(&camera->eye, &anchor, &eyeOffset);
-
-        viewDir.r = 100.0f;
-        viewDir.pitch = -sAimPitch;
-        viewDir.yaw = player->actor.shape.rot.y;
-        Camera_Vec3fVecSphGeoAdd(&camera->at, &camera->eye, &viewDir);
-        camera->eyeNext = camera->eye;
-        camera->inputDir.x = sAimPitch;
-        camera->inputDir.y = player->actor.shape.rot.y;
-        camera->inputDir.z = 0;
-        sBowAimActive = true;
-        return;
     }
 
     atToEye.yaw = sAimYaw;
@@ -7243,6 +7251,8 @@ Vec3s Camera_Update(Camera* camera) {
         osSyncPrintf("camera: engine (%d %d %d) %04x \n", camera->setting, camera->mode,
                      sCameraSettings[camera->setting].cameraModes[camera->mode].funcIdx, camera->unk_14C);
     }
+
+    Camera_PreparePathEngineBowAim(camera);
 
     if (sOOBTimer < 200) {
         sCameraFunctions[sCameraSettings[camera->setting].cameraModes[camera->mode].funcIdx](camera);

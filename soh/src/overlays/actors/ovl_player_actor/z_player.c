@@ -1313,6 +1313,8 @@ extern s32 Ship_ConsumeEvade(void);
 extern s32 Ship_GetSelectedWeaponSlot(void);
 extern s32 Ship_ConsumeWeaponSelection(void);
 extern s32 Ship_IsBowAimHeld(void);
+extern s32 Ship_IsBowUseBuffered(void);
+extern void Ship_AcknowledgeBowUse(void);
 
 static u16 D_80854398[] = { NA_SE_IT_BOW_DRAW, NA_SE_IT_SLING_DRAW, NA_SE_IT_HOOKSHOT_READY };
 
@@ -2347,6 +2349,9 @@ s32 func_8083442C(Player* this, PlayState* play) {
     s32 arrowType;
 
     Player_SetUpperActionFunc(this, func_808351D4);
+    if ((this == GET_PLAYER(play)) && (this->heldItemAction == PLAYER_IA_BOW)) {
+        Ship_AcknowledgeBowUse();
+    }
     this->stateFlags1 |= PLAYER_STATE1_READY_TO_FIRE;
     this->unk_834 = 14;
 
@@ -2748,7 +2753,8 @@ s32 func_808353D8(Player* this, PlayState* play) {
     }
 
     if (!func_80834758(play, this) &&
-        (sUseHeldItem || ((this->unk_860 < 0) && sHeldItemButtonIsHeldDown) || func_80834E44(play))) {
+        (sUseHeldItem || ((this == GET_PLAYER(play)) && Ship_IsBowUseBuffered()) ||
+         ((this->unk_860 < 0) && sHeldItemButtonIsHeldDown) || func_80834E44(play))) {
         this->unk_860 = ABS(this->unk_860);
 
         if (func_8083442C(this, play)) {
@@ -2763,7 +2769,9 @@ s32 func_808353D8(Player* this, PlayState* play) {
             this->unk_834--;
         }
 
-        if (Player_IsZTargeting(this) || (this->unk_6AD != 0) || (this->stateFlags1 & PLAYER_STATE1_FIRST_PERSON)) {
+        if (Player_IsZTargeting(this) ||
+            ((this == GET_PLAYER(play)) && Ship_IsBowAimHeld() && (this->heldItemAction == PLAYER_IA_BOW)) ||
+            (this->unk_6AD != 0) || (this->stateFlags1 & PLAYER_STATE1_FIRST_PERSON)) {
             if (this->unk_834 == 0) {
                 this->unk_834++;
             }
@@ -3179,6 +3187,21 @@ int Player_CanUpdateItems(Player* this) {
  * depending on some conditions. See details below.
  */
 s32 Player_UpdateUpperBody(Player* this, PlayState* play) {
+    if (this == GET_PLAYER(play)) {
+        s32 pcBowAimHeld = Ship_IsBowAimHeld() && (this->heldItemAction == PLAYER_IA_BOW);
+
+        if (pcBowAimHeld && (this->upperActionFunc != func_808351D4) &&
+            (this->upperActionFunc != func_808353D8)) {
+            // RMB owns a persistent bow-ready upper-body state. Native bow
+            // aiming normally relies on its first-person movement lock to
+            // keep this state alive; without that lock, ordinary locomotion
+            // repeatedly restores the standing upper-body pose.
+            Player_SetUpperActionFunc(this, func_808353D8);
+            LinkAnimation_PlayLoop(play, &this->upperSkelAnime, &gPlayerAnim_link_bow_bow_wait);
+            this->unk_834 = 10;
+        }
+    }
+
     if ((this->actor.parent != NULL) && Player_HoldsHookshot(this)) {
         Player_SetupAction(play, this, Player_Action_80850AEC, 1);
         this->stateFlags3 |= PLAYER_STATE3_FLYING_WITH_HOOKSHOT;
@@ -3214,9 +3237,15 @@ s32 Player_UpdateUpperBody(Player* this, PlayState* play) {
         Math_StepToF(&this->upperAnimInterpWeight, 0.0f, 0.25f);
         AnimationContext_SetInterp(play, this->skelAnime.limbCount, this->skelAnime.jointTable,
                                    this->upperSkelAnime.jointTable, 1.0f - this->upperAnimInterpWeight);
-    } else if ((Player_CheckForIdleAnim(this) == IDLE_ANIM_NONE) || (this->linearVelocity != 0.0f)) {
+    } else if (((this == GET_PLAYER(play)) &&
+                (Ship_IsBowAimHeld() || (this->stateFlags1 & PLAYER_STATE1_READY_TO_FIRE)) &&
+                (this->heldItemAction == PLAYER_IA_BOW)) ||
+               (Player_CheckForIdleAnim(this) == IDLE_ANIM_NONE) || (this->linearVelocity != 0.0f)) {
         // Only copy the upper body animation to the upper body limbs in the main skeleton.
         // Doing so allows the main skeleton to play its own animation for the lower body limbs.
+        // PC bow aim also uses this path while stationary; CopyAll alternates
+        // the ordinary standing pose with the bow pose as animation commands
+        // are resolved, which is the visible idle-only shaking.
         AnimationContext_SetCopyTrue(play, this->skelAnime.limbCount, this->skelAnime.jointTable,
                                      this->upperSkelAnime.jointTable, sUpperBodyLimbCopyMap);
     } else {
@@ -6303,6 +6332,14 @@ void func_8083DC54(Player* this, PlayState* play) {
     f32 temp1;
     Vec3f sp34;
 
+    if ((this == GET_PLAYER(play)) && Ship_IsBowAimHeld() && (this->heldItemAction == PLAYER_IA_BOW)) {
+        // Mouse aim owns focus pitch/yaw. The idle path below follows floor
+        // slope and eases focus toward zero, making a stationary drawn bow
+        // fight the camera every frame.
+        func_80836AB8(this, 1);
+        return;
+    }
+
     if (this->focusActor != NULL) {
         if (func_8002DD78(this) || func_808334B4(this)) {
             func_8083DB98(this, true);
@@ -6837,7 +6874,7 @@ s32 func_8083FD78(Player* this, f32* arg1, s16* arg2, PlayState* play) {
 
         // Bow aiming retains its deliberate walk/shuffle speed. Shielding uses
         // the same full-speed lateral movement as an unblocked player.
-        if (Ship_IsBowAimHeld() && (this->heldItemAction == PLAYER_IA_BOW)) {
+        if ((this == GET_PLAYER(play)) && Ship_IsBowAimHeld() && (this->heldItemAction == PLAYER_IA_BOW)) {
             *arg1 = CLAMP_MAX(*arg1, 3.5f);
         }
 
@@ -7103,8 +7140,22 @@ void Player_Action_808407CC(Player* this, PlayState* play) {
     s32 temp1;
     s16 temp2;
     s32 temp3;
+    s32 pcBowStationary = (this == GET_PLAYER(play)) && Ship_IsBowAimHeld() &&
+                            (this->heldItemAction == PLAYER_IA_BOW) &&
+                            (sControlStickMagnitude < 20.0f) && (this->linearVelocity == 0.0f);
 
-    if (LinkAnimation_Update(play, &this->skelAnime)) {
+    if (pcBowStationary) {
+        // Parallel idle is a one-shot transition that restarts whenever it
+        // completes. That is normally subtle, but its feet/root motion shakes
+        // a separately drawn bow. Hold a neutral lower-body frame until actual
+        // movement input arrives; the upper skeleton continues bow aiming.
+        if ((this->skelAnime.animation != &gPlayerAnim_link_normal_wait) ||
+            (this->skelAnime.playSpeed != 0.0f) || (this->skelAnime.curFrame != 0.0f)) {
+            LinkAnimation_Change(play, &this->skelAnime, &gPlayerAnim_link_normal_wait, 0.0f, 0.0f, 0.0f,
+                                 ANIMMODE_ONCE, 0.0f);
+        }
+        LinkAnimation_Update(play, &this->skelAnime);
+    } else if (LinkAnimation_Update(play, &this->skelAnime)) {
         Player_FinishAnimMovement(this);
         Player_AnimPlayOnce(play, this, Player_GetIdleAnim(this));
     }
@@ -10921,15 +10972,76 @@ static Gfx* sMaskDlists[PLAYER_MASK_MAX - 1] = {
 
 static Vec3s D_80854864 = { 0, 0, 0 };
 
+s32 Player_BuildPCBowJointTable(Player* this, Vec3s jointTable[PLAYER_LIMB_BUF_COUNT], s32 freezeLowerBody) {
+    static Vec3s sLocalLowerBody[PLAYER_LIMB_UPPER];
+    static Vec3s sNetworkStationaryLowerBody[PLAYER_LIMB_UPPER];
+    static s32 sLocalLowerBodyValid = false;
+    static s32 sNetworkStationaryLowerBodyValid = false;
+    Vec3s* lowerBody;
+    s32* lowerBodyValid;
+    s32 bowPoseActive;
+    s32 limb;
+
+    // Local lower-body freezing belongs only to RMB first-person aiming.
+    // Network snapshots also need the upper bow pose during ordinary LMB draw.
+    bowPoseActive = freezeLowerBody ? Ship_IsBowAimHeld()
+                                    : (Ship_IsBowAimHeld() ||
+                                       (this->stateFlags1 & PLAYER_STATE1_READY_TO_FIRE));
+    if (!bowPoseActive || (this->heldItemAction != PLAYER_IA_BOW)) {
+        sLocalLowerBodyValid = false;
+        sNetworkStationaryLowerBodyValid = false;
+        return false;
+    }
+
+    for (limb = 0; limb < PLAYER_LIMB_BUF_COUNT; ++limb) {
+        jointTable[limb] = this->skelAnime.jointTable[limb];
+    }
+
+    lowerBody = freezeLowerBody ? sLocalLowerBody : sNetworkStationaryLowerBody;
+    lowerBodyValid = freezeLowerBody ? &sLocalLowerBodyValid : &sNetworkStationaryLowerBodyValid;
+
+    if (!freezeLowerBody && (sControlStickMagnitude >= 20.0f)) {
+        *lowerBodyValid = false;
+    } else if (!*lowerBodyValid) {
+        // Capture one coherent root/leg pose when input reaches neutral. Keep
+        // it for the entire stationary aim instead of sampling whichever idle
+        // or parallel-transition frame happened to run this update.
+        for (limb = 0; limb < PLAYER_LIMB_UPPER; ++limb) {
+            lowerBody[limb] = this->skelAnime.jointTable[limb];
+        }
+        *lowerBodyValid = true;
+    }
+
+    if (*lowerBodyValid) {
+        for (limb = 0; limb < PLAYER_LIMB_UPPER; ++limb) {
+            jointTable[limb] = lowerBody[limb];
+        }
+    }
+    for (limb = PLAYER_LIMB_UPPER; limb <= PLAYER_LIMB_TORSO; ++limb) {
+        jointTable[limb] = this->upperSkelAnime.jointTable[limb];
+    }
+    return true;
+}
+
 void Player_DrawGameplay(PlayState* play, Player* this, s32 lod, Gfx* cullDList, OverrideLimbDrawOpa overrideLimbDraw) {
     static s32 D_8085486C = 255;
+    Vec3s pcBowJointTable[PLAYER_LIMB_BUF_COUNT];
+    Vec3s* drawJointTable = this->skelAnime.jointTable;
+
+    if ((this == GET_PLAYER(play)) && Player_BuildPCBowJointTable(this, pcBowJointTable, true)) {
+        // AnimationContext applies the upper-body copy later in the frame.
+        // Drawing the main table directly can therefore alternate between an
+        // idle pose and the bow pose. Compose the table from the two current
+        // skeletons explicitly so every rendered aim frame is coherent.
+        drawJointTable = pcBowJointTable;
+    }
 
     OPEN_DISPS(play->state.gfxCtx);
 
     gSPSegment(POLY_OPA_DISP++, 0x0C, cullDList);
     gSPSegment(POLY_XLU_DISP++, 0x0C, cullDList);
 
-    Player_DrawImpl(play, this->skelAnime.skeleton, this->skelAnime.jointTable, this->skelAnime.dListCount, lod,
+    Player_DrawImpl(play, this->skelAnime.skeleton, drawJointTable, this->skelAnime.dListCount, lod,
                     this->currentTunic, this->currentBoots, this->actor.shape.face, overrideLimbDraw,
                     Player_PostLimbDrawGameplay, this);
 
@@ -11014,7 +11126,11 @@ void Player_Draw(Actor* thisx, PlayState* play2) {
         func_8002EBCC(&this->actor, play, 0);
         func_8002ED80(&this->actor, play, 0);
 
-        if (this->unk_6AD != 0) {
+        if ((this == GET_PLAYER(play)) && Ship_IsBowAimHeld() && (this->heldItemAction == PLAYER_IA_BOW)) {
+            // Render native first-person arms/bow without enabling the native
+            // first-person gameplay state, which would lock locomotion.
+            overrideLimbDraw = Player_OverrideLimbDrawGameplayFirstPerson;
+        } else if (this->unk_6AD != 0) {
             Vec3f projectedHeadPos;
 
             SkinMatrix_Vec3fMtxFMultXYZ(&play->viewProjectionMtxF, &this->actor.focus.pos, &projectedHeadPos);

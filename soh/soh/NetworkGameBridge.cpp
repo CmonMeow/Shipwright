@@ -172,6 +172,9 @@ extern "C" void Fishing_UpdateNetworkLine(PlayState* play, Actor* collisionActor
                                             u8 lureType, f32 lineGravity);
 extern "C" void Fishing_UpdateNetworkSinkingLure(Vec3f* lurePos, Vec3f positions[20], s16 playerYaw,
                                                    u8 castState, u8 underwater);
+extern "C" s32 Ship_IsBowAimHeld(void);
+extern "C" s32 Player_BuildPCBowJointTable(Player* player, Vec3s jointTable[PLAYER_LIMB_BUF_COUNT],
+                                             s32 freezeLowerBody);
 
 uint64_t NowMilliseconds() {
     return static_cast<uint64_t>(std::chrono::duration_cast<std::chrono::milliseconds>(
@@ -860,7 +863,8 @@ void SendLocalPlayerState(PlayState* play) {
     if ((player->actor.bgCheckFlags & 0x20) != 0) {
         packet.stateFlags |= NETWORK_PLAYER_SWIMMING;
     }
-    if ((player->stateFlags1 & PLAYER_STATE1_READY_TO_FIRE) != 0) {
+    if (((player->stateFlags1 & PLAYER_STATE1_READY_TO_FIRE) != 0) ||
+        ((player->heldItemAction == PLAYER_IA_BOW) && (player->heldActor != nullptr))) {
         packet.stateFlags |= NETWORK_PLAYER_READY_TO_FIRE;
     }
     if (gNetworkGame.suppressDeathDuringRespawn && play->transitionTrigger == TRANS_TRIGGER_OFF &&
@@ -938,10 +942,16 @@ void SendLocalPlayerState(PlayState* play) {
             packet.fishingFishLimbRot[limbRot] = fishLimbRot[limbRot];
         }
     }
+    Vec3s pcBowJointTable[PLAYER_LIMB_BUF_COUNT]{};
+    const bool pcBowAim = Player_BuildPCBowJointTable(player, pcBowJointTable, false) != 0;
     for (size_t limb = 0; limb < NETWORK_PLAYER_LIMB_COUNT; ++limb) {
-        packet.jointTable[limb][0] = player->skelAnime.jointTable[limb].x;
-        packet.jointTable[limb][1] = player->skelAnime.jointTable[limb].y;
-        packet.jointTable[limb][2] = player->skelAnime.jointTable[limb].z;
+        // The gameplay animation context merges upperSkelAnime into the main
+        // table asynchronously. Snapshot the bow upper limbs from their source
+        // so remote clients never receive alternating idle/aimed frames.
+        const Vec3s& joint = pcBowAim ? pcBowJointTable[limb] : player->skelAnime.jointTable[limb];
+        packet.jointTable[limb][0] = joint.x;
+        packet.jointTable[limb][1] = joint.y;
+        packet.jointTable[limb][2] = joint.z;
     }
     gNetworkGame.runtime->SendPlayerState(packet);
     SendLocalProjectiles(play, player);
