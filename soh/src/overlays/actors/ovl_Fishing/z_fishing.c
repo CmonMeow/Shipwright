@@ -7,7 +7,6 @@
 #include "z_fishing.h"
 #include "soh/NetworkGameBridge.h"
 
-#include "overlays/actors/ovl_En_Kanban/z_en_kanban.h"
 #include "objects/object_fish/object_fish.h"
 #include "message_data_fmt.h"
 #include "vt.h"
@@ -384,29 +383,12 @@ static void* sPreviousSpecialEffects;
 static void Fishing_StopCinematic(PlayState* play);
 
 static void Fishing_StartCatchNotification(PlayState* play) {
-    Font* font;
-    s32 i;
+    char notification[96];
+    const char* fishName = sFishingCaughtTextId == 0x4099 ? "loach" : "fish";
 
-    Message_StartTextbox(play, sFishingCaughtTextId, NULL);
-    font = &play->msgCtx.font;
-
-    // The original catch messages append Keep/Release choices. End the
-    // message at that control code so only the catch and weight are shown.
-    if (gSaveContext.language == LANGUAGE_JPN) {
-        for (i = 0; i < ARRAY_COUNT(font->msgBufWide); i++) {
-            if (font->msgBufWide[i] == MESSAGE_TWO_CHOICE_JPN) {
-                font->msgBufWide[i] = MESSAGE_END_JPN;
-                break;
-            }
-        }
-    } else {
-        for (i = 0; i < ARRAY_COUNT(font->msgBuf); i++) {
-            if ((u8)font->msgBuf[i] == MESSAGE_TWO_CHOICE) {
-                font->msgBuf[i] = MESSAGE_END;
-                break;
-            }
-        }
-    }
+    snprintf(notification, sizeof(notification), "Caught a %s: %d lb  -  A to release", fishName,
+             gSaveContext.minigameScore);
+    NetworkGame_ShowNotification(notification);
 }
 static s16 sLureTimer; // AND'd for various effects/checks
 static s16 D_80B7E0B0;
@@ -546,6 +528,7 @@ static f32 sProjectedW;
 static Vec3f sCameraEye;
 static Vec3f sCameraAt;
 static s16 sSubCamId;
+
 static f32 sCatchCamX;
 static f32 sSubCamVelFactor;
 static f32 D_80B7FED0;
@@ -1236,8 +1219,6 @@ void Fishing_Init(Actor* thisx, PlayState* play2) {
         }
 
         Fishing_InitPondProps(this, play);
-        Actor_SpawnAsChild(&play->actorCtx, thisx, play, ACTOR_EN_KANBAN, 53.0f, -17.0f, 982.0f, 0, 0, 0,
-                           ENKANBAN_FISHING);
         Actor_Spawn(&play->actorCtx, play, ACTOR_FISHING, 0.0f, 0.0f, 0.0f, 0, 0, 0, 200);
 
         // Loach(es) will spawn every fourth game, or if "Loaches Always Appear" is enabled
@@ -2829,10 +2810,6 @@ void Fishing_UpdateLure(Fishing* this, PlayState* play) {
                     if (wiggle > 1.0f) {
                         wiggle = 1.0f;
                     }
-                    if (CHECK_BTN_ALL(input->press.button, BTN_B)) {
-                        wiggle = 0.5f;
-                    }
-
                     if (sIsOwnersHatHooked) {
                         if (wiggle > 0.3f) {
                             wiggle = 0.3f;
@@ -2891,10 +2868,6 @@ void Fishing_UpdateLure(Fishing* this, PlayState* play) {
                     spDC = 0x500;
                     sLureWiggleRotYTarget = sReelLineRot[LINE_SEG_COUNT - 2].y + M_PI;
                     sLureRot.x = 0.0f;
-                    if (CHECK_BTN_ALL(input->press.button, BTN_B)) {
-                        sRodLineSpooled += 6.0f;
-                        Sfx_PlaySfxAtPos(&sSoundPos, NA_SE_PL_WALK_SAND);
-                    }
                 } else {
                     if (sRodLineSpooled > 150.0f) {
                         sLureRot.x = sReelLineRot[LINE_SEG_COUNT - 2].x + M_PI;
@@ -4306,7 +4279,6 @@ void Fishing_UpdateFish(Actor* thisx, PlayState* play2) {
                 player->unk_860 = 3;
                 func_800A9F6C(0.0f, 1, 3, 1);
                 sFishesCaught++;
-                func_80064520(play, &play->csCtx);
                 sFishingPlayerCinematicState = 100;
                 sCatchCamX = 45.0f;
                 sRodCastState = 5;
@@ -5440,103 +5412,24 @@ void Fishing_HandleOwnerDialog(Fishing* this, PlayState* play) {
             }
             break;
 
-        case 11: // collect prize, update record.
+        case 11:
             if (((Message_GetState(&play->msgCtx) == TEXT_STATE_EVENT) ||
                  (Message_GetState(&play->msgCtx) == TEXT_STATE_NONE)) &&
                 Message_ShouldAdvance(play)) {
-                s32 getItemId;
-                GetItemEntry getItemEntry = (GetItemEntry)GET_ITEM_NONE;
-
                 Message_CloseTextbox(play);
-                // Declare and fill a struct for use in hooks
-                struct VBFishingData fishData;
-                fishData.actor = this;
-                fishData.sFishOnHandIsLoach = &sFishOnHandIsLoach;
-                fishData.sSinkingLureLocation = &sSinkingLureLocation;
-                fishData.fishWeight = sFishOnHandLength;
-                fishData.sFishOnHandLength = &sFishOnHandLength;
-                fishData.sFishingRecordLength = sFishingRecordLength;
 
                 if (sFishOnHandIsLoach == 0) {
-                    // If we set the record, update the prize state.
-                    // if not, reset sFishOnHandLength here as we carry it in the struct anyway
-                    
-                        sFishingRecordLength = sFishOnHandLength;
-                        sFishOnHandLength = 0.0f; // if skipped here, is set at the end of the function. needs to be
-                                                  // kept for later checks
-
-                        if (sLinkAge == LINK_AGE_CHILD) {
-                            f32 temp;
-
-                            HIGH_SCORE(HS_FISHING) &= 0xFFFFFF00;
-                            HIGH_SCORE(HS_FISHING) |= (s32)sFishingRecordLength & HS_FISH_LENGTH_CHILD;
-
-                            temp = (HIGH_SCORE(HS_FISHING) & HS_FISH_LENGTH_ADULT) >> 0x18;
-                            if (temp < sFishingRecordLength) {
-                                HIGH_SCORE(HS_FISHING) &= 0xFFFFFF;
-                                HIGH_SCORE(HS_FISHING) |= ((s32)sFishingRecordLength & HS_FISH_LENGTH_CHILD) << 0x18;
-
-                                if (sLureCaughtWith == FS_LURE_SINKING) {
-                                    HIGH_SCORE(HS_FISHING) |= HS_FISH_CHEAT_ADULT;
-                                }
-                            }
-
-                            if (sLureCaughtWith == FS_LURE_SINKING) {
-                                HIGH_SCORE(HS_FISHING) |= HS_FISH_CHEAT_CHILD;
-                                this->stateAndTimer = 0;
-                                break;
-                            }
-                        } else {
-                            HIGH_SCORE(HS_FISHING) &= 0xFFFFFF;
-                            HIGH_SCORE(HS_FISHING) |= ((s32)sFishingRecordLength & HS_FISH_LENGTH_CHILD) << 0x18;
-
-                            if (sLureCaughtWith == FS_LURE_SINKING) {
-                                HIGH_SCORE(HS_FISHING) |= HS_FISH_CHEAT_ADULT;
-                                this->stateAndTimer = 0;
-                                break;
-                            }
-                        }
-                    
-
-                    if (sFishingRecordLength >= 60.0f) { // 13 lbs
-                        getItemId = GI_RUPEE_PURPLE;
-                    } else if (sFishingRecordLength >= 50.0f) { // 9 lbs
-                        getItemId = GI_RUPEE_RED;
-                    } else if (sFishingRecordLength >= 40.0f) { // 6 lbs
-                        getItemId = GI_RUPEE_BLUE;
-                    } else {
-                        getItemId = GI_RUPEE_GREEN;
-                    }
-
-                    if (sLinkAge == LINK_AGE_CHILD) { // 9 lbs
-                        // Award the child's main prize once.
-                        if (((sFishingRecordLength >= 50.0f) &&
-                                                      !(HIGH_SCORE(HS_FISHING) & HS_FISH_PRIZE_CHILD))) {
-                            HIGH_SCORE(HS_FISHING) |= HS_FISH_PRIZE_CHILD;
-                            getItemId = GI_HEART_PIECE;
-                            sSinkingLureLocation = (u8)Rand_ZeroFloat(3.999f) + 1;
-                        }
-                    } else { // 13 lbs
-                        // Award the adult's main prize once.
-                        if (((sFishingRecordLength >= 60.0f) &&
-                                                      !(HIGH_SCORE(HS_FISHING) & HS_FISH_PRIZE_ADULT))) {
-                            HIGH_SCORE(HS_FISHING) |= HS_FISH_PRIZE_ADULT;
-                            getItemId = GI_RUPEE_PURPLE;
-                            sSinkingLureLocation = (u8)Rand_ZeroFloat(3.999f) + 1;
-                        }
-                    }
-                } else {
-                    getItemId = GI_RUPEE_PURPLE;
-                    sFishOnHandLength = 0.0f; // doesn't record loach
+                    sFishingRecordLength = sFishOnHandLength;
+                    HIGH_SCORE(HS_FISHING) &= 0x00FFFFFF;
+                    HIGH_SCORE(HS_FISHING) |= ((s32)sFishingRecordLength & HS_FISH_LENGTH_CHILD) << 24;
                 }
 
+                sFishOnHandLength = 0.0f;
                 this->actor.parent = NULL;
-
-                Actor_OfferGetItem(&this->actor, play, getItemId, 2000.0f, 1000.0f);
-                this->stateAndTimer = 23;
+                this->stateAndTimer = 0;
+                sIsRodVisible = true;
             }
             break;
-
         case 20:
             if ((Message_GetState(&play->msgCtx) == TEXT_STATE_EVENT) && Message_ShouldAdvance(play)) {
                 Message_CloseTextbox(play);
@@ -5578,26 +5471,6 @@ void Fishing_HandleOwnerDialog(Fishing* this, PlayState* play) {
             }
             break;
 
-        case 23:
-            sIsRodVisible = false;
-            if (Actor_HasParent(&this->actor, play)) {
-                this->stateAndTimer = 24;
-            } else {
-                Actor_OfferGetItem(&this->actor, play, GI_RUPEE_PURPLE, 2000.0f, 1000.0f);
-            }
-            break;
-
-        case 24:
-            sIsRodVisible = false;
-            if ((Message_GetState(&play->msgCtx) == TEXT_STATE_DONE) && Message_ShouldAdvance(play)) {
-                if (sFishOnHandIsLoach == 0) {
-                    this->stateAndTimer = 0;
-                } else {
-                    Message_StartTextbox(play, 0x409C, NULL);
-                    this->stateAndTimer = 20;
-                }
-            }
-            break;
     }
 }
 
@@ -5886,7 +5759,7 @@ void Fishing_UpdateOwner(Actor* thisx, PlayState* play2) {
             mainCam->eyeNext = sCameraEye;
             mainCam->at = sCameraAt;
             func_800C08AC(play, sSubCamId, 0);
-            func_80064534(play, &play->csCtx);
+            PlayerAction_Reset(play);
             sFishingPlayerCinematicState = 0;
             sSubCamId = 0;
             Environment_EnableUnderwaterLights(play, 0);
@@ -5899,7 +5772,7 @@ void Fishing_UpdateOwner(Actor* thisx, PlayState* play2) {
         case 10: { // owner tells you to return the rod.
             Camera* mainCam;
 
-            func_80064520(play, &play->csCtx);
+            PlayerAction_Reset(play);
             sSubCamId = Play_CreateSubCamera(play);
             Play_ChangeCameraStatus(play, MAIN_CAM, CAM_STAT_WAIT);
             Play_ChangeCameraStatus(play, sSubCamId, CAM_STAT_ACTIVE);
@@ -5928,7 +5801,7 @@ void Fishing_UpdateOwner(Actor* thisx, PlayState* play2) {
                 mainCam->eyeNext = sCameraEye;
                 mainCam->at = sCameraAt;
                 func_800C08AC(play, sSubCamId, 0);
-                func_80064534(play, &play->csCtx);
+                PlayerAction_Reset(play);
                 Player_SetCsActionWithHaltedActors(play, &this->actor, 7);
                 sFishingPlayerCinematicState = 0;
                 sSubCamId = 0;
@@ -5941,7 +5814,7 @@ void Fishing_UpdateOwner(Actor* thisx, PlayState* play2) {
         case 20: { // found the sinking lure
             Camera* mainCam;
 
-            func_80064520(play, &play->csCtx);
+            PlayerAction_Reset(play);
             sSubCamId = Play_CreateSubCamera(play);
             Play_ChangeCameraStatus(play, MAIN_CAM, CAM_STAT_WAIT);
             Play_ChangeCameraStatus(play, sSubCamId, CAM_STAT_ACTIVE);
@@ -6032,7 +5905,7 @@ void Fishing_UpdateOwner(Actor* thisx, PlayState* play2) {
                         mainCam->eyeNext = sCameraEye;
                         mainCam->at = sCameraAt;
                         func_800C08AC(play, sSubCamId, 0);
-                        func_80064534(play, &play->csCtx);
+                        PlayerAction_Reset(play);
                         Player_SetCsActionWithHaltedActors(play, &this->actor, 7);
                         sFishingPlayerCinematicState = 0;
                         sSubCamId = 0;

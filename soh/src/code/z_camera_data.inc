@@ -122,7 +122,10 @@ CameraModeValue sSetNormal0ModeFirstPersonData[] = {
 };
 
 CameraModeValue sSetNormal0ModeBowArrowData[] = {
-    CAM_FUNCDATA_SUBJ3(-7, 14, 50, 10, 0, -30, -5, 45, 0x2000),
+    // Keep the bow visible by placing the rig halfway between the original
+    // head position and the previous full forward offset. Subj3 offsets are
+    // tenths of a world unit; negative local Z points forward here.
+    CAM_FUNCDATA_SUBJ3(-7, 14, 50, 10, 0, -30, -125, 45, 0x2000),
 };
 
 CameraModeValue sSetNormal0ModeBowArrowZData[] = {
@@ -362,32 +365,6 @@ CameraModeValue sSetNormal3ModeTalkData[] = {
  */
 CameraModeValue sSetNormal3ModeBoomerangData[] = {
     CAM_FUNCDATA_JUMP3(-40, 150, 250, -5, 18, 5, 60, 60, 40, 0x0005),
-};
-
-/**
- *=====================================================================
- *                   Custom Data: HORSE Setting
- *=====================================================================
- */
-
-CameraModeValue sSetHorseModeNormalData[] = {
-    CAM_FUNCDATA_NORM3(-50, 220, 250, 10, 16, 20, 60, 100, 0x0600),
-};
-
-CameraModeValue sSetHorseModeTargetData[] = {
-    CAM_FUNCDATA_NORM3(-40, 180, 220, -2, 12, 100, 45, 100, 0x2600),
-};
-
-CameraModeValue sSetHorseModeBowArrowData[] = {
-    CAM_FUNCDATA_SUBJ3(-7, 14, 100, 10, 0, -30, -5, 40, 0x2600),
-};
-
-CameraModeValue sSetHorseModeFollowTargetData[] = {
-    CAM_FUNCDATA_KEEP1(-60, 180, 220, 25, 45, -5, 15, 15, 45, 50, 0x2601, -60, 20),
-};
-
-CameraModeValue sSetHorseModeTalkData[] = {
-    CAM_FUNCDATA_KEEP3(-60, 140, 200, 40, 10, 0, 5, 70, 45, 50, 10, 0x3500),
 };
 
 /**
@@ -1262,18 +1239,6 @@ CameraMode sCamSetNormal3Modes[] = {
     CAM_SETTING_MODE_ENTRY(CAM_FUNC_PARA1, sSetNormal0ModePushPullData),
 };
 
-CameraMode sCamSetHorseModes[] = {
-    CAM_SETTING_MODE_ENTRY(CAM_FUNC_NORM3, sSetHorseModeNormalData),
-    CAM_SETTING_MODE_ENTRY(CAM_FUNC_NORM3, sSetHorseModeTargetData),
-    CAM_SETTING_MODE_ENTRY(CAM_FUNC_KEEP1, sSetHorseModeFollowTargetData),
-    CAM_SETTING_MODE_ENTRY(CAM_FUNC_KEEP3, sSetHorseModeTalkData),
-    { CAM_FUNC_NONE, 0, NULL },
-    { CAM_FUNC_NONE, 0, NULL },
-    { CAM_FUNC_NONE, 0, NULL },
-    CAM_SETTING_MODE_ENTRY(CAM_FUNC_SUBJ3, sSetHorseModeBowArrowData),
-    CAM_SETTING_MODE_ENTRY(CAM_FUNC_SUBJ3, sSetNormal0ModeBowArrowZData),
-};
-
 CameraMode sCamSetBossGohmaModes[] = {
     CAM_SETTING_MODE_ENTRY(CAM_FUNC_NORM1, sSetBossGohmaModeNormalData),
     CAM_SETTING_MODE_ENTRY(CAM_FUNC_PARA1, sSetNormal0ModeTargetData),
@@ -2013,7 +1978,7 @@ CameraSetting sCameraSettings[] = {
     { { 0x051FFFFF }, sCamSetDungeon0Modes },
     { { 0x051FFFFF }, sCamSetDungeon1Modes },
     { { 0x050FF7FF }, sCamSetNormal3Modes },
-    { { 0x8500018F }, sCamSetHorseModes },
+    { { 0x00000000 }, NULL },
     { { 0x051FFFFF }, sCamSetBossGohmaModes },
     { { 0x051FFFFF }, sCamSetBossDodongoModes },
     { { 0x051FFFFF }, sCamSetBossBarinadeModes },
@@ -2078,7 +2043,6 @@ CameraSetting sCameraSettings[] = {
 s32 Camera_Normal0(Camera* camera);
 s32 Camera_Normal1(Camera* camera);
 s32 Camera_Normal2(Camera* camera);
-s32 Camera_Normal3(Camera* camera);
 s32 Camera_Normal4(Camera* camera);
 s32 Camera_Parallel0(Camera* camera);
 s32 Camera_Parallel1(Camera* camera);
@@ -2151,7 +2115,7 @@ s32 (*sCameraFunctions[])(Camera*) = {
     Camera_Normal0,
     Camera_Normal1,
     Camera_Normal2,
-    Camera_Normal3,
+    NULL,
     Camera_Normal4,
     Camera_Parallel0,
     Camera_Parallel1,
@@ -2401,5 +2365,4 @@ s16 D_8011DAFC[] = {
 };
 
 PlayState* D_8015BD7C;
-DbCamera D_8015BD80;
 CollisionPoly* playerFloorPoly;

@@ -359,14 +359,6 @@ void Sched_HandleRSPDone(SchedContext* sc) {
 
     assert(sc->curRSPTask != NULL);
 
-    if (sc->curRSPTask->list.t.type == M_AUDTASK) {
-        gRSPAudioTotalTime += osGetTime() - sRSPAudioStartTime;
-    } else if (sc->curRSPTask->list.t.type == M_GFXTASK) {
-        gRSPGFXTotalTime += osGetTime() - sRSPGFXStartTime;
-    } else {
-        gRSPOtherTotalTime += osGetTime() - sRSPOtherStartTime;
-    }
-
     curRSPTask = sc->curRSPTask;
     sc->curRSPTask = NULL;
     if (sLogScheduler) {
@@ -405,7 +397,6 @@ void Sched_HandleRDPDone(SchedContext* sc) {
     OSScTask* nextRDP = NULL;
     s32 state;
 
-    gRDPTotalTime = osGetTime() - sRDPStartTime;
     assert(sc->curRDPTask != NULL);
     assert(sc->curRDPTask->list.t.type == M_GFXTASK);
     curTask = sc->curRDPTask;

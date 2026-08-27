@@ -218,7 +218,7 @@ const char* DmaMgr_GetFileName(uintptr_t vrom) {
         return "(unknown)";
     }
 
-    if (DmaMgr_CompareName(ret, "kanji") == 0 || DmaMgr_CompareName(ret, "link_animetion") == 0) {
+    if (DmaMgr_CompareName(ret, "link_animetion") == 0) {
         return NULL;
     }
 

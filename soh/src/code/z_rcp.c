@@ -1597,7 +1597,7 @@ void Gfx_SetupFrame(GraphicsContext* gfxCtx, u8 r, u8 g, u8 b) {
     gDPSetDepthImage(POLY_XLU_DISP++, gZBuffer);
     gDPSetDepthImage(OVERLAY_DISP++, gZBuffer);
 
-    if ((R_PAUSE_MENU_MODE < 2) && (gTrnsnUnkState < 2)) {
+    {
         s32 letterboxSize = ShrinkWindow_GetCurrentVal(); // Upstream TODO: Letterbox
 
         if (HREG(80) == 16) {
@@ -1673,17 +1673,6 @@ void Gfx_SetupFrame(GraphicsContext* gfxCtx, u8 r, u8 g, u8 b) {
             gDPPipeSync(OVERLAY_DISP++);
         }
     }
-
-    CLOSE_DISPS(gfxCtx);
-}
-
-void func_80095974(GraphicsContext* gfxCtx) {
-    OPEN_DISPS(gfxCtx);
-
-    gSPDisplayList(POLY_OPA_DISP++, sFillSetupDL);
-    gDPSetScissor(POLY_OPA_DISP++, G_SC_NON_INTERLACE, 0, 0, gScreenWidth, gScreenHeight);
-    gDPSetDepthImage(POLY_OPA_DISP++, gZBuffer);
-    gDPSetColorImage(POLY_OPA_DISP++, G_IM_FMT_RGBA, G_IM_SIZ_16b, gScreenWidth, gfxCtx->curFrameBuffer);
 
     CLOSE_DISPS(gfxCtx);
 }

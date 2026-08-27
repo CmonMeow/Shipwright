@@ -85,7 +85,6 @@ typedef s32 (*SkinOverrideLimbDraw)(struct Actor*, struct PlayState*, s32, Skin*
 #define SKIN_DRAW_FLAG_CUSTOM_TRANSFORMS (1 << 0)
 #define SKIN_DRAW_FLAG_CUSTOM_MATRIX     (1 << 1)
 
-#define SKIN_TRANSFORM_IS_FHG 0x23
 
 #ifdef __cplusplus
 };

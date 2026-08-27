@@ -68,11 +68,9 @@ extern "C"
 	extern DmaEntry gDmaDataTable[0x60C];
 	extern u64 D_801120C0[];
 	extern u8 D_80113070[];
-	extern u64 gJpegUCode[];
 	extern EffectSsOverlay gEffectSsOverlayTable[EFFECT_SS_TYPE_MAX];
 	extern Gfx D_80116280[];
-	extern s32 gDbgCamEnabled;
-	extern GameStateOverlay gGameStateOverlayTable[6];
+	extern GameStateOverlay gGameStateOverlayTable[2];
 	extern u8 gWeatherMode;
 	extern u8 D_8011FB34;
 	extern u8 D_8011FB38;
@@ -81,7 +79,6 @@ extern "C"
 	extern struct_8011FC1C D_8011FC1C[][9];
 	extern SkyboxFile gSkyboxFiles[];
 	extern s32 gZeldaArenaLogSeverity;
-	extern MapData gMapDataTable;
 	extern s16 gSpoilingItems[3];
 	extern s16 gSpoilingItemReverts[3];
 	extern FlexSkeletonHeader* gPlayerSkelHeaders;
@@ -103,24 +100,13 @@ extern "C"
 	extern u16 gUpgradeCapacities[8][4];
 	extern u32 gGsFlagsMasks[4];
 	extern u32 gGsFlagsShifts[4];
-	extern void* gItemIcons[158];
-	extern u8 gItemAgeReqs[];
-	extern u8 gSlotAgeReqs[];
 	extern u8 gItemSlots[56];
-	extern void (*gSceneCmdHandlers[SCENE_CMD_ID_MAX])(PlayState*, SceneCmd*);
-	extern s16 gLinkObjectIds[2];
 	extern u32 gObjectTableSize;
 	extern RomFile gObjectTable[OBJECT_ID_MAX];
 	extern EntranceInfo gEntranceTable[ENTR_MAX];
 	extern SceneTableEntry gSceneTable[SCENE_ID_MAX];
 	extern u16 gSramSlotOffsets[];
-	// 4 16-colors palettes
-	extern u64 gMojiFontTLUTs[4][4]; // original name: "moji_tlut"
-	extern u64 gMojiFontTex[]; // original name: "font_ff"
-	extern KaleidoMgrOverlay gKaleidoMgrOverlayTable[KALEIDO_OVL_MAX];
-	extern KaleidoMgrOverlay* gKaleidoMgrCurOvl;
 	extern u8 gBossMarkState;
-	extern void* gDebugCutsceneScript;
 	extern s32 gScreenWidth;
 	extern s32 gScreenHeight;
 	extern Mtx gMtxClear;
@@ -172,7 +158,6 @@ extern "C"
 	extern s32 gSystemArenaLogSeverity;
 	extern u8 __osPfsInodeCacheBank;
 	extern s32 __osPfsLastChannel;
-	extern f32 iceTrapScale;
 	extern f32 triforcePieceScale;
 	extern f32 mysteryItemScale;
 	
@@ -183,41 +168,20 @@ extern "C"
 	extern u8 D_80155F50[];
 	extern u8 D_80157580[];
 	extern u8 D_801579A0[];
-	extern u64 gJpegUCodeData[];
 
 	extern SaveContext gSaveContext;
 	extern GameInfo* gGameInfo;
-	extern u16 D_8015FCC0;
-	extern u16 D_8015FCC2;
-	extern u16 D_8015FCC4;
-	extern u8 D_8015FCC8;
 	extern u8 gCustomLensFlareOn;
 	extern Vec3f gCustomLensFlarePos;
 	extern s16 gLensFlareScale;
 	extern f32 gLensFlareColorIntensity;
 	extern s16 gLensFlareScreenFillAlpha;
 	extern LightningStrike gLightningStrike;
-	extern MapData* gMapData;
 	extern f32 gBossMarkScale;
-	extern PauseMapMarksData* gLoadedPauseMarkDataTable;
-	extern s32 gTrnsnUnkState;
-	extern Color_RGBA8_u32 gVisMonoColor;
 	extern PreNmiBuff* gAppNmiBufferPtr;
 	extern SchedContext gSchedContext;
 	extern PadMgr gPadMgr;
 	extern uintptr_t gSegments[NUM_SEGMENTS];
-	extern volatile OSTime D_8016A520;
-	extern volatile OSTime D_8016A528;
-	extern volatile OSTime D_8016A530;
-	extern volatile OSTime D_8016A538;
-	extern volatile OSTime D_8016A540;
-	extern volatile OSTime D_8016A548;
-	extern volatile OSTime D_8016A550;
-	extern volatile OSTime D_8016A558;
-	extern volatile OSTime gRSPAudioTotalTime;
-	extern volatile OSTime gRSPGFXTotalTime;
-	extern volatile OSTime gRSPOtherTotalTime;
-	extern volatile OSTime gRDPTotalTime;
 	extern FaultThreadStruct gFaultStruct;
 
 	extern ActiveSound gActiveSounds[7][MAX_CHANNELS_PER_BANK]; // total size = 0xA8

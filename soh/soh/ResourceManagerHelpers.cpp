@@ -13,7 +13,6 @@
 #include <fast/Fast3dWindow.h>
 #include <fast/resource/ResourceType.h>
 #include <fast/resource/type/DisplayList.h>
-#include <stb_image.h>
 
 extern "C" PlayState* gPlayState;
 
@@ -73,11 +72,6 @@ extern "C" uint32_t ResourceMgr_GetGameRegion(int index) {
         case OOT_PAL_GC_MQ_DBG:
             return GAME_REGION_PAL;
     }
-}
-
-extern "C" char* _message_0xFFFC_nes;
-extern "C" bool ResourceMgr_IsPalLoaded() {
-    return _message_0xFFFC_nes != NULL;
 }
 
 u32 IsSceneMasterQuest(s16 sceneNum) {
@@ -183,49 +177,6 @@ extern "C" char* ResourceMgr_GetResourceDataByNameHandlingMQ(const char* path) {
 extern "C" uint8_t ResourceMgr_TexIsRaw(const char* texPath) {
     auto res = std::static_pointer_cast<Fast::Texture>(ResourceMgr_GetResourceByNameHandlingMQ(texPath));
     return res->Flags & TEX_FLAG_LOAD_AS_RAW;
-}
-
-extern "C" uint8_t ResourceMgr_ResourceIsBackground(char* texPath) {
-    auto res = ResourceMgr_GetResourceByNameHandlingMQ(texPath);
-    return res->GetInitData()->Type == static_cast<uint32_t>(SOH::ResourceType::SOH_Background);
-}
-
-extern "C" char* ResourceMgr_LoadJPEG(char* data, size_t dataSize) {
-    static char* finalBuffer = 0;
-
-    if (finalBuffer == 0) {
-        finalBuffer = (char*)malloc(dataSize);
-    }
-
-    int w;
-    int h;
-    int comp;
-
-    unsigned char* pixels =
-        stbi_load_from_memory((const unsigned char*)data, 320 * 240 * 2, &w, &h, &comp, STBI_rgb_alpha);
-    // unsigned char* pixels = stbi_load_from_memory((const unsigned char*)data, 480 * 240 * 2, &w, &h, &comp,
-    // STBI_rgb_alpha);
-    int idx = 0;
-
-    for (int y = 0; y < h; y++) {
-        for (int x = 0; x < w; x++) {
-            uint16_t* bufferTest = (uint16_t*)finalBuffer;
-            int pixelIdx = ((y * w) + x) * 4;
-
-            uint8_t r = pixels[pixelIdx + 0] / 8;
-            uint8_t g = pixels[pixelIdx + 1] / 8;
-            uint8_t b = pixels[pixelIdx + 2] / 8;
-
-            uint8_t alphaBit = pixels[pixelIdx + 3] != 0;
-
-            uint16_t data = (r << 11) + (g << 6) + (b << 1) + alphaBit;
-
-            finalBuffer[idx++] = (data & 0xFF00) >> 8;
-            finalBuffer[idx++] = (data & 0x00FF);
-        }
-    }
-
-    return (char*)finalBuffer;
 }
 
 extern "C" char* ResourceMgr_LoadTexOrDListByName(const char* filePath) {

@@ -665,12 +665,6 @@ endif()
 add_dependencies(${PROJECT_NAME}
     libultraship
 )
-if(NOT CMAKE_SYSTEM_NAME MATCHES "NintendoSwitch|CafeOS")
-add_dependencies(${PROJECT_NAME}
-    ZAPDLib
-)
-endif()
-
 if (CMAKE_SYSTEM_NAME STREQUAL "Windows")
     find_package(Ogg CONFIG REQUIRED)
     link_libraries(Ogg::ogg)
@@ -684,7 +678,6 @@ if (CMAKE_SYSTEM_NAME STREQUAL "Windows")
     if("${CMAKE_VS_PLATFORM_NAME}" STREQUAL "x64")
         set(ADDITIONAL_LIBRARY_DEPENDENCIES
             "libultraship;"
-            "ZAPDLib;"
             "glu32;"
             "winmm;"
             "imm32;"
@@ -700,7 +693,6 @@ if (CMAKE_SYSTEM_NAME STREQUAL "Windows")
     elseif("${CMAKE_VS_PLATFORM_NAME}" STREQUAL "Win32")
         set(ADDITIONAL_LIBRARY_DEPENDENCIES
             "libultraship;"
-            "ZAPDLib;"
             "glu32;"
             "winmm;"
             "imm32;"
@@ -733,7 +725,6 @@ else()
     find_package(OpusFile REQUIRED)
      set(ADDITIONAL_LIBRARY_DEPENDENCIES
     "libultraship;"
-        "ZAPDLib;"
         "Ogg::ogg"
         "Vorbis::vorbis"
         "Vorbis::vorbisenc"

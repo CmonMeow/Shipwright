@@ -1,9 +1,7 @@
 #include "global.h"
 #include "vt.h"
 
-#include "overlays/actors/ovl_Arms_Hook/z_arms_hook.h"
 #include "overlays/actors/ovl_En_Arrow/z_en_arrow.h"
-#include "overlays/actors/ovl_En_Part/z_en_part.h"
 #include "objects/gameplay_keep/gameplay_keep.h"
 #include "objects/gameplay_dangeon_keep/gameplay_dangeon_keep.h"
 #include "objects/object_bdoor/object_bdoor.h"
@@ -81,7 +79,6 @@ static CollisionPoly* sCurCeilingPoly;
 static s32 sCurCeilingBgId;
 
 // Used for animating the ice trap on the "Get Item" model.
-f32 iceTrapScale;
 
 // For Link's voice pitch SFX modifier
 static f32 freqMultiplier = 1;
@@ -1305,19 +1302,15 @@ f32 Actor_HeightDiff(Actor* actorA, Actor* actorB) {
 }
 
 f32 Player_GetHeight(Player* player) {
-    f32 offset = (player->stateFlags1 & PLAYER_STATE1_ON_HORSE) ? 32.0f : 0.0f;
-
     if (PLAYER_IS_ADULT) {
-        return offset + 68.0f;
+        return 68.0f;
     } else {
-        return offset + 44.0f;
+        return 44.0f;
     }
 }
 
 f32 func_8002DCE4(Player* player) {
-    if (player->stateFlags1 & PLAYER_STATE1_ON_HORSE) {
-        return 8.0f;
-    } else if (player->stateFlags1 & PLAYER_STATE1_IN_WATER) {
+    if (player->stateFlags1 & PLAYER_STATE1_IN_WATER) {
         return (R_RUN_SPEED_LIMIT / 100.0f) * 0.6f;
     } else {
         return R_RUN_SPEED_LIMIT / 100.0f;
@@ -1350,35 +1343,8 @@ s32 func_8002DDF4(PlayState* play) {
     return player->stateFlags2 & PLAYER_STATE2_STATIONARY_LADDER;
 }
 
-void func_8002DE04(PlayState* play, Actor* actorA, Actor* actorB) {
-    ArmsHook* hookshot = (ArmsHook*)Actor_Find(&play->actorCtx, ACTOR_ARMS_HOOK, ACTORCAT_ITEMACTION);
-
-    hookshot->grabbed = actorB;
-    hookshot->grabbedDistDiff.x = 0.0f;
-    hookshot->grabbedDistDiff.y = 0.0f;
-    hookshot->grabbedDistDiff.z = 0.0f;
-    actorB->flags |= ACTOR_FLAG_HOOKSHOT_ATTACHED;
-    actorA->flags &= ~ACTOR_FLAG_HOOKSHOT_ATTACHED;
-}
-
-void func_8002DE74(PlayState* play, Player* player) {
-    if ((play->roomCtx.curRoom.behaviorType1 != ROOM_BEHAVIOR_TYPE1_4) && func_800C0CB8(play)) {
-        Camera_ChangeSetting(Play_GetCamera(play, MAIN_CAM), CAM_SET_HORSE);
-    }
-}
-
-void Actor_MountHorse(PlayState* play, Player* player, Actor* horse) {
-    player->rideActor = horse;
-    player->stateFlags1 |= PLAYER_STATE1_ON_HORSE;
-    horse->child = &player->actor;
-}
-
 s32 func_8002DEEC(Player* player) {
     return (player->stateFlags1 & (PLAYER_STATE1_DEAD | PLAYER_STATE1_IN_CUTSCENE)) || (player->csAction != 0);
-}
-
-void func_8002DF18(PlayState* play, Player* player) {
-    func_8006DC68(play, player);
 }
 
 s32 func_8002DF38(PlayState* play, Actor* actor, u8 csAction) {
@@ -1921,132 +1887,21 @@ u32 Actor_HasParent(Actor* actor, PlayState* play) {
     }
 }
 
-/**
- * Uses the given `GetItemEntry` to prepare the player to receive an item via the animation
- * where Link holds an item over his head. This function does not require an actor for giving
- * the player an item, instead setting the player as their own interactRangeActor and getItemDirection.
- *
- * \param play the Global Context
- * \param getItemEntry the GetItemEntry for the item you want the player to receive.
- * \return true if the player can receive an item, false if not.
- */
-s32 GiveItemEntryWithoutActor(PlayState* play, GetItemEntry getItemEntry) {
-    Player* player = GET_PLAYER(play);
-
-    if (!(player->stateFlags1 &
-          (PLAYER_STATE1_DEAD | PLAYER_STATE1_CHARGING_SPIN_ATTACK | PLAYER_STATE1_HANGING_OFF_LEDGE |
-           PLAYER_STATE1_CLIMBING_LEDGE | PLAYER_STATE1_JUMPING | PLAYER_STATE1_FREEFALL | PLAYER_STATE1_FIRST_PERSON |
-           PLAYER_STATE1_CLIMBING_LADDER)) &&
-        Player_GetExplosiveHeld(player) < 0) {
-        if (((player->heldActor != NULL) && ((getItemEntry.getItemId > GI_NONE) && (getItemEntry.getItemId < GI_MAX))) ||
-            (!(player->stateFlags1 & (PLAYER_STATE1_CARRYING_ACTOR | PLAYER_STATE1_IN_CUTSCENE)))) {
-            if ((getItemEntry.getItemId != GI_NONE)) {
-                player->getItemEntry = getItemEntry;
-                player->getItemId = getItemEntry.getItemId;
-                player->interactRangeActor = &player->actor;
-                player->getItemDirection = player->actor.shape.rot.y;
-                return true;
-            }
-        }
-    }
-
-    return false;
-}
-
-/**
- * Uses the given `GetItemEntry` to prepare the player to receive an item via the animation
- * where Link holds an item over his head. This uses data from the actor link is receiving
- * the item from to set the player's interactRangeActor and getItemDirection. It also checks
- * a range from which Link must be from said actor in order to receive the item.
- *
- * \param actor the actor link is receiving an item from. Will usually be a chest but can also
- * be an npc.
- * \param play the Global Context
- * \param getItemEntry the GetItemEntry for the item you want the player to receive.
- * \param xzRange the distance on the x and z axes that the player can be from the target
- * actor to receive the item.
- * \param yRange the distance on the y axis that the player can be from the target actor
- * to receive the item.
- * \return true if the player can receive an item, false if not.
- */
-s32 GiveItemEntryFromActor(Actor* actor, PlayState* play, GetItemEntry getItemEntry, f32 xzRange, f32 yRange) {
-    Player* player = GET_PLAYER(play);
-
-    if (!(player->stateFlags1 &
-          (PLAYER_STATE1_DEAD | PLAYER_STATE1_CHARGING_SPIN_ATTACK | PLAYER_STATE1_HANGING_OFF_LEDGE |
-           PLAYER_STATE1_CLIMBING_LEDGE | PLAYER_STATE1_JUMPING | PLAYER_STATE1_FREEFALL | PLAYER_STATE1_FIRST_PERSON |
-           PLAYER_STATE1_CLIMBING_LADDER)) &&
-        Player_GetExplosiveHeld(player) < 0) {
-        if ((((player->heldActor != NULL) || (actor == player->talkActor)) &&
-             ((getItemEntry.getItemId > GI_NONE) && (getItemEntry.getItemId < GI_MAX))) ||
-            (!(player->stateFlags1 & (PLAYER_STATE1_CARRYING_ACTOR | PLAYER_STATE1_IN_CUTSCENE)))) {
-            if ((actor->xzDistToPlayer < xzRange) && (fabsf(actor->yDistToPlayer) < yRange)) {
-                s16 yawDiff = actor->yawTowardsPlayer - player->actor.shape.rot.y;
-                s32 absYawDiff = ABS(yawDiff);
-
-                if ((getItemEntry.getItemId != GI_NONE) || (player->getItemDirection < absYawDiff)) {
-                    iceTrapScale = 0.0f;
-                    player->getItemEntry = getItemEntry;
-                    player->getItemId = getItemEntry.getItemId;
-                    player->interactRangeActor = actor;
-                    player->getItemDirection = absYawDiff;
-                    return true;
-                }
-            }
-        }
-    }
-
-    return false;
-}
-
-/**
- * Uses the given `GetItemEntry` to prepare the player to receive an item via the animation
- * where Link holds an item over his head. This is a wrapper function around `GiveItemEntryFromActor`
- * that supplies a fixed xzRange of 50.0f and a fixed yRange of 10.0f.
- *
- * \param actor the target actor that link is receiving an item from.
- * \param play the Global Context
- * \param getItemEntry the GetItemEntry for the item you want the player to receive.
- */
-s32 GiveItemEntryFromActorWithFixedRange(Actor* actor, PlayState* play, GetItemEntry getItemEntry) {
-    return GiveItemEntryFromActor(actor, play, getItemEntry, 50.0f, 10.0f);
-}
-
-s32 Actor_OfferGetItem(Actor* actor, PlayState* play, s32 getItemId, f32 xzRange, f32 yRange) {
-    Player* player = GET_PLAYER(play);
-
-    if (!(player->stateFlags1 &
-          (PLAYER_STATE1_DEAD | PLAYER_STATE1_CHARGING_SPIN_ATTACK | PLAYER_STATE1_HANGING_OFF_LEDGE |
-           PLAYER_STATE1_CLIMBING_LEDGE | PLAYER_STATE1_JUMPING | PLAYER_STATE1_FREEFALL | PLAYER_STATE1_FIRST_PERSON |
-           PLAYER_STATE1_CLIMBING_LADDER)) &&
-        Player_GetExplosiveHeld(player) < 0) {
-        if ((((player->heldActor != NULL) || (actor == player->talkActor)) &&
-             ((getItemId > GI_NONE) && (getItemId < GI_MAX))) ||
-            (!(player->stateFlags1 & (PLAYER_STATE1_CARRYING_ACTOR | PLAYER_STATE1_IN_CUTSCENE)))) {
-            if ((actor->xzDistToPlayer < xzRange) && (fabsf(actor->yDistToPlayer) < yRange)) {
-                s16 yawDiff = actor->yawTowardsPlayer - player->actor.shape.rot.y;
-                s32 absYawDiff = ABS(yawDiff);
-
-                if ((getItemId != GI_NONE) || (player->getItemDirection < absYawDiff)) {
-                    player->getItemId = getItemId;
-                    player->interactRangeActor = actor;
-                    player->getItemDirection = absYawDiff;
-                    return true;
-                }
-            }
-        }
-    }
-
-    return false;
-}
-
-void Actor_OfferGetItemNearby(Actor* actor, PlayState* play, s32 getItemId) {
-    Actor_OfferGetItem(actor, play, getItemId, 50.0f, 10.0f);
-}
-
 void Actor_OfferCarry(Actor* actor, PlayState* play) {
-    Actor_OfferGetItemNearby(actor, play, GI_NONE);
+    Player* player = GET_PLAYER(play);
+
+    if (!(player->stateFlags1 &
+          (PLAYER_STATE1_DEAD | PLAYER_STATE1_CHARGING_SPIN_ATTACK | PLAYER_STATE1_HANGING_OFF_LEDGE |
+           PLAYER_STATE1_CLIMBING_LEDGE | PLAYER_STATE1_JUMPING | PLAYER_STATE1_FREEFALL |
+           PLAYER_STATE1_FIRST_PERSON | PLAYER_STATE1_CLIMBING_LADDER | PLAYER_STATE1_CARRYING_ACTOR |
+           PLAYER_STATE1_IN_CUTSCENE)) &&
+        (Player_GetExplosiveHeld(player) < 0) && (actor->xzDistToPlayer < 50.0f) &&
+        (fabsf(actor->yDistToPlayer) < 10.0f)) {
+        player->interactRangeActor = actor;
+        player->getItemDirection = ABS(actor->yawTowardsPlayer - player->actor.shape.rot.y);
+    }
 }
+
 
 u32 Actor_HasNoParent(Actor* actor, PlayState* play) {
     if (actor->parent == NULL) {
@@ -2056,57 +1911,11 @@ u32 Actor_HasNoParent(Actor* actor, PlayState* play) {
     }
 }
 
-void func_8002F5C4(Actor* actorA, Actor* actorB, PlayState* play) {
-    Actor* parent = actorA->parent;
-
-    if (parent->id == ACTOR_PLAYER) {
-        Player* player = (Player*)parent;
-
-        player->heldActor = actorB;
-        player->interactRangeActor = actorB;
-    }
-
-    parent->child = actorB;
-    actorB->parent = parent;
-    actorA->parent = NULL;
-}
-
 void func_8002F5F0(Actor* actor, PlayState* play) {
     Player* player = GET_PLAYER(play);
 
     if (actor->xyzDistToPlayerSq < player->closestSecretDistSq) {
         player->closestSecretDistSq = actor->xyzDistToPlayerSq;
-    }
-}
-
-s32 Actor_IsMounted(PlayState* play, Actor* horse) {
-    if (horse->child != NULL) {
-        return true;
-    } else {
-        return false;
-    }
-}
-
-u32 Actor_SetRideActor(PlayState* play, Actor* horse, s32 mountSide) {
-    Player* player = GET_PLAYER(play);
-
-    if (!(player->stateFlags1 &
-          (PLAYER_STATE1_DEAD | PLAYER_STATE1_CARRYING_ACTOR | PLAYER_STATE1_CHARGING_SPIN_ATTACK |
-           PLAYER_STATE1_HANGING_OFF_LEDGE | PLAYER_STATE1_CLIMBING_LEDGE | PLAYER_STATE1_JUMPING |
-           PLAYER_STATE1_FREEFALL | PLAYER_STATE1_FIRST_PERSON | PLAYER_STATE1_CLIMBING_LADDER))) {
-        player->rideActor = horse;
-        player->mountSide = mountSide;
-        return true;
-    }
-
-    return false;
-}
-
-s32 Actor_NotMounted(PlayState* play, Actor* horse) {
-    if (horse->child == NULL) {
-        return true;
-    } else {
-        return false;
     }
 }
 
@@ -2224,199 +2033,10 @@ s32 func_8002F9EC(PlayState* play, Actor* actor, CollisionPoly* poly, s32 bgId, 
     return false;
 }
 
-// Local data used for Farore's Wind light (stored in BSS, possibly a struct?)
-LightInfo D_8015BC00;
-LightNode* D_8015BC10;
-s32 D_8015BC14;
-f32 D_8015BC18;
-
-void func_8002FA60(PlayState* play) {
-    Vec3f lightPos;
-
-    if (gSaveContext.fw.set) {
-        gSaveContext.respawn[RESPAWN_MODE_TOP].data = 0x28;
-        gSaveContext.respawn[RESPAWN_MODE_TOP].pos.x = gSaveContext.fw.pos.x;
-        gSaveContext.respawn[RESPAWN_MODE_TOP].pos.y = gSaveContext.fw.pos.y;
-        gSaveContext.respawn[RESPAWN_MODE_TOP].pos.z = gSaveContext.fw.pos.z;
-        gSaveContext.respawn[RESPAWN_MODE_TOP].yaw = gSaveContext.fw.yaw;
-        gSaveContext.respawn[RESPAWN_MODE_TOP].playerParams = gSaveContext.fw.playerParams;
-        gSaveContext.respawn[RESPAWN_MODE_TOP].entranceIndex = gSaveContext.fw.entranceIndex;
-        gSaveContext.respawn[RESPAWN_MODE_TOP].roomIndex = gSaveContext.fw.roomIndex;
-        gSaveContext.respawn[RESPAWN_MODE_TOP].tempSwchFlags = gSaveContext.fw.tempSwchFlags;
-        gSaveContext.respawn[RESPAWN_MODE_TOP].tempCollectFlags = gSaveContext.fw.tempCollectFlags;
-    } else {
-        gSaveContext.respawn[RESPAWN_MODE_TOP].data = 0;
-        gSaveContext.respawn[RESPAWN_MODE_TOP].pos.x = 0.0f;
-        gSaveContext.respawn[RESPAWN_MODE_TOP].pos.y = 0.0f;
-        gSaveContext.respawn[RESPAWN_MODE_TOP].pos.z = 0.0f;
-    }
-
-    lightPos.x = gSaveContext.respawn[RESPAWN_MODE_TOP].pos.x;
-    lightPos.y = gSaveContext.respawn[RESPAWN_MODE_TOP].pos.y + 80.0f;
-    lightPos.z = gSaveContext.respawn[RESPAWN_MODE_TOP].pos.z;
-
-    Lights_PointNoGlowSetInfo(&D_8015BC00, lightPos.x, lightPos.y, lightPos.z, 0xFF, 0xFF, 0xFF, -1);
-
-    D_8015BC10 = LightContext_InsertLight(play, &play->lightCtx, &D_8015BC00);
-    D_8015BC14 = 0;
-    D_8015BC18 = 0.0f;
-}
-
-void Actor_DrawFaroresWindPointer(PlayState* play) {
-    s32 lightRadius = -1;
-    s32 params;
-
-    OPEN_DISPS(play->state.gfxCtx);
-
-    params = gSaveContext.respawn[RESPAWN_MODE_TOP].data;
-
-    if (params) {
-        f32 yOffset = PLAYER_IS_ADULT ? 80.0f : 60.0f;
-        f32 ratio = 1.0f;
-        s32 alpha = 255;
-        s32 temp = params - 40;
-
-        if (temp < 0) {
-            gSaveContext.respawn[RESPAWN_MODE_TOP].data = ++params;
-            ratio = ABS(params) * 0.025f;
-            D_8015BC14 = 60;
-            D_8015BC18 = 1.0f;
-        } else if (D_8015BC14) {
-            D_8015BC14--;
-        } else if (D_8015BC18 > 0.0f) {
-            static Vec3f effectVel = { 0.0f, -0.05f, 0.0f };
-            static Vec3f effectAccel = { 0.0f, -0.025f, 0.0f };
-            Color_RGBA8 effectPrimCol = { 255, 255, 255, 0 };
-            Color_RGBA8 effectEnvCol = { 100, 200, 0, 0 };
-            
-            
-            Vec3f* curPos = &gSaveContext.respawn[RESPAWN_MODE_TOP].pos;
-            Vec3f* nextPos = &gSaveContext.respawn[RESPAWN_MODE_DOWN].pos;
-            f32 prevNum = D_8015BC18;
-            Vec3f dist;
-            f32 diff = Math_Vec3f_DistXYZAndStoreDiff(nextPos, curPos, &dist);
-            Vec3f effectPos;
-            f32 factor;
-            f32 length;
-            f32 dx;
-            f32 speed;
-
-            if (diff < 20.0f) {
-                D_8015BC18 = 0.0f;
-                Math_Vec3f_Copy(curPos, nextPos);
-            } else {
-                length = diff * (1.0f / D_8015BC18);
-                speed = 20.0f / length;
-                speed = CLAMP_MIN(speed, 0.05f);
-                Math_StepToF(&D_8015BC18, 0.0f, speed);
-                factor = (diff * (D_8015BC18 / prevNum)) / diff;
-                curPos->x = nextPos->x + (dist.x * factor);
-                curPos->y = nextPos->y + (dist.y * factor);
-                curPos->z = nextPos->z + (dist.z * factor);
-                length *= 0.5f;
-                dx = diff - length;
-                yOffset += sqrtf(SQ(length) - SQ(dx)) * 0.2f;
-                osSyncPrintf("-------- DISPLAY Y=%f\n", yOffset);
-            }
-
-            effectPos.x = curPos->x + Rand_CenteredFloat(6.0f);
-            effectPos.y = curPos->y + 80.0f + (6.0f * Rand_ZeroOne());
-            effectPos.z = curPos->z + Rand_CenteredFloat(6.0f);
-
-            EffectSsKiraKira_SpawnDispersed(play, &effectPos, &effectVel, &effectAccel, &effectPrimCol, &effectEnvCol,
-                                            1000, 16);
-
-            if (D_8015BC18 == 0.0f) {
-                gSaveContext.respawn[RESPAWN_MODE_TOP] = gSaveContext.respawn[RESPAWN_MODE_DOWN];
-                gSaveContext.respawn[RESPAWN_MODE_TOP].playerParams = 0x06FF;
-                gSaveContext.respawn[RESPAWN_MODE_TOP].data = 40;
-            }
-
-            gSaveContext.respawn[RESPAWN_MODE_TOP].pos = *curPos;
-        } else if (temp > 0) {
-            Vec3f* curPos = &gSaveContext.respawn[RESPAWN_MODE_TOP].pos;
-            f32 nextRatio = 1.0f - temp * 0.1f;
-            f32 curRatio = 1.0f - (f32)(temp - 1) * 0.1f;
-            Vec3f eye;
-            Vec3f dist;
-            f32 diff;
-
-            if (nextRatio > 0.0f) {
-                eye.x = play->view.eye.x;
-                eye.y = play->view.eye.y - yOffset;
-                eye.z = play->view.eye.z;
-                diff = Math_Vec3f_DistXYZAndStoreDiff(&eye, curPos, &dist);
-                diff = (diff * (nextRatio / curRatio)) / diff;
-                curPos->x = eye.x + (dist.x * diff);
-                curPos->y = eye.y + (dist.y * diff);
-                curPos->z = eye.z + (dist.z * diff);
-                gSaveContext.respawn[RESPAWN_MODE_TOP].pos = *curPos;
-            }
-
-            alpha = 255 - (temp * 30);
-
-            if (alpha < 0) {
-                gSaveContext.fw.set = 0;
-                gSaveContext.respawn[RESPAWN_MODE_TOP].data = 0;
-                alpha = 0;
-            } else {
-                gSaveContext.respawn[RESPAWN_MODE_TOP].data = ++params;
-            }
-
-            ratio = 1.0f + ((f32)temp * 0.2); // required to match
-        }
-
-        lightRadius = 500.0f * ratio;
-
-        if ((play->csCtx.state == CS_STATE_IDLE) &&
-            (((void)0, gSaveContext.respawn[RESPAWN_MODE_TOP].entranceIndex) ==
-             ((void)0, gSaveContext.entranceIndex)) &&
-            (((void)0, gSaveContext.respawn[RESPAWN_MODE_TOP].roomIndex) == play->roomCtx.curRoom.num)) {
-            f32 scale = 0.025f * ratio;
-
-            POLY_XLU_DISP = Gfx_SetupDL(POLY_XLU_DISP, 0x19);
-
-            Matrix_Translate(((void)0, gSaveContext.respawn[RESPAWN_MODE_TOP].pos.x),
-                             ((void)0, gSaveContext.respawn[RESPAWN_MODE_TOP].pos.y) + yOffset,
-                             ((void)0, gSaveContext.respawn[RESPAWN_MODE_TOP].pos.z), MTXMODE_NEW);
-            Matrix_Scale(scale, scale, scale, MTXMODE_APPLY);
-            Matrix_Mult(&play->billboardMtxF, MTXMODE_APPLY);
-            Matrix_Push();
-
-            gDPPipeSync(POLY_XLU_DISP++);
-            Color_RGB8 Spell_env = { 100, 200, 0 };
-            Color_RGB8 Spell_col = { 255, 255, 200 };
-            
-            
-            gDPSetPrimColor(POLY_XLU_DISP++, 128, 128, Spell_col.r, Spell_col.g, Spell_col.b, alpha);
-            gDPSetEnvColor(POLY_XLU_DISP++, Spell_env.r, Spell_env.g, Spell_env.b, 255);
-
-            Matrix_RotateZ(((play->gameplayFrames * 1500) & 0xFFFF) * M_PI / 32768.0f, MTXMODE_APPLY);
-            gSPMatrix(POLY_XLU_DISP++, MATRIX_NEWMTX(play->state.gfxCtx), G_MTX_MODELVIEW | G_MTX_LOAD | G_MTX_NOPUSH);
-            gSPDisplayList(POLY_XLU_DISP++, gEffFlash1DL);
-
-            Matrix_Pop();
-            Matrix_RotateZ(~((play->gameplayFrames * 1200) & 0xFFFF) * M_PI / 32768.0f, MTXMODE_APPLY);
-
-            gSPMatrix(POLY_XLU_DISP++, MATRIX_NEWMTX(play->state.gfxCtx), G_MTX_MODELVIEW | G_MTX_LOAD | G_MTX_NOPUSH);
-            gSPDisplayList(POLY_XLU_DISP++, gEffFlash1DL);
-        }
-
-        Lights_PointNoGlowSetInfo(&D_8015BC00, ((void)0, gSaveContext.respawn[RESPAWN_MODE_TOP].pos.x),
-                                  ((void)0, gSaveContext.respawn[RESPAWN_MODE_TOP].pos.y) + yOffset,
-                                  ((void)0, gSaveContext.respawn[RESPAWN_MODE_TOP].pos.z), 255, 255, 255, lightRadius);
-    }
-    CLOSE_DISPS(play->state.gfxCtx);
-}
-
-void func_80030488(PlayState* play) {
-    LightContext_RemoveLight(play, &play->lightCtx, D_8015BC10);
-}
 
 void Actor_DisableLens(PlayState* play) {
     if (play->actorCtx.lensActive) {
         play->actorCtx.lensActive = false;
-        Magic_Reset(play);
     }
 }
 
@@ -2443,7 +2063,6 @@ void func_800304DC(PlayState* play, ActorContext* actorCtx, ActorEntry* actorEnt
 
     Actor_SpawnEntry(actorCtx, actorEntry, play);
     func_8002C0C0(&actorCtx->targetCtx, actorCtx->actorLists[ACTORCAT_PLAYER].head, play);
-    func_8002FA60(play);
 }
 
 u32 D_80116068[ACTORCAT_MAX] = {
@@ -2469,25 +2088,12 @@ void Actor_UpdateAll(PlayState* play, ActorContext* actorCtx) {
     u32 unkFlag;
     u32 unkCondition;
     Actor* sp74;
-    ActorEntry* actorEntry;
     s32 i;
 
     player = GET_PLAYER(play);
 
     sp74 = NULL;
     unkFlag = 0;
-
-    if (play->numSetupActors != 0) {
-        actorEntry = &play->setupActorList[0];
-        for (i = 0; i < play->numSetupActors; i++) {
-            Actor* spawnedActor = Actor_SpawnEntry(&play->actorCtx, actorEntry++, play);
-
-            // #region SOH [ObjectExtension] ActorListIndex tracking
-            SetActorListIndex(spawnedActor, (s16)i);
-            // #endregion
-        }
-        play->numSetupActors = 0;
-    }
 
     if (actorCtx->unk_02 != 0) {
         actorCtx->unk_02--;
@@ -2962,10 +2568,6 @@ void func_800315AC(PlayState* play, ActorContext* actorCtx) {
         }
     }
 
-    if ((HREG(64) != 1) || (HREG(73) != 0)) {
-        Effect_DrawAll(play->state.gfxCtx);
-    }
-
     if ((HREG(64) != 1) || (HREG(74) != 0)) {
         EffectSs_DrawAll(play);
     }
@@ -2973,13 +2575,11 @@ void func_800315AC(PlayState* play, ActorContext* actorCtx) {
     if ((HREG(64) != 1) || (HREG(72) != 0)) {
         if (play->actorCtx.lensActive) {
             Actor_DrawLensActors(play, invisibleActorCounter, invisibleActors);
-            if ((play->csCtx.state != CS_STATE_IDLE) || Player_InCsMode(play)) {
+            if ((play->playerActionCtx.state != CS_STATE_IDLE) || Player_InCsMode(play)) {
                 Actor_DisableLens(play);
             }
         }
     }
-
-    Actor_DrawFaroresWindPointer(play);
 
     if (IREG(32) == 0) {
         Lights_DrawGlow(play);
@@ -3077,7 +2677,6 @@ void func_80031C3C(ActorContext* actorCtx, PlayState* play) {
     }
 
     Play_SaveSceneFlags(play);
-    func_80030488(play);
 }
 
 /**
@@ -3222,12 +2821,7 @@ Actor* Actor_Spawn(ActorContext* actorCtx, PlayState* play, s16 actorId, f32 pos
     actor->id = dbEntry->id;
     actor->flags = dbEntry->flags;
 
-    if (dbEntry->id == ACTOR_EN_PART) {
-        actor->objBankIndex = rotZ;
-        rotZ = 0;
-    } else {
-        actor->objBankIndex = objBankIndex;
-    }
+    actor->objBankIndex = objBankIndex;
 
     actor->init = dbEntry->init;
     actor->destroy = dbEntry->destroy;
@@ -3268,34 +2862,6 @@ Actor* Actor_SpawnAsChild(ActorContext* actorCtx, Actor* parent, PlayState* play
     }
 
     return spawnedActor;
-}
-
-void Actor_SpawnTransitionActors(PlayState* play, ActorContext* actorCtx) {
-    TransitionActorEntry* transitionActor;
-    u8 numActors;
-    s32 i;
-
-    transitionActor = play->transiActorCtx.list;
-    numActors = play->transiActorCtx.numActors;
-
-    for (i = 0; i < numActors; i++) {
-        if (transitionActor->id >= 0) {
-            if (((transitionActor->sides[0].room >= 0) &&
-                 ((transitionActor->sides[0].room == play->roomCtx.curRoom.num) ||
-                  (transitionActor->sides[0].room == play->roomCtx.prevRoom.num))) ||
-                ((transitionActor->sides[1].room >= 0) &&
-                 ((transitionActor->sides[1].room == play->roomCtx.curRoom.num) ||
-                  (transitionActor->sides[1].room == play->roomCtx.prevRoom.num)))) {
-                Actor_Spawn(actorCtx, play, (s16)(transitionActor->id & 0x1FFF), transitionActor->pos.x,
-                            transitionActor->pos.y, transitionActor->pos.z, 0, transitionActor->rotY, 0,
-                            (i << 0xA) + transitionActor->params);
-
-                transitionActor->id = -transitionActor->id;
-                numActors = play->transiActorCtx.numActors;
-            }
-        }
-        transitionActor++;
-    }
 }
 
 Actor* Actor_SpawnEntry(ActorContext* actorCtx, ActorEntry* actorEntry, PlayState* play) {
@@ -3519,114 +3085,8 @@ s16 func_80032D60(s16* arg0, s16 arg1, s16 arg2, s16 arg3) {
     return arg0[0];
 }
 
-void BodyBreak_Alloc(BodyBreak* bodyBreak, s32 count, PlayState* play) {
-    u32 matricesSize;
-    u32 dListsSize;
-    u32 objectIdsSize;
 
-    matricesSize = (count + 1) * sizeof(*bodyBreak->matrices);
-    bodyBreak->matrices = ZELDA_ARENA_MALLOC_DEBUG(matricesSize);
 
-    if (bodyBreak->matrices != NULL) {
-        dListsSize = (count + 1) * sizeof(*bodyBreak->dLists);
-        bodyBreak->dLists = ZELDA_ARENA_MALLOC_DEBUG(dListsSize);
-
-        if (bodyBreak->dLists != NULL) {
-            objectIdsSize = (count + 1) * sizeof(*bodyBreak->objectIds);
-            bodyBreak->objectIds = ZELDA_ARENA_MALLOC_DEBUG(objectIdsSize);
-
-            if (bodyBreak->objectIds != NULL) {
-                memset((u8*)bodyBreak->matrices, 0, matricesSize);
-                memset((u8*)bodyBreak->dLists, 0, dListsSize);
-                memset((u8*)bodyBreak->objectIds, 0, objectIdsSize);
-                bodyBreak->val = 1;
-                return;
-            }
-        }
-    }
-
-    if (bodyBreak->matrices != NULL) {
-        ZELDA_ARENA_FREE_DEBUG(bodyBreak->matrices);
-    }
-
-    if (bodyBreak->dLists != NULL) {
-        ZELDA_ARENA_FREE_DEBUG(bodyBreak->dLists);
-    }
-
-    if (bodyBreak->objectIds != NULL) {
-        ZELDA_ARENA_FREE_DEBUG(bodyBreak->objectIds);
-    }
-}
-
-void BodyBreak_SetInfo(BodyBreak* bodyBreak, s32 limbIndex, s32 minLimbIndex, s32 maxLimbIndex, u32 count, Gfx** dList,
-                       s16 objectId) {
-    PlayState* play = Effect_GetPlayState();
-
-    if ((play->actorCtx.freezeFlashTimer == 0) && (bodyBreak->val > 0)) {
-        if ((limbIndex >= minLimbIndex) && (limbIndex <= maxLimbIndex) && (*dList != NULL)) {
-            bodyBreak->dLists[bodyBreak->val] = *dList;
-            Matrix_Get(&bodyBreak->matrices[bodyBreak->val]);
-            bodyBreak->objectIds[bodyBreak->val] = objectId;
-            bodyBreak->val++;
-        }
-
-        if (limbIndex != bodyBreak->prevLimbIndex) {
-            bodyBreak->count++;
-        }
-
-        if ((u32)bodyBreak->count >= count) {
-            bodyBreak->count = bodyBreak->val - 1;
-            bodyBreak->val = BODYBREAK_STATUS_READY;
-        }
-    }
-
-    bodyBreak->prevLimbIndex = limbIndex;
-}
-
-s32 BodyBreak_SpawnParts(Actor* actor, BodyBreak* bodyBreak, PlayState* play, s16 type) {
-    EnPart* spawnedEnPart;
-    MtxF* mtx;
-    s16 objBankIndex;
-
-    if (bodyBreak->val != BODYBREAK_STATUS_READY) {
-        return false;
-    }
-
-    while (bodyBreak->count > 0) {
-        Matrix_Put(&bodyBreak->matrices[bodyBreak->count]);
-        Matrix_Scale(1.0f / actor->scale.x, 1.0f / actor->scale.y, 1.0f / actor->scale.z, MTXMODE_APPLY);
-        Matrix_Get(&bodyBreak->matrices[bodyBreak->count]);
-
-        
-            if (bodyBreak->objectIds[bodyBreak->count] >= 0) {
-                objBankIndex = bodyBreak->objectIds[bodyBreak->count];
-            } else {
-                objBankIndex = actor->objBankIndex;
-            }
-        
-
-        mtx = &bodyBreak->matrices[bodyBreak->count];
-
-        spawnedEnPart = (EnPart*)Actor_SpawnAsChild(&play->actorCtx, actor, play, ACTOR_EN_PART, mtx->xw, mtx->yw,
-                                                    mtx->zw, 0, 0, objBankIndex, type);
-
-        if (spawnedEnPart != NULL) {
-            Matrix_MtxFToYXZRotS(&bodyBreak->matrices[bodyBreak->count], &spawnedEnPart->actor.shape.rot, 0);
-            spawnedEnPart->displayList = bodyBreak->dLists[bodyBreak->count];
-            spawnedEnPart->actor.scale = actor->scale;
-        }
-
-        bodyBreak->count--;
-    }
-
-    bodyBreak->val = BODYBREAK_STATUS_FINISHED;
-
-    ZELDA_ARENA_FREE_DEBUG(bodyBreak->matrices);
-    ZELDA_ARENA_FREE_DEBUG(bodyBreak->dLists);
-    ZELDA_ARENA_FREE_DEBUG(bodyBreak->objectIds);
-
-    return true;
-}
 
 void Actor_SpawnFloorDustRing(PlayState* play, Actor* actor, Vec3f* posXZ, f32 radius, s32 amountMinusOne,
                               f32 randAccelWeight, s16 scale, s16 scaleStep, u8 useLighting) {
@@ -3722,7 +3182,7 @@ void Actor_ChangeCategory(PlayState* play, ActorContext* actorCtx, Actor* actor,
 }
 
 /**
- * Checks if a hookshot or arrow actor is going to collide with the cylinder denoted by the
+ * Checks if an arrow actor is going to collide with the cylinder denoted by the
  * actor's `cylRadius` and `cylHeight`.
  * The check is only peformed if the projectile actor is within the provided sphere radius.
  *
@@ -3739,20 +3199,11 @@ Actor* Actor_GetProjectileActor(PlayState* play, Actor* refActor, f32 radius) {
 
     actor = play->actorCtx.actorLists[ACTORCAT_ITEMACTION].head;
     while (actor != NULL) {
-        if (((actor->id != ACTOR_ARMS_HOOK) && (actor->id != ACTOR_EN_ARROW)) || (actor == refActor)) {
+        if ((actor->id != ACTOR_EN_ARROW) || (actor == refActor)) {
             actor = actor->next;
         } else {
-            //! @bug The projectile actor gets unsafely casted to a hookshot to check its timer, even though
-            //  it can also be an arrow.
-            //  Luckily, the field at the same offset in the arrow actor is the x component of a vector
-            //  which will rarely ever be 0. So it's very unlikely for this bug to cause an issue.
-            //
-            //  SoH [Port] We're making a change here, it doesn't technically fix the bug but makes it behave
-            //  more like hardware. Because of pointer size differences in SoH this was accessing a different
-            //  place in memory and causing issues with Dark link behavior, and probably other places too
             if ((Math_Vec3f_DistXYZ(&refActor->world.pos, &actor->world.pos) > radius) ||
-                (actor->id == ACTOR_ARMS_HOOK && ((ArmsHook*)actor)->timer == 0) ||
-                (actor->id == ACTOR_EN_ARROW && ((EnArrow*)actor)->unk_210.x == 0)) {
+                (((EnArrow*)actor)->unk_210.x == 0)) {
                 actor = actor->next;
             } else {
                 deltaX = Math_SinS(actor->world.rot.y) * (actor->speedXZ * 10.0f);
@@ -4438,7 +3889,7 @@ s16 Actor_UpdateAlphaByDistance(Actor* actor, PlayState* play, s16 alpha, f32 ra
     Player* player = GET_PLAYER(play);
     f32 distance;
 
-    if ((play->csCtx.state != CS_STATE_IDLE) || (gDbgCamEnabled)) {
+    if (play->playerActionCtx.state != CS_STATE_IDLE) {
         distance = Math_Vec3f_DistXYZ(&actor->world.pos, &play->view.eye) * 0.25f;
     } else {
         distance = Math_Vec3f_DistXYZ(&actor->world.pos, &player->actor.world.pos);
@@ -4558,36 +4009,6 @@ s32 func_800354B4(PlayState* play, Actor* actor, f32 range, s16 arg3, s16 arg4, 
     }
 }
 
-void func_8003555C(PlayState* play, Vec3f* pos, Vec3f* velocity, Vec3f* accel) {
-    Color_RGBA8 color1;
-    Color_RGBA8 color2;
-
-    color1.r = 200;
-    color1.g = 160;
-    color1.b = 120;
-
-    color2.r = 130;
-    color2.g = 90;
-    color2.b = 50;
-
-    //! @bug color1 and color2 alpha components not set before being passed on
-    EffectSsKiraKira_SpawnSmall(play, pos, velocity, accel, &color1, &color2);
-}
-
-Vec3f D_80116268 = { 0.0f, -1.5f, 0.0f };
-Vec3f D_80116274 = { 0.0f, -0.2f, 0.0f };
-
-Gfx D_80116280[] = {
-    gsDPSetRenderMode(G_RM_FOG_SHADE_A, AA_EN | Z_CMP | Z_UPD | IM_RD | CLR_ON_CVG | CVG_DST_WRAP | ZMODE_XLU |
-                                            FORCE_BL | GBL_c2(G_BL_CLR_IN, G_BL_A_IN, G_BL_CLR_MEM, G_BL_1MA)),
-    gsDPSetAlphaCompare(G_AC_THRESHOLD),
-    gsSPEndDisplayList(),
-};
-
-void func_800355B8(PlayState* play, Vec3f* pos) {
-    func_8003555C(play, pos, &D_80116268, &D_80116274);
-}
-
 u8 func_800355E4(PlayState* play, Collider* collider) {
     Player* player = GET_PLAYER(play);
 
@@ -4682,29 +4103,6 @@ void func_80035844(Vec3f* arg0, Vec3f* arg1, Vec3s* arg2, s32 arg3) {
 
     arg2->y = Math_Atan2S(dz, dx);
     arg2->x = Math_Atan2S(sqrtf(SQ(dx) + SQ(dz)), dy);
-}
-
-/**
- * Spawns En_Part (Dissipating Flames) actor as a child of the given actor.
- */
-Actor* func_800358DC(Actor* actor, Vec3f* spawnPos, Vec3s* spawnRot, f32* arg3, s32 timer, s16* unused, PlayState* play,
-                     s16 params, s32 arg8) {
-    EnPart* spawnedEnPart;
-
-    spawnedEnPart = (EnPart*)Actor_SpawnAsChild(&play->actorCtx, actor, play, ACTOR_EN_PART, spawnPos->x, spawnPos->y,
-                                                spawnPos->z, spawnRot->x, spawnRot->y, actor->objBankIndex, params);
-    if (spawnedEnPart != NULL) {
-        spawnedEnPart->actor.scale = actor->scale;
-        spawnedEnPart->actor.speedXZ = arg3[0];
-        spawnedEnPart->displayList = arg8;
-        spawnedEnPart->action = 2;
-        spawnedEnPart->timer = timer;
-        spawnedEnPart->rotZ = arg3[1];
-        spawnedEnPart->rotZSpeed = arg3[2];
-        return &spawnedEnPart->actor;
-    }
-
-    return NULL;
 }
 
 void func_800359B8(Actor* actor, s16 arg1, Vec3s* arg2) {
@@ -6195,8 +5593,7 @@ s32 func_80038154(PlayState* play, Actor* actor, Vec3s* arg2, Vec3s* arg3, f32 a
     actor->focus.pos = actor->world.pos;
     actor->focus.pos.y += arg4;
 
-    if (!(((play->csCtx.state != CS_STATE_IDLE) || (gDbgCamEnabled)) &&
-          (gSaveContext.entranceIndex == ENTR_KOKIRI_FOREST_0))) {
+    if (!((play->playerActionCtx.state != CS_STATE_IDLE) && (gSaveContext.entranceIndex == ENTR_KOKIRI_FOREST_0))) {
         var = actor->yawTowardsPlayer - actor->shape.rot.y;
         abs_var = ABS(var);
         if (abs_var >= 0x4300) {
@@ -6205,8 +5602,7 @@ s32 func_80038154(PlayState* play, Actor* actor, Vec3s* arg2, Vec3s* arg3, f32 a
         }
     }
 
-    if (((play->csCtx.state != CS_STATE_IDLE) || (gDbgCamEnabled)) &&
-        (gSaveContext.entranceIndex == ENTR_KOKIRI_FOREST_0)) {
+    if ((play->playerActionCtx.state != CS_STATE_IDLE) && (gSaveContext.entranceIndex == ENTR_KOKIRI_FOREST_0)) {
         sp2C = play->view.eye;
     } else {
         sp2C = player->actor.focus.pos;
@@ -6226,8 +5622,7 @@ s32 func_80038290(PlayState* play, Actor* actor, Vec3s* arg2, Vec3s* arg3, Vec3f
 
     actor->focus.pos = arg4;
 
-    if (!(((play->csCtx.state != CS_STATE_IDLE) || (gDbgCamEnabled)) &&
-          (gSaveContext.entranceIndex == ENTR_KOKIRI_FOREST_0))) {
+    if (!((play->playerActionCtx.state != CS_STATE_IDLE) && (gSaveContext.entranceIndex == ENTR_KOKIRI_FOREST_0))) {
         var = actor->yawTowardsPlayer - actor->shape.rot.y;
         abs_var = ABS(var);
         if (abs_var >= 0x4300) {
@@ -6236,8 +5631,7 @@ s32 func_80038290(PlayState* play, Actor* actor, Vec3s* arg2, Vec3s* arg3, Vec3f
         }
     }
 
-    if (((play->csCtx.state != CS_STATE_IDLE) || (gDbgCamEnabled)) &&
-        (gSaveContext.entranceIndex == ENTR_KOKIRI_FOREST_0)) {
+    if ((play->playerActionCtx.state != CS_STATE_IDLE) && (gSaveContext.entranceIndex == ENTR_KOKIRI_FOREST_0)) {
         sp24 = play->view.eye;
     } else {
         sp24 = player->actor.focus.pos;

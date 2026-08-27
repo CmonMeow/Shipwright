@@ -350,17 +350,6 @@
         <PlayerAnimation Name="gPlayerAnim_link_hook_walk2ready" Offset="0x2CC8"/>
         <PlayerAnimation Name="gPlayerAnim_link_last_hit_motion1" Offset="0x2CD0"/>
         <PlayerAnimation Name="gPlayerAnim_link_last_hit_motion2" Offset="0x2CD8"/>
-        <PlayerAnimation Name="gPlayerAnim_link_magic_honoo1" Offset="0x2CE0"/>
-        <PlayerAnimation Name="gPlayerAnim_link_magic_honoo2" Offset="0x2CE8"/>
-        <PlayerAnimation Name="gPlayerAnim_link_magic_honoo3" Offset="0x2CF0"/>
-        <PlayerAnimation Name="gPlayerAnim_link_magic_kaze1" Offset="0x2CF8"/>
-        <PlayerAnimation Name="gPlayerAnim_link_magic_kaze2" Offset="0x2D00"/>
-        <PlayerAnimation Name="gPlayerAnim_link_magic_kaze3" Offset="0x2D08"/>
-        <PlayerAnimation Name="gPlayerAnim_link_magic_tamashii1" Offset="0x2D10"/>
-        <PlayerAnimation Name="gPlayerAnim_link_magic_tamashii2" Offset="0x2D18"/>
-        <PlayerAnimation Name="gPlayerAnim_link_magic_tamashii3" Offset="0x2D20"/>
-        <PlayerAnimation Name="gPlayerAnim_link_magic_tame" Offset="0x2D28"/>
-        <PlayerAnimation Name="gPlayerAnim_link_magic_tame_kaijyo" Offset="0x2D30"/>
         <PlayerAnimation Name="gPlayerAnim_link_normal_100step_up" Offset="0x2D38"/>
         <PlayerAnimation Name="gPlayerAnim_link_normal_150step_up" Offset="0x2D40"/>
         <PlayerAnimation Name="gPlayerAnim_link_normal_250jump_start" Offset="0x2D48"/>
@@ -927,11 +916,9 @@
         <!-- ntsc end -->
         <DList Name="gItemDropDL" Offset="0x41D80"/>
         <Texture Name="gDropKeySmallTex" OutName="drop_key_small" Format="rgba16" Width="32" Height="32" Offset="0x41E50"/>
-        <Texture Name="gDropMagicSmallTex" OutName="drop_magic_small" Format="rgba16" Width="32" Height="32" Offset="0x42650"/>
         <Texture Name="gDropDekuNutTex" OutName="drop_deku_nut" Format="rgba16" Width="32" Height="32" Offset="0x42E50"/>
         <Texture Name="gDropDekuSeedsTex" OutName="drop_deku_seeds" Format="rgba16" Width="32" Height="32" Offset="0x43650"/>
         <Texture Name="gDropDekuStickTex" OutName="drop_deku_stick" Format="rgba16" Width="32" Height="32" Offset="0x43E50"/>
-        <Texture Name="gDropMagicLargeTex" OutName="drop_magic_large" Format="rgba16" Width="32" Height="32" Offset="0x44650"/>
         <Texture Name="gRupeeGreenTex" OutName="rupee_green" Format="rgba16" Width="4" Height="4" Offset="0x44E50"/>
         <Texture Name="gRupeeBlueTex" OutName="rupee_blue" Format="rgba16" Width="4" Height="4" Offset="0x44E70"/>
         <Texture Name="gRupeeRedTex" OutName="rupee_red" Format="rgba16" Width="4" Height="4" Offset="0x44E90"/>

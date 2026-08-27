@@ -1,6 +1,7 @@
 #include "NetworkGameBridge.h"
 
 #include "ActorDB.h"
+#include "ResourceManagerHelpers.h"
 #include "Network/ShipwrightNetworkRuntime.h"
 #include "ship/window/PathEngineOverlay.h"
 #include "PathEngineMultiplayerUI.h"
@@ -246,6 +247,10 @@ void NetworkRemotePlayer_Destroy(Actor* thisx, PlayState* play) {
     if (remote->bodyColliderInitialized) {
         Collider_DestroyCylinder(play, &remote->bodyCollider);
     }
+    // SkelAnime_InitLink uses the actor-owned joint/morph arrays, so it must
+    // only unregister the skeleton resource (Player_Destroy follows the same
+    // ownership rule). SkelAnime_Free would incorrectly free those arrays.
+    ResourceMgr_UnregisterSkeleton(&remote->skelAnime);
     SkelAnime_Free(&remote->bowArrowSkelAnime, play);
 }
 
@@ -550,14 +555,6 @@ void NetworkRemoteProjectile_Update(Actor* thisx, PlayState* play) {
     }
     RemoteProjectileRecord& record = found->second;
     const NetworkProjectileStatePacket& state = record.state;
-    if (state.projectileKind == NETWORK_PROJECTILE_BOMB && state.phase == NETWORK_BOMB_EXPLODING &&
-        projectile->lastPhase != NETWORK_BOMB_EXPLODING) {
-        Vec3f velocity = { 0.0f, 0.0f, 0.0f };
-        Vec3f accel = { 0.0f, 0.1f, 0.0f };
-        Vec3f effectPos = { state.x, state.y + 10.0f, state.z };
-        EffectSsBomb2_SpawnLayered(play, &effectPos, &velocity, &accel, 100, 19);
-        Audio_PlayActorSound2(thisx, NA_SE_IT_BOMB_EXPLOSION);
-    }
     if (state.projectileKind == NETWORK_PROJECTILE_ARROW && state.phase == NETWORK_ARROW_STUCK &&
         projectile->lastPhase != NETWORK_ARROW_STUCK) {
         Audio_PlayActorSound2(thisx, NA_SE_IT_ARROW_STICK_CRE);
@@ -962,15 +959,7 @@ void ProcessPlayerRespawns(PlayState* play) {
         gSaveContext.healthCapacity = STARTING_HEALTH;
         gSaveContext.health = STARTING_HEALTH;
         gSaveContext.healthAccumulator = 0;
-        gSaveContext.magicState = MAGIC_STATE_IDLE;
-        gSaveContext.prevMagicState = MAGIC_STATE_IDLE;
-        gSaveContext.magicCapacity = 0;
-        gSaveContext.magicFillTarget = gSaveContext.magic;
-        gSaveContext.magicLevel = gSaveContext.magic = 0;
-        play->pauseCtx.state = 0;
-        play->pauseCtx.debugState = 0;
         play->gameOverCtx.state = GAMEOVER_INACTIVE;
-        R_PAUSE_MENU_MODE = 0;
         gNetworkGame.suppressDeathDuringRespawn = true;
         Play_TriggerRespawn(play);
         gSaveContext.respawnFlag = -2;
@@ -1115,6 +1104,18 @@ extern "C" void NetworkGame_UpdateTransport(void) {
     // menu. Process the reliable server command here because this frame-level
     // transport hook continues while gameplay simulation is frozen.
     ProcessPlayerRespawns(gPlayState);
+}
+
+extern "C" void NetworkGame_ShowNotification(const char* text) {
+    if (gNetworkGame.multiplayerUI) {
+        gNetworkGame.multiplayerUI->ShowNotification(text);
+    }
+}
+
+extern "C" void NetworkGame_ClearNotification(void) {
+    if (gNetworkGame.multiplayerUI) {
+        gNetworkGame.multiplayerUI->ClearNotification();
+    }
 }
 
 extern "C" void NetworkGame_Update(PlayState* play) {

@@ -5,20 +5,14 @@
 int gfx_create_framebuffer(uint32_t width, uint32_t height, uint32_t native_width, uint32_t native_height,
                            uint8_t resize);
 
-s32 gPauseFrameBuffer = -1;
 s32 gBlurFrameBuffer = -1;
-// A framebuffer that should only be used for drawing in the same frame that it is copied too
-// i.e. the VisMono and VisFbuf effects
+// Scratch framebuffer used by effects that copy and draw within one frame.
 s32 gReusableFrameBuffer = -1;
 
 // N64 resolution sized buffer (320x240), used by picto box and deku bubble
 s32 gN64ResFrameBuffer = -1;
 
 void FB_CreateFramebuffers(void) {
-    if (gPauseFrameBuffer == -1) {
-        gPauseFrameBuffer = gfx_create_framebuffer(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_WIDTH, SCREEN_HEIGHT, true);
-    }
-
     if (gBlurFrameBuffer == -1) {
         gBlurFrameBuffer = gfx_create_framebuffer(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_WIDTH, SCREEN_HEIGHT, true);
     }

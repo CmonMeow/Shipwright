@@ -10,8 +10,6 @@ extern "C" {
 
 extern float OTRGetAspectRatio();
 
-extern f32 sFontWidths[144];
-extern const char* fontTbl[140];
 }
 
 constexpr f32 fourByThree = 4.0f / 3.0f;
@@ -49,26 +47,6 @@ extern "C" void Ship_CreateQuadVertexGroup(Vtx* vtxList, s32 xStart, s32 yStart,
     vtxList[3].v.ob[1] = yStart + height;
     vtxList[3].v.tc[0] = (flippedH ? width * 2 : width) << 5;
     vtxList[3].v.tc[1] = height << 5;
-}
-
-extern "C" f32 Ship_GetCharFontWidth(u8 character) {
-    u8 adjustedChar = character - ' ';
-
-    if (adjustedChar >= ARRAY_COUNTU(sFontWidths)) {
-        return 0.0f;
-    }
-
-    return sFontWidths[adjustedChar];
-}
-
-extern "C" void* Ship_GetCharFontTexture(u8 character) {
-    u8 adjustedChar = character - ' ';
-
-    if (adjustedChar >= ARRAY_COUNTU(fontTbl)) {
-        return (void*)gEmptyTexture;
-    }
-
-    return (void*)fontTbl[adjustedChar];
 }
 
 static bool default_init = false;

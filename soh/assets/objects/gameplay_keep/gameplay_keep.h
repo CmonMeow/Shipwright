@@ -1008,39 +1008,6 @@ static const ALIGN_ASSET(2) char gPlayerAnim_link_last_hit_motion1[] = dgPlayerA
 #define dgPlayerAnim_link_last_hit_motion2 "__OTR__objects/gameplay_keep/gPlayerAnim_link_last_hit_motion2"
 static const ALIGN_ASSET(2) char gPlayerAnim_link_last_hit_motion2[] = dgPlayerAnim_link_last_hit_motion2;
 
-#define dgPlayerAnim_link_magic_honoo1 "__OTR__objects/gameplay_keep/gPlayerAnim_link_magic_honoo1"
-static const ALIGN_ASSET(2) char gPlayerAnim_link_magic_honoo1[] = dgPlayerAnim_link_magic_honoo1;
-
-#define dgPlayerAnim_link_magic_honoo2 "__OTR__objects/gameplay_keep/gPlayerAnim_link_magic_honoo2"
-static const ALIGN_ASSET(2) char gPlayerAnim_link_magic_honoo2[] = dgPlayerAnim_link_magic_honoo2;
-
-#define dgPlayerAnim_link_magic_honoo3 "__OTR__objects/gameplay_keep/gPlayerAnim_link_magic_honoo3"
-static const ALIGN_ASSET(2) char gPlayerAnim_link_magic_honoo3[] = dgPlayerAnim_link_magic_honoo3;
-
-#define dgPlayerAnim_link_magic_kaze1 "__OTR__objects/gameplay_keep/gPlayerAnim_link_magic_kaze1"
-static const ALIGN_ASSET(2) char gPlayerAnim_link_magic_kaze1[] = dgPlayerAnim_link_magic_kaze1;
-
-#define dgPlayerAnim_link_magic_kaze2 "__OTR__objects/gameplay_keep/gPlayerAnim_link_magic_kaze2"
-static const ALIGN_ASSET(2) char gPlayerAnim_link_magic_kaze2[] = dgPlayerAnim_link_magic_kaze2;
-
-#define dgPlayerAnim_link_magic_kaze3 "__OTR__objects/gameplay_keep/gPlayerAnim_link_magic_kaze3"
-static const ALIGN_ASSET(2) char gPlayerAnim_link_magic_kaze3[] = dgPlayerAnim_link_magic_kaze3;
-
-#define dgPlayerAnim_link_magic_tamashii1 "__OTR__objects/gameplay_keep/gPlayerAnim_link_magic_tamashii1"
-static const ALIGN_ASSET(2) char gPlayerAnim_link_magic_tamashii1[] = dgPlayerAnim_link_magic_tamashii1;
-
-#define dgPlayerAnim_link_magic_tamashii2 "__OTR__objects/gameplay_keep/gPlayerAnim_link_magic_tamashii2"
-static const ALIGN_ASSET(2) char gPlayerAnim_link_magic_tamashii2[] = dgPlayerAnim_link_magic_tamashii2;
-
-#define dgPlayerAnim_link_magic_tamashii3 "__OTR__objects/gameplay_keep/gPlayerAnim_link_magic_tamashii3"
-static const ALIGN_ASSET(2) char gPlayerAnim_link_magic_tamashii3[] = dgPlayerAnim_link_magic_tamashii3;
-
-#define dgPlayerAnim_link_magic_tame "__OTR__objects/gameplay_keep/gPlayerAnim_link_magic_tame"
-static const ALIGN_ASSET(2) char gPlayerAnim_link_magic_tame[] = dgPlayerAnim_link_magic_tame;
-
-#define dgPlayerAnim_link_magic_tame_kaijyo "__OTR__objects/gameplay_keep/gPlayerAnim_link_magic_tame_kaijyo"
-static const ALIGN_ASSET(2) char gPlayerAnim_link_magic_tame_kaijyo[] = dgPlayerAnim_link_magic_tame_kaijyo;
-
 #define dgPlayerAnim_link_normal_100step_up "__OTR__objects/gameplay_keep/gPlayerAnim_link_normal_100step_up"
 static const ALIGN_ASSET(2) char gPlayerAnim_link_normal_100step_up[] = dgPlayerAnim_link_normal_100step_up;
 
@@ -2631,9 +2598,6 @@ static const ALIGN_ASSET(2) char gItemDropDL[] = dgItemDropDL;
 #define dgDropKeySmallTex "__OTR__objects/gameplay_keep/gDropKeySmallTex"
 static const ALIGN_ASSET(2) char gDropKeySmallTex[] = dgDropKeySmallTex;
 
-#define dgDropMagicSmallTex "__OTR__objects/gameplay_keep/gDropMagicSmallTex"
-static const ALIGN_ASSET(2) char gDropMagicSmallTex[] = dgDropMagicSmallTex;
-
 #define dgDropDekuNutTex "__OTR__objects/gameplay_keep/gDropDekuNutTex"
 static const ALIGN_ASSET(2) char gDropDekuNutTex[] = dgDropDekuNutTex;
 
@@ -2642,9 +2606,6 @@ static const ALIGN_ASSET(2) char gDropDekuSeedsTex[] = dgDropDekuSeedsTex;
 
 #define dgDropDekuStickTex "__OTR__objects/gameplay_keep/gDropDekuStickTex"
 static const ALIGN_ASSET(2) char gDropDekuStickTex[] = dgDropDekuStickTex;
-
-#define dgDropMagicLargeTex "__OTR__objects/gameplay_keep/gDropMagicLargeTex"
-static const ALIGN_ASSET(2) char gDropMagicLargeTex[] = dgDropMagicLargeTex;
 
 #define dgRupeeGreenTex "__OTR__objects/gameplay_keep/gRupeeGreenTex"
 static const ALIGN_ASSET(2) char gRupeeGreenTex[] = dgRupeeGreenTex;

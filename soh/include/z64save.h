@@ -10,30 +10,10 @@
 #define MAX_HEALTH STARTING_HEALTH
 
 typedef enum {
-    /* 0x0 */ MAGIC_STATE_IDLE, // Regular gameplay
-    /* 0x1 */ MAGIC_STATE_CONSUME_SETUP, // Sets the speed at which magic border flashes
-    /* 0x2 */ MAGIC_STATE_CONSUME, // Consume magic until target is reached or no more magic is available
-    /* 0x3 */ MAGIC_STATE_METER_FLASH_1, // Flashes border and freezes Dark Link
-    /* 0x4 */ MAGIC_STATE_METER_FLASH_2, // Flashes border and draws yellow magic to preview target consumption
-    /* 0x5 */ MAGIC_STATE_RESET, // Reset colors and return to idle
-    /* 0x6 */ MAGIC_STATE_METER_FLASH_3, // Flashes border with no additional behaviour
-    /* 0x7 */ MAGIC_STATE_CONSUME_LENS, // Magic slowly consumed by lens.
-    /* 0x8 */ MAGIC_STATE_STEP_CAPACITY, // Step `magicCapacity` to full capacity
-    /* 0x9 */ MAGIC_STATE_FILL, // Add magic until magicFillTarget is reached.
-    /* 0xA */ MAGIC_STATE_ADD // Add requested magic
-} MagicState;
-
-typedef enum {
-    /* 0 */ MAGIC_CONSUME_NOW, // Consume Magic immediately without preview
-    /* 1 */ MAGIC_CONSUME_WAIT_NO_PREVIEW, // Sets consume target but waits to consume. No yellow magic preview to target consumption. Unused
-    /* 2 */ MAGIC_CONSUME_NOW_ALT, // Identical behaviour to MAGIC_CONSUME_NOW. Unused
-    /* 3 */ MAGIC_CONSUME_LENS, // Lens consumption
-    /* 4 */ MAGIC_CONSUME_WAIT_PREVIEW, // Sets consume target but waits to consume. Draws yellow magic to target consumption
-    /* 5 */ MAGIC_ADD // Sets a target to add magic
-} MagicChangeType;
-
-#define MAGIC_NORMAL_METER 0x30
-#define MAGIC_DOUBLE_METER (2 * MAGIC_NORMAL_METER)
+    NAME_LANGUAGE_PAL,
+    NAME_LANGUAGE_NTSC_JPN,
+    NAME_LANGUAGE_NTSC_ENG,
+} FilenameLanguage;
 
 typedef struct {
     /* 0x00 */ u8 buttonItems[4];
@@ -68,12 +48,6 @@ typedef struct {
     /* 0x18 */ u32 floors;
 } SavedSceneFlags; // size = 0x1C
 
-typedef struct {
-    /* 0x00 */ s16 scene; // Upstream TODO: sceneId
-    /* 0x02 */ Vec3s pos;
-    /* 0x08 */ s16 angle;
-} HorseData; // size = 0x0A
-
 /**
  * The respawn mode names refer to the perceived player movement when respawning
  * "down": being on ground
@@ -83,7 +57,6 @@ typedef struct {
 typedef enum {
     /* 0x00 */ RESPAWN_MODE_DOWN,   /* Normal Void Outs */
     /* 0x01 */ RESPAWN_MODE_RETURN, /* Grotto Returnpoints */
-    /* 0x02 */ RESPAWN_MODE_TOP,    /* Farore's Wind */
     /* 0x03 */ RESPAWN_MODE_MAX
 } RespawnMode;
 
@@ -97,17 +70,6 @@ typedef struct {
     /* 0x14 */ u32 tempSwchFlags;
     /* 0x18 */ u32 tempCollectFlags;
 } RespawnData; // size = 0x1C
-
-typedef struct {
-    /* 0x00 */ Vec3i pos;
-    /* 0x0C */ s32 yaw;
-    /* 0x10 */ s32 playerParams;
-    /* 0x14 */ s32 entranceIndex;
-    /* 0x18 */ s32 roomIndex;
-    /* 0x1C */ s32 set;
-    /* 0x20 */ s32 tempSwchFlags;
-    /* 0x24 */ s32 tempCollectFlags;
-} FaroresWindData; // size = 0x28
 
 typedef enum TimerState {
     /* 0x0 */ TIMER_STATE_OFF,
@@ -157,7 +119,6 @@ typedef enum TimerId {
 typedef struct ShipSaveContextData {
     u16 pendingSale;
     u16 pendingSaleMod;
-    FaroresWindData backupFW;
     u8 maskMemory;
     u8 filenameLanguage;
 } ShipSaveContextData;
@@ -178,14 +139,10 @@ typedef struct {
     /* 0x002C */ s16 n64ddFlag;
     /* 0x002E */ s16 healthCapacity; // "max_life"
     /* 0x0030 */ s16 health; // "now_life"
-    /* 0x0032 */ s8 magicLevel; // 0 for no magic/new load, 1 for magic, 2 for double magic
-    /* 0x0033 */ s8 magic; // current magic available for use
     /* 0x0034 */ s64 rupees;
     /* 0x0036 */ u16 swordHealth;
     /* 0x0038 */ u16 naviTimer;
-    /* 0x003A */ u8 isMagicAcquired;
     /* 0x003B */ char unk_3B[0x01];
-    /* 0x003C */ u8 isDoubleMagicAcquired;
     /* 0x003D */ u8 isDoubleDefenseAcquired;
     /* 0x003E */ u8 bgsFlag;
     /* 0x003F */ u8 ocarinaGameRoundNum;
@@ -197,7 +154,6 @@ typedef struct {
     /* 0x0068 */ ItemEquips equips;
     /* 0x0074 */ Inventory inventory;
     /* 0x00D4 */ SavedSceneFlags sceneFlags[124];
-    /* 0x0E64 */ FaroresWindData fw;
     /* 0x0E8C */ char unk_E8C[0x10];
     /* 0x0E9C */ s32 gsFlags[6];
     /* 0x0EB4 */ char unk_EB4[0x4];
@@ -214,7 +170,6 @@ typedef struct {
     /* 0x12C5 */ u8 scarecrowSpawnSongSet;
     /* 0x12C6 */ OcarinaNote scarecrowSpawnSong[16]; // Upstream TODO: Audio
     /* 0x1346 */ char unk_1346[0x02];
-    /* 0x1348 */ HorseData horseData;
     /* 0x1352 */ u16 checksum; // "check_sum"
     /* 0x1354 */ s32 fileNum; // "file_no"
     /* 0x1358 */ char unk_1358[0x0004];
@@ -229,7 +184,6 @@ typedef struct {
     /* 0x13C4 */ s16 dogParams;
     /* 0x13C6 */ u8 textTriggerFlags;
     /* 0x13C7 */ u8 showTitleCard;
-    /* 0x13C8 */ s16 nayrusLoveTimer;
     /* 0x13CA */ char unk_13CA[0x0002];
     /* 0x13CC */ s64 rupeeAccumulator;
     /* 0x13CE */ s16 timerState;
@@ -247,11 +201,6 @@ typedef struct {
     /* 0x13EA */ u16 unk_13EA; // also alpha type?
     /* 0x13EC */ u16 unk_13EC; // alpha type counter?
     /* 0x13EE */ u16 unk_13EE; // previous alpha type?
-    /* 0x13F0 */ s16 magicState; // determines magic meter behavior on each frame
-    /* 0x13F2 */ s16 prevMagicState; // used to resume the previous state after adding or filling magic
-    /* 0x13F4 */ s16 magicCapacity; // maximum magic available
-    /* 0x13F6 */ s16 magicFillTarget; // target used to fill magic. Target can either be full capacity (Magic_Fill, magic upgrades), or the saved magic amount (loading a file, game over)
-    /* 0x13F8 */ s16 magicTarget; // target for magic to step to when adding or consuming magic
     /* 0x13FA */ u16 eventInf[4]; // "event_inf"
     /* 0x1402 */ u16 mapIndex; // intended for maps/minimaps but commonly used as the dungeon index
     /* 0x1404 */ u16 minigameState;

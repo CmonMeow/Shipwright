@@ -77,7 +77,9 @@ if %errorlevel% neq 0 goto :cmEnd
 if %errorlevel% neq 0 goto :cmEnd
 "C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" -E rm -r -f C:/Users/CmonMeow/Desktop/Shipwright/soh/assets/custom/shaders/
 if %errorlevel% neq 0 goto :cmEnd
-"C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" -E copy_directory C:/Users/CmonMeow/Desktop/Shipwright/libultraship/src/fast/shaders/ C:/Users/CmonMeow/Desktop/Shipwright/soh/assets/custom/shaders/
+"C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" -E make_directory C:/Users/CmonMeow/Desktop/Shipwright/soh/assets/custom/shaders/opengl
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" -E copy_directory C:/Users/CmonMeow/Desktop/Shipwright/libultraship/src/fast/shaders/opengl/ C:/Users/CmonMeow/Desktop/Shipwright/soh/assets/custom/shaders/opengl/
 if %errorlevel% neq 0 goto :cmEnd
 C:\Users\CmonMeow\AppData\Local\Programs\Python\Python313\python.exe C:/Users/CmonMeow/Desktop/Shipwright/OTRExporter/extract_assets.py -z C:/Users/CmonMeow/Desktop/Shipwright/x64/Debug/ZAPD.exe --norom --custom-otr-file soh.o2r --custom-assets-path C:/Users/CmonMeow/Desktop/Shipwright/soh/assets/custom --port-ver 9.2.3
 if %errorlevel% neq 0 goto :cmEnd
@@ -103,7 +105,9 @@ if %errorlevel% neq 0 goto :cmEnd
 if %errorlevel% neq 0 goto :cmEnd
 "C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" -E rm -r -f C:/Users/CmonMeow/Desktop/Shipwright/soh/assets/custom/shaders/
 if %errorlevel% neq 0 goto :cmEnd
-"C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" -E copy_directory C:/Users/CmonMeow/Desktop/Shipwright/libultraship/src/fast/shaders/ C:/Users/CmonMeow/Desktop/Shipwright/soh/assets/custom/shaders/
+"C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" -E make_directory C:/Users/CmonMeow/Desktop/Shipwright/soh/assets/custom/shaders/opengl
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" -E copy_directory C:/Users/CmonMeow/Desktop/Shipwright/libultraship/src/fast/shaders/opengl/ C:/Users/CmonMeow/Desktop/Shipwright/soh/assets/custom/shaders/opengl/
 if %errorlevel% neq 0 goto :cmEnd
 C:\Users\CmonMeow\AppData\Local\Programs\Python\Python313\python.exe C:/Users/CmonMeow/Desktop/Shipwright/OTRExporter/extract_assets.py -z C:/Users/CmonMeow/Desktop/Shipwright/x64/Release/ZAPD.exe --norom --custom-otr-file soh.o2r --custom-assets-path C:/Users/CmonMeow/Desktop/Shipwright/soh/assets/custom --port-ver 9.2.3
 if %errorlevel% neq 0 goto :cmEnd

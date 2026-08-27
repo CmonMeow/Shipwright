@@ -258,7 +258,7 @@ void EnArrow_Fly(EnArrow* this, PlayState* play) {
                 sfxId = NA_SE_IT_SLING_REFLECT;
             }
 
-            EffectSsStone1_Spawn(play, &this->actor.world.pos, 0);
+            EffectSsHitMark_SpawnCustomScale(play, 0, 150, &this->actor.world.pos);
             SoundSource_PlaySfxAtFixedWorldPos(play, &this->actor.world.pos, 20, sfxId);
             Actor_Kill(&this->actor);
         } else {
@@ -374,15 +374,6 @@ void EnArrow_Update(Actor* thisx, PlayState* play) {
         this->actionFunc(this, play);
     }
 
-    if ((this->actor.params >= ARROW_FIRE) && (this->actor.params <= ARROW_0E)) {
-        s16 elementalActorIds[] = { ACTOR_ARROW_FIRE, ACTOR_ARROW_ICE,  ACTOR_ARROW_LIGHT,
-                                    ACTOR_ARROW_FIRE, ACTOR_ARROW_FIRE, ACTOR_ARROW_FIRE };
-
-        if (this->actor.child == NULL) {
-            Actor_SpawnAsChild(&play->actorCtx, &this->actor, play, elementalActorIds[this->actor.params - 3],
-                               this->actor.world.pos.x, this->actor.world.pos.y, this->actor.world.pos.z, 0, 0, 0, 0);
-        }
-    }
 }
 
 void func_809B4800(EnArrow* this, PlayState* play) {

@@ -1,5 +1,4 @@
 #include "global.h"
-#include "overlays/actors/ovl_En_fHG/z_en_fhg.h"
 #include <assert.h>
 #include "soh/ResourceManagerHelpers.h"
 
@@ -173,12 +172,6 @@ s32 Skin_ApplyAnimTransformations(Skin* skin, MtxF* limbMatrices, Actor* actor, 
         zTransl = jointRot->z;
 
         jointRot++;
-
-        if (setTranslation == SKIN_TRANSFORM_IS_FHG) {
-            EnfHG* horse = (EnfHG*)actor;
-
-            yRot += horse->turnRot;
-        }
 
         SkinMatrix_SetTranslateRotateZYX(&limbMatrices[0], xRot, yRot, zRot, xTransl, yTransl, zTransl);
     } else {

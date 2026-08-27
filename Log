@@ -1,13 +1,19 @@
-Client: send MAGIC_REQUEST_PLAYER to 127.0.0.1:47777
-Server: challenge 2e100afd
-Client: Received challenge 2e100afd
-Client: send MAGIC_CREATE_W_CHALLENGE 2e100afd
+Dedicated collision unavailable: using validated client collision witnesses
+Client: send MAGIC_REQUEST_PLAYER to 127.0.0.1:47778
+Server: challenge 633dfef2
+Client: Received challenge 633dfef2
+Client: send MAGIC_CREATE_W_CHALLENGE 633dfef2
 Server: create player 1
-Server: MAGIC_CREATE_W_CHALLENGE accepted 2e100afd
+Server: MAGIC_CREATE_W_CHALLENGE accepted 633dfef2
 Server: old challenges cleared
-NetServer: new player (waiting for ProcessPlayers) - session.playerCount=0, playerId=1, bot=0, name='ShipwrightTest', |users|=1
+NetServer: new player (waiting for ProcessPlayers) - session.playerCount=0, playerId=1, bot=0, name='CmonMeow', |users|=1
 NetServer::ProcessPlayers(): users.card=1, session.playerCount=0, created=1, deleted=0
+Network runtime: server accepted encryption key from 1
+Network runtime: client accepted server encryption key
+Network runtime: player 1 entered scene 73 room 3 at 666.0 -87.0 354.0
+Network runtime: player 1 entered scene 110 room 3 at 0.0 0.0 0.0
 NetServer:finishDestroyPlayer (waiting for ProcessPlayers) - session.playerCount=1, playerId=1, |users|=0
-Network self-test passed: guaranteed high-priority localhost round trip
-Dedicated collision self-test passed: scenes=102 triangles=87158 wildFish=246
-Voice codec self-test passed: PathEngine Opus codec and ADPCM fallback
+Runtime host summary: chat=1 private=1 state=1 poseEquipment=1 bowString=1 voice=1 actor=1 arrowPitch=1 arrowDamage=0 clientMelee=0 hostMeleeSeen=0 fishCanonical=1 impact=0 aimedPitch=0 stuckPitch=0 stuckPersistent=1 response=1 complete=0
+Runtime client timeout: initial=1 privateSent=1 chat=1 private=1 state=1 voice=1 actor=1 arrowDamage=0 clientMeleeNearMiss=0 clientMelee=0 clientMeleeAck=0 hostMeleeDamage=0 witnessArrow=0 impact=0
+Secure runtime self-test failed: wait=0 host=11 client=21
+Dedicated collision self-test: oot.o2r could not be loaded

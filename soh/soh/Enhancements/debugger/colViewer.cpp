@@ -10,7 +10,6 @@ extern "C" {
 #include "variables.h"
 #include "functions.h"
 #include "macros.h"
-#include "overlays/actors/ovl_En_Kakasi2/z_en_kakasi2.h"
 extern PlayState* gPlayState;
 }
 
@@ -340,55 +339,6 @@ void DrawBgActorCollision() {
     }
 }
 
-void DrawScarecrowSpawn(std::vector<Gfx>& dl, EnKakasi2* scarecrow) {
-    if (scarecrow == nullptr) {
-        return;
-    }
-
-    f32 radius = scarecrow->maxSpawnDistance.x;
-    f32 height = scarecrow->maxSpawnDistance.y * 2.0f;
-
-    if (radius <= 0.0f || height <= 0.0f) {
-        return;
-    }
-
-    Mtx m;
-    MtxF mt;
-    MtxF ms;
-    MtxF dest;
-
-    f32 halfHeight = height * 0.5f;
-    Vec3f* pos = &scarecrow->actor.world.pos;
-
-    SkinMatrix_SetTranslate(&mt, pos->x, pos->y - halfHeight, pos->z);
-    SkinMatrix_SetScale(&ms, radius / 128.0f, height / 128.0f, radius / 128.0f);
-    SkinMatrix_MtxFMtxFMult(&mt, &ms, &dest);
-    guMtxF2L(dest.mf, &m);
-    mtxDl.push_back(m);
-
-    dl.push_back(gsSPMatrix(&mtxDl.back(), G_MTX_MODELVIEW | G_MTX_LOAD | G_MTX_PUSH));
-    dl.push_back(gsSPDisplayList(cylinderGfx.data()));
-    dl.push_back(gsSPPopMatrix(G_MTX_MODELVIEW));
-}
-
-void DrawScarecrowSpawns() {
-    std::vector<Gfx>& dl = xluDl;
-    InitGfx(dl);
-    dl.push_back(gsSPMatrix(&gMtxClear, G_MTX_MODELVIEW | G_MTX_LOAD | G_MTX_NOPUSH));
-
-    Color_RGBA8 color = { 255, 128, 0, 200 };
-    dl.push_back(gsDPSetPrimColor(0, 0, color.r, color.g, color.b, color.a));
-
-    ActorContext* actorCtx = &gPlayState->actorCtx;
-    for (int32_t listIndex = 0; listIndex < ARRAY_COUNT(actorCtx->actorLists); listIndex++) {
-        for (Actor* actor = actorCtx->actorLists[listIndex].head; actor != nullptr; actor = actor->next) {
-            if (actor->id == ACTOR_EN_KAKASI2) {
-                DrawScarecrowSpawn(dl, reinterpret_cast<EnKakasi2*>(actor));
-            }
-        }
-    }
-}
-
 // Draws a quad
 void DrawQuad(std::vector<Gfx>& dl, Vec3f& v0, Vec3f& v1, Vec3f& v2, Vec3f& v3) {
     Vec3f norm;
@@ -573,7 +523,6 @@ extern "C" void DrawColViewer() {
 
     DrawSceneCollision();
     DrawBgActorCollision();
-    DrawScarecrowSpawns();
     DrawColCheckCollision();
     DrawWaterboxList();
 

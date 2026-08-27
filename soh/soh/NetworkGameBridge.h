@@ -21,6 +21,8 @@ int NetworkGame_ShouldAutoStartTest(void);
 void NetworkGame_Shutdown(void);
 void NetworkGame_UpdateTransport(void);
 void NetworkGame_Update(struct PlayState* play);
+void NetworkGame_ShowNotification(const char* text);
+void NetworkGame_ClearNotification(void);
 int NetworkGame_IsObjectDestroyed(struct PlayState* play, struct Actor* actor);
 void NetworkGame_NotifyActorEvent(struct PlayState* play, struct Actor* actor, unsigned char eventType);
 int NetworkGame_ConsumeActorEvent(struct PlayState* play, struct Actor* actor, unsigned char eventType);

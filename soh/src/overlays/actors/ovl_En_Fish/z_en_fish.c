@@ -166,27 +166,6 @@ void EnFish_SetYOffset(EnFish* this) {
     this->actor.shape.yOffset = CLAMP(this->actor.shape.yOffset, -200.0f, 200.0f);
 }
 
-s32 EnFish_InBottleRange(EnFish* this, PlayState* play) {
-    s32 pad;
-    Player* player = GET_PLAYER(play);
-    Vec3f sp1C;
-
-    if (this->actor.xzDistToPlayer < 32.0f) {
-        sp1C.x = (Math_SinS(this->actor.yawTowardsPlayer + 0x8000) * 16.0f) + player->actor.world.pos.x;
-        sp1C.y = player->actor.world.pos.y;
-        sp1C.z = (Math_CosS(this->actor.yawTowardsPlayer + 0x8000) * 16.0f) + player->actor.world.pos.z;
-
-        //! @bug: this check is superfluous: it is automatically satisfied if the coarse check is satisfied. It may have
-        //! been intended to check the actor is in front of Player, but yawTowardsPlayer does not depend on Player's
-        //! world rotation.
-        if (EnFish_XZDistanceSquared(&sp1C, &this->actor.world.pos) <= SQ(20.0f)) {
-            return true;
-        }
-    }
-
-    return false;
-}
-
 s32 EnFish_CheckXZDistanceToPlayer(EnFish* this, PlayState* play) {
     return (this->actor.xzDistToPlayer < 60.0f);
 }
@@ -622,7 +601,7 @@ void EnFish_Cutscene_WiggleFlyingThroughAir(EnFish* this, PlayState* play) {
 void EnFish_UpdateCutscene(EnFish* this, PlayState* play) {
     s32 pad;
     s32 pad2;
-    CsCmdActorCue* csAction = play->csCtx.npcActions[1];
+    CsCmdActorCue* csAction = play->playerActionCtx.npcActions[1];
     Vec3f startPos;
     Vec3f endPos;
     f32 progress;
@@ -666,7 +645,7 @@ void EnFish_UpdateCutscene(EnFish* this, PlayState* play) {
     endPos.y = csAction->endPos.y;
     endPos.z = csAction->endPos.z;
 
-    progress = Environment_LerpWeight(csAction->endFrame, csAction->startFrame, play->csCtx.frames);
+    progress = Environment_LerpWeight(csAction->endFrame, csAction->startFrame, play->playerActionCtx.frames);
 
     this->actor.world.pos.x = (endPos.x - startPos.x) * progress + startPos.x;
     this->actor.world.pos.y = (endPos.y - startPos.y) * progress + startPos.y + D_80A17014;
@@ -712,9 +691,6 @@ void EnFish_OrdinaryUpdate(EnFish* this, PlayState* play) {
             }
 
             EnFish_BeginRespawn(this);
-        } else if (EnFish_InBottleRange(this, play)) {
-            // GI_MAX in this case allows the player to catch the actor in a bottle
-            Actor_OfferGetItem(&this->actor, play, GI_MAX, 80.0f, 20.0f);
         }
     }
 }
@@ -745,8 +721,8 @@ void EnFish_RespawningUpdate(EnFish* this, PlayState* play) {
 void EnFish_Update(Actor* thisx, PlayState* play) {
     EnFish* this = (EnFish*)thisx;
 
-    if ((D_80A17010 == NULL) && (this->actor.params == FISH_DROPPED) && (play->csCtx.state != 0) &&
-        (play->csCtx.npcActions[1] != NULL)) {
+    if ((D_80A17010 == NULL) && (this->actor.params == FISH_DROPPED) && (play->playerActionCtx.state != 0) &&
+        (play->playerActionCtx.npcActions[1] != NULL)) {
         EnFish_SetCutsceneData(this);
     }
 

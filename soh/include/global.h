@@ -19,12 +19,6 @@
 #define _icon_item_staticSegmentRomEnd 0
 #define _map_i_staticSegmentRomStart 0
 #define _map_i_staticSegmentRomEnd 0
-#define _message_staticSegmentRomStart 0
-#define _message_staticSegmentRomEnd 0
-#define _do_action_staticSegmentRomStart 0
-#define _do_action_staticSegmentRomEnd 0
-#define _nes_font_staticSegmentRomStart 0
-#define _nes_font_staticSegmentRomEnd 0
 #define _nintendo_rogo_staticSegmentRomStart 0
 #define _nintendo_rogo_staticSegmentRomEnd 0
 #define _dmadataSegmentStart 0

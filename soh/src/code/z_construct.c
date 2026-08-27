@@ -1,10 +1,8 @@
 #include "global.h"
-#include <textures/do_action_static/do_action_static.h>
 #include <assert.h>
 #include "soh/ResourceManagerHelpers.h"
 
 void func_80110990(PlayState* play) {
-    Map_Destroy(play);
 }
 
 void func_801109B0(PlayState* play) {
@@ -27,7 +25,7 @@ void func_801109B0(PlayState* play) {
     interfaceCtx->unk_260 = 0;
     interfaceCtx->unk_244 = interfaceCtx->aAlpha = interfaceCtx->bAlpha = interfaceCtx->cLeftAlpha =
         interfaceCtx->cDownAlpha = interfaceCtx->cRightAlpha = interfaceCtx->healthAlpha = interfaceCtx->startAlpha =
-            interfaceCtx->magicAlpha = 0;
+            interfaceCtx->counterAlpha = 0;
 
     parameterSize = (uintptr_t)_parameter_staticSegmentRomEnd - (uintptr_t)_parameter_staticSegmentRomStart;
 
@@ -41,17 +39,6 @@ void func_801109B0(PlayState* play) {
     assert(interfaceCtx->parameterSegment != NULL);
     DmaMgr_SendRequest1(interfaceCtx->parameterSegment, (uintptr_t)_parameter_staticSegmentRomStart, parameterSize,
                         __FILE__, 162);
-
-    interfaceCtx->doActionSegment = GAMESTATE_ALLOC_MC(&play->state, 3 * sizeof(char*));
-
-    osSyncPrintf("ＤＯアクション テクスチャ初期=%x\n", 0x480); // "DO Action Texture Initialization"
-    osSyncPrintf("parameter->do_actionSegment=%x\n", interfaceCtx->doActionSegment);
-
-    assert(interfaceCtx->doActionSegment != NULL);
-
-    interfaceCtx->doActionSegment[0] = gAttackDoActionENGTex;
-    interfaceCtx->doActionSegment[1] = gCheckDoActionENGTex;
-    interfaceCtx->doActionSegment[2] = gReturnDoActionENGTex;
 
     interfaceCtx->iconItemSegment =
         GAMESTATE_ALLOC_MC(&play->state, 0x1000 * ARRAY_COUNT(gSaveContext.equips.buttonItems));
@@ -121,8 +108,6 @@ void func_801109B0(PlayState* play) {
     osSyncPrintf("ＰＡＲＡＭＥＴＥＲ領域＝%x\n", parameterSize + 0x5300); // "Parameter Area = %x"
 
     HealthMeter_Init(play);
-    Map_Init(play);
-
     interfaceCtx->unk_23C = interfaceCtx->unk_242 = 0;
 
     R_ITEM_BTN_X(0) = B_BUTTON_X;
@@ -142,8 +127,6 @@ void Message_Init(PlayState* play) {
     MessageContext* msgCtx = &play->msgCtx;
     s32 pad;
 
-    Message_SetTables();
-
     play->msgCtx.ocarinaMode = OCARINA_MODE_00;
 
     msgCtx->msgMode = MSGMODE_NONE;
@@ -159,12 +142,6 @@ void Message_Init(PlayState* play) {
 
     osSyncPrintf("吹き出しgame_alloc=%x\n", 0x2200); // "Textbox game_alloc=%x"
     assert(msgCtx->textboxSegment != NULL);
-
-    if (ResourceMgr_GetGameRegion(0) == GAME_REGION_PAL && gSaveContext.language != LANGUAGE_JPN) {
-        Font_LoadOrderedFont(&play->msgCtx.font);
-    } else { // GAME_REGION_NTSC
-        Font_LoadOrderedFontNTSC(&play->msgCtx.font);
-    }
 
     YREG(31) = 0;
 }

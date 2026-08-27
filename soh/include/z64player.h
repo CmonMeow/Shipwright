@@ -17,7 +17,7 @@ typedef enum PlayerStartMode {
     /*  3 */ PLAYER_START_MODE_DOOR, // Unused. Use a door immediately if one is nearby. If no door is in usable range, a softlock occurs.
     /*  4 */ PLAYER_START_MODE_GROTTO, // Arriving from a grotto, launched upward from the ground.
     /*  5 */ PLAYER_START_MODE_WARP_SONG, // Arriving from a warp song.
-    /*  6 */ PLAYER_START_MODE_FARORES_WIND, // Arriving from a Farores Wind warp.
+    /*  6 */ PLAYER_START_MODE_UNUSED_6,
     /*  7 */ PLAYER_START_MODE_KNOCKED_OVER, // Knocked over on the ground and flashing red.
     /*  8 */ PLAYER_START_MODE_UNUSED_8,  // Unused, behaves the same as PLAYER_START_MODE_MOVE_FORWARD_SLOW.
     /*  9 */ PLAYER_START_MODE_UNUSED_9,  // Unused, behaves the same as PLAYER_START_MODE_MOVE_FORWARD_SLOW.
@@ -121,12 +121,12 @@ typedef enum PlayerItemAction {
     /* 0x12 */ PLAYER_IA_BOMB,
     /* 0x13 */ PLAYER_IA_BOMBCHU,
     /* 0x14 */ PLAYER_IA_BOOMERANG,
-    /* 0x15 */ PLAYER_IA_MAGIC_SPELL_15,
-    /* 0x16 */ PLAYER_IA_MAGIC_SPELL_16,
-    /* 0x17 */ PLAYER_IA_MAGIC_SPELL_17,
-    /* 0x18 */ PLAYER_IA_FARORES_WIND,
-    /* 0x19 */ PLAYER_IA_NAYRUS_LOVE,
-    /* 0x1A */ PLAYER_IA_DINS_FIRE,
+    /* 0x15 */ PLAYER_IA_UNUSED_15,
+    /* 0x16 */ PLAYER_IA_UNUSED_16,
+    /* 0x17 */ PLAYER_IA_UNUSED_17,
+    /* 0x18 */ PLAYER_IA_UNUSED_18,
+    /* 0x19 */ PLAYER_IA_UNUSED_19,
+    /* 0x1A */ PLAYER_IA_UNUSED_1A,
     /* 0x1B */ PLAYER_IA_DEKU_NUT,
     /* 0x1C */ PLAYER_IA_OCARINA_FAIRY,
     /* 0x1D */ PLAYER_IA_OCARINA_OF_TIME,
@@ -259,7 +259,7 @@ typedef enum PlayerDoorType {
 } PlayerDoorType;
 
 typedef enum PlayerModelGroup {
-    /* 0x00 */ PLAYER_MODELGROUP_0, // unused (except for a bug in `Player_OverrideLimbDrawPause`)
+    /* 0x00 */ PLAYER_MODELGROUP_0,
     /* 0x01 */ PLAYER_MODELGROUP_CHILD_HYLIAN_SHIELD,  //hold sword only. used for holding sword only as child link with hylian shield equipped
     /* 0x02 */ PLAYER_MODELGROUP_SWORD_AND_SHIELD, // hold sword and shield or just sword if no shield is equipped
     /* 0x03 */ PLAYER_MODELGROUP_DEFAULT, // non-specific models, for items that don't have particular link models
@@ -689,7 +689,6 @@ typedef struct PendingFlag {
 #define PLAYER_STATE1_FIRST_PERSON (1 << 20)
 #define PLAYER_STATE1_CLIMBING_LADDER (1 << 21)
 #define PLAYER_STATE1_SHIELDING (1 << 22)
-#define PLAYER_STATE1_ON_HORSE (1 << 23)
 #define PLAYER_STATE1_USING_BOOMERANG (1 << 24) // Currently using the boomerang. This includes all phases (aiming, throwing, and catching).
 #define PLAYER_STATE1_BOOMERANG_THROWN (1 << 25) // Boomerang has been thrown and is flying in the air
 #define PLAYER_STATE1_DAMAGED (1 << 26)
@@ -714,7 +713,6 @@ typedef struct PendingFlag {
 #define PLAYER_STATE2_STATIONARY_LADDER (1 << 12)
 #define PLAYER_STATE2_LOCK_ON_WITH_SWITCH (1 << 13) // Actor lock-on is active, specifically with Switch Targeting. Hold Targeting checks the state of the Z button instead of this flag.
 #define PLAYER_STATE2_FROZEN (1 << 14)
-#define PLAYER_STATE2_PAUSE_MOST_UPDATING (1 << 15)
 #define PLAYER_STATE2_DO_ACTION_ENTER (1 << 16) // Sets the "Enter On A" DoAction
 #define PLAYER_STATE2_SPIN_ATTACKING (1 << 17) //w/o magic
 #define PLAYER_STATE2_CRAWLING (1 << 18) // Crawling through a crawlspace
@@ -734,11 +732,10 @@ typedef struct PendingFlag {
 
 #define PLAYER_STATE3_IGNORE_CEILING_FLOOR_WATER (1 << 0)
 #define PLAYER_STATE3_MIDAIR (1 << 1)
-#define PLAYER_STATE3_PAUSE_ACTION_FUNC (1 << 2)
 #define PLAYER_STATE3_FINISHED_ATTACKING (1 << 3)
 #define PLAYER_STATE3_CHECK_FLOOR_WATER_COLLISION (1 << 4)
 #define PLAYER_STATE3_FORCE_PULL_OCARINA (1 << 5)
-#define PLAYER_STATE3_RESTORE_NAYRUS_LOVE (1 << 6) // Set by ocarina effects actors when destroyed to signal Nayru's Love may be restored (see `ACTOROVL_ALLOC_ABSOLUTE`)
+#define PLAYER_STATE3_UNUSED_6 (1 << 6)
 #define PLAYER_STATE3_FLYING_WITH_HOOKSHOT (1 << 7) // Flying in the air with the hookshot as it pulls Player toward its destination
 
 typedef void (*PlayerActionFunc)(struct Player*, struct PlayState*);
@@ -819,9 +816,7 @@ typedef struct Player {
     /* 0x0434 */ s16 getItemId; // Upstream TODO: Document why this is s16 while it's s8 upstream
     /* 0x0436 */ u16 getItemDirection;
     /* 0x0438 */ Actor* interactRangeActor;
-    /* 0x043C */ s8 mountSide;
     /* 0x043D */ char unk_43D[0x003];
-    /* 0x0440 */ Actor* rideActor;
     /* 0x0444 */ u8 csAction;
     /* 0x0445 */ u8 prevCsAction;
     /* 0x0446 */ u8 cueId;
@@ -843,7 +838,6 @@ typedef struct Player {
     /* 0x0664 */ Actor* focusActor; // Actor that Player and the camera are looking at; Used for lock-on, talking, and more
     /* 0x0668 */ char unk_668[0x004];
     /* 0x066C */ s32 zTargetActiveTimer; // Non-zero values indicate Z-Targeting should update; Values under 5 indicate lock-on is releasing
-    /* 0x0670 */ s32 meleeWeaponEffectIndex;
     /* 0x0674 */ PlayerActionFunc actionFunc;
     /* 0x0678 */ PlayerAgeProperties* ageProperties;
     /* 0x067C */ u32 stateFlags1;

@@ -38,8 +38,6 @@ class OTRGlobals {
     uint32_t GetInterpolationFPS();
     std::shared_ptr<std::vector<std::string>> ListFiles(std::string path);
 
-  private:
-    void CheckSaveFile(size_t sramSize) const;
 };
 #endif
 
@@ -47,19 +45,14 @@ class OTRGlobals {
 void InitOTR(int argc, char* argv[]);
 void DeinitOTR(void);
 void OTRAudio_Init();
-void OTRMessage_Init();
 void InitAudio();
 void Graph_StartFrame();
 void Graph_ProcessGfxCommands(Gfx* commands);
 void Graph_ProcessFrame(void (*run_one_game_iter)(void));
-void OTRGfxPrint(const char* str, void* printer, void (*printImpl)(void*, char));
 void OTRGetPixelDepthPrepare(float x, float y);
 uint16_t OTRGetPixelDepth(float x, float y);
 int32_t OTRGetLastScancode();
 char* GetResourceDataByNameHandlingMQ(const char* path);
-
-void Ctx_ReadSaveFile(uintptr_t addr, void* dramAddr, size_t size);
-void Ctx_WriteSaveFile(uintptr_t addr, void* dramAddr, size_t size);
 
 uint64_t GetPerfCounter();
 uint64_t osGetTime(void);
@@ -81,9 +74,6 @@ int Controller_ShouldRumble(size_t slot);
 void Gfx_RegisterBlendedTexture(const char* name, u8* mask, u8* replacement);
 void Gfx_UnregisterBlendedTexture(const char* name);
 void Gfx_TextureCacheDelete(const uint8_t* addr);
-GetItemID RetrieveGetItemIDFromItemID(ItemID itemID);
-GetItemEntry ItemTable_Retrieve(int16_t getItemID);
-GetItemEntry ItemTable_RetrieveEntry(s16 tableID, s16 getItemID);
 void Messagebox_ShowErrorBox(char* title, char* body);
 
 uint32_t Ship_GetInterpolationFPS();
@@ -92,7 +82,6 @@ uint32_t Ship_GetInterpolationFrameCount();
 
 #ifdef __cplusplus
 extern "C" {
-void SaveManager_ThreadPoolWait();
 #endif
 uint64_t GetUnixTimestamp();
 #ifdef __cplusplus

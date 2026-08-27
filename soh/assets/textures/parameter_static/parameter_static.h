@@ -162,13 +162,4 @@ static const ALIGN_ASSET(2) char gAmmoDigit9Tex[] = dgAmmoDigit9Tex;
 #define dgUnusedAmmoDigitHalfTex "__OTR__textures/parameter_static/gUnusedAmmoDigitHalfTex"
 static const ALIGN_ASSET(2) char gUnusedAmmoDigitHalfTex[] = dgUnusedAmmoDigitHalfTex;
 
-#define dgMagicMeterEndTex "__OTR__textures/parameter_static/gMagicMeterEndTex"
-static const ALIGN_ASSET(2) char gMagicMeterEndTex[] = dgMagicMeterEndTex;
-
-#define dgMagicMeterMidTex "__OTR__textures/parameter_static/gMagicMeterMidTex"
-static const ALIGN_ASSET(2) char gMagicMeterMidTex[] = dgMagicMeterMidTex;
-
-#define dgMagicMeterFillTex "__OTR__textures/parameter_static/gMagicMeterFillTex"
-static const ALIGN_ASSET(2) char gMagicMeterFillTex[] = dgMagicMeterFillTex;
-
 #endif // TEXTURES_PARAMETER_STATIC_H

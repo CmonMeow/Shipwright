@@ -9,7 +9,6 @@
 
 namespace SOH {
 typedef struct {
-    int8_t elfMessage;
     int16_t globalObject;
 } SpecialObjects;
 

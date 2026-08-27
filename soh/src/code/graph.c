@@ -20,8 +20,6 @@ static struct RunFrameContext {
     int state;
 } runFrameContext;
 
-OSTime sGraphUpdateTime;
-OSTime sGraphSetTaskTime;
 FaultClient sGraphFaultClient;
 CfbInfo sGraphCfbInfos[3];
 FaultClient sGraphUcodeFaultClient;
@@ -127,20 +125,8 @@ GameStateOverlay* Graph_GetNextGameState(GameState* gameState) {
     if (gameStateInitFunc == TitleSetup_Init) {
         return &gGameStateOverlayTable[0];
     }
-    if (gameStateInitFunc == Select_Init) {
-        return &gGameStateOverlayTable[1];
-    }
-    if (gameStateInitFunc == Title_Init) {
-        return &gGameStateOverlayTable[2];
-    }
     if (gameStateInitFunc == Play_Init) {
-        return &gGameStateOverlayTable[3];
-    }
-    if (gameStateInitFunc == Opening_Init) {
-        return &gGameStateOverlayTable[4];
-    }
-    if (gameStateInitFunc == FileChoose_Init) {
-        return &gGameStateOverlayTable[5];
+        return &gGameStateOverlayTable[1];
     }
 
     LOG_ADDRESS("game_init_func", gameStateInitFunc);
@@ -169,15 +155,12 @@ void Graph_TaskSet00(GraphicsContext* gfxCtx) {
     static Gfx* D_8012D260 = NULL;
     static s32 sGraphCfbInfoIdx = 0;
 
-    OSTime time;
     OSTimer timer;
     OSMesg msg;
     OSTask_t* task = &gfxCtx->task.list.t;
     OSScTask* scTask = &gfxCtx->task;
     CfbInfo* cfb;
     s32 pad1;
-
-    D_8016A528 = osGetTime() - sGraphSetTaskTime - D_8016A558;
 
     osSetTimer(&timer, OS_USEC_TO_CYCLES(3000000), 0, &gfxCtx->queue, OS_MESG_32(666));
 
@@ -210,15 +193,6 @@ void Graph_TaskSet00(GraphicsContext* gfxCtx) {
     if (gfxCtx->callback != NULL) {
         gfxCtx->callback(gfxCtx, gfxCtx->callbackParam);
     }
-
-    time = osGetTime();
-    if (D_8016A550 != 0) {
-        D_8016A558 = (D_8016A558 + time) - D_8016A550;
-        D_8016A550 = time;
-    }
-    D_8016A520 = D_8016A558;
-    D_8016A558 = 0;
-    sGraphSetTaskTime = osGetTime();
 
     task->type = M_GFXTASK;
     task->flags = OS_SC_DRAM_DLIST;
@@ -390,23 +364,6 @@ void Graph_Update(GraphicsContext* gfxCtx, GameState* gameState) {
 
     func_800F3054();
 
-    {
-        OSTime time = osGetTime();
-        s32 pad[4];
-
-        D_8016A538 = gRSPGFXTotalTime;
-        D_8016A530 = gRSPAudioTotalTime;
-        D_8016A540 = gRDPTotalTime;
-        gRSPGFXTotalTime = 0;
-        gRSPAudioTotalTime = 0;
-        gRDPTotalTime = 0;
-
-        if (sGraphUpdateTime != 0) {
-            D_8016A548 = time - sGraphUpdateTime;
-        }
-        sGraphUpdateTime = time;
-    }
-
     if (gIsCtrlr2Valid && PreNmiBuff_IsResetting(gAppNmiBufferPtr) && !gameState->unk_A0) {
         // "To reset mode"
         osSyncPrintf(VT_COL(YELLOW, BLACK) "PRE-NMIによりリセットモードに移行します\n" VT_RST);
@@ -505,9 +462,6 @@ void Graph_ThreadEntry(void* arg0) {
         RunFrame();
     }
 
-    // The pause save screen is removed. Persist the active file when the PC
-    // window closes while PlayState and the current entrance are still valid.
-    Play_PerformSave(gPlayState);
 }
 
 void* Graph_Alloc(GraphicsContext* gfxCtx, size_t size) {

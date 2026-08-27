@@ -921,7 +921,8 @@ void ShipwrightNetworkRuntime::HandleClientMessage(char* buffer, __int32 size) {
         SaneProjectileState(projectile) && projectile.playerId != mLocalPlayerId) {
         const auto key = std::make_pair(projectile.playerId, projectile.projectileId);
         const auto latest = mLatestProjectileSequences.find(key);
-        if (latest != mLatestProjectileSequences.end() && projectile.sequence <= latest->second) {
+        if (latest != mLatestProjectileSequences.end() &&
+            !SequenceIsNewer(projectile.sequence, latest->second)) {
             return;
         }
         mLatestProjectileSequences[key] = projectile.sequence;

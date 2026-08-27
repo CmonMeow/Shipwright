@@ -7,7 +7,6 @@ void InitOTR(int argc, char* argv[]);
 void Graph_ProcessFrame(void (*run_one_game_iter)(void));
 void Graph_StartFrame();
 void Graph_ProcessGfxCommands(Gfx* commands);
-void OTRGfxPrint(const char* str, void* printer, void (*printImpl)(void*, char));
 void OTRSetFrameDivisor(int divisor);
 void OTRGetPixelDepthPrepare(float x, float y);
 uint16_t OTRGetPixelDepth(float x, float y);

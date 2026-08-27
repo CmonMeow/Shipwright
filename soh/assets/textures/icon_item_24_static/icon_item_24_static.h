@@ -57,10 +57,4 @@ static const ALIGN_ASSET(2) char gQuestIconDungeonMapTex[] = dgQuestIconDungeonM
 #define dgQuestIconSmallKeyTex "__OTR__textures/icon_item_24_static/gQuestIconSmallKeyTex"
 static const ALIGN_ASSET(2) char gQuestIconSmallKeyTex[] = dgQuestIconSmallKeyTex;
 
-#define dgQuestIconMagicJarSmallTex "__OTR__textures/icon_item_24_static/gQuestIconMagicJarSmallTex"
-static const ALIGN_ASSET(2) char gQuestIconMagicJarSmallTex[] = dgQuestIconMagicJarSmallTex;
-
-#define dgQuestIconMagicJarBigTex "__OTR__textures/icon_item_24_static/gQuestIconMagicJarBigTex"
-static const ALIGN_ASSET(2) char gQuestIconMagicJarBigTex[] = dgQuestIconMagicJarBigTex;
-
 #endif // TEXTURES_ICON_ITEM_24_STATIC_H

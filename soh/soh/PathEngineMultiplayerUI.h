@@ -15,6 +15,8 @@ class PathEngineMultiplayerUI final {
     PathEngineMultiplayerUI& operator=(const PathEngineMultiplayerUI&) = delete;
 
     void Update(SoH::Network::ShipwrightNetworkRuntime& runtime);
+    void ShowNotification(const char* text);
+    void ClearNotification();
     void Shutdown();
 
   private:

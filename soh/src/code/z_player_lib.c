@@ -5,7 +5,6 @@
 #include "objects/object_link_child/object_link_child.h"
 #include "objects/object_triforce_spot/object_triforce_spot.h"
 #include "objects/object_fish/object_fish.h"
-#include "overlays/actors/ovl_Demo_Effect/z_demo_effect.h"
 #include "soh/ResourceManagerHelpers.h"
 
 #include <stdlib.h>
@@ -26,76 +25,6 @@ s16 sBootData[1][17] = {
     { 200, 1000, 300, 700, 550, 270, 600, 350, 800, 600, -100, 600, 590, 750, 125, 200, 130 },
 };
 
-// Used to map action params to model groups
-u8 sActionModelGroups[] = {
-    PLAYER_MODELGROUP_DEFAULT,          // PLAYER_IA_NONE
-    PLAYER_MODELGROUP_SWORD,            // PLAYER_IA_SWORD_CS
-    PLAYER_MODELGROUP_10,               // PLAYER_IA_FISHING_POLE
-    PLAYER_MODELGROUP_SWORD_AND_SHIELD, // PLAYER_IA_SWORD_MASTER
-    PLAYER_MODELGROUP_SWORD_AND_SHIELD, // PLAYER_IA_SWORD_KOKIRI
-    PLAYER_MODELGROUP_BGS,              // PLAYER_IA_SWORD_BIGGORON
-    PLAYER_MODELGROUP_10,               // PLAYER_IA_DEKU_STICK
-    PLAYER_MODELGROUP_HAMMER,           // PLAYER_IA_HAMMER
-    PLAYER_MODELGROUP_BOW_SLINGSHOT,    // PLAYER_IA_BOW
-    PLAYER_MODELGROUP_BOW_SLINGSHOT,    // PLAYER_IA_BOW_FIRE
-    PLAYER_MODELGROUP_BOW_SLINGSHOT,    // PLAYER_IA_BOW_ICE
-    PLAYER_MODELGROUP_BOW_SLINGSHOT,    // PLAYER_IA_BOW_LIGHT
-    PLAYER_MODELGROUP_BOW_SLINGSHOT,    // PLAYER_IA_BOW_0C
-    PLAYER_MODELGROUP_BOW_SLINGSHOT,    // PLAYER_IA_BOW_0D
-    PLAYER_MODELGROUP_BOW_SLINGSHOT,    // PLAYER_IA_BOW_0E
-    PLAYER_MODELGROUP_BOW_SLINGSHOT,    // PLAYER_IA_SLINGSHOT
-    PLAYER_MODELGROUP_HOOKSHOT,         // PLAYER_IA_HOOKSHOT
-    PLAYER_MODELGROUP_HOOKSHOT,         // PLAYER_IA_LONGSHOT
-    PLAYER_MODELGROUP_EXPLOSIVES,       // PLAYER_IA_BOMB
-    PLAYER_MODELGROUP_EXPLOSIVES,       // PLAYER_IA_BOMBCHU
-    PLAYER_MODELGROUP_BOOMERANG,        // PLAYER_IA_BOOMERANG
-    PLAYER_MODELGROUP_DEFAULT,          // PLAYER_IA_MAGIC_SPELL_15
-    PLAYER_MODELGROUP_DEFAULT,          // PLAYER_IA_MAGIC_SPELL_16
-    PLAYER_MODELGROUP_BOW_SLINGSHOT,    // PLAYER_IA_MAGIC_SPELL_17
-    PLAYER_MODELGROUP_DEFAULT,          // PLAYER_IA_FARORES_WIND
-    PLAYER_MODELGROUP_DEFAULT,          // PLAYER_IA_NAYRUS_LOVE
-    PLAYER_MODELGROUP_DEFAULT,          // PLAYER_IA_DINS_FIRE
-    PLAYER_MODELGROUP_DEFAULT,          // PLAYER_IA_DEKU_NUT
-    PLAYER_MODELGROUP_OCARINA,          // PLAYER_IA_OCARINA_FAIRY
-    PLAYER_MODELGROUP_OOT,              // PLAYER_IA_OCARINA_OF_TIME
-    PLAYER_MODELGROUP_BOTTLE,           // PLAYER_IA_BOTTLE
-    PLAYER_MODELGROUP_BOTTLE,           // PLAYER_IA_BOTTLE_FISH
-    PLAYER_MODELGROUP_BOTTLE,           // PLAYER_IA_BOTTLE_FIRE
-    PLAYER_MODELGROUP_BOTTLE,           // PLAYER_IA_BOTTLE_BUG
-    PLAYER_MODELGROUP_BOTTLE,           // PLAYER_IA_BOTTLE_POE
-    PLAYER_MODELGROUP_BOTTLE,           // PLAYER_IA_BOTTLE_BIG_POE
-    PLAYER_MODELGROUP_BOTTLE,           // PLAYER_IA_BOTTLE_RUTOS_LETTER
-    PLAYER_MODELGROUP_BOTTLE,           // PLAYER_IA_BOTTLE_POTION_RED
-    PLAYER_MODELGROUP_BOTTLE,           // PLAYER_IA_BOTTLE_POTION_BLUE
-    PLAYER_MODELGROUP_BOTTLE,           // PLAYER_IA_BOTTLE_POTION_GREEN
-    PLAYER_MODELGROUP_BOTTLE,           // PLAYER_IA_BOTTLE_MILK_FULL
-    PLAYER_MODELGROUP_BOTTLE,           // PLAYER_IA_BOTTLE_MILK_HALF
-    PLAYER_MODELGROUP_BOTTLE,           // PLAYER_IA_BOTTLE_FAIRY
-    PLAYER_MODELGROUP_DEFAULT,          // PLAYER_IA_ZELDAS_LETTER
-    PLAYER_MODELGROUP_DEFAULT,          // PLAYER_IA_WEIRD_EGG
-    PLAYER_MODELGROUP_DEFAULT,          // PLAYER_IA_CHICKEN
-    PLAYER_MODELGROUP_DEFAULT,          // PLAYER_IA_MAGIC_BEAN
-    PLAYER_MODELGROUP_DEFAULT,          // PLAYER_IA_POCKET_EGG
-    PLAYER_MODELGROUP_DEFAULT,          // PLAYER_IA_POCKET_CUCCO
-    PLAYER_MODELGROUP_DEFAULT,          // PLAYER_IA_COJIRO
-    PLAYER_MODELGROUP_DEFAULT,          // PLAYER_IA_ODD_MUSHROOM
-    PLAYER_MODELGROUP_DEFAULT,          // PLAYER_IA_ODD_POTION
-    PLAYER_MODELGROUP_DEFAULT,          // PLAYER_IA_POACHERS_SAW
-    PLAYER_MODELGROUP_DEFAULT,          // PLAYER_IA_BROKEN_GORONS_SWORD
-    PLAYER_MODELGROUP_DEFAULT,          // PLAYER_IA_PRESCRIPTION
-    PLAYER_MODELGROUP_DEFAULT,          // PLAYER_IA_FROG
-    PLAYER_MODELGROUP_DEFAULT,          // PLAYER_IA_EYEDROPS
-    PLAYER_MODELGROUP_DEFAULT,          // PLAYER_IA_CLAIM_CHECK
-    PLAYER_MODELGROUP_DEFAULT,          // PLAYER_IA_MASK_KEATON
-    PLAYER_MODELGROUP_DEFAULT,          // PLAYER_IA_MASK_SKULL
-    PLAYER_MODELGROUP_DEFAULT,          // PLAYER_IA_MASK_SPOOKY
-    PLAYER_MODELGROUP_DEFAULT,          // PLAYER_IA_MASK_BUNNY_HOOD
-    PLAYER_MODELGROUP_DEFAULT,          // PLAYER_IA_MASK_GORON
-    PLAYER_MODELGROUP_DEFAULT,          // PLAYER_IA_MASK_ZORA
-    PLAYER_MODELGROUP_DEFAULT,          // PLAYER_IA_MASK_GERUDO
-    PLAYER_MODELGROUP_DEFAULT,          // PLAYER_IA_MASK_TRUTH
-    PLAYER_MODELGROUP_DEFAULT,          // PLAYER_IA_LENS_OF_TRUTH
-};
 
 TextTriggerEntry sTextTriggers[] = {
     { 1, 0x3040 },
@@ -622,8 +551,7 @@ void Player_SetBootData(PlayState* play, Player* this) {
 s32 Player_InBlockingCsMode(PlayState* play, Player* this) {
     return (this->stateFlags1 & (PLAYER_STATE1_DEAD | PLAYER_STATE1_IN_CUTSCENE)) || (this->csAction != 0) ||
            (play->transitionTrigger == TRANS_TRIGGER_START) || (this->stateFlags1 & PLAYER_STATE1_LOADING) ||
-           (this->stateFlags3 & PLAYER_STATE3_FLYING_WITH_HOOKSHOT) ||
-           ((gSaveContext.magicState != MAGIC_STATE_IDLE) && (Player_ActionToMagicSpell(this, this->itemAction) >= 0));
+           (this->stateFlags3 & PLAYER_STATE3_FLYING_WITH_HOOKSHOT);
 }
 
 s32 Player_InCsMode(PlayState* play) {
@@ -648,13 +576,21 @@ s32 Player_IsChildWithHylianShield(Player* this) {
 }
 
 s32 Player_ActionToModelGroup(Player* this, s32 actionParam) {
-    s32 modelGroup = sActionModelGroups[actionParam];
+    (void)this;
 
-    if ((modelGroup == PLAYER_MODELGROUP_SWORD_AND_SHIELD) && Player_IsChildWithHylianShield(this)) {
-        // child, using kokiri sword with hylian shield equipped
-        return PLAYER_MODELGROUP_CHILD_HYLIAN_SHIELD;
-    } else {
-        return modelGroup;
+    switch (actionParam) {
+        case PLAYER_IA_SWORD_CS:
+            return PLAYER_MODELGROUP_SWORD;
+        case PLAYER_IA_FISHING_POLE:
+            return PLAYER_MODELGROUP_10;
+        case PLAYER_IA_SWORD_MASTER:
+            return PLAYER_MODELGROUP_SWORD_AND_SHIELD;
+        case PLAYER_IA_SWORD_BIGGORON:
+            return PLAYER_MODELGROUP_BGS;
+        case PLAYER_IA_BOW:
+            return PLAYER_MODELGROUP_BOW_SLINGSHOT;
+        default:
+            return PLAYER_MODELGROUP_DEFAULT;
     }
 }
 
@@ -752,7 +688,7 @@ void Player_SetEquipmentData(PlayState* play, Player* this) {
         this->currentShield = SHIELD_EQUIP_TO_PLAYER(CUR_EQUIP_VALUE(EQUIP_TYPE_SHIELD));
         this->currentTunic = PLAYER_TUNIC_KOKIRI;
         this->currentBoots = PLAYER_BOOTS_KOKIRI;
-        this->currentSwordItemId = B_BTN_ITEM;
+        this->currentSwordItemId = ITEM_SWORD_MASTER;
         Player_SetModelGroup(this, Player_ActionToModelGroup(this, this->heldItemAction));
         Player_SetBootData(play, this);
     }
@@ -781,7 +717,7 @@ void Player_ReleaseLockOn(Player* this) {
  */
 void Player_ClearZTargeting(Player* this) {
     if ((this->actor.bgCheckFlags & 1) ||
-        (this->stateFlags1 & (PLAYER_STATE1_CLIMBING_LADDER | PLAYER_STATE1_ON_HORSE | PLAYER_STATE1_IN_WATER)) ||
+        (this->stateFlags1 & (PLAYER_STATE1_CLIMBING_LADDER | PLAYER_STATE1_IN_WATER)) ||
         (!(this->stateFlags1 & (PLAYER_STATE1_JUMPING | PLAYER_STATE1_FREEFALL)) &&
          ((this->actor.world.pos.y - this->actor.floorHeight) < 100.0f))) {
         this->stateFlags1 &=
@@ -818,12 +754,6 @@ void Player_SetAutoLockOnActor(PlayState* play, Actor* actor) {
     this->stateFlags1 |= PLAYER_STATE1_FRIENDLY_ACTOR_FOCUS;
     Camera_SetParam(Play_GetCamera(play, 0), 8, actor);
     Camera_ChangeMode(Play_GetCamera(play, 0), 2);
-}
-
-s32 func_8008EF30(PlayState* play) {
-    Player* this = GET_PLAYER(play);
-
-    return (this->stateFlags1 & PLAYER_STATE1_ON_HORSE);
 }
 
 s32 func_8008EF44(PlayState* play, s32 ammo) {
@@ -874,16 +804,6 @@ s32 Player_HasMirrorShieldSetToDraw(PlayState* play) {
     Player* this = GET_PLAYER(play);
 
     return (this->rightHandType == PLAYER_MODELTYPE_RH_SHIELD) && (this->currentShield == PLAYER_SHIELD_MIRROR);
-}
-
-s32 Player_ActionToMagicSpell(Player* this, s32 actionParam) {
-    s32 magicSpell = actionParam - PLAYER_IA_MAGIC_SPELL_15;
-
-    if ((magicSpell >= 0) && (magicSpell < 6)) {
-        return magicSpell;
-    } else {
-        return -1;
-    }
 }
 
 s32 Player_HoldsHookshot(Player* this) {
@@ -1189,8 +1109,7 @@ void func_8008F87C(PlayState* play, Player* this, SkelAnime* skelAnime, Vec3f* p
     s16 temp2;
     s32 temp3;
 
-    if ((this->actor.scale.y >= 0.0f) && !(this->stateFlags1 & PLAYER_STATE1_DEAD) &&
-        (Player_ActionToMagicSpell(this, this->itemAction) < 0)) {
+    if ((this->actor.scale.y >= 0.0f) && !(this->stateFlags1 & PLAYER_STATE1_DEAD)) {
         s32 pad;
 
         sp7C = D_80126058[PLAYER_AGE];
@@ -1252,7 +1171,6 @@ void func_8008F87C(PlayState* play, Player* this, SkelAnime* skelAnime, Vec3f* p
 
             if ((temp3 >= 2) && (temp3 < 4) && !SurfaceType_IsWallDamage(&play->colCtx, sp88, sp84)) {
                 footprintPos.y = sp80;
-                EffectSsGFire_Spawn(play, &footprintPos);
             }
         }
     }
@@ -1486,72 +1404,10 @@ void func_800906D4(PlayState* play, Player* this, Vec3f* newTipPos) {
     }
 }
 
-void Player_DrawGetItemIceTrap(PlayState* play, Player* this, Vec3f* refPos, s32 drawIdPlusOne, f32 height) {
-    OPEN_DISPS(play->state.gfxCtx);
-
-    if (iceTrapScale < 0.01) {
-        iceTrapScale += 0.001f;
-    } else if (iceTrapScale < 0.8f) {
-        iceTrapScale += 0.2f;
-    }
-    gSPSegment(POLY_XLU_DISP++, 0x08,
-               Gfx_TwoTexScrollEx(play->state.gfxCtx, 0, 0, (0 - play->gameplayFrames) % 128, 32, 32, 1, 0,
-                                  (play->gameplayFrames * -2) % 128, 32, 32, 0, -1, 0, -2));
-
-    Matrix_Translate(0.0f, -40.0f, 0.0f, MTXMODE_APPLY);
-    Matrix_Scale(iceTrapScale, iceTrapScale, iceTrapScale, MTXMODE_APPLY);
-    gSPMatrix(POLY_XLU_DISP++, MATRIX_NEWMTX(play->state.gfxCtx), G_MTX_NOPUSH | G_MTX_LOAD | G_MTX_MODELVIEW);
-    gDPSetEnvColor(POLY_XLU_DISP++, 0, 50, 100, 255);
-    gSPDisplayList(POLY_XLU_DISP++, gEffIceFragment3DL);
-
-    // Reset matrix for the fake item model because we're animating the size of the ice block around it before this.
-    Matrix_Translate(refPos->x + (3.3f * Math_SinS(this->actor.shape.rot.y)), refPos->y + height,
-                     refPos->z + ((3.3f + (IREG(90) / 10.0f)) * Math_CosS(this->actor.shape.rot.y)), MTXMODE_NEW);
-    Matrix_RotateZYX(0, play->gameplayFrames * 1000, 0, MTXMODE_APPLY);
-    Matrix_Scale(0.2f, 0.2f, 0.2f, MTXMODE_APPLY);
-    // Draw fake item model.
-    if (this->getItemEntry.drawFunc != NULL) {
-        this->getItemEntry.drawFunc(play, &this->getItemEntry);
-    } else {
-        GetItem_Draw(play, drawIdPlusOne - 1);
-    }
-
-    CLOSE_DISPS(play->state.gfxCtx);
-}
-
-void Player_DrawGetItemImpl(PlayState* play, Player* this, Vec3f* refPos, s32 drawIdPlusOne) {
-    f32 height = (this->exchangeItemId != EXCH_ITEM_NONE) ? 6.0f : 14.0f;
-
-    OPEN_DISPS(play->state.gfxCtx);
-
-    gSegments[6] = VIRTUAL_TO_PHYSICAL(this->giObjectSegment);
-
-    gSPSegment(POLY_OPA_DISP++, 0x06, this->giObjectSegment);
-    gSPSegment(POLY_XLU_DISP++, 0x06, this->giObjectSegment);
-
-    Matrix_Translate(refPos->x + (3.3f * Math_SinS(this->actor.shape.rot.y)), refPos->y + height,
-                     refPos->z + ((3.3f + (IREG(90) / 10.0f)) * Math_CosS(this->actor.shape.rot.y)), MTXMODE_NEW);
-    Matrix_RotateZYX(0, play->gameplayFrames * 1000, 0, MTXMODE_APPLY);
-    Matrix_Scale(0.2f, 0.2f, 0.2f, MTXMODE_APPLY);
-
-    if (this->getItemEntry.drawFunc != NULL) {
-        this->getItemEntry.drawFunc(play, &this->getItemEntry);
-    } else {
-        GetItem_Draw(play, drawIdPlusOne - 1);
-    }
-
-    CLOSE_DISPS(play->state.gfxCtx);
-}
-
 void Player_DrawGetItem(PlayState* play, Player* this) {
-    // if (!this->giObjectLoading || !osRecvMesg(&this->giObjectLoadQueue, NULL, OS_MESG_NOBLOCK)) // OTRTODO: Do
-    // something about osRecvMesg here...
-    {
-        this->giObjectLoading = false;
-        Player_DrawGetItemImpl(play, this, &sGetItemRefPos, ABS(this->unk_862));
-    }
+    (void)play;
+    (void)this;
 }
-
 void func_80090A28(Player* this, Vec3f* vecs) {
     D_8012608C.x = D_80126080.x;
 
@@ -1843,7 +1699,7 @@ void Player_PostLimbDrawGameplay(PlayState* play, s32 limbIndex, Gfx** dList, Ve
 }
 
 u32 func_80091738(PlayState* play, u8* segment, SkelAnime* skelAnime) {
-    s16 linkObjectId = gLinkObjectIds[PLAYER_AGE];
+    const s16 linkObjectId = OBJECT_LINK_BOY;
     size_t size;
     void* ptr;
 
@@ -1871,194 +1727,3 @@ u8 sPauseModelGroupBySword[] = {
     PLAYER_MODELGROUP_SWORD_AND_SHIELD, // PLAYER_SWORD_MASTER
     PLAYER_MODELGROUP_BGS,              // PLAYER_SWORD_BIGGORON
 };
-
-s32 Player_OverrideLimbDrawPause(PlayState* play, s32 limbIndex, Gfx** dList, Vec3f* pos, Vec3s* rot, void* arg) {
-    u8* playerSwordAndShield = arg;
-    // SOH: Ensure positive value from playerSwordAndShield[] to avoid OOB array access.
-    //      This can occur in the case where playerSwordAndShield[0] is PLAYER_SWORD_NONE
-    u8 modelGroup =
-        sPauseModelGroupBySword[playerSwordAndShield[0] > 0 ? playerSwordAndShield[0] - PLAYER_SWORD_KOKIRI : 0];
-    s32 type;
-    s32 dListOffset = 0;
-    Gfx** dLists;
-    size_t ptrSize = sizeof(uint32_t);
-
-    if (limbIndex == PLAYER_LIMB_L_HAND) {
-        type = gPlayerModelTypes[modelGroup][PLAYER_MODELGROUPENTRY_LEFT_HAND];
-        sLeftHandType = type;
-
-        // SOH: Handle unexpected swordless case. Previously OOB array access is avoided, but we want the
-        //      hand model-type to be set to open (otherwise it is set to holding sword model-type)
-        if (playerSwordAndShield[0] == PLAYER_SWORD_NONE) {
-            type = PLAYER_MODELTYPE_LH_OPEN;
-        }
-
-        if ((type == PLAYER_MODELTYPE_LH_BGS) && (gSaveContext.swordHealth <= 0.0f)) {
-            dListOffset = 4;
-        }
-    } else if (limbIndex == PLAYER_LIMB_R_HAND) {
-        type = gPlayerModelTypes[modelGroup][PLAYER_MODELGROUPENTRY_RIGHT_HAND];
-        sRightHandType = type;
-        if (type == PLAYER_MODELTYPE_RH_SHIELD) {
-            dListOffset = playerSwordAndShield[1] * ptrSize;
-        }
-    } else if (limbIndex == PLAYER_LIMB_SHEATH) {
-        type = gPlayerModelTypes[modelGroup][PLAYER_MODELGROUPENTRY_SHEATH];
-        if ((type == PLAYER_MODELTYPE_SHEATH_18) || (type == PLAYER_MODELTYPE_SHEATH_19)) {
-            dListOffset = playerSwordAndShield[1] * ptrSize;
-        }
-    } else if (limbIndex == PLAYER_LIMB_WAIST) {
-        type = gPlayerModelTypes[modelGroup][PLAYER_MODELGROUPENTRY_WAIST];
-
-    } else {
-        return 0;
-    }
-
-    dLists = &sPlayerDListGroups[type][PLAYER_AGE];
-    *dList = dLists[dListOffset];
-
-    return 0;
-}
-
-void Player_DrawPauseImpl(PlayState* play, void* gameplayKeep, void* linkObject, SkelAnime* skelAnime, Vec3f* pos,
-                          Vec3s* rot, f32 scale, s32 sword, s32 tunic, s32 shield, s32 boots, s32 width, s32 height,
-                          Vec3f* eye, Vec3f* at, f32 fovy, void* colorFrameBuffer, void* depthFrameBuffer) {
-    // Note: the viewport x and y values are overwritten below, before usage
-    static Vp viewport = { (PAUSE_EQUIP_PLAYER_WIDTH / 2) << 2, (PAUSE_EQUIP_PLAYER_HEIGHT / 2) << 2, G_MAXZ / 2, 0,
-                           (PAUSE_EQUIP_PLAYER_WIDTH / 2) << 2, (PAUSE_EQUIP_PLAYER_HEIGHT / 2) << 2, G_MAXZ / 2, 0 };
-    static Lights1 lights1 = gdSPDefLights1(80, 80, 80, 255, 255, 255, 84, 84, -84);
-    static Vec3f lightDir = { 89.8f, 0.0f, 89.8f };
-    u8 playerSwordAndShield[2];
-    Gfx* opaRef;
-    Gfx* xluRef;
-    u16 perspNorm;
-    Mtx* perspMtx = Graph_Alloc(play->state.gfxCtx, sizeof(Mtx));
-    Mtx* lookAtMtx = Graph_Alloc(play->state.gfxCtx, sizeof(Mtx));
-
-    OPEN_DISPS(play->state.gfxCtx);
-
-    opaRef = POLY_OPA_DISP;
-    POLY_OPA_DISP++;
-
-    xluRef = POLY_XLU_DISP;
-    POLY_XLU_DISP++;
-
-    gSPDisplayList(WORK_DISP++, POLY_OPA_DISP);
-    gSPDisplayList(WORK_DISP++, POLY_XLU_DISP);
-
-    gSPSegment(POLY_OPA_DISP++, 0x00, NULL);
-
-    gDPPipeSync(POLY_OPA_DISP++);
-
-    gSPLoadGeometryMode(POLY_OPA_DISP++, 0);
-    gSPTexture(POLY_OPA_DISP++, 0xFFFF, 0xFFFF, 0, G_TX_RENDERTILE, G_OFF);
-    gDPSetCombineMode(POLY_OPA_DISP++, G_CC_SHADE, G_CC_SHADE);
-    gDPSetOtherMode(POLY_OPA_DISP++,
-                    G_AD_DISABLE | G_CD_MAGICSQ | G_CK_NONE | G_TC_FILT | G_TF_BILERP | G_TT_NONE | G_TL_TILE |
-                        G_TD_CLAMP | G_TP_PERSP | G_CYC_FILL | G_PM_NPRIMITIVE,
-                    G_AC_NONE | G_ZS_PIXEL | G_RM_NOOP | G_RM_NOOP2);
-
-    // Also matches if some of the previous graphics commands are moved inside this block too. Possible macro?
-    
-        s32 pad[2];
-
-        gSPLoadGeometryMode(POLY_OPA_DISP++, G_ZBUFFER | G_SHADE | G_CULL_BACK | G_LIGHTING | G_SHADING_SMOOTH);
-    
-
-    gDPSetScissor(POLY_OPA_DISP++, G_SC_NON_INTERLACE, 0, 0, width, height);
-    gSPClipRatio(POLY_OPA_DISP++, FRUSTRATIO_1);
-
-    gDPSetColorImage(POLY_OPA_DISP++, G_IM_FMT_RGBA, G_IM_SIZ_16b, width, depthFrameBuffer);
-    gDPSetCycleType(POLY_OPA_DISP++, G_CYC_FILL);
-    gDPSetRenderMode(POLY_OPA_DISP++, G_RM_NOOP, G_RM_NOOP2);
-    gDPSetFillColor(POLY_OPA_DISP++, (GPACK_ZDZ(G_MAXFBZ, 0) << 16) | GPACK_ZDZ(G_MAXFBZ, 0));
-    gDPFillRectangle(POLY_OPA_DISP++, 0, 0, width - 1, height - 1);
-
-    gDPPipeSync(POLY_OPA_DISP++);
-
-    gDPSetColorImage(POLY_OPA_DISP++, G_IM_FMT_RGBA, G_IM_SIZ_16b, width, colorFrameBuffer);
-    gDPSetCycleType(POLY_OPA_DISP++, G_CYC_FILL);
-    gDPSetRenderMode(POLY_OPA_DISP++, G_RM_NOOP, G_RM_NOOP2);
-    gDPSetFillColor(POLY_OPA_DISP++, (GPACK_RGBA5551(0, 0, 0, 1) << 16) | GPACK_RGBA5551(0, 0, 0, 1));
-    gDPFillRectangle(POLY_OPA_DISP++, 0, 0, width - 1, height - 1);
-
-    gDPPipeSync(POLY_OPA_DISP++);
-
-    gDPSetDepthImage(POLY_OPA_DISP++, depthFrameBuffer);
-
-    viewport.vp.vscale[0] = viewport.vp.vtrans[0] = width * ((1 << 2) / 2);
-    viewport.vp.vscale[1] = viewport.vp.vtrans[1] = height * ((1 << 2) / 2);
-    gSPViewport(POLY_OPA_DISP++, &viewport);
-
-    guPerspective(perspMtx, &perspNorm, fovy, (f32)width / (f32)height, 10.0f, 4000.0f, 1.0f);
-
-    gSPPerspNormalize(POLY_OPA_DISP++, perspNorm);
-    gSPMatrix(POLY_OPA_DISP++, perspMtx, G_MTX_NOPUSH | G_MTX_LOAD | G_MTX_PROJECTION);
-
-    guLookAt(lookAtMtx, eye->x, eye->y, eye->z, at->x, at->y, at->z, 0.0f, 1.0f, 0.0f);
-
-    gSPMatrix(POLY_OPA_DISP++, lookAtMtx, G_MTX_NOPUSH | G_MTX_MUL | G_MTX_PROJECTION);
-
-    playerSwordAndShield[0] = sword;
-    playerSwordAndShield[1] = shield;
-
-    Matrix_SetTranslateRotateYXZ(pos->x, pos->y, pos->z, rot);
-    Matrix_Scale(scale, scale, scale, MTXMODE_APPLY);
-
-    gSPSegment(POLY_OPA_DISP++, 0x04, gameplayKeep);
-    gSPSegment(POLY_OPA_DISP++, 0x06, linkObject);
-
-    gSPSetLights1(POLY_OPA_DISP++, lights1);
-
-    func_80093C80(play);
-
-    POLY_OPA_DISP = Gfx_SetFog2(POLY_OPA_DISP++, 0, 0, 0, 0, 997, 1000);
-
-    func_8002EABC(pos, &play->view.eye, &lightDir, play->state.gfxCtx);
-
-    gSPSegment(POLY_OPA_DISP++, 0x0C, gCullBackDList);
-
-    Player_DrawImpl(play, skelAnime->skeleton, skelAnime->jointTable, skelAnime->dListCount, 0, tunic, boots, 0,
-                    Player_OverrideLimbDrawPause, NULL, &playerSwordAndShield);
-
-    gSPEndDisplayList(POLY_OPA_DISP++);
-    gSPEndDisplayList(POLY_XLU_DISP++);
-
-    gSPBranchList(opaRef, POLY_OPA_DISP);
-    gSPBranchList(xluRef, POLY_XLU_DISP);
-
-    CLOSE_DISPS(play->state.gfxCtx);
-}
-
-void Player_DrawPause(PlayState* play, u8* segment, SkelAnime* skelAnime, Vec3f* pos, Vec3s* rot, f32 scale, s32 sword,
-                      s32 tunic, s32 shield, s32 boots) {
-    Vec3f eye = { 0.0f, 0.0f, -400.0f };
-    Vec3f at = { 0.0f, 0.0f, 0.0f };
-    Vec3s* destTable;
-    Vec3s* srcTable;
-    s32 i;
-
-    gSegments[4] = VIRTUAL_TO_PHYSICAL(segment + 0x3800);
-    gSegments[6] = VIRTUAL_TO_PHYSICAL(segment + 0x8800);
-
-    if (sword == PLAYER_SWORD_BIGGORON) {
-        srcTable = gLinkPauseAdultBgsJointTable;
-    } else if (shield != PLAYER_SHIELD_NONE) {
-        srcTable = gLinkPauseAdultShieldJointTable;
-    } else {
-        srcTable = gLinkPauseAdultJointTable;
-    }
-
-    srcTable = ResourceMgr_LoadArrayByNameAsVec3s(srcTable);
-    Vec3s* ogSrcTable = srcTable;
-    destTable = skelAnime->jointTable;
-    for (i = 0; i < skelAnime->limbCount; i++) {
-        *destTable++ = *srcTable++;
-    }
-    free(ogSrcTable);
-
-    Player_DrawPauseImpl(play, segment + 0x3800, segment + 0x8800, skelAnime, pos, rot, scale, sword, tunic, shield,
-                         boots, PAUSE_EQUIP_PLAYER_WIDTH, PAUSE_EQUIP_PLAYER_HEIGHT, &eye, &at, 60.0f,
-                         play->state.gfxCtx->curFrameBuffer,
-                         play->state.gfxCtx->curFrameBuffer + (PAUSE_EQUIP_PLAYER_WIDTH * PAUSE_EQUIP_PLAYER_HEIGHT));
-}

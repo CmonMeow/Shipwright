@@ -15,8 +15,6 @@ OSViMode osViModeFpalLan1;
 OSViMode osViModePalLan1;
 // AudioContext gAudioContext;
 // unk_D_8016E750 D_8016E750[4];
-u8 gLetterTLUT[4][32];
-u8 gFontFF[999];
 DmaEntry gDmaDataTable[0x60C];
 // u8 D_80133418;
 u16 gAudioSEFlagSwapSource[64];

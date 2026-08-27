@@ -2,7 +2,7 @@
 #define Z64CAMERA_H
 
 #include <libultraship/libultra.h>
-#include "z64cutscene.h"
+#include "z64runtime_action.h"
 
 #define CAM_STAT_CUT        0
 #define CAM_STAT_WAIT       1
@@ -28,7 +28,7 @@ typedef enum {
     /* 0x03 */ CAM_SET_DUNGEON0,
     /* 0x04 */ CAM_SET_DUNGEON1,
     /* 0x05 */ CAM_SET_NORMAL3,
-    /* 0x06 */ CAM_SET_HORSE, // "HORSE0"
+    /* 0x06 */ CAM_SET_UNUSED_6,
     /* 0x07 */ CAM_SET_BOSS_GOHMA, // "BOSS_GOMA" (unused)
     /* 0x08 */ CAM_SET_BOSS_DODONGO, // "BOSS_DODO" (unused)
     /* 0x09 */ CAM_SET_BOSS_BARINADE, // "BOSS_BARI" (unused)
@@ -121,7 +121,7 @@ typedef enum {
     /* 0x01 */ CAM_FUNC_NORM0,
     /* 0x02 */ CAM_FUNC_NORM1,
     /* 0x03 */ CAM_FUNC_NORM2,
-    /* 0x04 */ CAM_FUNC_NORM3,
+    /* 0x04 */ CAM_FUNC_UNUSED_4,
     /* 0x05 */ CAM_FUNC_NORM4,
     /* 0x06 */ CAM_FUNC_PARA0,
     /* 0x07 */ CAM_FUNC_PARA1,
@@ -314,40 +314,6 @@ typedef struct {
     { unk_23, CAM_DATA_UNK_23 }, \
     { yawUpdateRateTarget, CAM_DATA_YAW_UPDATE_RATE_TARGET }, \
     { maxYawUpdate, CAM_DATA_MAX_YAW_UPDATE }, \
-    { fov, CAM_DATA_FOV }, \
-    { atLerpStepScale, CAM_DATA_AT_LERP_STEP_SCALE }, \
-    { flags, CAM_DATA_FLAGS }
-
-typedef struct {
-    /* 0x00 */ SwingAnimation swing;
-    /* 0x1C */ f32 unk_1C;
-    /* 0x20 */ f32 unk_20;
-    /* 0x24 */ s16 curPitch;
-    /* 0x26 */ s16 yawUpdAmt;
-    /* 0x28 */ s16 yawTimer;
-    /* 0x2A */ s16 distTimer;
-} Normal3Anim; // size = 0x2C
-
-typedef struct {
-    /* 0x00 */ f32 yOffset;
-    /* 0x04 */ f32 distMin;
-    /* 0x08 */ f32 distMax;
-    /* 0x0C */ f32 yawUpdateSpeed;
-    /* 0x10 */ f32 unk_10;
-    /* 0x14 */ f32 fovTarget;
-    /* 0x18 */ f32 maxAtLERPScale;
-    /* 0x1C */ s16 pitchTarget;
-    /* 0x1E */ s16 interfaceFlags;
-    /* 0x20 */ Normal3Anim anim;
-} Normal3; // size = 0x4C
-
-#define CAM_FUNCDATA_NORM3(yOffset, eyeDist, eyeDistNext, pitchTarget, yawUpdateRateTarget, xzUpdateRateTarget, fov, atLerpStepScale, flags) \
-    { yOffset, CAM_DATA_Y_OFFSET }, \
-    { eyeDist, CAM_DATA_EYE_DIST }, \
-    { eyeDistNext, CAM_DATA_EYE_DIST_NEXT }, \
-    { pitchTarget, CAM_DATA_PITCH_TARGET }, \
-    { yawUpdateRateTarget, CAM_DATA_YAW_UPDATE_RATE_TARGET }, \
-    { xzUpdateRateTarget, CAM_DATA_XZ_UPDATE_RATE_TARGET }, \
     { fov, CAM_DATA_FOV }, \
     { atLerpStepScale, CAM_DATA_AT_LERP_STEP_SCALE }, \
     { flags, CAM_DATA_FLAGS }
@@ -1218,71 +1184,5 @@ typedef struct {
     /* 0x168 */ s16 csId;
     /* 0x16A */ s16 unk_16A;
 } Camera; // size = 0x16C
-
-/**
- * Debug Camera
-*/
-
-typedef struct {
-    /* 0x0000 */ s16 mode;
-    /* 0x0002 */ s16 nFrames;
-    /* 0x0004 */ s16 nPoints;
-    /* 0x0006 */ s16 unkIdx;
-    /* 0x0008 */ s16 unk_08;
-    /* 0x000A */ s16 unk_0A;
-    /* 0x000C */ s32 unk_0C; // bool: indicates position vs lookAt?
-    /* 0x0010 */ char unk_10[0x14];
-    /* 0x0024 */ CutsceneCameraPoint position[129];
-    /* 0x0834 */ CutsceneCameraPoint lookAt[129];
-    /* 0x1044 */ s16 demoCtrlMenu;
-    /* 0x1046 */ s16 demoCtrlActionIdx; // e (?), s (save), l (load), c (clear)
-    /* 0x1048 */ s16 demoCtrlToggleSwitch;
-    /* 0x104A */ Vec3s unk_104A;
-} DbCameraSub; // size = 0x1050
-
-typedef struct {
-    /* 0x00 */ s32 unk_00;
-    /* 0x04 */ Vec3f at;
-    /* 0x10 */ Vec3f eye;
-    /* 0x1C */ Vec3f unk_1C;
-    /* 0x28 */ char unk_28[0xC];
-    /* 0x34 */ s32 unk_34;
-    /* 0x38 */ s32 unk_38;
-    /* 0x3C */ s32 unk_3C; // bool
-    /* 0x40 */ s32 unk_40;
-    /* 0x44 */ s32 unk_44;
-    /* 0x48 */ f32 fov;
-    /* 0x4C */ s16 roll;
-    /* 0x4E */ char unk_4E[0x2];
-    /* 0x50 */ f32 rollDegrees;
-    /* 0x54 */ Vec3f unk_54;
-    /* 0x60 */ Vec3f unk_60;
-    /* 0x6C */ Vec3f unk_6C;
-    /* 0x78 */ s16 unk_78;
-    /* 0x7A */ s16 unk_7A;
-    /* 0x7C */ DbCameraSub sub;
-} DbCamera; // size = 0x10CC
-
-typedef struct {
-    /* 0x00 */ char letter;
-    /* 0x01 */ u8 unk_01;
-    /* 0x02 */ s16 mode;
-    /* 0x04 */ CutsceneCameraPoint* position;
-    /* 0x08 */ CutsceneCameraPoint* lookAt;
-    /* 0x0C */ s16 nFrames;
-    /* 0x0E */ s16 nPoints;
-} DbCameraCut; // size = 0x10
-
-typedef struct {
-    /* 0x00 */ f32 curFrame;
-    /* 0x04 */ f32 unk_04; // frame count?
-    /* 0x08 */ s16 keyframe;
-    /* 0x0A */ s16 unk_0A;
-    /* 0x0C */ s16 unk_0C;
-    /* 0x10 */ Vec3f positionPos; // confusing name
-    /* 0x1C */ Vec3f lookAtPos;
-    /* 0x28 */ f32 roll;
-    /* 0x2C */ f32 fov;
-} DbCameraAnim; // size = 0x30
 
 #endif

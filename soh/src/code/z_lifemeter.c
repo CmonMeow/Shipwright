@@ -583,9 +583,7 @@ void HealthMeter_HandleCriticalAlarm(PlayState* play) {
         if (interfaceCtx->unk_22A <= 0) {
             interfaceCtx->unk_22A = 0;
             interfaceCtx->unk_22C = 0;
-            if (!Player_InCsMode(play) &&
-                (play->pauseCtx.state == 0) && (play->pauseCtx.debugState == 0) && HealthMeter_IsCritical() &&
-                !Play_InCsMode(play)) {
+            if (!Player_InCsMode(play) && HealthMeter_IsCritical()) {
                 Sfx_PlaySfxCentered(NA_SE_SY_HITPOINT_ALARM);
             }
         }

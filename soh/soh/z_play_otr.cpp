@@ -1,13 +1,9 @@
 #include <libultraship/log/PathEngineLog.hpp>
-#include "ResourceManagerHelpers.h"
 #include <libultraship/libultraship.h>
 #include "soh/resource/type/Scene.h"
-#include <ship/utils/StringHelper.h>
 #include "global.h"
 #include "vt.h"
-#include <fast/resource/type/Vertex.h>
 
-extern "C" void Play_InitScene(PlayState* play, s32 spawn);
 extern "C" void Play_InitEnvironment(PlayState* play, s16 skyboxId);
 void OTRPlay_InitScene(PlayState* play, s32 spawn);
 s32 OTRScene_ExecuteCommands(PlayState* play, SOH::Scene* scene);
@@ -28,24 +24,14 @@ extern "C" void OTRPlay_SpawnScene(PlayState* play, s32 sceneId, s32 spawn) {
 
     // osSyncPrintf("\nSCENE SIZE %fK\n", (scene->sceneFile.vromEnd - scene->sceneFile.vromStart) / 1024.0f);
 
-    // Scenes considered "dungeon" with a MQ variant
-    int16_t inNonSharedScene = (sceneId >= SCENE_DEKU_TREE && sceneId <= SCENE_ICE_CAVERN) ||
-                               sceneId == SCENE_GERUDO_TRAINING_GROUND || sceneId == SCENE_INSIDE_GANONS_CASTLE;
-
-    std::string sceneVersion = "shared";
-    if (inNonSharedScene) {
-        sceneVersion = ResourceMgr_IsGameMasterQuest() ? "mq" : "nonmq";
-    }
-    std::string scenePath = StringHelper::Sprintf("scenes/%s/%s/%s", sceneVersion.c_str(), scene->sceneFile.fileName,
-                                                  scene->sceneFile.fileName);
+    const std::string scenePath = "scenes/shared/test01_scene/test01_scene";
 
     play->sceneSegment = OTRPlay_LoadFile(play, scenePath.c_str());
 
-    // Failed to load scene... default to doodongs cavern
+    // The reduced runtime has no fallback scene.
     if (play->sceneSegment == nullptr) {
-        Error("Unable to load scene %s... Defaulting to Doodong's Cavern!\n",
-                  scenePath.c_str());
-        OTRPlay_SpawnScene(play, 0x01, 0);
+        PathEngineLog("Unable to load required test01 scene: {}", scenePath);
+        play->state.running = false;
         return;
     }
 
@@ -66,25 +52,12 @@ void OTRPlay_InitScene(PlayState* play, s32 spawn) {
     play->linkActorEntry = nullptr;
     play->unk_11DFC = nullptr;
     play->setupEntranceList = nullptr;
-    play->setupExitList = nullptr;
-    play->cUpElfMsgs = nullptr;
-    play->setupPathList = nullptr;
-    play->numSetupActors = 0;
     Object_InitBank(play, &play->objectCtx);
     LightContext_Init(play, &play->lightCtx);
-    TransitionActor_InitContext(&play->state, &play->transiActorCtx);
     func_80096FD4(play, &play->roomCtx.curRoom);
     YREG(15) = 0;
     gSaveContext.worldMapArea = 0;
     OTRScene_ExecuteCommands(play, (SOH::Scene*)play->sceneSegment);
 
     Play_InitEnvironment(play, play->skyboxId);
-    /* auto data = static_cast<LUS::Vertex*>(Ship::Context::GetInstance()
-                                               ->GetResourceManager()
-                                               ->ResourceLoad("object_link_child\\object_link_childVtx_01FE08")
-                                               .get());
-
-    auto data2 = ResourceMgr_LoadVtxByCRC(0x68d4ea06044e228f);*/
-
-    volatile int a = 0;
 }

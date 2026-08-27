@@ -18,9 +18,6 @@ static const ALIGN_ASSET(2) char gItemIconBowTex[] = dgItemIconBowTex;
 #define dgItemIconArrowFireTex "__OTR__textures/icon_item_static/gItemIconArrowFireTex"
 static const ALIGN_ASSET(2) char gItemIconArrowFireTex[] = dgItemIconArrowFireTex;
 
-#define dgItemIconDinsFireTex "__OTR__textures/icon_item_static/gItemIconDinsFireTex"
-static const ALIGN_ASSET(2) char gItemIconDinsFireTex[] = dgItemIconDinsFireTex;
-
 #define dgItemIconSlingshotTex "__OTR__textures/icon_item_static/gItemIconSlingshotTex"
 static const ALIGN_ASSET(2) char gItemIconSlingshotTex[] = dgItemIconSlingshotTex;
 
@@ -42,9 +39,6 @@ static const ALIGN_ASSET(2) char gItemIconLongshotTex[] = dgItemIconLongshotTex;
 #define dgItemIconArrowIceTex "__OTR__textures/icon_item_static/gItemIconArrowIceTex"
 static const ALIGN_ASSET(2) char gItemIconArrowIceTex[] = dgItemIconArrowIceTex;
 
-#define dgItemIconFaroresWindTex "__OTR__textures/icon_item_static/gItemIconFaroresWindTex"
-static const ALIGN_ASSET(2) char gItemIconFaroresWindTex[] = dgItemIconFaroresWindTex;
-
 #define dgItemIconBoomerangTex "__OTR__textures/icon_item_static/gItemIconBoomerangTex"
 static const ALIGN_ASSET(2) char gItemIconBoomerangTex[] = dgItemIconBoomerangTex;
 
@@ -59,9 +53,6 @@ static const ALIGN_ASSET(2) char gItemIconHammerTex[] = dgItemIconHammerTex;
 
 #define dgItemIconArrowLightTex "__OTR__textures/icon_item_static/gItemIconArrowLightTex"
 static const ALIGN_ASSET(2) char gItemIconArrowLightTex[] = dgItemIconArrowLightTex;
-
-#define dgItemIconNayrusLoveTex "__OTR__textures/icon_item_static/gItemIconNayrusLoveTex"
-static const ALIGN_ASSET(2) char gItemIconNayrusLoveTex[] = dgItemIconNayrusLoveTex;
 
 #define dgItemIconBottleEmptyTex "__OTR__textures/icon_item_static/gItemIconBottleEmptyTex"
 static const ALIGN_ASSET(2) char gItemIconBottleEmptyTex[] = dgItemIconBottleEmptyTex;

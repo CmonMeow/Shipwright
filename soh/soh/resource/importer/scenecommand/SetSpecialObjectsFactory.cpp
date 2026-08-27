@@ -10,7 +10,7 @@ SetSpecialObjectsFactory::ReadResource(std::shared_ptr<Ship::ResourceInitData> i
 
     ReadCommandId(setSpecialObjects, reader);
 
-    setSpecialObjects->specialObjects.elfMessage = reader->ReadInt8();
+    reader->ReadInt8();
     setSpecialObjects->specialObjects.globalObject = reader->ReadInt16();
 
     
@@ -25,7 +25,6 @@ SetSpecialObjectsFactoryXML::ReadResource(std::shared_ptr<Ship::ResourceInitData
 
     setSpecialObjects->cmdId = SceneCommandID::SetSpecialObjects;
 
-    setSpecialObjects->specialObjects.elfMessage = reader->IntAttribute("ElfMessage");
     setSpecialObjects->specialObjects.globalObject = reader->IntAttribute("GlobalObject");
 
     return setSpecialObjects;

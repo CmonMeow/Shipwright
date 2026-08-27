@@ -69,6 +69,7 @@ struct PathEngineMultiplayerUI::Impl {
     std::deque<NetworkChatLine> history;
     std::string draft;
     std::string notice;
+    std::string gameplayNotice;
     std::string lastStatus;
     size_t cursor = 0;
     size_t viewStart = 0;
@@ -319,7 +320,7 @@ struct PathEngineMultiplayerUI::Impl {
         auto& variables = Variables();
         // A disabled passive overlay must never hide the command line while
         // the user is actively typing into it.
-        if (!active && !variables.GetInteger(kChatEnabled, 1)) {
+        if (!active && !variables.GetInteger(kChatEnabled, 1) && gameplayNotice.empty()) {
             return;
         }
         const float windowWidth = static_cast<float>(WindowGetWidth());
@@ -375,6 +376,13 @@ struct PathEngineMultiplayerUI::Impl {
         if (!notice.empty()) {
             Ship::PathEngineOverlay::QueueText(notice.c_str(), x + 8.0f, y + height + 4.0f, 0.95f, 0.82f, 0.48f);
         }
+        if (!gameplayNotice.empty()) {
+            const float notificationX = std::max(12.0f, (windowWidth - 420.0f) * 0.5f);
+            Ship::PathEngineOverlay::QueueRect(notificationX, 42.0f, notificationX + 420.0f, 78.0f,
+                                               0.02f, 0.025f, 0.025f, 0.82f);
+            Ship::PathEngineOverlay::QueueText(gameplayNotice.c_str(), notificationX + 12.0f, 53.0f,
+                                               0.95f, 0.90f, 0.72f);
+        }
     }
 
     void UpdateVoice(SoH::Network::ShipwrightNetworkRuntime& runtime) {
@@ -407,6 +415,7 @@ struct PathEngineMultiplayerUI::Impl {
         Ship::PathEngineOverlay::Clear();
         voice.reset();
         history.clear();
+        gameplayNotice.clear();
     }
 };
 
@@ -419,6 +428,14 @@ PathEngineMultiplayerUI::~PathEngineMultiplayerUI() {
 
 void PathEngineMultiplayerUI::Update(SoH::Network::ShipwrightNetworkRuntime& runtime) {
     mImpl->Update(runtime);
+}
+
+void PathEngineMultiplayerUI::ShowNotification(const char* text) {
+    mImpl->gameplayNotice = text == nullptr ? "" : text;
+}
+
+void PathEngineMultiplayerUI::ClearNotification() {
+    mImpl->gameplayNotice.clear();
 }
 
 void PathEngineMultiplayerUI::Shutdown() {

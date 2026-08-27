@@ -397,7 +397,6 @@ void Environment_Init(PlayState* play2, EnvironmentContext* envCtx, s32 unused) 
     cREG(12) = 0;
     cREG(13) = 0;
     cREG(14) = 0;
-    D_8015FCC8 = 1;
 
     for (i = 0; i < ARRAY_COUNT(sLightningBolts); i++) {
         sLightningBolts[i].state = LIGHTNING_BOLT_INACTIVE;
@@ -406,8 +405,8 @@ void Environment_Init(PlayState* play2, EnvironmentContext* envCtx, s32 unused) 
     play->roomCtx.unk_74[0] = 0;
     play->roomCtx.unk_74[1] = 0;
 
-    for (i = 0; i < ARRAY_COUNT(play->csCtx.npcActions); i++) {
-        play->csCtx.npcActions[i] = 0;
+    for (i = 0; i < ARRAY_COUNT(play->playerActionCtx.npcActions); i++) {
+        play->playerActionCtx.npcActions[i] = 0;
     }
 
     if (Object_GetIndex(&play->objectCtx, OBJECT_GAMEPLAY_FIELD_KEEP) < 0 && !play->envCtx.sunMoonDisabled) {
@@ -877,8 +876,8 @@ void Environment_PrintDebugInfo(PlayState* play, Gfx** gfx) {
 void func_80075B44(PlayState* play);
 void func_800766C4(PlayState* play);
 
-void Environment_Update(PlayState* play, EnvironmentContext* envCtx, LightContext* lightCtx, PauseContext* pauseCtx,
-                        MessageContext* msgCtx, GameOverContext* gameOverCtx, GraphicsContext* gfxCtx) {
+void Environment_Update(PlayState* play, EnvironmentContext* envCtx, LightContext* lightCtx, MessageContext* msgCtx,
+                        GameOverContext* gameOverCtx, GraphicsContext* gfxCtx) {
     f32 sp8C;
     f32 sp88 = 0.0f;
     u16 i;
@@ -892,8 +891,8 @@ void Environment_Update(PlayState* play, EnvironmentContext* envCtx, LightContex
         Rumble_ClearRequests();
     }
 
-    if (pauseCtx->state == 0) {
-        if ((play->pauseCtx.state == 0) && (play->pauseCtx.debugState == 0)) {
+    {
+        {
             if (play->skyboxId == SKYBOX_NORMAL_SKY) {
                 play->skyboxCtx.rot.y -= 0.001f;
             } else if (play->skyboxId == SKYBOX_CUTSCENE_MAP) {
@@ -917,7 +916,7 @@ void Environment_Update(PlayState* play, EnvironmentContext* envCtx, LightContex
             }
         }
 
-        if ((pauseCtx->state == 0) && (gameOverCtx->state == GAMEOVER_INACTIVE)) {
+        if (gameOverCtx->state == GAMEOVER_INACTIVE) {
             if (((msgCtx->msgLength == 0) && (msgCtx->msgMode == 0)) ||
                 (((void)0, gSaveContext.gameMode) == GAMEMODE_END_CREDITS)) {
                 if ((envCtx->unk_1A == 0) && !FrameAdvance_IsEnabled(play) &&
@@ -1304,7 +1303,7 @@ void Environment_DrawSunAndMoon(PlayState* play) {
 
     OPEN_DISPS(play->state.gfxCtx);
 
-    if (play->csCtx.state != 0) {
+    if (play->playerActionCtx.state != 0) {
         Math_SmoothStepToF(&play->envCtx.sunPos.x,
                            -(Math_SinS(((void)0, gSaveContext.dayTime) - 0x8000) * 120.0f) * 25.0f, 1.0f, 0.8f, 0.8f);
         Math_SmoothStepToF(&play->envCtx.sunPos.y,
@@ -2088,7 +2087,7 @@ void func_80075B44(PlayState* play) {
                 gSaveContext.dogIsLost = true;
                 Sfx_PlaySfxCentered(NA_SE_EV_CHICKEN_CRY_M);
                 if ((Inventory_ReplaceItem(play, ITEM_WEIRD_EGG, ITEM_CHICKEN) || Inventory_HatchPocketCucco(play)) &&
-                    play->csCtx.state == 0 && !Player_InCsMode(play)) {
+                    play->playerActionCtx.state == 0 && !Player_InCsMode(play)) {
                     Message_StartTextbox(play, 0x3066, NULL);
                 }
                 play->envCtx.unk_E0++;
@@ -2126,104 +2125,8 @@ void Environment_DrawCustomLensFlare(PlayState* play) {
     }
 }
 
-void Environment_InitGameOverLights(PlayState* play) {
-    s32 pad;
-    Player* player = GET_PLAYER(play);
 
-    sGameOverLightsIntensity = 0;
 
-    Lights_PointNoGlowSetInfo(&sNGameOverLightInfo, (s16)player->actor.world.pos.x - 10.0f,
-                              (s16)player->actor.world.pos.y + 10.0f, (s16)player->actor.world.pos.z - 10.0f, 0, 0, 0,
-                              255);
-    sNGameOverLightNode = LightContext_InsertLight(play, &play->lightCtx, &sNGameOverLightInfo);
-
-    Lights_PointNoGlowSetInfo(&sSGameOverLightInfo, (s16)player->actor.world.pos.x + 10.0f,
-                              (s16)player->actor.world.pos.y + 10.0f, (s16)player->actor.world.pos.z + 10.0f, 0, 0, 0,
-                              255);
-    sSGameOverLightNode = LightContext_InsertLight(play, &play->lightCtx, &sSGameOverLightInfo);
-}
-
-void Environment_FadeInGameOverLights(PlayState* play) {
-    Player* player = GET_PLAYER(play);
-    s16 i;
-
-    Lights_PointNoGlowSetInfo(&sNGameOverLightInfo, (s16)player->actor.world.pos.x - 10.0f,
-                              (s16)player->actor.world.pos.y + 10.0f, (s16)player->actor.world.pos.z - 10.0f,
-                              sGameOverLightsIntensity, sGameOverLightsIntensity, sGameOverLightsIntensity, 255);
-    Lights_PointNoGlowSetInfo(&sSGameOverLightInfo, (s16)player->actor.world.pos.x + 10.0f,
-                              (s16)player->actor.world.pos.y + 10.0f, (s16)player->actor.world.pos.z + 10.0f,
-                              sGameOverLightsIntensity, sGameOverLightsIntensity, sGameOverLightsIntensity, 255);
-
-    if (sGameOverLightsIntensity < 254) {
-        sGameOverLightsIntensity += 2;
-    }
-
-    if (func_800C0CB8(play)) {
-        for (i = 0; i < 3; i++) {
-            if (play->envCtx.adjAmbientColor[i] > -255) {
-                play->envCtx.adjAmbientColor[i] -= 12;
-                play->envCtx.adjLight1Color[i] -= 12;
-            }
-            play->envCtx.adjFogColor[i] = -255;
-        }
-
-        if (play->envCtx.lightSettings.fogFar + play->envCtx.adjFogFar > 900) {
-            play->envCtx.adjFogFar -= 100;
-        }
-
-        if (play->envCtx.lightSettings.fogNear + play->envCtx.adjFogNear > 950) {
-            play->envCtx.adjFogNear -= 10;
-        }
-    } else {
-        play->envCtx.fillScreen = true;
-        play->envCtx.screenFillColor[0] = 0;
-        play->envCtx.screenFillColor[1] = 0;
-        play->envCtx.screenFillColor[2] = 0;
-        play->envCtx.screenFillColor[3] = sGameOverLightsIntensity;
-    }
-}
-
-void Environment_FadeOutGameOverLights(PlayState* play) {
-    Player* player = GET_PLAYER(play);
-    s16 i;
-
-    if (sGameOverLightsIntensity >= 3) {
-        sGameOverLightsIntensity -= 3;
-    } else {
-        sGameOverLightsIntensity = 0;
-    }
-
-    if (sGameOverLightsIntensity == 1) {
-        LightContext_RemoveLight(play, &play->lightCtx, sNGameOverLightNode);
-        LightContext_RemoveLight(play, &play->lightCtx, sSGameOverLightNode);
-    } else if (sGameOverLightsIntensity >= 2) {
-        Lights_PointNoGlowSetInfo(&sNGameOverLightInfo, (s16)player->actor.world.pos.x - 10.0f,
-                                  (s16)player->actor.world.pos.y + 10.0f, (s16)player->actor.world.pos.z - 10.0f,
-                                  sGameOverLightsIntensity, sGameOverLightsIntensity, sGameOverLightsIntensity, 255);
-        Lights_PointNoGlowSetInfo(&sSGameOverLightInfo, (s16)player->actor.world.pos.x + 10.0f,
-                                  (s16)player->actor.world.pos.y + 10.0f, (s16)player->actor.world.pos.z + 10.0f,
-                                  sGameOverLightsIntensity, sGameOverLightsIntensity, sGameOverLightsIntensity, 255);
-    }
-
-    if (func_800C0CB8(play)) {
-        for (i = 0; i < 3; i++) {
-            Math_SmoothStepToS(&play->envCtx.adjAmbientColor[i], 0, 5, 12, 1);
-            Math_SmoothStepToS(&play->envCtx.adjLight1Color[i], 0, 5, 12, 1);
-            play->envCtx.adjFogColor[i] = 0;
-        }
-        play->envCtx.adjFogFar = 0;
-        play->envCtx.adjFogNear = 0;
-    } else {
-        play->envCtx.fillScreen = true;
-        play->envCtx.screenFillColor[0] = 0;
-        play->envCtx.screenFillColor[1] = 0;
-        play->envCtx.screenFillColor[2] = 0;
-        play->envCtx.screenFillColor[3] = sGameOverLightsIntensity;
-        if (sGameOverLightsIntensity == 0) {
-            play->envCtx.fillScreen = false;
-        }
-    }
-}
 
 void func_800766C4(PlayState* play) {
     u8 max = MAX(play->envCtx.unk_EE[0], play->envCtx.unk_F2[0]);
@@ -2523,8 +2426,8 @@ void Environment_WarpSongLeave(PlayState* play) {
     gSaveContext.respawnFlag = -3;
     play->nextEntranceIndex = gSaveContext.respawn[RESPAWN_MODE_RETURN].entranceIndex;
     play->transitionTrigger = TRANS_TRIGGER_START;
-    play->transitionType = TRANS_TYPE_FADE_WHITE;
-    gSaveContext.nextTransitionType = TRANS_TYPE_FADE_WHITE;
+    play->transitionType = TRANS_TYPE_FADE_BLACK;
+    gSaveContext.nextTransitionType = TRANS_TYPE_FADE_BLACK;
 
     switch (play->nextEntranceIndex) {
         case ENTR_DEATH_MOUNTAIN_CRATER_UPPER_EXIT:

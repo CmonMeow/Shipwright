@@ -3,7 +3,6 @@
 
 #include <libultraship/libultra.h>
 
-extern s32 gPauseFrameBuffer;
 extern s32 gBlurFrameBuffer;
 extern s32 gReusableFrameBuffer;
 extern s32 gN64ResFrameBuffer;

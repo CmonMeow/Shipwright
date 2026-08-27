@@ -4,7 +4,6 @@ dmadata
 Audiobank
 Audioseq
 Audiotable
-kanji
 link_animetion
 icon_item_static
 icon_item_24_static
@@ -15,13 +14,7 @@ icon_item_jpn_static
 icon_item_nes_static
 item_name_static
 map_name_static
-do_action_static
-message_static
 message_texture_static
-nes_font_static
-jpn_message_data_static
-nes_message_data_static
-staff_message_data_static
 map_grand_static
 map_i_static
 map_48x85_static
@@ -163,8 +156,6 @@ ovl_En_Horse_Link_Child
 ovl_Door_Ana
 ovl_Bg_Spot02_Objects
 ovl_Bg_Haka
-ovl_Magic_Wind
-ovl_Magic_Fire
 ovl_En_Ru1
 ovl_Boss_Fd2
 ovl_En_Fd_Fire
@@ -240,7 +231,6 @@ ovl_Item_Shield
 ovl_Bg_Ice_Shelter
 ovl_En_Ice_Hono
 ovl_Item_Ocarina
-ovl_Magic_Dark
 ovl_Demo_6K
 ovl_En_Anubice_Tag
 ovl_Bg_Haka_Gate
@@ -683,7 +673,6 @@ object_oF1d_map
 object_ru2
 object_gi_shield_1
 object_dekujr
-object_gi_magicpot
 object_gi_bomb_1
 object_oF1s
 object_ma2
@@ -757,7 +746,6 @@ object_ge1
 object_yabusame_point
 object_gi_boots_2
 object_gi_seed
-object_gnd_magic
 object_d_elevator
 object_d_hsblock
 object_d_lift

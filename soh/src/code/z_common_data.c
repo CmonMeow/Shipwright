@@ -2,6 +2,8 @@
 #include <string.h>
 
 SaveContext gSaveContext;
+static GameInfo sGameInfo;
+GameInfo* gGameInfo = &sGameInfo;
 
 void SaveContext_Init(void) {
     memset(&gSaveContext, 0, sizeof(gSaveContext));

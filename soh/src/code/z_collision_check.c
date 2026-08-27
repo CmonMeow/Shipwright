@@ -1436,52 +1436,9 @@ void CollisionCheck_NoBlood(PlayState* play, Collider* collider, Vec3f* v) {
  * Used by collider types HIT0 and HIT8.
  */
 void CollisionCheck_BlueBlood(PlayState* play, Collider* collider, Vec3f* v) {
-    static EffectSparkInit D_8015D8A0;
-    s32 effectIndex;
-
-    D_8015D8A0.position.x = v->x;
-    D_8015D8A0.position.y = v->y;
-    D_8015D8A0.position.z = v->z;
-    D_8015D8A0.uDiv = 5;
-    D_8015D8A0.vDiv = 5;
-    D_8015D8A0.colorStart[0].r = 10;
-    D_8015D8A0.colorStart[0].g = 10;
-    D_8015D8A0.colorStart[0].b = 200;
-    D_8015D8A0.colorStart[0].a = 255;
-    D_8015D8A0.colorStart[1].r = 0;
-    D_8015D8A0.colorStart[1].g = 0;
-    D_8015D8A0.colorStart[1].b = 128;
-    D_8015D8A0.colorStart[1].a = 255;
-    D_8015D8A0.colorStart[2].r = 0;
-    D_8015D8A0.colorStart[2].g = 0;
-    D_8015D8A0.colorStart[2].b = 128;
-    D_8015D8A0.colorStart[2].a = 255;
-    D_8015D8A0.colorStart[3].r = 0;
-    D_8015D8A0.colorStart[3].g = 0;
-    D_8015D8A0.colorStart[3].b = 128;
-    D_8015D8A0.colorStart[3].a = 255;
-    D_8015D8A0.colorEnd[0].r = 0;
-    D_8015D8A0.colorEnd[0].g = 0;
-    D_8015D8A0.colorEnd[0].b = 32;
-    D_8015D8A0.colorEnd[0].a = 0;
-    D_8015D8A0.colorEnd[1].r = 0;
-    D_8015D8A0.colorEnd[1].g = 0;
-    D_8015D8A0.colorEnd[1].b = 32;
-    D_8015D8A0.colorEnd[1].a = 0;
-    D_8015D8A0.colorEnd[2].r = 0;
-    D_8015D8A0.colorEnd[2].g = 0;
-    D_8015D8A0.colorEnd[2].b = 64;
-    D_8015D8A0.colorEnd[2].a = 0;
-    D_8015D8A0.colorEnd[3].r = 0;
-    D_8015D8A0.colorEnd[3].g = 0;
-    D_8015D8A0.colorEnd[3].b = 64;
-    D_8015D8A0.colorEnd[3].a = 0;
-    D_8015D8A0.timer = 0;
-    D_8015D8A0.duration = 16;
-    D_8015D8A0.speed = 8.0f;
-    D_8015D8A0.gravity = -1.0f;
-
-    Effect_Add(play, &effectIndex, EFFECT_SPARK, 0, 1, &D_8015D8A0);
+    (void)play;
+    (void)collider;
+    (void)v;
 }
 
 /**
@@ -1489,52 +1446,9 @@ void CollisionCheck_BlueBlood(PlayState* play, Collider* collider, Vec3f* v) {
  * Used by collider types HIT2 and HIT6. No actor has type HIT2.
  */
 void CollisionCheck_GreenBlood(PlayState* play, Collider* collider, Vec3f* v) {
-    static EffectSparkInit D_8015DD68;
-    s32 effectIndex;
-
-    D_8015DD68.position.x = v->x;
-    D_8015DD68.position.y = v->y;
-    D_8015DD68.position.z = v->z;
-    D_8015DD68.uDiv = 5;
-    D_8015DD68.vDiv = 5;
-    D_8015DD68.colorStart[0].r = 10;
-    D_8015DD68.colorStart[0].g = 200;
-    D_8015DD68.colorStart[0].b = 10;
-    D_8015DD68.colorStart[0].a = 255;
-    D_8015DD68.colorStart[1].r = 0;
-    D_8015DD68.colorStart[1].g = 128;
-    D_8015DD68.colorStart[1].b = 0;
-    D_8015DD68.colorStart[1].a = 255;
-    D_8015DD68.colorStart[2].r = 0;
-    D_8015DD68.colorStart[2].g = 128;
-    D_8015DD68.colorStart[2].b = 0;
-    D_8015DD68.colorStart[2].a = 255;
-    D_8015DD68.colorStart[3].r = 0;
-    D_8015DD68.colorStart[3].g = 128;
-    D_8015DD68.colorStart[3].b = 0;
-    D_8015DD68.colorStart[3].a = 255;
-    D_8015DD68.colorEnd[0].r = 0;
-    D_8015DD68.colorEnd[0].g = 32;
-    D_8015DD68.colorEnd[0].b = 0;
-    D_8015DD68.colorEnd[0].a = 0;
-    D_8015DD68.colorEnd[1].r = 0;
-    D_8015DD68.colorEnd[1].g = 32;
-    D_8015DD68.colorEnd[1].b = 0;
-    D_8015DD68.colorEnd[1].a = 0;
-    D_8015DD68.colorEnd[2].r = 0;
-    D_8015DD68.colorEnd[2].g = 64;
-    D_8015DD68.colorEnd[2].b = 0;
-    D_8015DD68.colorEnd[2].a = 0;
-    D_8015DD68.colorEnd[3].r = 0;
-    D_8015DD68.colorEnd[3].g = 64;
-    D_8015DD68.colorEnd[3].b = 0;
-    D_8015DD68.colorEnd[3].a = 0;
-    D_8015DD68.timer = 0;
-    D_8015DD68.duration = 16;
-    D_8015DD68.speed = 8.0f;
-    D_8015DD68.gravity = -1.0f;
-
-    Effect_Add(play, &effectIndex, EFFECT_SPARK, 0, 1, &D_8015DD68);
+    (void)play;
+    (void)collider;
+    (void)v;
 }
 
 /**
@@ -1542,8 +1456,8 @@ void CollisionCheck_GreenBlood(PlayState* play, Collider* collider, Vec3f* v) {
  * Used by collider type HIT4, which no actor has.
  */
 void CollisionCheck_WaterBurst(PlayState* play, Collider* collider, Vec3f* pos) {
+    (void)collider;
     EffectSsSibuki_SpawnBurst(play, pos);
-    CollisionCheck_SpawnWaterDroplets(play, pos);
 }
 
 /**
@@ -1551,7 +1465,9 @@ void CollisionCheck_WaterBurst(PlayState* play, Collider* collider, Vec3f* pos) 
  * Used by collider type HIT7, which no actor has.
  */
 void CollisionCheck_RedBlood(PlayState* play, Collider* collider, Vec3f* v) {
-    CollisionCheck_SpawnRedBlood(play, v);
+    (void)play;
+    (void)collider;
+    (void)v;
 }
 
 /**
@@ -1559,7 +1475,9 @@ void CollisionCheck_RedBlood(PlayState* play, Collider* collider, Vec3f* v) {
  * Unused.
  */
 void CollisionCheck_RedBloodUnused(PlayState* play, Collider* collider, Vec3f* v) {
-    CollisionCheck_SpawnRedBlood(play, v);
+    (void)play;
+    (void)collider;
+    (void)v;
 }
 
 /**
@@ -3269,107 +3187,11 @@ void Collider_UpdateSpheres(s32 limb, ColliderJntSph* collider) {
  * Spawns red blood droplets.
  * No actor has a collision type that spawns red blood.
  */
-void CollisionCheck_SpawnRedBlood(PlayState* play, Vec3f* v) {
-    static EffectSparkInit D_8015CF10;
-    s32 effectIndex;
-
-    D_8015CF10.position.x = v->x;
-    D_8015CF10.position.y = v->y;
-    D_8015CF10.position.z = v->z;
-    D_8015CF10.uDiv = 5;
-    D_8015CF10.vDiv = 5;
-    D_8015CF10.colorStart[0].r = 128;
-    D_8015CF10.colorStart[0].g = 0;
-    D_8015CF10.colorStart[0].b = 64;
-    D_8015CF10.colorStart[0].a = 255;
-    D_8015CF10.colorStart[1].r = 128;
-    D_8015CF10.colorStart[1].g = 0;
-    D_8015CF10.colorStart[1].b = 64;
-    D_8015CF10.colorStart[1].a = 255;
-    D_8015CF10.colorStart[2].r = 255;
-    D_8015CF10.colorStart[2].g = 128;
-    D_8015CF10.colorStart[2].b = 0;
-    D_8015CF10.colorStart[2].a = 255;
-    D_8015CF10.colorStart[3].r = 255;
-    D_8015CF10.colorStart[3].g = 128;
-    D_8015CF10.colorStart[3].b = 0;
-    D_8015CF10.colorStart[3].a = 255;
-    D_8015CF10.colorEnd[0].r = 64;
-    D_8015CF10.colorEnd[0].g = 0;
-    D_8015CF10.colorEnd[0].b = 32;
-    D_8015CF10.colorEnd[0].a = 0;
-    D_8015CF10.colorEnd[1].r = 64;
-    D_8015CF10.colorEnd[1].g = 0;
-    D_8015CF10.colorEnd[1].b = 32;
-    D_8015CF10.colorEnd[1].a = 0;
-    D_8015CF10.colorEnd[2].r = 128;
-    D_8015CF10.colorEnd[2].g = 0;
-    D_8015CF10.colorEnd[2].b = 64;
-    D_8015CF10.colorEnd[2].a = 0;
-    D_8015CF10.colorEnd[3].r = 128;
-    D_8015CF10.colorEnd[3].g = 0;
-    D_8015CF10.colorEnd[3].b = 64;
-    D_8015CF10.colorEnd[3].a = 0;
-    D_8015CF10.timer = 0;
-    D_8015CF10.duration = 16;
-    D_8015CF10.speed = 8.0f;
-    D_8015CF10.gravity = -1.0f;
-
-    Effect_Add(play, &effectIndex, EFFECT_SPARK, 0, 1, &D_8015CF10);
-}
 
 /**
  * Spawns water droplets.
  * No actor has a collision type that spawns water droplets.
  */
-void CollisionCheck_SpawnWaterDroplets(PlayState* play, Vec3f* v) {
-    static EffectSparkInit D_8015D3D8;
-    s32 effectIndex;
-
-    D_8015D3D8.position.x = v->x;
-    D_8015D3D8.position.y = v->y;
-    D_8015D3D8.position.z = v->z;
-    D_8015D3D8.uDiv = 5;
-    D_8015D3D8.vDiv = 5;
-    D_8015D3D8.colorStart[0].r = 255;
-    D_8015D3D8.colorStart[0].g = 255;
-    D_8015D3D8.colorStart[0].b = 255;
-    D_8015D3D8.colorStart[0].a = 255;
-    D_8015D3D8.colorStart[1].r = 100;
-    D_8015D3D8.colorStart[1].g = 100;
-    D_8015D3D8.colorStart[1].b = 100;
-    D_8015D3D8.colorStart[1].a = 100;
-    D_8015D3D8.colorStart[2].r = 100;
-    D_8015D3D8.colorStart[2].g = 100;
-    D_8015D3D8.colorStart[2].b = 100;
-    D_8015D3D8.colorStart[2].a = 100;
-    D_8015D3D8.colorStart[3].r = 100;
-    D_8015D3D8.colorStart[3].g = 100;
-    D_8015D3D8.colorStart[3].b = 100;
-    D_8015D3D8.colorStart[3].a = 100;
-    D_8015D3D8.colorEnd[0].r = 50;
-    D_8015D3D8.colorEnd[0].g = 50;
-    D_8015D3D8.colorEnd[0].b = 50;
-    D_8015D3D8.colorEnd[0].a = 50;
-    D_8015D3D8.colorEnd[1].r = 50;
-    D_8015D3D8.colorEnd[1].g = 50;
-    D_8015D3D8.colorEnd[1].b = 50;
-    D_8015D3D8.colorEnd[1].a = 50;
-    D_8015D3D8.colorEnd[2].r = 50;
-    D_8015D3D8.colorEnd[2].g = 50;
-    D_8015D3D8.colorEnd[2].b = 50;
-    D_8015D3D8.colorEnd[2].a = 50;
-    D_8015D3D8.colorEnd[3].r = 0;
-    D_8015D3D8.colorEnd[3].g = 0;
-    D_8015D3D8.colorEnd[3].b = 0;
-    D_8015D3D8.colorEnd[3].a = 0;
-    D_8015D3D8.timer = 0;
-    D_8015D3D8.duration = 16;
-    D_8015D3D8.speed = 8.0f;
-    D_8015D3D8.gravity = -1.0f;
-
-    Effect_Add(play, &effectIndex, EFFECT_SPARK, 0, 1, &D_8015D3D8);
-}
 
 /**
  * Spawns streaks of light from hits against solid objects

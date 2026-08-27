@@ -62,7 +62,6 @@
 		<BuildDependency Project="ZERO_CHECK.vcxproj"/>
 	</Project>
 	<Project Path="soh/soh.vcxproj" Type="8bc9ceb8-8b4a-11d0-8d11-00a0c91bc942" Id="9be9808f-4839-3804-9bd4-6ab6bed0cca7" DefaultStartup="true">
-		<BuildDependency Project="ZAPD/ZAPDLib.vcxproj"/>
 		<BuildDependency Project="ZERO_CHECK.vcxproj"/>
 		<BuildDependency Project="libultraship/libgfxd.vcxproj"/>
 		<BuildDependency Project="libultraship/src/libultraship.vcxproj"/>

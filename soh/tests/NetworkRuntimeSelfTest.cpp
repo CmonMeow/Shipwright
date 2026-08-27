@@ -158,6 +158,7 @@ int RunHost() {
     bool chatReceived = false;
     bool privateReceived = false;
     bool stateReceived = false;
+    bool poseEquipmentReceived = false;
     bool bowStringScaleReceived = false;
     bool voiceReceived = false;
     bool actorEventReceived = false;
@@ -226,7 +227,14 @@ int RunHost() {
                                           std::fabs(state.fishingFishLength - TestPondFishLength()) < 0.001f);
             bowStringScaleReceived = bowStringScaleReceived ||
                                      (state.playerId > 0 && state.itemAction == 8 &&
-                                      state.bowStringScale == 0.625f);
+                                      state.bowStringScale == 0.625f &&
+                                      (state.stateFlags & NETWORK_PLAYER_READY_TO_FIRE) != 0);
+            poseEquipmentReceived = poseEquipmentReceived ||
+                                    (state.playerId > 0 && state.itemAction == 8 && state.modelGroup == 2 &&
+                                     state.upperLimbRot[0] == 101 && state.upperLimbRot[1] == 202 &&
+                                     state.upperLimbRot[2] == 303 && state.headLimbRot[0] == 404 &&
+                                     state.headLimbRot[1] == 505 && state.headLimbRot[2] == 606 &&
+                                     state.jointTable[5][1] == 707 && state.jointTable[5][2] == 808);
             corpseReceived = corpseReceived ||
                              (state.playerId < -1 && (state.stateFlags & NETWORK_PLAYER_DEAD) != 0 &&
                               state.jointTable[0][0] == 1234);
@@ -413,16 +421,17 @@ int RunHost() {
     }
 
     network.Disconnect();
-    Error("Runtime host summary: chat=%d private=%d state=%d bowString=%d voice=%d actor=%d arrowPitch=%d arrowDamage=%d "
+    Error("Runtime host summary: chat=%d private=%d state=%d poseEquipment=%d bowString=%d voice=%d actor=%d arrowPitch=%d arrowDamage=%d "
           "clientMelee=%d hostMeleeSeen=%d fishCanonical=%d impact=%d aimedPitch=%d stuckPitch=%d stuckPersistent=%d response=%d complete=%d",
-          chatReceived, privateReceived, stateReceived, bowStringScaleReceived, voiceReceived, actorEventReceived,
+          chatReceived, privateReceived, stateReceived, poseEquipmentReceived, bowStringScaleReceived,
+          voiceReceived, actorEventReceived,
           arrowNativeDisplayPitchReceived, arrowDamageReceived, clientMeleeDamageReceived, clientSawHostMeleeDamage,
           fishCanonicalStateReceived,
           projectileImpactWitnessed, arrowAimedDisplayPitchReceived, arrowStuckDisplayPitchReceived,
           !projectileRetiredUnexpectedly,
           responseSent, clientComplete);
     return clientComplete && responseSent && fishReleaseReceived && fishCanonicalStateReceived &&
-                   bowStringScaleReceived && projectileImpactSent &&
+                   poseEquipmentReceived && bowStringScaleReceived && projectileImpactSent &&
                    offAxisProjectileImpactRejected && projectileImpactWitnessed &&
                    arrowNativeDisplayPitchReceived && arrowAimedDisplayPitchReceived &&
                    arrowStuckDisplayPitchReceived && arrowDamageReceived &&
@@ -601,8 +610,17 @@ int RunClient() {
             bowState.z = 0.0f;
             bowState.itemAction = 8;
             bowState.bowStringScale = 0.625f;
+            bowState.stateFlags |= NETWORK_PLAYER_READY_TO_FIRE;
             bowState.aimPitch = 0;
             bowState.aimYaw = 0;
+            bowState.upperLimbRot[0] = 101;
+            bowState.upperLimbRot[1] = 202;
+            bowState.upperLimbRot[2] = 303;
+            bowState.headLimbRot[0] = 404;
+            bowState.headLimbRot[1] = 505;
+            bowState.headLimbRot[2] = 606;
+            bowState.jointTable[5][1] = 707;
+            bowState.jointTable[5][2] = 808;
             bowStateSent = network.SendPlayerState(bowState);
             bowStateSentAt = GetTickCount64();
         }
