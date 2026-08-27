@@ -1,4 +1,5 @@
 #include "ActorDB.h"
+#include "NetworkGameBridge.h"
 
 #include <assert.h>
 
@@ -596,6 +597,7 @@ void ActorDB::Entry::SetDesc(const std::string& newDesc) {
 }
 
 void ActorDB::AddBuiltInCustomActors() {
+    NetworkGame_RegisterActors();
 }
 
 extern "C" ActorDBEntry* ActorDB_Retrieve(const int id) {

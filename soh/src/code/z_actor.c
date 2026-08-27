@@ -647,7 +647,7 @@ void Flags_SetSwitch(PlayState* play, s32 flag) {
         play->actorCtx.flags.tempSwch |= (1 << (flag - 0x20));
     }
     if (previouslyOff) {
-        LUSLOG_INFO("Switch Flag Set - %#x", flag);
+        Error("Switch Flag Set - %#x", flag);
     }
 }
 
@@ -662,7 +662,7 @@ void Flags_UnsetSwitch(PlayState* play, s32 flag) {
         play->actorCtx.flags.tempSwch &= ~(1 << (flag - 0x20));
     }
     if (previouslyOn) {
-        LUSLOG_INFO("Switch Flag Unset - %#x", flag);
+        Error("Switch Flag Unset - %#x", flag);
     }
 }
 
@@ -713,7 +713,7 @@ void Flags_SetTreasure(PlayState* play, s32 flag) {
     u8 previouslyOff = !Flags_GetTreasure(play, flag);
     play->actorCtx.flags.chest |= (1 << flag);
     if (previouslyOff) {
-        LUSLOG_INFO("Treasure Flag Set - %#x", flag);
+        Error("Treasure Flag Set - %#x", flag);
     }
 }
 
@@ -731,7 +731,7 @@ void Flags_SetClear(PlayState* play, s32 flag) {
     u8 previouslyOff = !Flags_GetClear(play, flag);
     play->actorCtx.flags.clear |= (1 << flag);
     if (previouslyOff) {
-        LUSLOG_INFO("Clear Flag Set - %#x", flag);
+        Error("Clear Flag Set - %#x", flag);
     }
 }
 
@@ -742,7 +742,7 @@ void Flags_UnsetClear(PlayState* play, s32 flag) {
     u8 previouslyOn = Flags_GetClear(play, flag);
     play->actorCtx.flags.clear &= ~(1 << flag);
     if (previouslyOn) {
-        LUSLOG_INFO("Clear Flag Unset - %#x", flag);
+        Error("Clear Flag Unset - %#x", flag);
     }
 }
 
@@ -791,7 +791,7 @@ void Flags_SetCollectible(PlayState* play, s32 flag) {
         }
     }
     if (previouslyOff) {
-        LUSLOG_INFO("Collectible Flag Set - %#x", flag);
+        Error("Collectible Flag Set - %#x", flag);
     }
 }
 
@@ -4757,7 +4757,7 @@ void Flags_SetEventChkInf(s32 flag) {
     u8 previouslyOff = !Flags_GetEventChkInf(flag);
     gSaveContext.eventChkInf[flag >> 4] |= (1 << (flag & 0xF));
     if (previouslyOff) {
-        LUSLOG_INFO("EventChkInf Flag Set - %#x", flag);
+        Error("EventChkInf Flag Set - %#x", flag);
     }
 }
 
@@ -4768,7 +4768,7 @@ void Flags_UnsetEventChkInf(s32 flag) {
     u8 previouslyOn = Flags_GetEventChkInf(flag);
     gSaveContext.eventChkInf[flag >> 4] &= ~(1 << (flag & 0xF));
     if (previouslyOn) {
-        LUSLOG_INFO("EventChkInf Flag Unset - %#x", flag);
+        Error("EventChkInf Flag Unset - %#x", flag);
     }
 }
 
@@ -4786,7 +4786,7 @@ void Flags_SetItemGetInf(s32 flag) {
     u8 previouslyOff = !Flags_GetItemGetInf(flag);
     gSaveContext.itemGetInf[flag >> 4] |= (1 << (flag & 0xF));
     if (previouslyOff) {
-        LUSLOG_INFO("ItemGetInf Flag Set - %#x", flag);
+        Error("ItemGetInf Flag Set - %#x", flag);
     }
 }
 
@@ -4797,7 +4797,7 @@ void Flags_UnsetItemGetInf(s32 flag) {
     u8 previouslyOn = Flags_GetItemGetInf(flag);
     gSaveContext.itemGetInf[flag >> 4] &= ~(1 << (flag & 0xF));
     if (previouslyOn) {
-        LUSLOG_INFO("ItemGetInf Flag Unset - %#x", flag);
+        Error("ItemGetInf Flag Unset - %#x", flag);
     }
 }
 
@@ -4815,7 +4815,7 @@ void Flags_SetInfTable(s32 flag) {
     u8 previouslyOff = !Flags_GetInfTable(flag);
     gSaveContext.infTable[flag >> 4] |= (1 << (flag & 0xF));
     if (previouslyOff) {
-        LUSLOG_INFO("InfTable Flag Set - %#x", flag);
+        Error("InfTable Flag Set - %#x", flag);
     }
 }
 
@@ -4826,7 +4826,7 @@ void Flags_UnsetInfTable(s32 flag) {
     u8 previouslyOn = Flags_GetInfTable(flag);
     gSaveContext.infTable[flag >> 4] &= ~(1 << (flag & 0xF));
     if (previouslyOn) {
-        LUSLOG_INFO("InfTable Flag Unset - %#x", flag);
+        Error("InfTable Flag Unset - %#x", flag);
     }
 }
 
@@ -4844,7 +4844,7 @@ void Flags_SetEventInf(s32 flag) {
     u8 previouslyOff = !Flags_GetEventInf(flag);
     gSaveContext.eventInf[flag >> 4] |= (1 << (flag & 0xF));
     if (previouslyOff) {
-        LUSLOG_INFO("EventInf Flag Set - %#x", flag);
+        Error("EventInf Flag Set - %#x", flag);
     }
 }
 
@@ -4855,7 +4855,7 @@ void Flags_UnsetEventInf(s32 flag) {
     u8 previouslyOn = Flags_GetEventInf(flag);
     gSaveContext.eventInf[flag >> 4] &= ~(1 << (flag & 0xF));
     if (previouslyOn) {
-        LUSLOG_INFO("EventInf Flag Unset - %#x", flag);
+        Error("EventInf Flag Unset - %#x", flag);
     }
 }
 

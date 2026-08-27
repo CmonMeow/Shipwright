@@ -1,7 +1,5 @@
 #include "soh/resource/importer/scenecommand/SetRoomListFactory.h"
 #include "soh/resource/type/scenecommand/SetRoomList.h"
-#include "soh/resource/logging/SceneCommandLoggers.h"
-#include "spdlog/spdlog.h"
 #include <tinyxml2.h>
 
 namespace SOH {

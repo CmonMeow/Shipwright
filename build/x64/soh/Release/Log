@@ -1,0 +1,10 @@
+Dedicated server hosting secure session on port 777
+Server: challenge 2ed00c3a
+Server: create player 1
+Server: MAGIC_CREATE_W_CHALLENGE accepted 2ed00c3a
+Server: old challenges cleared
+NetServer: new player (waiting for ProcessPlayers) - session.playerCount=0, playerId=1, bot=0, name='CmonMeow', |users|=1
+NetServer::ProcessPlayers(): users.card=1, session.playerCount=0, created=1, deleted=0
+Network runtime: server accepted encryption key from 1
+NetServer:finishDestroyPlayer (waiting for ProcessPlayers) - session.playerCount=1, playerId=1, |users|=0
+NetServer::ProcessPlayers(): users.card=0, session.playerCount=1, created=0, deleted=1

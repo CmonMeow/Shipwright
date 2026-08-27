@@ -10,6 +10,7 @@ enum class ResourceType {
     SOH_Skeleton = 0x4F534B4C,        // OSKL
     SOH_SkeletonLimb = 0x4F534C42,    // OSLB
     SOH_Path = 0x4F505448,            // OPTH
+    // Archive compatibility only; the runtime no longer registers or loads it.
     SOH_Cutscene = 0x4F435654,        // OCUT
     SOH_Text = 0x4F545854,            // OTXT
     SOH_Audio = 0x4F415544,           // OAUD

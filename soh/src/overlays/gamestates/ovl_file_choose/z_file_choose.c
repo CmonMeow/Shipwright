@@ -29,9 +29,6 @@
 #include "soh/ResourceManagerHelpers.h"
 #include "soh/ShipUtils.h"
 
-#define MIN_QUEST (ResourceMgr_GameHasOriginal() ? QUEST_NORMAL : QUEST_MASTER)
-#define MAX_QUEST QUEST_MASTER
-
 static u8 FileChoose_EncodeUsernameCharacter(char character, bool isPalName) {
     if (character >= 'A' && character <= 'Z') {
         return (isPalName ? 0x0A : 0xAB) + (character - 'A');
@@ -140,31 +137,6 @@ void FileChoose_DrawImageRGBA32(GraphicsContext* gfxCtx, s16 centerX, s16 center
     CLOSE_DISPS(gfxCtx);
 }
 
-void FileChoose_DrawTextRec(GraphicsContext* gfxCtx, s32 r, s32 g, s32 b, s32 a, f32 x, f32 y, f32 z, s32 s, s32 t,
-                            f32 dx, f32 dy) {
-    f32 unk;
-    s32 ulx, uly, lrx, lry;
-    f32 w, h;
-    s32 dsdx, dtdy;
-
-    OPEN_DISPS(gfxCtx);
-    gDPPipeSync(POLY_OPA_DISP++);
-    gDPSetPrimColor(POLY_OPA_DISP++, 0, 0, r, g, b, a);
-
-    w = 8.0f * z;
-    h = 12.0f * z;
-    unk = (1.0f / z) * 1024;
-    dsdx = unk * dx;
-    dtdy = dy * unk;
-
-    ulx = (x - w) * 4.0f;
-    uly = (y - h) * 4.0f;
-    lrx = (x + w) * 4.0f;
-    lry = (y + h) * 4.0f;
-    gSPTextureRectangle(POLY_OPA_DISP++, ulx, uly, lrx, lry, G_TX_RENDERTILE, s, t, dsdx, dtdy);
-    CLOSE_DISPS(gfxCtx);
-}
-
 static s16 sUnused = 106;
 
 static s16 sScreenFillAlpha = 255;
@@ -186,17 +158,6 @@ s16 sWindowContentColors[2][3] = {
     { 100, 150, 255 }, // blue
     { 100, 100, 100 }, // gray
 };
-
-static int FileChoose_IsSaveCompatible(const SaveFileMetaInfo* restrict meta) {
-    bool valid = true;
-    if (meta->requiresMasterQuest) {
-        valid = valid && ResourceMgr_GameHasMasterQuest();
-    }
-    if (meta->requiresOriginal) {
-        valid = valid && ResourceMgr_GameHasOriginal();
-    }
-    return valid;
-}
 
 void FileChoose_SetView(FileChooseContext* this, f32 eyeX, f32 eyeY, f32 eyeZ) {
     Vec3f eye;
@@ -376,11 +337,19 @@ void FileChoose_UpdateMainMenu(GameState* thisx) {
                 Audio_PlaySoundGeneral(NA_SE_SY_FSEL_DECIDE_L, &gSfxDefaultPos, 4, &gSfxDefaultFreqAndVolScale,
                                        &gSfxDefaultFreqAndVolScale, &gSfxDefaultReverb);
                 this->prevConfigMode = this->configMode;
-                this->configMode = CM_ROTATE_TO_QUEST_MENU;
-                this->logoAlpha = 0;
-            } else if (!FileChoose_IsSaveCompatible(Save_GetSaveMetaInfo(this->buttonIndex))) {
-                Audio_PlaySoundGeneral(NA_SE_SY_FSEL_ERROR, &gSfxDefaultPos, 4, &gSfxDefaultFreqAndVolScale,
-                                       &gSfxDefaultFreqAndVolScale, &gSfxDefaultReverb);
+                this->configMode = CM_ROTATE_TO_NAME_ENTRY;
+                // The removed quest menu occupied the 314-degree face. Starting here preserves the original
+                // main-to-name-entry rotation without ever showing that face.
+                this->windowRot = 314.0f;
+                this->kbdButton = FS_KBD_BTN_NONE;
+                this->charPage = gSaveContext.language == LANGUAGE_JPN ? FS_CHAR_PAGE_HIRA : FS_CHAR_PAGE_ENG;
+                this->kbdX = 0;
+                this->kbdY = 0;
+                this->charIndex = 0;
+                this->charBgAlpha = 0;
+                this->nameEntryBoxPosX = 120;
+                this->nameEntryBoxAlpha = 0;
+                FileChoose_SetDefaultPlayerName(this);
             } else if (this->n64ddFlags[this->buttonIndex] == this->n64ddFlag) {
                 Audio_PlaySoundGeneral(NA_SE_SY_FSEL_DECIDE_L, &gSfxDefaultPos, 4, &gSfxDefaultFreqAndVolScale,
                                        &gSfxDefaultFreqAndVolScale, &gSfxDefaultReverb);
@@ -472,140 +441,6 @@ void FileChoose_UpdateMainMenu(GameState* thisx) {
     }
 }
 
-void FileChoose_UpdateStickDirectionPromptAnim(GameState* thisx) {
-    FileChooseContext* this = (FileChooseContext*)thisx;
-    f32 arrowAnimTween;
-    f32 new_var3;       // likely fake temp
-    s32 new_var2 = 155; // likely fake temp
-    f32 stickAnimTween;
-
-    arrowAnimTween = this->arrowAnimTween;
-    stickAnimTween = this->stickAnimTween;
-    if (this->arrowAnimState == 0) {
-        arrowAnimTween += 0.027f;
-        if (arrowAnimTween > 1.0f) {
-            arrowAnimTween = 1.0f;
-            this->arrowAnimState = 1;
-        }
-
-    } else {
-        arrowAnimTween -= 0.027f;
-        if (arrowAnimTween < 0.0f) {
-            arrowAnimTween = 0.0f;
-            this->arrowAnimState = 0;
-        }
-    }
-
-    this->arrowAnimTween = arrowAnimTween;
-    if (this->stickAnimState == 0) {
-        stickAnimTween += 0.027f;
-        if (stickAnimTween > 1.0f) {
-            stickAnimTween = 1.0f;
-            this->stickAnimState = 1;
-        }
-
-    } else {
-        stickAnimTween = 0.0f;
-        this->stickAnimState = 0;
-    }
-
-    this->stickAnimTween = stickAnimTween;
-    this->stickLeftPrompt.arrowColorR = (u8)(155 - ((s32)(75.0f * arrowAnimTween)));
-    this->stickLeftPrompt.arrowColorG = (u8)(new_var2 - (s32)(55.0f * arrowAnimTween));
-    new_var3 = (75.0f * arrowAnimTween);
-    this->stickLeftPrompt.arrowColorB = (u8)(255 - ((s32)(75.0f * arrowAnimTween)));
-    this->stickLeftPrompt.arrowColorA = (u8)(200 - ((s32)(50.0f * arrowAnimTween)));
-    this->stickRightPrompt.arrowColorR = (u8)(new_var2 - (s32)new_var3);
-    this->stickRightPrompt.arrowColorG = (u8)(155 - (s32)new_var3);
-    this->stickRightPrompt.arrowColorB = (u8)(255 - ((s32)(75.0f * arrowAnimTween)));
-    this->stickRightPrompt.arrowColorA = (u8)(200 - ((s32)(50.0f * arrowAnimTween)));
-    this->stickRightPrompt.arrowTexX = 260.0f;
-    this->stickLeftPrompt.arrowTexX = 63.0f;
-    this->stickRightPrompt.stickTexX = 244.0f;
-    this->stickLeftPrompt.stickTexX = 79.0f;
-    this->stickRightPrompt.stickTexX += (8.0f * stickAnimTween);
-    this->stickLeftPrompt.stickTexX -= (8.0f * stickAnimTween);
-    this->stickLeftPrompt.arrowTexY = this->stickRightPrompt.arrowTexY = 135.0f;
-    this->stickLeftPrompt.stickTexY = this->stickRightPrompt.stickTexY = 139.0f;
-}
-
-void FileChoose_StartQuestMenu(GameState* thisx) {
-    FileChooseContext* this = (FileChooseContext*)thisx;
-
-    this->logoAlpha += 25;
-
-    if (this->logoAlpha >= 255) {
-        this->logoAlpha = 255;
-        this->configMode = CM_QUEST_MENU;
-
-    }
-}
-
-void FileChoose_UpdateQuestMenu(GameState* thisx) {
-    FileChoose_UpdateStickDirectionPromptAnim(thisx);
-    FileChooseContext* this = (FileChooseContext*)thisx;
-    Input* input = &this->state.input[0];
-    s8 i = 0;
-
-
-    if (ABS(this->stickRelX) > 30) {
-        if (this->stickRelX > 30) {
-            this->questType[this->buttonIndex] += 1;
-            while (this->questType[this->buttonIndex] == QUEST_MASTER && !ResourceMgr_GameHasMasterQuest()) {
-                // If Master Quest is selected without a Master Quest OTR present, skip past it.
-                this->questType[this->buttonIndex] += 1;
-            }
-        } else if (this->stickRelX < -30) {
-            this->questType[this->buttonIndex] -= 1;
-            while (this->questType[this->buttonIndex] == QUEST_MASTER && !ResourceMgr_GameHasMasterQuest()) {
-                // If Master Quest is selected without a Master Quest OTR present, skip past it.
-                this->questType[this->buttonIndex] -= 1;
-            }
-        }
-
-        // If current buttonIndex is higher or lower than the min/max value, wrap around.
-        if (this->questType[this->buttonIndex] > MAX_QUEST) {
-            this->questType[this->buttonIndex] = MIN_QUEST;
-        } else if (this->questType[this->buttonIndex] < MIN_QUEST) {
-            this->questType[this->buttonIndex] = MAX_QUEST;
-        }
-
-        Audio_PlaySoundGeneral(NA_SE_SY_FSEL_CURSOR, &gSfxDefaultPos, 4, &gSfxDefaultFreqAndVolScale,
-                               &gSfxDefaultFreqAndVolScale, &gSfxDefaultReverb);
-
-    }
-
-    if (CHECK_BTN_ALL(input->press.button, BTN_A)) {
-        gSaveContext.ship.quest.id = this->questType[this->buttonIndex];
-
-        Audio_PlaySoundGeneral(NA_SE_SY_FSEL_DECIDE_L, &gSfxDefaultPos, 4, &gSfxDefaultFreqAndVolScale,
-                               &gSfxDefaultFreqAndVolScale, &gSfxDefaultReverb);
-        osSyncPrintf("Selected Dungeon Quest: %d\n", IS_MASTER_QUEST);
-        this->prevConfigMode = this->configMode;
-        this->configMode = CM_ROTATE_TO_NAME_ENTRY;
-        this->logoAlpha = 0;
-        this->kbdButton = FS_KBD_BTN_NONE;
-        this->charPage = FS_CHAR_PAGE_ENG;
-        this->kbdX = 0;
-        this->kbdY = 0;
-        this->charIndex = 0;
-        this->charBgAlpha = 0;
-        this->nameEntryBoxPosX = 120;
-        this->nameEntryBoxAlpha = 0;
-        if (gSaveContext.language == LANGUAGE_JPN) {
-            this->charPage = FS_CHAR_PAGE_HIRA; // Default to Hiragana Keyboard
-        }
-        FileChoose_SetDefaultPlayerName(this);
-        return;
-    }
-
-    if (CHECK_BTN_ALL(input->press.button, BTN_B)) {
-        this->configMode = CM_QUEST_TO_MAIN;
-        sLastFileChooseButtonIndex = -1;
-        return;
-    }
-}
-
 void FileChoose_UnusedCM31(GameState* thisx) {
 }
 
@@ -662,7 +497,7 @@ void FileChoose_RotateToOptions(GameState* thisx) {
  */
 void FileChoose_RotateToMain(GameState* thisx) {
     FileChooseContext* this = (FileChooseContext*)thisx;
-    if (this->configMode == CM_QUEST_TO_MAIN || this->configMode == CM_OPTIONS_TO_MAIN) {
+    if (this->configMode == CM_OPTIONS_TO_MAIN) {
         this->windowRot -= VREG(16);
 
         if (this->windowRot <= 0.0f) {
@@ -671,32 +506,12 @@ void FileChoose_RotateToMain(GameState* thisx) {
         }
     }
 
-    if (this->configMode == CM_NAME_ENTRY_TO_MAIN && this->prevConfigMode == CM_MAIN_MENU) {
+    if (this->configMode == CM_NAME_ENTRY_TO_MAIN) {
         this->windowRot += VREG(16);
 
         if (this->windowRot >= 942.0f) {
             this->windowRot = 0.0f;
             this->configMode = CM_MAIN_MENU;
-        }
-    }
-}
-
-void FileChoose_RotateToQuest(GameState* thisx) {
-    FileChooseContext* this = (FileChooseContext*)thisx;
-
-    if (this->configMode == CM_NAME_ENTRY_TO_QUEST_MENU) {
-        this->windowRot -= VREG(16);
-
-        if (this->windowRot <= 314.0f) {
-            this->windowRot = 314.0f;
-            this->configMode = CM_START_QUEST_MENU;
-        }
-    } else {
-        this->windowRot += VREG(16);
-
-        if (this->windowRot >= 314.0f) {
-            this->windowRot = 314.0f;
-            this->configMode = CM_START_QUEST_MENU;
         }
     }
 }
@@ -722,9 +537,7 @@ static void (*gConfigModeUpdateFuncs[])(GameState*) = {
     FileChoose_StartNameEntry,      FileChoose_RotateToMain,
     FileChoose_RotateToOptions,     FileChoose_UpdateOptionsMenu,
     FileChoose_StartOptions,        FileChoose_RotateToMain,
-    FileChoose_UnusedCMDelay,       FileChoose_RotateToQuest,
-    FileChoose_UpdateQuestMenu,     FileChoose_StartQuestMenu,
-    FileChoose_RotateToMain,        FileChoose_RotateToQuest,
+    FileChoose_UnusedCMDelay,
 };
 
 static void (*gConfigModeUpdateFuncsNES[])(GameState*) = {
@@ -748,9 +561,7 @@ static void (*gConfigModeUpdateFuncsNES[])(GameState*) = {
     FileChoose_StartNameEntryNES,   FileChoose_RotateToMain,
     FileChoose_RotateToOptions,     FileChoose_UpdateOptionsMenuNES,
     FileChoose_StartOptionsNES,     FileChoose_RotateToMain,
-    FileChoose_UnusedCMDelay,       FileChoose_RotateToQuest,
-    FileChoose_UpdateQuestMenu,     FileChoose_StartQuestMenu,
-    FileChoose_RotateToMain,        FileChoose_RotateToQuest,
+    FileChoose_UnusedCMDelay,
 };
 
 /**
@@ -1353,20 +1164,6 @@ static void* sOptionsButtonTextures[] = {
     gFileSelOptionsButtonJPNTex,
 };
 
-const char* FileChoose_GetQuestChooseTitleTexName(Language lang) {
-    switch (lang) {
-        case LANGUAGE_ENG:
-        default:
-            return gFileSelPleaseChooseAQuestENGTex;
-        case LANGUAGE_FRA:
-            return gFileSelPleaseChooseAQuestFRATex;
-        case LANGUAGE_GER:
-            return gFileSelPleaseChooseAQuestGERTex;
-        case LANGUAGE_JPN:
-            return gFileSelPleaseChooseAQuestJPNTex;
-    }
-}
-
 /**
  * Draw most window contents including buttons, labels, and icons.
  * Does not include anything from the keyboard and settings windows.
@@ -1381,18 +1178,7 @@ void FileChoose_DrawWindowContents(GameState* thisx) {
     s16 pad;
     char* tex;
 
-    switch (this->configMode) {
-        case CM_QUEST_MENU:
-        case CM_ROTATE_TO_NAME_ENTRY:
-        case CM_START_QUEST_MENU:
-        case CM_QUEST_TO_MAIN:
-        case CM_NAME_ENTRY_TO_QUEST_MENU:
-            tex = FileChoose_GetQuestChooseTitleTexName(gSaveContext.language);
-            break;
-        default:
-            tex = sTitleLabels[gSaveContext.language][this->titleLabel];
-            break;
-    }
+    tex = sTitleLabels[gSaveContext.language][this->titleLabel];
 
     OPEN_DISPS(this->state.gfxCtx);
 
@@ -1407,80 +1193,8 @@ void FileChoose_DrawWindowContents(GameState* thisx) {
                         G_TX_NOMIRROR | G_TX_WRAP, G_TX_NOMASK, G_TX_NOMASK, G_TX_NOLOD, G_TX_NOLOD);
     gSP1Quadrangle(POLY_OPA_DISP++, 0, 2, 3, 1, 0);
 
-    // draw next title label
-    if ((this->configMode == CM_QUEST_MENU) || (this->configMode == CM_START_QUEST_MENU) ||
-        this->configMode == CM_NAME_ENTRY_TO_QUEST_MENU ||
-        false) {
-        // draw control stick prompts.
-        Gfx_SetupDL_39Opa(this->state.gfxCtx);
-        gDPSetCombineMode(POLY_OPA_DISP++, G_CC_MODULATEIA_PRIM, G_CC_MODULATEIA_PRIM);
-        gDPLoadTextureBlock(POLY_OPA_DISP++, gArrowCursorTex, G_IM_FMT_IA, G_IM_SIZ_8b, 16, 24, 0,
-                            G_TX_NOMIRROR | G_TX_WRAP, G_TX_NOMIRROR | G_TX_WRAP, 4, G_TX_NOMASK, G_TX_NOLOD,
-                            G_TX_NOLOD);
-        FileChoose_DrawTextRec(this->state.gfxCtx, this->stickLeftPrompt.arrowColorR, this->stickLeftPrompt.arrowColorG,
-                               this->stickLeftPrompt.arrowColorB, this->stickLeftPrompt.arrowColorA,
-                               this->stickLeftPrompt.arrowTexX, this->stickLeftPrompt.arrowTexY,
-                               this->stickLeftPrompt.z, 0, 0, -1.0f, 1.0f);
-        FileChoose_DrawTextRec(this->state.gfxCtx, this->stickRightPrompt.arrowColorR,
-                               this->stickRightPrompt.arrowColorG, this->stickRightPrompt.arrowColorB,
-                               this->stickRightPrompt.arrowColorA, this->stickRightPrompt.arrowTexX,
-                               this->stickRightPrompt.arrowTexY, this->stickRightPrompt.z, 0, 0, 1.0f, 1.0f);
-        gDPLoadTextureBlock(POLY_OPA_DISP++, gControlStickTex, G_IM_FMT_IA, G_IM_SIZ_8b, 16, 16, 0,
-                            G_TX_NOMIRROR | G_TX_WRAP, G_TX_NOMIRROR | G_TX_WRAP, 4, G_TX_NOMASK, G_TX_NOLOD,
-                            G_TX_NOLOD);
-        FileChoose_DrawTextRec(this->state.gfxCtx, this->stickLeftPrompt.stickColorR, this->stickLeftPrompt.stickColorG,
-                               this->stickLeftPrompt.stickColorB, this->stickLeftPrompt.stickColorA,
-                               this->stickLeftPrompt.stickTexX, this->stickLeftPrompt.stickTexY,
-                               this->stickLeftPrompt.z, 0, 0, -1.0f, 1.0f);
-        FileChoose_DrawTextRec(this->state.gfxCtx, this->stickRightPrompt.stickColorR,
-                               this->stickRightPrompt.stickColorG, this->stickRightPrompt.stickColorB,
-                               this->stickRightPrompt.stickColorA, this->stickRightPrompt.stickTexX,
-                               this->stickRightPrompt.stickTexY, this->stickRightPrompt.z, 0, 0, 1.0f, 1.0f);
-        switch (this->questType[this->buttonIndex]) {
-            case QUEST_NORMAL:
-            default:
-                gDPSetPrimColor(POLY_OPA_DISP++, 0, 0, 255, 255, 255, this->logoAlpha);
-                FileChoose_DrawTextureI8(this->state.gfxCtx, gTitleTheLegendOfTextTex, 72, 8, 156, 108, 72, 8, 1024,
-                                         1024);
-                FileChoose_DrawTextureI8(this->state.gfxCtx, gTitleOcarinaOfTimeTMTextTex, 96, 8, 154, 163, 96, 8, 1024,
-                                         1024);
-                FileChoose_DrawImageRGBA32(this->state.gfxCtx, 160, 135, gTitleZeldaShieldLogoTex, 160, 160);
-                break;
-
-            case QUEST_MASTER:
-                gDPSetPrimColor(POLY_OPA_DISP++, 0, 0, 255, 255, 255, this->logoAlpha);
-                FileChoose_DrawTextureI8(this->state.gfxCtx, gTitleTheLegendOfTextTex, 72, 8, 156, 108, 72, 8, 1024,
-                                         1024);
-                FileChoose_DrawTextureI8(this->state.gfxCtx, gTitleOcarinaOfTimeTMTextTex, 96, 8, 154, 163, 96, 8, 1024,
-                                         1024);
-                FileChoose_DrawImageRGBA32(this->state.gfxCtx, 160, 135, gTitleZeldaShieldLogoMQTex, 160, 160);
-                if (gSaveContext.language == LANGUAGE_JPN || ResourceMgr_GetGameVersion(0) == OOT_NTSC_JP_MQ) {
-                    FileChoose_DrawImageRGBA32(this->state.gfxCtx, 243, 184, gTitleUraLogoTex, 40, 40);
-                    gDPPipeSync(POLY_OPA_DISP++);
-                    gDPSetCycleType(POLY_OPA_DISP++, G_CYC_2CYCLE);
-                    gDPSetRenderMode(POLY_OPA_DISP++, G_RM_PASS, G_RM_XLU_SURF2);
-                    gDPSetCombineLERP(POLY_OPA_DISP++, TEXEL1, PRIMITIVE, PRIM_LOD_FRAC, TEXEL0, 0, 0, 0, TEXEL0,
-                                      PRIMITIVE, ENVIRONMENT, COMBINED, ENVIRONMENT, COMBINED, 0, PRIMITIVE, 0);
-
-                    gDPSetPrimColor(POLY_OPA_DISP++, 0, 0x80, 170, 255, 255, 255);
-                    gDPSetEnvColor(POLY_OPA_DISP++, ZREG(34), 100 + ZREG(35), 255 + ZREG(36), 255);
-
-                    gDPLoadTextureBlock(POLY_OPA_DISP++, gTitleTitleJPNTex, G_IM_FMT_I, G_IM_SIZ_8b, 128, 16, 0,
-                                        G_TX_NOMIRROR | G_TX_WRAP, G_TX_NOMASK, G_TX_NOLOD, G_TX_NOMIRROR | G_TX_WRAP,
-                                        G_TX_NOMASK, G_TX_NOLOD);
-                    gDPLoadMultiBlock(POLY_OPA_DISP++, gTitleFlameEffectTex, 0x100, 1, G_IM_FMT_I, G_IM_SIZ_8b, 32, 32,
-                                      0, G_TX_NOMIRROR | G_TX_WRAP, G_TX_NOMIRROR | G_TX_WRAP, 5, 5, 2, 1);
-                    gDPSetTileSize(POLY_OPA_DISP++, 1, 0 & 0x7F, 0 & 0x7F, (0 & 0x7F) + ((32 - 1) << 2),
-                                   (0 & 0x7F) + ((32 - 1) << 2));
-                    gSPTextureRectangle(POLY_OPA_DISP++, 114 << 2, 179 << 2, (114 + 128) << 2, (179 + 16) << 2,
-                                        G_TX_RENDERTILE, 0, 0, 1 << 10, 1 << 10);
-                } else {
-                    FileChoose_DrawImageRGBA32(this->state.gfxCtx, 182, 180, gTitleMasterQuestSubtitleTex, 128, 32);
-                }
-                break;
-
-        }
-    } else if (this->configMode != CM_ROTATE_TO_NAME_ENTRY) {
+    // Rotate directly from the file list to name entry; no intermediate quest face remains.
+    if (this->configMode != CM_ROTATE_TO_NAME_ENTRY) {
         gDPPipeSync(POLY_OPA_DISP++);
         gDPSetPrimColor(POLY_OPA_DISP++, 0, 0, 255, 255, 255, this->titleAlpha[1]);
         gDPLoadTextureBlock(POLY_OPA_DISP++, sTitleLabels[gSaveContext.language][this->nextTitleLabel], G_IM_FMT_IA,
@@ -1517,14 +1231,9 @@ void FileChoose_DrawWindowContents(GameState* thisx) {
 
             isActive = ((this->n64ddFlag == this->n64ddFlags[i]) || (this->nameBoxAlpha[i] == 0)) ? 0 : 1;
 
-            if (!FileChoose_IsSaveCompatible(Save_GetSaveMetaInfo(i)) && Save_GetSaveMetaInfo(i)->valid) {
-                gDPSetPrimColor(POLY_OPA_DISP++, 0, 0, sWindowContentColors[1][0], sWindowContentColors[1][1],
-                                sWindowContentColors[1][2], this->fileButtonAlpha[i]);
-            } else {
-                gDPSetPrimColor(POLY_OPA_DISP++, 0, 0, sWindowContentColors[isActive][0],
-                                sWindowContentColors[isActive][1], sWindowContentColors[isActive][2],
-                                this->fileButtonAlpha[i]);
-            }
+            gDPSetPrimColor(POLY_OPA_DISP++, 0, 0, sWindowContentColors[isActive][0],
+                            sWindowContentColors[isActive][1], sWindowContentColors[isActive][2],
+                            this->fileButtonAlpha[i]);
 
             gDPLoadTextureBlock(POLY_OPA_DISP++, sFileButtonTextures[gSaveContext.language][i], G_IM_FMT_IA,
                                 G_IM_SIZ_16b, 64, 16, 0, G_TX_NOMIRROR | G_TX_WRAP, G_TX_NOMIRROR | G_TX_WRAP,
@@ -1532,14 +1241,9 @@ void FileChoose_DrawWindowContents(GameState* thisx) {
             gSP1Quadrangle(POLY_OPA_DISP++, 0, 2, 3, 1, 0);
 
             // draw file name box
-            if (!FileChoose_IsSaveCompatible(Save_GetSaveMetaInfo(i))) {
-                gDPSetPrimColor(POLY_OPA_DISP++, 0, 0, sWindowContentColors[1][0], sWindowContentColors[1][1],
-                                sWindowContentColors[1][2], this->nameBoxAlpha[i]);
-            } else {
-                gDPSetPrimColor(POLY_OPA_DISP++, 0, 0, sWindowContentColors[isActive][0],
-                                sWindowContentColors[isActive][1], sWindowContentColors[isActive][2],
-                                this->nameBoxAlpha[i]);
-            }
+            gDPSetPrimColor(POLY_OPA_DISP++, 0, 0, sWindowContentColors[isActive][0],
+                            sWindowContentColors[isActive][1], sWindowContentColors[isActive][2],
+                            this->nameBoxAlpha[i]);
 
             gDPLoadTextureBlock(POLY_OPA_DISP++, gFileSelNameBoxTex, G_IM_FMT_IA, G_IM_SIZ_16b, 108, 16, 0,
                                 G_TX_NOMIRROR | G_TX_WRAP, G_TX_NOMIRROR | G_TX_WRAP, G_TX_NOMASK, G_TX_NOMASK,
@@ -1557,37 +1261,16 @@ void FileChoose_DrawWindowContents(GameState* thisx) {
                 gSP1Quadrangle(POLY_OPA_DISP++, 8, 10, 11, 9, 0);
             }
 
-            // Draw MQ label
-            if (Save_GetSaveMetaInfo(i)->requiresMasterQuest && Save_GetSaveMetaInfo(i)->valid) {
-                if (!FileChoose_IsSaveCompatible(Save_GetSaveMetaInfo(i))) {
-                    gDPSetPrimColor(POLY_OPA_DISP++, 0, 0, sWindowContentColors[1][0], sWindowContentColors[1][1],
-                                    sWindowContentColors[1][2], this->nameBoxAlpha[i]);
-                } else {
-                    gDPSetPrimColor(POLY_OPA_DISP++, 0, 0, sWindowContentColors[isActive][0],
-                                    sWindowContentColors[isActive][1], sWindowContentColors[isActive][2],
-                                    this->nameAlpha[i]);
-                }
-                gDPLoadTextureBlock(POLY_OPA_DISP++, gFileSelMQButtonTex, G_IM_FMT_IA, G_IM_SIZ_16b, 44, 16, 0,
-                                    G_TX_NOMIRROR | G_TX_WRAP, G_TX_NOMIRROR | G_TX_WRAP, G_TX_NOMASK, G_TX_NOMASK,
-                                    G_TX_NOLOD, G_TX_NOLOD);
-                gSP1Quadrangle(POLY_OPA_DISP++, 8, 10, 11, 9, 0);
-            }
-
             // draw connectors
-            if (!FileChoose_IsSaveCompatible(Save_GetSaveMetaInfo(i)) && Save_GetSaveMetaInfo(i)->valid) {
-                gDPSetPrimColor(POLY_OPA_DISP++, 0, 0, sWindowContentColors[1][0], sWindowContentColors[1][1],
-                                sWindowContentColors[1][2], this->fileButtonAlpha[i]);
-            } else {
-                gDPSetPrimColor(POLY_OPA_DISP++, 0, 0, sWindowContentColors[isActive][0],
-                                sWindowContentColors[isActive][1], sWindowContentColors[isActive][2],
-                                this->connectorAlpha[i]);
-            }
+            gDPSetPrimColor(POLY_OPA_DISP++, 0, 0, sWindowContentColors[isActive][0],
+                            sWindowContentColors[isActive][1], sWindowContentColors[isActive][2],
+                            this->connectorAlpha[i]);
             gDPLoadTextureBlock(POLY_OPA_DISP++, gFileSelConnectorTex, G_IM_FMT_IA, G_IM_SIZ_8b, 24, 16, 0,
                                 G_TX_NOMIRROR | G_TX_WRAP, G_TX_NOMIRROR | G_TX_WRAP, G_TX_NOMASK, G_TX_NOMASK,
                                 G_TX_NOLOD, G_TX_NOLOD);
             gSP1Quadrangle(POLY_OPA_DISP++, 12, 14, 15, 13, 0);
 
-            if (this->n64ddFlags[i] || Save_GetSaveMetaInfo(i)->requiresMasterQuest) {
+            if (this->n64ddFlags[i]) {
                 gSP1Quadrangle(POLY_OPA_DISP++, 16, 18, 19, 17, 0);
             }
         }
@@ -1702,9 +1385,7 @@ void FileChoose_ConfigModeDraw(GameState* thisx) {
 
     FrameInterpolation_RecordOpenChild(this, this->configMode);
 
-    if (this->configMode != CM_NAME_ENTRY && this->configMode != CM_START_NAME_ENTRY &&
-        this->configMode != CM_QUEST_MENU && this->configMode != CM_NAME_ENTRY_TO_QUEST_MENU &&
-        true) {
+    if (this->configMode != CM_NAME_ENTRY && this->configMode != CM_START_NAME_ENTRY) {
         gDPPipeSync(POLY_OPA_DISP++);
         gDPSetCombineMode(POLY_OPA_DISP++, G_CC_MODULATEIA_PRIM, G_CC_MODULATEIA_PRIM);
         gDPSetPrimColor(POLY_OPA_DISP++, 0, 0, this->windowColor[0], this->windowColor[1], this->windowColor[2],
@@ -1715,8 +1396,7 @@ void FileChoose_ConfigModeDraw(GameState* thisx) {
         Matrix_Scale(0.78f, 0.78f, 0.78f, MTXMODE_APPLY);
 
         if (this->windowRot != 0) {
-            if ((this->configMode >= CM_MAIN_TO_OPTIONS && this->configMode <= CM_OPTIONS_TO_MAIN) ||
-                this->configMode == CM_ROTATE_TO_QUEST_MENU || this->configMode == CM_QUEST_TO_MAIN) {
+            if (this->configMode >= CM_MAIN_TO_OPTIONS && this->configMode <= CM_OPTIONS_TO_MAIN) {
                 Matrix_RotateX(this->windowRot / 100.0f, MTXMODE_APPLY);
             } else {
                 Matrix_RotateX((this->windowRot - 942.0f) / 100.0f, MTXMODE_APPLY);
@@ -1802,41 +1482,8 @@ void FileChoose_ConfigModeDraw(GameState* thisx) {
         }
     }
 
-    // draw quest menu
-    if (this->configMode == CM_QUEST_MENU || (this->configMode == CM_ROTATE_TO_QUEST_MENU) ||
-        this->configMode == CM_ROTATE_TO_NAME_ENTRY || this->configMode == CM_QUEST_TO_MAIN ||
-        this->configMode == CM_NAME_ENTRY_TO_QUEST_MENU) {
-        // window
-        gDPPipeSync(POLY_OPA_DISP++);
-        gDPSetCombineMode(POLY_OPA_DISP++, G_CC_MODULATEIA_PRIM, G_CC_MODULATEIA_PRIM);
-        gDPSetPrimColor(POLY_OPA_DISP++, 0, 0, this->windowColor[0], this->windowColor[1], this->windowColor[2],
-                        this->windowAlpha);
-        gDPSetEnvColor(POLY_OPA_DISP++, 0, 0, 0, 0);
-
-        Matrix_Translate(0.0f, 0.0f, -93.6f, MTXMODE_NEW);
-        Matrix_Scale(0.78f, 0.78f, 0.78f, MTXMODE_APPLY);
-        Matrix_RotateX((this->windowRot - 314.0f) / 100.0f, MTXMODE_APPLY);
-
-        gSPMatrix(POLY_OPA_DISP++, MATRIX_NEWMTX(this->state.gfxCtx), G_MTX_NOPUSH | G_MTX_LOAD | G_MTX_MODELVIEW);
-
-        gSPVertex(POLY_OPA_DISP++, &this->windowVtx[0], 32, 0);
-        gSPDisplayList(POLY_OPA_DISP++, gFileSelWindow1DL);
-
-        gSPVertex(POLY_OPA_DISP++, &this->windowVtx[32], 32, 0);
-        gSPDisplayList(POLY_OPA_DISP++, gFileSelWindow2DL);
-
-        gSPVertex(POLY_OPA_DISP++, &this->windowVtx[64], 16, 0);
-        gSPDisplayList(POLY_OPA_DISP++, gFileSelWindow3DL);
-
-        gDPPipeSync(POLY_OPA_DISP++);
-
-        FileChoose_DrawWindowContents(&this->state);
-    }
-
     gDPPipeSync(POLY_OPA_DISP++);
     FileChoose_SetView(this, 0.0f, 0.0f, 64.0f);
-
-
     FrameInterpolation_RecordCloseChild();
 
     CLOSE_DISPS(this->state.gfxCtx);
@@ -2452,41 +2099,6 @@ void FileChoose_InitContext(GameState* thisx) {
     this->unk_1CAD6[3] = 8;
     this->unk_1CAD6[4] = 10;
 
-    this->stickLeftPrompt.stickColorR = 200;
-    this->stickLeftPrompt.stickColorG = 200;
-    this->stickLeftPrompt.stickColorB = 200;
-    this->stickLeftPrompt.stickColorA = 180;
-    this->stickLeftPrompt.stickTexX = 79;
-    this->stickLeftPrompt.stickTexY = 139;
-    this->stickLeftPrompt.arrowColorR = 155;
-    this->stickLeftPrompt.arrowColorG = 155;
-    this->stickLeftPrompt.arrowColorB = 255;
-    this->stickLeftPrompt.arrowColorA = 200;
-    this->stickLeftPrompt.arrowTexX = 63;
-    this->stickLeftPrompt.arrowTexY = 135;
-    this->stickLeftPrompt.z = 1;
-    this->stickLeftPrompt.isEnabled = false;
-
-    this->stickRightPrompt.stickColorR = 200;
-    this->stickRightPrompt.stickColorG = 200;
-    this->stickRightPrompt.stickColorB = 200;
-    this->stickRightPrompt.stickColorA = 180;
-    this->stickRightPrompt.stickTexX = 244;
-    this->stickRightPrompt.stickTexY = 139;
-    this->stickRightPrompt.arrowColorR = 155;
-    this->stickRightPrompt.arrowColorG = 155;
-    this->stickRightPrompt.arrowColorB = 255;
-    this->stickRightPrompt.arrowColorA = 200;
-    this->stickRightPrompt.arrowTexX = 260;
-    this->stickRightPrompt.arrowTexY = 135;
-    this->stickRightPrompt.z = 1;
-    this->stickRightPrompt.isEnabled = false;
-
-    this->arrowAnimState = 0;
-    this->stickAnimState = 0;
-    this->arrowAnimTween = 0;
-    this->stickAnimTween = 0;
-
     ShrinkWindow_SetVal(0);
 
     gSaveContext.skyboxTime = 0;
@@ -2528,11 +2140,6 @@ void FileChoose_Init(GameState* thisx) {
     FileChooseContext* this = (FileChooseContext*)thisx;
     size_t size = (u32)_title_staticSegmentRomEnd - (u32)_title_staticSegmentRomStart;
     s32 pad;
-    this->logoAlpha = 0;
-    this->questType[0] = MIN_QUEST;
-    this->questType[1] = MIN_QUEST;
-    this->questType[2] = MIN_QUEST;
-
     SREG(30) = 1;
     osSyncPrintf("SIZE=%x\n", size);
 

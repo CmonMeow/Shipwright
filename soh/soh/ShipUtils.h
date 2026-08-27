@@ -5,7 +5,11 @@
 
 #ifdef __cplusplus
 
-void LoadGuiTextures();
+#include <algorithm>
+#include <array>
+#include <iterator>
+#include <set>
+#include <vector>
 
 extern "C" {
 #endif

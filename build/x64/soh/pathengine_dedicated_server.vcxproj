@@ -1,0 +1,248 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="18.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <PreferredToolArchitecture>x64</PreferredToolArchitecture>
+  </PropertyGroup>
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{A07671B0-9F2A-3F57-9E52-62C2E5652F3C}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <VcpkgEnabled>false</VcpkgEnabled>
+    <WindowsTargetPlatformVersion>10.0.26100.0</WindowsTargetPlatformVersion>
+    <Platform>x64</Platform>
+    <ProjectName>DedicatedServer</ProjectName>
+    <VCProjectUpgraderObjectName>NoUpgrade</VCProjectUpgraderObjectName>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <Import Project="C:/Program Files/Microsoft Visual Studio/18/Community/VC/Auxiliary/Build/14.51/Microsoft.VCToolsVersion.14.51.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v145</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v145</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets">
+    <Import Project="do_not_import_user.props" Condition="exists('do_not_import_user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.20506.1</_ProjectFileVersion>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:\Users\CmonMeow\Desktop\Shipwright\x64\Debug\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">pathengine_dedicated_server.dir\Debug\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">PathEngineServer</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">.exe</TargetExt>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</LinkIncremental>
+    <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</GenerateManifest>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:\Users\CmonMeow\Desktop\Shipwright\x64\Release\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">pathengine_dedicated_server.dir\Release\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">PathEngineServer</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.exe</TargetExt>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</LinkIncremental>
+    <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</GenerateManifest>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>C:\Users\CmonMeow\Desktop\Shipwright\soh\soh;C:\Users\CmonMeow\Desktop\Shipwright\soh\..\libultraship\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalOptions>%(AdditionalOptions) /external:I "C:/Users/CmonMeow/Desktop/Shipwright/build/x64/vcpkg/installed/x64-windows-static/include" /utf-8</AdditionalOptions>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+      <BufferSecurityCheck></BufferSecurityCheck>
+      <CallingConvention></CallingConvention>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <ExternalWarningLevel>TurnOffAllWarnings</ExternalWarningLevel>
+      <FloatingPointModel></FloatingPointModel>
+      <ForceConformanceInForLoopScope></ForceConformanceInForLoopScope>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <MinimalRebuild></MinimalRebuild>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <Optimization></Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RemoveUnreferencedCodeData></RemoveUnreferencedCodeData>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <SupportJustMyCode></SupportJustMyCode>
+      <TreatWChar_tAsBuiltInType></TreatWChar_tAsBuiltInType>
+      <UseFullPaths>false</UseFullPaths>
+      <UseStandardPreprocessor>true</UseStandardPreprocessor>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;_CRT_SECURE_NO_WARNINGS;NOMINMAX;CVAR_PREFIX_SETTING="gSettings";CVAR_PREFIX_WINDOW="gOpenWindows";CVAR_PREFIX_GENERAL="gGeneral";CVAR_VSYNC_ENABLED="gSettings.VsyncEnabled";CVAR_Z_FIGHTING_MODE="gSettings.ZFightingMode";CVAR_INTERNAL_RESOLUTION="gSettings.InternalResolution";CVAR_MSAA_VALUE="gSettings.MSAAValue";CVAR_TEXTURE_FILTER="gSettings.TextureFilter";CVAR_AUDIO_CHANNELS_SETTING="gAudioChannelsSetting";CONTROLLERBUTTONS_T=uint32_t;CMAKE_INTDIR="Debug"</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <ScanSourceForModuleDependencies>false</ScanSourceForModuleDependencies>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_DEBUG;_WINDOWS;_CRT_SECURE_NO_WARNINGS;NOMINMAX;CVAR_PREFIX_SETTING=\"gSettings\";CVAR_PREFIX_WINDOW=\"gOpenWindows\";CVAR_PREFIX_GENERAL=\"gGeneral\";CVAR_VSYNC_ENABLED=\"gSettings.VsyncEnabled\";CVAR_Z_FIGHTING_MODE=\"gSettings.ZFightingMode\";CVAR_INTERNAL_RESOLUTION=\"gSettings.InternalResolution\";CVAR_MSAA_VALUE=\"gSettings.MSAAValue\";CVAR_TEXTURE_FILTER=\"gSettings.TextureFilter\";CVAR_AUDIO_CHANNELS_SETTING=\"gAudioChannelsSetting\";CONTROLLERBUTTONS_T=uint32_t;CMAKE_INTDIR=\"Debug\"</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>C:\Users\CmonMeow\Desktop\Shipwright\soh\soh;C:\Users\CmonMeow\Desktop\Shipwright\soh\..\libultraship\include;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\vcpkg\installed\x64-windows-static\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>C:\Users\CmonMeow\Desktop\Shipwright\soh\soh;C:\Users\CmonMeow\Desktop\Shipwright\soh\..\libultraship\include;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\vcpkg\installed\x64-windows-static\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <PostBuildEvent>
+      <Message></Message>
+      <Command>setlocal
+..\vcpkg\vcpkg.exe z-applocal --target-binary=C:/Users/CmonMeow/Desktop/Shipwright/x64/Debug/PathEngineServer.exe --installed-bin-dir=C:/Users/CmonMeow/Desktop/Shipwright/build/x64/vcpkg/installed/x64-windows-static/debug/bin
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+    </PostBuildEvent>
+    <Link>
+      <AdditionalDependencies>Debug\pathengine_network.lib;Ws2_32.lib;..\vcpkg\installed\x64-windows-static\debug\lib\libsodium.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <DataExecutionPrevention></DataExecutionPrevention>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
+      <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <ImageHasSafeExceptionHandlers></ImageHasSafeExceptionHandlers>
+      <ImportLibrary>C:/Users/CmonMeow/Desktop/Shipwright/build/x64/soh/Debug/PathEngineServer.lib</ImportLibrary>
+      <LinkErrorReporting></LinkErrorReporting>
+      <ProgramDataBaseFile>C:/Users/CmonMeow/Desktop/Shipwright/x64/Debug/PathEngineServer.pdb</ProgramDataBaseFile>
+      <RandomizedBaseAddress></RandomizedBaseAddress>
+      <SubSystem>Console</SubSystem>
+    </Link>
+    <ProjectReference>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>C:\Users\CmonMeow\Desktop\Shipwright\soh\soh;C:\Users\CmonMeow\Desktop\Shipwright\soh\..\libultraship\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalOptions>%(AdditionalOptions) /external:I "C:/Users/CmonMeow/Desktop/Shipwright/build/x64/vcpkg/installed/x64-windows-static/include" /utf-8</AdditionalOptions>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+      <BufferSecurityCheck></BufferSecurityCheck>
+      <CallingConvention></CallingConvention>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <ExternalWarningLevel>TurnOffAllWarnings</ExternalWarningLevel>
+      <FloatingPointModel></FloatingPointModel>
+      <ForceConformanceInForLoopScope></ForceConformanceInForLoopScope>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <MinimalRebuild></MinimalRebuild>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <Optimization></Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RemoveUnreferencedCodeData></RemoveUnreferencedCodeData>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <SupportJustMyCode></SupportJustMyCode>
+      <TreatWChar_tAsBuiltInType></TreatWChar_tAsBuiltInType>
+      <UseFullPaths>false</UseFullPaths>
+      <UseStandardPreprocessor>true</UseStandardPreprocessor>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;_CRT_SECURE_NO_WARNINGS;NOMINMAX;CVAR_PREFIX_SETTING="gSettings";CVAR_PREFIX_WINDOW="gOpenWindows";CVAR_PREFIX_GENERAL="gGeneral";CVAR_VSYNC_ENABLED="gSettings.VsyncEnabled";CVAR_Z_FIGHTING_MODE="gSettings.ZFightingMode";CVAR_INTERNAL_RESOLUTION="gSettings.InternalResolution";CVAR_MSAA_VALUE="gSettings.MSAAValue";CVAR_TEXTURE_FILTER="gSettings.TextureFilter";CVAR_AUDIO_CHANNELS_SETTING="gAudioChannelsSetting";CONTROLLERBUTTONS_T=uint32_t;CMAKE_INTDIR="Release"</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <DebugInformationFormat>
+      </DebugInformationFormat>
+      <ScanSourceForModuleDependencies>false</ScanSourceForModuleDependencies>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;_CRT_SECURE_NO_WARNINGS;NOMINMAX;CVAR_PREFIX_SETTING=\"gSettings\";CVAR_PREFIX_WINDOW=\"gOpenWindows\";CVAR_PREFIX_GENERAL=\"gGeneral\";CVAR_VSYNC_ENABLED=\"gSettings.VsyncEnabled\";CVAR_Z_FIGHTING_MODE=\"gSettings.ZFightingMode\";CVAR_INTERNAL_RESOLUTION=\"gSettings.InternalResolution\";CVAR_MSAA_VALUE=\"gSettings.MSAAValue\";CVAR_TEXTURE_FILTER=\"gSettings.TextureFilter\";CVAR_AUDIO_CHANNELS_SETTING=\"gAudioChannelsSetting\";CONTROLLERBUTTONS_T=uint32_t;CMAKE_INTDIR=\"Release\"</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>C:\Users\CmonMeow\Desktop\Shipwright\soh\soh;C:\Users\CmonMeow\Desktop\Shipwright\soh\..\libultraship\include;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\vcpkg\installed\x64-windows-static\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>C:\Users\CmonMeow\Desktop\Shipwright\soh\soh;C:\Users\CmonMeow\Desktop\Shipwright\soh\..\libultraship\include;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\vcpkg\installed\x64-windows-static\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <PostBuildEvent>
+      <Message></Message>
+      <Command>setlocal
+..\vcpkg\vcpkg.exe z-applocal --target-binary=C:/Users/CmonMeow/Desktop/Shipwright/x64/Release/PathEngineServer.exe --installed-bin-dir=C:/Users/CmonMeow/Desktop/Shipwright/build/x64/vcpkg/installed/x64-windows-static/bin
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+    </PostBuildEvent>
+    <Link>
+      <AdditionalDependencies>Release\pathengine_network.lib;Ws2_32.lib;..\vcpkg\installed\x64-windows-static\lib\libsodium.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <DataExecutionPrevention></DataExecutionPrevention>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
+      <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <ImageHasSafeExceptionHandlers></ImageHasSafeExceptionHandlers>
+      <ImportLibrary>C:/Users/CmonMeow/Desktop/Shipwright/build/x64/soh/Release/PathEngineServer.lib</ImportLibrary>
+      <LinkErrorReporting></LinkErrorReporting>
+      <ProgramDataBaseFile>C:/Users/CmonMeow/Desktop/Shipwright/x64/Release/PathEngineServer.pdb</ProgramDataBaseFile>
+      <RandomizedBaseAddress></RandomizedBaseAddress>
+      <SubSystem>Console</SubSystem>
+    </Link>
+    <ProjectReference>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\CMakeLists.txt">
+      <UseUtf8Encoding>Always</UseUtf8Encoding>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Building Custom Rule C:/Users/CmonMeow/Desktop/Shipwright/soh/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">setlocal
+"C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" -SC:/Users/CmonMeow/Desktop/Shipwright -BC:/Users/CmonMeow/Desktop/Shipwright/build/x64 --check-stamp-file C:/Users/CmonMeow/Desktop/Shipwright/build/x64/soh/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-4.3\Modules\CMakeFindDependencyMacro.cmake;C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-4.3\Modules\ExternalProject\shared_internal_commands.cmake;C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-4.3\Modules\FetchContent.cmake;C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-4.3\Modules\FetchContent\CMakeLists.cmake.in;C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-4.3\Modules\FindGit.cmake;C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-4.3\Modules\FindPackageHandleStandardArgs.cmake;C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-4.3\Modules\FindPackageMessage.cmake;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\vcpkg\installed\x64-windows-static\share\Vorbis\VorbisConfig.cmake;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\vcpkg\installed\x64-windows-static\share\Vorbis\VorbisConfigVersion.cmake;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\vcpkg\installed\x64-windows-static\share\Vorbis\VorbisTargets-debug.cmake;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\vcpkg\installed\x64-windows-static\share\Vorbis\VorbisTargets-release.cmake;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\vcpkg\installed\x64-windows-static\share\Vorbis\VorbisTargets.cmake;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\vcpkg\installed\x64-windows-static\share\ogg\OggConfig.cmake;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\vcpkg\installed\x64-windows-static\share\ogg\OggConfigVersion.cmake;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\vcpkg\installed\x64-windows-static\share\ogg\OggTargets-debug.cmake;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\vcpkg\installed\x64-windows-static\share\ogg\OggTargets-release.cmake;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\vcpkg\installed\x64-windows-static\share\ogg\OggTargets.cmake;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\vcpkg\installed\x64-windows-static\share\opus\OpusConfig.cmake;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\vcpkg\installed\x64-windows-static\share\opus\OpusConfigVersion.cmake;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\vcpkg\installed\x64-windows-static\share\opus\OpusTargets-debug.cmake;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\vcpkg\installed\x64-windows-static\share\opus\OpusTargets-release.cmake;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\vcpkg\installed\x64-windows-static\share\opus\OpusTargets.cmake;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\vcpkg\installed\x64-windows-static\share\opusfile\OpusFileConfig.cmake;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\vcpkg\installed\x64-windows-static\share\opusfile\OpusFileConfigVersion.cmake;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\vcpkg\installed\x64-windows-static\share\opusfile\OpusFileTargets-debug.cmake;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\vcpkg\installed\x64-windows-static\share\opusfile\OpusFileTargets-release.cmake;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\vcpkg\installed\x64-windows-static\share\opusfile\OpusFileTargets.cmake;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\vcpkg\installed\x64-windows-static\share\unofficial-sodium\unofficial-sodiumConfig.cmake;C:\Users\CmonMeow\Desktop\Shipwright\soh\CMake\Default.cmake;C:\Users\CmonMeow\Desktop\Shipwright\soh\CMake\DefaultCXX.cmake;C:\Users\CmonMeow\Desktop\Shipwright\soh\CMake\Utils.cmake;C:\Users\CmonMeow\Desktop\Shipwright\soh\properties.h.in;C:\Users\CmonMeow\Desktop\Shipwright\soh\src\boot\build.c.in;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:\Users\CmonMeow\Desktop\Shipwright\build\x64\soh\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</LinkObjects>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Building Custom Rule C:/Users/CmonMeow/Desktop/Shipwright/soh/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">setlocal
+"C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" -SC:/Users/CmonMeow/Desktop/Shipwright -BC:/Users/CmonMeow/Desktop/Shipwright/build/x64 --check-stamp-file C:/Users/CmonMeow/Desktop/Shipwright/build/x64/soh/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-4.3\Modules\CMakeFindDependencyMacro.cmake;C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-4.3\Modules\ExternalProject\shared_internal_commands.cmake;C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-4.3\Modules\FetchContent.cmake;C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-4.3\Modules\FetchContent\CMakeLists.cmake.in;C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-4.3\Modules\FindGit.cmake;C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-4.3\Modules\FindPackageHandleStandardArgs.cmake;C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-4.3\Modules\FindPackageMessage.cmake;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\vcpkg\installed\x64-windows-static\share\Vorbis\VorbisConfig.cmake;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\vcpkg\installed\x64-windows-static\share\Vorbis\VorbisConfigVersion.cmake;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\vcpkg\installed\x64-windows-static\share\Vorbis\VorbisTargets-debug.cmake;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\vcpkg\installed\x64-windows-static\share\Vorbis\VorbisTargets-release.cmake;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\vcpkg\installed\x64-windows-static\share\Vorbis\VorbisTargets.cmake;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\vcpkg\installed\x64-windows-static\share\ogg\OggConfig.cmake;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\vcpkg\installed\x64-windows-static\share\ogg\OggConfigVersion.cmake;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\vcpkg\installed\x64-windows-static\share\ogg\OggTargets-debug.cmake;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\vcpkg\installed\x64-windows-static\share\ogg\OggTargets-release.cmake;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\vcpkg\installed\x64-windows-static\share\ogg\OggTargets.cmake;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\vcpkg\installed\x64-windows-static\share\opus\OpusConfig.cmake;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\vcpkg\installed\x64-windows-static\share\opus\OpusConfigVersion.cmake;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\vcpkg\installed\x64-windows-static\share\opus\OpusTargets-debug.cmake;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\vcpkg\installed\x64-windows-static\share\opus\OpusTargets-release.cmake;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\vcpkg\installed\x64-windows-static\share\opus\OpusTargets.cmake;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\vcpkg\installed\x64-windows-static\share\opusfile\OpusFileConfig.cmake;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\vcpkg\installed\x64-windows-static\share\opusfile\OpusFileConfigVersion.cmake;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\vcpkg\installed\x64-windows-static\share\opusfile\OpusFileTargets-debug.cmake;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\vcpkg\installed\x64-windows-static\share\opusfile\OpusFileTargets-release.cmake;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\vcpkg\installed\x64-windows-static\share\opusfile\OpusFileTargets.cmake;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\vcpkg\installed\x64-windows-static\share\unofficial-sodium\unofficial-sodiumConfig.cmake;C:\Users\CmonMeow\Desktop\Shipwright\soh\CMake\Default.cmake;C:\Users\CmonMeow\Desktop\Shipwright\soh\CMake\DefaultCXX.cmake;C:\Users\CmonMeow\Desktop\Shipwright\soh\CMake\Utils.cmake;C:\Users\CmonMeow\Desktop\Shipwright\soh\properties.h.in;C:\Users\CmonMeow\Desktop\Shipwright\soh\src\boot\build.c.in;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:\Users\CmonMeow\Desktop\Shipwright\build\x64\soh\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</LinkObjects>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\clients\PathEngineDedicatedServer.cpp" />
+  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\ZERO_CHECK.vcxproj">
+      <Project>{D741AB23-4C40-3F72-98FF-D787876C4574}</Project>
+      <Name>ZERO_CHECK</Name>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </ProjectReference>
+    <ProjectReference Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\soh\pathengine_network.vcxproj">
+      <Project>{CC8974D8-759D-3CFA-8CF0-B4F8B3D546CF}</Project>
+      <Name>pathengine_network</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

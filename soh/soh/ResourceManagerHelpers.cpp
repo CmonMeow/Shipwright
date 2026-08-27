@@ -1,3 +1,4 @@
+#include <libultraship/log/PathEngineLog.hpp>
 #include "ResourceManagerHelpers.h"
 #include "OTRGlobals.h"
 #include "variables.h"
@@ -12,6 +13,7 @@
 #include <fast/Fast3dWindow.h>
 #include <fast/resource/ResourceType.h>
 #include <fast/resource/type/DisplayList.h>
+#include <stb_image.h>
 
 extern "C" PlayState* gPlayState;
 
@@ -79,26 +81,7 @@ extern "C" bool ResourceMgr_IsPalLoaded() {
 }
 
 u32 IsSceneMasterQuest(s16 sceneNum) {
-    if (OTRGlobals::Instance->HasMasterQuest()) {
-        if (!OTRGlobals::Instance->HasOriginal()) {
-            return true;
-        }
-
-        if (IS_MASTER_QUEST) {
-            return true;
-        }
-
-    }
-
     return false;
-}
-
-extern "C" uint32_t ResourceMgr_GameHasMasterQuest() {
-    return OTRGlobals::Instance->HasMasterQuest();
-}
-
-extern "C" uint32_t ResourceMgr_GameHasOriginal() {
-    return OTRGlobals::Instance->HasOriginal();
 }
 
 extern "C" uint32_t ResourceMgr_IsSceneMasterQuest(s16 sceneNum) {
@@ -319,10 +302,10 @@ extern "C" void ResourceMgr_PatchGfxByName(const char* path, const char* patchNa
         for (int i = 0; i < res->instructions.size(); i++) {
             Gfx* gfx = (Gfx*)&res->instructions[i];
             // Log all commands
-            // SPDLOG_INFO("index:{} command:{}", i, gfx->words.w0 >> 24);
+            // PathEngineLog("index:{} command:{}", i, gfx->words.w0 >> 24);
             // Log only SetPrimColors
             if (gfx->words.w0 >> 24 == 250) {
-                SPDLOG_INFO("index:{} r:{} g:{} b:{} a:{}", i, _SHIFTR(gfx->words.w1, 24, 8), _SHIFTR(gfx->words.w1, 16,
+                PathEngineLog("index:{} r:{} g:{} b:{} a:{}", i, _SHIFTR(gfx->words.w1, 24, 8), _SHIFTR(gfx->words.w1, 16,
     8), _SHIFTR(gfx->words.w1, 8, 8), _SHIFTR(gfx->words.w1, 0, 8));
             }
         }

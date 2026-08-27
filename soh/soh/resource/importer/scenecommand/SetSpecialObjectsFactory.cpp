@@ -1,7 +1,5 @@
 #include "soh/resource/importer/scenecommand/SetSpecialObjectsFactory.h"
 #include "soh/resource/type/scenecommand/SetSpecialObjects.h"
-#include "soh/resource/logging/SceneCommandLoggers.h"
-#include "spdlog/spdlog.h"
 #include <tinyxml2.h>
 
 namespace SOH {

@@ -1,0 +1,84 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="18.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Network\Network\netapi.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Network\Network\netchannel.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Network\Network\netmessage.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Network\Network\netpeer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Network\ReliableUdpService.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Network\ShipwrightNetworkRuntime.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Network\bitmask.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Network\netTransportNet.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Network\Network\netapi.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Network\Network\netchannel.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Network\Network\netglobal.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Network\Network\netmessage.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Network\Network\netpch.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Network\Network\netpeer.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Network\NetworkProtocol.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Network\ReliableUdpService.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Network\ShipwrightNetworkRuntime.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Network\VoiceChat.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Network\bitmask.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Network\netTransport.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Network\netTransportCommon.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Network\pointers.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{B8AEE8DF-645E-357A-83CA-AA95C17E8E4A}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{FBBA4402-F9B9-396F-A5B0-D4EE37A28A02}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

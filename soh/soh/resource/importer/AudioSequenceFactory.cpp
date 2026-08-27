@@ -1,7 +1,6 @@
 #include "soh/resource/importer/AudioSequenceFactory.h"
 #include "soh/resource/importer/AudioSoundFontFactory.h"
 #include "soh/resource/type/AudioSequence.h"
-#include "spdlog/spdlog.h"
 #include <ship/resource/ResourceManager.h>
 #include <tinyxml2.h>
 

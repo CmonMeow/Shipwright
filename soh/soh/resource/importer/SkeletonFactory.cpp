@@ -1,6 +1,6 @@
+#include <libultraship/log/PathEngineLog.hpp>
 #include "soh/resource/importer/SkeletonFactory.h"
 #include "soh/resource/type/Skeleton.h"
-#include <spdlog/spdlog.h>
 #include <tinyxml2.h>
 #include <libultraship/libultraship.h>
 
@@ -57,7 +57,7 @@ ResourceFactoryBinarySkeletonV0::ReadResource(std::shared_ptr<Ship::File> file,
     } else if (skeleton->type == SkeletonType::Curve) {
         skeleton->skeletonData.skelCurveLimbList.limbs = (SkelCurveLimb**)skeleton->skeletonHeaderSegments.data();
     } else {
-        SPDLOG_ERROR("unknown skeleton type {}", (uint32_t)skeleton->type);
+        PathEngineLog("unknown skeleton type {}", (uint32_t)skeleton->type);
     }
 
     skeleton->skeletonData.skeletonHeader.skeletonType = (uint8_t)skeleton->type;

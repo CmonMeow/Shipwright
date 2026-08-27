@@ -371,11 +371,7 @@ void FileChoose_DrawNameEntry(GameState* thisx) {
 
                 if (this->newFileNameCharCount < 0) {
                     this->newFileNameCharCount = 0;
-                    if (this->prevConfigMode == CM_QUEST_MENU) {
-                        this->configMode = CM_NAME_ENTRY_TO_QUEST_MENU;
-                    } else {
-                        this->configMode = CM_NAME_ENTRY_TO_MAIN;
-                    }
+                    this->configMode = CM_NAME_ENTRY_TO_MAIN;
                     this->prevConfigMode = CM_NAME_ENTRY;
                 } else {
                     for (i = this->newFileNameCharCount; i < 7; i++) {
@@ -698,7 +694,7 @@ void FileChoose_UpdateOptionsMenu(GameState* thisx) {
     }
 
     uint8_t languageChanged = 0;
-    uint8_t versionIndex = ResourceMgr_GameHasMasterQuest() && ResourceMgr_GameHasOriginal();
+    uint8_t versionIndex = 0;
     uint8_t isPalN64 = ResourceMgr_GetGameRegion(versionIndex) == GAME_REGION_PAL &&
                        ResourceMgr_GetGamePlatform(versionIndex) == GAME_PLATFORM_N64;
 
@@ -909,7 +905,7 @@ void FileChoose_DrawOptionsImpl(GameState* thisx) {
         }
     }
 
-    uint8_t versionIndex = ResourceMgr_GameHasMasterQuest() && ResourceMgr_GameHasOriginal();
+    uint8_t versionIndex = 0;
     uint8_t isPalN64 = ResourceMgr_GetGameRegion(versionIndex) == GAME_REGION_PAL &&
                        ResourceMgr_GetGamePlatform(versionIndex) == GAME_PLATFORM_N64;
     uint8_t isPalGC = ResourceMgr_GetGameRegion(versionIndex) == GAME_REGION_PAL &&

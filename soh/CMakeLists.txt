@@ -122,7 +122,12 @@ source_group("include" FILES ${Header_Files__include})
 
 # soh (root)
 file(GLOB_RECURSE soh__ RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} "soh/*.c" "soh/*.cpp" "soh/*.h" "soh/*.hpp")
-
+file(GLOB_RECURSE pathengine_network__ RELATIVE ${CMAKE_CURRENT_SOURCE_DIR}
+    "soh/Network/*.cpp"
+    "soh/Network/*.h"
+    "soh/Network/*.hpp"
+)
+list(REMOVE_ITEM soh__ ${pathengine_network__})
 
 # Create source groups that match the real file directory paths
 foreach(source IN LISTS soh__)
@@ -137,24 +142,6 @@ if (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
     set_source_files_properties(soh/Enhancements/custom-message/CustomMessageManager.cpp PROPERTIES COMPILE_FLAGS "/utf-8")
     set_source_files_properties(soh/Enhancements/custom-message/CustomMessageManager.h PROPERTIES COMPILE_FLAGS "/utf-8")
 endif()
-
-# soh/Extractor {{{
-list(FILTER ship__ EXCLUDE REGEX "soh/Extractor/*")
-
-if(NOT CMAKE_SYSTEM_NAME MATCHES "NintendoSwitch|CafeOS")
-    file(GLOB_RECURSE soh__Extractor RELATIVE ${CMAKE_CURRENT_SOURCE_DIR}
-        "soh/Extractor/*.c"
-        "soh/Extractor/*.cpp"
-        "soh/Extractor/*.h"
-        "soh/Extractor/*.hpp"
-    )
-else()
-    file(GLOB_RECURSE soh__Extractor RELATIVE ${CMAKE_CURRENT_SOURCE_DIR}
-        "soh/Extractor/*.h"
-        "soh/Extractor/*.hpp"
-    )
-endif()
-# }}}
 
 # src (decomp) {{{
 file(GLOB_RECURSE src__ RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} "src/*.c" "src/*.h")
@@ -193,13 +180,114 @@ set(ALL_FILES
     ${Header_Files}
     ${Header_Files__include}
     ${soh__}
-    ${soh__Extractor}
     ${src__}
 )
 
 ################################################################################
 # Target
 ################################################################################
+if (CMAKE_SYSTEM_NAME STREQUAL "Windows")
+    find_package(unofficial-sodium CONFIG REQUIRED)
+
+    add_library(pathengine_network STATIC ${pathengine_network__})
+    target_include_directories(pathengine_network PUBLIC
+        ${CMAKE_CURRENT_SOURCE_DIR}/soh
+        ${CMAKE_CURRENT_SOURCE_DIR}/../libultraship/include
+    )
+    target_compile_definitions(pathengine_network PRIVATE
+        WIN32
+        _WINDOWS
+        _CRT_SECURE_NO_WARNINGS
+        NOMINMAX
+    )
+    set_target_properties(pathengine_network PROPERTIES
+        MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>"
+    )
+    target_compile_options(pathengine_network PRIVATE $<$<COMPILE_LANGUAGE:CXX>:/EHsc>)
+    target_link_libraries(pathengine_network PUBLIC
+        Ws2_32
+        unofficial-sodium::sodium
+    )
+
+    add_library(pathengine_protocol INTERFACE)
+    target_link_libraries(pathengine_protocol INTERFACE
+        pathengine_network
+        unofficial-sodium::sodium
+    )
+
+    add_executable(pathengine_network_test tests/NetworkSelfTest.cpp)
+    target_link_libraries(pathengine_network_test PRIVATE pathengine_network)
+    set_target_properties(pathengine_network_test PROPERTIES
+        FOLDER "tests"
+        MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>"
+    )
+    target_compile_options(pathengine_network_test PRIVATE /EHsc)
+
+    add_executable(pathengine_protocol_test tests/NetworkProtocolSelfTest.cpp)
+    target_link_libraries(pathengine_protocol_test PRIVATE pathengine_protocol)
+    set_target_properties(pathengine_protocol_test PROPERTIES
+        FOLDER "tests"
+        MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>"
+    )
+    target_compile_options(pathengine_protocol_test PRIVATE /EHsc)
+
+    add_executable(pathengine_runtime_test tests/NetworkRuntimeSelfTest.cpp)
+    target_link_libraries(pathengine_runtime_test PRIVATE pathengine_protocol)
+    set_target_properties(pathengine_runtime_test PROPERTIES
+        FOLDER "tests"
+        MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>"
+    )
+    target_compile_options(pathengine_runtime_test PRIVATE /EHsc)
+
+    add_executable(pathengine_voice_test tests/VoiceCodecSelfTest.cpp)
+    target_link_libraries(pathengine_voice_test PRIVATE
+        pathengine_protocol
+        Opus::opus
+        winmm
+    )
+    set_target_properties(pathengine_voice_test PROPERTIES
+        FOLDER "tests"
+        MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>"
+    )
+    target_compile_options(pathengine_voice_test PRIVATE /EHsc)
+
+    add_executable(pathengine_voice_client WIN32 clients/PathEngineVoiceClient.cpp)
+    target_link_libraries(pathengine_voice_client PRIVATE
+        pathengine_protocol
+        Opus::opus
+        winmm
+    )
+    set_target_properties(pathengine_voice_client PROPERTIES
+        OUTPUT_NAME "PathEngineVoice"
+        FOLDER "clients"
+        MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>"
+    )
+    target_compile_definitions(pathengine_voice_client PRIVATE
+        WIN32
+        _WINDOWS
+        _CRT_SECURE_NO_WARNINGS
+        NOMINMAX
+    )
+    target_compile_options(pathengine_voice_client PRIVATE /EHsc)
+
+    add_executable(pathengine_dedicated_server clients/PathEngineDedicatedServer.cpp)
+    target_link_libraries(pathengine_dedicated_server PRIVATE pathengine_protocol)
+    set_target_properties(pathengine_dedicated_server PROPERTIES
+        OUTPUT_NAME "PathEngineServer"
+        PROJECT_LABEL "DedicatedServer"
+        RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/../x64"
+        FOLDER "clients"
+        MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>"
+    )
+    target_compile_definitions(pathengine_dedicated_server PRIVATE
+        WIN32
+        _WINDOWS
+        _CRT_SECURE_NO_WARNINGS
+        NOMINMAX
+    )
+    target_compile_options(pathengine_dedicated_server PRIVATE /EHsc)
+endif()
+
 add_executable(${PROJECT_NAME} ${ALL_FILES})
 
 if (CMAKE_SYSTEM_NAME STREQUAL "Windows")
@@ -271,9 +359,6 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(dr_libs)
 
-find_package(SDL2)
-set(SDL2-INCLUDE ${SDL2_INCLUDE_DIRS})
-
 ################################################################################
 # Compile definitions
 ################################################################################
@@ -281,16 +366,17 @@ set(SDL2-INCLUDE ${SDL2_INCLUDE_DIRS})
 target_include_directories(${PROJECT_NAME} PRIVATE assets
     ${CMAKE_CURRENT_SOURCE_DIR}/include/
     ${CMAKE_CURRENT_SOURCE_DIR}/src/
+    ${CMAKE_CURRENT_SOURCE_DIR}/soh/
     ${CMAKE_CURRENT_SOURCE_DIR}/../libultraship/include
     ${CMAKE_CURRENT_SOURCE_DIR}/../ZAPDTR/ZAPD/resource/type
-    ${SDL2-INCLUDE}
-    ${SDL2-NET-INCLUDE}
     ${CMAKE_CURRENT_SOURCE_DIR}/assets/
     ${dr_libs_SOURCE_DIR}
     .
 )
 
 if (CMAKE_SYSTEM_NAME STREQUAL "Windows")
+    target_link_libraries(${PROJECT_NAME} PRIVATE pathengine_network)
+
     if("${CMAKE_VS_PLATFORM_NAME}" STREQUAL "x64")
         target_compile_definitions(${PROJECT_NAME} PRIVATE
             "$<$<CONFIG:Debug>:"
@@ -305,8 +391,6 @@ if (CMAKE_SYSTEM_NAME STREQUAL "Windows")
             "F3DEX_GBI_2"
             "UNICODE;"
             "_UNICODE"
-            SPDLOG_ACTIVE_LEVEL=${SPDLOG_MIN_CUTOFF}
-            LOG_LEVEL_GAME_PRINTS=${SPDLOG_LEVEL_OFF}
             STORMLIB_NO_AUTO_LINK
             "_CRT_SECURE_NO_WARNINGS;"
             NOMINMAX
@@ -327,8 +411,6 @@ if (CMAKE_SYSTEM_NAME STREQUAL "Windows")
             "WIN32;"
             "UNICODE;"
             "_UNICODE;"
-            SPDLOG_ACTIVE_LEVEL=${SPDLOG_MIN_CUTOFF}
-            LOG_LEVEL_GAME_PRINTS=${SPDLOG_LEVEL_OFF}
             STORMLIB_NO_AUTO_LINK
             NOMINMAX
         )
@@ -342,11 +424,7 @@ elseif (CMAKE_SYSTEM_NAME STREQUAL "CafeOS")
             "NDEBUG;"
         ">"
         "F3DEX_GBI_2;"
-        "SPDLOG_NO_THREAD_ID;"
-        "SPDLOG_NO_TLS;"
         "STBI_NO_THREAD_LOCALS;"
-        SPDLOG_ACTIVE_LEVEL=${SPDLOG_MIN_CUTOFF}
-        LOG_LEVEL_GAME_PRINTS=${SPDLOG_LEVEL_OFF}
     )
 elseif ("${CMAKE_CXX_COMPILER_ID}" MATCHES "GNU|Clang|AppleClang")
     target_compile_definitions(${PROJECT_NAME} PRIVATE
@@ -362,8 +440,6 @@ elseif ("${CMAKE_CXX_COMPILER_ID}" MATCHES "GNU|Clang|AppleClang")
         "ENABLE_OPENGL;"
         "UNICODE;"
         "_UNICODE;"
-        SPDLOG_ACTIVE_LEVEL=${SPDLOG_MIN_CUTOFF}
-        LOG_LEVEL_GAME_PRINTS=${SPDLOG_LEVEL_OFF}
     )
 endif()
 ################################################################################
@@ -585,7 +661,6 @@ add_dependencies(${PROJECT_NAME}
 endif()
 
 if (CMAKE_SYSTEM_NAME STREQUAL "Windows")
-    find_package(glfw3 REQUIRED)
     find_package(Ogg CONFIG REQUIRED)
     link_libraries(Ogg::ogg)
 
@@ -600,9 +675,6 @@ if (CMAKE_SYSTEM_NAME STREQUAL "Windows")
             "libultraship;"
             "ZAPDLib;"
             "glu32;"
-            "SDL2::SDL2;"
-            "SDL2::SDL2main;"
-            "glfw;"
             "winmm;"
             "imm32;"
             "version;"
@@ -619,9 +691,6 @@ if (CMAKE_SYSTEM_NAME STREQUAL "Windows")
             "libultraship;"
             "ZAPDLib;"
             "glu32;"
-            "SDL2::SDL2;"
-            "SDL2::SDL2main;"
-            "glfw;"
             "winmm;"
             "imm32;"
             "version;"
@@ -629,28 +698,22 @@ if (CMAKE_SYSTEM_NAME STREQUAL "Windows")
         )
     endif()
 elseif(CMAKE_SYSTEM_NAME STREQUAL "NintendoSwitch")
-    find_package(SDL2)
     set(THREADS_PREFER_PTHREAD_FLAG ON)
     find_package(Threads REQUIRED)
     set(ADDITIONAL_LIBRARY_DEPENDENCIES
         "libultraship;"
-        SDL2::SDL2
         -lglad
         Threads::Threads
     )
 elseif(CMAKE_SYSTEM_NAME STREQUAL "CafeOS")
-    find_package(SDL2 REQUIRED)
     set(ADDITIONAL_LIBRARY_DEPENDENCIES
         "libultraship;"
-        SDL2::SDL2-static
-
         "$<$<CONFIG:Debug>:-Wl,--wrap=abort>"
     )
     target_include_directories(${PROJECT_NAME} PRIVATE
         ${DEVKITPRO}/portlibs/wiiu/include/
     )
 else()
-    find_package(SDL2)
     set(THREADS_PREFER_PTHREAD_FLAG ON)
     find_package(Threads REQUIRED)
     find_package(Ogg REQUIRED)
@@ -660,7 +723,6 @@ else()
      set(ADDITIONAL_LIBRARY_DEPENDENCIES
     "libultraship;"
         "ZAPDLib;"
-        SDL2::SDL2
         "Ogg::ogg"
         "Vorbis::vorbis"
         "Vorbis::vorbisenc"
@@ -681,16 +743,10 @@ INSTALL(FILES $<TARGET_PDB_FILE:soh> DESTINATION ./debug COMPONENT ship)
 INSTALL(FILES ${CMAKE_BINARY_DIR}/soh/soh.o2r DESTINATION . COMPONENT ship)
 endif()
 
-find_program(CURL NAMES curl DOC "Path to the curl program.  Used to download files.")
-execute_process(COMMAND ${CURL} -sSfL https://raw.githubusercontent.com/mdqinc/SDL_GameControllerDB/master/gamecontrollerdb.txt -o ${CMAKE_BINARY_DIR}/gamecontrollerdb.txt OUTPUT_VARIABLE RESULT)
-
 if("${CMAKE_SYSTEM_NAME}" STREQUAL "Darwin")
 configure_file( ${CMAKE_CURRENT_SOURCE_DIR}/macosx/Info.plist.in ${CMAKE_BINARY_DIR}/macosx/Info.plist @ONLY)
 INSTALL(TARGETS soh DESTINATION ../MacOS COMPONENT ship)
-INSTALL(FILES ${CMAKE_BINARY_DIR}/gamecontrollerdb.txt DESTINATION ../MacOS COMPONENT ship)
 INSTALL(FILES ${CMAKE_BINARY_DIR}/soh/soh.o2r DESTINATION ../Resources COMPONENT ship)
-elseif(NOT "${CMAKE_SYSTEM_NAME}" MATCHES "NintendoSwitch|CafeOS")
-INSTALL(FILES ${CMAKE_BINARY_DIR}/gamecontrollerdb.txt DESTINATION . COMPONENT ship)
 endif()
 
 if(CMAKE_SYSTEM_NAME MATCHES "NintendoSwitch|CafeOS")

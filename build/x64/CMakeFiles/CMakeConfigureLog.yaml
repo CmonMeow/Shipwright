@@ -20127,3 +20127,278 @@ events:
         - "C:/Program Files/Ship"
       CMAKE_FIND_ROOT_PATH: "C:/Users/CmonMeow/Desktop/Shipwright/build/x64/vcpkg/installed/x64-windows-static/debug;C:/Users/CmonMeow/Desktop/Shipwright/build/x64/vcpkg/installed/x64-windows-static"
 ...
+
+---
+events:
+  -
+    kind: "find-v1"
+    backtrace:
+      - "build/x64/vcpkg/installed/x64-windows-static/share/unofficial-sodium/unofficial-sodiumConfig.cmake:21 (find_library)"
+      - "build/x64/vcpkg/scripts/buildsystems/vcpkg.cmake:939 (_find_package)"
+      - "soh/CMakeLists.txt:190 (find_package)"
+    mode: "library"
+    variable: "VCPKG_SODIUM_LIBRARY_RELEASE"
+    description: "Path to a library."
+    settings:
+      SearchFramework: "LAST"
+      SearchAppBundle: "LAST"
+      CMAKE_FIND_USE_CMAKE_PATH: true
+      CMAKE_FIND_USE_CMAKE_ENVIRONMENT_PATH: true
+      CMAKE_FIND_USE_SYSTEM_ENVIRONMENT_PATH: true
+      CMAKE_FIND_USE_CMAKE_SYSTEM_PATH: true
+      CMAKE_FIND_USE_INSTALL_PREFIX: true
+    names:
+      - "sodium"
+      - "libsodium"
+    candidate_directories:
+      - "C:/Users/CmonMeow/Desktop/Shipwright/build/x64/vcpkg/installed/x64-windows-static/debug/Users/CmonMeow/Desktop/Shipwright/build/x64/vcpkg/installed/x64-windows-static/lib/"
+      - "C:/Users/CmonMeow/Desktop/Shipwright/build/x64/vcpkg/installed/x64-windows-static/lib/"
+      - "C:/Users/CmonMeow/Desktop/Shipwright/build/x64/vcpkg/installed/x64-windows-static/lib/"
+    searched_directories:
+      - "C:/Users/CmonMeow/Desktop/Shipwright/build/x64/vcpkg/installed/x64-windows-static/debug/Users/CmonMeow/Desktop/Shipwright/build/x64/vcpkg/installed/x64-windows-static/lib/"
+    found: "C:/Users/CmonMeow/Desktop/Shipwright/build/x64/vcpkg/installed/x64-windows-static/lib/libsodium.lib"
+    search_context:
+      CMAKE_LIBRARY_PATH:
+        - "C:/Users/CmonMeow/Desktop/Shipwright/build/x64/vcpkg/installed/x64-windows-static/debug/lib/manual-link"
+        - "C:/Users/CmonMeow/Desktop/Shipwright/build/x64/vcpkg/installed/x64-windows-static/lib/manual-link"
+      CMAKE_PREFIX_PATH:
+        - "C:/Users/CmonMeow/Desktop/Shipwright/build/x64/vcpkg/installed/x64-windows-static/debug"
+        - "C:/Users/CmonMeow/Desktop/Shipwright/build/x64/vcpkg/installed/x64-windows-static"
+      ENV{PATH}:
+        - "C:\\Users\\CmonMeow\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\native\\powershell"
+        - "C:\\Users\\CmonMeow\\.codex\\tmp\\arg0\\codex-arg0c3yFTR"
+        - "C:\\Users\\CmonMeow\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\native\\libheif\\libheif\\bin"
+        - "C:\\Users\\CmonMeow\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\native\\jxrlib\\jxrlib\\bin"
+        - "C:\\Users\\CmonMeow\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\native\\poppler\\Library\\bin"
+        - "C:\\Users\\CmonMeow\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\bin\\override"
+        - "C:\\Program Files\\BellSoft\\LibericaJRE-21-Full\\bin\\"
+        - "C:\\Program Files\\Eclipse Adoptium\\jre-21.0.11.10-hotspot\\bin"
+        - "C:\\Program Files\\Amazon Corretto\\jdk21.0.11_10\\bin"
+        - "C:\\Windows\\system32"
+        - "C:\\Windows"
+        - "C:\\Windows\\System32\\Wbem"
+        - "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\"
+        - "C:\\Windows\\System32\\OpenSSH\\"
+        - "C:\\Program Files\\dotnet\\"
+        - "C:\\Program Files (x86)\\Windows Kits\\10\\Windows Performance Toolkit\\"
+        - "C:\\Users\\CmonMeow\\AppData\\Local\\Programs\\Python\\Python313\\Scripts\\"
+        - "C:\\Users\\CmonMeow\\AppData\\Local\\Programs\\Python\\Python313\\"
+        - "C:\\Users\\CmonMeow\\AppData\\Local\\Programs\\Python\\Launcher\\"
+        - "C:\\Users\\CmonMeow\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\native\\powershell"
+        - "C:\\Users\\CmonMeow\\AppData\\Local\\Microsoft\\WindowsApps"
+        - "C:\\Users\\CmonMeow\\AppData\\Local\\GitHubDesktop\\bin"
+        - "C:\\Users\\CmonMeow\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\bin\\fallback"
+        - "C:\\Users\\CmonMeow\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\native\\git\\cmd"
+        - "C:\\Users\\CmonMeow\\AppData\\Local\\OpenAI\\Codex\\bin\\b91d382ea836415f"
+        - "C:\\Users\\CmonMeow\\AppData\\Local\\OpenAI\\Codex\\bin\\d0097be4feba73d0"
+      CMAKE_INSTALL_PREFIX: "C:/Program Files/Ship"
+      CMAKE_SYSTEM_PREFIX_PATH:
+        - "C:/Program Files"
+        - "C:/Program Files (x86)"
+        - "C:/Program Files/Microsoft Visual Studio/18/Community/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake"
+        - "C:/Program Files/Ship"
+      CMAKE_SYSTEM_LIBRARY_PATH:
+        - "C:/Program Files/Ship/bin"
+        - "C:/Program Files/Microsoft Visual Studio/18/Community/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/bin"
+        - "/bin"
+      CMAKE_FIND_ROOT_PATH: "C:/Users/CmonMeow/Desktop/Shipwright/build/x64/vcpkg/installed/x64-windows-static/debug;C:/Users/CmonMeow/Desktop/Shipwright/build/x64/vcpkg/installed/x64-windows-static"
+  -
+    kind: "find-v1"
+    backtrace:
+      - "build/x64/vcpkg/installed/x64-windows-static/share/unofficial-sodium/unofficial-sodiumConfig.cmake:27 (find_library)"
+      - "build/x64/vcpkg/scripts/buildsystems/vcpkg.cmake:939 (_find_package)"
+      - "soh/CMakeLists.txt:190 (find_package)"
+    mode: "library"
+    variable: "VCPKG_SODIUM_LIBRARY_DEBUG"
+    description: "Path to a library."
+    settings:
+      SearchFramework: "LAST"
+      SearchAppBundle: "LAST"
+      CMAKE_FIND_USE_CMAKE_PATH: true
+      CMAKE_FIND_USE_CMAKE_ENVIRONMENT_PATH: true
+      CMAKE_FIND_USE_SYSTEM_ENVIRONMENT_PATH: true
+      CMAKE_FIND_USE_CMAKE_SYSTEM_PATH: true
+      CMAKE_FIND_USE_INSTALL_PREFIX: true
+    names:
+      - "sodium"
+      - "libsodium"
+    candidate_directories:
+      - "C:/Users/CmonMeow/Desktop/Shipwright/build/x64/vcpkg/installed/x64-windows-static/debug/lib/"
+      - "C:/Users/CmonMeow/Desktop/Shipwright/build/x64/vcpkg/installed/x64-windows-static/debug/lib/"
+      - "C:/Users/CmonMeow/Desktop/Shipwright/build/x64/vcpkg/installed/x64-windows-static/debug/lib/"
+    found: "C:/Users/CmonMeow/Desktop/Shipwright/build/x64/vcpkg/installed/x64-windows-static/debug/lib/libsodium.lib"
+    search_context:
+      CMAKE_LIBRARY_PATH:
+        - "C:/Users/CmonMeow/Desktop/Shipwright/build/x64/vcpkg/installed/x64-windows-static/debug/lib/manual-link"
+        - "C:/Users/CmonMeow/Desktop/Shipwright/build/x64/vcpkg/installed/x64-windows-static/lib/manual-link"
+      CMAKE_PREFIX_PATH:
+        - "C:/Users/CmonMeow/Desktop/Shipwright/build/x64/vcpkg/installed/x64-windows-static/debug"
+        - "C:/Users/CmonMeow/Desktop/Shipwright/build/x64/vcpkg/installed/x64-windows-static"
+      ENV{PATH}:
+        - "C:\\Users\\CmonMeow\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\native\\powershell"
+        - "C:\\Users\\CmonMeow\\.codex\\tmp\\arg0\\codex-arg0c3yFTR"
+        - "C:\\Users\\CmonMeow\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\native\\libheif\\libheif\\bin"
+        - "C:\\Users\\CmonMeow\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\native\\jxrlib\\jxrlib\\bin"
+        - "C:\\Users\\CmonMeow\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\native\\poppler\\Library\\bin"
+        - "C:\\Users\\CmonMeow\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\bin\\override"
+        - "C:\\Program Files\\BellSoft\\LibericaJRE-21-Full\\bin\\"
+        - "C:\\Program Files\\Eclipse Adoptium\\jre-21.0.11.10-hotspot\\bin"
+        - "C:\\Program Files\\Amazon Corretto\\jdk21.0.11_10\\bin"
+        - "C:\\Windows\\system32"
+        - "C:\\Windows"
+        - "C:\\Windows\\System32\\Wbem"
+        - "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\"
+        - "C:\\Windows\\System32\\OpenSSH\\"
+        - "C:\\Program Files\\dotnet\\"
+        - "C:\\Program Files (x86)\\Windows Kits\\10\\Windows Performance Toolkit\\"
+        - "C:\\Users\\CmonMeow\\AppData\\Local\\Programs\\Python\\Python313\\Scripts\\"
+        - "C:\\Users\\CmonMeow\\AppData\\Local\\Programs\\Python\\Python313\\"
+        - "C:\\Users\\CmonMeow\\AppData\\Local\\Programs\\Python\\Launcher\\"
+        - "C:\\Users\\CmonMeow\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\native\\powershell"
+        - "C:\\Users\\CmonMeow\\AppData\\Local\\Microsoft\\WindowsApps"
+        - "C:\\Users\\CmonMeow\\AppData\\Local\\GitHubDesktop\\bin"
+        - "C:\\Users\\CmonMeow\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\bin\\fallback"
+        - "C:\\Users\\CmonMeow\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\native\\git\\cmd"
+        - "C:\\Users\\CmonMeow\\AppData\\Local\\OpenAI\\Codex\\bin\\b91d382ea836415f"
+        - "C:\\Users\\CmonMeow\\AppData\\Local\\OpenAI\\Codex\\bin\\d0097be4feba73d0"
+      CMAKE_INSTALL_PREFIX: "C:/Program Files/Ship"
+      CMAKE_SYSTEM_PREFIX_PATH:
+        - "C:/Program Files"
+        - "C:/Program Files (x86)"
+        - "C:/Program Files/Microsoft Visual Studio/18/Community/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake"
+        - "C:/Program Files/Ship"
+      CMAKE_SYSTEM_LIBRARY_PATH:
+        - "C:/Program Files/Ship/bin"
+        - "C:/Program Files/Microsoft Visual Studio/18/Community/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/bin"
+        - "/bin"
+      CMAKE_FIND_ROOT_PATH: "C:/Users/CmonMeow/Desktop/Shipwright/build/x64/vcpkg/installed/x64-windows-static/debug;C:/Users/CmonMeow/Desktop/Shipwright/build/x64/vcpkg/installed/x64-windows-static"
+  -
+    kind: "find_package-v1"
+    backtrace:
+      - "build/x64/vcpkg/scripts/buildsystems/vcpkg.cmake:939 (_find_package)"
+      - "soh/CMakeLists.txt:190 (find_package)"
+    name: "unofficial-sodium"
+    configs:
+      -
+        filename: "unofficial-sodium.cps"
+        kind: "cps"
+      -
+        filename: "unofficial-sodiumConfig.cmake"
+        kind: "cmake"
+      -
+        filename: "unofficial-sodium-config.cmake"
+        kind: "cmake"
+    version_request:
+      exact: false
+    settings:
+      required: "required_explicit"
+      quiet: false
+      global: false
+      policy_scope: true
+      bypass_provider: false
+      names:
+        - "unofficial-sodium"
+      path_suffixes:
+        - ""
+      paths:
+        CMAKE_FIND_USE_CMAKE_PATH: true
+        CMAKE_FIND_USE_CMAKE_ENVIRONMENT_PATH: true
+        CMAKE_FIND_USE_SYSTEM_ENVIRONMENT_PATH: true
+        CMAKE_FIND_USE_CMAKE_SYSTEM_PATH: true
+        CMAKE_FIND_USE_INSTALL_PREFIX: true
+        CMAKE_FIND_USE_PACKAGE_ROOT_PATH: true
+        CMAKE_FIND_USE_CMAKE_PACKAGE_REGISTRY: true
+        CMAKE_FIND_USE_SYSTEM_PACKAGE_REGISTRY: true
+        CMAKE_FIND_ROOT_PATH_MODE: "BOTH"
+    candidates:
+      -
+        path: "C:/Users/CmonMeow/Desktop/Shipwright/build/x64/vcpkg/installed/x64-windows-static/debug/unofficial-sodiumConfig.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/Users/CmonMeow/Desktop/Shipwright/build/x64/vcpkg/installed/x64-windows-static/debug/unofficial-sodium-config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/Users/CmonMeow/Desktop/Shipwright/build/x64/vcpkg/installed/x64-windows-static/debug/lib/cps/unofficial-sodium.cps"
+        mode: "cps"
+        reason: "no_exist"
+      -
+        path: "C:/Users/CmonMeow/Desktop/Shipwright/build/x64/vcpkg/installed/x64-windows-static/debug/share/cps/unofficial-sodium.cps"
+        mode: "cps"
+        reason: "no_exist"
+      -
+        path: "C:/Users/CmonMeow/Desktop/Shipwright/build/x64/vcpkg/installed/x64-windows-static/debug/unofficial-sodiumConfig.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/Users/CmonMeow/Desktop/Shipwright/build/x64/vcpkg/installed/x64-windows-static/debug/unofficial-sodium-config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/Users/CmonMeow/Desktop/Shipwright/build/x64/vcpkg/installed/x64-windows-static/debug/lib/cps/unofficial-sodium.cps"
+        mode: "cps"
+        reason: "no_exist"
+      -
+        path: "C:/Users/CmonMeow/Desktop/Shipwright/build/x64/vcpkg/installed/x64-windows-static/debug/share/cps/unofficial-sodium.cps"
+        mode: "cps"
+        reason: "no_exist"
+      -
+        path: "C:/Users/CmonMeow/Desktop/Shipwright/build/x64/vcpkg/installed/x64-windows-static/unofficial-sodiumConfig.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/Users/CmonMeow/Desktop/Shipwright/build/x64/vcpkg/installed/x64-windows-static/unofficial-sodium-config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/Users/CmonMeow/Desktop/Shipwright/build/x64/vcpkg/installed/x64-windows-static/lib/cps/unofficial-sodium.cps"
+        mode: "cps"
+        reason: "no_exist"
+      -
+        path: "C:/Users/CmonMeow/Desktop/Shipwright/build/x64/vcpkg/installed/x64-windows-static/share/cps/unofficial-sodium.cps"
+        mode: "cps"
+        reason: "no_exist"
+    found:
+      path: "C:/Users/CmonMeow/Desktop/Shipwright/build/x64/vcpkg/installed/x64-windows-static/share/unofficial-sodium/unofficial-sodiumConfig.cmake"
+      mode: "config"
+      version: ""
+    search_context:
+      CMAKE_PREFIX_PATH:
+        - "C:/Users/CmonMeow/Desktop/Shipwright/build/x64/vcpkg/installed/x64-windows-static/debug"
+        - "C:/Users/CmonMeow/Desktop/Shipwright/build/x64/vcpkg/installed/x64-windows-static"
+      ENV{PATH}:
+        - "C:\\Users\\CmonMeow\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\native\\powershell"
+        - "C:\\Users\\CmonMeow\\.codex\\tmp\\arg0\\codex-arg0c3yFTR"
+        - "C:\\Users\\CmonMeow\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\native\\libheif\\libheif\\bin"
+        - "C:\\Users\\CmonMeow\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\native\\jxrlib\\jxrlib\\bin"
+        - "C:\\Users\\CmonMeow\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\native\\poppler\\Library\\bin"
+        - "C:\\Users\\CmonMeow\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\bin\\override"
+        - "C:\\Program Files\\BellSoft\\LibericaJRE-21-Full\\bin\\"
+        - "C:\\Program Files\\Eclipse Adoptium\\jre-21.0.11.10-hotspot\\bin"
+        - "C:\\Program Files\\Amazon Corretto\\jdk21.0.11_10\\bin"
+        - "C:\\Windows\\system32"
+        - "C:\\Windows"
+        - "C:\\Windows\\System32\\Wbem"
+        - "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\"
+        - "C:\\Windows\\System32\\OpenSSH\\"
+        - "C:\\Program Files\\dotnet\\"
+        - "C:\\Program Files (x86)\\Windows Kits\\10\\Windows Performance Toolkit\\"
+        - "C:\\Users\\CmonMeow\\AppData\\Local\\Programs\\Python\\Python313\\Scripts\\"
+        - "C:\\Users\\CmonMeow\\AppData\\Local\\Programs\\Python\\Python313\\"
+        - "C:\\Users\\CmonMeow\\AppData\\Local\\Programs\\Python\\Launcher\\"
+        - "C:\\Users\\CmonMeow\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\native\\powershell"
+        - "C:\\Users\\CmonMeow\\AppData\\Local\\Microsoft\\WindowsApps"
+        - "C:\\Users\\CmonMeow\\AppData\\Local\\GitHubDesktop\\bin"
+        - "C:\\Users\\CmonMeow\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\bin\\fallback"
+        - "C:\\Users\\CmonMeow\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\native\\git\\cmd"
+        - "C:\\Users\\CmonMeow\\AppData\\Local\\OpenAI\\Codex\\bin\\b91d382ea836415f"
+        - "C:\\Users\\CmonMeow\\AppData\\Local\\OpenAI\\Codex\\bin\\d0097be4feba73d0"
+      CMAKE_INSTALL_PREFIX: "C:/Program Files/Ship"
+      CMAKE_SYSTEM_PREFIX_PATH:
+        - "C:/Program Files"
+        - "C:/Program Files (x86)"
+        - "C:/Program Files/Microsoft Visual Studio/18/Community/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake"
+        - "C:/Program Files/Ship"
+      CMAKE_FIND_ROOT_PATH: "C:/Users/CmonMeow/Desktop/Shipwright/build/x64/vcpkg/installed/x64-windows-static/debug;C:/Users/CmonMeow/Desktop/Shipwright/build/x64/vcpkg/installed/x64-windows-static"
+...

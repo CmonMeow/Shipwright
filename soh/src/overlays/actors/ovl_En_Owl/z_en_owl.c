@@ -11,6 +11,7 @@
 #include "vt.h"
 #include <assert.h>
 #include "soh/ResourceManagerHelpers.h"
+#include "soh/NetworkGameBridge.h"
 #define FLAGS (ACTOR_FLAG_ATTENTION_ENABLED | ACTOR_FLAG_FRIENDLY | ACTOR_FLAG_UPDATE_CULLING_DISABLED)
 
 void EnOwl_Init(Actor* thisx, PlayState* play);
@@ -205,8 +206,15 @@ void EnOwl_WaitToFlyAway(EnOwl* this, PlayState* play) {
 
     EnOwl_LookAtLink(this, play);
 
-    if ((this->actor.xzDistToPlayer < triggerDistance) && !Play_InCsMode(play)) {
-        if (Rand_ZeroOne() < 0.5f) {
+    const s32 remotelyActivated = NetworkGame_ConsumeObjectActivation(play, &this->actor);
+    if (remotelyActivated || ((this->actor.xzDistToPlayer < triggerDistance) && !Play_InCsMode(play))) {
+        if (!remotelyActivated) {
+            NetworkGame_NotifyObjectActivated(play, &this->actor);
+        }
+
+        // Use the placed actor identity rather than a client-local random roll so
+        // every player sees the owl turn and depart in the same direction.
+        if (((this->actor.params ^ (s16)this->actor.home.pos.x ^ (s16)this->actor.home.pos.z) & 1) != 0) {
             this->actionFlags |= 0x40;
         } else {
             this->actionFlags &= ~0x40;

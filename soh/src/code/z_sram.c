@@ -234,10 +234,6 @@ void Sram_InitSave(FileChooseContext* fileChooseCtx) {
 
     gSaveContext.n64ddFlag = fileChooseCtx->n64ddFlag;
 
-    u8 currentQuest = fileChooseCtx->questType[fileChooseCtx->buttonIndex];
-
-    gSaveContext.ship.quest.id = currentQuest;
-
     Save_SaveFile();
     SaveManager_ThreadPoolWait();
 }

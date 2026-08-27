@@ -1396,7 +1396,7 @@ void AudioLoad_Init(void* heap, size_t heapSize) {
                 char* error = malloc(len + 1);
                 snprintf(error, len, "Could not find sound font for sequence %s. It will not be in the audio editor.",
                          customSeqList[j]);
-                LUSLOG_ERROR("%s", error);
+                Error("%s", error);
                 Messagebox_ShowErrorBox("Invalid Sequence", error);
                 free(error);
                 continue;

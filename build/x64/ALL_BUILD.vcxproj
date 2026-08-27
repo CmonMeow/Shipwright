@@ -109,10 +109,6 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </ProjectReference>
-    <ProjectReference Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\libultraship\ImGui.vcxproj">
-      <Project>{58698712-2511-33C9-96E7-7DD1725DB59B}</Project>
-      <Name>ImGui</Name>
-    </ProjectReference>
     <ProjectReference Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\OTRExporter\OTRExporter\OTRExporter.vcxproj">
       <Project>{E64BA336-AD65-38A9-8ED7-CC576EE085C4}</Project>
       <Name>OTRExporter</Name>
@@ -132,6 +128,34 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
     <ProjectReference Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\libultraship\src\libultraship.vcxproj">
       <Project>{06CC8D88-1A4D-3E2C-94F1-180FC8B912DB}</Project>
       <Name>libultraship</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\soh\pathengine_dedicated_server.vcxproj">
+      <Project>{A07671B0-9F2A-3F57-9E52-62C2E5652F3C}</Project>
+      <Name>pathengine_dedicated_server</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\soh\pathengine_network.vcxproj">
+      <Project>{CC8974D8-759D-3CFA-8CF0-B4F8B3D546CF}</Project>
+      <Name>pathengine_network</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\soh\pathengine_network_test.vcxproj">
+      <Project>{92ADE79A-7272-3589-92B4-B7934D68AE37}</Project>
+      <Name>pathengine_network_test</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\soh\pathengine_protocol_test.vcxproj">
+      <Project>{BFC460C2-DFBB-3AE5-87EA-17054D918B39}</Project>
+      <Name>pathengine_protocol_test</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\soh\pathengine_runtime_test.vcxproj">
+      <Project>{56ECC117-E870-357F-948C-7B509762F2D6}</Project>
+      <Name>pathengine_runtime_test</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\soh\pathengine_voice_client.vcxproj">
+      <Project>{C72C33C9-A7AD-3B6A-B0B7-76A89CFA8FB7}</Project>
+      <Name>pathengine_voice_client</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\soh\pathengine_voice_test.vcxproj">
+      <Project>{8A79F18C-EC04-31C9-9854-66FEA5AF5500}</Project>
+      <Name>pathengine_voice_test</Name>
     </ProjectReference>
     <ProjectReference Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\prism-build\prism.vcxproj">
       <Project>{48948160-6BFA-30FB-9401-08B164880F69}</Project>

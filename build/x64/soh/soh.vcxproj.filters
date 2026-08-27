@@ -7,19 +7,13 @@
     <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\CrashHandlerExt.cpp">
       <Filter>soh</Filter>
     </ClCompile>
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\controls\SohInputEditorWindow.cpp">
-      <Filter>soh\Enhancements\controls</Filter>
-    </ClCompile>
     <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\debugger\colViewer.cpp">
       <Filter>soh\Enhancements\debugger</Filter>
     </ClCompile>
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Extractor\Extract.cpp">
-      <Filter>soh\Extractor</Filter>
-    </ClCompile>
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Extractor\FastCrc32C.c">
-      <Filter>soh\Extractor</Filter>
-    </ClCompile>
     <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\GbiWrap.cpp">
+      <Filter>soh</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\NetworkGameBridge.cpp">
       <Filter>soh</Filter>
     </ClCompile>
     <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\OTRGlobals.cpp">
@@ -31,6 +25,9 @@
     <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\ObjectExtension\ObjectExtension.cpp">
       <Filter>soh\ObjectExtension</Filter>
     </ClCompile>
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\PathEngineMultiplayerUI.cpp">
+      <Filter>soh</Filter>
+    </ClCompile>
     <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\ResourceManagerHelpers.cpp">
       <Filter>soh</Filter>
     </ClCompile>
@@ -39,30 +36,6 @@
     </ClCompile>
     <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\ShipUtils.cpp">
       <Filter>soh</Filter>
-    </ClCompile>
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SohGui\ImGuiUtils.cpp">
-      <Filter>soh\SohGui</Filter>
-    </ClCompile>
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SohGui\Menu.cpp">
-      <Filter>soh\SohGui</Filter>
-    </ClCompile>
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SohGui\ResolutionEditor.cpp">
-      <Filter>soh\SohGui</Filter>
-    </ClCompile>
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SohGui\SohGui.cpp">
-      <Filter>soh\SohGui</Filter>
-    </ClCompile>
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SohGui\SohMenu.cpp">
-      <Filter>soh\SohGui</Filter>
-    </ClCompile>
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SohGui\SohMenuSettings.cpp">
-      <Filter>soh\SohGui</Filter>
-    </ClCompile>
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SohGui\SohModals.cpp">
-      <Filter>soh\SohGui</Filter>
-    </ClCompile>
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SohGui\UIWidgets.cpp">
-      <Filter>soh\SohGui</Filter>
     </ClCompile>
     <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\frame_interpolation.cpp">
       <Filter>soh</Filter>
@@ -95,9 +68,6 @@
       <Filter>soh\resource\importer</Filter>
     </ClCompile>
     <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\resource\importer\CollisionHeaderFactory.cpp">
-      <Filter>soh\resource\importer</Filter>
-    </ClCompile>
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\resource\importer\CutsceneFactory.cpp">
       <Filter>soh\resource\importer</Filter>
     </ClCompile>
     <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\resource\importer\PathFactory.cpp">
@@ -196,12 +166,6 @@
     <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\resource\importer\scenecommand\SetWindSettingsFactory.cpp">
       <Filter>soh\resource\importer\scenecommand</Filter>
     </ClCompile>
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\resource\logging\PathLogger.cpp">
-      <Filter>soh\resource\logging</Filter>
-    </ClCompile>
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\resource\logging\SceneCommandLoggers.cpp">
-      <Filter>soh\resource\logging</Filter>
-    </ClCompile>
     <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\resource\type\Animation.cpp">
       <Filter>soh\resource\type</Filter>
     </ClCompile>
@@ -221,9 +185,6 @@
       <Filter>soh\resource\type</Filter>
     </ClCompile>
     <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\resource\type\CollisionHeader.cpp">
-      <Filter>soh\resource\type</Filter>
-    </ClCompile>
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\resource\type\Cutscene.cpp">
       <Filter>soh\resource\type</Filter>
     </ClCompile>
     <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\resource\type\Path.cpp">
@@ -341,9 +302,6 @@
       <Filter>src\boot</Filter>
     </ClCompile>
     <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\src\boot\idle.c">
-      <Filter>src\boot</Filter>
-    </ClCompile>
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\src\boot\is_debug.c">
       <Filter>src\boot</Filter>
     </ClCompile>
     <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\src\boot\logutils.c">
@@ -2544,22 +2502,16 @@
     <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\CrashHandlerExt.h">
       <Filter>soh</Filter>
     </ClInclude>
-    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\controls\SohInputEditorWindow.h">
-      <Filter>soh\Enhancements\controls</Filter>
-    </ClInclude>
     <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Enhancements\debugger\colViewer.h">
       <Filter>soh\Enhancements\debugger</Filter>
-    </ClInclude>
-    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Extractor\Extract.h">
-      <Filter>soh\Extractor</Filter>
-    </ClInclude>
-    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Extractor\portable-file-dialogs.h">
-      <Filter>soh\Extractor</Filter>
     </ClInclude>
     <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\GameVersions.h">
       <Filter>soh</Filter>
     </ClInclude>
     <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\ItemTableTypes.h">
+      <Filter>soh</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\NetworkGameBridge.h">
       <Filter>soh</Filter>
     </ClInclude>
     <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\OTRAudio.h">
@@ -2574,6 +2526,9 @@
     <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\ObjectExtension\ObjectExtension.h">
       <Filter>soh\ObjectExtension</Filter>
     </ClInclude>
+    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\PathEngineMultiplayerUI.h">
+      <Filter>soh</Filter>
+    </ClInclude>
     <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\ResourceManagerHelpers.h">
       <Filter>soh</Filter>
     </ClInclude>
@@ -2582,30 +2537,6 @@
     </ClInclude>
     <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\ShipUtils.h">
       <Filter>soh</Filter>
-    </ClInclude>
-    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SohGui\ImGuiUtils.h">
-      <Filter>soh\SohGui</Filter>
-    </ClInclude>
-    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SohGui\Menu.h">
-      <Filter>soh\SohGui</Filter>
-    </ClInclude>
-    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SohGui\MenuTypes.h">
-      <Filter>soh\SohGui</Filter>
-    </ClInclude>
-    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SohGui\ResolutionEditor.h">
-      <Filter>soh\SohGui</Filter>
-    </ClInclude>
-    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SohGui\SohGui.hpp">
-      <Filter>soh\SohGui</Filter>
-    </ClInclude>
-    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SohGui\SohMenu.h">
-      <Filter>soh\SohGui</Filter>
-    </ClInclude>
-    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SohGui\SohModals.h">
-      <Filter>soh\SohGui</Filter>
-    </ClInclude>
-    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\SohGui\UIWidgets.hpp">
-      <Filter>soh\SohGui</Filter>
     </ClInclude>
     <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\cvar_prefixes.h">
       <Filter>soh</Filter>
@@ -2641,9 +2572,6 @@
       <Filter>soh\resource\importer</Filter>
     </ClInclude>
     <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\resource\importer\CollisionHeaderFactory.h">
-      <Filter>soh\resource\importer</Filter>
-    </ClInclude>
-    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\resource\importer\CutsceneFactory.h">
       <Filter>soh\resource\importer</Filter>
     </ClInclude>
     <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\resource\importer\PathFactory.h">
@@ -2742,12 +2670,6 @@
     <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\resource\importer\scenecommand\SetWindSettingsFactory.h">
       <Filter>soh\resource\importer\scenecommand</Filter>
     </ClInclude>
-    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\resource\logging\PathLogger.h">
-      <Filter>soh\resource\logging</Filter>
-    </ClInclude>
-    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\resource\logging\SceneCommandLoggers.h">
-      <Filter>soh\resource\logging</Filter>
-    </ClInclude>
     <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\resource\type\Animation.h">
       <Filter>soh\resource\type</Filter>
     </ClInclude>
@@ -2767,9 +2689,6 @@
       <Filter>soh\resource\type</Filter>
     </ClInclude>
     <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\resource\type\CollisionHeader.h">
-      <Filter>soh\resource\type</Filter>
-    </ClInclude>
-    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\resource\type\Cutscene.h">
       <Filter>soh\resource\type</Filter>
     </ClInclude>
     <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\resource\type\Path.h">
@@ -2873,6 +2792,9 @@
     </ClInclude>
     <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\resource\type\scenecommand\SetWindSettings.h">
       <Filter>soh\resource\type\scenecommand</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\sysdef.h">
+      <Filter>soh</Filter>
     </ClInclude>
     <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\util.h">
       <Filter>soh</Filter>
@@ -4299,20 +4221,11 @@
     <Filter Include="soh\Enhancements">
       <UniqueIdentifier>{A2C34106-92C8-37A4-8887-820F4133D858}</UniqueIdentifier>
     </Filter>
-    <Filter Include="soh\Enhancements\controls">
-      <UniqueIdentifier>{B581F3B1-A2D6-3B69-ADA0-CE5E06F9F3A3}</UniqueIdentifier>
-    </Filter>
     <Filter Include="soh\Enhancements\debugger">
       <UniqueIdentifier>{86B968F3-4C8B-39C2-863A-AC1D2FD76FDD}</UniqueIdentifier>
     </Filter>
-    <Filter Include="soh\Extractor">
-      <UniqueIdentifier>{CFE9DBC9-ED88-3CF8-948C-C0C777CF2734}</UniqueIdentifier>
-    </Filter>
     <Filter Include="soh\ObjectExtension">
       <UniqueIdentifier>{E455F3AF-956A-34B0-81D1-60E2B0847306}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="soh\SohGui">
-      <UniqueIdentifier>{C6F90571-4E0C-3B68-A3F7-147F9214FD50}</UniqueIdentifier>
     </Filter>
     <Filter Include="soh\resource">
       <UniqueIdentifier>{E1425858-E72B-38B0-96FD-1E3B69A7A1E1}</UniqueIdentifier>
@@ -4322,9 +4235,6 @@
     </Filter>
     <Filter Include="soh\resource\importer\scenecommand">
       <UniqueIdentifier>{751FD54F-6377-33A2-BC47-610238B3EF1D}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="soh\resource\logging">
-      <UniqueIdentifier>{F3375648-1D89-35C7-9AF6-BB4847062D99}</UniqueIdentifier>
     </Filter>
     <Filter Include="soh\resource\type">
       <UniqueIdentifier>{40FE4C9F-5DC9-3998-AEC7-6F69627D5224}</UniqueIdentifier>

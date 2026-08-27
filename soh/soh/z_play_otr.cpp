@@ -1,3 +1,4 @@
+#include <libultraship/log/PathEngineLog.hpp>
 #include "ResourceManagerHelpers.h"
 #include <libultraship/libultraship.h>
 #include "soh/resource/type/Scene.h"
@@ -42,7 +43,7 @@ extern "C" void OTRPlay_SpawnScene(PlayState* play, s32 sceneId, s32 spawn) {
 
     // Failed to load scene... default to doodongs cavern
     if (play->sceneSegment == nullptr) {
-        lusprintf(__FILE__, __LINE__, 2, "Unable to load scene %s... Defaulting to Doodong's Cavern!\n",
+        Error("Unable to load scene %s... Defaulting to Doodong's Cavern!\n",
                   scenePath.c_str());
         OTRPlay_SpawnScene(play, 0x01, 0);
         return;
@@ -57,7 +58,7 @@ extern "C" void OTRPlay_SpawnScene(PlayState* play, s32 sceneId, s32 spawn) {
 
     osSyncPrintf("ROOM SIZE=%fK\n", roomSize / 1024.0f);
 
-    SPDLOG_INFO("Scene Init - sceneNum: {0:#x}, entranceIndex: {1:#x}", play->sceneNum, gSaveContext.entranceIndex);
+    PathEngineLog("Scene Init - sceneNum: {0:#x}, entranceIndex: {1:#x}", play->sceneNum, gSaveContext.entranceIndex);
 }
 
 void OTRPlay_InitScene(PlayState* play, s32 spawn) {

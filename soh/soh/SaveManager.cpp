@@ -1,3 +1,4 @@
+#include <libultraship/log/PathEngineLog.hpp>
 #include "SaveManager.h"
 #include "OTRGlobals.h"
 #include "soh/util.h"
@@ -9,17 +10,15 @@
 #include "macros.h"
 #include <variables.h>
 #include <libultraship/libultraship.h>
-#include "soh/SohGui/SohGui.hpp"
 
 #define NOGDI // avoid various windows defines that conflict with things in z64.h
-#include <spdlog/spdlog.h>
-
 #include <fstream>
 #include <filesystem>
 #include <array>
 #include <mutex>
 
 extern "C" SaveContext gSaveContext;
+extern "C" void Messagebox_ShowErrorBox(char* title, char* body);
 using namespace std::string_literals;
 
 void SaveManager::WriteSaveFile(const std::filesystem::path& savePath, const uintptr_t addr, void* dramAddr,
@@ -83,9 +82,6 @@ SaveManager::SaveManager() {
             info.seedHash[i] = 0;
         }
 
-        info.requiresMasterQuest = 0;
-        info.requiresOriginal = 0;
-
         info.buildVersionMajor = 0;
         info.buildVersionMinor = 0;
         info.buildVersionPatch = 0;
@@ -120,7 +116,7 @@ void SaveManager::Init() {
         input >> globalBlock;
 
         if (!globalBlock.contains("version")) {
-            SPDLOG_WARN("Global save does not contain a version. We are reconstructing it.");
+            PathEngineLog("Global save does not contain a version. We are reconstructing it.");
             CreateDefaultGlobal();
             return;
         }
@@ -133,7 +129,7 @@ void SaveManager::Init() {
                 LoadData("language", gSaveContext.language);
                 break;
             default:
-                SPDLOG_WARN("Global save has a unrecognized version. We are reconstructing it.");
+                PathEngineLog("Global save has a unrecognized version. We are reconstructing it.");
                 CreateDefaultGlobal();
                 break;
         }
@@ -152,7 +148,7 @@ void SaveManager::Init() {
 
 void SaveManager::StartupCheckAndInitMeta(int fileNum) {
     saveMtx.lock();
-    SPDLOG_INFO("Init Meta - fileNum: {}", fileNum);
+    PathEngineLog("Init Meta - fileNum: {}", fileNum);
     std::filesystem::path fileName = GetFileName(fileNum);
 
     std::ifstream input(fileName);
@@ -162,7 +158,7 @@ void SaveManager::StartupCheckAndInitMeta(int fileNum) {
     input.close();
     saveMtx.unlock();
     if (!metaSaveBlock.contains("version")) {
-        SPDLOG_ERROR("Save at " + fileName.string() + " contains no version");
+        PathEngineLog("Save at " + fileName.string() + " contains no version");
         assert(false);
         return;
     }
@@ -189,10 +185,6 @@ void SaveManager::StartupCheckAndInitMeta(int fileNum) {
     fileMetaInfo[fileNum].hasWallet = true;
     fileMetaInfo[fileNum].defense = baseBlock["inventory"]["defenseHearts"];
     fileMetaInfo[fileNum].health = baseBlock["health"];
-
-    fileMetaInfo[fileNum].requiresOriginal = !baseBlock["isMasterQuest"];
-    fileMetaInfo[fileNum].requiresMasterQuest = baseBlock["isMasterQuest"];
-
 
     fileMetaInfo[fileNum].buildVersionMajor = gBuildVersionMajor;
     fileMetaInfo[fileNum].buildVersionMinor = gBuildVersionMinor;
@@ -228,9 +220,6 @@ void SaveManager::InitMeta(int fileNum) {
     fileMetaInfo[fileNum].health = gSaveContext.health;
     fileMetaInfo[fileNum].maxTriforcePieces = 0;
     fileMetaInfo[fileNum].fishingPoleShuffled = false;
-    fileMetaInfo[fileNum].requiresMasterQuest = IS_MASTER_QUEST;
-    fileMetaInfo[fileNum].requiresOriginal = !IS_MASTER_QUEST;
-
     fileMetaInfo[fileNum].buildVersionMajor = gBuildVersionMajor;
     fileMetaInfo[fileNum].buildVersionMinor = gBuildVersionMinor;
     fileMetaInfo[fileNum].buildVersionPatch = gBuildVersionPatch;
@@ -399,9 +388,6 @@ void SaveManager::InitFileNormal() {
     gSaveContext.ship.pendingSale = ITEM_NONE;
     gSaveContext.ship.pendingSaleMod = MOD_NONE;
     gSaveContext.ship.maskMemory = PLAYER_MASK_NONE;
-
-    // Init with normal quest unless only an MQ rom is provided
-    gSaveContext.ship.quest.id = OTRGlobals::Instance->HasOriginal() ? QUEST_NORMAL : QUEST_MASTER;
 
 }
 
@@ -717,7 +703,7 @@ int copy_file(const char* src, const char* dst) {
 
 void SaveManager::SaveFileThreaded(int fileNum, SaveContext* saveContext, int sectionID) {
     saveMtx.lock();
-    SPDLOG_INFO("Save File - fileNum: {}", fileNum);
+    PathEngineLog("Save File - fileNum: {}", fileNum);
     // Needed for first time save, hasn't changed in forever anyway
     saveBlock["version"] = 1;
     if (sectionID == SECTION_ID_BASE) {
@@ -781,7 +767,7 @@ void SaveManager::SaveFileThreaded(int fileNum, SaveContext* saveContext, int se
 
     delete saveContext;
     InitMeta(fileNum);
-    SPDLOG_INFO("Save File Finish - fileNum: {}", fileNum);
+    PathEngineLog("Save File Finish - fileNum: {}", fileNum);
     saveMtx.unlock();
 }
 
@@ -793,7 +779,7 @@ void SaveManager::SaveSection(int fileNum, int sectionID, bool threaded) {
     }
     // Don't save a nonexistent section
     if (sectionID >= sectionIndex) {
-        SPDLOG_ERROR("SaveSection: Section ID not registered.");
+        PathEngineLog("SaveSection: Section ID not registered.");
         return;
     }
     auto saveContext = new SaveContext;
@@ -825,7 +811,7 @@ void SaveManager::SaveGlobal() {
 
 void SaveManager::LoadFile(int fileNum) {
     saveMtx.lock();
-    SPDLOG_INFO("Load File - fileNum: {}", fileNum);
+    PathEngineLog("Load File - fileNum: {}", fileNum);
     std::filesystem::path fileName = GetFileName(fileNum);
     assert(std::filesystem::exists(fileName));
     InitFile(false);
@@ -837,7 +823,7 @@ void SaveManager::LoadFile(int fileNum) {
         input >> saveBlock;
         input.close();
         if (!saveBlock.contains("version")) {
-            SPDLOG_ERROR("Save at " + fileName.string() + " contains no version");
+            PathEngineLog("Save at " + fileName.string() + " contains no version");
             assert(false);
         }
         switch (saveBlock["version"].get<int>()) {
@@ -848,7 +834,7 @@ void SaveManager::LoadFile(int fileNum) {
                     if (!sectionLoadHandlers.contains(sectionName)) {
                         // Unloadable sections aren't necessarily errors, they are probably mods that were unloaded
                         // TODO report in a more noticeable manner
-                        SPDLOG_WARN("Save " + GetFileName(fileNum).string() + " contains unloadable section " +
+                        PathEngineLog("Save " + GetFileName(fileNum).string() + " contains unloadable section " +
                                     sectionName);
                         continue;
                     }
@@ -858,7 +844,7 @@ void SaveManager::LoadFile(int fileNum) {
                         // has a mod at an earlier version than the save has. In this case, the user probably wants to
                         // load the save. Report the error so that the user can rectify the error.
                         // TODO report in a more noticeable manner
-                        SPDLOG_ERROR("Save " + GetFileName(fileNum).string() + " contains section " + sectionName +
+                        PathEngineLog("Save " + GetFileName(fileNum).string() + " contains section " + sectionName +
                                      " with an unloadable version " + std::to_string(sectionVersion));
                         assert(false);
                         continue;
@@ -871,7 +857,7 @@ void SaveManager::LoadFile(int fileNum) {
                 }
                 break;
             default:
-                SPDLOG_ERROR("Unrecognized save version " + std::to_string(saveBlock["version"].get<int>()) + " in " +
+                PathEngineLog("Unrecognized save version " + std::to_string(saveBlock["version"].get<int>()) + " in " +
                              GetFileName(fileNum).string());
                 assert(false);
                 break;
@@ -888,10 +874,10 @@ void SaveManager::LoadFile(int fileNum) {
 #else
         std::filesystem::rename(fileName, newFileName);
 #endif
-        SohGui::RegisterPopup("Error loading save file", "A problem occurred loading the save in slot " +
-                                                             std::to_string(fileNum + 1) +
-                                                             ".\nSave file corruption is suspected.\n" +
-                                                             "The file has been renamed to prevent further issues.");
+        std::string message = "A problem occurred loading the save in slot " + std::to_string(fileNum + 1) +
+                              ".\nSave file corruption is suspected.\n"
+                              "The file has been renamed to prevent further issues.";
+        Messagebox_ShowErrorBox(const_cast<char*>("Error loading save file"), message.data());
     }
     saveMtx.unlock();
 }
@@ -906,7 +892,7 @@ bool SaveManager::SaveFile_Exist(int fileNum) {
     try {
         return std::filesystem::exists(GetFileName(fileNum));
     } catch (std::filesystem::filesystem_error const& ex) {
-        SPDLOG_ERROR("Filesystem error");
+        PathEngineLog("Filesystem error");
         return false;
     }
 }
@@ -921,7 +907,7 @@ void SaveManager::AddLoadFunction(const std::string& name, int version, LoadFunc
     }
 
     if (sectionLoadHandlers[name].contains(version)) {
-        SPDLOG_ERROR("Adding load function for section and version that already has one: " + name + ", " +
+        PathEngineLog("Adding load function for section and version that already has one: " + name + ", " +
                      std::to_string(version));
         assert(false);
         return;
@@ -933,7 +919,7 @@ void SaveManager::AddLoadFunction(const std::string& name, int version, LoadFunc
 int SaveManager::AddSaveFunction(const std::string& name, int version, SaveFunc func, bool saveWithBase,
                                  int parentSection = -1) {
     if (sectionRegistry.contains(name)) {
-        SPDLOG_ERROR("Adding save function for section that already has one: " + name);
+        PathEngineLog("Adding save function for section that already has one: " + name);
         assert(false);
         return -1;
     }
@@ -952,7 +938,7 @@ int SaveManager::AddSaveFunction(const std::string& name, int version, SaveFunc 
 
 void SaveManager::AddPostFunction(const std::string& name, PostFunc func) {
     if (postHandlers.contains(name)) {
-        SPDLOG_ERROR("Adding post function for section that already has one: " + name);
+        PathEngineLog("Adding post function for section that already has one: " + name);
         assert(false);
         return;
     }
@@ -1264,12 +1250,6 @@ void SaveManager::LoadBaseVersion2() {
         SaveManager::Instance->LoadData("angle", gSaveContext.horseData.angle);
     });
 
-    int isMQ = 0;
-    SaveManager::Instance->LoadData("isMasterQuest", isMQ);
-    if (isMQ) {
-        gSaveContext.ship.quest.id = QUEST_MASTER;
-    }
-
     // Workaround for breaking save compatibility from 5.0.2 -> 5.1.0 in commit d7c35221421bf712b5ead56a360f81f624aca4bc
     if (!gSaveContext.isMagicAcquired) {
         SaveManager::Instance->LoadData("isMagicAcquired", gSaveContext.isMagicAcquired);
@@ -1377,11 +1357,6 @@ void SaveManager::LoadBaseVersion3() {
         SaveManager::Instance->LoadData("angle", gSaveContext.horseData.angle);
     });
 
-    int isMQ = 0;
-    SaveManager::Instance->LoadData("isMasterQuest", isMQ);
-    if (isMQ) {
-        gSaveContext.ship.quest.id = QUEST_MASTER;
-    }
     SaveManager::Instance->LoadStruct("backupFW", []() {
         SaveManager::Instance->LoadStruct("pos", []() {
             SaveManager::Instance->LoadData("x", gSaveContext.ship.backupFW.pos.x);
@@ -1477,11 +1452,6 @@ void SaveManager::LoadBaseVersion5() {
         SaveManager::Instance->LoadData("angle", gSaveContext.horseData.angle);
     });
 
-    int isMQ = 0;
-    SaveManager::Instance->LoadData("isMasterQuest", isMQ);
-    if (isMQ) {
-        gSaveContext.ship.quest.id = QUEST_MASTER;
-    }
     SaveManager::Instance->LoadData("dogParams", gSaveContext.dogParams);
     SaveManager::Instance->LoadData("filenameLanguage", gSaveContext.ship.filenameLanguage);
     gSaveContext.inventory.questItems &= ~QUEST_SPIRITUAL_STONE_MASK;
@@ -1570,7 +1540,6 @@ void SaveManager::SaveBase(SaveContext* saveContext, int sectionID, bool fullSav
         SaveManager::Instance->SaveData("angle", saveContext->horseData.angle);
     });
 
-    SaveManager::Instance->SaveData("isMasterQuest", saveContext->ship.quest.id == QUEST_MASTER);
     SaveManager::Instance->SaveData("dogParams", saveContext->dogParams);
     SaveManager::Instance->SaveData("filenameLanguage", saveContext->ship.filenameLanguage);
 }
@@ -1672,8 +1641,6 @@ void SaveManager::CopyZeldaFile(int from, int to) {
     fileMetaInfo[to].questItems = fileMetaInfo[from].questItems;
     fileMetaInfo[to].defense = fileMetaInfo[from].defense;
     fileMetaInfo[to].health = fileMetaInfo[from].health;
-    fileMetaInfo[to].requiresMasterQuest = fileMetaInfo[from].requiresMasterQuest;
-    fileMetaInfo[to].requiresOriginal = fileMetaInfo[from].requiresOriginal;
     fileMetaInfo[to].buildVersionMajor = fileMetaInfo[from].buildVersionMajor;
     fileMetaInfo[to].buildVersionMinor = fileMetaInfo[from].buildVersionMinor;
     fileMetaInfo[to].buildVersionPatch = fileMetaInfo[from].buildVersionPatch;
@@ -1687,8 +1654,6 @@ void SaveManager::DeleteZeldaFile(int fileNum) {
         std::filesystem::remove(GetFileName(fileNum));
     }
     fileMetaInfo[fileNum].valid = false;
-    fileMetaInfo[fileNum].requiresMasterQuest = false;
-    fileMetaInfo[fileNum].requiresOriginal = false;
 }
 
 // Functionality required to convert old saves into versioned saves

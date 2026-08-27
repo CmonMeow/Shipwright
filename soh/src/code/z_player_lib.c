@@ -4,6 +4,7 @@
 #include "objects/object_link_boy/object_link_boy.h"
 #include "objects/object_link_child/object_link_child.h"
 #include "objects/object_triforce_spot/object_triforce_spot.h"
+#include "objects/object_fish/object_fish.h"
 #include "overlays/actors/ovl_Demo_Effect/z_demo_effect.h"
 #include "soh/ResourceManagerHelpers.h"
 
@@ -426,6 +427,117 @@ Gfx** sPlayerDListGroups[PLAYER_MODELTYPE_MAX] = {
     sPlayerWaistDLs,                  // PLAYER_MODELTYPE_WAIST
 };
 
+s32 sLeftHandType;
+s32 sRightHandType;
+
+/**
+ * Selects adult Link's hand, sheath, and waist models for a synchronized
+ * player. data points to two bytes: model group, then shield. Unlike the
+ * gameplay callback this only selects display lists; it never touches local
+ * player state, colliders, held actors, or weapon effects.
+ */
+s32 Player_OverrideLimbDrawNetwork(PlayState* play, s32 limbIndex, Gfx** dList, Vec3f* pos, Vec3s* rot,
+                                   void* data) {
+    PlayerNetworkDrawData* network = data;
+    u8 modelGroup = network->modelGroup;
+    u8 shield = network->shield;
+    s32 type;
+    s32 dListOffset = 0;
+
+    (void)play;
+    (void)pos;
+    if (limbIndex == PLAYER_LIMB_HEAD) {
+        rot->x += network->headLimbRot.z;
+        rot->y -= network->headLimbRot.y;
+        rot->z += network->headLimbRot.x;
+    } else if (limbIndex == PLAYER_LIMB_UPPER) {
+        Matrix_RotateY(network->upperLimbRot.y * (M_PI / 0x8000), MTXMODE_APPLY);
+        Matrix_RotateX(network->upperLimbRot.x * (M_PI / 0x8000), MTXMODE_APPLY);
+        Matrix_RotateZ(network->upperLimbRot.z * (M_PI / 0x8000), MTXMODE_APPLY);
+    }
+
+    if (modelGroup >= PLAYER_MODELGROUP_MAX) {
+        modelGroup = PLAYER_MODELGROUP_DEFAULT;
+    }
+    if (shield >= PLAYER_SHIELD_MAX) {
+        shield = PLAYER_SHIELD_MIRROR;
+    }
+
+    if (limbIndex == PLAYER_LIMB_L_HAND) {
+        type = gPlayerModelTypes[modelGroup][PLAYER_MODELGROUPENTRY_LEFT_HAND];
+        sLeftHandType = type;
+        // This project keeps the unbreakable Biggoron Sword only.
+        dListOffset = 0;
+    } else if (limbIndex == PLAYER_LIMB_R_HAND) {
+        type = gPlayerModelTypes[modelGroup][PLAYER_MODELGROUPENTRY_RIGHT_HAND];
+        sRightHandType = type;
+        if (type == PLAYER_MODELTYPE_RH_SHIELD) {
+            dListOffset = shield * (s32)sizeof(uint32_t);
+        }
+    } else if (limbIndex == PLAYER_LIMB_SHEATH) {
+        type = gPlayerModelTypes[modelGroup][PLAYER_MODELGROUPENTRY_SHEATH];
+        if ((type == PLAYER_MODELTYPE_SHEATH_18) || (type == PLAYER_MODELTYPE_SHEATH_19)) {
+            dListOffset = shield * (s32)sizeof(uint32_t);
+        }
+    } else if (limbIndex == PLAYER_LIMB_WAIST) {
+        type = gPlayerModelTypes[modelGroup][PLAYER_MODELGROUPENTRY_WAIST];
+    } else {
+        return 0;
+    }
+
+    *dList = sPlayerDListGroups[type][PLAYER_AGE + dListOffset];
+    return 0;
+}
+
+void Player_PostLimbDrawNetwork(PlayState* play, s32 limbIndex, Gfx** dList, Vec3s* rot, void* data) {
+    static f32 rodScales[22] = {
+        1.0f, 1.0f, 1.0f, 0.9625f, 0.925f, 0.8875f, 0.85f, 0.8125f, 0.775f, 0.73749995f, 0.7f,
+        0.6625f, 0.625f, 0.5875f, 0.54999995f, 0.5125f, 0.47499996f, 0.4375f, 0.39999998f,
+        0.36249995f, 0.325f, 0.28749996f,
+    };
+    PlayerNetworkDrawData* network = data;
+    s32 i;
+
+    (void)dList;
+    (void)rot;
+    // Fishing_DrawRod starts from Player.mf_9E0, captured from the left hand.
+    if (limbIndex != PLAYER_LIMB_L_HAND || network->itemAction != PLAYER_IA_FISHING_POLE) {
+        return;
+    }
+
+    OPEN_DISPS(play->state.gfxCtx);
+    Gfx_SetupDL_25Opa(play->state.gfxCtx);
+    gSPDisplayList(POLY_OPA_DISP++, gFishingRodMaterialDL);
+    gDPSetPrimColor(POLY_OPA_DISP++, 0, 0, 255, 155, 0, 255);
+
+    Matrix_Translate(0.0f, 400.0f, 0.0f, MTXMODE_APPLY);
+    Matrix_RotateY((network->fishingState == 5 ? 0.56f : 0.41f) * M_PI, MTXMODE_APPLY);
+    Matrix_RotateX(-M_PI / 5.0000003f, MTXMODE_APPLY);
+    Matrix_RotateZ(3.0f * M_PI / 20.0f, MTXMODE_APPLY);
+    Matrix_Scale(0.70000005f, 0.70000005f, 0.70000005f, MTXMODE_APPLY);
+    Matrix_Translate(0.0f, 0.0f, -1300.0f, MTXMODE_APPLY);
+
+    for (i = 0; i < 22; ++i) {
+        Matrix_Push();
+        Matrix_Scale(rodScales[i], rodScales[i], 0.52f, MTXMODE_APPLY);
+        gSPMatrix(POLY_OPA_DISP++, MATRIX_NEWMTX(play->state.gfxCtx), G_MTX_NOPUSH | G_MTX_LOAD | G_MTX_MODELVIEW);
+        if (i < 5) {
+            gDPLoadTextureBlock(POLY_OPA_DISP++, gFishingRodSegmentBlackTex, G_IM_FMT_RGBA, G_IM_SIZ_16b, 16, 8, 0,
+                                G_TX_NOMIRROR | G_TX_WRAP, G_TX_NOMIRROR | G_TX_WRAP, 4, 3, G_TX_NOLOD, G_TX_NOLOD);
+        } else if ((i < 8) || ((i % 2) == 0)) {
+            gDPLoadTextureBlock(POLY_OPA_DISP++, gFishingRodSegmentWhiteTex, G_IM_FMT_RGBA, G_IM_SIZ_16b, 16, 8, 0,
+                                G_TX_NOMIRROR | G_TX_WRAP, G_TX_NOMIRROR | G_TX_WRAP, 4, 3, G_TX_NOLOD, G_TX_NOLOD);
+        } else {
+            gDPLoadTextureBlock(POLY_OPA_DISP++, gFishingRodSegmentStripTex, G_IM_FMT_RGBA, G_IM_SIZ_16b, 16, 8, 0,
+                                G_TX_NOMIRROR | G_TX_WRAP, G_TX_NOMIRROR | G_TX_WRAP, 4, 3, G_TX_NOLOD, G_TX_NOLOD);
+        }
+        gSPDisplayList(POLY_OPA_DISP++, gFishingRodSegmentDL);
+        Matrix_Pop();
+        Matrix_Translate(0.0f, 0.0f, 500.0f, MTXMODE_APPLY);
+    }
+    CLOSE_DISPS(play->state.gfxCtx);
+}
+
 Gfx gCullBackDList[] = {
     gsSPSetGeometryMode(G_CULL_BACK),
     gsSPEndDisplayList(),
@@ -439,8 +551,6 @@ Gfx gCullFrontDList[] = {
 Vec3f* D_80160000;
 s32 sDListsLodOffset;
 Vec3f sGetItemRefPos;
-s32 sLeftHandType;
-s32 sRightHandType;
 
 void Player_SetBootData(PlayState* play, Player* this) {
     s16* bootRegs;
@@ -1330,11 +1440,7 @@ void func_800906D4(PlayState* play, Player* this, Vec3f* newTipPos) {
     Matrix_MultVec3f(&D_801260A4[1], &newBasePos[1]);
     Matrix_MultVec3f(&D_801260A4[2], &newBasePos[2]);
 
-    if (func_80090480(play, NULL, &this->meleeWeaponInfo[0], &newTipPos[0], &newBasePos[0]) &&
-        !(this->stateFlags1 & PLAYER_STATE1_SHIELDING)) {
-        EffectBlure_AddVertex(Effect_GetByIndex(this->meleeWeaponEffectIndex), &this->meleeWeaponInfo[0].tip,
-                              &this->meleeWeaponInfo[0].base);
-    }
+    func_80090480(play, NULL, &this->meleeWeaponInfo[0], &newTipPos[0], &newBasePos[0]);
 
     if ((this->meleeWeaponState > 0) &&
         ((this->meleeWeaponAnimation < 0x18) || (this->stateFlags2 & PLAYER_STATE2_SPIN_ATTACKING))) {

@@ -544,11 +544,7 @@ void FileChoose_DrawNameEntryNES(GameState* thisx) {
                 this->newFileNameCharCount--;
                 if (this->newFileNameCharCount < 0) {
                     this->newFileNameCharCount = 0;
-                    if (this->prevConfigMode == CM_QUEST_MENU) {
-                        this->configMode = CM_NAME_ENTRY_TO_QUEST_MENU;
-                    } else {
-                        this->configMode = CM_NAME_ENTRY_TO_MAIN;
-                    }
+                    this->configMode = CM_NAME_ENTRY_TO_MAIN;
                     this->prevConfigMode = CM_NAME_ENTRY;
                 } else {
                     for (i = this->newFileNameCharCount; i < 7; i++) {

@@ -1,7 +1,5 @@
 #include "soh/resource/importer/BackgroundFactory.h"
 #include "soh/resource/type/Background.h"
-#include "spdlog/spdlog.h"
-
 namespace SOH {
 std::shared_ptr<Ship::IResource>
 ResourceFactoryBinaryBackgroundV0::ReadResource(std::shared_ptr<Ship::File> file,

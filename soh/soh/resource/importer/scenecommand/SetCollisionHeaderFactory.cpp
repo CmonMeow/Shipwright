@@ -1,8 +1,6 @@
 #include "soh/resource/importer/scenecommand/SetCollisionHeaderFactory.h"
 #include "soh/resource/type/scenecommand/SetCollisionHeader.h"
-#include "soh/resource/logging/SceneCommandLoggers.h"
 #include "libultraship/libultraship.h"
-#include "spdlog/spdlog.h"
 #include <tinyxml2.h>
 
 namespace SOH {

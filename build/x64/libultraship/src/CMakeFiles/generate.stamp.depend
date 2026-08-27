@@ -1,14 +1,10 @@
 # CMake generation dependency list for this directory.
 C:/Program Files/Microsoft Visual Studio/18/Community/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/share/cmake-4.3/Modules/CMakeFindDependencyMacro.cmake
 C:/Program Files/Microsoft Visual Studio/18/Community/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/share/cmake-4.3/Modules/CMakePushCheckState.cmake
-C:/Program Files/Microsoft Visual Studio/18/Community/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/share/cmake-4.3/Modules/CheckCSourceCompiles.cmake
-C:/Program Files/Microsoft Visual Studio/18/Community/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/share/cmake-4.3/Modules/CheckIncludeFile.cmake
-C:/Program Files/Microsoft Visual Studio/18/Community/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/share/cmake-4.3/Modules/CheckLibraryExists.cmake
 C:/Program Files/Microsoft Visual Studio/18/Community/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/share/cmake-4.3/Modules/CheckSymbolExists.cmake
 C:/Program Files/Microsoft Visual Studio/18/Community/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/share/cmake-4.3/Modules/FindBZip2.cmake
 C:/Program Files/Microsoft Visual Studio/18/Community/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/share/cmake-4.3/Modules/FindPackageHandleStandardArgs.cmake
 C:/Program Files/Microsoft Visual Studio/18/Community/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/share/cmake-4.3/Modules/FindPackageMessage.cmake
-C:/Program Files/Microsoft Visual Studio/18/Community/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/share/cmake-4.3/Modules/FindThreads.cmake
 C:/Program Files/Microsoft Visual Studio/18/Community/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/share/cmake-4.3/Modules/FindZLIB.cmake
 C:/Program Files/Microsoft Visual Studio/18/Community/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/share/cmake-4.3/Modules/SelectLibraryConfigurations.cmake
 C:/Users/CmonMeow/Desktop/Shipwright/build/x64/vcpkg/installed/x64-windows-static/share/fmt/fmt-config-version.cmake
@@ -24,11 +20,6 @@ C:/Users/CmonMeow/Desktop/Shipwright/build/x64/vcpkg/installed/x64-windows-stati
 C:/Users/CmonMeow/Desktop/Shipwright/build/x64/vcpkg/installed/x64-windows-static/share/nlohmann_json/nlohmann_jsonConfig.cmake
 C:/Users/CmonMeow/Desktop/Shipwright/build/x64/vcpkg/installed/x64-windows-static/share/nlohmann_json/nlohmann_jsonConfigVersion.cmake
 C:/Users/CmonMeow/Desktop/Shipwright/build/x64/vcpkg/installed/x64-windows-static/share/nlohmann_json/nlohmann_jsonTargets.cmake
-C:/Users/CmonMeow/Desktop/Shipwright/build/x64/vcpkg/installed/x64-windows-static/share/spdlog/spdlogConfig.cmake
-C:/Users/CmonMeow/Desktop/Shipwright/build/x64/vcpkg/installed/x64-windows-static/share/spdlog/spdlogConfigTargets-debug.cmake
-C:/Users/CmonMeow/Desktop/Shipwright/build/x64/vcpkg/installed/x64-windows-static/share/spdlog/spdlogConfigTargets-release.cmake
-C:/Users/CmonMeow/Desktop/Shipwright/build/x64/vcpkg/installed/x64-windows-static/share/spdlog/spdlogConfigTargets.cmake
-C:/Users/CmonMeow/Desktop/Shipwright/build/x64/vcpkg/installed/x64-windows-static/share/spdlog/spdlogConfigVersion.cmake
 C:/Users/CmonMeow/Desktop/Shipwright/build/x64/vcpkg/installed/x64-windows-static/share/tinyxml2/tinyxml2-config-version.cmake
 C:/Users/CmonMeow/Desktop/Shipwright/build/x64/vcpkg/installed/x64-windows-static/share/tinyxml2/tinyxml2-config.cmake
 C:/Users/CmonMeow/Desktop/Shipwright/build/x64/vcpkg/installed/x64-windows-static/share/tinyxml2/tinyxml2-static-targets-debug.cmake

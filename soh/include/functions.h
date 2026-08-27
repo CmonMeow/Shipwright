@@ -10,14 +10,10 @@ extern "C"
 {
 #endif
 
-#include <libultraship/log/luslog.h>
+#include <libultraship/log/PathEngineLog.h>
 #include <soh/ItemTableTypes.h>
 
-#if (LOG_LEVEL_GAME_PRINTS >= SPDLOG_ACTIVE_LEVEL) && !(LOG_LEVEL_GAME_PRINTS >= 6)
-#define osSyncPrintf(...) lusprintf(__FILE__, __LINE__, LOG_LEVEL_GAME_PRINTS , __VA_ARGS__)
-#else
-#define osSyncPrintf(fmt, ...) osSyncPrintfUnused(fmt, ##__VA_ARGS__)
-#endif
+#define osSyncPrintf(...) Error(__VA_ARGS__)
 
 void gSPSegment(void* value, int segNum, uintptr_t target);
 void gSPSegmentLoadRes(void* value, int segNum, uintptr_t target);
@@ -67,11 +63,6 @@ void __assert(const char* exp, const char* file, s32 line);
 #if defined(__APPLE__) && defined(NDEBUG)
 void __assert(const char* exp, const char* file, s32 line);
 #endif
-void isPrintfInit(void);
-void osSyncPrintfUnused(const char* fmt, ...);
-//void osSyncPrintf(const char* fmt, ...);
-void rmonPrintf(const char* fmt, ...);
-void* is_proutSyncPrintf(void* arg, const char* str, u32 count);
 void func_80002384(const char* exp, const char* file, u32 line);
 OSPiHandle* osDriveRomInit(void);
 void StackCheck_Init(StackEntry* entry, void* stackTop, void* stackBottom, u32 initValue, s32 minSpace,
@@ -1142,6 +1133,8 @@ s32 Player_OverrideLimbDrawGameplayCommon(PlayState* play, s32 limbIndex, Gfx** 
 s32 Player_OverrideLimbDrawGameplayDefault(PlayState* play, s32 limbIndex, Gfx** dList, Vec3f* pos, Vec3s* rot, void* data);
 s32 Player_OverrideLimbDrawGameplayFirstPerson(PlayState* play, s32 limbIndex, Gfx** dList, Vec3f* pos, Vec3s* rot, void* data);
 s32 Player_OverrideLimbDrawGameplayCrawling(PlayState* play, s32 limbIndex, Gfx** dList, Vec3f* pos, Vec3s* rot, void* data);
+s32 Player_OverrideLimbDrawNetwork(PlayState* play, s32 limbIndex, Gfx** dList, Vec3f* pos, Vec3s* rot, void* data);
+void Player_PostLimbDrawNetwork(PlayState* play, s32 limbIndex, Gfx** dList, Vec3s* rot, void* data);
 u8 func_80090480(PlayState* play, ColliderQuad* collider, WeaponInfo* weaponDim, Vec3f* newTip,
                  Vec3f* newBase);
 void Player_DrawGetItem(PlayState* play, Player* player);

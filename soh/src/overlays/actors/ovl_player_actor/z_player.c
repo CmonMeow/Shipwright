@@ -10291,11 +10291,6 @@ static InitChainEntry sInitChain[] = {
     ICHAIN_F32(targetArrowOffset, 500, ICHAIN_STOP),
 };
 
-static EffectBlureInit2 blureSword = {
-    0, 8, 0, { 255, 255, 255, 255 }, { 255, 255, 255, 64 }, { 255, 255, 255, 0 }, { 255, 255, 255, 0 }, 4,
-    0, 2, 0, { 255, 255, 255, 255 }, { 255, 255, 255, 64 },
-};
-
 static Vec3s sSkeletonBaseTransl = { -57, 3377, 0 };
 
 void Player_InitCommon(Player* this, PlayState* play, FlexSkeletonHeader* skelHeader) {
@@ -10313,7 +10308,6 @@ void Player_InitCommon(Player* this, PlayState* play, FlexSkeletonHeader* skelHe
                        this->upperMorphTable, PLAYER_LIMB_MAX);
     this->upperSkelAnime.baseTransl = sSkeletonBaseTransl;
 
-    Effect_Add(play, &this->meleeWeaponEffectIndex, EFFECT_BLURE2, 0, 0, &blureSword);
     ActorShape_Init(&this->actor.shape, 0.0f, ActorShadow_DrawFeet, this->ageProperties->unk_04);
     this->subCamId = SUBCAM_NONE;
     Collider_InitCylinder(play, &this->cylinder);
@@ -11920,8 +11914,6 @@ void Player_Draw(Actor* thisx, PlayState* play2) {
 
 void Player_Destroy(Actor* thisx, PlayState* play) {
     Player* this = (Player*)thisx;
-
-    Effect_Delete(play, this->meleeWeaponEffectIndex);
 
     Collider_DestroyCylinder(play, &this->cylinder);
     Collider_DestroyQuad(play, &this->meleeWeaponQuads[0]);

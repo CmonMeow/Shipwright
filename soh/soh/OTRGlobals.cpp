@@ -1,19 +1,18 @@
+#include <libultraship/log/PathEngineLog.hpp>
 #include "OTRGlobals.h"
 #include "OTRAudio.h"
+#include "cvar_prefixes.h"
 #include <algorithm>
-#include <atomic>
 #include <filesystem>
 #include <fstream>
 #include <vector>
 #include <chrono>
-#include <optional>
 
 #include "ResourceManagerHelpers.h"
 #include <fast/Fast3dWindow.h>
 #include <ship/resource/File.h>
 #include <ship/window/Window.h>
 #include <soh/GameVersions.h>
-#include <spdlog/sinks/rotating_file_sink.h>
 
 #ifdef _WIN32
 #include <Windows.h>
@@ -21,31 +20,17 @@
 #include <time.h>
 #endif
 #include <ship/audio/AudioPlayer.h>
-#include "Enhancements/controls/SohInputEditorWindow.h"
 #include "Enhancements/debugger/colViewer.h"
 #include "frame_interpolation.h"
-#include "SohGui/SohMenu.h"
-#include "SohGui/SohGui.hpp"
 #include "variables.h"
 #include "z64.h"
 #include "macros.h"
-#include <ship/window/gui/Fonts.h>
 #include <ship/window/FileDropMgr.h>
-#include <ship/window/gui/resource/Font.h>
+#include <ship/input/Win32Input.h>
 #include <ship/utils/StringHelper.h>
 #include "util.h"
 
-#if not defined(__SWITCH__) && not defined(__WIIU__)
-#include "Extractor/Extract.h"
-#endif
-
 #include <fast/interpreter.h>
-
-#ifdef __APPLE__
-#include <SDL_scancode.h>
-#else
-#include <SDL2/SDL_scancode.h>
-#endif
 
 #ifdef __SWITCH__
 #include <port/switch/SwitchImpl.h>
@@ -55,11 +40,10 @@
 #endif
 
 #include <functions.h>
-#include "soh/SohGui/ImGuiUtils.h"
 #include "ActorDB.h"
+#include "NetworkGameBridge.h"
 #include "SaveManager.h"
 #include <libultraship/libultraship.h>
-#include <libultraship/controller/controldeck/ControlDeck.h>
 #include <fast/resource/ResourceType.h>
 
 // Resource Types/Factories
@@ -75,7 +59,6 @@
 #include "soh/resource/type/AudioSequence.h"
 #include "soh/resource/type/AudioSoundFont.h"
 #include "soh/resource/type/CollisionHeader.h"
-#include "soh/resource/type/Cutscene.h"
 #include "soh/resource/type/Path.h"
 #include "soh/resource/type/PlayerAnimation.h"
 #include "soh/resource/type/Scene.h"
@@ -93,7 +76,6 @@
 #include "soh/resource/importer/AudioSequenceFactory.h"
 #include "soh/resource/importer/AudioSoundFontFactory.h"
 #include "soh/resource/importer/CollisionHeaderFactory.h"
-#include "soh/resource/importer/CutsceneFactory.h"
 #include "soh/resource/importer/PathFactory.h"
 #include "soh/resource/importer/PlayerAnimationFactory.h"
 #include "soh/resource/importer/SceneFactory.h"
@@ -113,41 +95,6 @@ extern "C" PlayState* gPlayState;
 
 extern "C" void PadMgr_ThreadEntry(PadMgr* padMgr);
 std::vector<std::shared_ptr<std::string>> cameraStdStrings;
-
-Color_RGB8 kokiriColor = { 0x1E, 0x69, 0x1B };
-Color_RGB8 goronColor = { 0x64, 0x14, 0x00 };
-Color_RGB8 zoraColor = { 0x00, 0xEC, 0x64 };
-
-int32_t previousImGuiScaleIndex;
-float previousImGuiScale;
-
-// Same as NaviColor type from OoT src (z_actor.c), but modified to be sans alpha channel for Controller LED.
-typedef struct {
-    Color_RGB8 inner;
-    Color_RGB8 outer;
-} NaviColor_RGB8;
-
-static NaviColor_RGB8 defaultIdleColor = { { 255, 255, 255 }, { 0, 0, 255 } };
-static NaviColor_RGB8 defaultNPCColor = { { 150, 150, 255 }, { 150, 150, 255 } };
-static NaviColor_RGB8 defaultEnemyColor = { { 255, 255, 0 }, { 200, 155, 0 } };
-static NaviColor_RGB8 defaultPropsColor = { { 0, 255, 0 }, { 0, 255, 0 } };
-
-// Labeled according to ActorCategory (included through ActorDB.h)
-const NaviColor_RGB8 LEDColorDefaultNaviColorList[] = {
-    defaultPropsColor, // ACTORCAT_SWITCH       Switch
-    defaultPropsColor, // ACTORCAT_BG           Background (Prop type 1)
-    defaultIdleColor,  // ACTORCAT_PLAYER       Player
-    defaultPropsColor, // ACTORCAT_EXPLOSIVE    Bomb
-    defaultNPCColor,   // ACTORCAT_NPC          NPC
-    defaultEnemyColor, // ACTORCAT_ENEMY        Enemy
-    defaultPropsColor, // ACTORCAT_PROP         Prop type 2
-    defaultPropsColor, // ACTORCAT_ITEMACTION   Item/Action
-    defaultPropsColor, // ACTORCAT_MISC         Misc.
-    defaultEnemyColor, // ACTORCAT_BOSS         Boss
-    defaultPropsColor, // ACTORCAT_DOOR         Door
-    defaultPropsColor, // ACTORCAT_CHEST        Chest
-    defaultPropsColor, // ACTORCAT_MAX
-};
 
 // OTRTODO: A lot of these left in Japanese are used by the mempak manager. LUS does not currently support mempaks.
 // Ignore unused ones.
@@ -252,461 +199,43 @@ OTRGlobals::OTRGlobals() {
     context->InitConfiguration();
     context->InitConsoleVariables();
 
-    auto controlDeck = std::make_shared<LUS::ControlDeck>(std::vector<CONTROLLERBUTTONS_T>({
-        BTN_CUSTOM_MODIFIER1,
-        BTN_CUSTOM_MODIFIER2,
-    }));
-    context->InitControlDeck(controlDeck);
     context->InitResourceManager({ portArchivePath }, {}, 3, true);
     context->InitConsole();
 
-    auto sohInputEditorWindow =
-        std::make_shared<SohInputEditorWindow>(CVAR_WINDOW("ControllerConfiguration"), "Configure Controller");
-    sohFast3dWindow =
-        std::make_shared<Fast::Fast3dWindow>(std::vector<std::shared_ptr<Ship::GuiWindow>>({ sohInputEditorWindow }));
+    sohFast3dWindow = std::make_shared<Fast::Fast3dWindow>();
     context->InitWindow(sohFast3dWindow);
-
-    SohGui::SetupMenu();
-
-    if (sohArchiveVersionMatch) {
-
-        auto overlay = context->GetInstance()->GetWindow()->GetGui()->GetGameOverlay();
-        overlay->LoadFont("Press Start 2P", 12.0f, "fonts/PressStart2P-Regular.ttf");
-        overlay->LoadFont("Fipps", 32.0f, "fonts/Fipps-Regular.otf");
-        overlay->SetCurrentFont(CVarGetString(CVAR_GAME_OVERLAY_FONT, "Press Start 2P"));
-
-        fontMonoSmall = CreateFontWithSize(14.0f, "fonts/Inconsolata-Regular.ttf");
-        fontMono = CreateFontWithSize(16.0f, "fonts/Inconsolata-Regular.ttf");
-        fontMonoLarger = CreateFontWithSize(20.0f, "fonts/Inconsolata-Regular.ttf");
-        fontMonoLargest = CreateFontWithSize(24.0f, "fonts/Inconsolata-Regular.ttf");
-        fontStandard = CreateFontWithSize(16.0f, "fonts/Montserrat-Regular.ttf");
-        fontStandardLarger = CreateFontWithSize(20.0f, "fonts/Montserrat-Regular.ttf");
-        fontStandardLargest = CreateFontWithSize(24.0f, "fonts/Montserrat-Regular.ttf");
-        fontJapanese = CreateFontWithSize(24.0f, "fonts/NotoSansJP-Regular.ttf", true);
-        ImGui::GetIO().FontDefault = fontStandardLarger;
-    }
-
-    previousImGuiScaleIndex = -1;
-    previousImGuiScale = defaultImGuiScale;
-    ScaleImGui();
-}
-
-typedef enum ExtractSteps {
-    ES_PORT_ARCHIVE,
-    ES_WINDOWS,
-    ES_EXTRACT_ARGS,
-    ES_EXTRACT,
-    ES_VERIFY,
-} ExtractSteps;
-
-typedef enum PromptSteps {
-    PS_FILE_CHECK,
-    PS_LOCAL,
-    PS_FIRST,
-    PS_SECOND,
-    PS_DUPE,
-    PS_WAIT,
-    PS_NONE,
-} PromptSteps;
-
-typedef enum WindowsSteps {
-    WS_TEMP,
-    WS_PERMS,
-    WS_ONEDRIVE,
-    WS_DONE,
-} WindowsSteps;
-
-bool IsSubpath(const std::filesystem::path& path, const std::filesystem::path& base) {
-    auto rel = std::filesystem::relative(path, base);
-    return !rel.empty() && rel.native()[0] != '.';
-}
-
-bool PathTestCleanup(FILE* tfile) {
-    try {
-        if (std::filesystem::exists("./text.txt"))
-            std::filesystem::remove("./text.txt");
-        if (std::filesystem::exists("./test/"))
-            std::filesystem::remove("./test/");
-    } catch (std::filesystem::filesystem_error const& ex) { return false; }
-    return true;
-}
-
-namespace SohGui {
-extern std::shared_ptr<SohGui::SohMenu> mSohMenu;
 }
 
 void OTRGlobals::RunExtract(int argc, char* argv[]) {
-    bool extractDone = false;
-    ExtractSteps extractStep = ES_PORT_ARCHIVE;
-    WindowsSteps windowsStep = WS_TEMP;
-    auto wnd = std::dynamic_pointer_cast<Fast::Fast3dWindow>(OTRGlobals::Instance->context->GetWindow());
-    auto gui = wnd->GetGui();
+    (void)argc;
+    (void)argv;
 
-    OTRVersion vanillaVersion = DetectOTRVersion("oot.o2r", false);
-    OTRVersion mqVersion = DetectOTRVersion("oot-mq.o2r", true);
+    const bool hasVanillaArchive =
+        std::filesystem::exists(Ship::Context::LocateFileAcrossAppDirs("oot.o2r", appShortName));
+    const bool hasMasterQuestArchive =
+        std::filesystem::exists(Ship::Context::LocateFileAcrossAppDirs("oot-mq.o2r", appShortName));
 
-    bool shouldRegen = VerifyArchiveVersion(vanillaVersion) || VerifyArchiveVersion(mqVersion);
-
-    std::filesystem::path ownPath;
-    std::vector<std::string> args;
-    if (argc > 1) {
-        for (int i = 1; i < argc; i++) {
-            args.push_back(argv[i]);
-        }
-    }
-    Extractor extract;
-    PromptSteps promptStep = PS_FILE_CHECK;
-    bool generatedIsMQ = false;
-    std::atomic<size_t> extractCount = 0, totalExtract = 0;
-
-    std::string installPath = Ship::Context::GetAppBundlePath();
-    std::string dataPath = Ship::Context::GetAppDirectoryPath(appShortName);
-    std::string file;
-
-#if defined(__SWITCH__)
-    SohGui::RegisterPopup("Outdated ROM Archives",
-                          "\x1b[2;2HYou've launched the Ship with an old ROM O2R file."
-                          "\x1b[4;2HPlease regenerate a new ROM O2R and relaunch."
-                          "\x1b[6;2HPress the Home button to exit...",
-                          "OK", "", [&]() { exit(1); });
-#elif defined(__WIIU__)
-    SohGui::RegisterPopup("Outdated ROM Archives",
-                          "You've launched the Ship with an old a ROM O2R file.\n\n"
-                          "Please generate a ROM O2R and relaunch.\n\n"
-                          "Press and hold the Power button to shutdown...",
-                          "OK", "", [&]() { exit(1); });
-    OSFatal();
-#endif
-
-    if (!std::filesystem::exists(installPath + "/assets")) {
-        SohGui::RegisterPopup("Extractor assets not found",
-                              "No O2R files found. Missing 'assets/' folder needed to generate OTR file.\nPlease "
-                              "re-extract them from the download or.\n\nExiting...",
-                              "OK", "", [&]() { exit(1); });
-    } else if (shouldRegen) {
-        SohGui::RegisterPopup("Outdated ROM Archives",
-                              "Your oot.o2r or oot-mq.o2r were created with incompatible versions of SoH.\nYou will "
-                              "now be redirected to re-extract them.");
-        std::filesystem::remove("oot.o2r");
-        std::filesystem::remove("oot-mq.o2r");
+    if (sohArchiveVersionMatch && (hasVanillaArchive || hasMasterQuestArchive)) {
+        return;
     }
 
-    std::shared_ptr<BS::thread_pool> threadPool = std::make_shared<BS::thread_pool>(1);
-    std::optional<std::future<void>> extractionTask;
+    std::string title;
+    std::string message;
+    if (!sohArchiveVersionMatch) {
+        title = std::filesystem::exists(portArchivePath) ? "Outdated soh.o2r" : "Missing soh.o2r";
+        message = "The required soh.o2r archive is missing or incompatible.";
+    } else {
+        title = "No Ocarina of Time archive";
+        message = "Run the OTRExporter on your supported Ocarina of Time ROM, then place oot.o2r beside the game.";
+    }
 
-    while (!extractDone) {
-        if (SohGui::PopupsQueued() > 0 || extractionTask.has_value()) {
-            goto render;
-        }
-        switch (extractStep) {
-            case ES_PORT_ARCHIVE: {
-                if (sohArchiveVersionMatch) {
 #ifdef _WIN32
-                    extractStep = ES_WINDOWS;
-#elif (defined(__WIIU__) || defined(__SWITCH__))
-                    extractStep = ES_VERIFY;
+    MessageBoxA(nullptr, message.c_str(), title.c_str(), MB_OK | MB_ICONERROR);
 #else
-                    extractStep = args.empty() ? ES_EXTRACT : ES_EXTRACT_ARGS;
+    std::fprintf(stderr, "%s: %s\n", title.c_str(), message.c_str());
 #endif
-                } else {
-                    std::string msg;
-
-#if defined(__SWITCH__)
-                    msg = "\x1b[4;2HPlease re-extract it from the download.\n"
-                          "\x1b[6;2HPress the Home button to exit...";
-#elif defined(__WIIU__)
-                    msg = "Please extract the soh.o2r from the Ship of Harkinian download\nto your folder.\n\nPress "
-                          "and hold the power\n"
-                          "button to shutdown...";
-#else
-                    msg =
-                        "Please extract the soh.o2r from the Ship of Harkinian download to your folder.\n\nExiting...";
-#endif
-                    std::string title =
-                        !std::filesystem::exists(portArchivePath) ? "Missing soh.o2r" : "soh.o2r is outdated";
-                    SohGui::RegisterPopup(title, msg, "OK", "", [&]() { exit(1); });
-                }
-                continue;
-            }
-            case ES_WINDOWS: {
-                switch (windowsStep) {
-                    case WS_TEMP: {
-#ifdef _WIN32
-                        char* tempVar = getenv("TEMP");
-                        std::filesystem::path tempPath;
-                        try {
-                            tempPath = std::filesystem::canonical(tempVar);
-                        } catch (std::filesystem::filesystem_error const& ex) {
-                            std::string userPath = getenv("USERPROFILE");
-                            userPath.append("\\AppData\\Local\\Temp");
-                            tempPath = std::filesystem::canonical(userPath);
-                        }
-                        wchar_t buffer[MAX_PATH];
-                        GetModuleFileName(NULL, buffer, _countof(buffer));
-                        ownPath = std::filesystem::canonical(buffer).parent_path();
-                        if (IsSubpath(ownPath, tempPath)) {
-                            SohGui::RegisterPopup("SoH Path Error",
-                                                  "SoH is running in a temp folder.\nExtract the .zip and run again.",
-                                                  "OK", "", [&]() { exit(0); });
-                        } else {
-                            windowsStep = WS_PERMS;
-                        }
-#endif
-                        continue;
-                    }
-                    case WS_PERMS: {
-                        FILE* tfile = fopen("./text.txt", "w");
-                        std::filesystem::path tfolder = std::filesystem::path("./test/");
-                        bool error = false;
-                        try {
-                            create_directories(tfolder);
-                        } catch (std::filesystem::filesystem_error const& ex) { error = true; }
-                        if (tfile == NULL || error) {
-                            SohGui::RegisterPopup("SoH Permissions Error",
-                                                  "SoH does not have proper file permissions.\nPlease move it to a "
-                                                  "folder that does and run again.",
-                                                  "OK", "", [&]() {
-                                                      fclose(tfile);
-                                                      PathTestCleanup(tfile);
-                                                      exit(0);
-                                                  });
-                        } else {
-                            fclose(tfile);
-                            if (!PathTestCleanup(tfile)) {
-                                SohGui::RegisterPopup("SoH Permissions Error",
-                                                      "SoH does not have proper file permissions.\nPlease move it to a "
-                                                      "folder that does and run again.",
-                                                      "OK", "", [&]() { exit(0); });
-                            }
-                            windowsStep = WS_ONEDRIVE;
-                        }
-                        continue;
-                    }
-                    case WS_ONEDRIVE: {
-                        if (ownPath.string().find("OneDrive") != std::string::npos) {
-                            SohGui::RegisterPopup("SoH Path Error",
-                                                  "SoH appears to be in a OneDrive folder, which will cause issues.\n"
-                                                  "Please move it to a folder outside of OneDrive, like the root of a\n"
-                                                  "drive (e.g. \"C:\\Games\\SoH\").",
-                                                  "OK", "", [&]() { exit(0); });
-                        } else {
-                            windowsStep = WS_DONE;
-                            extractStep = args.empty() ? ES_EXTRACT : ES_EXTRACT_ARGS;
-                        }
-                        continue;
-                    }
-                    default:
-                        continue;
-                }
-                break;
-            }
-            case ES_EXTRACT_ARGS: {
-#if !defined(__SWITCH__) && !defined(__WIIU__)
-                if (args.empty()) {
-                    SohGui::RegisterPopup(
-                        "Run Ship of Harkinian", "All files have been processed. Run SoH?", "Yes", "No",
-                        [&]() {
-                            if (!std::filesystem::exists(Ship::Context::GetAppDirectoryPath(appShortName) +
-                                                         "/oot.o2r") &&
-                                !std::filesystem::exists(Ship::Context::GetAppDirectoryPath(appShortName) +
-                                                         "/oot-mq.o2r")) {
-                                extractStep = ES_EXTRACT;
-                                promptStep = PS_FILE_CHECK;
-                            } else {
-                                extractStep = ES_VERIFY;
-                            }
-                        },
-                        [&]() { exit(0); });
-                    break;
-                }
-                file = args.at(0);
-                args.erase(args.begin());
-                extract = Extractor();
-                if (extract.RunFileStandalone(file)) {
-                    bool doExtract = true;
-                    std::string archive = (extract.IsMasterQuest() ? "oot-mq.o2r" : "oot.o2r");
-                    if (std::filesystem::exists(Ship::Context::GetAppDirectoryPath(appShortName) + "/" + archive)) {
-                        std::string msg = "Archive for current ROM, " + archive + ", already exists.\nExtract again?";
-                        SohGui::RegisterPopup("Confirm Re-extract", msg.c_str(), "Yes", "No", [&]() {
-                            extractionTask = threadPool->submit_task([&]() -> void {
-                                extract.CallZapd(installPath, Ship::Context::GetAppDirectoryPath(appShortName),
-                                                 &extractCount, &totalExtract);
-                                extractCount = totalExtract = 0;
-                            });
-                        });
-                    } else {
-                        extractionTask = threadPool->submit_task([&]() -> void {
-                            extract.CallZapd(installPath, Ship::Context::GetAppDirectoryPath(appShortName),
-                                             &extractCount, &totalExtract);
-                            extractCount = totalExtract = 0;
-                        });
-                    }
-                } else {
-                    bool open = true;
-                    std::string msg = "File\n" + std::string(file) + "\nis not a ROM or does not match supported ROMs.";
-                    SohGui::RegisterPopup("SoH ROM Error", msg.c_str());
-                }
-#else
-                extractStep = ES_VERIFY;
-#endif
-                break;
-            }
-            case ES_EXTRACT: {
-                switch (promptStep) {
-                    case PS_FILE_CHECK: {
-                        const bool ootO2RExists =
-                            std::filesystem::exists(
-                                Ship::Context::LocateFileAcrossAppDirs("oot-mq.o2r", appShortName)) ||
-                            std::filesystem::exists(Ship::Context::LocateFileAcrossAppDirs("oot.o2r", appShortName));
-
-                        if (!ootO2RExists) {
-                            SohGui::RegisterPopup(
-                                "No O2R Files", "No O2R files found. Generate one now?", "Yes", "No",
-                                [&]() { promptStep = PS_LOCAL; }, [&]() { exit(0); });
-                        } else {
-                            extractStep = ES_VERIFY;
-                        }
-                        continue;
-                    }
-                    case PS_LOCAL: {
-                        extract = Extractor();
-                        extract.SetSearchPath(installPath);
-                        extract.GetRoms(args);
-                        extract.SetSearchPath(dataPath);
-                        extract.GetRoms(args);
-                        if (!args.empty()) {
-                            promptStep = PS_WAIT;
-                            SohGui::RegisterPopup(
-                                "ROMs found", "ROMs found in application directory. Would you like to process them?",
-                                "Yes", "No", [&]() { extractStep = ES_EXTRACT_ARGS; },
-                                [&]() { promptStep = PS_FIRST; });
-                        } else {
-                            promptStep = PS_FIRST;
-                        }
-                        continue;
-                    }
-                    case PS_FIRST: {
-                        if (!extract.ManuallySearchForRomMatchingType(RomSearchMode::Both)) {
-                            promptStep = PS_FILE_CHECK;
-                            continue;
-                        }
-                        extractionTask = threadPool->submit_task([&]() -> void {
-                            extract.CallZapd(installPath, Ship::Context::GetAppDirectoryPath(appShortName),
-                                             &extractCount, &totalExtract);
-                            generatedIsMQ = extract.IsMasterQuest();
-                            promptStep = PS_SECOND;
-                            extractCount = 0;
-                            totalExtract = 0;
-                        });
-                        continue;
-                    }
-                    case PS_SECOND: {
-                        SohGui::RegisterPopup(
-                            "Extraction Complete", "ROM Extracted. Extract another?", "Yes", "No",
-                            [&]() {
-                                if (!extract.ManuallySearchForRomMatchingType(generatedIsMQ ? RomSearchMode::Vanilla
-                                                                                            : RomSearchMode::MQ)) {
-                                    extractStep = ES_VERIFY;
-                                } else {
-                                    extractionTask = threadPool->submit_task([&]() -> void {
-                                        extract.CallZapd(installPath, Ship::Context::GetAppDirectoryPath(appShortName),
-                                                         &extractCount, &totalExtract);
-                                        extractStep = ES_VERIFY;
-                                        extractCount = 0;
-                                        totalExtract = 0;
-                                    });
-                                }
-                            },
-                            [&]() { extractStep = ES_VERIFY; });
-                        continue;
-                    }
-                    default:
-                        break;
-                }
-                break;
-            }
-            case ES_VERIFY: {
-                const bool ootO2RExists =
-                    std::filesystem::exists(Ship::Context::LocateFileAcrossAppDirs("oot-mq.o2r", appShortName)) ||
-                    std::filesystem::exists(Ship::Context::LocateFileAcrossAppDirs("oot.o2r", appShortName));
-
-                if (!ootO2RExists) {
-                    SohGui::RegisterPopup("No ROM Archives",
-                                          "No ROM O2R files detected. Please generate a ROM O2R and relaunch.", "OK",
-                                          "", [&]() { exit(0); });
-                }
-                extractDone = true;
-                continue;
-            }
-            default:
-                break;
-        }
-
-    render:
-        if (!WindowIsRunning()) {
-            exit(0);
-        }
-        // Process window events for resize, mouse, keyboard events
-        wnd->HandleEvents();
-        UIWidgets::Colors themeColor =
-            static_cast<UIWidgets::Colors>(CVarGetInteger(CVAR_SETTING("Menu.Theme"), UIWidgets::Colors::LightBlue));
-        ImGui::PushStyleColor(ImGuiCol_TitleBgActive, UIWidgets::ColorValues.at(themeColor));
-        ImGui::PushStyleColor(ImGuiCol_ModalWindowDimBg, UIWidgets::ColorValues.at(UIWidgets::Colors::DarkGray));
-
-        // Skip dropped frames
-        if (!wnd->IsFrameReady()) {
-            continue;
-        }
-        gui->StartDraw();
-        sohFast3dWindow->StartFrame();
-        sohFast3dWindow->RunGuiOnly();
-        if (extractionTask.has_value()) {
-            auto status = extractionTask->wait_for(std::chrono::milliseconds(0));
-            if (status == std::future_status::ready) {
-                try {
-                    extractionTask->get();
-                } catch (const std::exception& e) {
-                    SohGui::RegisterPopup("Extraction Crashed", e.what(), "Close", "", []() { exit(1); });
-                }
-                extractionTask.reset();
-            } else {
-                if (!ImGui::IsPopupOpen("ROM Extraction")) {
-                    ImGui::OpenPopup("ROM Extraction");
-                }
-                ImGui::PushStyleVar(ImGuiStyleVar_FrameRounding, 3.0f);
-                ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(10.0f, 8.0f));
-                auto color = UIWidgets::ColorValues.at(THEME_COLOR);
-                ImGui::PushStyleColor(ImGuiCol_FrameBg, ImVec4(color.x, color.y, color.z, 0.6f));
-                ImGui::PushStyleColor(ImGuiCol_PlotHistogram, ImVec4(color.x, color.y, color.z, 1.0f));
-                ImGui::PushStyleColor(ImGuiCol_Border, ImVec4(0.0f, 0.0f, 0.0f, 0.3f));
-                if (ImGui::BeginPopupModal("ROM Extraction", NULL,
-                                           ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoResize |
-                                               ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoScrollbar |
-                                               ImGuiWindowFlags_NoSavedSettings)) {
-                    float progress = (totalExtract > 0.0f ? (float)extractCount / (float)totalExtract : 0) * 100.0f;
-                    auto filename = std::filesystem::path(file).filename().string();
-                    ImGui::Text("Extracting %s...%s", filename.c_str(),
-                                roundf(progress) == 100.0f ? " Done. Finishing up." : "");
-                    std::string overlay = extractCount > 0 ? fmt::format("{:.0f}%", progress) : "Starting Up";
-                    ImGui::ProgressBar(progress / 100.0f, ImVec2(600.0f, 50.0f), overlay.c_str());
-                    ImGui::EndPopup();
-                }
-                ImGui::PopStyleColor(3);
-                ImGui::PopStyleVar(2);
-            }
-        }
-        gui->EndDraw();
-        sohFast3dWindow->EndFrame();
-        ImGui::PopStyleColor(2);
-    }
-
-#ifdef __SWITCH__
-    Ship::Switch::Init(Ship::PreInitPhase);
-#elif defined(__WIIU__)
-    Ship::WiiU::Init(appShortName);
-#endif
+    std::exit(EXIT_FAILURE);
 }
-
 void OTRGlobals::Initialize() {
     std::string mqPath = Ship::Context::LocateFileAcrossAppDirs("oot-mq.o2r", appShortName);
     if (std::filesystem::exists(mqPath)) {
@@ -723,17 +252,8 @@ void OTRGlobals::Initialize() {
         OOT_NTSC_JP_GC, OOT_NTSC_US_GC, OOT_PAL_GC,     OOT_PAL_GC_DBG1,   OOT_PAL_GC_DBG2,
     };
 
-#if (_DEBUG)
-    auto defaultLogLevel = spdlog::level::trace;
-#else
-    auto defaultLogLevel = spdlog::level::info;
-#endif
     context->InitConfiguration();
     context->InitConsoleVariables();
-    auto logLevel =
-        static_cast<spdlog::level::level_enum>((defaultLogLevel));
-    context->InitLogging(logLevel, logLevel);
-    Ship::Context::GetInstance()->GetLogger()->set_pattern("[%H:%M:%S.%e] [%s:%#] [%l] %v");
 
     context->InitGfxDebugger();
     context->InitFileDropMgr();
@@ -747,7 +267,7 @@ void OTRGlobals::Initialize() {
 
     context->InitAudio({ .SampleRate = 32000, .SampleLength = 1024, .DesiredBuffered = 1680 });
 
-    SPDLOG_INFO("Starting Ship of Harkinian version {} (Branch: {} | Commit: {})", (char*)gBuildVersion,
+    PathEngineLog("Starting Ship of Harkinian version {} (Branch: {} | Commit: {})", (char*)gBuildVersion,
                 (char*)gGitBranch, (char*)gGitCommitHash);
 
     auto loader = context->GetResourceManager()->GetResourceLoader();
@@ -799,8 +319,6 @@ void OTRGlobals::Initialize() {
                                     "Path", static_cast<uint32_t>(SOH::ResourceType::SOH_Path), 0);
     loader->RegisterResourceFactory(std::make_shared<SOH::ResourceFactoryXMLPathV0>(), RESOURCE_FORMAT_XML, "Path",
                                     static_cast<uint32_t>(SOH::ResourceType::SOH_Path), 0);
-    loader->RegisterResourceFactory(std::make_shared<SOH::ResourceFactoryBinaryCutsceneV0>(), RESOURCE_FORMAT_BINARY,
-                                    "Cutscene", static_cast<uint32_t>(SOH::ResourceType::SOH_Cutscene), 0);
     loader->RegisterResourceFactory(std::make_shared<SOH::ResourceFactoryBinaryTextV0>(), RESOURCE_FORMAT_BINARY,
                                     "Text", static_cast<uint32_t>(SOH::ResourceType::SOH_Text), 0);
     loader->RegisterResourceFactory(std::make_shared<SOH::ResourceFactoryXMLTextV0>(), RESOURCE_FORMAT_XML, "Text",
@@ -823,8 +341,6 @@ void OTRGlobals::Initialize() {
     loader->RegisterResourceFactory(std::make_shared<SOH::ResourceFactoryBinaryBackgroundV0>(), RESOURCE_FORMAT_BINARY,
                                     "Background", static_cast<uint32_t>(SOH::ResourceType::SOH_Background), 0);
 
-    hasMasterQuest = hasOriginal = false;
-
     // Move the camera strings from read only memory onto the heap (writable memory)
     // This is in OTRGlobals right now because this is a place that will only ever be run once at the beginning of
     // startup. We should probably find some code in db_camera that does initialization and only run once, and then
@@ -840,84 +356,22 @@ void OTRGlobals::Initialize() {
     for (uint32_t version : versions) {
         if (!ValidHashes.contains(version)) {
 #if defined(__SWITCH__)
-            SPDLOG_ERROR("Invalid OTR File!");
+            PathEngineLog("Invalid OTR File!");
 #elif defined(__WIIU__)
             Ship::WiiU::ThrowInvalidOTR();
+#elif defined(_WIN32)
+            MessageBoxA(nullptr, "Attempted to load an invalid OTR file. Try regenerating.", "Invalid OTR File",
+                        MB_OK | MB_ICONERROR);
 #else
-            SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Invalid OTR File",
-                                     "Attempted to load an invalid OTR file. Try regenerating.", nullptr);
-            SPDLOG_ERROR("Invalid OTR File!");
+            std::fprintf(stderr, "Invalid OTR File: Attempted to load an invalid OTR file. Try regenerating.\n");
+            PathEngineLog("Invalid OTR File!");
 #endif
             exit(1);
-        }
-        switch (version) {
-            case OOT_PAL_MQ:
-            case OOT_NTSC_JP_MQ:
-            case OOT_NTSC_US_MQ:
-            case OOT_PAL_GC_MQ_DBG:
-                hasMasterQuest = true;
-                break;
-            case OOT_NTSC_US_10:
-            case OOT_NTSC_US_11:
-            case OOT_NTSC_US_12:
-            case OOT_PAL_10:
-            case OOT_PAL_11:
-            case OOT_NTSC_JP_GC_CE:
-            case OOT_NTSC_JP_GC:
-            case OOT_NTSC_US_GC:
-            case OOT_PAL_GC:
-            case OOT_PAL_GC_DBG1:
-            case OOT_PAL_GC_DBG2:
-                hasOriginal = true;
-                break;
-            default:
-                break;
         }
     }
 }
 
 OTRGlobals::~OTRGlobals() {
-}
-
-void OTRGlobals::ScaleImGui() {
-    int32_t imGuiScaleIndex = CVarGetInteger(CVAR_SETTING("ImGuiScale"), defaultImGuiScale);
-    if (imGuiScaleIndex == previousImGuiScaleIndex) {
-        return;
-    }
-
-    float scale = imguiScaleOptionToValue[imGuiScaleIndex];
-    float newScale = scale / previousImGuiScale;
-    ImGui::GetStyle().ScaleAllSizes(newScale);
-    ImGui::GetIO().FontGlobalScale = scale;
-    previousImGuiScale = scale;
-    previousImGuiScaleIndex = imGuiScaleIndex;
-}
-
-ImFont* OTRGlobals::CreateDefaultFontWithSize(float size) {
-    auto mImGuiIo = &ImGui::GetIO();
-    ImFontConfig fontCfg = ImFontConfig();
-    fontCfg.OversampleH = fontCfg.OversampleV = 1;
-    fontCfg.PixelSnapH = true;
-    fontCfg.SizePixels = size;
-    ImFont* font = mImGuiIo->Fonts->AddFontDefault(&fontCfg);
-    // FontAwesome fonts need to have their sizes reduced by 2.0f/3.0f in order to align correctly
-    float iconFontSize = size * 2.0f / 3.0f;
-    static const ImWchar sIconsRanges[] = { ICON_MIN_FA, ICON_MAX_16_FA, 0 };
-    ImFontConfig iconsConfig;
-    iconsConfig.MergeMode = true;
-    iconsConfig.PixelSnapH = true;
-    iconsConfig.GlyphMinAdvanceX = iconFontSize;
-    mImGuiIo->Fonts->AddFontFromMemoryCompressedBase85TTF(fontawesome_compressed_data_base85, iconFontSize,
-                                                          &iconsConfig, sIconsRanges);
-    return font;
-}
-
-bool OTRGlobals::HasMasterQuest() {
-    return hasMasterQuest;
-}
-
-bool OTRGlobals::HasOriginal() {
-    return hasOriginal;
 }
 
 uint32_t OTRGlobals::GetInterpolationFPS() {
@@ -1335,7 +789,11 @@ OTRVersion DetectOTRVersion(std::string fileName, bool isMQ) {
 }
 
 extern "C" void Messagebox_ShowErrorBox(char* title, char* body) {
-    Extractor::ShowErrorBox(title, body);
+#ifdef _WIN32
+    MessageBoxA(nullptr, body, title, MB_OK | MB_ICONERROR);
+#else
+    std::fprintf(stderr, "%s: %s\n", title, body);
+#endif
 }
 
 bool VerifyArchiveVersion(OTRVersion version) {
@@ -1350,16 +808,13 @@ extern "C" void InitOTR(int argc, char* argv[]) {
     InitColViewer();
     SaveManager::Instance = new SaveManager();
 
-    SohGui::SetupMenuElements();
-
     ActorDB::Instance = new ActorDB();
     OTRMessage_Init();
     OTRAudio_Init();
     OTRExtScanner();
     ActorDB::AddBuiltInCustomActors();
+    NetworkGame_Initialize(argc, argv);
     Ship::Context::GetInstance()->GetFileDropMgr()->RegisterDropHandler(SoH_HandleConfigDrop);
-
-    RegisterImGuiItemIcons();
 
     srand(time(NULL));
 }
@@ -1369,12 +824,10 @@ extern "C" void SaveManager_ThreadPoolWait() {
 }
 
 extern "C" void DeinitOTR() {
+    NetworkGame_Shutdown();
     SaveManager_ThreadPoolWait();
     OTRAudio_Exit();
 
-    // Destroying gui here because we have shared ptrs to LUS objects which output to SPDLOG which is destroyed before
-    // these shared ptrs.
-    SohGui::Destroy();
     sohFast3dWindow = nullptr;
 
     OTRGlobals::Instance->context = nullptr;
@@ -1419,16 +872,12 @@ extern "C" uint64_t GetUnixTimestamp() {
 }
 
 extern "C" void Graph_StartFrame() {
-#ifndef __WIIU__
-    using Ship::KbScancode;
-    int32_t dwScancode = OTRGlobals::Instance->context->GetWindow()->GetLastScancode();
-    OTRGlobals::Instance->context->GetWindow()->SetLastScancode(-1);
-
-    switch (dwScancode) {
-        case KbScancode::LUS_KB_F1: {
-            ToggleColViewer();
-            break;
-        }
+    // Transport must continue through title/file-select screens, scene loads,
+    // and gameplay pauses. PlayState-specific synchronization runs later.
+    NetworkGame_UpdateTransport();
+#ifdef _WIN32
+    if (Ship::GetWin32Input().ConsumePress(VK_F1)) {
+        ToggleColViewer();
     }
 #endif
 }
@@ -1446,14 +895,10 @@ void RunCommands(Gfx* Commands, const std::vector<std::unordered_map<Mtx*, MtxF>
     auto intp = wnd->GetInterpreterWeak().lock().get();
     intp->mInterpolationIndex = 0;
 
-    UIWidgets::Colors themeColor =
-        static_cast<UIWidgets::Colors>(CVarGetInteger(CVAR_SETTING("Menu.Theme"), UIWidgets::Colors::LightBlue));
-    ImGui::PushStyleColor(ImGuiCol_TitleBgActive, UIWidgets::ColorValues.at(themeColor));
     for (const auto& m : mtx_replacements) {
         wnd->DrawAndRunGraphicsCommands(Commands, m);
         intp->mInterpolationIndex++;
     }
-    ImGui::PopStyleColor();
 }
 
 // C->C++ Bridge
@@ -1598,40 +1043,6 @@ extern "C" SoundFontSample* ReadCustomSample(const char* path) {
 
     return nullptr;
     */
-}
-
-ImFont* OTRGlobals::CreateFontWithSize(float size, std::string fontPath, bool isJapaneseFont) {
-    auto mImGuiIo = &ImGui::GetIO();
-    ImFont* font;
-    if (fontPath == "") {
-        ImFontConfig fontCfg = ImFontConfig();
-        fontCfg.OversampleH = fontCfg.OversampleV = 1;
-        fontCfg.PixelSnapH = true;
-        fontCfg.SizePixels = size;
-        font = mImGuiIo->Fonts->AddFontDefault(&fontCfg);
-    } else {
-        auto initData = std::make_shared<Ship::ResourceInitData>();
-        initData->Format = RESOURCE_FORMAT_BINARY;
-        initData->Type = static_cast<uint32_t>(RESOURCE_TYPE_FONT);
-        initData->ResourceVersion = 0;
-        initData->Path = fontPath;
-        std::shared_ptr<Ship::Font> fontData = std::static_pointer_cast<Ship::Font>(
-            Ship::Context::GetInstance()->GetResourceManager()->LoadResource(fontPath, false, initData));
-        ImFontConfig fontConf;
-        fontConf.FontDataOwnedByAtlas = false;
-        const ImWchar* glyph_ranges = isJapaneseFont ? mImGuiIo->Fonts->GetGlyphRangesJapanese() : nullptr;
-        font = mImGuiIo->Fonts->AddFontFromMemoryTTF(fontData->Data, fontData->DataSize, size, &fontConf, glyph_ranges);
-    }
-    // FontAwesome fonts need to have their sizes reduced by 2.0f/3.0f in order to align correctly
-    float iconFontSize = size * 2.0f / 3.0f;
-    static const ImWchar sIconsRanges[] = { ICON_MIN_FA, ICON_MAX_16_FA, 0 };
-    ImFontConfig iconsConfig;
-    iconsConfig.MergeMode = true;
-    iconsConfig.PixelSnapH = true;
-    iconsConfig.GlyphMinAdvanceX = iconFontSize;
-    mImGuiIo->Fonts->AddFontFromMemoryCompressedBase85TTF(fontawesome_compressed_data_base85, iconFontSize,
-                                                          &iconsConfig, sIconsRanges);
-    return font;
 }
 
 std::filesystem::path GetSaveFile(std::shared_ptr<Ship::Config> Conf) {
@@ -1800,76 +1211,7 @@ extern "C" uint32_t OTRGetCurrentHeight() {
     return OTRGlobals::Instance->context->GetWindow()->GetHeight();
 }
 
-Color_RGB8 GetColorForControllerLED() {
-    auto brightness = CVarGetFloat(CVAR_SETTING("LEDBrightness"), 1.0f) / 1.0f;
-    Color_RGB8 color = { 0, 0, 0 };
-    if (brightness > 0.0f) {
-        LEDColorSource source =
-            static_cast<LEDColorSource>(CVarGetInteger(CVAR_SETTING("LEDColorSource"), LED_SOURCE_TUNIC_ORIGINAL));
-        bool criticalOverride = CVarGetInteger(CVAR_SETTING("LEDCriticalOverride"), 1);
-        if (gPlayState && source == LED_SOURCE_TUNIC_ORIGINAL) {
-            switch (CUR_EQUIP_VALUE(EQUIP_TYPE_TUNIC)) {
-                case EQUIP_VALUE_TUNIC_KOKIRI:
-                    color = kokiriColor;
-                    break;
-                case EQUIP_VALUE_TUNIC_GORON:
-                    color = goronColor;
-                    break;
-                case EQUIP_VALUE_TUNIC_ZORA:
-                    color = zoraColor;
-                    break;
-            }
-        }
-        if (gPlayState && source == LED_SOURCE_NAVI_ORIGINAL) {
-            Actor* arrowPointedActor = gPlayState->actorCtx.targetCtx.arrowPointedActor;
-            if (arrowPointedActor) {
-                ActorCategory category = (ActorCategory)arrowPointedActor->category;
-                color = LEDColorDefaultNaviColorList[category].inner;
-            } else { // No target actor.
-                color = LEDColorDefaultNaviColorList[ACTORCAT_PLAYER].inner;
-            }
-        }
-        if (source == LED_SOURCE_CUSTOM) {
-            color = CVarGetColor24(CVAR_SETTING("LEDPort1Color"), { 255, 255, 255 });
-        }
-        if (gPlayState && (criticalOverride || source == LED_SOURCE_HEALTH)) {
-            if (HealthMeter_IsCritical()) {
-                color = { 0xFF, 0, 0 };
-            } else if (gSaveContext.healthCapacity != 0 && source == LED_SOURCE_HEALTH) {
-                if (gSaveContext.health / (float)gSaveContext.healthCapacity <= 0.4f) {
-                    color = { 0xFF, 0xFF, 0 };
-                } else {
-                    color = { 0, 0xFF, 0 };
-                }
-            }
-        }
-        color.r = color.r * brightness;
-        color.g = color.g * brightness;
-        color.b = color.b * brightness;
-    }
-
-    return color;
-}
-
 extern "C" void OTRControllerCallback(uint8_t rumble) {
-    // We call this every tick, SDL accounts for this use and prevents driver spam
-    // https://github.com/libsdl-org/SDL/blob/f17058b562c8a1090c0c996b42982721ace90903/src/joystick/SDL_joystick.c#L1114-L1144
-    Ship::Context::GetInstance()->GetControlDeck()->GetControllerByPort(0)->GetLED()->SetLEDColor(
-        GetColorForControllerLED());
-
-    static std::shared_ptr<SohInputEditorWindow> controllerConfigWindow = nullptr;
-    if (controllerConfigWindow == nullptr) {
-        controllerConfigWindow = std::dynamic_pointer_cast<SohInputEditorWindow>(
-            Ship::Context::GetInstance()->GetWindow()->GetGui()->GetGuiWindow("Controller Configuration"));
-    } else if (controllerConfigWindow->TestingRumble()) {
-        return;
-    }
-
-    if (rumble) {
-        Ship::Context::GetInstance()->GetControlDeck()->GetControllerByPort(0)->GetRumble()->StartRumble();
-    } else {
-        Ship::Context::GetInstance()->GetControlDeck()->GetControllerByPort(0)->GetRumble()->StopRumble();
-    }
 }
 
 extern "C" float OTRGetAspectRatio() {
@@ -1940,27 +1282,7 @@ extern "C" void AudioPlayer_Play(const uint8_t* buf, uint32_t len) {
 }
 
 extern "C" int Controller_ShouldRumble(size_t slot) {
-    // don't rumble if we don't have rumble mappings
-    if (Ship::Context::GetInstance()
-            ->GetControlDeck()
-            ->GetControllerByPort(static_cast<uint8_t>(slot))
-            ->GetRumble()
-            ->GetAllRumbleMappings()
-            .empty()) {
-        return 0;
-    }
-
-    // don't rumble if we don't have connected gamepads
-    if (Ship::Context::GetInstance()
-            ->GetControlDeck()
-            ->GetConnectedPhysicalDeviceManager()
-            ->GetConnectedSDLGamepadsForPort(slot)
-            .empty()) {
-        return 0;
-    }
-
-    // rumble
-    return 1;
+    return 0;
 }
 
 extern "C" GetItemEntry ItemTable_Retrieve(int16_t getItemID) {
@@ -2059,20 +1381,15 @@ bool SoH_HandleConfigDrop(char* filePath) {
             }
         }
 
-        auto gui = Ship::Context::GetInstance()->GetWindow()->GetGui();
-        gui->SaveConsoleVariablesNextFrame();
+        Ship::Context::GetInstance()->GetConsoleVariables()->Save();
         uint32_t finalHash = SohUtils::Hash(configJson.dump());
-        gui->GetGameOverlay()->TextDrawNotification(30.0f, true, "Configuration Loaded. Hash: %d", finalHash);
+        PathEngineLog("Configuration loaded. Hash: {}", finalHash);
         return true;
     } catch (std::exception& e) {
-        SPDLOG_ERROR("Failed to load config file: {}", e.what());
-        auto gui = Ship::Context::GetInstance()->GetWindow()->GetGui();
-        gui->GetGameOverlay()->TextDrawNotification(30.0f, true, "Failed to load config file");
+        PathEngineLog("Failed to load config file: {}", e.what());
         return false;
     } catch (...) {
-        SPDLOG_ERROR("Failed to load config file");
-        auto gui = Ship::Context::GetInstance()->GetWindow()->GetGui();
-        gui->GetGameOverlay()->TextDrawNotification(30.0f, true, "Failed to load config file");
+        PathEngineLog("Failed to load config file");
         return false;
     }
     return false;

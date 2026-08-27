@@ -456,8 +456,8 @@ void Scene_CommandAlternateHeaderList(PlayState* play, SceneCmd* cmd) {
 }
 
 void Scene_CommandCutsceneData(PlayState* play, SceneCmd* cmd) {
-    osSyncPrintf("\ngame_play->demo_play.data=[%x]", play->csCtx.segment);
-    play->csCtx.segment = SEGMENTED_TO_VIRTUAL(cmd->cutsceneData.segment);
+    (void)cmd;
+    play->csCtx.segment = NULL;
 }
 
 // Camera & World Map Area

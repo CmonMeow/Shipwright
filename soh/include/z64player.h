@@ -745,6 +745,15 @@ typedef void (*PlayerActionFunc)(struct Player*, struct PlayState*);
 typedef s32 (*UpperActionFunc)(struct Player*, struct PlayState*);
 typedef void (*AfterPutAwayFunc)(struct PlayState*, struct Player*);
 
+typedef struct PlayerNetworkDrawData {
+    u8 modelGroup;
+    u8 shield;
+    u8 itemAction;
+    u8 fishingState;
+    Vec3s upperLimbRot;
+    Vec3s headLimbRot;
+} PlayerNetworkDrawData;
+
 #define UNK6AE_ROT_FOCUS_X (1 << 0)
 #define UNK6AE_ROT_FOCUS_Y (1 << 1)
 #define UNK6AE_ROT_FOCUS_Z (1 << 2)

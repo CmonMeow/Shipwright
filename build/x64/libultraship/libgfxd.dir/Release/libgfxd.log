@@ -1,8 +1,1 @@
-﻿  gfxd.c
-  uc.c
-  uc_f3d.c
-  uc_f3db.c
-  uc_f3dex.c
-  uc_f3dex2.c
-  uc_f3dexb.c
-  libgfxd.vcxproj -> C:\Users\CmonMeow\Desktop\Shipwright\build\x64\libultraship\Release\libgfxd.lib
+﻿  libgfxd.vcxproj -> C:\Users\CmonMeow\Desktop\Shipwright\build\x64\libultraship\Release\libgfxd.lib

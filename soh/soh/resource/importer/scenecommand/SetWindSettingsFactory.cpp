@@ -1,7 +1,5 @@
 #include "soh/resource/importer/scenecommand/SetWindSettingsFactory.h"
 #include "soh/resource/type/scenecommand/SetWindSettings.h"
-#include "soh/resource/logging/SceneCommandLoggers.h"
-#include "spdlog/spdlog.h"
 #include <tinyxml2.h>
 
 namespace SOH {

@@ -1,17 +1,11 @@
 #include "SetCutscenes.h"
 
 namespace SOH {
-uint32_t* SetCutscenes::GetPointer() {
-    if (cutscene == nullptr) {
-        return nullptr;
-    }
-    return cutscene->GetPointer();
+uint8_t* SetCutscenes::GetPointer() {
+    return &ignored;
 }
 
 size_t SetCutscenes::GetPointerSize() {
-    if (cutscene == nullptr) {
-        return 0;
-    }
-    return cutscene->GetPointerSize();
+    return 0;
 }
 } // namespace SOH

@@ -139,7 +139,7 @@ CMAKE_PROJECT_DESCRIPTION:STATIC=
 CMAKE_PROJECT_GIT_BRANCH:STRING=main
 
 //Git commit hash
-CMAKE_PROJECT_GIT_COMMIT_HASH:STRING=f568b37
+CMAKE_PROJECT_GIT_COMMIT_HASH:STRING=a587826
 
 //Git commit tag
 CMAKE_PROJECT_GIT_COMMIT_TAG:STRING=
@@ -489,6 +489,12 @@ VCPKG_PREFER_SYSTEM_LIBS:BOOL=OFF
 //Enable the setup of CMAKE_PROGRAM_PATH to vcpkg paths
 VCPKG_SETUP_CMAKE_PROGRAM_PATH:BOOL=ON
 
+//Path to a library.
+VCPKG_SODIUM_LIBRARY_DEBUG:FILEPATH=C:/Users/CmonMeow/Desktop/Shipwright/build/x64/vcpkg/installed/x64-windows-static/debug/lib/libsodium.lib
+
+//Path to a library.
+VCPKG_SODIUM_LIBRARY_RELEASE:FILEPATH=C:/Users/CmonMeow/Desktop/Shipwright/build/x64/vcpkg/installed/x64-windows-static/lib/libsodium.lib
+
 //Vcpkg target triplet (ex. x86-windows)
 VCPKG_TARGET_TRIPLET:STRING=x64-windows-static
 
@@ -569,6 +575,9 @@ spdlog_DIR:PATH=C:/Users/CmonMeow/Desktop/Shipwright/build/x64/vcpkg/installed/x
 
 //The directory containing a CMake configuration file for tinyxml2.
 tinyxml2_DIR:PATH=C:/Users/CmonMeow/Desktop/Shipwright/build/x64/vcpkg/installed/x64-windows-static/share/tinyxml2
+
+//The directory containing a CMake configuration file for unofficial-sodium.
+unofficial-sodium_DIR:PATH=C:/Users/CmonMeow/Desktop/Shipwright/build/x64/vcpkg/installed/x64-windows-static/share/unofficial-sodium
 
 
 ########################

@@ -1,3 +1,4 @@
+#include <libultraship/log/PathEngineLog.hpp>
 #include "util.h"
 
 #include <string.h>
@@ -5,7 +6,6 @@
 #include <algorithm>
 #include <array>
 #include <assert.h>
-#include <spdlog/spdlog.h>
 #include <variables.h>
 
 std::string invalidString = "";
@@ -648,7 +648,7 @@ std::vector<std::string> questItemNamesGer = {
 
 const std::string& SohUtils::GetSceneName(int32_t scene) {
     if (scene > sceneNames.size()) {
-        SPDLOG_WARN("Passed invalid scene id to SohUtils::GetSceneName: ({})", scene);
+        PathEngineLog("Passed invalid scene id to SohUtils::GetSceneName: ({})", scene);
         assert(false);
         return invalidString;
     }
@@ -673,7 +673,7 @@ const std::string& SohUtils::GetItemName(int32_t item) {
     }
 
     if (item >= currentItemNames->size()) {
-        SPDLOG_WARN("Passed invalid item id to SohUtils::GetItemName: ({})", item);
+        PathEngineLog("Passed invalid item id to SohUtils::GetItemName: ({})", item);
         assert(false);
         return invalidString;
     }
@@ -697,7 +697,7 @@ const std::string& SohUtils::GetQuestItemName(int32_t item) {
             break;
     }
     if (item > questItemNamesEng.size()) {
-        SPDLOG_WARN("Passed invalid quest item id to SohUtils::GetQuestItemName: ({})", item);
+        PathEngineLog("Passed invalid quest item id to SohUtils::GetQuestItemName: ({})", item);
         assert(false);
         return invalidString;
     }

@@ -1,7 +1,5 @@
 #include "soh/resource/importer/PlayerAnimationFactory.h"
 #include "soh/resource/type/PlayerAnimation.h"
-#include "spdlog/spdlog.h"
-
 namespace SOH {
 std::shared_ptr<Ship::IResource>
 ResourceFactoryBinaryPlayerAnimationV0::ReadResource(std::shared_ptr<Ship::File> file,

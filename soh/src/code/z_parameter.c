@@ -1442,7 +1442,7 @@ u8 Return_Item(u8 itemID, u8 modId, ItemID returnItem) {
  * @return u8
  */
 u8 Item_Give(PlayState* play, u8 item) {
-    lusprintf(__FILE__, __LINE__, 2, "Item Give - item: %#x", item);
+    Error("Item Give - item: %#x", item);
     static s16 sAmmoRefillCounts[] = { 5, 10, 20, 30, 5, 10, 30, 0, 5, 20, 1, 5, 10, 20, 50, 10 };
     s16 i;
     s16 slot;

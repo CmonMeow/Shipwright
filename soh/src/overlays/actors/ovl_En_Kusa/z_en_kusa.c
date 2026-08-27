@@ -9,6 +9,7 @@
 #include "objects/gameplay_keep/gameplay_keep.h"
 #include "objects/gameplay_field_keep/gameplay_field_keep.h"
 #include "objects/object_kusa/object_kusa.h"
+#include "soh/NetworkGameBridge.h"
 #include "vt.h"
 #define FLAGS (ACTOR_FLAG_UPDATE_CULLING_DISABLED | ACTOR_FLAG_THROW_ONLY)
 
@@ -23,7 +24,7 @@ void EnKusa_SetupMain(EnKusa* this);
 void EnKusa_SetupFall(EnKusa* this);
 void EnKusa_SetupCut(EnKusa* this);
 void EnKusa_SetupUprootedWaitRegrow(EnKusa* this);
-void EnKusa_SetupRegrow(EnKusa* this);
+void EnKusa_SetupRegrow(EnKusa* this, PlayState* play);
 
 void EnKusa_Fall(EnKusa* this, PlayState* play);
 void EnKusa_WaitObject(EnKusa* this, PlayState* play);
@@ -264,6 +265,18 @@ void EnKusa_Init(Actor* thisx, PlayState* play) {
         return;
     }
 
+    if (NetworkGame_IsObjectDestroyed(play, &this->actor)) {
+        if (!(this->actor.flags & ACTOR_FLAG_GRASS_DESTROYED)) {
+            EnKusa_SpawnFragments(this, play);
+            SoundSource_PlaySfxAtFixedWorldPos(play, &this->actor.world.pos, 20, NA_SE_EV_PLANT_BROKEN);
+        }
+        if ((this->actor.params & 3) == ENKUSA_TYPE_0) {
+            Actor_Kill(&this->actor);
+            return;
+        }
+        this->actor.flags |= ACTOR_FLAG_GRASS_DESTROYED;
+    }
+
     EnKusa_SetupWaitObject(this);
 }
 
@@ -304,7 +317,14 @@ void EnKusa_SetupMain(EnKusa* this) {
 void EnKusa_Main(EnKusa* this, PlayState* play) {
     s32 pad;
 
-    if (Actor_HasParent(&this->actor, play)) {
+    if (NetworkGame_IsObjectDestroyed(play, &this->actor)) {
+        if ((this->actor.params & 3) == ENKUSA_TYPE_0) {
+            Actor_Kill(&this->actor);
+            return;
+        }
+        this->actor.flags |= ACTOR_FLAG_GRASS_DESTROYED;
+        EnKusa_SetupCut(this);
+    } else if (Actor_HasParent(&this->actor, play)) {
         EnKusa_SetupLiftedUp(this);
         SoundSource_PlaySfxAtFixedWorldPos(play, &this->actor.world.pos, 20, NA_SE_PL_PULL_UP_PLANT);
     } else if (this->collider.base.acFlags & AC_HIT && gPlayState->csCtx.state == 0) {
@@ -316,6 +336,8 @@ void EnKusa_Main(EnKusa* this, PlayState* play) {
         if ((this->actor.params >> 4) & 1) {
             EnKusa_SpawnBugs(this, play);
         }
+
+        NetworkGame_NotifyObjectDestroyed(play, &this->actor);
 
         if ((this->actor.params & 3) == ENKUSA_TYPE_0) {
             Actor_Kill(&this->actor);
@@ -383,6 +405,7 @@ void EnKusa_Fall(EnKusa* this, PlayState* play) {
         }
         EnKusa_SpawnFragments(this, play);
         EnKusa_DropCollectible(this, play);
+        NetworkGame_NotifyObjectDestroyed(play, &this->actor);
         switch (this->actor.params & 3) {
             case ENKUSA_TYPE_0:
             case ENKUSA_TYPE_2:
@@ -438,7 +461,7 @@ void EnKusa_SetupCut(EnKusa* this) {
 
 void EnKusa_CutWaitRegrow(EnKusa* this, PlayState* play) {
     if (this->timer >= 120) {
-        EnKusa_SetupRegrow(this);
+        EnKusa_SetupRegrow(this, play);
     }
 }
 
@@ -458,17 +481,18 @@ void EnKusa_UprootedWaitRegrow(EnKusa* this, PlayState* play) {
     if (this->timer > 120) {
         if (Math_StepToF(&this->actor.world.pos.y, this->actor.home.pos.y, 0.6f)) {
             if (this->timer >= 170) {
-                EnKusa_SetupRegrow(this);
+                EnKusa_SetupRegrow(this, play);
             }
         }
     }
 }
 
-void EnKusa_SetupRegrow(EnKusa* this) {
+void EnKusa_SetupRegrow(EnKusa* this, PlayState* play) {
     EnKusa_SetupAction(this, EnKusa_Regrow);
     EnKusa_SetScaleSmall(this);
     this->actor.shape.rot = this->actor.home.rot;
     this->actor.flags &= ~ACTOR_FLAG_GRASS_DESTROYED;
+    NetworkGame_NotifyObjectRestored(play, &this->actor);
 }
 
 void EnKusa_Regrow(EnKusa* this, PlayState* play) {

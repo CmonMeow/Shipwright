@@ -12,8 +12,6 @@ typedef struct {
     u32 questItems;
     s8 defense;
     u16 health;
-    u32 requiresMasterQuest;
-    u32 requiresOriginal;
     u8 seedHash[5];
     char buildVersion[50];
     s16 buildVersionMajor;

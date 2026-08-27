@@ -3375,32 +3375,8 @@ void CollisionCheck_SpawnWaterDroplets(PlayState* play, Vec3f* v) {
  * Spawns streaks of light from hits against solid objects
  */
 void CollisionCheck_SpawnShieldParticles(PlayState* play, Vec3f* v) {
-    static EffectShieldParticleInit initMetal = {
-        16,
-        { 0, 0, 0 },
-        { 0, 200, 255, 255 },
-        { 255, 255, 255, 255 },
-        { 255, 255, 128, 255 },
-        { 255, 255, 0, 255 },
-        { 255, 64, 0, 200 },
-        { 255, 0, 0, 255 },
-        2.1f,
-        35.0f,
-        30.0f,
-        8,
-        { 0, 0, 0, { 0, 128, 255 }, false, 300 },
-        true,
-    };
-    s32 effectIndex;
-
-    initMetal.position.x = v->x;
-    initMetal.position.y = v->y;
-    initMetal.position.z = v->z;
-    initMetal.lightPoint.x = initMetal.position.x;
-    initMetal.lightPoint.y = initMetal.position.y;
-    initMetal.lightPoint.z = initMetal.position.z;
-
-    Effect_Add(play, &effectIndex, EFFECT_SHIELD_PARTICLE, 0, 1, &initMetal);
+    (void)play;
+    (void)v;
 }
 
 /**
@@ -3432,32 +3408,8 @@ void CollisionCheck_SpawnShieldParticlesMetal2(PlayState* play, Vec3f* v) {
  * Spawns streaks of light and makes a wooden sound
  */
 void CollisionCheck_SpawnShieldParticlesWood(PlayState* play, Vec3f* v, Vec3f* actorPos) {
-    static EffectShieldParticleInit initWood = {
-        16,
-        { 0, 0, 0 },
-        { 0, 200, 255, 255 },
-        { 255, 255, 255, 255 },
-        { 255, 255, 128, 255 },
-        { 255, 255, 0, 255 },
-        { 255, 64, 0, 200 },
-        { 255, 0, 0, 255 },
-        2.1f,
-        35.0f,
-        30.0f,
-        8,
-        { 0, 0, 0, { 0, 128, 255 }, false, 300 },
-        false,
-    };
-    s32 effectIndex;
-
-    initWood.position.x = v->x;
-    initWood.position.y = v->y;
-    initWood.position.z = v->z;
-    initWood.lightPoint.x = initWood.position.x;
-    initWood.lightPoint.y = initWood.position.y;
-    initWood.lightPoint.z = initWood.position.z;
-
-    Effect_Add(play, &effectIndex, EFFECT_SHIELD_PARTICLE, 0, 1, &initWood);
+    (void)play;
+    (void)v;
     Audio_PlaySoundGeneral(NA_SE_IT_REFLECTION_WOOD, actorPos, 4, &gSfxDefaultFreqAndVolScale,
                            &gSfxDefaultFreqAndVolScale, &gSfxDefaultReverb);
 }

@@ -1,0 +1,19 @@
+{
+    "CVars": {
+        "gSettings": null
+    },
+    "Window": {
+        "AudioBackend": "wasapi",
+        "Backend": {
+            "Id": 0,
+            "Name": "Win32 OpenGL"
+        },
+        "Fullscreen": {
+            "Enabled": false
+        },
+        "Height": 480,
+        "PositionX": 154,
+        "PositionY": 328,
+        "Width": 640
+    }
+}

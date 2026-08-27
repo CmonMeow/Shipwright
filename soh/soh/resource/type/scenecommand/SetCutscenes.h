@@ -1,23 +1,21 @@
 #pragma once
 
 #include <cstdint>
-#include <vector>
-#include <memory>
 #include <string>
 #include <ship/resource/Resource.h>
 #include "soh/resource/type/scenecommand/SceneCommand.h"
-#include "soh/resource/type/Cutscene.h"
-// #include <libultraship/libultra.h>
 
 namespace SOH {
-class SetCutscenes : public SceneCommand<uint32_t> {
+// Scene archives retain command 0x17 for format compatibility. Cutscene data is
+// deliberately not loaded by the PC runtime.
+class SetCutscenes : public SceneCommand<uint8_t> {
   public:
     using SceneCommand::SceneCommand;
 
-    uint32_t* GetPointer();
+    uint8_t* GetPointer();
     size_t GetPointerSize();
 
     std::string fileName;
-    std::shared_ptr<Cutscene> cutscene;
+    uint8_t ignored = 0;
 };
 }; // namespace SOH

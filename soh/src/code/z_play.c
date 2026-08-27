@@ -10,6 +10,7 @@
 #include "soh/OTRGlobals.h"
 #include "soh/ResourceManagerHelpers.h"
 #include "soh/SaveManager.h"
+#include "soh/NetworkGameBridge.h"
 #include "soh/framebuffer_effects.h"
 
 #include <libultraship/libultraship.h>
@@ -1021,6 +1022,8 @@ void Play_Update(PlayState* play) {
                         Actor_UpdateAll(play, &play->actorCtx);
                     }
 
+                    NetworkGame_Update(play);
+
                     PLAY_LOG(3643);
                     func_80064558(play, &play->csCtx);
 
@@ -1440,7 +1443,6 @@ void Play_Draw(PlayState* play) {
         }
 
         DrawColViewer();
-
     Play_Draw_DrawOverlayElements:
         if ((HREG(80) != 10) || (HREG(89) != 0)) {
             Play_DrawOverlayElements(play);

@@ -1,3 +1,4 @@
+#include <libultraship/log/PathEngineLog.hpp>
 #include "colViewer.h"
 
 #include <vector>
@@ -593,7 +594,7 @@ extern "C" void DrawColViewer() {
 
     if ((vtxDl.size() > vtxDlCapacity) || (mtxDl.size() > mtxDlCapacity)) {
         // If the sizes somehow changed between the two draws, we can't continue because we may be using invalid data
-        SPDLOG_WARN("Error drawing collision, vertex/matrix sizes didn't settle.");
+        PathEngineLog("Error drawing collision, vertex/matrix sizes didn't settle.");
         return;
     }
 

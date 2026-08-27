@@ -6,6 +6,7 @@
 #include "global.h"
 #include "vt.h"
 #include "stdio.h"
+#include "stdlib.h"
 #include "soh/OTRGlobals.h"
 
 #include <libultraship/bridge.h>
@@ -44,7 +45,11 @@ void Main_LogSystemHeap(void) {
 }
 
 #ifdef _WIN32
-int SDL_main(int argc, char* argv[]) {
+int PASCAL WinMain(HINSTANCE hInstance, HINSTANCE previousInstance, LPSTR commandLine, int showCommand) {
+    (void)hInstance;
+    (void)previousInstance;
+    (void)commandLine;
+    (void)showCommand;
     AllocConsole();
     (void)freopen("CONIN$", "r", stdin);
     (void)freopen("CONOUT$", "w", stdout);
@@ -55,9 +60,13 @@ int SDL_main(int argc, char* argv[]) {
     // Allow non-ascii characters for Windows
     setlocale(LC_ALL, ".UTF8");
 
+    int argc = __argc;
+    char** argv = __argv;
+
 #else //_WIN32
 int main(int argc, char* argv[]) {
 #endif
+    ClearLog();
     InitOTR(argc, argv);
     // TODO: Was moved to below InitOTR because it requires window to be setup. But will be late to catch crashes.
     CrashHandlerRegisterCallback(CrashHandler_PrintSohData);

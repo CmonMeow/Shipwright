@@ -1,7 +1,6 @@
+#include <libultraship/log/PathEngineLog.hpp>
 #include "soh/resource/importer/scenecommand/SetMeshFactory.h"
 #include "soh/resource/type/scenecommand/SetMesh.h"
-#include "soh/resource/logging/SceneCommandLoggers.h"
-#include "spdlog/spdlog.h"
 #include <tinyxml2.h>
 #include "libultraship/libultraship.h"
 
@@ -24,7 +23,7 @@ std::shared_ptr<Ship::IResource> SetMeshFactory::ReadResource(std::shared_ptr<Sh
         } else if (setMesh->meshHeader.base.type == 2) {
             setMesh->meshHeader.polygon2.num = polyNum;
         } else {
-            SPDLOG_ERROR("Tried to load mesh in SetMesh scene header with type that doesn't exist: {}",
+            PathEngineLog("Tried to load mesh in SetMesh scene header with type that doesn't exist: {}",
                          setMesh->meshHeader.base.type);
         }
     }
@@ -156,7 +155,7 @@ std::shared_ptr<Ship::IResource> SetMeshFactory::ReadResource(std::shared_ptr<Sh
 
             setMesh->dlists2.push_back(dlist);
         } else {
-            SPDLOG_ERROR("Tried to load mesh in SetMesh scene header with type that doesn't exist: {}",
+            PathEngineLog("Tried to load mesh in SetMesh scene header with type that doesn't exist: {}",
                          setMesh->meshHeader.base.type);
         }
     }
@@ -169,7 +168,7 @@ std::shared_ptr<Ship::IResource> SetMeshFactory::ReadResource(std::shared_ptr<Sh
         setMesh->meshHeader.polygon1.multi.list = setMesh->images.data();
         setMesh->meshHeader.polygon1.dlist = (Gfx*)setMesh->dlists.data();
     } else {
-        SPDLOG_ERROR("Tried to load mesh in SetMesh scene header with type that doesn't exist: {}",
+        PathEngineLog("Tried to load mesh in SetMesh scene header with type that doesn't exist: {}",
                      setMesh->meshHeader.base.type);
     }
 
@@ -196,7 +195,7 @@ std::shared_ptr<Ship::IResource> SetMeshFactoryXML::ReadResource(std::shared_ptr
         } else if (setMesh->meshHeader.base.type == 2) {
             setMesh->meshHeader.polygon2.num = polyNum;
         } else {
-            SPDLOG_ERROR("Tried to load mesh in SetMesh scene header with type that doesn't exist: {}",
+            PathEngineLog("Tried to load mesh in SetMesh scene header with type that doesn't exist: {}",
                          setMesh->meshHeader.base.type);
         }
     }
@@ -340,7 +339,7 @@ std::shared_ptr<Ship::IResource> SetMeshFactoryXML::ReadResource(std::shared_ptr
 
             setMesh->dlists2.push_back(dlist);
         } else {
-            SPDLOG_ERROR("Tried to load mesh in SetMesh scene header with type that doesn't exist: {}",
+            PathEngineLog("Tried to load mesh in SetMesh scene header with type that doesn't exist: {}",
                          setMesh->meshHeader.base.type);
         }
 
@@ -355,7 +354,7 @@ std::shared_ptr<Ship::IResource> SetMeshFactoryXML::ReadResource(std::shared_ptr
         setMesh->meshHeader.polygon1.multi.list = setMesh->images.data();
         setMesh->meshHeader.polygon1.dlist = (Gfx*)setMesh->dlists.data();
     } else {
-        SPDLOG_ERROR("Tried to load mesh in SetMesh scene header with type that doesn't exist: {}",
+        PathEngineLog("Tried to load mesh in SetMesh scene header with type that doesn't exist: {}",
                      setMesh->meshHeader.base.type);
     }
 

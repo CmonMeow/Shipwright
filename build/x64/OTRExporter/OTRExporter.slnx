@@ -5,9 +5,6 @@
 		<BuildType Name="Release"/>
 		<Platform Name="x64"/>
 	</Configurations>
-	<Project Path="../libultraship/ImGui.vcxproj" Type="8bc9ceb8-8b4a-11d0-8d11-00a0c91bc942" Id="58698712-2511-33c9-96e7-7dd1725db59b">
-		<BuildDependency Project="../ZERO_CHECK.vcxproj"/>
-	</Project>
 	<Project Path="OTRExporter/OTRExporter.vcxproj" Type="8bc9ceb8-8b4a-11d0-8d11-00a0c91bc942" Id="e64ba336-ad65-38a9-8ed7-cc576ee085c4">
 		<BuildDependency Project="../ZERO_CHECK.vcxproj"/>
 		<BuildDependency Project="../libultraship/src/libultraship.vcxproj"/>
@@ -16,7 +13,6 @@
 		<BuildDependency Project="../ZERO_CHECK.vcxproj"/>
 	</Project>
 	<Project Path="../libultraship/src/libultraship.vcxproj" Type="8bc9ceb8-8b4a-11d0-8d11-00a0c91bc942" Id="06cc8d88-1a4d-3e2c-94f1-180fc8b912db">
-		<BuildDependency Project="../libultraship/ImGui.vcxproj"/>
 		<BuildDependency Project="../ZERO_CHECK.vcxproj"/>
 		<BuildDependency Project="../libultraship/libgfxd.vcxproj"/>
 		<BuildDependency Project="../_deps/prism-build/prism.vcxproj"/>

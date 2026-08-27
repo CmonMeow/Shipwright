@@ -7,6 +7,7 @@
 #include "z_obj_bombiwa.h"
 #include "overlays/effects/ovl_Effect_Ss_Kakera/z_eff_ss_kakera.h"
 #include "objects/object_bombiwa/object_bombiwa.h"
+#include "soh/NetworkGameBridge.h"
 
 #define FLAGS 0
 
@@ -75,7 +76,8 @@ void ObjBombiwa_InitCollision(Actor* thisx, PlayState* play) {
 void ObjBombiwa_Init(Actor* thisx, PlayState* play) {
     Actor_ProcessInitChain(thisx, sInitChain);
     ObjBombiwa_InitCollision(thisx, play);
-    if ((Flags_GetSwitch(play, thisx->params & 0x3F) != 0)) {
+    if ((Flags_GetSwitch(play, thisx->params & 0x3F) != 0) || NetworkGame_IsObjectDestroyed(play, thisx)) {
+        Flags_SetSwitch(play, thisx->params & 0x3F);
         Actor_Kill(thisx);
     } else {
         CollisionCheck_SetInfo(&thisx->colChkInfo, NULL, &sColChkInfoInit);
@@ -125,10 +127,16 @@ void ObjBombiwa_Update(Actor* thisx, PlayState* play) {
     ObjBombiwa* this = (ObjBombiwa*)thisx;
     s32 pad;
 
-    if ((func_80033684(play, &this->actor) != NULL) ||
+    s32 networkStateDestroyed = NetworkGame_IsObjectDestroyed(play, &this->actor);
+    s32 networkExplosion = NetworkGame_IsExplosionNear(play, &this->actor, 120.0f);
+
+    if (networkStateDestroyed || networkExplosion || (func_80033684(play, &this->actor) != NULL) ||
         ((this->collider.base.acFlags & AC_HIT) && (this->collider.info.acHitInfo->toucher.dmgFlags & 0x40000040))) {
         ObjBombiwa_Break(this, play);
         Flags_SetSwitch(play, this->actor.params & 0x3F);
+        if (!networkStateDestroyed) {
+            NetworkGame_NotifyObjectDestroyed(play, &this->actor);
+        }
         SoundSource_PlaySfxAtFixedWorldPos(play, &this->actor.world.pos, 80, NA_SE_EV_WALL_BROKEN);
         if (((this->actor.params >> 0xF) & 1) != 0) {
             Sfx_PlaySfxCentered(NA_SE_SY_CORRECT_CHIME);

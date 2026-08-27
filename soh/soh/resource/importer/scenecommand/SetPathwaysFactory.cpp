@@ -1,7 +1,5 @@
 #include "soh/resource/importer/scenecommand/SetPathwaysFactory.h"
 #include "soh/resource/type/scenecommand/SetPathways.h"
-#include "soh/resource/logging/SceneCommandLoggers.h"
-#include "spdlog/spdlog.h"
 #include <tinyxml2.h>
 #include <libultraship/libultraship.h>
 

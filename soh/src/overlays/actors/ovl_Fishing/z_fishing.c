@@ -440,6 +440,36 @@ static s16 D_80B7E150;
 static f32 sReelLinePosStep;
 static Vec3f sRodTipPos;
 static Vec3f sReelLinePos[LINE_SEG_COUNT];
+
+s32 Fishing_GetNetworkVisualState(PlayState* play, u8* castState, Vec3f* rodTipOffset, Vec3f* lureOffset,
+                                  Vec3f lineOffsets[12]) {
+    Player* player;
+    s32 i;
+    s32 firstLinePoint;
+
+    if (play == NULL || castState == NULL || rodTipOffset == NULL || lureOffset == NULL || lineOffsets == NULL) {
+        return false;
+    }
+    player = GET_PLAYER(play);
+    if (player == NULL || player->heldItemAction != PLAYER_IA_FISHING_POLE || sFishingMain == NULL) {
+        return false;
+    }
+    *castState = (u8)sRodCastState;
+    rodTipOffset->x = sRodTipPos.x - player->actor.world.pos.x;
+    rodTipOffset->y = sRodTipPos.y - player->actor.world.pos.y;
+    rodTipOffset->z = sRodTipPos.z - player->actor.world.pos.z;
+    lureOffset->x = sLurePos.x - player->actor.world.pos.x;
+    lureOffset->y = sLurePos.y - player->actor.world.pos.y;
+    lureOffset->z = sLurePos.z - player->actor.world.pos.z;
+    firstLinePoint = CLAMP((s32)sRodLineSpooled, 0, LINE_SEG_COUNT - 1);
+    for (i = 0; i < 12; i++) {
+        s32 lineIndex = firstLinePoint + ((LINE_SEG_COUNT - 1 - firstLinePoint) * i) / 11;
+        lineOffsets[i].x = sReelLinePos[lineIndex].x - player->actor.world.pos.x;
+        lineOffsets[i].y = sReelLinePos[lineIndex].y - player->actor.world.pos.y;
+        lineOffsets[i].z = sReelLinePos[lineIndex].z - player->actor.world.pos.z;
+    }
+    return true;
+}
 static Vec3f sReelLineRot[LINE_SEG_COUNT];
 static Vec3f sReelLineUnk[LINE_SEG_COUNT];
 static Vec3f sLureHookRefPos[2];

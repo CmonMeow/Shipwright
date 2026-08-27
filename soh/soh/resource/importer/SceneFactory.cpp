@@ -1,4 +1,4 @@
-#include "spdlog/spdlog.h"
+#include <libultraship/log/PathEngineLog.hpp>
 #include <tinyxml2.h>
 #include "soh/resource/type/SohResourceType.h"
 #include "soh/resource/importer/SceneFactory.h"
@@ -90,7 +90,7 @@ ResourceFactoryBinarySceneV0::ParseSceneCommand(std::shared_ptr<Scene> scene,
     }
 
     if (result == nullptr) {
-        SPDLOG_ERROR("Failed to load scene command of type {} in scene {}", (uint32_t)cmdID,
+        PathEngineLog("Failed to load scene command of type {} in scene {}", (uint32_t)cmdID,
                      scene->GetInitData()->Path);
     }
 
@@ -201,7 +201,7 @@ std::shared_ptr<ISceneCommand> ResourceFactoryXMLSceneV0::ParseSceneCommand(std:
     SceneCommandID cmdID = GetCommandID(commandName);
 
     if (cmdID == SceneCommandID::Error) {
-        SPDLOG_ERROR("Failed to load scene command with name {} in scene {}", commandName, scene->GetInitData()->Path);
+        PathEngineLog("Failed to load scene command with name {} in scene {}", commandName, scene->GetInitData()->Path);
         return nullptr;
     }
 
@@ -219,7 +219,7 @@ std::shared_ptr<ISceneCommand> ResourceFactoryXMLSceneV0::ParseSceneCommand(std:
     }
 
     if (result == nullptr) {
-        SPDLOG_ERROR("Failed to load scene command of type {} in scene {}", (uint32_t)cmdID,
+        PathEngineLog("Failed to load scene command of type {} in scene {}", (uint32_t)cmdID,
                      scene->GetInitData()->Path);
     }
 

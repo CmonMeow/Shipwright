@@ -1,6 +1,5 @@
 #include "soh/resource/importer/CollisionHeaderFactory.h"
 #include "soh/resource/type/CollisionHeader.h"
-#include "spdlog/spdlog.h"
 #include <tinyxml2.h>
 
 namespace SOH {

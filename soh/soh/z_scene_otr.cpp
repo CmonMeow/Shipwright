@@ -1,3 +1,4 @@
+#include <libultraship/log/PathEngineLog.hpp>
 #include "ResourceManagerHelpers.h"
 #include <libultraship/libultraship.h>
 #include "soh/resource/type/Scene.h"
@@ -6,14 +7,12 @@
 #include "vt.h"
 #include "soh/resource/type/CollisionHeader.h"
 #include <fast/resource/type/DisplayList.h>
-#include "soh/resource/type/Cutscene.h"
 #include "soh/resource/type/Path.h"
 #include "soh/resource/type/Text.h"
 #include <ship/resource/type/Blob.h>
 #include <memory>
 #include <cassert>
 #include "soh/resource/type/scenecommand/SetCameraSettings.h"
-#include "soh/resource/type/scenecommand/SetCutscenes.h"
 #include "soh/resource/type/scenecommand/SetStartPositionList.h"
 #include "soh/resource/type/scenecommand/SetActorList.h"
 #include "soh/resource/type/scenecommand/SetCollisionHeader.h"
@@ -368,12 +367,8 @@ bool Scene_CommandAlternateHeaderList(PlayState* play, SOH::ISceneCommand* cmd) 
 }
 
 bool Scene_CommandCutsceneData(PlayState* play, SOH::ISceneCommand* cmd) {
-    // SOH::SetCutscenes* cmdCS = std::static_pointer_cast<SOH::SetCutscenes>(cmd);
-    SOH::SetCutscenes* cmdCS = (SOH::SetCutscenes*)cmd;
-
-    play->csCtx.segment = cmdCS->cutscene->commands.data();
-
-    // osSyncPrintf("\ngame_play->demo_play.data=[%x]", play->csCtx.segment);
+    (void)cmd;
+    play->csCtx.segment = nullptr;
     return false;
 }
 
@@ -514,7 +509,7 @@ extern "C" s32 OTRfunc_8009728C(PlayState* play, RoomContext* roomCtx, s32 roomN
 
         roomCtx->unk_30 ^= 1;
 
-        SPDLOG_INFO("Room Init - curRoom.num: {0:#x}", roomCtx->curRoom.num);
+        PathEngineLog("Room Init - curRoom.num: {0:#x}", roomCtx->curRoom.num);
 
         return 1;
     }

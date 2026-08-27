@@ -5,14 +5,10 @@
 		<BuildType Name="Release"/>
 		<Platform Name="x64"/>
 	</Configurations>
-	<Project Path="ImGui.vcxproj" Type="8bc9ceb8-8b4a-11d0-8d11-00a0c91bc942" Id="58698712-2511-33c9-96e7-7dd1725db59b">
-		<BuildDependency Project="../ZERO_CHECK.vcxproj"/>
-	</Project>
 	<Project Path="libgfxd.vcxproj" Type="8bc9ceb8-8b4a-11d0-8d11-00a0c91bc942" Id="e336f0a6-2313-316a-a6db-31a934f64874">
 		<BuildDependency Project="../ZERO_CHECK.vcxproj"/>
 	</Project>
 	<Project Path="src/libultraship.vcxproj" Type="8bc9ceb8-8b4a-11d0-8d11-00a0c91bc942" Id="06cc8d88-1a4d-3e2c-94f1-180fc8b912db">
-		<BuildDependency Project="ImGui.vcxproj"/>
 		<BuildDependency Project="../ZERO_CHECK.vcxproj"/>
 		<BuildDependency Project="libgfxd.vcxproj"/>
 		<BuildDependency Project="../_deps/prism-build/prism.vcxproj"/>
@@ -30,7 +26,6 @@
 	</Project>
 	<Folder Name="/CMakePredefinedTargets/">
 		<Project Path="ALL_BUILD.vcxproj" Type="8bc9ceb8-8b4a-11d0-8d11-00a0c91bc942" Id="9b7f8073-6431-3172-99c4-e4e3e24ffcaa" DefaultStartup="true">
-			<BuildDependency Project="ImGui.vcxproj"/>
 			<BuildDependency Project="../ZERO_CHECK.vcxproj"/>
 			<BuildDependency Project="libgfxd.vcxproj"/>
 			<BuildDependency Project="src/libultraship.vcxproj"/>

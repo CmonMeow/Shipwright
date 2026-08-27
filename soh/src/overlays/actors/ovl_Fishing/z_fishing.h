@@ -80,4 +80,7 @@ struct VBFishingData {
     f32 sFishingRecordLength;
 };
 
+s32 Fishing_GetNetworkVisualState(PlayState* play, u8* castState, Vec3f* rodTipOffset, Vec3f* lureOffset,
+                                  Vec3f lineOffsets[12]);
+
 #endif

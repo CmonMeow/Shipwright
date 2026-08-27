@@ -1,7 +1,7 @@
+#include <libultraship/log/PathEngineLog.hpp>
 #include "soh/resource/importer/AnimationFactory.h"
 #include "soh/resource/type/Animation.h"
 #include <ship/resource/ResourceManager.h>
-#include "spdlog/spdlog.h"
 #include <ship/Context.h>
 
 namespace SOH {
@@ -88,7 +88,7 @@ ResourceFactoryBinaryAnimationV0::ReadResource(std::shared_ptr<Ship::File> file,
 
         animation->animationData.linkAnimationHeader.segment = animData->GetPointer();
     } else if (animType == AnimationType::Legacy) {
-        SPDLOG_DEBUG("BEYTAH ANIMATION?!");
+        PathEngineLog("BEYTAH ANIMATION?!");
     }
 
     return animation;

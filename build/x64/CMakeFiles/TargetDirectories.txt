@@ -5,7 +5,6 @@ C:/Users/CmonMeow/Desktop/Shipwright/build/x64/CMakeFiles/PACKAGE.dir
 C:/Users/CmonMeow/Desktop/Shipwright/build/x64/CMakeFiles/INSTALL.dir
 C:/Users/CmonMeow/Desktop/Shipwright/build/x64/CMakeFiles/ALL_BUILD.dir
 C:/Users/CmonMeow/Desktop/Shipwright/build/x64/CMakeFiles/ZERO_CHECK.dir
-C:/Users/CmonMeow/Desktop/Shipwright/build/x64/libultraship/CMakeFiles/ImGui.dir
 C:/Users/CmonMeow/Desktop/Shipwright/build/x64/libultraship/CMakeFiles/stb.dir
 C:/Users/CmonMeow/Desktop/Shipwright/build/x64/libultraship/CMakeFiles/libgfxd.dir
 C:/Users/CmonMeow/Desktop/Shipwright/build/x64/libultraship/CMakeFiles/PACKAGE.dir
@@ -38,6 +37,13 @@ C:/Users/CmonMeow/Desktop/Shipwright/build/x64/OTRExporter/CMakeFiles/ALL_BUILD.
 C:/Users/CmonMeow/Desktop/Shipwright/build/x64/OTRExporter/OTRExporter/CMakeFiles/OTRExporter.dir
 C:/Users/CmonMeow/Desktop/Shipwright/build/x64/OTRExporter/OTRExporter/CMakeFiles/PACKAGE.dir
 C:/Users/CmonMeow/Desktop/Shipwright/build/x64/OTRExporter/OTRExporter/CMakeFiles/INSTALL.dir
+C:/Users/CmonMeow/Desktop/Shipwright/build/x64/soh/CMakeFiles/pathengine_network.dir
+C:/Users/CmonMeow/Desktop/Shipwright/build/x64/soh/CMakeFiles/pathengine_network_test.dir
+C:/Users/CmonMeow/Desktop/Shipwright/build/x64/soh/CMakeFiles/pathengine_protocol_test.dir
+C:/Users/CmonMeow/Desktop/Shipwright/build/x64/soh/CMakeFiles/pathengine_runtime_test.dir
+C:/Users/CmonMeow/Desktop/Shipwright/build/x64/soh/CMakeFiles/pathengine_voice_test.dir
+C:/Users/CmonMeow/Desktop/Shipwright/build/x64/soh/CMakeFiles/pathengine_voice_client.dir
+C:/Users/CmonMeow/Desktop/Shipwright/build/x64/soh/CMakeFiles/pathengine_dedicated_server.dir
 C:/Users/CmonMeow/Desktop/Shipwright/build/x64/soh/CMakeFiles/soh.dir
 C:/Users/CmonMeow/Desktop/Shipwright/build/x64/soh/CMakeFiles/PACKAGE.dir
 C:/Users/CmonMeow/Desktop/Shipwright/build/x64/soh/CMakeFiles/INSTALL.dir

@@ -18,7 +18,6 @@ RUN apt-get update && \
 		curl \
 		git \
 		lld \
-		libsdl2-dev \
 		zlib1g-dev \
 		libbz2-dev \
 		libpng-dev \
@@ -39,24 +38,6 @@ RUN git clone https://github.com/Perlmint/glew-cmake.git && \
 	cmake glew-cmake && \
 	make -j$(nproc) && \
 	make install
-
-ENV SDL2VER=2.0.22
-RUN curl -sLO https://libsdl.org/release/SDL2-${SDL2VER}.tar.gz && \
-	tar -xzf SDL2-${SDL2VER}.tar.gz && \
-	cd SDL2-${SDL2VER} && \
-	./configure --build=x86_64-linux-gnu && \
-	make -j$(nproc) && make install && \
-	rm ../SDL2-${SDL2VER}.tar.gz && \
-	cp -av /usr/local/lib/libSDL* /lib/x86_64-linux-gnu/
-
-ENV SDL2NETVER=2.2.0
-RUN curl -sLO https://www.libsdl.org/projects/SDL_net/release/SDL2_net-${SDL2NETVER}.tar.gz && \
-	tar -xzf SDL2_net-${SDL2NETVER}.tar.gz && \
-	cd SDL2_net-${SDL2NETVER} && \
-	./configure --build=x86_64-linux-gnu && \
-	make -j$(nproc) && make install && \
-	rm ../SDL2_net-${SDL2NETVER}.tar.gz && \
-	cp -av /usr/local/lib/libSDL* /lib/x86_64-linux-gnu/
 
 RUN \
 	ln -sf /proc/self/mounts /etc/mtab && \

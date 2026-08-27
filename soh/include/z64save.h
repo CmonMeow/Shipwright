@@ -154,15 +154,10 @@ typedef enum TimerId {
 
 #pragma region SoH
 
-typedef struct ShipQuestSaveContextData {
-    u8 id;
-} ShipQuestSaveContextData;
-
 typedef struct ShipSaveContextData {
     u16 pendingSale;
     u16 pendingSaleMod;
     FaroresWindData backupFW;
-    ShipQuestSaveContextData quest;
     u8 maskMemory;
     u8 filenameLanguage;
 } ShipSaveContextData;
@@ -284,14 +279,6 @@ typedef struct {
     /* 0x1424 */ s16 healthAccumulator;
     /*        */ ShipSaveContextData ship;
 } SaveContext; // size = 0x1428
-
-typedef enum {
-    /* 00 */ QUEST_NORMAL,
-    /* 01 */ QUEST_MASTER,
-} Quest;
-
-#define IS_VANILLA (gSaveContext.ship.quest.id == QUEST_NORMAL)
-#define IS_MASTER_QUEST (gSaveContext.ship.quest.id == QUEST_MASTER)
 
 typedef enum {
     /* 0x00 */ BTN_ENABLED,

@@ -5,15 +5,11 @@
 		<BuildType Name="Release"/>
 		<Platform Name="x64"/>
 	</Configurations>
-	<Project Path="../libultraship/ImGui.vcxproj" Type="8bc9ceb8-8b4a-11d0-8d11-00a0c91bc942" Id="58698712-2511-33c9-96e7-7dd1725db59b">
-		<BuildDependency Project="../ZERO_CHECK.vcxproj"/>
-	</Project>
 	<Project Path="../OTRExporter/OTRExporter/OTRExporter.vcxproj" Type="8bc9ceb8-8b4a-11d0-8d11-00a0c91bc942" Id="e64ba336-ad65-38a9-8ed7-cc576ee085c4">
 		<BuildDependency Project="../ZERO_CHECK.vcxproj"/>
 		<BuildDependency Project="../libultraship/src/libultraship.vcxproj"/>
 	</Project>
 	<Project Path="../ZAPD/ZAPDLib.vcxproj" Type="8bc9ceb8-8b4a-11d0-8d11-00a0c91bc942" Id="eb0c1e29-45db-36b6-8d66-052b54325d34">
-		<BuildDependency Project="../libultraship/ImGui.vcxproj"/>
 		<BuildDependency Project="../OTRExporter/OTRExporter/OTRExporter.vcxproj"/>
 		<BuildDependency Project="../ZERO_CHECK.vcxproj"/>
 		<BuildDependency Project="../libultraship/libgfxd.vcxproj"/>
@@ -26,22 +22,24 @@
 		<BuildDependency Project="../ZERO_CHECK.vcxproj"/>
 	</Project>
 	<Project Path="../libultraship/src/libultraship.vcxproj" Type="8bc9ceb8-8b4a-11d0-8d11-00a0c91bc942" Id="06cc8d88-1a4d-3e2c-94f1-180fc8b912db">
-		<BuildDependency Project="../libultraship/ImGui.vcxproj"/>
 		<BuildDependency Project="../ZERO_CHECK.vcxproj"/>
 		<BuildDependency Project="../libultraship/libgfxd.vcxproj"/>
 		<BuildDependency Project="../_deps/prism-build/prism.vcxproj"/>
 		<BuildDependency Project="../libultraship/stb.vcxproj"/>
 		<BuildDependency Project="../_deps/stormlib-build/storm.vcxproj"/>
 	</Project>
+	<Project Path="pathengine_network.vcxproj" Type="8bc9ceb8-8b4a-11d0-8d11-00a0c91bc942" Id="cc8974d8-759d-3cfa-8cf0-b4f8b3d546cf">
+		<BuildDependency Project="../ZERO_CHECK.vcxproj"/>
+	</Project>
 	<Project Path="../_deps/prism-build/prism.vcxproj" Type="8bc9ceb8-8b4a-11d0-8d11-00a0c91bc942" Id="48948160-6bfa-30fb-9401-08b164880f69">
 		<BuildDependency Project="../ZERO_CHECK.vcxproj"/>
 	</Project>
 	<Project Path="soh.vcxproj" Type="8bc9ceb8-8b4a-11d0-8d11-00a0c91bc942" Id="9be9808f-4839-3804-9bd4-6ab6bed0cca7">
-		<BuildDependency Project="../libultraship/ImGui.vcxproj"/>
 		<BuildDependency Project="../ZAPD/ZAPDLib.vcxproj"/>
 		<BuildDependency Project="../ZERO_CHECK.vcxproj"/>
 		<BuildDependency Project="../libultraship/libgfxd.vcxproj"/>
 		<BuildDependency Project="../libultraship/src/libultraship.vcxproj"/>
+		<BuildDependency Project="pathengine_network.vcxproj"/>
 		<BuildDependency Project="../_deps/prism-build/prism.vcxproj"/>
 		<BuildDependency Project="../libultraship/stb.vcxproj"/>
 		<BuildDependency Project="../_deps/stormlib-build/storm.vcxproj"/>
@@ -55,6 +53,13 @@
 	<Folder Name="/CMakePredefinedTargets/">
 		<Project Path="ALL_BUILD.vcxproj" Type="8bc9ceb8-8b4a-11d0-8d11-00a0c91bc942" Id="9b7f8073-6431-3172-99c4-e4e3e24ffcaa" DefaultStartup="true">
 			<BuildDependency Project="../ZERO_CHECK.vcxproj"/>
+			<BuildDependency Project="pathengine_dedicated_server.vcxproj"/>
+			<BuildDependency Project="pathengine_network.vcxproj"/>
+			<BuildDependency Project="pathengine_network_test.vcxproj"/>
+			<BuildDependency Project="pathengine_protocol_test.vcxproj"/>
+			<BuildDependency Project="pathengine_runtime_test.vcxproj"/>
+			<BuildDependency Project="pathengine_voice_client.vcxproj"/>
+			<BuildDependency Project="pathengine_voice_test.vcxproj"/>
 			<BuildDependency Project="soh.vcxproj"/>
 		</Project>
 		<Project Path="INSTALL.vcxproj" Type="8bc9ceb8-8b4a-11d0-8d11-00a0c91bc942" Id="1fe2807b-cb21-3084-9b4a-a0ad26b8ab49">
@@ -70,5 +75,33 @@
 			<Build Solution="Release|*" Project="false"/>
 		</Project>
 		<Project Path="../ZERO_CHECK.vcxproj" Type="8bc9ceb8-8b4a-11d0-8d11-00a0c91bc942" Id="d741ab23-4c40-3f72-98ff-d787876c4574"/>
+	</Folder>
+	<Folder Name="/clients/">
+		<Project Path="pathengine_dedicated_server.vcxproj" Type="8bc9ceb8-8b4a-11d0-8d11-00a0c91bc942" Id="a07671b0-9f2a-3f57-9e52-62c2e5652f3c">
+			<BuildDependency Project="../ZERO_CHECK.vcxproj"/>
+			<BuildDependency Project="pathengine_network.vcxproj"/>
+		</Project>
+		<Project Path="pathengine_voice_client.vcxproj" Type="8bc9ceb8-8b4a-11d0-8d11-00a0c91bc942" Id="c72c33c9-a7ad-3b6a-b0b7-76a89cfa8fb7">
+			<BuildDependency Project="../ZERO_CHECK.vcxproj"/>
+			<BuildDependency Project="pathengine_network.vcxproj"/>
+		</Project>
+	</Folder>
+	<Folder Name="/tests/">
+		<Project Path="pathengine_network_test.vcxproj" Type="8bc9ceb8-8b4a-11d0-8d11-00a0c91bc942" Id="92ade79a-7272-3589-92b4-b7934d68ae37">
+			<BuildDependency Project="../ZERO_CHECK.vcxproj"/>
+			<BuildDependency Project="pathengine_network.vcxproj"/>
+		</Project>
+		<Project Path="pathengine_protocol_test.vcxproj" Type="8bc9ceb8-8b4a-11d0-8d11-00a0c91bc942" Id="bfc460c2-dfbb-3ae5-87ea-17054d918b39">
+			<BuildDependency Project="../ZERO_CHECK.vcxproj"/>
+			<BuildDependency Project="pathengine_network.vcxproj"/>
+		</Project>
+		<Project Path="pathengine_runtime_test.vcxproj" Type="8bc9ceb8-8b4a-11d0-8d11-00a0c91bc942" Id="56ecc117-e870-357f-948c-7b509762f2d6">
+			<BuildDependency Project="../ZERO_CHECK.vcxproj"/>
+			<BuildDependency Project="pathengine_network.vcxproj"/>
+		</Project>
+		<Project Path="pathengine_voice_test.vcxproj" Type="8bc9ceb8-8b4a-11d0-8d11-00a0c91bc942" Id="8a79f18c-ec04-31c9-9854-66fea5af5500">
+			<BuildDependency Project="../ZERO_CHECK.vcxproj"/>
+			<BuildDependency Project="pathengine_network.vcxproj"/>
+		</Project>
 	</Folder>
 </Solution>

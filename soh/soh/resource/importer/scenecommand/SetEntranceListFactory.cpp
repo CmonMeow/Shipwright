@@ -1,7 +1,5 @@
 #include "soh/resource/importer/scenecommand/SetEntranceListFactory.h"
 #include "soh/resource/type/scenecommand/SetEntranceList.h"
-#include "soh/resource/logging/SceneCommandLoggers.h"
-#include "spdlog/spdlog.h"
 #include <tinyxml2.h>
 
 namespace SOH {
