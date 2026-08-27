@@ -500,6 +500,36 @@ void Player_PostLimbDrawNetwork(PlayState* play, s32 limbIndex, Gfx** dList, Vec
 
     (void)dList;
     (void)rot;
+    if ((limbIndex == PLAYER_LIMB_L_HAND) && network->bowReady &&
+        (network->itemAction >= PLAYER_IA_BOW) && (network->itemAction <= PLAYER_IA_BOW_0E)) {
+        SkelAnime* arrowSkelAnime = network->bowArrowSkelAnime;
+
+        if (arrowSkelAnime == NULL) {
+            return;
+        }
+        OPEN_DISPS(play->state.gfxCtx);
+        Gfx_SetupDL_25Opa(play->state.gfxCtx);
+        Matrix_Push();
+        Matrix_Translate(398.0f, 1419.0f, 244.0f, MTXMODE_APPLY);
+        Matrix_RotateZYX(0x69E8, -0x5708, 0x458E, MTXMODE_APPLY);
+        SkelAnime_DrawLod(play, arrowSkelAnime->skeleton, arrowSkelAnime->jointTable, NULL, NULL,
+                          arrowSkelAnime, 0);
+        Matrix_Pop();
+        CLOSE_DISPS(play->state.gfxCtx);
+    }
+    if ((limbIndex == PLAYER_LIMB_R_HAND) &&
+        ((sRightHandType == PLAYER_MODELTYPE_RH_BOW_SLINGSHOT) ||
+         (sRightHandType == PLAYER_MODELTYPE_RH_BOW_SLINGSHOT_2))) {
+        OPEN_DISPS(play->state.gfxCtx);
+        Matrix_Push();
+        Matrix_Translate(0.0f, -360.4f, 0.0f, MTXMODE_APPLY);
+        Matrix_Scale(1.0f, network->bowStringScale, 1.0f, MTXMODE_APPLY);
+        gSPMatrix(POLY_XLU_DISP++, MATRIX_NEWMTX(play->state.gfxCtx),
+                  G_MTX_NOPUSH | G_MTX_LOAD | G_MTX_MODELVIEW);
+        gSPDisplayList(POLY_XLU_DISP++, gLinkAdultBowStringDL);
+        Matrix_Pop();
+        CLOSE_DISPS(play->state.gfxCtx);
+    }
     // Fishing_DrawRod starts from Player.mf_9E0, captured from the left hand.
     if (limbIndex != PLAYER_LIMB_L_HAND || network->itemAction != PLAYER_IA_FISHING_POLE) {
         return;
@@ -513,11 +543,18 @@ void Player_PostLimbDrawNetwork(PlayState* play, s32 limbIndex, Gfx** dList, Vec
     Matrix_Translate(0.0f, 400.0f, 0.0f, MTXMODE_APPLY);
     Matrix_RotateY((network->fishingState == 5 ? 0.56f : 0.41f) * M_PI, MTXMODE_APPLY);
     Matrix_RotateX(-M_PI / 5.0000003f, MTXMODE_APPLY);
-    Matrix_RotateZ(3.0f * M_PI / 20.0f, MTXMODE_APPLY);
+    Matrix_RotateZ((network->fishingRodTwist * 0.5f) + (3.0f * M_PI / 20.0f), MTXMODE_APPLY);
+    Matrix_RotateX((network->fishingRodCastX + 20.0f) * 0.01f * M_PI, MTXMODE_APPLY);
     Matrix_Scale(0.70000005f, 0.70000005f, 0.70000005f, MTXMODE_APPLY);
     Matrix_Translate(0.0f, 0.0f, -1300.0f, MTXMODE_APPLY);
 
     for (i = 0; i < 22; ++i) {
+        static f32 rodBendRatios[22] = {
+            0.0f,  0.0f,  0.0f,  0.0f,  0.0f,  0.06f,   0.12f,   0.18f,   0.24f,   0.30f,   0.36f,
+            0.42f, 0.48f, 0.54f, 0.60f, 0.60f, 0.5142f, 0.4285f, 0.3428f, 0.2571f, 0.1714f, 0.0857f,
+        };
+        Matrix_RotateY(rodBendRatios[i] * network->fishingRodBendY * 0.5f, MTXMODE_APPLY);
+        Matrix_RotateX(rodBendRatios[i] * network->fishingRodBendX * 0.5f, MTXMODE_APPLY);
         Matrix_Push();
         Matrix_Scale(rodScales[i], rodScales[i], 0.52f, MTXMODE_APPLY);
         gSPMatrix(POLY_OPA_DISP++, MATRIX_NEWMTX(play->state.gfxCtx), G_MTX_NOPUSH | G_MTX_LOAD | G_MTX_MODELVIEW);

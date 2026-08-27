@@ -76,10 +76,40 @@ bool TestPacketSerialization() {
     source.rotationX = -123;
     source.rotationY = 12345;
     source.rotationZ = 321;
+    source.aimPitch = -2048;
+    source.aimYaw = 8192;
     source.speed = 4.5f;
+    source.bowStringScale = 0.625f;
     source.stateFlags = NETWORK_PLAYER_VISIBLE | NETWORK_PLAYER_GROUNDED;
     source.modelGroup = 2;
-    source.itemAction = 3;
+    source.itemAction = NETWORK_PLAYER_ITEM_FISHING_POLE;
+    source.fishingState = 4;
+    source.meleeWeaponState = 2;
+    source.meleeBase[0] = 10.0f;
+    source.meleeBase[1] = 20.0f;
+    source.meleeTip[2] = 75.0f;
+    source.fishingLineSpooled = 137;
+    source.fishingLineHooked = 1;
+    source.fishingLureType = 2;
+    source.fishingSinkingLureUnderwater = 1;
+    source.fishingLureDrawOffset[2] = 9.5f;
+    source.fishingLureSpin = 0.375f;
+    source.fishingLureZOffset = -725.0f;
+    source.fishingLureHookOffsets[0][0] = 19.25f;
+    source.fishingLureHookOffsets[1][2] = -8.5f;
+    source.fishingLureHookRot[0][0] = 0.75f;
+    source.fishingLureHookRot[1][1] = -1.25f;
+    source.fishingLineScale = 0.0015f;
+    source.fishingLineGravity = 2.25f;
+    source.fishingFishActive = 1;
+    source.fishingFishIsLoach = 1;
+    source.fishingFishOffset[0] = 12.5f;
+    source.fishingFishOffset[1] = -7.25f;
+    source.fishingFishOffset[2] = 44.0f;
+    source.fishingFishRot[0] = -3000;
+    source.fishingFishRot[1] = 12000;
+    source.fishingFishRot[2] = 900;
+    source.fishingFishLength = 61.5f;
     for (int limb = 0; limb < NETWORK_PLAYER_LIMB_COUNT; ++limb) {
         source.jointTable[limb][0] = static_cast<short>(limb * 3);
         source.jointTable[limb][1] = static_cast<short>(limb * -5);
@@ -88,8 +118,85 @@ bool TestPacketSerialization() {
 
     const std::string encoded = BuildAppPacket(NAMTPlayerState, source);
     NetworkPlayerStatePacket decoded{};
-    if (!ParseAppPacket(encoded.data(), static_cast<__int32>(encoded.size()), NAMTPlayerState, decoded) ||
+    // Fishing state must fit comfortably in one ordinary UDP datagram. The
+    // segmented line and sinking lure are reconstructed by each client with
+    // native solvers instead of being sent as render geometry.
+    if (encoded.size() >= 560 ||
+        !ParseAppPacket(encoded.data(), static_cast<__int32>(encoded.size()), NAMTPlayerState, decoded) ||
         std::memcmp(&source, &decoded, sizeof(source)) != 0) {
+        return false;
+    }
+
+    NetworkPlayerStatePacket ordinary{};
+    ordinary.playerId = 8;
+    ordinary.sceneId = 42;
+    ordinary.roomId = 3;
+    ordinary.sequence = 100;
+    ordinary.x = 14.0f;
+    ordinary.y = 28.0f;
+    ordinary.z = -7.0f;
+    ordinary.rotationY = 4096;
+    ordinary.stateFlags = NETWORK_PLAYER_VISIBLE;
+    ordinary.modelGroup = 2;
+    ordinary.itemAction = 3;
+    ordinary.jointTable[NETWORK_PLAYER_LIMB_COUNT - 1][2] = -1234;
+    const std::string ordinaryEncoded = BuildAppPacket(NAMTPlayerState, ordinary);
+    NetworkPlayerStatePacket ordinaryDecoded{};
+    if (ordinaryEncoded.size() >= 1400 ||
+        !ParseAppPacket(ordinaryEncoded.data(), static_cast<__int32>(ordinaryEncoded.size()),
+                        NAMTPlayerState, ordinaryDecoded) ||
+        std::memcmp(&ordinary, &ordinaryDecoded, sizeof(ordinary)) != 0) {
+        return false;
+    }
+
+    NetworkProjectileImpactPacket impactSource{ 4, 81, 42, -15.5f, 250.25f, 99.0f };
+    const std::string impactEncoded = BuildAppPacket(NAMTProjectileImpact, impactSource);
+    NetworkProjectileImpactPacket impactDecoded{};
+    if (!ParseAppPacket(impactEncoded.data(), static_cast<__int32>(impactEncoded.size()),
+                        NAMTProjectileImpact, impactDecoded) ||
+        std::memcmp(&impactSource, &impactDecoded, sizeof(impactSource)) != 0) {
+        return false;
+    }
+
+    NetworkProjectileStatePacket projectileSource{};
+    projectileSource.playerId = 4;
+    projectileSource.projectileId = 81;
+    projectileSource.sceneId = 42;
+    projectileSource.sequence = 0x12345678;
+    projectileSource.active = 1;
+    projectileSource.projectileKind = NETWORK_PROJECTILE_ARROW;
+    projectileSource.phase = NETWORK_ARROW_STUCK;
+    projectileSource.projectileType = 2;
+    projectileSource.x = -15.5f;
+    projectileSource.y = 250.25f;
+    projectileSource.z = 99.0f;
+    projectileSource.rotationX = 0x4000;
+    projectileSource.rotationY = -1234;
+    projectileSource.velocityZ = 3000.0f;
+    const std::string projectileEncoded = BuildAppPacket(NAMTDynamicObjectStateRaw, projectileSource);
+    NetworkProjectileStatePacket projectileDecoded{};
+    if (!ParseAppPacket(projectileEncoded.data(), static_cast<__int32>(projectileEncoded.size()),
+                        NAMTDynamicObjectStateRaw, projectileDecoded) ||
+        std::memcmp(&projectileSource, &projectileDecoded, sizeof(projectileSource)) != 0) {
+        return false;
+    }
+
+    NetworkActorEventPacket actorEvent{ 7, 123, 42, 3, 0x127, -17, 100, 200, 300, 101.0f, 202.0f, 303.0f,
+                                        NETWORK_ACTOR_EVENT_BOULDER_BREAK };
+    const std::string encodedEvent = BuildAppPacket(NAMTActorEvent, actorEvent);
+    NetworkActorEventPacket decodedEvent{};
+    if (!ParseAppPacket(encodedEvent.data(), static_cast<__int32>(encodedEvent.size()), NAMTActorEvent,
+                        decodedEvent) ||
+        std::memcmp(&actorEvent, &decodedEvent, sizeof(actorEvent)) != 0) {
+        return false;
+    }
+
+    NetworkPlayerRespawnPacket respawnSource{ 7 };
+    const std::string respawnEncoded = BuildAppPacket(NAMTPlayerRespawn, respawnSource);
+    NetworkPlayerRespawnPacket respawnDecoded{};
+    if (!ParseAppPacket(respawnEncoded.data(), static_cast<__int32>(respawnEncoded.size()), NAMTPlayerRespawn,
+                        respawnDecoded) ||
+        std::memcmp(&respawnSource, &respawnDecoded, sizeof(respawnSource)) != 0) {
         return false;
     }
 

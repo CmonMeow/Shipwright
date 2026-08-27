@@ -750,8 +750,16 @@ typedef struct PlayerNetworkDrawData {
     u8 shield;
     u8 itemAction;
     u8 fishingState;
+    u8 bowReady;
+    u8 pad[3];
     Vec3s upperLimbRot;
     Vec3s headLimbRot;
+    f32 fishingRodBendY;
+    f32 fishingRodBendX;
+    f32 fishingRodTwist;
+    f32 fishingRodCastX;
+    f32 bowStringScale;
+    void* bowArrowSkelAnime;
 } PlayerNetworkDrawData;
 
 #define UNK6AE_ROT_FOCUS_X (1 << 0)

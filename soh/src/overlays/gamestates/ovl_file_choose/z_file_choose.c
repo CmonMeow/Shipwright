@@ -28,6 +28,7 @@
 #include "soh/OTRGlobals.h"
 #include "soh/ResourceManagerHelpers.h"
 #include "soh/ShipUtils.h"
+#include "soh/NetworkGameBridge.h"
 
 static u8 FileChoose_EncodeUsernameCharacter(char character, bool isPalName) {
     if (character >= 'A' && character <= 'Z') {
@@ -94,6 +95,34 @@ typedef struct Sprite {
 } Sprite;
 
 void Sram_InitDebugSave(void);
+
+static void FileChoose_StartNetworkSmokeTest(FileChooseContext* this) {
+    s32 buttonIndex;
+
+    gSaveContext.fileNum = 0xFF;
+    gSaveContext.gameMode = GAMEMODE_NORMAL;
+    Sram_InitDebugSave();
+    for (buttonIndex = 0; buttonIndex < ARRAY_COUNT(gSaveContext.buttonStatus); ++buttonIndex) {
+        gSaveContext.buttonStatus[buttonIndex] = BTN_ENABLED;
+    }
+    gSaveContext.magicFillTarget = gSaveContext.magic;
+    gSaveContext.magic = 0;
+    gSaveContext.magicCapacity = 0;
+    gSaveContext.magicLevel = 0;
+    gSaveContext.forceRisingButtonAlphas = 0;
+    gSaveContext.unk_13E8 = 0;
+    gSaveContext.unk_13EA = 0;
+    gSaveContext.unk_13EC = 0;
+    gSaveContext.entranceIndex = ENTR_TEST01_0;
+    gSaveContext.respawnFlag = 0;
+    gSaveContext.respawn[RESPAWN_MODE_DOWN].entranceIndex = ENTR_LOAD_OPENING;
+    gSaveContext.seqId = (u8)NA_BGM_DISABLED;
+    gSaveContext.natureAmbienceId = 0xFF;
+    gSaveContext.showTitleCard = false;
+    gWeatherMode = 0;
+    SET_NEXT_GAMESTATE(&this->state, Play_Init, PlayState);
+    this->state.running = false;
+}
 void FileChoose_DrawTextureI8(GraphicsContext* gfxCtx, const void* texture, s16 texWidth, s16 texHeight, s16 rectLeft,
                               s16 rectTop, s16 rectWidth, s16 rectHeight, s16 dsdx, s16 dtdy) {
     OPEN_DISPS(gfxCtx);
@@ -2164,6 +2193,10 @@ void FileChoose_Init(GameState* thisx) {
         Font_LoadOrderedFont(&this->font);
     } else { // GAME_REGION_NTSC
         Font_LoadOrderedFontNTSC(&this->font);
+    }
+    if (NetworkGame_ShouldAutoStartTest()) {
+        FileChoose_StartNetworkSmokeTest(this);
+        return;
     }
     Audio_QueueSeqCmd(0xF << 28 | SEQ_PLAYER_BGM_MAIN << 24 | 0xA);
     func_800F5E18(SEQ_PLAYER_BGM_MAIN, NA_BGM_FILE_SELECT, 0, 7, 1);

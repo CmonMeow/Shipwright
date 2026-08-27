@@ -39,6 +39,9 @@ void DrainRelayQueues(SoH::Network::ShipwrightNetworkRuntime& network) {
     NetworkProjectileStatePacket projectile;
     while (network.PollProjectileState(projectile)) {
     }
+    NetworkPlayerRespawnPacket respawn;
+    while (network.PollPlayerRespawn(respawn)) {
+    }
     NetworkVoicePacket voice;
     while (network.PollVoice(voice)) {
     }

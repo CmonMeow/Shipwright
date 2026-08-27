@@ -168,7 +168,7 @@ void SaveManager::StartupCheckAndInitMeta(int fileNum) {
     for (int i = 0; i < ARRAY_COUNT(fileMetaInfo[fileNum].playerName); i++) {
         fileMetaInfo[fileNum].playerName[i] = baseBlock["playerName"][i];
     }
-    fileMetaInfo[fileNum].healthCapacity = baseBlock["healthCapacity"];
+    fileMetaInfo[fileNum].healthCapacity = STARTING_HEALTH;
     fileMetaInfo[fileNum].questItems = baseBlock["inventory"]["questItems"];
     for (int i = 0; i < ARRAY_COUNT(fileMetaInfo[fileNum].inventoryItems); i++) {
         fileMetaInfo[fileNum].inventoryItems[i] = baseBlock["inventory"]["items"][i];
@@ -184,7 +184,8 @@ void SaveManager::StartupCheckAndInitMeta(int fileNum) {
     fileMetaInfo[fileNum].filenameLanguage = baseBlock.value("filenameLanguage", 0);
     fileMetaInfo[fileNum].hasWallet = true;
     fileMetaInfo[fileNum].defense = baseBlock["inventory"]["defenseHearts"];
-    fileMetaInfo[fileNum].health = baseBlock["health"];
+    fileMetaInfo[fileNum].health =
+        std::clamp<s16>(baseBlock["health"].get<s16>(), 0, STARTING_HEALTH);
 
     fileMetaInfo[fileNum].buildVersionMajor = gBuildVersionMajor;
     fileMetaInfo[fileNum].buildVersionMinor = gBuildVersionMinor;
@@ -285,7 +286,7 @@ void SaveManager::InitFileNormal() {
     }
     gSaveContext.adultEquips.equipment = 0;
     gSaveContext.unk_54 = 0;
-    gSaveContext.savedSceneNum = SCENE_LINKS_HOUSE;
+    gSaveContext.savedSceneNum = SCENE_TEST01;
 
     // Equipment
     for (int button = 0; button < ARRAY_COUNT(gSaveContext.equips.buttonItems); button++) {
@@ -383,6 +384,9 @@ void SaveManager::InitFileNormal() {
     Flags_SetEventChkInf(EVENTCHKINF_DRAWBRIDGE_OPENED_AFTER_ZELDA_FLED);
     Flags_SetEventChkInf(EVENTCHKINF_OPENED_THE_DOOR_OF_TIME);
 
+    // Multiplayer test sessions begin in the debug-ROM test01 arena (Map Select 118).
+    gSaveContext.entranceIndex = ENTR_TEST01_0;
+
     // SoH specific
     gSaveContext.ship.backupFW = gSaveContext.fw;
     gSaveContext.ship.pendingSale = ITEM_NONE;
@@ -418,8 +422,8 @@ void SaveManager::InitFileDebug() {
         gSaveContext.ship.filenameLanguage =
             (gSaveContext.language == LANGUAGE_JPN) ? NAME_LANGUAGE_NTSC_JPN : NAME_LANGUAGE_NTSC_ENG;
     }
-    gSaveContext.healthCapacity = 0xE0;
-    gSaveContext.health = 0xE0;
+    gSaveContext.healthCapacity = STARTING_HEALTH;
+    gSaveContext.health = STARTING_HEALTH;
     gSaveContext.magicLevel = 0;
     gSaveContext.magic = 0x30;
     gSaveContext.rupees = 150;
@@ -538,8 +542,8 @@ void SaveManager::InitFileMaxed() {
         gSaveContext.ship.filenameLanguage =
             (gSaveContext.language == LANGUAGE_JPN) ? NAME_LANGUAGE_NTSC_JPN : NAME_LANGUAGE_NTSC_ENG;
     }
-    gSaveContext.healthCapacity = MAX_HEALTH;
-    gSaveContext.health = MAX_HEALTH;
+    gSaveContext.healthCapacity = STARTING_HEALTH;
+    gSaveContext.health = STARTING_HEALTH;
     gSaveContext.magicLevel = 2;
     gSaveContext.magic = MAGIC_DOUBLE_METER;
     gSaveContext.rupees = 500;
@@ -862,6 +866,8 @@ void SaveManager::LoadFile(int fileNum) {
                 assert(false);
                 break;
         }
+        gSaveContext.healthCapacity = STARTING_HEALTH;
+        gSaveContext.health = std::clamp<s16>(gSaveContext.health, 0, STARTING_HEALTH);
         InitMeta(fileNum);
     } catch (const std::exception& e) {
         input.close();

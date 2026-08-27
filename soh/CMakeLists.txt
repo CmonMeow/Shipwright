@@ -188,10 +188,12 @@ set(ALL_FILES
 ################################################################################
 if (CMAKE_SYSTEM_NAME STREQUAL "Windows")
     find_package(unofficial-sodium CONFIG REQUIRED)
+    find_package(libzip CONFIG REQUIRED)
 
     add_library(pathengine_network STATIC ${pathengine_network__})
     target_include_directories(pathengine_network PUBLIC
         ${CMAKE_CURRENT_SOURCE_DIR}/soh
+        ${CMAKE_CURRENT_SOURCE_DIR}/include
         ${CMAKE_CURRENT_SOURCE_DIR}/../libultraship/include
     )
     target_compile_definitions(pathengine_network PRIVATE
@@ -207,6 +209,7 @@ if (CMAKE_SYSTEM_NAME STREQUAL "Windows")
     target_link_libraries(pathengine_network PUBLIC
         Ws2_32
         unofficial-sodium::sodium
+        libzip::zip
     )
 
     add_library(pathengine_protocol INTERFACE)
@@ -222,6 +225,14 @@ if (CMAKE_SYSTEM_NAME STREQUAL "Windows")
         MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>"
     )
     target_compile_options(pathengine_network_test PRIVATE /EHsc)
+
+    add_executable(pathengine_collision_test tests/ServerCollisionSelfTest.cpp)
+    target_link_libraries(pathengine_collision_test PRIVATE pathengine_network)
+    set_target_properties(pathengine_collision_test PROPERTIES
+        FOLDER "tests"
+        MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>"
+    )
+    target_compile_options(pathengine_collision_test PRIVATE /EHsc)
 
     add_executable(pathengine_protocol_test tests/NetworkProtocolSelfTest.cpp)
     target_link_libraries(pathengine_protocol_test PRIVATE pathengine_protocol)

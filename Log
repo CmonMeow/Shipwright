@@ -1,14 +1,13 @@
-Client: send MAGIC_REQUEST_PLAYER to 127.0.0.1:47778
-Server: challenge 75c01cf2
-Client: Received challenge 75c01cf2
-Client: send MAGIC_CREATE_W_CHALLENGE 75c01cf2
+Client: send MAGIC_REQUEST_PLAYER to 127.0.0.1:47777
+Server: challenge 2e100afd
+Client: Received challenge 2e100afd
+Client: send MAGIC_CREATE_W_CHALLENGE 2e100afd
 Server: create player 1
-Server: MAGIC_CREATE_W_CHALLENGE accepted 75c01cf2
+Server: MAGIC_CREATE_W_CHALLENGE accepted 2e100afd
 Server: old challenges cleared
-NetServer: new player (waiting for ProcessPlayers) - session.playerCount=0, playerId=1, bot=0, name='CmonMeow', |users|=1
+NetServer: new player (waiting for ProcessPlayers) - session.playerCount=0, playerId=1, bot=0, name='ShipwrightTest', |users|=1
 NetServer::ProcessPlayers(): users.card=1, session.playerCount=0, created=1, deleted=0
-Network runtime: server accepted encryption key from 1
-Network runtime: client accepted server encryption key
 NetServer:finishDestroyPlayer (waiting for ProcessPlayers) - session.playerCount=1, playerId=1, |users|=0
-Secure runtime self-test passed: encrypted state, chat, private E2E text, and voice
+Network self-test passed: guaranteed high-priority localhost round trip
+Dedicated collision self-test passed: scenes=102 triangles=87158 wildFish=246
 Voice codec self-test passed: PathEngine Opus codec and ADPCM fallback

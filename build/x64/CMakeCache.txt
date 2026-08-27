@@ -139,7 +139,7 @@ CMAKE_PROJECT_DESCRIPTION:STATIC=
 CMAKE_PROJECT_GIT_BRANCH:STRING=main
 
 //Git commit hash
-CMAKE_PROJECT_GIT_COMMIT_HASH:STRING=a587826
+CMAKE_PROJECT_GIT_COMMIT_HASH:STRING=4a434bd
 
 //Git commit tag
 CMAKE_PROJECT_GIT_COMMIT_TAG:STRING=
@@ -741,7 +741,7 @@ FIND_PACKAGE_MESSAGE_DETAILS_Python3:INTERNAL=[C:/Users/CmonMeow/AppData/Local/P
 //Details about finding Threads
 FIND_PACKAGE_MESSAGE_DETAILS_Threads:INTERNAL=[TRUE][v()]
 //Details about finding ZLIB
-FIND_PACKAGE_MESSAGE_DETAILS_ZLIB:INTERNAL=[optimized;C:/Users/CmonMeow/Desktop/Shipwright/build/x64/vcpkg/installed/x64-windows-static/lib/zs.lib;debug;C:/Users/CmonMeow/Desktop/Shipwright/build/x64/vcpkg/installed/x64-windows-static/debug/lib/zsd.lib][C:/Users/CmonMeow/Desktop/Shipwright/build/x64/vcpkg/installed/x64-windows-static/include][ ][v1.3.2()]
+FIND_PACKAGE_MESSAGE_DETAILS_ZLIB:INTERNAL=[optimized;C:/Users/CmonMeow/Desktop/Shipwright/build/x64/vcpkg/installed/x64-windows-static/lib/zs.lib;debug;C:/Users/CmonMeow/Desktop/Shipwright/build/x64/vcpkg/installed/x64-windows-static/debug/lib/zsd.lib][C:/Users/CmonMeow/Desktop/Shipwright/build/x64/vcpkg/installed/x64-windows-static/include][ ][v1.3.2(1.1.2)]
 //Details about finding nlohmann_json
 FIND_PACKAGE_MESSAGE_DETAILS_nlohmann_json:INTERNAL=[C:/Users/CmonMeow/Desktop/Shipwright/build/x64/vcpkg/installed/x64-windows-static/share/nlohmann_json/nlohmann_jsonConfig.cmake][v3.12.0()]
 //ADVANCED property for variable: GIT_EXECUTABLE

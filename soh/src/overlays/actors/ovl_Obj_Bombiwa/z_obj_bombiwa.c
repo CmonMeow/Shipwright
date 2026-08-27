@@ -128,14 +128,15 @@ void ObjBombiwa_Update(Actor* thisx, PlayState* play) {
     s32 pad;
 
     s32 networkStateDestroyed = NetworkGame_IsObjectDestroyed(play, &this->actor);
-    s32 networkExplosion = NetworkGame_IsExplosionNear(play, &this->actor, 120.0f);
+    s32 networkBreakEvent = NetworkGame_ConsumeActorEvent(play, &this->actor,
+                                                          NETWORK_GAME_ACTOR_EVENT_BOULDER_BREAK);
 
-    if (networkStateDestroyed || networkExplosion || (func_80033684(play, &this->actor) != NULL) ||
+    if (networkBreakEvent || networkStateDestroyed || (func_80033684(play, &this->actor) != NULL) ||
         ((this->collider.base.acFlags & AC_HIT) && (this->collider.info.acHitInfo->toucher.dmgFlags & 0x40000040))) {
         ObjBombiwa_Break(this, play);
         Flags_SetSwitch(play, this->actor.params & 0x3F);
-        if (!networkStateDestroyed) {
-            NetworkGame_NotifyObjectDestroyed(play, &this->actor);
+        if (!networkBreakEvent && !networkStateDestroyed) {
+            NetworkGame_NotifyActorEvent(play, &this->actor, NETWORK_GAME_ACTOR_EVENT_BOULDER_BREAK);
         }
         SoundSource_PlaySfxAtFixedWorldPos(play, &this->actor.world.pos, 80, NA_SE_EV_WALL_BROKEN);
         if (((this->actor.params >> 0xF) & 1) != 0) {

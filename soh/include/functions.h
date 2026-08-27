@@ -1101,6 +1101,7 @@ void func_8008EC70(Player* player);
 void Player_SetEquipmentData(PlayState* play, Player* player);
 void Player_UpdateBottleHeld(PlayState* play, Player* player, s32 item, s32 actionParam);
 void func_80837C0C(PlayState* play, Player* this, s32 arg2, f32 arg3, f32 arg4, s16 arg5, s32 arg6);
+void func_80838280(Player* this);
 void Player_ReleaseLockOn(Player* player);
 void Player_ClearZTargeting(Player* player);
 void Player_SetAutoLockOnActor(PlayState* play, Actor* actor);

@@ -1816,10 +1816,9 @@ u8 Item_Give(PlayState* play, u8 item) {
         gSaveContext.inventory.questItems += 1 << (QUEST_HEART_PIECE + 4);
         return Return_Item(item, MOD_NONE, ITEM_NONE);
     } else if (item == ITEM_HEART_CONTAINER) {
-        
-            gSaveContext.healthCapacity += FULL_HEART_HEALTH;
-            gSaveContext.health += FULL_HEART_HEALTH;
-        
+        if (play != NULL) {
+            Health_ChangeBy(play, FULL_HEART_HEALTH);
+        }
         return Return_Item(item, MOD_NONE, ITEM_NONE);
     } else if (item == ITEM_HEART) {
         osSyncPrintf("回復ハート回復ハート回復ハート\n"); // "Recovery Heart"

@@ -206,10 +206,11 @@ void EnOwl_WaitToFlyAway(EnOwl* this, PlayState* play) {
 
     EnOwl_LookAtLink(this, play);
 
-    const s32 remotelyActivated = NetworkGame_ConsumeObjectActivation(play, &this->actor);
+    const s32 remotelyActivated = NetworkGame_ConsumeActorEvent(play, &this->actor,
+                                                                 NETWORK_GAME_ACTOR_EVENT_OWL_DEPART);
     if (remotelyActivated || ((this->actor.xzDistToPlayer < triggerDistance) && !Play_InCsMode(play))) {
         if (!remotelyActivated) {
-            NetworkGame_NotifyObjectActivated(play, &this->actor);
+            NetworkGame_NotifyActorEvent(play, &this->actor, NETWORK_GAME_ACTOR_EVENT_OWL_DEPART);
         }
 
         // Use the placed actor identity rather than a client-local random roll so

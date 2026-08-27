@@ -129,7 +129,6 @@ void ObjSyokudai_Update(Actor* thisx, PlayState* play2) {
     s32 lightRadius = -1;
     u8 brightness = 0;
     Player* player;
-    EnArrow* arrow;
     s32 interactionType;
     u32 dmgFlags;
     Vec3f tipToFlame;
@@ -192,12 +191,6 @@ void ObjSyokudai_Update(Actor* thisx, PlayState* play2) {
                                                &gSfxDefaultReverb);
                     } else if (player->unk_860 < 200) {
                         player->unk_860 = 200;
-                    }
-                } else if (dmgFlags & 0x20) {
-                    arrow = (EnArrow*)this->colliderFlame.base.ac;
-                    if ((arrow->actor.update != NULL) && (arrow->actor.id == ACTOR_EN_ARROW)) {
-                        arrow->actor.params = 0;
-                        arrow->collider.info.toucher.dmgFlags = 0x800;
                     }
                 }
                 if ((0 <= this->litTimer) && (this->litTimer < (50 * litTimeScale + 100)) && (torchType != 0)) {

@@ -1,10 +1,12 @@
-Dedicated server hosting secure session on port 777
-Server: challenge 2ed00c3a
+Client: send MAGIC_REQUEST_PLAYER to 127.0.0.1:47777
+Voice codec self-test passed: PathEngine Opus codec and ADPCM fallback
+Server: challenge 60497cfc
+Client: Received challenge 60497cfc
+Client: send MAGIC_CREATE_W_CHALLENGE 60497cfc
 Server: create player 1
-Server: MAGIC_CREATE_W_CHALLENGE accepted 2ed00c3a
+Server: MAGIC_CREATE_W_CHALLENGE accepted 60497cfc
 Server: old challenges cleared
-NetServer: new player (waiting for ProcessPlayers) - session.playerCount=0, playerId=1, bot=0, name='CmonMeow', |users|=1
+NetServer: new player (waiting for ProcessPlayers) - session.playerCount=0, playerId=1, bot=0, name='ShipwrightTest', |users|=1
 NetServer::ProcessPlayers(): users.card=1, session.playerCount=0, created=1, deleted=0
-Network runtime: server accepted encryption key from 1
 NetServer:finishDestroyPlayer (waiting for ProcessPlayers) - session.playerCount=1, playerId=1, |users|=0
-NetServer::ProcessPlayers(): users.card=0, session.playerCount=1, created=0, deleted=1
+Network self-test passed: guaranteed high-priority localhost round trip

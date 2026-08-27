@@ -53,6 +53,7 @@
 	<Folder Name="/CMakePredefinedTargets/">
 		<Project Path="ALL_BUILD.vcxproj" Type="8bc9ceb8-8b4a-11d0-8d11-00a0c91bc942" Id="9b7f8073-6431-3172-99c4-e4e3e24ffcaa" DefaultStartup="true">
 			<BuildDependency Project="../ZERO_CHECK.vcxproj"/>
+			<BuildDependency Project="pathengine_collision_test.vcxproj"/>
 			<BuildDependency Project="pathengine_dedicated_server.vcxproj"/>
 			<BuildDependency Project="pathengine_network.vcxproj"/>
 			<BuildDependency Project="pathengine_network_test.vcxproj"/>
@@ -87,6 +88,10 @@
 		</Project>
 	</Folder>
 	<Folder Name="/tests/">
+		<Project Path="pathengine_collision_test.vcxproj" Type="8bc9ceb8-8b4a-11d0-8d11-00a0c91bc942" Id="4ff85fb2-7d97-381a-99f0-04c1efe98e76">
+			<BuildDependency Project="../ZERO_CHECK.vcxproj"/>
+			<BuildDependency Project="pathengine_network.vcxproj"/>
+		</Project>
 		<Project Path="pathengine_network_test.vcxproj" Type="8bc9ceb8-8b4a-11d0-8d11-00a0c91bc942" Id="92ade79a-7272-3589-92b4-b7934d68ae37">
 			<BuildDependency Project="../ZERO_CHECK.vcxproj"/>
 			<BuildDependency Project="pathengine_network.vcxproj"/>

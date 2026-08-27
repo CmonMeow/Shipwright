@@ -16,6 +16,9 @@
     <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Network\ReliableUdpService.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Network\ServerCollisionWorld.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Network\ShipwrightNetworkRuntime.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -49,6 +52,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Network\ReliableUdpService.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Network\ServerCollisionWorld.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\soh\Network\ShipwrightNetworkRuntime.h">

@@ -4,6 +4,8 @@
 #include <libultraship/libultra.h>
 #include "global.h"
 
+#define FISHING_LINE_SEG_COUNT 200
+
 struct Fishing;
 
 typedef struct Fishing {
@@ -62,6 +64,8 @@ typedef struct Fishing {
     f32 wildMaxX;
     f32 wildMinZ;
     f32 wildMaxZ;
+    s32 networkOwnerPlayerId;
+    u8 networkHookAnnounced;
 } Fishing;
 
 #define EN_FISH_OWNER 1      // param for owner of pond. default if params<100
@@ -81,6 +85,17 @@ struct VBFishingData {
 };
 
 s32 Fishing_GetNetworkVisualState(PlayState* play, u8* castState, Vec3f* rodTipOffset, Vec3f* lureOffset,
-                                  Vec3f lineOffsets[12]);
+                                   Vec3f* lureDrawOffset, f32* rodBendY, f32* rodBendX, f32* rodTwist,
+                                   f32* rodCastX, Vec3f* lureRot, f32* lureSpin, f32* lureZOffset,
+                                   Vec3f lureHookOffsets[2], Vec3f lureHookRot[2], f32* lineScale,
+                                   f32* lineGravity, u8* lureType, u8* lineSpooled, u8* lineHooked,
+                                   u8* fishActive, u8* fishIsLoach,
+                                   Vec3f* fishOffset, Vec3s* fishRot, s16 fishLimbRot[8], f32* fishLength,
+                                   u8* sinkingLureSegmentIndex, u8* sinkingLureUnderwater);
+void Fishing_UpdateNetworkLine(PlayState* play, Actor* collisionActor, Vec3f* rodTip, Vec3f* lurePos,
+                               Vec3f linePos[FISHING_LINE_SEG_COUNT], Vec3f lineRot[FISHING_LINE_SEG_COUNT],
+                               Vec3f lineUnk[FISHING_LINE_SEG_COUNT], s16 lineSpooled, u8 lureType, f32 lineGravity);
+void Fishing_UpdateNetworkSinkingLure(Vec3f* lurePos, Vec3f positions[20], s16 playerYaw, u8 castState,
+                                      u8 underwater);
 
 #endif

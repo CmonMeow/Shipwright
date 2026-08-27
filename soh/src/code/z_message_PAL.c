@@ -4422,10 +4422,7 @@ void Message_Update(PlayState* play) {
             }
             if ((s32)(gSaveContext.inventory.questItems & 0xF0000000) == 0x40000000) {
                 gSaveContext.inventory.questItems ^= 0x40000000;
-                
-                    gSaveContext.healthCapacity += FULL_HEART_HEALTH;
-                    gSaveContext.health += FULL_HEART_HEALTH;
-                
+                Health_ChangeBy(play, FULL_HEART_HEALTH);
             }
             if (msgCtx->ocarinaAction != OCARINA_ACTION_CHECK_NOWARP_DONE) {
                 if (sLastPlayedSong == OCARINA_SONG_SARIAS) {

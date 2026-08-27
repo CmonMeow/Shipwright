@@ -1,6 +1,7 @@
 #pragma once
 
 #include "NetworkProtocol.h"
+#include "ServerCollisionWorld.h"
 
 #include <cstdint>
 #include <chrono>
@@ -8,6 +9,7 @@
 #include <future>
 #include <map>
 #include <memory>
+#include <set>
 #include <string>
 #include <tuple>
 #include <vector>
@@ -48,16 +50,19 @@ class ShipwrightNetworkRuntime final {
     bool SendChat(const std::string& message);
     bool SendPrivateChat(int32_t targetPlayer, const std::string& message);
     bool SendPlayerState(NetworkPlayerStatePacket packet);
-    bool SendDynamicObjectState(const NetworkDynamicObjectStatePacket& packet);
-    bool SendProjectileState(NetworkProjectileStatePacket packet);
+    bool SendActorEvent(NetworkActorEventPacket packet);
+    bool SendProjectileState(NetworkProjectileStatePacket packet, bool reliableTransition = false);
+    bool SendProjectileImpact(NetworkProjectileImpactPacket packet);
     bool SendVoice(NetworkVoicePacket packet);
 
     bool PollChat(NetworkChatLine& line);
     bool PollPlayerState(NetworkPlayerStatePacket& packet);
     bool PollPlayerRemove(NetworkPlayerRemovePacket& packet);
     bool PollDynamicObjectState(NetworkDynamicObjectStatePacket& packet);
+    bool PollActorEvent(NetworkActorEventPacket& packet);
     bool PollProjectileState(NetworkProjectileStatePacket& packet);
     bool PollPlayerDamage(NetworkPlayerDamagePacket& packet);
+    bool PollPlayerRespawn(NetworkPlayerRespawnPacket& packet);
     bool PollVoice(NetworkVoicePacket& packet);
 
   private:
@@ -105,7 +110,18 @@ class ShipwrightNetworkRuntime final {
     std::string PlayerName(int32_t player) const;
     void QueueChat(const std::string& text, ChatLineKind kind = CLKNormal);
     bool AcceptServerProjectile(int32_t player, const NetworkProjectileStatePacket& request);
+    bool AcceptServerProjectileImpact(int32_t witness, const NetworkProjectileImpactPacket& impact);
+    void RetainServerStuckArrow(const std::pair<int32_t, int32_t>& currentKey);
+    void SanitizeServerFishingState(int32_t player, NetworkPlayerStatePacket& state,
+                                    const NetworkPlayerStatePacket* previous, float elapsedSeconds);
+    bool AcceptServerActorEvent(int32_t player, NetworkActorEventPacket packet);
+    void ProcessPendingActorEvents();
+    void UpdateServerDynamicObjects();
+    void ReleaseFishOwnedBy(int32_t player);
     void UpdateServerProjectiles();
+    void UpdateServerRespawns();
+    void ProcessServerDeathTransition(int32_t player, const NetworkPlayerStatePacket& state);
+    void CreateServerCorpse(const NetworkPlayerStatePacket& finalPose);
     void EvaluateMeleeAttack(int32_t player, const NetworkPlayerStatePacket& state);
     bool PlayerIsNearObject(int32_t player, const NetworkDynamicObjectStatePacket& objectState) const;
 
@@ -116,7 +132,9 @@ class ShipwrightNetworkRuntime final {
                                        std::string& cipher);
     static bool SanePlayerState(const NetworkPlayerStatePacket& packet);
     static bool SaneDynamicObjectState(const NetworkDynamicObjectStatePacket& packet);
+    static bool SaneActorEvent(const NetworkActorEventPacket& packet);
     static bool SaneProjectileState(const NetworkProjectileStatePacket& packet);
+    static bool SaneProjectileImpact(const NetworkProjectileImpactPacket& packet);
     static bool SaneVoice(const NetworkVoicePacket& packet);
 
     std::unique_ptr<NetTranspServer> mServer;
@@ -144,29 +162,56 @@ class ShipwrightNetworkRuntime final {
     std::deque<NetworkPlayerStatePacket> mPlayerStates;
     std::deque<NetworkPlayerRemovePacket> mPlayerRemovals;
     std::deque<NetworkDynamicObjectStatePacket> mDynamicObjectStates;
+    std::deque<NetworkActorEventPacket> mActorEvents;
     std::deque<NetworkProjectileStatePacket> mProjectileStates;
+    std::map<std::pair<int32_t, int32_t>, unsigned __int32> mLatestProjectileSequences;
     std::deque<NetworkPlayerDamagePacket> mPlayerDamage;
+    std::deque<NetworkPlayerRespawnPacket> mPlayerRespawns;
     struct ServerProjectile {
         NetworkProjectileStatePacket state{};
         float velocityX = 0.0f;
         float velocityY = 0.0f;
         float velocityZ = 0.0f;
+        float heldOffsetX = 0.0f;
+        float heldOffsetY = 0.0f;
+        float heldOffsetZ = 0.0f;
         float groundY = 0.0f;
         std::chrono::steady_clock::time_point spawned = std::chrono::steady_clock::now();
         std::chrono::steady_clock::time_point explodingSince = std::chrono::steady_clock::now();
+        std::chrono::steady_clock::time_point impactedSince = std::chrono::steady_clock::now();
         std::chrono::steady_clock::time_point lastUpdate = std::chrono::steady_clock::now();
         std::chrono::steady_clock::time_point lastBroadcast = std::chrono::steady_clock::now();
     };
     std::map<int32_t, NetworkPlayerStatePacket> mAuthoritativePlayerStates;
+    std::map<int32_t, bool> mPlayerWasDead;
+    std::map<int32_t, NetworkPlayerStatePacket> mLastDeadPlayerStates;
+    std::map<int32_t, std::chrono::steady_clock::time_point> mRespawnDeadlines;
+    std::map<int32_t, NetworkPlayerStatePacket> mServerCorpses;
+    std::map<int32_t, std::deque<int32_t>> mSceneCorpses;
     std::map<int32_t, std::chrono::steady_clock::time_point> mLastPlayerStateUpdate;
     std::map<std::pair<int32_t, int32_t>, ServerProjectile> mServerProjectiles;
+    ServerCollisionWorld mCollisionWorld;
     std::map<int32_t, std::chrono::steady_clock::time_point> mLastProjectileFire;
     std::map<int32_t, bool> mMeleeWasActive;
     std::map<int32_t, std::chrono::steady_clock::time_point> mLastMeleeAttack;
+    std::set<std::pair<int32_t, int32_t>> mMeleeHits;
+    std::set<std::pair<int32_t, int32_t>> mSeenActorEvents;
+    struct PendingActorEvent {
+        int32_t player = -1;
+        NetworkActorEventPacket packet{};
+        std::chrono::steady_clock::time_point received = std::chrono::steady_clock::now();
+    };
+    std::deque<PendingActorEvent> mPendingActorEvents;
     int32_t mNextServerProjectileId = 1;
+    int32_t mNextServerCorpseId = -1000;
+    int32_t mNextServerActorEventId = 1;
     std::map<std::tuple<int32_t, int32_t, int32_t, int32_t, int32_t, int32_t, int32_t>,
              NetworkDynamicObjectStatePacket> mPersistentDynamicObjectStates;
+    std::map<std::tuple<int32_t, int32_t, int32_t, int32_t, int32_t, int32_t, int32_t>,
+             std::chrono::steady_clock::time_point> mGrassRestoreDeadlines;
+    std::map<std::tuple<int32_t, int32_t, int32_t, int32_t, int32_t, int32_t, int32_t>, int32_t> mFishOwners;
     std::deque<NetworkVoicePacket> mVoice;
+    bool mLastLocalPlayerDead = false;
 };
 
 } // namespace SoH::Network

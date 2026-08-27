@@ -1,16 +1,26 @@
 # CMake generation dependency list for this directory.
 C:/Program Files/Microsoft Visual Studio/18/Community/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/share/cmake-4.3/Modules/CMakeFindDependencyMacro.cmake
+C:/Program Files/Microsoft Visual Studio/18/Community/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/share/cmake-4.3/Modules/CMakePushCheckState.cmake
+C:/Program Files/Microsoft Visual Studio/18/Community/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/share/cmake-4.3/Modules/CheckSymbolExists.cmake
 C:/Program Files/Microsoft Visual Studio/18/Community/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/share/cmake-4.3/Modules/ExternalProject/shared_internal_commands.cmake
 C:/Program Files/Microsoft Visual Studio/18/Community/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/share/cmake-4.3/Modules/FetchContent.cmake
 C:/Program Files/Microsoft Visual Studio/18/Community/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/share/cmake-4.3/Modules/FetchContent/CMakeLists.cmake.in
+C:/Program Files/Microsoft Visual Studio/18/Community/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/share/cmake-4.3/Modules/FindBZip2.cmake
 C:/Program Files/Microsoft Visual Studio/18/Community/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/share/cmake-4.3/Modules/FindGit.cmake
 C:/Program Files/Microsoft Visual Studio/18/Community/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/share/cmake-4.3/Modules/FindPackageHandleStandardArgs.cmake
 C:/Program Files/Microsoft Visual Studio/18/Community/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/share/cmake-4.3/Modules/FindPackageMessage.cmake
+C:/Program Files/Microsoft Visual Studio/18/Community/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/share/cmake-4.3/Modules/FindZLIB.cmake
+C:/Program Files/Microsoft Visual Studio/18/Community/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/share/cmake-4.3/Modules/SelectLibraryConfigurations.cmake
 C:/Users/CmonMeow/Desktop/Shipwright/build/x64/vcpkg/installed/x64-windows-static/share/Vorbis/VorbisConfig.cmake
 C:/Users/CmonMeow/Desktop/Shipwright/build/x64/vcpkg/installed/x64-windows-static/share/Vorbis/VorbisConfigVersion.cmake
 C:/Users/CmonMeow/Desktop/Shipwright/build/x64/vcpkg/installed/x64-windows-static/share/Vorbis/VorbisTargets-debug.cmake
 C:/Users/CmonMeow/Desktop/Shipwright/build/x64/vcpkg/installed/x64-windows-static/share/Vorbis/VorbisTargets-release.cmake
 C:/Users/CmonMeow/Desktop/Shipwright/build/x64/vcpkg/installed/x64-windows-static/share/Vorbis/VorbisTargets.cmake
+C:/Users/CmonMeow/Desktop/Shipwright/build/x64/vcpkg/installed/x64-windows-static/share/libzip/libzip-config-version.cmake
+C:/Users/CmonMeow/Desktop/Shipwright/build/x64/vcpkg/installed/x64-windows-static/share/libzip/libzip-config.cmake
+C:/Users/CmonMeow/Desktop/Shipwright/build/x64/vcpkg/installed/x64-windows-static/share/libzip/libzip-targets-debug.cmake
+C:/Users/CmonMeow/Desktop/Shipwright/build/x64/vcpkg/installed/x64-windows-static/share/libzip/libzip-targets-release.cmake
+C:/Users/CmonMeow/Desktop/Shipwright/build/x64/vcpkg/installed/x64-windows-static/share/libzip/libzip-targets.cmake
 C:/Users/CmonMeow/Desktop/Shipwright/build/x64/vcpkg/installed/x64-windows-static/share/ogg/OggConfig.cmake
 C:/Users/CmonMeow/Desktop/Shipwright/build/x64/vcpkg/installed/x64-windows-static/share/ogg/OggConfigVersion.cmake
 C:/Users/CmonMeow/Desktop/Shipwright/build/x64/vcpkg/installed/x64-windows-static/share/ogg/OggTargets-debug.cmake
@@ -27,6 +37,7 @@ C:/Users/CmonMeow/Desktop/Shipwright/build/x64/vcpkg/installed/x64-windows-stati
 C:/Users/CmonMeow/Desktop/Shipwright/build/x64/vcpkg/installed/x64-windows-static/share/opusfile/OpusFileTargets-release.cmake
 C:/Users/CmonMeow/Desktop/Shipwright/build/x64/vcpkg/installed/x64-windows-static/share/opusfile/OpusFileTargets.cmake
 C:/Users/CmonMeow/Desktop/Shipwright/build/x64/vcpkg/installed/x64-windows-static/share/unofficial-sodium/unofficial-sodiumConfig.cmake
+C:/Users/CmonMeow/Desktop/Shipwright/build/x64/vcpkg/installed/x64-windows-static/share/zlib/vcpkg-cmake-wrapper.cmake
 C:/Users/CmonMeow/Desktop/Shipwright/soh/CMake/Default.cmake
 C:/Users/CmonMeow/Desktop/Shipwright/soh/CMake/DefaultCXX.cmake
 C:/Users/CmonMeow/Desktop/Shipwright/soh/CMake/Utils.cmake

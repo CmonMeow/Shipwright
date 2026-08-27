@@ -56,60 +56,32 @@ static InitChainEntry sInitChain[] = {
     ICHAIN_F32(minVelocityY, -150, ICHAIN_STOP),
 };
 
+#define MAX_STUCK_PLAYER_ARROWS 99
+
+static EnArrow* sStuckPlayerArrows[MAX_STUCK_PLAYER_ARROWS];
+static s32 sNextStuckPlayerArrow;
+
+static void EnArrow_RetainStuckPlayerArrow(EnArrow* this) {
+    EnArrow* oldest = sStuckPlayerArrows[sNextStuckPlayerArrow];
+
+    if ((oldest != NULL) && (oldest != this) && (oldest->actor.update != NULL)) {
+        Actor_Kill(&oldest->actor);
+    }
+
+    sStuckPlayerArrows[sNextStuckPlayerArrow] = this;
+    sNextStuckPlayerArrow = (sNextStuckPlayerArrow + 1) % MAX_STUCK_PLAYER_ARROWS;
+}
+
 void EnArrow_SetupAction(EnArrow* this, EnArrowActionFunc actionFunc) {
     this->actionFunc = actionFunc;
 }
 
 void EnArrow_Init(Actor* thisx, PlayState* play) {
-    static EffectBlureInit2 blureNormal = {
-        0, 4, 0, { 0, 255, 200, 255 },   { 0, 255, 255, 255 }, { 0, 255, 200, 0 }, { 0, 255, 255, 0 }, 16,
-        0, 1, 0, { 255, 255, 170, 255 }, { 0, 150, 0, 0 },
-    };
-    static EffectBlureInit2 blureFire = {
-        0, 4, 0, { 0, 255, 200, 255 }, { 0, 255, 255, 255 }, { 0, 255, 200, 0 }, { 0, 255, 255, 0 }, 16,
-        0, 1, 0, { 255, 200, 0, 255 }, { 255, 0, 0, 0 },
-    };
-    static EffectBlureInit2 blureIce = {
-        0, 4, 0, { 0, 255, 200, 255 },   { 0, 255, 255, 255 }, { 0, 255, 200, 0 }, { 0, 255, 255, 0 }, 16,
-        0, 1, 0, { 170, 255, 255, 255 }, { 0, 100, 255, 0 },
-    };
-    static EffectBlureInit2 blureLight = {
-        0, 4, 0, { 0, 255, 200, 255 },   { 0, 255, 255, 255 }, { 0, 255, 200, 0 }, { 0, 255, 255, 0 }, 16,
-        0, 1, 0, { 255, 255, 170, 255 }, { 255, 255, 0, 0 },
-    };
     static u32 dmgFlags[] = {
         0x00000800, 0x00000020, 0x00000020, 0x00000800, 0x00001000,
         0x00002000, 0x00010000, 0x00004000, 0x00008000, 0x00000004,
     };
     EnArrow* this = (EnArrow*)thisx;
-
-    
-        blureNormal.altEnvColor = (Color_RGBA8){ 0, 150, 0, 0 };
-    
-    
-        blureNormal.altPrimColor = (Color_RGBA8){ 255, 255, 170, 255 };
-    
-
-    
-        blureFire.altEnvColor = (Color_RGBA8){ 255, 200, 0, 0 };
-    
-    
-        blureFire.altPrimColor = (Color_RGBA8){ 255, 0, 0, 255 };
-    
-
-    
-        blureIce.altEnvColor = (Color_RGBA8){ 0, 0, 255, 255 };
-    
-    
-        blureIce.altPrimColor = (Color_RGBA8){ 170, 255, 255, 0 };
-    
-
-    
-        blureLight.altEnvColor = (Color_RGBA8){ 255, 255, 0, 255 };
-    
-    
-        blureLight.altPrimColor = (Color_RGBA8){ 255, 255, 170, 0 };
-    
 
     Actor_ProcessInitChain(&this->actor, sInitChain);
 
@@ -122,28 +94,6 @@ void EnArrow_Init(Actor* thisx, PlayState* play) {
 
         if (this->actor.params <= ARROW_0E) {
             SkelAnime_Init(play, &this->skelAnime, &gArrowSkel, &gArrow2Anim, NULL, NULL, 0);
-        }
-
-        if (this->actor.params <= ARROW_NORMAL) {
-            if (this->actor.params == ARROW_NORMAL_HORSE) {
-                blureNormal.elemDuration = 4;
-            } else {
-                blureNormal.elemDuration = 16;
-            }
-
-            Effect_Add(play, &this->effectIndex, EFFECT_BLURE2, 0, 0, &blureNormal);
-
-        } else if (this->actor.params == ARROW_FIRE) {
-
-            Effect_Add(play, &this->effectIndex, EFFECT_BLURE2, 0, 0, &blureFire);
-
-        } else if (this->actor.params == ARROW_ICE) {
-
-            Effect_Add(play, &this->effectIndex, EFFECT_BLURE2, 0, 0, &blureIce);
-
-        } else if (this->actor.params == ARROW_LIGHT) {
-
-            Effect_Add(play, &this->effectIndex, EFFECT_BLURE2, 0, 0, &blureLight);
         }
 
         Collider_InitQuad(play, &this->collider);
@@ -167,9 +117,12 @@ void EnArrow_Init(Actor* thisx, PlayState* play) {
 
 void EnArrow_Destroy(Actor* thisx, PlayState* play) {
     EnArrow* this = (EnArrow*)thisx;
+    s32 i;
 
-    if (this->actor.params <= ARROW_LIGHT) {
-        Effect_Delete(play, this->effectIndex);
+    for (i = 0; i < MAX_STUCK_PLAYER_ARROWS; i++) {
+        if (sStuckPlayerArrows[i] == this) {
+            sStuckPlayerArrows[i] = NULL;
+        }
     }
 
     SkelAnime_Free(&this->skelAnime, play);
@@ -341,7 +294,7 @@ void EnArrow_Fly(EnArrow* this, PlayState* play) {
                 Animation_PlayOnce(&this->skelAnime, &gArrow2Anim);
 
                 if (this->actor.params >= ARROW_NORMAL_LIT) {
-                    this->timer = 60;
+                    EnArrow_RetainStuckPlayerArrow(this);
                 } else {
                     this->timer = 20;
                 }
@@ -397,7 +350,7 @@ void EnArrow_Fly(EnArrow* this, PlayState* play) {
 void func_809B45E0(EnArrow* this, PlayState* play) {
     SkelAnime_Update(&this->skelAnime);
 
-    if (DECR(this->timer) == 0) {
+    if ((this->actor.params < ARROW_NORMAL_LIT) && (DECR(this->timer) == 0)) {
         Actor_Kill(&this->actor);
     }
 }
@@ -429,47 +382,22 @@ void EnArrow_Update(Actor* thisx, PlayState* play) {
             Actor_SpawnAsChild(&play->actorCtx, &this->actor, play, elementalActorIds[this->actor.params - 3],
                                this->actor.world.pos.x, this->actor.world.pos.y, this->actor.world.pos.z, 0, 0, 0, 0);
         }
-    } else if (this->actor.params == ARROW_NORMAL_LIT) {
-        static Vec3f velocity = { 0.0f, 0.5f, 0.0f };
-        static Vec3f accel = { 0.0f, 0.5f, 0.0f };
-        static Color_RGBA8 primColor = { 255, 255, 100, 255 };
-        static Color_RGBA8 envColor = { 255, 50, 0, 0 };
-        // spawn dust for the flame
-        func_8002836C(play, &this->unk_21C, &velocity, &accel, &primColor, &envColor, 100, 0, 8);
     }
 }
 
 void func_809B4800(EnArrow* this, PlayState* play) {
     static Vec3f D_809B4E88 = { 0.0f, 400.0f, 1500.0f };
     static Vec3f D_809B4E94 = { 0.0f, -400.0f, 1500.0f };
-    static Vec3f D_809B4EA0 = { 0.0f, 0.0f, -300.0f };
     Vec3f sp44;
     Vec3f sp38;
-    s32 addBlureVertex;
-
-    Matrix_MultVec3f(&D_809B4EA0, &this->unk_21C);
 
     if (EnArrow_Fly == this->actionFunc) {
         Matrix_MultVec3f(&D_809B4E88, &sp44);
         Matrix_MultVec3f(&D_809B4E94, &sp38);
 
         if (this->actor.params <= ARROW_SEED) {
-            addBlureVertex = this->actor.params <= ARROW_LIGHT;
-
             if (this->hitActor == NULL) {
-                addBlureVertex &= func_80090480(play, &this->collider, &this->weaponInfo, &sp44, &sp38);
-            } else {
-                if (addBlureVertex) {
-                    if ((sp44.x == this->weaponInfo.tip.x) && (sp44.y == this->weaponInfo.tip.y) &&
-                        (sp44.z == this->weaponInfo.tip.z) && (sp38.x == this->weaponInfo.base.x) &&
-                        (sp38.y == this->weaponInfo.base.y) && (sp38.z == this->weaponInfo.base.z)) {
-                        addBlureVertex = false;
-                    }
-                }
-            }
-
-            if (addBlureVertex) {
-                EffectBlure_AddVertex(Effect_GetByIndex(this->effectIndex), &sp44, &sp38);
+                func_80090480(play, &this->collider, &this->weaponInfo, &sp44, &sp38);
             }
         }
     }

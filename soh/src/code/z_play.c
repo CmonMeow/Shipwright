@@ -973,7 +973,8 @@ void Play_Update(PlayState* play) {
             }
 
             PLAY_LOG(3551);
-            isPaused = (play->pauseCtx.state != 0) || (play->pauseCtx.debugState != 0);
+            isPaused = (play->pauseCtx.state != 0) || (play->pauseCtx.debugState != 0) ||
+                       (play->gameOverCtx.state == GAMEOVER_DEATH_WAIT_RESPAWN);
 
             PLAY_LOG(3555);
             AnimationContext_Reset(&play->animationCtx);
@@ -1139,7 +1140,12 @@ skip:
 }
 
 void Play_DrawOverlayElements(PlayState* play) {
-    if ((play->pauseCtx.state != 0) || (play->pauseCtx.debugState != 0)) {
+    // Game-over pause states are retained only for compatibility with a frame
+    // already entering the old path. Never draw their save/continue pages;
+    // multiplayer leaves the last rendered world frame visible until the
+    // server sends the respawn command.
+    if (((play->pauseCtx.state != 0) || (play->pauseCtx.debugState != 0)) &&
+        !((play->pauseCtx.state >= 8) && (play->pauseCtx.state <= 0x11))) {
         KaleidoScopeCall_Draw(play);
     }
 
@@ -1481,6 +1487,15 @@ time_t Play_GetRealTime() {
 
 void Play_Main(GameState* thisx) {
     PlayState* play = (PlayState*)thisx;
+
+    // Title, opening and map-select states run at 60 Hz (R_UPDATE_RATE 1),
+    // while OoT gameplay is authored for 20 Hz (R_UPDATE_RATE 3). Keep a
+    // stale non-gameplay rate from accelerating PlayState after direct starts
+    // and cutscene-free transitions. Preserve the one special transition that
+    // explicitly owns the 60 Hz rate until it tears itself down.
+    if (gTrnsnUnkState != 3) {
+        R_UPDATE_RATE = 3;
+    }
 
     D_8012D1F8 = &play->state.input[0];
 

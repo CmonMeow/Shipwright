@@ -265,16 +265,22 @@ void EnKusa_Init(Actor* thisx, PlayState* play) {
         return;
     }
 
-    if (NetworkGame_IsObjectDestroyed(play, &this->actor)) {
-        if (!(this->actor.flags & ACTOR_FLAG_GRASS_DESTROYED)) {
-            EnKusa_SpawnFragments(this, play);
-            SoundSource_PlaySfxAtFixedWorldPos(play, &this->actor.world.pos, 20, NA_SE_EV_PLANT_BROKEN);
+    {
+        s32 remoteCut = NetworkGame_ConsumeActorEvent(play, &this->actor,
+                                                      NETWORK_GAME_ACTOR_EVENT_GRASS_CUT) ||
+                        NetworkGame_ConsumeActorEvent(play, &this->actor,
+                                                      NETWORK_GAME_ACTOR_EVENT_GRASS_THROWN_BREAK);
+        if (NetworkGame_IsObjectDestroyed(play, &this->actor)) {
+            if (remoteCut && !(this->actor.flags & ACTOR_FLAG_GRASS_DESTROYED)) {
+                EnKusa_SpawnFragments(this, play);
+                SoundSource_PlaySfxAtFixedWorldPos(play, &this->actor.world.pos, 20, NA_SE_EV_PLANT_BROKEN);
+            }
+            if ((this->actor.params & 3) == ENKUSA_TYPE_0) {
+                Actor_Kill(&this->actor);
+                return;
+            }
+            this->actor.flags |= ACTOR_FLAG_GRASS_DESTROYED;
         }
-        if ((this->actor.params & 3) == ENKUSA_TYPE_0) {
-            Actor_Kill(&this->actor);
-            return;
-        }
-        this->actor.flags |= ACTOR_FLAG_GRASS_DESTROYED;
     }
 
     EnKusa_SetupWaitObject(this);
@@ -316,8 +322,16 @@ void EnKusa_SetupMain(EnKusa* this) {
 
 void EnKusa_Main(EnKusa* this, PlayState* play) {
     s32 pad;
+    s32 remoteCut = NetworkGame_ConsumeActorEvent(play, &this->actor,
+                                                  NETWORK_GAME_ACTOR_EVENT_GRASS_CUT) ||
+                    NetworkGame_ConsumeActorEvent(play, &this->actor,
+                                                  NETWORK_GAME_ACTOR_EVENT_GRASS_THROWN_BREAK);
 
-    if (NetworkGame_IsObjectDestroyed(play, &this->actor)) {
+    if (remoteCut || NetworkGame_IsObjectDestroyed(play, &this->actor)) {
+        if (remoteCut) {
+            EnKusa_SpawnFragments(this, play);
+            SoundSource_PlaySfxAtFixedWorldPos(play, &this->actor.world.pos, 20, NA_SE_EV_PLANT_BROKEN);
+        }
         if ((this->actor.params & 3) == ENKUSA_TYPE_0) {
             Actor_Kill(&this->actor);
             return;
@@ -337,7 +351,7 @@ void EnKusa_Main(EnKusa* this, PlayState* play) {
             EnKusa_SpawnBugs(this, play);
         }
 
-        NetworkGame_NotifyObjectDestroyed(play, &this->actor);
+        NetworkGame_NotifyActorEvent(play, &this->actor, NETWORK_GAME_ACTOR_EVENT_GRASS_CUT);
 
         if ((this->actor.params & 3) == ENKUSA_TYPE_0) {
             Actor_Kill(&this->actor);
@@ -405,7 +419,7 @@ void EnKusa_Fall(EnKusa* this, PlayState* play) {
         }
         EnKusa_SpawnFragments(this, play);
         EnKusa_DropCollectible(this, play);
-        NetworkGame_NotifyObjectDestroyed(play, &this->actor);
+        NetworkGame_NotifyActorEvent(play, &this->actor, NETWORK_GAME_ACTOR_EVENT_GRASS_THROWN_BREAK);
         switch (this->actor.params & 3) {
             case ENKUSA_TYPE_0:
             case ENKUSA_TYPE_2:
@@ -492,7 +506,6 @@ void EnKusa_SetupRegrow(EnKusa* this, PlayState* play) {
     EnKusa_SetScaleSmall(this);
     this->actor.shape.rot = this->actor.home.rot;
     this->actor.flags &= ~ACTOR_FLAG_GRASS_DESTROYED;
-    NetworkGame_NotifyObjectRestored(play, &this->actor);
 }
 
 void EnKusa_Regrow(EnKusa* this, PlayState* play) {

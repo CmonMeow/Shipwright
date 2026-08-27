@@ -129,6 +129,10 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
       <Project>{06CC8D88-1A4D-3E2C-94F1-180FC8B912DB}</Project>
       <Name>libultraship</Name>
     </ProjectReference>
+    <ProjectReference Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\soh\pathengine_collision_test.vcxproj">
+      <Project>{4FF85FB2-7D97-381A-99F0-04C1EFE98E76}</Project>
+      <Name>pathengine_collision_test</Name>
+    </ProjectReference>
     <ProjectReference Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\soh\pathengine_dedicated_server.vcxproj">
       <Project>{A07671B0-9F2A-3F57-9E52-62C2E5652F3C}</Project>
       <Name>pathengine_dedicated_server</Name>

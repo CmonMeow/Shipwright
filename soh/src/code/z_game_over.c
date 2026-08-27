@@ -7,7 +7,8 @@ void GameOver_Init(PlayState* play) {
 void GameOver_FadeInLights(PlayState* play) {
     GameOverContext* gameOverCtx = &play->gameOverCtx;
 
-    if ((gameOverCtx->state >= GAMEOVER_DEATH_WAIT_GROUND && gameOverCtx->state < GAMEOVER_REVIVE_START) ||
+    if ((gameOverCtx->state >= GAMEOVER_DEATH_WAIT_GROUND &&
+         gameOverCtx->state < GAMEOVER_DEATH_WAIT_RESPAWN) ||
         (gameOverCtx->state >= GAMEOVER_REVIVE_RUMBLE && gameOverCtx->state < GAMEOVER_REVIVE_FADE_OUT)) {
         Environment_FadeInGameOverLights(play);
     }
@@ -95,10 +96,15 @@ void GameOver_Update(PlayState* play) {
             gGameOverTimer--;
 
             if (gGameOverTimer == 0) {
-                play->pauseCtx.state = 8;
-                gameOverCtx->state++;
-                func_800AA15C();
+                // Multiplayer owns the respawn deadline. Stop on the final
+                // death frame without opening the vanilla save/continue menu;
+                // Graph_StartFrame keeps pumping the transport while Play_Update
+                // treats this state as frozen.
+                gameOverCtx->state = GAMEOVER_DEATH_WAIT_RESPAWN;
             }
+            break;
+
+        case GAMEOVER_DEATH_WAIT_RESPAWN:
             break;
 
         case GAMEOVER_REVIVE_START:

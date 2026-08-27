@@ -207,6 +207,11 @@ void Sram_OpenSave() {
     
 
     gSaveContext.magicLevel = 0;
+
+    // Keep every client in the shared debug-ROM arena while multiplayer is
+    // under test. Existing save slots otherwise retain their last overworld
+    // entrance and can never satisfy the same-scene visibility gate.
+    gSaveContext.entranceIndex = ENTR_TEST01_0;
 }
 
 void Sram_InitSave(FileChooseContext* fileChooseCtx) {
@@ -217,7 +222,10 @@ void Sram_InitSave(FileChooseContext* fileChooseCtx) {
 
     Sram_InitNewSave();
 
-    gSaveContext.entranceIndex = ENTR_LINKS_HOUSE_CHILD_SPAWN;
+    // Multiplayer test sessions begin in the debug-ROM test01 arena (Map Select 118).
+    // Set this here, after Sram_InitNewSave(), so the entrance selected by the
+    // normal save initializer is not replaced with Link's House before it is saved.
+    gSaveContext.entranceIndex = ENTR_TEST01_0;
     gSaveContext.linkAge = 1;
     gSaveContext.dayTime = 0x6AAB;
     gSaveContext.cutsceneIndex = 0xFFF1;

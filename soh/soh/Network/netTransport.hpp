@@ -108,6 +108,9 @@ enum NetAppMessageType : unsigned char {
 	NAMTWorldChunk,
 	NAMTWorldComplete,
 	NAMTPlayerDamage,
+	NAMTActorEvent,
+	NAMTProjectileImpact,
+	NAMTPlayerRespawn,
 	NAMTEncrypted
 };
 
