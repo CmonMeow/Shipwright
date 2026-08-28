@@ -1099,6 +1099,7 @@ void Object_UpdateBank(ObjectContext* objectCtx);
 s32 Object_GetIndex(ObjectContext* objectCtx, s16 objectId);
 s32 Object_IsLoaded(ObjectContext* objectCtx, s32 bankIndex);
 void Scene_SetTransitionForNextEntrance(PlayState* play);
+void Scene_PrepareWater(PlayState* play);
 void Scene_Draw(PlayState* play);
 void SkelAnime_DrawLod(PlayState* play, void** skeleton, Vec3s* jointTable,
                        OverrideLimbDrawOpa overrideLimbDraw, PostLimbDrawOpa postLimbDraw, void* arg, s32 dListIndex);

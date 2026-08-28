@@ -2179,9 +2179,12 @@ void Fishing_DrawSinkingLure(PlayState* play) {
     Fishing_UpdateSinkingLure(play);
 
     if (sLurePos.y < WATER_SURFACE_Y(play)) {
-        Gfx_SetupDL_25Opa(play->state.gfxCtx);
+        // Submit submerged lure segments after the translucent water surface.
+        // Drawing them in the opaque pass lets the later water pass completely
+        // hide the small segments when viewed from above.
+        Gfx_SetupDL_25Xlu(play->state.gfxCtx);
 
-        gSPDisplayList(POLY_OPA_DISP++, gFishingSinkingLureSegmentMaterialDL);
+        gSPDisplayList(POLY_XLU_DISP++, gFishingSinkingLureSegmentMaterialDL);
 
         for (i = SINKING_LURE_SEG_COUNT - 1; i >= 0; i--) {
             if ((i + sSinkingLureSegmentIndex) < SINKING_LURE_SEG_COUNT) {
@@ -2191,9 +2194,9 @@ void Fishing_DrawSinkingLure(PlayState* play) {
                 Matrix_Scale(scale, scale, scale, MTXMODE_APPLY);
                 Matrix_ReplaceRotation(&play->billboardMtxF);
 
-                gSPMatrix(POLY_OPA_DISP++, MATRIX_NEWMTX(play->state.gfxCtx),
+                gSPMatrix(POLY_XLU_DISP++, MATRIX_NEWMTX(play->state.gfxCtx),
                           G_MTX_NOPUSH | G_MTX_LOAD | G_MTX_MODELVIEW);
-                gSPDisplayList(POLY_OPA_DISP++, gFishingSinkingLureSegmentModelDL);
+                gSPDisplayList(POLY_XLU_DISP++, gFishingSinkingLureSegmentModelDL);
                 FrameInterpolation_RecordCloseChild();
             }
         }

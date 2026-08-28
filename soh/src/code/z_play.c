@@ -656,9 +656,14 @@ void Play_Draw(PlayState* play) {
                 } else {
                     roomDrawFlags = HREG(84);
                 }
-                Scene_Draw(play);
+                // Segment 8 is consumed by test01's native translucent water
+                // material, so prepare it before the room display lists.
+                Scene_PrepareWater(play);
                 Room_Draw(play, &play->roomCtx.curRoom, roomDrawFlags & 3);
                 Room_Draw(play, &play->roomCtx.prevRoom, roomDrawFlags & 3);
+                // Draw the top-facing WaterBox surface after the room's
+                // translucent geometry so it reaches the framebuffer last.
+                Scene_Draw(play);
             }
         }
 

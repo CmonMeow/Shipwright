@@ -1,4 +1,5 @@
 #include "global.h"
+#include "assets/scenes/test_levels/test01/test01_room_0.h"
 
 #define TEST01_ENTRANCE_FIELD                                                                    \
     (ENTRANCE_INFO_DISPLAY_TITLE_CARD_FLAG |                                                     \
@@ -27,27 +28,34 @@ void Scene_SetTransitionForNextEntrance(PlayState* play) {
     play->transitionType = TRANS_TYPE_FADE_BLACK;
 }
 
+void Scene_PrepareWater(PlayState* play) {
+    u32 gameplayFrames;
+    Gfx* waterScroll;
+
+    OPEN_DISPS(play->state.gfxCtx);
+
+    gameplayFrames = play->gameplayFrames;
+    // test01's native water material calls display list 0x08000001. Keep
+    // segment 8 populated even though the added top-facing WaterBox plane
+    // binds the room texture directly.
+    waterScroll = Gfx_TwoTexScrollEx(play->state.gfxCtx, 0, 127 - gameplayFrames % 128,
+                                     gameplayFrames % 128, 32, 32, 1, gameplayFrames % 128,
+                                     gameplayFrames % 128, 32, 32, -1, 1, 1, 1);
+    gSPSegment(POLY_OPA_DISP++, 0x08, waterScroll);
+    gSPSegment(POLY_XLU_DISP++, 0x08, waterScroll);
+
+    CLOSE_DISPS(play->state.gfxCtx);
+}
+
 static void Scene_DrawCalmWater(PlayState* play) {
     CollisionHeader* colHeader = play->colCtx.colHeader;
     u32 gameplayFrames;
-    Gfx* waterScroll;
     Vtx* waterVertices;
     s32 i;
 
     OPEN_DISPS(play->state.gfxCtx);
 
     gameplayFrames = play->gameplayFrames;
-    waterScroll = Gfx_TwoTexScrollEx(play->state.gfxCtx, 0, 127 - gameplayFrames % 128,
-                                     (gameplayFrames * 1) % 128, 32, 32, 1, gameplayFrames % 128,
-                                     (gameplayFrames * 1) % 128, 32, 32, -1, 1, 1, 1);
-    gSPSegment(POLY_OPA_DISP++, 0x08, waterScroll);
-    gSPSegment(POLY_XLU_DISP++, 0x08, waterScroll);
-
-    gDPPipeSync(POLY_OPA_DISP++);
-    gDPSetEnvColor(POLY_OPA_DISP++, 128, 128, 128, 128);
-
-    gDPPipeSync(POLY_XLU_DISP++);
-    gDPSetEnvColor(POLY_XLU_DISP++, 128, 128, 128, 128);
 
     if ((colHeader != NULL) && (colHeader->numWaterBoxes > 0)) {
         waterVertices = Graph_Alloc(play->state.gfxCtx, colHeader->numWaterBoxes * 4 * sizeof(Vtx));
@@ -56,9 +64,10 @@ static void Scene_DrawCalmWater(PlayState* play) {
             gSPMatrix(POLY_XLU_DISP++, &gMtxClear, G_MTX_MODELVIEW | G_MTX_LOAD);
             gSPClearGeometryMode(POLY_XLU_DISP++, G_CULL_BOTH | G_LIGHTING);
             gDPSetRenderMode(POLY_XLU_DISP++, G_RM_AA_ZB_XLU_SURF, G_RM_AA_ZB_XLU_SURF2);
-            gDPSetCombineMode(POLY_XLU_DISP++, G_CC_PRIMITIVE, G_CC_PRIMITIVE);
-            gDPSetPrimColor(POLY_XLU_DISP++, 0, 0, 26, 122, 148, 184);
-            gSPLoadShader(POLY_XLU_DISP++, "SHIPWRIGHT_WATER", 0);
+            gDPSetCombineMode(POLY_XLU_DISP++, G_CC_MODULATEIA_PRIM, G_CC_MODULATEIA_PRIM);
+            gDPSetPrimColor(POLY_XLU_DISP++, 0, 0, 210, 235, 255, 150);
+            gDPLoadTextureBlock(POLY_XLU_DISP++, test01_room_0Tex_0090E8, G_IM_FMT_RGBA, G_IM_SIZ_16b, 32, 32, 0,
+                                G_TX_WRAP, G_TX_WRAP, 5, 5, G_TX_NOLOD, G_TX_NOLOD);
 
             for (i = 0; i < colHeader->numWaterBoxes; i++) {
                 WaterBox* waterBox = &colHeader->waterBoxes[i];
@@ -86,8 +95,8 @@ static void Scene_DrawCalmWater(PlayState* play) {
 
                 for (j = 0; j < 4; j++) {
                     vtx[j].v.flag = 0;
-                    vtx[j].v.tc[0] = (j & 1) ? 0x400 : 0;
-                    vtx[j].v.tc[1] = (j & 2) ? 0x400 : 0;
+                    vtx[j].v.tc[0] = (s16)((vtx[j].v.ob[0] * 4) + (gameplayFrames * 2));
+                    vtx[j].v.tc[1] = (s16)((vtx[j].v.ob[2] * 4) + gameplayFrames);
                     vtx[j].v.cn[0] = 255;
                     vtx[j].v.cn[1] = 255;
                     vtx[j].v.cn[2] = 255;
@@ -95,10 +104,11 @@ static void Scene_DrawCalmWater(PlayState* play) {
                 }
 
                 gSPVertex(POLY_XLU_DISP++, vtx, 4, 0);
-                gSP2Triangles(POLY_XLU_DISP++, 0, 1, 2, 0, 1, 3, 2, 0);
+                // Wind the replacement surface upward. The original order faces
+                // down, which leaves the water visible only from below.
+                gSP2Triangles(POLY_XLU_DISP++, 0, 2, 1, 0, 1, 2, 3, 0);
             }
 
-            gSPUnloadShader(POLY_XLU_DISP++);
         }
     }
 
