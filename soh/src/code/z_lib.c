@@ -356,10 +356,9 @@ void IChain_Apply_Vec3f(u8* ptr, InitChainEntry* ichain) {
 
 void IChain_Apply_Vec3fdiv1000(u8* ptr, InitChainEntry* ichain) {
     Vec3f* vec = (Vec3f*)(ptr + ichain->offset);
-    f32 val;
 
     osSyncPrintf("pp=%x data=%f\n", vec, ichain->value / 1000.0f);
-    val = ichain->value / 1000.0f;
+    f32 val = ichain->value / 1000.0f;
 
     vec->z = val;
     vec->y = val;

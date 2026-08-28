@@ -209,8 +209,8 @@ void UCodeDisas_ParseRenderMode(UCodeDisas* this, u32 mode) {
     };
 
     s32 i;
-    s32 a;
-    s32 b;
+    s32 a = { 0 };
+    s32 b = { 0 };
 
     for (i = 0; i < ARRAY_COUNT(sUCodeDisasRenderModeFlags); i++) {
         if ((mode & sUCodeDisasRenderModeFlags[i].mask) != sUCodeDisasRenderModeFlags[i].value) {
@@ -445,16 +445,13 @@ typedef union {
 
 void UCodeDisas_Disassemble(UCodeDisas* this, GfxMod* ptr) {
     u32 pad;
-    u32 addr;
-    u32 rdpHalf;
-    u16 linkDlLow;
-    u8 sid;
-    u8 cmd;
+    u32 rdpHalf = { 0 };
+    u16 linkDlLow = { 0 };
+    u8 sid = { 0 };
     s32 i0;
-    u32 exit;
     GfxMod curGfx[1];
 
-    exit = false;
+    u32 exit = false;
 
     while (!exit) {
         this->dlCnt++;
@@ -463,8 +460,8 @@ void UCodeDisas_Disassemble(UCodeDisas* this, GfxMod* ptr) {
         DISAS_LOG("%08x:", ptr);
 
         *curGfx = *ptr;
-        cmd = curGfx->dma.cmd;
-        addr = UCodeDisas_TranslateAddr(this, curGfx->dma.addr);
+        u8 cmd = curGfx->dma.cmd;
+        u32 addr = UCodeDisas_TranslateAddr(this, curGfx->dma.addr);
 
         DISAS_LOG("%08x-%08x:", curGfx->words.w0, curGfx->words.w1);
 
@@ -922,13 +919,12 @@ void UCodeDisas_Disassemble(UCodeDisas* this, GfxMod* ptr) {
                         switch (cmd) {
                             case G_MTX: {
                                 Gmatrix gmtx = ptr->matrix;
-                                u32 params;
                                 MtxF mtx;
                                 s32 i1 = 0;
 
                                 DISAS_LOG("gsSPMatrix(0x%08x(%08x), 0", gmtx.addr, addr);
 
-                                params = (gmtx.params ^ G_MTX_PUSH);
+                                u32 params = (gmtx.params ^ G_MTX_PUSH);
 
                                 for (; i1 != ARRAY_COUNT(sUCodeDisasMtxFlags); i1++) {
                                     DISAS_LOG("|%s", (sUCodeDisasMtxFlags[i1].value & params)
@@ -974,11 +970,10 @@ void UCodeDisas_Disassemble(UCodeDisas* this, GfxMod* ptr) {
 
                             case G_VTX: {
                                 u32 numv = curGfx->words.w0;
-                                u32 vbidx;
 
                                 numv >>= 12;
                                 numv &= 0xFF;
-                                vbidx = (curGfx->vtx.vbidx >> 1) - numv;
+                                u32 vbidx = (curGfx->vtx.vbidx >> 1) - numv;
 
                                 DISAS_LOG("gsSPVertex(0x%08x(0x%08x), %d, %d),", curGfx->words.w1, addr, numv, vbidx);
 

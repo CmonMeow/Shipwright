@@ -3,11 +3,11 @@
 
 s32 osPfsFileState(OSPfs* pfs, s32 fileNo, OSPfsState* state) {
     s32 ret;
-    s32 pages;
+    s32 pages = { 0 };
     __OSInode inode;
     __OSDir dir;
-    __OSInodeUnit page;
-    u8 bank;
+    __OSInodeUnit page = { 0 };
+    u8 bank = { 0 };
 
     if (fileNo >= pfs->dir_size || fileNo < 0) {
         return PFS_ERR_INVALID;

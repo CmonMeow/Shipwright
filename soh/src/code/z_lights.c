@@ -63,8 +63,6 @@ void Lights_Reset(Lights* lights, u8 ambentR, u8 ambentG, u8 ambentB) {
  * Draws every light in the provided Lights group
  */
 void Lights_Draw(Lights* lights, GraphicsContext* gfxCtx) {
-    Light* light;
-    s32 i;
 
 #if 1
 
@@ -73,8 +71,8 @@ void Lights_Draw(Lights* lights, GraphicsContext* gfxCtx) {
     gSPNumLights(POLY_OPA_DISP++, lights->numLights);
     gSPNumLights(POLY_XLU_DISP++, lights->numLights);
 
-    i = 0;
-    light = &lights->l.l[0];
+    s32 i = 0;
+    Light* light = &lights->l.l[0];
 
     while (i < lights->numLights) {
         i++;
@@ -100,22 +98,16 @@ Light* Lights_FindSlot(Lights* lights) {
 }
 
 void Lights_BindPoint(Lights* lights, LightParams* params, Vec3f* vec) {
-    f32 xDiff;
-    f32 yDiff;
-    f32 zDiff;
-    f32 posDiff;
-    f32 scale;
-    Light* light;
 
     if (vec != NULL) {
-        xDiff = params->point.x - vec->x;
-        yDiff = params->point.y - vec->y;
-        zDiff = params->point.z - vec->z;
-        scale = params->point.radius;
-        posDiff = SQ(xDiff) + SQ(yDiff) + SQ(zDiff);
+        f32 xDiff = params->point.x - vec->x;
+        f32 yDiff = params->point.y - vec->y;
+        f32 zDiff = params->point.z - vec->z;
+        f32 scale = params->point.radius;
+        f32 posDiff = SQ(xDiff) + SQ(yDiff) + SQ(zDiff);
 
         if (posDiff < SQ(scale)) {
-            light = Lights_FindSlot(lights);
+            Light* light = Lights_FindSlot(lights);
 
             if (light != NULL) {
                 posDiff = sqrtf(posDiff);
@@ -159,17 +151,16 @@ void Lights_BindDirectional(Lights* lights, LightParams* params, Vec3f* vec) {
  */
 void Lights_BindAll(Lights* lights, LightNode* listHead, Vec3f* vec) {
     LightsBindFunc bindFuncs[] = { Lights_BindPoint, Lights_BindDirectional, Lights_BindPoint };
-    LightInfo* info;
 
     while (listHead != NULL) {
-        info = listHead->info;
+        LightInfo* info = listHead->info;
         bindFuncs[info->type](lights, &info->params, vec);
         listHead = listHead->next;
     }
 }
 
 LightNode* Lights_FindBufSlot() {
-    LightNode* node;
+    LightNode* node = { 0 };
 
     if (sLightsBuffer.numOccupied >= LIGHTS_BUFFER_SIZE) {
         return NULL;
@@ -248,9 +239,8 @@ void LightContext_DestroyList(PlayState* play, LightContext* lightCtx) {
  * list may result in older entries not being bound to a Light when calling Lights_BindAll
  */
 LightNode* LightContext_InsertLight(PlayState* play, LightContext* lightCtx, LightInfo* info) {
-    LightNode* node;
 
-    node = Lights_FindBufSlot();
+    LightNode* node = Lights_FindBufSlot();
 
     if (node != NULL) {
         node->info = info;
@@ -286,10 +276,9 @@ void LightContext_RemoveLight(PlayState* play, LightContext* lightCtx, LightNode
 // unused
 Lights* Lights_NewAndDraw(GraphicsContext* gfxCtx, u8 ambientR, u8 ambientG, u8 ambientB, u8 numLights, u8 r, u8 g,
                           u8 b, s8 x, s8 y, s8 z) {
-    Lights* lights;
     s32 i;
 
-    lights = Graph_Alloc(gfxCtx, sizeof(Lights));
+    Lights* lights = Graph_Alloc(gfxCtx, sizeof(Lights));
 
     lights->l.a.l.col[0] = lights->l.a.l.colc[0] = ambientR;
     lights->l.a.l.col[1] = lights->l.a.l.colc[1] = ambientG;
@@ -311,9 +300,8 @@ Lights* Lights_NewAndDraw(GraphicsContext* gfxCtx, u8 ambientR, u8 ambientG, u8 
 }
 
 Lights* Lights_New(GraphicsContext* gfxCtx, u8 ambientR, u8 ambientG, u8 ambientB) {
-    Lights* lights;
 
-    lights = Graph_Alloc(gfxCtx, sizeof(Lights));
+    Lights* lights = Graph_Alloc(gfxCtx, sizeof(Lights));
 
     lights->l.a.l.col[0] = lights->l.a.l.colc[0] = ambientR;
     lights->l.a.l.col[1] = lights->l.a.l.colc[1] = ambientG;
@@ -324,34 +312,28 @@ Lights* Lights_New(GraphicsContext* gfxCtx, u8 ambientR, u8 ambientG, u8 ambient
 }
 
 void Lights_GlowCheckPrepare(PlayState* play) {
-    LightNode* node;
-    LightPoint* params;
     Vec3f pos;
     Vec3f multDest;
     f32 wDest;
-    f32 wX;
-    f32 wY;
 
-    node = play->lightCtx.listHead;
+    LightNode* node = play->lightCtx.listHead;
 
     while (node != NULL) {
-        params = &node->info->params.point;
+        LightPoint* params = &node->info->params.point;
 
         if (node->info->type == LIGHT_POINT_GLOW) {
             f32 x, y;
-            u32 shrink;
-            uint32_t height;
 
             pos.x = params->x;
             pos.y = params->y;
             pos.z = params->z;
             func_8002BE04(play, &pos, &multDest, &wDest);
-            wX = multDest.x * wDest;
-            wY = multDest.y * wDest;
+            f32 wX = multDest.x * wDest;
+            f32 wY = multDest.y * wDest;
 
             x = wX * 160 + 160;
             y = wY * 120 + 120;
-            shrink = ShrinkWindow_GetCurrentVal();
+            u32 shrink = ShrinkWindow_GetCurrentVal();
 
             if ((multDest.z > 1.0f) && y >= shrink && y <= SCREEN_HEIGHT - shrink) {
                 OTRGetPixelDepthPrepare(x, y);
@@ -362,41 +344,33 @@ void Lights_GlowCheckPrepare(PlayState* play) {
 }
 
 void Lights_GlowCheck(PlayState* play) {
-    LightNode* node;
-    LightPoint* params;
     Vec3f pos;
     Vec3f multDest;
     f32 wDest;
-    f32 wX;
-    f32 wY;
-    s32 wZ;
-    s32 zBuf;
 
-    node = play->lightCtx.listHead;
+    LightNode* node = play->lightCtx.listHead;
 
     while (node != NULL) {
-        params = &node->info->params.point;
+        LightPoint* params = &node->info->params.point;
 
         if (node->info->type == LIGHT_POINT_GLOW) {
             f32 x, y;
-            u32 shrink;
-            uint32_t height;
 
             pos.x = params->x;
             pos.y = params->y;
             pos.z = params->z;
             func_8002BE04(play, &pos, &multDest, &wDest);
             params->drawGlow = false;
-            wX = multDest.x * wDest;
-            wY = multDest.y * wDest;
+            f32 wX = multDest.x * wDest;
+            f32 wY = multDest.y * wDest;
 
             x = wX * 160 + 160;
             y = wY * 120 + 120;
-            shrink = ShrinkWindow_GetCurrentVal();
+            u32 shrink = ShrinkWindow_GetCurrentVal();
 
             if ((multDest.z > 1.0f) && y >= shrink && y <= SCREEN_HEIGHT - shrink) {
-                wZ = (s32)((multDest.z * wDest) * 16352.0f) + 16352;
-                zBuf = OTRGetPixelDepth(x, y) * 4;
+                s32 wZ = (s32)((multDest.z * wDest) * 16352.0f) + 16352;
+                s32 zBuf = OTRGetPixelDepth(x, y) * 4;
 
                 if (wZ < (zBuf >> 3)) {
                     params->drawGlow = true;
@@ -408,10 +382,8 @@ void Lights_GlowCheck(PlayState* play) {
 }
 
 void Lights_DrawGlow(PlayState* play) {
-    s32 pad;
-    LightNode* node;
 
-    node = play->lightCtx.listHead;
+    LightNode* node = play->lightCtx.listHead;
 
     OPEN_DISPS(play->state.gfxCtx);
 
@@ -421,16 +393,12 @@ void Lights_DrawGlow(PlayState* play) {
     gSPDisplayList(POLY_XLU_DISP++, gGlowCircleTextureLoadDL);
 
     while (node != NULL) {
-        LightInfo* info;
-        LightPoint* params;
-        f32 scale;
-        s32 pad[4];
 
-        info = node->info;
-        params = &info->params.point;
+        LightInfo* info = node->info;
+        LightPoint* params = &info->params.point;
 
         if ((info->type == LIGHT_POINT_GLOW) && (params->drawGlow)) {
-            scale = SQ(params->radius) * 0.0000026f;
+            f32 scale = SQ(params->radius) * 0.0000026f;
 
             FrameInterpolation_RecordOpenChild(node, 0);
             gDPSetPrimColor(POLY_XLU_DISP++, 0, 0, params->color[0], params->color[1], params->color[2], 50);

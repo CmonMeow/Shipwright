@@ -7,7 +7,7 @@ s32 osPfsDeleteFile(OSPfs* pfs, u16 companyCode, u32 gameCode, u8* gameName, u8*
     __OSInode inode;
     __OSDir dir;
     __OSInodeUnit last_page;
-    u8 startpage;
+    u8 startpage = { 0 };
     u8 bank;
 
     if ((companyCode == 0) || (gameCode == 0)) {
@@ -54,13 +54,12 @@ s32 osPfsDeleteFile(OSPfs* pfs, u16 companyCode, u32 gameCode, u8* gameName, u8*
 
 s32 __osPfsReleasePages(OSPfs* pfs, __OSInode* inode, u8 initialPage, u8 bank, __OSInodeUnit* finalPage) {
     __OSInodeUnit next;
-    __OSInodeUnit prev;
     s32 ret = 0;
 
     next.ipage = (u16)((bank << 8) + initialPage);
 
     do {
-        prev = next;
+        __OSInodeUnit prev = next;
         next = inode->inodePage[next.inode_t.page];
         inode->inodePage[prev.inode_t.page].ipage = PFS_PAGE_NOT_USED;
     } while (next.ipage >= pfs->inodeStartPage && next.inode_t.bank == bank);

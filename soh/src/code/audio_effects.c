@@ -6,7 +6,7 @@
 
 void Audio_SequenceChannelProcessSound(SequenceChannel* channel, s32 recalculateVolume, s32 b) {
     f32 channelVolume;
-    f32 chanFreqScale;
+    f32 chanFreqScale = { 0 };
     s32 i;
 
     if (channel->changes.s.volume || recalculateVolume) {
@@ -86,11 +86,10 @@ void Audio_SequencePlayerProcessSound(SequencePlayer* seqPlayer) {
 }
 
 f32 Audio_GetPortamentoFreqScale(Portamento* p) {
-    u32 loResCur;
-    f32 result;
+    f32 result = { 0 };
 
     p->cur += p->speed;
-    loResCur = (p->cur >> 8) & 0xFF;
+    u32 loResCur = (p->cur >> 8) & 0xFF;
 
     if (loResCur >= 127) {
         loResCur = 127;
@@ -102,20 +101,19 @@ f32 Audio_GetPortamentoFreqScale(Portamento* p) {
 }
 
 s16 Audio_GetVibratoPitchChange(VibratoState* vib) {
-    s32 index;
     vib->time += (s32)vib->rate;
-    index = (vib->time >> 10) & 0x3F;
+    s32 index = (vib->time >> 10) & 0x3F;
     return vib->curve[index];
 }
 
 f32 Audio_GetVibratoFreqScale(VibratoState* vib) {
     static f32 D_80130510 = 0.0f;
     static s32 D_80130514 = 0;
-    f32 pitchChange;
+    f32 pitchChange = { 0 };
     f32 extent;
-    f32 invExtent;
-    f32 result;
-    f32 temp;
+    f32 invExtent = { 0 };
+    f32 result = { 0 };
+    f32 temp = { 0 };
     SequenceChannel* channel = vib->channel;
 
     if (vib->delay != 0) {
@@ -182,12 +180,11 @@ void Audio_NoteVibratoUpdate(Note* note) {
 }
 
 void Audio_NoteVibratoInit(Note* note) {
-    VibratoState* vib;
     SequenceChannel* channel;
 
     note->playbackState.vibratoFreqScale = 1.0f;
 
-    vib = &note->vibratoState;
+    VibratoState* vib = &note->vibratoState;
 
     vib->active = 1;
     vib->time = 0;

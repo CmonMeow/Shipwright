@@ -3,10 +3,9 @@
 #include <assert.h>
 
 s32 Object_Spawn(ObjectContext* objectCtx, s16 objectId) {
-    size_t size;
 
     objectCtx->status[objectCtx->num].id = objectId;
-    size = gObjectTable[objectId].vromEnd - gObjectTable[objectId].vromStart;
+    size_t size = gObjectTable[objectId].vromEnd - gObjectTable[objectId].vromStart;
 
     osSyncPrintf("OBJECT[%d] SIZE %fK SEG=%x\n", objectId, size / 1024.0f, objectCtx->status[objectCtx->num].segment);
 

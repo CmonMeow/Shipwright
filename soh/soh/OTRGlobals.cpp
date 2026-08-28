@@ -120,10 +120,7 @@ OTRGlobals::OTRGlobals() {
     context->InitWindow(sohFast3dWindow);
 }
 
-void OTRGlobals::RunExtract(int argc, char* argv[]) {
-    (void)argc;
-    (void)argv;
-
+void OTRGlobals::RunExtract() {
     if (gameArchiveVersionMatch && std::filesystem::exists(gameArchivePath)) {
         return;
     }
@@ -424,7 +421,7 @@ bool VerifyArchiveVersion(OTRVersion version) {
 
 extern "C" void InitOTR(int argc, char* argv[]) {
     OTRGlobals::Instance = new OTRGlobals();
-    OTRGlobals::Instance->RunExtract(argc, argv);
+    OTRGlobals::Instance->RunExtract();
 
     OTRGlobals::Instance->Initialize();
     InitColViewer();

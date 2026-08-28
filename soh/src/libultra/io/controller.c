@@ -15,7 +15,7 @@ u32 gOSContInitialized = 0;
 s32 osContInit(OSMesgQueue* mq, u8* ctlBitfield, OSContStatus* status) {
     OSMesg mesg;
     s32 ret = 0;
-    OSTime currentTime;
+    OSTime currentTime = { 0 };
     OSTimer timer;
     OSMesgQueue timerqueue;
 
@@ -45,12 +45,11 @@ s32 osContInit(OSMesgQueue* mq, u8* ctlBitfield, OSContStatus* status) {
 }
 
 void __osContGetInitData(u8* ctlBitfield, OSContStatus* status) {
-    u8* bufptr;
     __OSContRequestHeader req;
     s32 i;
     u8 bitfieldTemp = 0;
 
-    bufptr = (u8*)(&__osPifInternalBuff);
+    u8* bufptr = (u8*)(&__osPifInternalBuff);
 
     for (i = 0; i < __osMaxControllers; i++, bufptr += sizeof(req), status++) {
         req = *((__OSContRequestHeader*)bufptr);
@@ -66,7 +65,7 @@ void __osContGetInitData(u8* ctlBitfield, OSContStatus* status) {
 }
 
 void __osPackRequestData(u8 poll) {
-    u8* bufptr;
+    u8* bufptr = { 0 };
     __OSContRequestHeader req;
     s32 i;
 

@@ -1,11 +1,10 @@
 #include "global.h"
 
 void GameAlloc_Log(GameAlloc* this) {
-    GameAllocEntry* iter;
 
     osSyncPrintf("this = %08x\n", this);
 
-    iter = this->base.next;
+    GameAllocEntry* iter = this->base.next;
     while (iter != &this->base) {
         osSyncPrintf("ptr = %08x size = %d\n", iter, iter->size);
         iter = iter->next;
@@ -45,10 +44,9 @@ void* GameAlloc_Malloc(GameAlloc* this, size_t size) {
 }
 
 void GameAlloc_Free(GameAlloc* this, void* data) {
-    GameAllocEntry* ptr;
 
     if (data != NULL) {
-        ptr = &((GameAllocEntry*)data)[-1];
+        GameAllocEntry* ptr = &((GameAllocEntry*)data)[-1];
         LOG_CHECK_NULL_POINTER("ptr->prev", ptr->prev);
         LOG_CHECK_NULL_POINTER("ptr->next", ptr->next);
         ptr->prev->next = ptr->next;
@@ -60,10 +58,9 @@ void GameAlloc_Free(GameAlloc* this, void* data) {
 
 void GameAlloc_Cleanup(GameAlloc* this) {
     GameAllocEntry* next = this->base.next;
-    GameAllocEntry* cur;
 
     while (&this->base != next) {
-        cur = next;
+        GameAllocEntry* cur = next;
         next = next->next;
         SYSTEM_ARENA_FREE_DEBUG(cur);
     }

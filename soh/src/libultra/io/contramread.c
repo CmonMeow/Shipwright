@@ -5,14 +5,13 @@
 s32 __osPfsLastChannel = -1;
 
 s32 __osContRamRead(OSMesgQueue* ctrlrqueue, s32 channel, u16 addr, u8* data) {
-    s32 ret;
+    s32 ret = { 0 };
     s32 i;
-    u8* bufptr;
     s32 retryCount = 2;
 
     __osSiGetAccess();
     do {
-        bufptr = (u8*)&gPifMempakBuf;
+        u8* bufptr = (u8*)&gPifMempakBuf;
 
         if ((__osContLastPoll != 2) || (__osPfsLastChannel != channel)) {
             __osContLastPoll = 2;

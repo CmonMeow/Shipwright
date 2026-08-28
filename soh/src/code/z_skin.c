@@ -5,24 +5,20 @@ MtxF gSkinLimbMatrices[60]; // holds matrices for each limb of the skeleton curr
 static s32 sUnused;
 
 void Skin_UpdateVertices(MtxF* mtx, SkinVertex* skinVertices, SkinLimbModif* modifEntry, Vtx* vtxBuf, Vec3f* pos) {
-    Vtx* vtx;
     SkinVertex* vertexEntry;
-    f32 xwTemp;
-    f32 ywTemp;
-    f32 zwTemp;
     Vec3f normal;
     Vec3f sp64;
 
     for (vertexEntry = skinVertices; vertexEntry < &skinVertices[modifEntry->vtxCount]; vertexEntry++) {
-        vtx = &vtxBuf[vertexEntry->index];
+        Vtx* vtx = &vtxBuf[vertexEntry->index];
 
         vtx->n.ob[0] = pos->x;
         vtx->n.ob[1] = pos->y;
         vtx->n.ob[2] = pos->z;
 
-        xwTemp = mtx->xw;
-        ywTemp = mtx->yw;
-        zwTemp = mtx->zw;
+        f32 xwTemp = mtx->xw;
+        f32 ywTemp = mtx->yw;
+        f32 zwTemp = mtx->zw;
 
         mtx->xw = mtx->yw = mtx->zw = 0.0f;
 
@@ -43,36 +39,25 @@ void Skin_UpdateVertices(MtxF* mtx, SkinVertex* skinVertices, SkinLimbModif* mod
 }
 
 void Skin_ApplyLimbModifications(GraphicsContext* gfxCtx, Skin* skin, s32 limbIndex, s32 arg3) {
-    s32 modifCount;
-    SkinLimb** skeleton;
-    SkinLimb* limb;
-    SkinAnimatedLimbData* data;
+    SkinTransformation* transformationEntry = { 0 };
     SkinLimbModif* modif;
-    SkinLimbVtx* vtxEntry;
-    s32 transformCount;
-    f32 scale;
-    SkinVertex* skinVertices;
-    SkinTransformation* limbTransformations;
-    Vtx* vtxBuf;
-    SkinLimbModif* modifications;
     Vec3f vtxPoint;
     Vec3f spD0;
-    SkinTransformation* transformationEntry;
 
     OPEN_DISPS(gfxCtx);
 
-    skeleton = (SkinLimb**)SEGMENTED_TO_VIRTUAL(skin->skeletonHeader->segment);
-    data = SEGMENTED_TO_VIRTUAL(((SkinLimb*)SEGMENTED_TO_VIRTUAL(skeleton[limbIndex]))->segment);
-    modifications = (SkinLimbModif*)SEGMENTED_TO_VIRTUAL(data->limbModifications);
+    SkinLimb** skeleton = (SkinLimb**)SEGMENTED_TO_VIRTUAL(skin->skeletonHeader->segment);
+    SkinAnimatedLimbData* data = SEGMENTED_TO_VIRTUAL(((SkinLimb*)SEGMENTED_TO_VIRTUAL(skeleton[limbIndex]))->segment);
+    SkinLimbModif* modifications = (SkinLimbModif*)SEGMENTED_TO_VIRTUAL(data->limbModifications);
 
-    vtxEntry = &skin->vtxTable[limbIndex];
-    vtxBuf = vtxEntry->buf[vtxEntry->index];
-    modifCount = data->limbModifCount;
+    SkinLimbVtx* vtxEntry = &skin->vtxTable[limbIndex];
+    Vtx* vtxBuf = vtxEntry->buf[vtxEntry->index];
+    s32 modifCount = data->limbModifCount;
 
     for (modif = modifications; modif < modifications + modifCount; modif++) {
-        transformCount = modif->transformCount;
-        skinVertices = (SkinVertex*)SEGMENTED_TO_VIRTUAL(modif->skinVertices);
-        limbTransformations = (SkinTransformation*)SEGMENTED_TO_VIRTUAL(modif->limbTransformations);
+        s32 transformCount = modif->transformCount;
+        SkinVertex* skinVertices = (SkinVertex*)SEGMENTED_TO_VIRTUAL(modif->skinVertices);
+        SkinTransformation* limbTransformations = (SkinTransformation*)SEGMENTED_TO_VIRTUAL(modif->limbTransformations);
 
         if (transformCount == 1) {
             Vec3f spAC;
@@ -100,7 +85,7 @@ void Skin_ApplyLimbModifications(GraphicsContext* gfxCtx, Skin* skin, s32 limbIn
 
             for (transformationEntry = &limbTransformations[0];
                  transformationEntry < &limbTransformations[transformCount]; transformationEntry++) {
-                scale = transformationEntry->scale * 0.01f;
+                f32 scale = transformationEntry->scale * 0.01f;
 
                 sp88.x = transformationEntry->x;
                 sp88.y = transformationEntry->y;
@@ -138,13 +123,11 @@ void Skin_ApplyLimbModifications(GraphicsContext* gfxCtx, Skin* skin, s32 limbIn
  * The vertices of this limb are modified dynamically
  */
 void Skin_DrawAnimatedLimb(GraphicsContext* gfxCtx, Skin* skin, s32 limbIndex, s32 arg3, s32 drawFlags) {
-    SkinLimb** skeleton;
-    SkinAnimatedLimbData* data;
 
     OPEN_DISPS(gfxCtx);
 
-    skeleton = SEGMENTED_TO_VIRTUAL(skin->skeletonHeader->segment);
-    data = SEGMENTED_TO_VIRTUAL(((SkinLimb*)SEGMENTED_TO_VIRTUAL(skeleton[limbIndex]))->segment);
+    SkinLimb** skeleton = SEGMENTED_TO_VIRTUAL(skin->skeletonHeader->segment);
+    SkinAnimatedLimbData* data = SEGMENTED_TO_VIRTUAL(((SkinLimb*)SEGMENTED_TO_VIRTUAL(skeleton[limbIndex]))->segment);
 
     if (!(drawFlags & SKIN_DRAW_FLAG_CUSTOM_TRANSFORMS)) {
         Skin_ApplyLimbModifications(gfxCtx, skin, limbIndex, arg3);
@@ -160,12 +143,10 @@ void Skin_DrawAnimatedLimb(GraphicsContext* gfxCtx, Skin* skin, s32 limbIndex, s
  */
 void Skin_DrawLimb(GraphicsContext* gfxCtx, Skin* skin, s32 limbIndex, Gfx* dlistOverride, s32 drawFlags) {
     Gfx* gfx = dlistOverride;
-    SkinLimb** skeleton;
-    s32 pad;
 
     OPEN_DISPS(gfxCtx);
 
-    skeleton = SEGMENTED_TO_VIRTUAL(skin->skeletonHeader->segment);
+    SkinLimb** skeleton = SEGMENTED_TO_VIRTUAL(skin->skeletonHeader->segment);
 
     if (dlistOverride == NULL) {
         gfx = ((SkinLimb*)SEGMENTED_TO_VIRTUAL(skeleton[limbIndex]))->segment;
@@ -188,10 +169,8 @@ void Skin_DrawLimb(GraphicsContext* gfxCtx, Skin* skin, s32 limbIndex, Gfx* dlis
 void Skin_DrawImpl(Actor* actor, PlayState* play, Skin* skin, SkinPostDraw postDraw,
                    SkinOverrideLimbDraw overrideLimbDraw, s32 setTranslation, s32 arg6, s32 drawFlags) {
     s32 i;
-    s32 segmentType;
-    SkinLimb** skeleton;
+    SkinLimb** skeleton = { 0 };
     GraphicsContext* gfxCtx = play->state.gfxCtx;
-    s32 pad;
 
     OPEN_DISPS(gfxCtx);
 
@@ -202,10 +181,9 @@ void Skin_DrawImpl(Actor* actor, PlayState* play, Skin* skin, SkinPostDraw postD
     skeleton = SEGMENTED_TO_VIRTUAL(skin->skeletonHeader->segment);
 
     if (!(drawFlags & SKIN_DRAW_FLAG_CUSTOM_MATRIX)) {
-        Mtx* mtx;
 
         gSPMatrix(POLY_OPA_DISP++, &gMtxClear, G_MTX_NOPUSH | G_MTX_LOAD | G_MTX_MODELVIEW);
-        mtx = SkinMatrix_MtxFToNewMtx(gfxCtx, &skin->mtx);
+        Mtx* mtx = SkinMatrix_MtxFToNewMtx(gfxCtx, &skin->mtx);
 
         if (mtx == NULL) {
             goto close_disps;
@@ -221,7 +199,7 @@ void Skin_DrawImpl(Actor* actor, PlayState* play, Skin* skin, SkinPostDraw postD
             shouldDraw = overrideLimbDraw(actor, play, i, skin);
         }
 
-        segmentType = ((SkinLimb*)SEGMENTED_TO_VIRTUAL(skeleton[i]))->segmentType;
+        s32 segmentType = ((SkinLimb*)SEGMENTED_TO_VIRTUAL(skeleton[i]))->segmentType;
 
         if (segmentType == SKIN_LIMB_TYPE_ANIMATED && shouldDraw == true) {
             Skin_DrawAnimatedLimb(gfxCtx, skin, i, arg6, drawFlags);

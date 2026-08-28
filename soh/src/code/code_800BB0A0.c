@@ -27,7 +27,7 @@ s32 func_800BB2B4(Vec3f* pos, f32* roll, f32* fov, CutsceneCameraPoint* point, s
     s32 key = *keyFrame;
     f32 speed1 = 0.0f;
     f32 speed2 = 0.0f;
-    f32 advance;
+    f32 advance = { 0 };
 
     if (key < 0) {
         progress = 0.0f;

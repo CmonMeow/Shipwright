@@ -84,8 +84,8 @@ s32 func_800435D8(PlayState* play, DynaPolyActor* dynaActor, s16 arg2, s16 arg3,
     f32 cos = Math_CosS(dynaActor->unk_158);
     s32 bgId;
     CollisionPoly* poly;
-    f32 a2;
-    f32 a3;
+    f32 a2 = { 0 };
+    f32 a3 = { 0 };
     f32 sign = (0.0f <= dynaActor->unk_150) ? 1.0f : -1.0f;
 
     a2 = (f32)arg2 - 0.1f;

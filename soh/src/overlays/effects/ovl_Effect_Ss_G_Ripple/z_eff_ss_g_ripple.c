@@ -30,12 +30,10 @@ EffectSsInit Effect_Ss_G_Ripple_InitVars = {
 };
 
 u32 EffectSsGRipple_Init(PlayState* play, u32 index, EffectSs* this, void* initParamsx) {
-    s32 pad;
     Vec3f zeroVec = { 0.0f, 0.0f, 0.0f };
-    WaterBox* waterBox;
     EffectSsGRippleInitParams* initParams = (EffectSsGRippleInitParams*)initParamsx;
 
-    waterBox = NULL;
+    WaterBox* waterBox = NULL;
     this->velocity = this->accel = zeroVec;
     this->pos = initParams->pos;
     this->gfx = SEGMENTED_TO_VIRTUAL(gEffWaterRippleDL);
@@ -61,13 +59,12 @@ u32 EffectSsGRipple_Init(PlayState* play, u32 index, EffectSs* this, void* initP
 
 void EffectSsGRipple_DrawRipple(PlayState* play, EffectSs* this, void* segment) {
     GraphicsContext* gfxCtx = play->state.gfxCtx;
-    f32 radius;
-    s32 pad;
+    f32 radius = { 0 };
     MtxF mfTrans;
     MtxF mfScale;
     MtxF mfResult;
-    Mtx* mtx;
-    f32 yPos;
+    Mtx* mtx = { 0 };
+    f32 yPos = { 0 };
 
     OPEN_DISPS(gfxCtx);
 
@@ -108,17 +105,14 @@ void EffectSsGRipple_Draw(PlayState* play, u32 index, EffectSs* this) {
 }
 
 void EffectSsGRipple_Update(PlayState* play, u32 index, EffectSs* this) {
-    f32 radius;
-    f32 primAlpha;
-    f32 envAlpha;
 
     if (DECR(this->rLifespan) == 0) {
-        radius = this->rRadius;
+        f32 radius = this->rRadius;
         Math_SmoothStepToF(&radius, this->rRadiusMax, 0.2f, 30.0f, 1.0f);
         this->rRadius = radius;
 
-        primAlpha = this->rPrimColorA;
-        envAlpha = this->rEnvColorA;
+        f32 primAlpha = this->rPrimColorA;
+        f32 envAlpha = this->rEnvColorA;
 
         Math_SmoothStepToF(&primAlpha, 0.0f, 0.2f, 15.0f, 7.0f);
         Math_SmoothStepToF(&envAlpha, 0.0f, 0.2f, 15.0f, 7.0f);

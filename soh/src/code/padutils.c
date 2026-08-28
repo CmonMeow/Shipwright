@@ -70,8 +70,8 @@ s8 PadUtils_GetRelY(Input* input) {
 void PadUtils_UpdateRelXY(Input* input) {
     s32 curX = PadUtils_GetCurX(input);
     s32 curY = PadUtils_GetCurY(input);
-    s32 relX;
-    s32 relY;
+    s32 relX = { 0 };
+    s32 relY = { 0 };
 
     if (curX > 7) {
         relX = (curX < 0x43) ? curX - 7 : 0x43 - 7;
@@ -126,8 +126,8 @@ s8 PadUtils_GetRelRY(Input* input) {
 void PadUtils_UpdateRelRXY(Input* input) {
     s32 curX = PadUtils_GetCurRX(input);
     s32 curY = PadUtils_GetCurRY(input);
-    s32 relX;
-    s32 relY;
+    s32 relX = { 0 };
+    s32 relY = { 0 };
 
     if (curX > 7) {
         relX = (curX < 0x43) ? curX - 7 : 0x43 - 7;

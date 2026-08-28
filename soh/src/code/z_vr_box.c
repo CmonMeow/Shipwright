@@ -149,24 +149,22 @@ Struct_8012AF0C D_8012AF0C[6] = {
 
 s32 func_800ADBB0(SkyboxContext* skyboxCtx, Vtx* roomVtx, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6, s32 arg7,
                   s32 arg8, s32 arg9) {
-    u32 pad42C;
-    s32 pad428;
+    u32 pad42C = { 0 };
+    s32 pad428 = { 0 };
     s32 sp424;
     s32 i;
     s32 j;
     s32 k;
-    u16 index;
     s16 phi_t1;
     s16 phi_a2_4;
     s16 phi_a0_4;
     s16 phi_t2_4;
     s16 phi_ra;
-    s32 sp358[9 * 5];
-    s32 sp2A4[9 * 5];
-    s32 sp1F0[9 * 5];
-    s32 sp13C[9 * 5];
-    s32 sp88[9 * 5];
-    s32 pad;
+    s32 sp358[9 * 5] = { 0 };
+    s32 sp2A4[9 * 5] = { 0 };
+    s32 sp1F0[9 * 5] = { 0 };
+    s32 sp13C[9 * 5] = { 0 };
+    s32 sp88[9 * 5] = { 0 };
 
     switch (arg8) {
         case 0:
@@ -228,7 +226,7 @@ s32 func_800ADBB0(SkyboxContext* skyboxCtx, Vtx* roomVtx, s32 arg2, s32 arg3, s3
         skyboxCtx->unk_138 = skyboxCtx->dListBuf[arg9 + sp424];
 
         for (i = 0; i < 0x20; i++) {
-            index = D_8012ACA0[sp424][i];
+            u16 index = D_8012ACA0[sp424][i];
 
             roomVtx[arg2 + i].v.ob[0] = sp358[index];
             roomVtx[arg2 + i].v.ob[1] = sp2A4[index];
@@ -261,23 +259,21 @@ s32 func_800ADBB0(SkyboxContext* skyboxCtx, Vtx* roomVtx, s32 arg2, s32 arg3, s3
 
 s32 func_800AE2C0(SkyboxContext* skyboxCtx, Vtx* roomVtx, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6, s32 arg7,
                   s32 arg8) {
+    s16 phi_a2_4 = { 0 };
     s32 i;
     s32 j;
     s32 k;
     s16 phi_a0_4;
     s16 phi_t1;
-    s32 temp1;
-    u16 index;
-    s16 phi_a2_4;
+    s32 temp1 = { 0 };
     s16 phi_ra;
     s16 phi_t2_4;
-    s32 temp2;
-    s32 sp2B4[5 * 5];
-    s32 sp250[5 * 5];
-    s32 sp1EC[5 * 5];
-    s32 sp188[5 * 5];
-    s32 sp124[5 * 5];
-    s32 pad;
+    s32 temp2 = { 0 };
+    s32 sp2B4[5 * 5] = { 0 };
+    s32 sp250[5 * 5] = { 0 };
+    s32 sp1EC[5 * 5] = { 0 };
+    s32 sp188[5 * 5] = { 0 };
+    s32 sp124[5 * 5] = { 0 };
 
     switch (arg8) {
         case 0:
@@ -337,7 +333,7 @@ s32 func_800AE2C0(SkyboxContext* skyboxCtx, Vtx* roomVtx, s32 arg2, s32 arg3, s3
     skyboxCtx->unk_138 = &skyboxCtx->dListBuf[2 * arg8];
 
     for (i = 0; i < 0x20; i++) {
-        index = D_8012ADD8[i];
+        u16 index = D_8012ADD8[i];
 
         roomVtx[arg2 + i].v.ob[0] = sp2B4[index];
         roomVtx[arg2 + i].v.ob[1] = sp250[index];
@@ -542,12 +538,10 @@ SkyboxTableEntry sSkyboxTable[] = {
 };
 
 void Skybox_Setup(PlayState* play, SkyboxContext* skyboxCtx, s16 skyboxId) {
-    size_t size;
     s16 i;
     u8 sp41; // imageIdx
     u8 sp40; // imageIdx2
-    uintptr_t start;
-    s32 phi_v1;
+    s32 phi_v1 = { 0 };
 
     switch (skyboxId) {
         case SKYBOX_NORMAL_SKY:

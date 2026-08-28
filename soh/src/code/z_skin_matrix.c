@@ -60,10 +60,6 @@ void SkinMatrix_Vec3fMtxFMultXYZ(MtxF* mf, Vec3f* src, Vec3f* dest) {
  * mfB and dest should not be the same matrix.
  */
 void SkinMatrix_MtxFMtxFMult(MtxF* mfA, MtxF* mfB, MtxF* dest) {
-    f32 cx;
-    f32 cy;
-    f32 cz;
-    f32 cw;
     //---ROW1---
     f32 rx = mfA->xx;
     f32 ry = mfA->xy;
@@ -71,10 +67,10 @@ void SkinMatrix_MtxFMtxFMult(MtxF* mfA, MtxF* mfB, MtxF* dest) {
     f32 rw = mfA->xw;
     //--------
 
-    cx = mfB->xx;
-    cy = mfB->yx;
-    cz = mfB->zx;
-    cw = mfB->wx;
+    f32 cx = mfB->xx;
+    f32 cy = mfB->yx;
+    f32 cz = mfB->zx;
+    f32 cw = mfB->wx;
     dest->xx = (rx * cx) + (ry * cy) + (rz * cz) + (rw * cw);
 
     cx = mfB->xy;
@@ -239,16 +235,13 @@ void SkinMatrix_MtxFCopy(MtxF* src, MtxF* dest) {
 s32 SkinMatrix_Invert(MtxF* src, MtxF* dest) {
     MtxF mfCopy;
     s32 i;
-    s32 pad;
-    f32 temp2;
-    f32 temp1;
+    f32 temp1 = { 0 };
     s32 thisCol;
-    s32 thisRow;
 
     SkinMatrix_MtxFCopy(src, &mfCopy);
     SkinMatrix_Clear(dest);
     for (thisCol = 0; thisCol < 4; thisCol++) {
-        thisRow = thisCol;
+        s32 thisRow = thisCol;
         while ((thisRow < 4) && (fabsf(mfCopy.mf[thisCol][thisRow]) < 0.0005f)) {
             thisRow++;
         }
@@ -270,7 +263,7 @@ s32 SkinMatrix_Invert(MtxF* src, MtxF* dest) {
                 mfCopy.mf[i][thisRow] = mfCopy.mf[i][thisCol];
                 mfCopy.mf[i][thisCol] = temp1;
 
-                temp2 = dest->mf[i][thisRow];
+                f32 temp2 = dest->mf[i][thisRow];
                 dest->mf[i][thisRow] = dest->mf[i][thisCol];
                 dest->mf[i][thisCol] = temp2;
             }
@@ -322,11 +315,11 @@ void SkinMatrix_SetScale(MtxF* mf, f32 x, f32 y, f32 z) {
  * Produces a rotation matrix using ZYX Tait-Bryan angles.
  */
 void SkinMatrix_SetRotateZYX(MtxF* mf, s16 x, s16 y, s16 z) {
-    f32 cos;
+    f32 cos = { 0 };
     f32 sinZ = Math_SinS(z);
     f32 cosZ = Math_CosS(z);
     f32 xy;
-    f32 sin;
+    f32 sin = { 0 };
     f32 xz;
     f32 yy;
     f32 yz;
@@ -383,11 +376,11 @@ void SkinMatrix_SetRotateZYX(MtxF* mf, s16 x, s16 y, s16 z) {
  * Produces a rotation matrix using YXZ Tait-Bryan angles.
  */
 void SkinMatrix_SetRotateYXZ(MtxF* mf, s16 x, s16 y, s16 z) {
-    f32 cos;
+    f32 cos = { 0 };
     f32 sinY = Math_SinS(y);
     f32 cosY = Math_CosS(y);
     f32 zx;
-    f32 sin;
+    f32 sin = { 0 };
     f32 zy;
     f32 xx;
     f32 xy;
@@ -539,25 +532,16 @@ Mtx* SkinMatrix_MtxFToNewMtx(GraphicsContext* gfxCtx, MtxF* src) {
  * NB: the rotation axis is assumed to be a unit vector.
  */
 void SkinMatrix_SetRotateAxis(MtxF* mf, s16 angle, f32 axisX, f32 axisY, f32 axisZ) {
-    f32 sinA;
-    f32 cosA;
-    f32 xx;
-    f32 yy;
-    f32 zz;
-    f32 xy;
-    f32 yz;
-    f32 xz;
-    f32 pad;
 
-    sinA = Math_SinS(angle);
-    cosA = Math_CosS(angle);
+    f32 sinA = Math_SinS(angle);
+    f32 cosA = Math_CosS(angle);
 
-    xx = axisX * axisX;
-    yy = axisY * axisY;
-    zz = axisZ * axisZ;
-    xy = axisX * axisY;
-    yz = axisY * axisZ;
-    xz = axisX * axisZ;
+    f32 xx = axisX * axisX;
+    f32 yy = axisY * axisY;
+    f32 zz = axisZ * axisZ;
+    f32 xy = axisX * axisY;
+    f32 yz = axisY * axisZ;
+    f32 xz = axisX * axisZ;
 
     mf->xx = (1.0f - xx) * cosA + xx;
     mf->yx = (1.0f - cosA) * xy + axisZ * sinA;
@@ -579,34 +563,21 @@ void SkinMatrix_SetRotateAxis(MtxF* mf, s16 angle, f32 axisX, f32 axisY, f32 axi
 }
 
 void func_800A8030(MtxF* mf, f32* arg1) {
-    f32 n;
-    f32 xNorm;
-    f32 yNorm;
-    f32 zNorm;
-    f32 wxNorm;
-    f32 wyNorm;
-    f32 wzNorm;
-    f32 xxNorm;
-    f32 xyNorm;
-    f32 xzNorm;
-    f32 yyNorm;
-    f32 yzNorm;
-    f32 zzNorm;
 
-    n = 2.0f / ((arg1[3] * arg1[3]) + ((arg1[2] * arg1[2]) + ((arg1[1] * arg1[1]) + (arg1[0] * arg1[0]))));
-    xNorm = arg1[0] * n;
-    yNorm = arg1[1] * n;
-    zNorm = arg1[2] * n;
+    f32 n = 2.0f / ((arg1[3] * arg1[3]) + ((arg1[2] * arg1[2]) + ((arg1[1] * arg1[1]) + (arg1[0] * arg1[0]))));
+    f32 xNorm = arg1[0] * n;
+    f32 yNorm = arg1[1] * n;
+    f32 zNorm = arg1[2] * n;
 
-    wxNorm = arg1[3] * xNorm;
-    wyNorm = arg1[3] * yNorm;
-    wzNorm = arg1[3] * zNorm;
-    xxNorm = arg1[0] * xNorm;
-    xyNorm = arg1[0] * yNorm;
-    xzNorm = arg1[0] * zNorm;
-    yyNorm = arg1[1] * yNorm;
-    yzNorm = arg1[1] * zNorm;
-    zzNorm = arg1[2] * zNorm;
+    f32 wxNorm = arg1[3] * xNorm;
+    f32 wyNorm = arg1[3] * yNorm;
+    f32 wzNorm = arg1[3] * zNorm;
+    f32 xxNorm = arg1[0] * xNorm;
+    f32 xyNorm = arg1[0] * yNorm;
+    f32 xzNorm = arg1[0] * zNorm;
+    f32 yyNorm = arg1[1] * yNorm;
+    f32 yzNorm = arg1[1] * zNorm;
+    f32 zzNorm = arg1[2] * zNorm;
 
     mf->xx = (1.0f - (yyNorm + zzNorm));
     mf->yx = (xyNorm + wzNorm);

@@ -31,12 +31,11 @@ s32 osPfsReadWriteFile(OSPfs* pfs, s32 fileNo, u8 flag, s32 offset, ssize_t size
     s32 ret;
     __OSDir dir;
     __OSInode inode;
-    __OSInodeUnit curPage;
-    s32 curBlock;
+    __OSInodeUnit curPage = { 0 };
+    s32 curBlock = { 0 };
     s32 blockSize;
-    u8* buffer;
-    u8 bank;
-    u16 blockno;
+    u8* buffer = { 0 };
+    u8 bank = { 0 };
 
     if ((fileNo >= pfs->dir_size) || (fileNo < 0)) {
         return PFS_ERR_INVALID;
@@ -97,7 +96,7 @@ s32 osPfsReadWriteFile(OSPfs* pfs, s32 fileNo, u8 flag, s32 offset, ssize_t size
             return ret;
         }
 
-        blockno = curPage.inode_t.page * PFS_ONE_PAGE + curBlock;
+        u16 blockno = curPage.inode_t.page * PFS_ONE_PAGE + curBlock;
         if (flag == PFS_READ) {
             ret = __osContRamRead(pfs->queue, pfs->channel, blockno, buffer);
         } else {

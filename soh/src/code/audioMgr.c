@@ -3,9 +3,8 @@
 #include "soh/OTRGlobals.h"
 
 void func_800C3C80(AudioMgr* audioMgr) {
-    AudioTask* task;
 
-    task = audioMgr->rspTask;
+    AudioTask* task = audioMgr->rspTask;
     if (audioMgr->rspTask->taskQueue != NULL) {
         osSendMesgPtr(task->taskQueue, NULL, OS_MESG_BLOCK);
     }
@@ -98,7 +97,6 @@ void AudioMgr_Init(AudioMgr* audioMgr, void* stack, OSPri pri, OSId id, SchedCon
     static bool hasInitialized = false;
 
     if (!hasInitialized) {
-        IrqMgrClient irqClient;
 
         osSyncPrintf("オーディオマネージャスレッド実行開始\n"); // "Start running audio manager thread"
         Audio_Init();

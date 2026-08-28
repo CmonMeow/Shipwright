@@ -2,16 +2,15 @@
 #include "global.h"
 
 s32 osPfsInitPak(OSMesgQueue* queue, OSPfs* pfs, s32 channel) {
-    s32 ret;
     u16 sum;
     u16 isum;
     u8 temp[BLOCKSIZE];
-    __OSPackId* id;
+    __OSPackId* id = { 0 };
     __OSPackId newid;
 
     __osSiGetAccess();
 
-    ret = __osPfsGetStatus(queue, channel);
+    s32 ret = __osPfsGetStatus(queue, channel);
 
     __osSiRelAccess();
 

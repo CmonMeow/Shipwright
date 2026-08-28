@@ -161,12 +161,12 @@ void HealthMeter_Init(PlayState* play) {
 void HealthMeter_Update(PlayState* play) {
     InterfaceContext* interfaceCtx = &play->interfaceCtx;
     f32 factor = interfaceCtx->unk_1FE * 0.1f;
-    f32 ddFactor;
+    f32 ddFactor = { 0 };
     s32 type = 0;
-    s32 ddType;
-    s16 rFactor;
-    s16 gFactor;
-    s16 bFactor;
+    s32 ddType = { 0 };
+    s16 rFactor = { 0 };
+    s16 gFactor = { 0 };
+    s16 bFactor = { 0 };
 
     Top_LM_Margin = (0);
     Left_LM_Margin = (0);
@@ -319,8 +319,7 @@ static void* sHeartDDTextures[] = {
 };
 
 s16 getHealthMeterXOffset() {
-    s16 X_Margins;
-    X_Margins = 0;
+    s16 X_Margins = 0;
 
     
         return OTRGetDimensionFromLeftEdge(0.0f) + X_Margins;
@@ -328,8 +327,7 @@ s16 getHealthMeterXOffset() {
 }
 
 s16 getHealthMeterYOffset() {
-    s16 Y_Margins;
-    Y_Margins = 0;
+    s16 Y_Margins = 0;
 
     f32 HeartsScale = 0.7f;
     
@@ -338,24 +336,18 @@ s16 getHealthMeterYOffset() {
 }
 
 void HealthMeter_Draw(PlayState* play) {
-    s32 pad[5];
-    void* heartBgImg;
-    u32 curColorSet;
+    void* heartBgImg = { 0 };
+    u32 curColorSet = { 0 };
     f32 PosX_anchor;
-    f32 offsetX;
-    f32 offsetY;
+    f32 offsetX = { 0 };
+    f32 offsetY = { 0 };
     s32 i;
-    f32 temp1;
-    f32 temp2;
-    f32 temp3;
-    f32 temp4;
     InterfaceContext* interfaceCtx = &play->interfaceCtx;
     GraphicsContext* gfxCtx = play->state.gfxCtx;
     Vtx* sp154 = interfaceCtx->beatingHeartVtx;
     s32 curHeartFraction = gSaveContext.health % FULL_HEART_HEALTH;
     s16 totalHeartCount = gSaveContext.healthCapacity / FULL_HEART_HEALTH;
     s16 fullHeartCount = gSaveContext.health / FULL_HEART_HEALTH;
-    s32 pad2;
     f32 sp144 = interfaceCtx->unk_22A * 0.1f;
     s32 curCombineModeSet = 0;
     u8* curBgImgLoaded = NULL;
@@ -373,11 +365,9 @@ void HealthMeter_Draw(PlayState* play) {
 
     curColorSet = -1;
     /*
-        s16 X_Margins;
-        s16 Y_Margins;
         
-            X_Margins = 0;
-            Y_Margins = 0;
+            s16 X_Margins = 0;
+            s16 Y_Margins = 0;
         
         s16 PosX_original = OTRGetDimensionFromLeftEdge(0.0f)+X_Margins;
         s16 PosY_original = 0.0f+Y_Margins;
@@ -508,12 +498,12 @@ void HealthMeter_Draw(PlayState* play) {
                 }
             }
 
-            temp3 = offsetY;
-            temp2 = offsetX;
-            temp4 = 1.0f;   // Heart texture size
+            f32 temp3 = offsetY;
+            f32 temp2 = offsetX;
+            f32 temp4 = 1.0f;
             temp4 /= 0.68f; // Hearts Scaled size
             temp4 *= 1 << 10;
-            temp1 = 8.0f;
+            f32 temp1 = 8.0f;
             temp1 *= 0.68f;
             /*gSPWideTextureRectangle(OVERLAY_DISP++, (s32)((temp2 - temp1) * 4), (s32)((temp3 - temp1) * 4),
                                 (s32)((temp2 + temp1) * 4), (s32)((temp3 + temp1) * 4), G_TX_RENDERTILE, 0, 0,
@@ -597,7 +587,7 @@ void HealthMeter_HandleCriticalAlarm(PlayState* play) {
 }
 
 u32 HealthMeter_IsCritical(void) {
-    s32 var;
+    s32 var = { 0 };
 
     if (gSaveContext.healthCapacity <= 0x50) {
         var = 0x10;

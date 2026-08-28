@@ -325,7 +325,6 @@ bool ServerCollisionWorld::LoadArchive(const std::filesystem::path& archivePath)
         std::vector<Triangle> triangles;
         triangles.reserve(polygonCount);
         for (uint32_t polygon = 0; polygon < polygonCount; ++polygon) {
-            uint16_t type = 0;
             uint16_t flagsA = 0;
             uint16_t flagsB = 0;
             uint16_t vertexC = 0;
@@ -333,13 +332,12 @@ bool ServerCollisionWorld::LoadArchive(const std::filesystem::path& archivePath)
             int16_t normalY = 0;
             int16_t normalZ = 0;
             int16_t originDistance = 0;
-            if (!reader.ReadU16(type) || !reader.ReadU16(flagsA) || !reader.ReadU16(flagsB) ||
+            if (!reader.Skip(sizeof(uint16_t)) || !reader.ReadU16(flagsA) || !reader.ReadU16(flagsB) ||
                 !reader.ReadU16(vertexC) || !reader.ReadS16(normalX) || !reader.ReadS16(normalY) ||
                 !reader.ReadS16(normalZ) || !reader.ReadS16(originDistance)) {
                 valid = false;
                 break;
             }
-            (void)type;
             if ((flagsA & kIgnoreProjectiles) != 0) {
                 continue;
             }
@@ -379,13 +377,11 @@ bool ServerCollisionWorld::LoadArchive(const std::filesystem::path& archivePath)
             int16_t zMin = 0;
             int16_t xLength = 0;
             int16_t zLength = 0;
-            int32_t properties = 0;
             if (!reader.ReadS16(xMin) || !reader.ReadS16(ySurface) || !reader.ReadS16(zMin) ||
-                !reader.ReadS16(xLength) || !reader.ReadS16(zLength) || !reader.ReadS32(properties)) {
+                !reader.ReadS16(xLength) || !reader.ReadS16(zLength) || !reader.Skip(sizeof(int32_t))) {
                 valid = false;
                 break;
             }
-            (void)properties;
             for (int32_t fishIndex = 0; fishIndex < kNormalWildFishPerWaterBox; ++fishIndex) {
                 AddWildFish(sceneFish, triangles, sceneId, waterIndex, xMin, ySurface, zMin, xLength, zLength,
                             fishIndex, false);
@@ -425,8 +421,8 @@ bool ServerCollisionWorld::LoadArchive(const std::filesystem::path& archivePath)
         }
         mScenes[sceneId] = std::move(triangles);
     }
-    for (const auto& [sceneId, ignored] : scenes) {
-        (void)ignored;
+    for (const auto& sceneEntry : scenes) {
+        const int32_t sceneId = sceneEntry.first;
         const auto existingFish = mWildFish.find(sceneId);
         if (existingFish != mWildFish.end()) {
             mWildFishCount -= existingFish->second.size();
@@ -480,8 +476,8 @@ bool ServerCollisionWorld::SegmentCast(int32_t sceneId, const ServerCollisionPoi
 }
 
 bool ServerCollisionWorld::ValidateLoadedGeometry() const {
-    for (const auto& [sceneId, triangles] : mScenes) {
-        (void)triangles;
+    for (const auto& sceneEntry : mScenes) {
+        const int32_t sceneId = sceneEntry.first;
         if (ValidateSceneGeometry(sceneId)) {
             return true;
         }

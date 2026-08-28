@@ -42,7 +42,7 @@ EffectSsInit Effect_Ss_HitMark_InitVars = {
 };
 
 u32 EffectSsHitMark_Init(PlayState* play, u32 index, EffectSs* this, void* initParamsx) {
-    s32 colorIdx;
+    s32 colorIdx = { 0 };
     EffectSsHitMarkInitParams* initParams = (EffectSsHitMarkInitParams*)initParamsx;
     this->pos = initParams->pos;
     this->gfx = SEGMENTED_TO_VIRTUAL(gEffHitMarkDL);
@@ -75,20 +75,17 @@ void EffectSsHitMark_Draw(PlayState* play, u32 index, EffectSs* this) {
     MtxF mfScale;
     MtxF mfResult;
     MtxF mfTrans11DA0;
-    Mtx* mtx;
-    f32 scale;
-    s32 pad;
 
     OPEN_DISPS(gfxCtx);
 
     SkinMatrix_SetTranslate(&mfTrans, this->pos.x, this->pos.y, this->pos.z);
-    scale = this->rScale / 100.0f;
+    f32 scale = this->rScale / 100.0f;
     SkinMatrix_SetScale(&mfScale, scale, scale, 1.0f);
     SkinMatrix_MtxFMtxFMult(&mfTrans, &play->billboardMtxF, &mfTrans11DA0);
     SkinMatrix_MtxFMtxFMult(&mfTrans11DA0, &mfScale, &mfResult);
     gSPMatrix(POLY_XLU_DISP++, &gMtxClear, G_MTX_NOPUSH | G_MTX_LOAD | G_MTX_MODELVIEW);
 
-    mtx = SkinMatrix_MtxFToNewMtx(gfxCtx, &mfResult);
+    Mtx* mtx = SkinMatrix_MtxFToNewMtx(gfxCtx, &mfResult);
 
     if (mtx != NULL) {
         gSPMatrix(POLY_XLU_DISP++, mtx, G_MTX_NOPUSH | G_MTX_LOAD | G_MTX_MODELVIEW);
@@ -102,7 +99,6 @@ void EffectSsHitMark_Draw(PlayState* play, u32 index, EffectSs* this) {
 }
 
 void EffectSsHitMark_Update(PlayState* play, u32 index, EffectSs* this) {
-    s32 colorIdx;
 
     if (this->rType == EFFECT_HITMARK_DUST) {
         this->rTexIdx = (15 - this->life) / 2;
@@ -111,7 +107,7 @@ void EffectSsHitMark_Update(PlayState* play, u32 index, EffectSs* this) {
     }
 
     if (this->rTexIdx != 0) {
-        colorIdx = this->rType * 4 + 2;
+        s32 colorIdx = this->rType * 4 + 2;
         this->rPrimColorR = func_80027DD4(this->rPrimColorR, sColors[colorIdx].r, this->life + 1);
         this->rPrimColorG = func_80027DD4(this->rPrimColorG, sColors[colorIdx].g, this->life + 1);
         this->rPrimColorB = func_80027DD4(this->rPrimColorB, sColors[colorIdx].b, this->life + 1);

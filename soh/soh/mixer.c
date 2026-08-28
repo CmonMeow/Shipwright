@@ -237,9 +237,8 @@ void aResampleImpl(uint8_t flags, uint16_t pitch, RESAMPLE_STATE state) {
     int16_t* in = in_initial;
     int16_t* out = BUF_S16(rspa.out);
     int nbytes = ROUND_UP_16(rspa.nbytes);
-    uint32_t pitch_accumulator;
+    uint32_t pitch_accumulator = { 0 };
     int i;
-    int16_t* tbl;
     int32_t sample;
 
     if (flags & A_INIT) {
@@ -257,7 +256,7 @@ void aResampleImpl(uint8_t flags, uint16_t pitch, RESAMPLE_STATE state) {
 
     do {
         for (i = 0; i < 8; i++) {
-            tbl = resample_table[pitch_accumulator * 64 >> 16];
+            int16_t* tbl = resample_table[pitch_accumulator * 64 >> 16];
             sample = ((in[0] * tbl[0] + 0x4000) >> 15) + ((in[1] * tbl[1] + 0x4000) >> 15) +
                      ((in[2] * tbl[2] + 0x4000) >> 15) + ((in[3] * tbl[3] + 0x4000) >> 15);
             *out++ = clamp16(sample);
@@ -333,7 +332,7 @@ static void aMixImplRef(uint16_t count, int16_t gain, uint16_t in_addr, uint16_t
     int16_t* in = BUF_S16(in_addr);
     int16_t* out = BUF_S16(out_addr);
     int i;
-    int32_t sample;
+    int32_t sample = { 0 };
 
     if (gain == -0x8000) {
         while (nbytes > 0) {

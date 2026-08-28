@@ -1,10 +1,10 @@
 Dedicated collision loaded: 1 scenes, 781 triangles, 32 authoritative wild fish
 Client: send MAGIC_REQUEST_PLAYER to 127.0.0.1:47778
-Server: challenge 5356467c
-Client: Received challenge 5356467c
-Client: send MAGIC_CREATE_W_CHALLENGE 5356467c
+Server: challenge 107b5c64
+Client: Received challenge 107b5c64
+Client: send MAGIC_CREATE_W_CHALLENGE 107b5c64
 Server: create player 1
-Server: MAGIC_CREATE_W_CHALLENGE accepted 5356467c
+Server: MAGIC_CREATE_W_CHALLENGE accepted 107b5c64
 Server: old challenges cleared
 NetServer: new player (waiting for ProcessPlayers) - session.playerCount=0, playerId=1, bot=0, name='CmonMeow', |users|=1
 NetServer::ProcessPlayers(): users.card=1, session.playerCount=0, created=1, deleted=0

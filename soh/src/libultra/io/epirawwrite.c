@@ -2,14 +2,13 @@
 
 s32 __osEPiRawWriteIo(OSPiHandle* handle, u32 devAddr, u32 data) {
     s32 status;
-    OSPiHandle* curHandle;
 
     while (status = HW_REG(PI_STATUS_REG, u32), status & (PI_STATUS_BUSY | PI_STATUS_IOBUSY)) {
         ;
     }
 
     if (__osCurrentHandle[handle->domain]->type != handle->type) {
-        curHandle = __osCurrentHandle[handle->domain];
+        OSPiHandle* curHandle = __osCurrentHandle[handle->domain];
 
         if (handle->domain == 0) {
             if (curHandle->latency != handle->latency) {

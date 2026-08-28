@@ -42,8 +42,7 @@ void TransitionFade_Destroy(void* thisx) {
 }
 
 void TransitionFade_Update(void* thisx, s32 updateRate) {
-    s32 alpha;
-    s16 newAlpha;
+    s16 newAlpha = { 0 };
     TransitionFade* this = (TransitionFade*)thisx;
 
     switch (this->fadeType) {
@@ -60,7 +59,7 @@ void TransitionFade_Update(void* thisx, s32 updateRate) {
                 osSyncPrintf(VT_COL(RED, WHITE) "０除算! ZCommonGet fade_speed に０がはいってる" VT_RST);
             }
 
-            alpha = (255.0f * this->fadeTimer) / ((void)0, gSaveContext.transFadeDuration);
+            s32 alpha = (255.0f * this->fadeTimer) / ((void)0, gSaveContext.transFadeDuration);
             this->fadeColor.a = (this->fadeDirection != 0) ? 255 - alpha : alpha;
             break;
         case 2:
@@ -85,11 +84,10 @@ void TransitionFade_Update(void* thisx, s32 updateRate) {
 
 void TransitionFade_Draw(void* thisx, Gfx** gfxP) {
     TransitionFade* this = (TransitionFade*)thisx;
-    Gfx* gfx;
     Color_RGBA8_u32* color = &this->fadeColor;
 
     if (color->a > 0) {
-        gfx = *gfxP;
+        Gfx* gfx = *gfxP;
         gSPDisplayList(gfx++, sRCPSetupFade);
         gDPSetPrimColor(gfx++, 0, 0, color->r, color->g, color->b, color->a);
         gDPFillRectangle(gfx++, 0, 0, gScreenWidth - 1, gScreenHeight - 1);

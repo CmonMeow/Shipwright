@@ -209,8 +209,6 @@ void EnFish_Respawning_SetupFollowChild(EnFish* this) {
 }
 
 void EnFish_Respawning_FollowChild(EnFish* this, PlayState* play) {
-    s32 pad;
-
     EnFish_SetYOffset(this);
     Math_SmoothStepToF(&this->actor.speedXZ, 1.8f, 0.08f, 0.4f, 0.0f);
 
@@ -245,14 +243,10 @@ void EnFish_Respawning_SetupFleePlayer(EnFish* this) {
 }
 
 void EnFish_Respawning_FleePlayer(EnFish* this, PlayState* play) {
-    s32 pad;
-    s16 pad2;
-    s16 frames;
-    s16 yaw;
-    s16 playerClose;
+    s16 yaw = { 0 };
 
     EnFish_SetYOffset(this);
-    playerClose = EnFish_CheckXZDistanceToPlayer(this, play);
+    s16 playerClose = EnFish_CheckXZDistanceToPlayer(this, play);
     Math_SmoothStepToF(&this->actor.speedXZ, 4.2f, 0.08f, 1.4f, 0.0f);
 
     if (EnFish_XZDistanceSquared(&this->actor.world.pos, &this->actor.home.pos) > SQ(160.0f)) {
@@ -263,7 +257,7 @@ void EnFish_Respawning_FleePlayer(EnFish* this, PlayState* play) {
         Math_StepToAngleS(&this->actor.world.rot.y, yaw, 2000);
     } else if (playerClose) {
         yaw = this->actor.yawTowardsPlayer + 0x8000;
-        frames = play->state.frames;
+        s16 frames = play->state.frames;
 
         if (frames & 0x10) {
             if (frames & 0x20) {
@@ -300,12 +294,10 @@ void EnFish_Respawning_SetupApproachPlayer(EnFish* this) {
 }
 
 void EnFish_Respawning_ApproachPlayer(EnFish* this, PlayState* play) {
-    s32 pad;
+    s16 yaw = { 0 };
     Player* player = GET_PLAYER(play);
-    s32 pad2;
     Vec3f sp38;
-    s16 yaw;
-    s16 temp_a0_2;
+    s16 temp_a0_2 = { 0 };
 
     EnFish_SetYOffset(this);
     Math_SmoothStepToF(&this->actor.speedXZ, 1.8f, 0.1f, 0.5f, 0.0f);
@@ -379,13 +371,11 @@ void EnFish_Dropped_Fall(EnFish* this, PlayState* play) {
  * height and whether the sound should play again.
  */
 void EnFish_Dropped_SetupFlopOnGround(EnFish* this) {
-    s32 pad;
-    f32 randomFloat;
-    s32 playSound;
+    s32 playSound = { 0 };
 
     this->actor.gravity = -1.0f;
     this->actor.minVelocityY = -10.0f;
-    randomFloat = Rand_ZeroOne();
+    f32 randomFloat = Rand_ZeroOne();
 
     if (randomFloat < 0.1f) {
         this->actor.velocity.y = (Rand_ZeroOne() * 3.0f) + 2.5f;
@@ -414,13 +404,11 @@ void EnFish_Dropped_SetupFlopOnGround(EnFish* this) {
 }
 
 void EnFish_Dropped_FlopOnGround(EnFish* this, PlayState* play) {
-    s32 pad;
     s16 frames = play->state.frames;
-    s16 targetXRot;
 
     Math_SmoothStepToF(&this->actor.speedXZ, Rand_ZeroOne() * 0.2f, 0.1f, 0.1f, 0.0f);
 
-    targetXRot = (s16)((((frames >> 5) & 2) | ((frames >> 2) & 1)) << 0xB) * 0.3f;
+    s16 targetXRot = (s16)((((frames >> 5) & 2) | ((frames >> 2) & 1)) << 0xB) * 0.3f;
 
     if (frames & 4) {
         targetXRot = -targetXRot;
@@ -466,8 +454,6 @@ void EnFish_Dropped_SetupSwimAway(EnFish* this) {
 }
 
 void EnFish_Dropped_SwimAway(EnFish* this, PlayState* play) {
-    s32 pad;
-
     Math_SmoothStepToF(&this->actor.speedXZ, 2.8f, 0.1f, 0.4f, 0.0f);
 
     // If touching wall or not in water, turn back and slow down for one frame.
@@ -516,12 +502,10 @@ void EnFish_Unique_SetupSwimIdle(EnFish* this) {
 void EnFish_Unique_SwimIdle(EnFish* this, PlayState* play) {
     static f32 speedStopping[] = { 0.0f, 0.04f, 0.09f };
     static f32 speedMoving[] = { 0.5f, 0.1f, 0.15f };
-    f32 playSpeed;
+    f32 playSpeed = { 0 };
     u32 frames = play->gameplayFrames;
-    f32* speed;
-    s32 pad2;
-    f32 extraPlaySpeed;
-    s32 pad3;
+    f32* speed = { 0 };
+    f32 extraPlaySpeed = { 0 };
 
     if (this->actor.xzDistToPlayer < 60.0f) {
         if (this->timer < 12) {
@@ -587,7 +571,6 @@ void EnFish_Cutscene_FlopOnGround(EnFish* this, PlayState* play) {
 }
 
 void EnFish_Cutscene_WiggleFlyingThroughAir(EnFish* this, PlayState* play) {
-    s32 pad;
     f32 sp28 = Math_SinS(this->slowPhase);
     f32 sp24 = Math_SinS(this->fastPhase);
 
@@ -599,12 +582,10 @@ void EnFish_Cutscene_WiggleFlyingThroughAir(EnFish* this, PlayState* play) {
 }
 
 void EnFish_UpdateCutscene(EnFish* this, PlayState* play) {
-    s32 pad;
-    s32 pad2;
     CsCmdActorCue* csAction = play->playerActionCtx.npcActions[1];
     Vec3f startPos;
     Vec3f endPos;
-    f32 progress;
+    f32 progress = { 0 };
     s32 bgId;
 
     if (csAction == NULL) {

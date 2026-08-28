@@ -6,8 +6,6 @@ StackEntry* sStackInfoListEnd = NULL;
 
 void StackCheck_Init(StackEntry* entry, void* stackTop, void* stackBottom, u32 initValue, s32 minSpace,
                      const char* name) {
-    StackEntry* iter;
-    u32* addr;
 
     if (entry == NULL) {
         sStackInfoListStart = NULL;
@@ -17,7 +15,7 @@ void StackCheck_Init(StackEntry* entry, void* stackTop, void* stackBottom, u32 i
         entry->initValue = initValue;
         entry->minSpace = minSpace;
         entry->name = name;
-        iter = sStackInfoListStart;
+        StackEntry* iter = sStackInfoListStart;
         while (iter) {
             if (iter == entry) {
                 osSyncPrintf(VT_COL(RED, WHITE) "stackcheck_init: %08x は既にリスト中にある\n" VT_RST, entry);
@@ -39,7 +37,7 @@ void StackCheck_Init(StackEntry* entry, void* stackTop, void* stackBottom, u32 i
         }
 
         if (entry->minSpace != -1) {
-            addr = (u32*)entry->head;
+            u32* addr = (u32*)entry->head;
             while ((uintptr_t)addr < entry->tail) {
                 *addr++ = entry->initValue;
             }
@@ -74,9 +72,9 @@ void StackCheck_Cleanup(StackEntry* entry) {
 
 s32 StackCheck_GetState(StackEntry* entry) {
     u32* last;
-    size_t used;
-    size_t free;
-    s32 ret;
+    size_t used = { 0 };
+    size_t free = { 0 };
+    s32 ret = { 0 };
 
     for (last = (uintptr_t*)entry->head; (uintptr_t)last < entry->tail; last++) {
         if (entry->initValue != *last) {

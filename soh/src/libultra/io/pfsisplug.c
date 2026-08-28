@@ -70,12 +70,11 @@ void __osPfsRequestData(u8 poll) {
 }
 
 void __osPfsGetInitData(u8* pattern, OSContStatus* contData) {
-    u8* bufptr;
     __OSContRequestHeader req;
     s32 i;
     u8 bits = 0;
 
-    bufptr = (u8*)&gPifMempakBuf;
+    u8* bufptr = (u8*)&gPifMempakBuf;
 
     for (i = 0; i < __osMaxControllers; i++, bufptr += sizeof(req), contData++) {
         req = *((__OSContRequestHeader*)bufptr);

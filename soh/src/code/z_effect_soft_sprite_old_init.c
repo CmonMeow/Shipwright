@@ -10,23 +10,21 @@
 
 void EffectSs_DrawGEffect(PlayState* play, EffectSs* this, void* texture) {
     GraphicsContext* gfxCtx = play->state.gfxCtx;
-    f32 scale;
     MtxF mfTrans;
     MtxF mfScale;
     MtxF mfResult;
     MtxF mfTrans11DA0;
-    Mtx* mtx;
     void* object = play->objectCtx.status[this->rgObjBankIdx].segment;
 
     OPEN_DISPS(gfxCtx);
-    scale = this->rgScale * 0.0025f;
+    f32 scale = this->rgScale * 0.0025f;
     SkinMatrix_SetTranslate(&mfTrans, this->pos.x, this->pos.y, this->pos.z);
     SkinMatrix_SetScale(&mfScale, scale, scale, scale);
     SkinMatrix_MtxFMtxFMult(&mfTrans, &play->billboardMtxF, &mfTrans11DA0);
     SkinMatrix_MtxFMtxFMult(&mfTrans11DA0, &mfScale, &mfResult);
     gSegments[6] = VIRTUAL_TO_PHYSICAL(object);
     gSPSegment(POLY_XLU_DISP++, 0x06, object);
-    mtx = SkinMatrix_MtxFToNewMtx(gfxCtx, &mfResult);
+    Mtx* mtx = SkinMatrix_MtxFToNewMtx(gfxCtx, &mfResult);
     if (mtx != NULL) {
         gSPMatrix(POLY_XLU_DISP++, mtx, G_MTX_NOPUSH | G_MTX_LOAD | G_MTX_MODELVIEW);
         gSPSegment(POLY_XLU_DISP++, 0x08, SEGMENTED_TO_VIRTUAL(texture));

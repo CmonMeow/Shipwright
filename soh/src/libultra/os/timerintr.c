@@ -20,24 +20,21 @@ void __osTimerServicesInit(void) {
 }
 
 void __osTimerInterrupt(void) {
-    OSTimer* timer;
-    u32 sp20;
-    u32 sp1c;
 
     if (__osTimerList->next == __osTimerList) {
         return;
     }
 
     while (true) {
-        timer = __osTimerList->next;
+        OSTimer* timer = __osTimerList->next;
         if (timer == __osTimerList) {
             __osSetCompare(0);
             __osTimerCounter = 0;
             break;
         }
 
-        sp20 = osGetCount();
-        sp1c = sp20 - __osTimerCounter;
+        u32 sp20 = osGetCount();
+        u32 sp1c = sp20 - __osTimerCounter;
         __osTimerCounter = sp20;
         if (sp1c < timer->value) {
             timer->value -= sp1c;
@@ -60,8 +57,8 @@ void __osTimerInterrupt(void) {
 }
 
 void __osSetTimerIntr(OSTime time) {
-    OSTime newTime;
-    u32 prevInt;
+    OSTime newTime = { 0 };
+    u32 prevInt = { 0 };
 
     if (time < 468) {
         time = 468;

@@ -489,10 +489,9 @@ u8 Environment_SmoothStepToS8(s8* pvalue, s8 target, u8 scale, u8 step, u8 minSt
 
 f32 Environment_LerpWeight(u16 max, u16 min, u16 val) {
     f32 diff = max - min;
-    f32 ret;
 
     if (diff != 0.0f) {
-        ret = 1.0f - (max - val) / diff;
+        f32 ret = 1.0f - (max - val) / diff;
 
         if (!(ret >= 1.0f)) {
             return ret;
@@ -503,15 +502,15 @@ f32 Environment_LerpWeight(u16 max, u16 min, u16 val) {
 }
 
 f32 Environment_LerpWeightAccelDecel(u16 endFrame, u16 startFrame, u16 curFrame, u16 accelDuration, u16 decelDuration) {
-    f32 endFrameF;
-    f32 startFrameF;
-    f32 curFrameF;
-    f32 accelDurationF;
-    f32 decelDurationF;
-    f32 totalFrames;
-    f32 temp;
-    f32 framesElapsed;
-    f32 ret;
+    f32 endFrameF = { 0 };
+    f32 startFrameF = { 0 };
+    f32 curFrameF = { 0 };
+    f32 accelDurationF = { 0 };
+    f32 decelDurationF = { 0 };
+    f32 totalFrames = { 0 };
+    f32 temp = { 0 };
+    f32 framesElapsed = { 0 };
+    f32 ret = { 0 };
 
     if (curFrame <= startFrame) {
         return 0.0f;
@@ -606,7 +605,6 @@ void func_8006FB94(EnvironmentContext* envCtx, u8 unused) {
 extern SkyboxTableEntry sSkyboxTable[];
 
 void Environment_UpdateSkybox(PlayState* play, u8 skyboxId, EnvironmentContext* envCtx, SkyboxContext* skyboxCtx) {
-    size_t size;
     u8 i;
     u8 newSkybox1Index = 0xFF;
     u8 newSkybox2Index = 0xFF;
@@ -817,7 +815,6 @@ void Environment_DisableUnderwaterLights(PlayState* play) {
 
 void Environment_PrintDebugInfo(PlayState* play, Gfx** gfx) {
     GfxPrint printer;
-    s32 pad[2];
 
     GfxPrint_Init(&printer);
     GfxPrint_Open(&printer, *gfx);
@@ -882,9 +879,7 @@ void Environment_Update(PlayState* play, EnvironmentContext* envCtx, LightContex
     f32 sp88 = 0.0f;
     u16 i;
     u16 j;
-    u16 time;
     EnvLightSettings* lightSettingsList = play->envCtx.lightSettingsList;
-    s32 adjustment;
 
     if ((((void)0, gSaveContext.gameMode) != GAMEMODE_NORMAL) &&
         (((void)0, gSaveContext.gameMode) != GAMEMODE_END_CREDITS)) {
@@ -938,7 +933,7 @@ void Environment_Update(PlayState* play, EnvironmentContext* envCtx, LightContex
             gSaveContext.skyboxTime = ((void)0, gSaveContext.dayTime);
         }
 
-        time = gSaveContext.dayTime;
+        u16 time = gSaveContext.dayTime;
 
         if (time > 0xC000 || time < 0x4555) {
             gSaveContext.nightFlag = 1;
@@ -947,12 +942,10 @@ void Environment_Update(PlayState* play, EnvironmentContext* envCtx, LightContex
         }
 
         if (SREG(0) != 0 || CREG(2) != 0) {
-            Gfx* displayList;
-            Gfx* prevDisplayList;
 
             OPEN_DISPS(play->state.gfxCtx);
-            prevDisplayList = POLY_OPA_DISP;
-            displayList = Graph_GfxPlusOne(POLY_OPA_DISP);
+            Gfx* prevDisplayList = POLY_OPA_DISP;
+            Gfx* displayList = Graph_GfxPlusOne(POLY_OPA_DISP);
             gSPDisplayList(OVERLAY_DISP++, displayList);
             Environment_PrintDebugInfo(play, &displayList);
             gSPEndDisplayList(displayList++);
@@ -1185,7 +1178,7 @@ void Environment_Update(PlayState* play, EnvironmentContext* envCtx, LightContex
         envCtx->dirLight2.params.dir.z = envCtx->lightSettings.light2Dir[2];
 
         // Adjust fog near and far if necessary
-        adjustment = envCtx->lightSettings.fogNear + envCtx->adjFogNear;
+        s32 adjustment = envCtx->lightSettings.fogNear + envCtx->adjFogNear;
 
         if (adjustment <= 996) {
             lightCtx->fogNear = adjustment;
@@ -1295,11 +1288,7 @@ void Environment_Update(PlayState* play, EnvironmentContext* envCtx, LightContex
 }
 
 void Environment_DrawSunAndMoon(PlayState* play) {
-    f32 alpha;
-    f32 color;
     f32 y;
-    f32 scale;
-    f32 temp;
 
     OPEN_DISPS(play->state.gfxCtx);
 
@@ -1323,9 +1312,9 @@ void Environment_DrawSunAndMoon(PlayState* play) {
                          play->view.eye.z + play->envCtx.sunPos.z, MTXMODE_NEW);
 
         y = play->envCtx.sunPos.y / 25.0f;
-        temp = y / 80.0f;
+        f32 temp = y / 80.0f;
 
-        alpha = temp * 255.0f;
+        f32 alpha = temp * 255.0f;
         if (alpha < 0.0f) {
             alpha = 0.0f;
         }
@@ -1335,7 +1324,7 @@ void Environment_DrawSunAndMoon(PlayState* play) {
 
         alpha = 255.0f - alpha;
 
-        color = temp;
+        f32 color = temp;
         if (color < 0.0f) {
             color = 0.0f;
         }
@@ -1347,7 +1336,7 @@ void Environment_DrawSunAndMoon(PlayState* play) {
         gDPSetPrimColor(POLY_OPA_DISP++, 0, 0, 255, (u8)(color * 75.0f) + 180, (u8)(color * 155.0f) + 100, 255);
         gDPSetEnvColor(POLY_OPA_DISP++, 255, (u8)(color * 255.0f), (u8)(color * 255.0f), alpha);
 
-        scale = (color * 2.0f) + 10.0f;
+        f32 scale = (color * 2.0f) + 10.0f;
         Matrix_Scale(scale, scale, scale, MTXMODE_APPLY);
         gSPMatrix(POLY_OPA_DISP++, MATRIX_NEWMTX(play->state.gfxCtx), G_MTX_LOAD);
         Gfx_SetupDL_54Opa(play->state.gfxCtx);
@@ -1412,33 +1401,12 @@ f32 sLensFlareScales[] = { 23.0f, 12.0f, 7.0f, 5.0f, 3.0f, 10.0f, 6.0f, 2.0f, 3.
 void Environment_DrawLensFlare(PlayState* play, EnvironmentContext* envCtx, View* view, GraphicsContext* gfxCtx,
                                Vec3f pos, s32 unused, s16 scale, f32 colorIntensity, s16 screenFillAlpha, u8 arg9) {
     s16 i;
-    f32 tempX;
-    f32 tempY;
-    f32 tempZ;
-    f32 lookDirX;
-    f32 lookDirY;
-    f32 lookDirZ;
-    f32 tempX2;
-    f32 tempY2;
-    f32 tempZ2;
-    f32 posDirX;
-    f32 posDirY;
-    f32 posDirZ;
-    f32 length;
-    f32 dist;
-    f32 halfPosX;
-    f32 halfPosY;
-    f32 halfPosZ;
     f32 cosAngle;
-    f32 pad160;
-    f32 unk88Target;
     u32 isOffScreen = false;
-    f32 alpha;
-    f32 adjScale;
+    f32 alpha = { 0 };
     Vec3f screenPos;
-    f32 fogInfluence;
-    f32 temp;
-    f32 alphaScale;
+    f32 fogInfluence = { 0 };
+    f32 temp = { 0 };
     Color_RGB8 lensFlareColors[] = {
         { 155, 205, 255 }, // blue
         { 255, 255, 205 }, // yellow
@@ -1461,40 +1429,40 @@ void Environment_DrawLensFlare(PlayState* play, EnvironmentContext* envCtx, View
 
     OPEN_DISPS(gfxCtx);
 
-    dist = Math3D_Vec3f_DistXYZ(&pos, &view->eye) / 12.0f;
+    f32 dist = Math3D_Vec3f_DistXYZ(&pos, &view->eye) / 12.0f;
 
     // compute a unit vector in the look direction
-    tempX = view->lookAt.x - view->eye.x;
-    tempY = view->lookAt.y - view->eye.y;
-    tempZ = view->lookAt.z - view->eye.z;
+    f32 tempX = view->lookAt.x - view->eye.x;
+    f32 tempY = view->lookAt.y - view->eye.y;
+    f32 tempZ = view->lookAt.z - view->eye.z;
 
-    length = sqrtf(SQ(tempX) + SQ(tempY) + SQ(tempZ));
+    f32 length = sqrtf(SQ(tempX) + SQ(tempY) + SQ(tempZ));
 
-    lookDirX = tempX / length;
-    lookDirY = tempY / length;
-    lookDirZ = tempZ / length;
+    f32 lookDirX = tempX / length;
+    f32 lookDirY = tempY / length;
+    f32 lookDirZ = tempZ / length;
 
     // compute a position along the look vector half as far as pos
-    halfPosX = view->eye.x + lookDirX * (dist * 6.0f);
-    halfPosY = view->eye.y + lookDirY * (dist * 6.0f);
-    halfPosZ = view->eye.z + lookDirZ * (dist * 6.0f);
+    f32 halfPosX = view->eye.x + lookDirX * (dist * 6.0f);
+    f32 halfPosY = view->eye.y + lookDirY * (dist * 6.0f);
+    f32 halfPosZ = view->eye.z + lookDirZ * (dist * 6.0f);
 
     // compute a unit vector in the direction from halfPos to pos
-    tempX2 = pos.x - halfPosX;
-    tempY2 = pos.y - halfPosY;
-    tempZ2 = pos.z - halfPosZ;
+    f32 tempX2 = pos.x - halfPosX;
+    f32 tempY2 = pos.y - halfPosY;
+    f32 tempZ2 = pos.z - halfPosZ;
 
     length = sqrtf(SQ(tempX2) + SQ(tempY2) + SQ(tempZ2));
 
-    posDirX = tempX2 / length;
-    posDirY = tempY2 / length;
-    posDirZ = tempZ2 / length;
+    f32 posDirX = tempX2 / length;
+    f32 posDirY = tempY2 / length;
+    f32 posDirZ = tempZ2 / length;
 
     // compute the cosine of the angle between lookDir and posDir
     cosAngle = (lookDirX * posDirX + lookDirY * posDirY + lookDirZ * posDirZ) /
                sqrtf((SQ(lookDirX) + SQ(lookDirY) + SQ(lookDirZ)) * (SQ(posDirX) + SQ(posDirY) + SQ(posDirZ)));
 
-    unk88Target = cosAngle * 3.5f;
+    f32 unk88Target = cosAngle * 3.5f;
     unk88Target = CLAMP_MAX(unk88Target, 1.0f);
 
     if (arg9 == 0) {
@@ -1524,7 +1492,7 @@ void Environment_DrawLensFlare(PlayState* play, EnvironmentContext* envCtx, View
 
             Matrix_Translate(-posDirX * i * dist, -posDirY * i * dist, -posDirZ * i * dist, MTXMODE_APPLY);
 
-            adjScale = sLensFlareScales[i] * cosAngle;
+            f32 adjScale = sLensFlareScales[i] * cosAngle;
 
             if (arg9) {
                 adjScale *= 0.001 * (scale + 630.0f * temp);
@@ -1574,7 +1542,7 @@ void Environment_DrawLensFlare(PlayState* play, EnvironmentContext* envCtx, View
             FrameInterpolation_RecordCloseChild();
         }
 
-        alphaScale = cosAngle - (1.5f - cosAngle);
+        f32 alphaScale = cosAngle - (1.5f - cosAngle);
 
         if (screenFillAlpha != 0) {
             if (alphaScale > 0.0f) {
@@ -1621,19 +1589,7 @@ f32 func_800746DC(void) {
 
 void Environment_DrawRain(PlayState* play, View* view, GraphicsContext* gfxCtx) {
     s16 i;
-    s32 pad;
     Vec3f vec;
-    f32 temp1;
-    f32 temp2;
-    f32 temp3;
-    f32 length;
-    f32 rotX;
-    f32 rotY;
-    f32 x50;
-    f32 y50;
-    f32 z50;
-    f32 x280;
-    f32 z280;
     Vec3f unused = { 0.0f, 0.0f, 0.0f };
     Vec3f windDirection = { 0.0f, 0.0f, 0.0f };
     Player* player = GET_PLAYER(play);
@@ -1645,18 +1601,18 @@ void Environment_DrawRain(PlayState* play, View* view, GraphicsContext* gfxCtx) 
         vec.y = view->lookAt.y - view->eye.y;
         vec.z = view->lookAt.z - view->eye.z;
 
-        length = sqrtf(SQXYZ(vec));
+        f32 length = sqrtf(SQXYZ(vec));
 
-        temp1 = vec.x / length;
-        temp2 = vec.y / length;
-        temp3 = vec.z / length;
+        f32 temp1 = vec.x / length;
+        f32 temp2 = vec.y / length;
+        f32 temp3 = vec.z / length;
 
-        x50 = view->eye.x + temp1 * 50.0f;
-        y50 = view->eye.y + temp2 * 50.0f;
-        z50 = view->eye.z + temp3 * 50.0f;
+        f32 x50 = view->eye.x + temp1 * 50.0f;
+        f32 y50 = view->eye.y + temp2 * 50.0f;
+        f32 z50 = view->eye.z + temp3 * 50.0f;
 
-        x280 = view->eye.x + temp1 * 280.0f;
-        z280 = view->eye.z + temp3 * 280.0f;
+        f32 x280 = view->eye.x + temp1 * 280.0f;
+        f32 z280 = view->eye.z + temp3 * 280.0f;
 
         if (play->envCtx.unk_EE[1]) {
             gDPPipeSync(POLY_XLU_DISP++);
@@ -1685,8 +1641,8 @@ void Environment_DrawRain(PlayState* play, View* view, GraphicsContext* gfxCtx) 
             length = sqrtf(SQXZ(vec));
 
             gSPMatrix(POLY_XLU_DISP++, SEG_ADDR(1, 0), G_MTX_NOPUSH | G_MTX_MUL | G_MTX_MODELVIEW);
-            rotX = Math_Atan2F(length, -vec.y);
-            rotY = Math_Atan2F(vec.z, vec.x);
+            f32 rotX = Math_Atan2F(length, -vec.y);
+            f32 rotY = Math_Atan2F(vec.z, vec.x);
             Matrix_RotateY(-rotY, MTXMODE_APPLY);
             Matrix_RotateX(M_PI / 2 - rotX, MTXMODE_APPLY);
             Matrix_Scale(0.4f, 1.2f, 0.4f, MTXMODE_APPLY);
@@ -1757,13 +1713,12 @@ void func_80074CE8(PlayState* play, u32 arg1) {
  */
 void Environment_DrawSkyboxFilters(PlayState* play) {
     if (((play->skyboxId != SKYBOX_NONE) && (play->lightCtx.fogNear < 980)) || (play->skyboxId == SKYBOX_UNSET_1D)) {
-        f32 alpha;
 
         OPEN_DISPS(play->state.gfxCtx);
 
         Gfx_SetupDL_57Opa(play->state.gfxCtx);
 
-        alpha = (1000 - play->lightCtx.fogNear) * 0.02f;
+        f32 alpha = (1000 - play->lightCtx.fogNear) * 0.02f;
 
         if (play->skyboxId == SKYBOX_UNSET_1D) {
             alpha = 1.0f;
@@ -1906,11 +1861,9 @@ void Environment_DrawLightning(PlayState* play, s32 unused) {
         gEffLightning7Tex, gEffLightning8Tex, NULL,
     };
     s16 i;
-    f32 dx;
-    f32 dz;
+    f32 dx = { 0 };
     f32 x;
     f32 z;
-    s32 pad[2];
     Vec3f unused1 = { 0.0f, 0.0f, 0.0f };
     Vec3f unused2 = { 0.0f, 0.0f, 0.0f };
 
@@ -1922,7 +1875,7 @@ void Environment_DrawLightning(PlayState* play, s32 unused) {
         switch (sLightningBolts[i].state) {
             case LIGHTNING_BOLT_START:
                 dx = play->view.lookAt.x - play->view.eye.x;
-                dz = play->view.lookAt.z - play->view.eye.z;
+                f32 dz = play->view.lookAt.z - play->view.eye.z;
 
                 x = dx / sqrtf(SQ(dx) + SQ(dz));
                 z = dz / sqrtf(SQ(dx) + SQ(dz));
@@ -2205,17 +2158,16 @@ void Environment_PatchSandstorm(PlayState* play) {
 }
 
 void Environment_DrawSandstorm(PlayState* play, u8 sandstormState) {
-    s32 primA1;
-    s32 envA1;
+    s32 primA1 = { 0 };
+    s32 envA1 = { 0 };
     s32 primA = play->envCtx.sandstormPrimA;
     s32 envA = play->envCtx.sandstormEnvA;
     Color_RGBA8 primColor;
     Color_RGBA8 envColor;
-    s32 pad;
-    f32 sp98;
-    u16 sp96;
-    u16 sp94;
-    u16 sp92;
+    f32 sp98 = { 0 };
+    u16 sp96 = { 0 };
+    u16 sp94 = { 0 };
+    u16 sp92 = { 0 };
 
     Environment_PatchSandstorm(play);
 
@@ -2333,14 +2285,13 @@ void Environment_DrawSandstorm(PlayState* play, u8 sandstormState) {
 }
 
 void Environment_AdjustLights(PlayState* play, f32 arg1, f32 arg2, f32 arg3, f32 arg4) {
-    f32 temp;
     s32 i;
 
     if (play->roomCtx.curRoom.behaviorType1 != ROOM_BEHAVIOR_TYPE1_5 && func_800C0CB8(play)) {
         arg1 = CLAMP_MIN(arg1, 0.0f);
         arg1 = CLAMP_MAX(arg1, 1.0f);
 
-        temp = arg1 - arg3;
+        f32 temp = arg1 - arg3;
         if (arg1 < arg3) {
             temp = 0.0f;
         }

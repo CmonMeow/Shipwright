@@ -12,13 +12,12 @@ GameState* gGameState;
 void gfx_texture_cache_clear();
 
 void GameState_Draw(GameState* gameState, GraphicsContext* gfxCtx) {
-    Gfx* newDList;
     Gfx* polyOpaP;
 
     (void)gameState;
     OPEN_DISPS(gfxCtx);
 
-    newDList = Graph_GfxPlusOne(polyOpaP = POLY_OPA_DISP);
+    Gfx* newDList = Graph_GfxPlusOne(polyOpaP = POLY_OPA_DISP);
     gSPDisplayList(OVERLAY_DISP++, newDList);
     gSPEndDisplayList(newDList++);
     Graph_BranchDlist(polyOpaP, newDList);
@@ -44,12 +43,11 @@ void GameState_SetFrameBuffer(GraphicsContext* gfxCtx) {
 }
 
 void func_800C49F4(GraphicsContext* gfxCtx) {
-    Gfx* newDlist;
     Gfx* polyOpaP;
 
     OPEN_DISPS(gfxCtx);
 
-    newDlist = Graph_GfxPlusOne(polyOpaP = POLY_OPA_DISP);
+    Gfx* newDlist = Graph_GfxPlusOne(polyOpaP = POLY_OPA_DISP);
     gSPDisplayList(OVERLAY_DISP++, newDlist);
 
     gSPEndDisplayList(newDlist++);
@@ -79,10 +77,9 @@ void GameState_Update(GameState* gameState) {
 }
 
 void GameState_InitArena(GameState* gameState, size_t size) {
-    void* arena;
 
     osSyncPrintf("ハイラル確保 サイズ＝%u バイト\n"); // "Hyrule reserved size = %u bytes"
-    arena = GAMESTATE_MALLOC_DEBUG(&gameState->alloc, size);
+    void* arena = GAMESTATE_MALLOC_DEBUG(&gameState->alloc, size);
     if (arena != NULL) {
         THA_Ct(&gameState->tha, arena, size);
         osSyncPrintf("ハイラル確保成功\n"); // "Successful Hyral"
@@ -95,7 +92,7 @@ void GameState_InitArena(GameState* gameState, size_t size) {
 
 void GameState_Realloc(GameState* gameState, size_t size) {
     GameAlloc* alloc = &gameState->alloc;
-    void* gameArena;
+    void* gameArena = { 0 };
     u32 systemMaxFree;
     u32 systemFree;
     u32 systemAlloc;
@@ -130,8 +127,6 @@ void GameState_Realloc(GameState* gameState, size_t size) {
 }
 
 void GameState_Init(GameState* gameState, GameStateFunc init, GraphicsContext* gfxCtx) {
-    OSTime startTime;
-    OSTime endTime;
 
     osSyncPrintf("game コンストラクタ開始\n"); // "game constructor start"
     gameState->gfxCtx = gfxCtx;
@@ -139,10 +134,10 @@ void GameState_Init(GameState* gameState, GameStateFunc init, GraphicsContext* g
     gameState->main = NULL;
     gameState->destroy = NULL;
     gameState->running = 1;
-    startTime = osGetTime();
+    OSTime startTime = osGetTime();
     gameState->size = 0;
     gameState->init = NULL;
-    endTime = osGetTime();
+    OSTime endTime = osGetTime();
 
     // "game_set_next_game_null processing time %d us"
     osSyncPrintf("game_set_next_game_null 処理時間 %d us\n", OS_CYCLES_TO_USEC(endTime - startTime));
@@ -212,7 +207,7 @@ u32 GameState_IsRunning(GameState* gameState) {
 }
 
 void* GameState_Alloc(GameState* gameState, size_t size, char* file, s32 line) {
-    void* ret;
+    void* ret = { 0 };
 
     if (THA_IsCrash(&gameState->tha)) {
         osSyncPrintf("ハイラルは滅亡している\n");

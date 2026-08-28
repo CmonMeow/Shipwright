@@ -53,13 +53,12 @@ f32 OLib_ClampMaxDist(f32 val, f32 max) {
 Vec3f* OLib_Vec3fDistNormalize(Vec3f* dest, Vec3f* a, Vec3f* b) {
     Vec3f v1;
     Vec3f v2;
-    f32 dist;
 
     v1.x = b->x - a->x;
     v1.y = b->y - a->y;
     v1.z = b->z - a->z;
 
-    dist = OLib_ClampMinDist(sqrtf(SQ(v1.x) + SQ(v1.y) + SQ(v1.z)), 0.01f);
+    f32 dist = OLib_ClampMinDist(sqrtf(SQ(v1.x) + SQ(v1.y) + SQ(v1.z)), 0.01f);
 
     v2.x = v1.x / dist;
     v2.y = v1.y / dist;
@@ -75,15 +74,11 @@ Vec3f* OLib_Vec3fDistNormalize(Vec3f* dest, Vec3f* a, Vec3f* b) {
  */
 Vec3f* OLib_VecSphToVec3f(Vec3f* dest, VecSph* sph) {
     Vec3f v;
-    f32 sinPitch;
-    f32 cosPitch;
-    f32 sinYaw;
-    f32 cosYaw;
 
-    cosPitch = Math_CosS(sph->pitch);
-    cosYaw = Math_CosS(sph->yaw);
-    sinPitch = Math_SinS(sph->pitch);
-    sinYaw = Math_SinS(sph->yaw);
+    f32 cosPitch = Math_CosS(sph->pitch);
+    f32 cosYaw = Math_CosS(sph->yaw);
+    f32 sinPitch = Math_SinS(sph->pitch);
+    f32 sinYaw = Math_SinS(sph->yaw);
 
     v.x = sph->r * sinPitch * sinYaw;
     v.y = sph->r * cosPitch;

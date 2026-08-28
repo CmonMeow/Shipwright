@@ -159,8 +159,7 @@ void Graph_TaskSet00(GraphicsContext* gfxCtx) {
     OSMesg msg;
     OSTask_t* task = &gfxCtx->task.list.t;
     OSScTask* scTask = &gfxCtx->task;
-    CfbInfo* cfb;
-    s32 pad1;
+    CfbInfo* cfb = { 0 };
 
     osSetTimer(&timer, OS_USEC_TO_CYCLES(3000000), 0, &gfxCtx->queue, OS_MESG_32(666));
 
@@ -246,7 +245,7 @@ void Graph_TaskSet00(GraphicsContext* gfxCtx) {
 }
 
 void Graph_Update(GraphicsContext* gfxCtx, GameState* gameState) {
-    u32 problem;
+    u32 problem = { 0 };
 
     // Skip game frame updates while gfx debugger is active, and execute with the last frame's DL buffer
     if (GfxDebuggerIsDebugging()) {
@@ -378,7 +377,6 @@ uint64_t GetPerfCounter();
 extern AudioMgr gAudioMgr;
 
 static void RunFrame() {
-    u32 size;
     char faultMsg[0x50];
     static bool hasSetupSkybox = false;
 
@@ -398,7 +396,7 @@ static void RunFrame() {
         runFrameContext.ovl = runFrameContext.nextOvl;
         Overlay_LoadGameState(runFrameContext.ovl);
 
-        size = runFrameContext.ovl->instanceSize;
+        u32 size = runFrameContext.ovl->instanceSize;
         osSyncPrintf("クラスサイズ＝%dバイト\n", size); // "Class size = %d bytes"
 
         gGameState = SYSTEM_ARENA_MALLOC_DEBUG(size);
@@ -530,14 +528,12 @@ Gfx* Graph_BranchDlist(Gfx* gfx, Gfx* dst) {
 }
 
 void* Graph_DlistAlloc(Gfx** gfx, size_t size) {
-    u8* ptr;
-    Gfx* dst;
 
-    size = ((size + 7) & ~7),
+    size = ((size + 7) & ~7);
 
-    ptr = (u8*)(*gfx + 1);
+    u8* ptr = (u8*)(*gfx + 1);
 
-    dst = (Gfx*)(ptr + size);
+    Gfx* dst = (Gfx*)(ptr + size);
     gSPBranchList(*gfx, dst);
 
     *gfx = dst;

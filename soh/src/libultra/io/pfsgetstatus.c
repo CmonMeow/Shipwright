@@ -29,14 +29,13 @@ s32 __osPfsGetStatus(OSMesgQueue* queue, s32 channel) {
 }
 
 void __osPfsRequestOneChannel(s32 channel, u8 poll) {
-    u8* bufptr;
     __OSContRequestHeaderAligned req;
     s32 idx;
 
     __osContLastPoll = CONT_CMD_END;
     gPifMempakBuf.status = CONT_CMD_READ_BUTTON;
 
-    bufptr = (u8*)&gPifMempakBuf;
+    u8* bufptr = (u8*)&gPifMempakBuf;
 
     req.txsize = 1;
     req.rxsize = 3;
@@ -56,7 +55,7 @@ void __osPfsRequestOneChannel(s32 channel, u8 poll) {
 
 void __osPfsGetOneChannelData(s32 channel, OSContStatus* contData) {
     u8* bufptr = (u8*)&gPifMempakBuf;
-    __OSContRequestHeaderAligned req;
+    __OSContRequestHeaderAligned req = { 0 };
     s32 idx;
 
     for (idx = 0; idx < channel; idx++) {

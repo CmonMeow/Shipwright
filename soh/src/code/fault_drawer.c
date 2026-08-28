@@ -45,7 +45,7 @@ void FaultDrawer_DrawRecImpl(s32 xStart, s32 yStart, s32 xEnd, s32 yEnd, u16 col
     s32 ySize = MIN(sFaultDrawerStruct.h - yStart, yEnd - yStart + 1);
     s32 x;
     s32 y;
-    u16* framebuffer;
+    u16* framebuffer = { 0 };
 
     if (xSize <= 0 || ySize <= 0) {
         return;
@@ -67,7 +67,7 @@ void FaultDrawer_DrawChar(char character) {
     const s32 cursorY = sFaultDrawerStruct.cursorY;
     s32 x;
     s32 y;
-    u16* framebuffer;
+    u16* framebuffer = { 0 };
 
     if (cursorX < sFaultDrawerStruct.xStart || cursorY < sFaultDrawerStruct.yStart ||
         cursorX + 7 > sFaultDrawerStruct.xEnd || cursorY + 7 > sFaultDrawerStruct.yEnd) {

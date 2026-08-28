@@ -7,7 +7,7 @@ OSPifRam osPifBuffers[MAXCONTROLLERS];
 
 s32 __osMotorAccess(OSPfs* pfs, u32 vibrate) {
     s32 i;
-    s32 ret;
+    s32 ret = { 0 };
     u8* buf = (u8*)&osPifBuffers[pfs->channel];
 
     if (!(pfs->status & 8)) {
@@ -69,7 +69,6 @@ void _MakeMotorData(s32 channel, OSPifRam* buf) {
 }
 
 s32 osMotorInit(OSMesgQueue* ctrlrqueue, OSPfs* pfs, s32 channel) {
-    s32 ret;
     u8 sp24[BLOCKSIZE];
 
     pfs->queue = ctrlrqueue;
@@ -77,7 +76,7 @@ s32 osMotorInit(OSMesgQueue* ctrlrqueue, OSPfs* pfs, s32 channel) {
     pfs->activebank = 0xFF;
     pfs->status = 0;
 
-    ret = __osPfsSelectBank(pfs, 0xFE);
+    s32 ret = __osPfsSelectBank(pfs, 0xFE);
     if (ret == 2) {
         ret = __osPfsSelectBank(pfs, MOTOR_ID);
     }

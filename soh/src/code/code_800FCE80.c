@@ -40,10 +40,9 @@ f32 Math_FAtanTaylorQF(f32 x) {
     f32 sq = SQ(x);
     f32 exp = x * sq;
     const f32* c = coeffs;
-    f32 term;
 
     while (1) {
-        term = *c++ * exp;
+        f32 term = *c++ * exp;
         if (poly + term == poly) {
             break;
         }
@@ -56,8 +55,8 @@ f32 Math_FAtanTaylorQF(f32 x) {
 
 /* Ditto for two quadrants */
 f32 Math_FAtanTaylorF(f32 x) {
-    f32 t;
-    f32 q;
+    f32 t = { 0 };
+    f32 q = { 0 };
 
     if (x > 0.0f) {
         t = x;
@@ -88,10 +87,10 @@ f32 Math_FAtanTaylorF(f32 x) {
 
 /* Arctangent approximation using a continued fraction */
 f32 Math_FAtanContFracF(f32 x) {
-    s32 sector;
-    f32 z;
-    f32 conv;
-    f32 sq;
+    s32 sector = { 0 };
+    f32 z = { 0 };
+    f32 conv = { 0 };
+    f32 sq = { 0 };
     s32 i;
 
     if (x >= -1.0f && x <= 1.0f) {

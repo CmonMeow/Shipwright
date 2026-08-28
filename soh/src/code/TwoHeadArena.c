@@ -90,7 +90,7 @@ void* THA_AllocStart1(TwoHeadArena* tha) {
 }
 
 void* THA_AllocEnd(TwoHeadArena* tha, size_t size) {
-    size_t mask;
+    size_t mask = { 0 };
 
     if (size == 8) {
         mask = ~7;

@@ -46,18 +46,13 @@ void _Ldtob(_Pft* args, u8 type) {
     u32 sp70;
     f64 val = args->v.ld;
     /* maybe struct? */
-    s16 err;
-    s16 nsig;
+    s16 err = { 0 };
+    s16 nsig = { 0 };
     s16 exp;
 
     s32 i;
-    s32 n;
-    f64 factor;
-    s32 gen;
     s32 j;
-    s32 lo;
-    ldiv_t qr;
-    u8 drop;
+    u8 drop = { 0 };
     s32 n2;
 
     if (args->prec < 0) {
@@ -79,7 +74,7 @@ void _Ldtob(_Pft* args, u8 type) {
         }
         exp = exp * 30103 / 0x000186A0 - 4;
         if (exp < 0) {
-            n = (3 - exp) & ~3;
+            s32 n = (3 - exp) & ~3;
             exp = -n;
             for (i = 0; n > 0; n >>= 1, i++) {
                 if ((n & 1) != 0) {
@@ -87,7 +82,7 @@ void _Ldtob(_Pft* args, u8 type) {
                 }
             }
         } else if (exp > 0) {
-            factor = 1;
+            f64 factor = 1;
             exp &= ~3;
 
             for (n = exp, i = 0; n > 0; n >>= 1, i++) {
@@ -97,19 +92,19 @@ void _Ldtob(_Pft* args, u8 type) {
             }
             val /= factor;
         }
-        gen = ((type == 'f') ? exp + 10 : 6) + args->prec;
+        s32 gen = ((type == 'f') ? exp + 10 : 6) + args->prec;
         if (gen > 0x13) {
             gen = 0x13;
         }
         *ptr++ = '0';
         while (gen > 0 && 0 < val) {
-            lo = val;
+            s32 lo = val;
             if ((gen -= 8) > 0) {
                 val = (val - lo) * 1.0e8;
             }
             ptr = ptr + 8;
             for (j = 8; lo > 0 && --j >= 0;) {
-                qr = ldiv(lo, 10);
+                ldiv_t qr = ldiv(lo, 10);
                 *--ptr = qr.rem + '0';
                 lo = qr.quot;
             }

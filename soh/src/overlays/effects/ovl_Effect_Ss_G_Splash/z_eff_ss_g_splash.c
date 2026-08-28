@@ -94,7 +94,7 @@ void EffectSsGSplash_Draw(PlayState* play, u32 index, EffectSs* this) {
         gEffWaterSplash1Tex, gEffWaterSplash2Tex, gEffWaterSplash3Tex, gEffWaterSplash4Tex,
         gEffWaterSplash5Tex, gEffWaterSplash6Tex, gEffWaterSplash7Tex, gEffWaterSplash8Tex,
     };
-    s16 texIdx;
+    s16 texIdx = { 0 };
 
     switch (this->rType) {
         case 0:
@@ -127,10 +127,9 @@ void EffectSsGSplash_Draw(PlayState* play, u32 index, EffectSs* this) {
 }
 
 void EffectSsGSplash_Update(PlayState* play, u32 index, EffectSs* this) {
-    Vec3f newSplashPos;
 
     if ((this->rType == 1) && (this->life == 5)) {
-        newSplashPos = this->pos;
+        Vec3f newSplashPos = this->pos;
         newSplashPos.y += ((this->rgScale * 20) * 0.002f);
         EffectSsGSplash_Spawn(play, &newSplashPos, 0, 0, 2, this->rgScale / 2);
     }

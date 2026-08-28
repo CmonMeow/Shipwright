@@ -17,12 +17,11 @@ f32 gViConfigXScale = 1.0;
 f32 gViConfigYScale = 1.0;
 
 void Main_ThreadEntry(void* arg) {
-    OSTime time;
 
     osSyncPrintf("mainx 実行開始\n");
     DmaMgr_Init();
     osSyncPrintf("codeセグメントロード中...");
-    time = osGetTime();
+    OSTime time = osGetTime();
     // DmaMgr_SendRequest1(_codeSegmentStart, (uintptr_t)_codeSegmentRomStart, _codeSegmentRomEnd -
     // _codeSegmentRomStart,
     //"../idle.c", 238);

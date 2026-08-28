@@ -144,18 +144,15 @@ void View_GetViewport(View* view, Viewport* viewport) {
 }
 
 void func_800AA550(View* view) {
-    s32 varY;
-    s32 varX;
-    s32 pad;
-    s32 ulx;
-    s32 uly;
-    s32 lrx;
-    s32 lry;
+    s32 ulx = { 0 };
+    s32 uly = { 0 };
+    s32 lrx = { 0 };
+    s32 lry = { 0 };
     GraphicsContext* gfxCtx = view->gfxCtx;
 
-    varY = ShrinkWindow_GetCurrentVal();
+    s32 varY = ShrinkWindow_GetCurrentVal();
 
-    varX = -1; // The following is optimized to varX = 0 but affects codegen
+    s32 varX = -1;
 
     if (varX < 0) {
         varX = 0;
@@ -289,18 +286,11 @@ static float sqr(float a) {
 }
 
 s32 func_800AAA9C(View* view) {
-    f32 aspect;
-    s32 width;
-    s32 height;
-    Vp* vp;
-    Mtx* projection;
-    Mtx* projectionFlipped;
-    Mtx* viewing;
     GraphicsContext* gfxCtx = view->gfxCtx;
 
     OPEN_DISPS(gfxCtx);
 
-    vp = Graph_Alloc(gfxCtx, sizeof(Vp));
+    Vp* vp = Graph_Alloc(gfxCtx, sizeof(Vp));
     LOG_CHECK_NULL_POINTER("vp", vp);
     View_ViewportToVp(vp, &view->viewport);
     view->vp = *vp;
@@ -310,18 +300,18 @@ s32 func_800AAA9C(View* view) {
     gSPViewport(POLY_OPA_DISP++, vp);
     gSPViewport(POLY_XLU_DISP++, vp);
 
-    projection = Graph_Alloc(gfxCtx, sizeof(Mtx));
-    projectionFlipped = Graph_Alloc(gfxCtx, sizeof(Mtx));
+    Mtx* projection = Graph_Alloc(gfxCtx, sizeof(Mtx));
+    Mtx* projectionFlipped = Graph_Alloc(gfxCtx, sizeof(Mtx));
     LOG_CHECK_NULL_POINTER("projection", projection);
     LOG_CHECK_NULL_POINTER("projectionFlipped", projectionFlipped);
     view->projectionPtr = projection;
     view->projectionFlippedPtr = projectionFlipped;
 
-    width = view->viewport.rightX - view->viewport.leftX;
-    height = view->viewport.bottomY - view->viewport.topY;
-    aspect = (f32)width / (f32)height;
+    s32 width = view->viewport.rightX - view->viewport.leftX;
+    s32 height = view->viewport.bottomY - view->viewport.topY;
+    f32 aspect = (f32)width / (f32)height;
 
-    viewing = Graph_Alloc(gfxCtx, sizeof(Mtx));
+    Mtx* viewing = Graph_Alloc(gfxCtx, sizeof(Mtx));
     LOG_CHECK_NULL_POINTER("viewing", viewing);
     view->viewingPtr = viewing;
 
@@ -472,13 +462,11 @@ s32 func_800AAA9C(View* view) {
 }
 
 s32 func_800AB0A8(View* view) {
-    Vp* vp;
-    Mtx* projection;
     GraphicsContext* gfxCtx = view->gfxCtx;
 
     OPEN_DISPS(gfxCtx);
 
-    vp = Graph_Alloc(gfxCtx, sizeof(Vp));
+    Vp* vp = Graph_Alloc(gfxCtx, sizeof(Vp));
     LOG_CHECK_NULL_POINTER("vp", vp);
     View_ViewportToVp(vp, &view->viewport);
     view->vp = *vp;
@@ -489,7 +477,7 @@ s32 func_800AB0A8(View* view) {
     gSPViewport(POLY_XLU_DISP++, vp);
     gSPViewport(OVERLAY_DISP++, vp);
 
-    projection = Graph_Alloc(gfxCtx, sizeof(Mtx));
+    Mtx* projection = Graph_Alloc(gfxCtx, sizeof(Mtx));
     LOG_CHECK_NULL_POINTER("projection", projection);
     view->projectionPtr = projection;
 
@@ -507,16 +495,12 @@ s32 func_800AB0A8(View* view) {
 }
 
 s32 func_800AB2C4(View* view) {
-    Vp* vp;
-    Mtx* projection;
-    Mtx* projectionFlipped;
-    GraphicsContext* gfxCtx;
 
-    gfxCtx = view->gfxCtx;
+    GraphicsContext* gfxCtx = view->gfxCtx;
 
     OPEN_DISPS(gfxCtx);
 
-    vp = Graph_Alloc(gfxCtx, sizeof(Vp));
+    Vp* vp = Graph_Alloc(gfxCtx, sizeof(Vp));
     LOG_CHECK_NULL_POINTER("vp", vp);
     View_ViewportToVp(vp, &view->viewport);
     view->vp = *vp;
@@ -526,8 +510,8 @@ s32 func_800AB2C4(View* view) {
                   view->viewport.bottomY);
     gSPViewport(OVERLAY_DISP++, vp);
 
-    projection = Graph_Alloc(gfxCtx, sizeof(Mtx));
-    projectionFlipped = Graph_Alloc(gfxCtx, sizeof(Mtx));
+    Mtx* projection = Graph_Alloc(gfxCtx, sizeof(Mtx));
+    Mtx* projectionFlipped = Graph_Alloc(gfxCtx, sizeof(Mtx));
     LOG_CHECK_NULL_POINTER("projection", projection);
     LOG_CHECK_NULL_POINTER("projectionFlipped", projectionFlipped);
     view->projectionPtr = projection;
@@ -546,18 +530,11 @@ s32 func_800AB2C4(View* view) {
 }
 
 s32 func_800AB560(View* view) {
-    s32 pad[2];
-    f32 aspect;
-    s32 width;
-    s32 height;
-    Vp* vp;
-    Mtx* projection;
-    Mtx* viewing;
     GraphicsContext* gfxCtx = view->gfxCtx;
 
     OPEN_DISPS(gfxCtx);
 
-    vp = Graph_Alloc(gfxCtx, sizeof(Vp));
+    Vp* vp = Graph_Alloc(gfxCtx, sizeof(Vp));
     LOG_CHECK_NULL_POINTER("vp", vp);
     View_ViewportToVp(vp, &view->viewport);
     view->vp = *vp;
@@ -567,14 +544,14 @@ s32 func_800AB560(View* view) {
                   view->viewport.bottomY);
     gSPViewport(OVERLAY_DISP++, vp);
 
-    projection = Graph_Alloc(gfxCtx, sizeof(Mtx));
+    Mtx* projection = Graph_Alloc(gfxCtx, sizeof(Mtx));
     LOG_CHECK_NULL_POINTER("projection", projection);
     view->projectionPtr = projection;
 
-    width = view->viewport.rightX - view->viewport.leftX;
-    height = view->viewport.bottomY - view->viewport.topY;
+    s32 width = view->viewport.rightX - view->viewport.leftX;
+    s32 height = view->viewport.bottomY - view->viewport.topY;
 
-    aspect = (f32)width / (f32)height;
+    f32 aspect = (f32)width / (f32)height;
     guPerspective(projection, &view->normal, view->fovy, aspect, view->zNear, view->zFar, view->scale);
 
     view->projection = *projection;
@@ -582,7 +559,7 @@ s32 func_800AB560(View* view) {
     gSPPerspNormalize(OVERLAY_DISP++, view->normal);
     gSPMatrix(OVERLAY_DISP++, projection, G_MTX_NOPUSH | G_MTX_LOAD | G_MTX_PROJECTION);
 
-    viewing = Graph_Alloc(gfxCtx, sizeof(Mtx));
+    Mtx* viewing = Graph_Alloc(gfxCtx, sizeof(Mtx));
     LOG_CHECK_NULL_POINTER("viewing", viewing);
     view->viewingPtr = viewing;
 
@@ -618,18 +595,14 @@ s32 func_800AB944(View* view) {
 }
 
 s32 func_800AB9EC(View* view, s32 arg1, Gfx** gfxp) {
+    Mtx* projection = { 0 };
     Gfx* gfx = *gfxp;
     GraphicsContext* gfxCtx = view->gfxCtx;
-    s32 width;
-    s32 height;
-    Vp* vp;
-    Mtx* projection;
-    Mtx* viewing;
 
     arg1 = (view->flags & arg1) | (arg1 >> 4);
 
     if (arg1 & 2) {
-        vp = Graph_Alloc(gfxCtx, sizeof(Vp));
+        Vp* vp = Graph_Alloc(gfxCtx, sizeof(Vp));
         LOG_CHECK_NULL_POINTER("vp", vp);
         View_ViewportToVp(vp, &view->viewport);
 
@@ -657,8 +630,8 @@ s32 func_800AB9EC(View* view, s32 arg1, Gfx** gfxp) {
         LOG_CHECK_NULL_POINTER("projection", projection);
         view->projectionPtr = projection;
 
-        width = view->viewport.rightX - view->viewport.leftX;
-        height = view->viewport.bottomY - view->viewport.topY;
+        s32 width = view->viewport.rightX - view->viewport.leftX;
+        s32 height = view->viewport.bottomY - view->viewport.topY;
 
         guPerspective(projection, &view->normal, view->fovy, (f32)width / (f32)height, view->zNear, view->zFar,
                       view->scale);
@@ -670,7 +643,7 @@ s32 func_800AB9EC(View* view, s32 arg1, Gfx** gfxp) {
     }
 
     if (arg1 & 1) {
-        viewing = Graph_Alloc(gfxCtx, sizeof(Mtx));
+        Mtx* viewing = Graph_Alloc(gfxCtx, sizeof(Mtx));
         LOG_CHECK_NULL_POINTER("viewing", viewing);
         view->viewingPtr = viewing;
 

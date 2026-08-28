@@ -8,7 +8,6 @@ OSThread* __osFaultedThread = NULL;
 
 void osCreateThread(OSThread* thread, OSId id, void (*entry)(void*), void* arg, void* sp, OSPri pri) {
     register u32 prevInt;
-    OSIntMask mask;
 
     thread->id = id;
     thread->priority = pri;
@@ -19,7 +18,7 @@ void osCreateThread(OSThread* thread, OSId id, void (*entry)(void*), void* arg, 
     thread->context.sp = (u64)(s32)sp - 16;
     thread->context.ra = __osCleanupThread;
 
-    mask = OS_IM_ALL;
+    OSIntMask mask = OS_IM_ALL;
     thread->context.sr = (mask & OS_IM_CPU) | 2;
     thread->context.rcp = (mask & RCP_IMASK) >> 16;
     thread->context.fpcsr = FPCSR_FS | FPCSR_EV;

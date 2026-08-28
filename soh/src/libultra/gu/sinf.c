@@ -15,12 +15,10 @@ static const du pilo = { 0x3E6110B4, 0x611A6263 };
 static const fu zero = { 0x00000000 };
 
 f32 sinf(f32 x) {
-    f64 dx;
-    f64 xSq;
-    f64 polyApprox;
-    f64 dn;
-    s32 n;
-    f64 result;
+    f64 dx = { 0 };
+    f64 xSq = { 0 };
+    f64 polyApprox = { 0 };
+    f64 result = { 0 };
     s32 ix = *(s32*)&x;
     s32 xpt = (ix >> 22);
 
@@ -40,8 +38,8 @@ f32 sinf(f32 x) {
 
     if (xpt < 0x136) {
         dx = x;
-        dn = dx * rpi.d;
-        n = ROUND(dn);
+        f64 dn = dx * rpi.d;
+        s32 n = ROUND(dn);
         dn = n;
 
         dx -= dn * pihi.d;

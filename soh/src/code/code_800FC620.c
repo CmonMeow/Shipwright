@@ -25,12 +25,11 @@ s32 Overlay_Load(uintptr_t vRomStart, uintptr_t vRomEnd, void* vRamStart, void* 
 
 #if 0
     s32 pad;
-    uintptr_t end;
+    uintptr_t end = { 0 };
     u32 bssSize;
-    OverlayRelocationSection* ovl;
-    u32 relocCnt;
-    u32 ovlOffset;
-    size_t size;
+    OverlayRelocationSection* ovl = { 0 };
+    u32 ovlOffset = { 0 };
+    size_t size = { 0 };
 
     if (gOverlayLogSeverity >= 3) {
         // "Start loading dynamic link function"
@@ -72,8 +71,6 @@ s32 Overlay_Load(uintptr_t vRomStart, uintptr_t vRomEnd, void* vRamStart, void* 
         size = ovl->bssSize;
         bssSize = size;
         bzero((void*)end, bssSize);
-        relocCnt = ovl->nRelocations;
-        (void)relocCnt; // suppresses set but unused warning
     }
 
     size = (uintptr_t)&ovl->relocations[ovl->nRelocations] - (uintptr_t)ovl;
@@ -129,14 +126,13 @@ void func_800FC8D8(void* blk, u32 nBlk, s32 blkSize, arg3_800FC8D8 arg3) {
 }
 
 void* func_800FC948(void* blk, u32 nBlk, u32 blkSize, arg3_800FC948 arg3) {
-    uintptr_t pos;
 
     if (blk == NULL) {
         blk = func_800FC800(nBlk * blkSize);
     }
 
     if (blk != NULL && arg3 != NULL) {
-        pos = (uintptr_t)blk;
+        uintptr_t pos = (uintptr_t)blk;
         while (pos < (uintptr_t)blk + (nBlk * blkSize)) {
             arg3((void*)pos, 0, 0, 0, 0, 0, 0, 0, 0);
             pos = (uintptr_t)pos + (blkSize & ~0);
@@ -146,17 +142,14 @@ void* func_800FC948(void* blk, u32 nBlk, u32 blkSize, arg3_800FC948 arg3) {
 }
 
 void func_800FCA18(void* blk, u32 nBlk, u32 blkSize, arg3_800FCA18 arg3, s32 arg4) {
-    uintptr_t pos;
-    uintptr_t end;
-    s32 masked_arg2;
 
     if (blk == 0) {
         return;
     }
     if (arg3 != 0) {
-        end = (uintptr_t)blk;
-        masked_arg2 = (s32)(blkSize & ~0);
-        pos = (uintptr_t)end + (nBlk * blkSize);
+        uintptr_t end = (uintptr_t)blk;
+        s32 masked_arg2 = (s32)(blkSize & ~0);
+        uintptr_t pos = (uintptr_t)end + (nBlk * blkSize);
 
         if (masked_arg2) {}
 

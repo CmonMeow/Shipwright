@@ -8,7 +8,7 @@ s32 osPfsAllocateFile(OSPfs* pfs, u16 companyCode, u32 gameCode, u8* gameName, u
     s32 prevPage;
     s32 oldPrevPage = 0;
     s32 ret = 0;
-    s32 fileSizeInPages;
+    s32 fileSizeInPages = { 0 };
     __OSInode inode;
     __OSInode backupInode;
     __OSDir dir;

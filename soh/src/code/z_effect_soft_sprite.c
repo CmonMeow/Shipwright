@@ -9,7 +9,7 @@ EffectSsInfo sEffectSsInfo = { 0 }; // "EffectSS2Info"
 void EffectSs_InitInfo(PlayState* play, s32 tableSize) {
     u32 i;
     EffectSs* effectSs;
-    EffectSsOverlay* overlay;
+    EffectSsOverlay* overlay = { 0 };
 
     for (i = 0; i < ARRAY_COUNT(gEffectSsOverlayTable); i++) {
         overlay = &gEffectSsOverlayTable[i];
@@ -38,8 +38,7 @@ void EffectSs_InitInfo(PlayState* play, s32 tableSize) {
 void EffectSs_ClearAll(PlayState* play) {
     u32 i;
     EffectSs* effectSs;
-    EffectSsOverlay* overlay;
-    void* addr;
+    EffectSsOverlay* overlay = { 0 };
 
     sEffectSsInfo.table = NULL;
     sEffectSsInfo.searchStartIndex = 0;
@@ -52,7 +51,7 @@ void EffectSs_ClearAll(PlayState* play) {
 
     overlay = &gEffectSsOverlayTable[0];
     for (i = 0; i < ARRAY_COUNT(gEffectSsOverlayTable); i++) {
-        addr = overlay->loadedRamAddr;
+        void* addr = overlay->loadedRamAddr;
 
         if (addr != NULL) {
             ZELDA_ARENA_FREE_DEBUG(addr);
@@ -97,8 +96,8 @@ void EffectSs_Reset(EffectSs* effectSs) {
 }
 
 s32 EffectSs_FindSlot(s32 priority, s32* pIndex) {
-    s32 foundFree;
-    s32 i;
+    s32 foundFree = { 0 };
+    s32 i = { 0 };
 
     if (sEffectSsInfo.searchStartIndex >= sEffectSsInfo.tableSize) {
         sEffectSsInfo.searchStartIndex = 0;
@@ -170,11 +169,10 @@ void EffectSs_Insert(PlayState* play, EffectSs* effectSs) {
 // original name: "EffectSoftSprite2_makeEffect"
 void EffectSs_Spawn(PlayState* play, s32 type, s32 priority, void* initParams) {
     s32 index;
-    u32 overlaySize;
-    EffectSsOverlay* overlayEntry;
-    EffectSsInit* initInfo;
+    u32 overlaySize = { 0 };
+    EffectSsInit* initInfo = { 0 };
 
-    overlayEntry = &gEffectSsOverlayTable[type];
+    EffectSsOverlay* overlayEntry = &gEffectSsOverlayTable[type];
 
     assert(type < EFFECT_SS_TYPE_MAX);
 

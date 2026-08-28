@@ -66,12 +66,10 @@ void Matrix_Mult(MtxF* mf, u8 mode) {
 void Matrix_Translate(f32 x, f32 y, f32 z, u8 mode) {
     FrameInterpolation_RecordMatrixTranslate(x, y, z, mode);
     MtxF* cmf = sCurrentMatrix;
-    f32 tx;
-    f32 ty;
 
     if (mode == MTXMODE_APPLY) {
-        tx = cmf->xx;
-        ty = cmf->xy;
+        f32 tx = cmf->xx;
+        f32 ty = cmf->xy;
         cmf->xw += tx * x + ty * y + cmf->xz * z;
         tx = cmf->yx;
         ty = cmf->yy;
@@ -111,11 +109,9 @@ void Matrix_Scale(f32 x, f32 y, f32 z, u8 mode) {
 
 void Matrix_RotateX(f32 x, u8 mode) {
     FrameInterpolation_RecordMatrixRotate1Coord(0, x, mode);
-    MtxF* cmf;
-    f32 sin;
-    f32 cos;
-    f32 temp1;
-    f32 temp2;
+    MtxF* cmf = { 0 };
+    f32 sin = { 0 };
+    f32 cos = { 0 };
 
     if (mode == MTXMODE_APPLY) {
         if (x != 0) {
@@ -124,8 +120,8 @@ void Matrix_RotateX(f32 x, u8 mode) {
             sin = sinf(x);
             cos = cosf(x);
 
-            temp1 = cmf->xy;
-            temp2 = cmf->xz;
+            f32 temp1 = cmf->xy;
+            f32 temp2 = cmf->xz;
             cmf->xy = temp1 * cos + temp2 * sin;
             cmf->xz = temp2 * cos - temp1 * sin;
 
@@ -176,11 +172,9 @@ void Matrix_RotateX(f32 x, u8 mode) {
 
 void Matrix_RotateY(f32 y, u8 mode) {
     FrameInterpolation_RecordMatrixRotate1Coord(1, y, mode);
-    MtxF* cmf;
-    f32 sin;
-    f32 cos;
-    f32 temp1;
-    f32 temp2;
+    MtxF* cmf = { 0 };
+    f32 sin = { 0 };
+    f32 cos = { 0 };
 
     if (mode == MTXMODE_APPLY) {
         if (y != 0) {
@@ -189,8 +183,8 @@ void Matrix_RotateY(f32 y, u8 mode) {
             sin = sinf(y);
             cos = cosf(y);
 
-            temp1 = cmf->xx;
-            temp2 = cmf->xz;
+            f32 temp1 = cmf->xx;
+            f32 temp2 = cmf->xz;
             cmf->xx = temp1 * cos - temp2 * sin;
             cmf->xz = temp1 * sin + temp2 * cos;
 
@@ -241,11 +235,9 @@ void Matrix_RotateY(f32 y, u8 mode) {
 
 void Matrix_RotateZ(f32 z, u8 mode) {
     FrameInterpolation_RecordMatrixRotate1Coord(2, z, mode);
-    MtxF* cmf;
-    f32 sin;
-    f32 cos;
-    f32 temp1;
-    f32 temp2;
+    MtxF* cmf = { 0 };
+    f32 sin = { 0 };
+    f32 cos = { 0 };
 
     if (mode == MTXMODE_APPLY) {
         if (z != 0) {
@@ -254,8 +246,8 @@ void Matrix_RotateZ(f32 z, u8 mode) {
             sin = sinf(z);
             cos = cosf(z);
 
-            temp1 = cmf->xx;
-            temp2 = cmf->xy;
+            f32 temp1 = cmf->xx;
+            f32 temp2 = cmf->xy;
             cmf->xx = temp1 * cos + temp2 * sin;
             cmf->xy = temp2 * cos - temp1 * sin;
 
@@ -313,17 +305,13 @@ void Matrix_RotateZ(f32 z, u8 mode) {
 void Matrix_RotateZYX(s16 x, s16 y, s16 z, u8 mode) {
     FrameInterpolation_RecordMatrixRotateZYX(x, y, z, mode);
     MtxF* cmf = sCurrentMatrix;
-    f32 temp1;
-    f32 temp2;
-    f32 sin;
-    f32 cos;
 
     if (mode == MTXMODE_APPLY) {
-        sin = Math_SinS(z);
-        cos = Math_CosS(z);
+        f32 sin = Math_SinS(z);
+        f32 cos = Math_CosS(z);
 
-        temp1 = cmf->xx;
-        temp2 = cmf->xy;
+        f32 temp1 = cmf->xx;
+        f32 temp2 = cmf->xy;
         cmf->xx = temp1 * cos + temp2 * sin;
         cmf->xy = temp2 * cos - temp1 * sin;
 
@@ -406,11 +394,9 @@ void Matrix_TranslateRotateZYX(Vec3f* translation, Vec3s* rotation) {
     MtxF* cmf = sCurrentMatrix;
     f32 sin = Math_SinS(rotation->z);
     f32 cos = Math_CosS(rotation->z);
-    f32 temp1;
-    f32 temp2;
 
-    temp1 = cmf->xx;
-    temp2 = cmf->xy;
+    f32 temp1 = cmf->xx;
+    f32 temp2 = cmf->xy;
     cmf->xw += temp1 * translation->x + temp2 * translation->y + cmf->xz * translation->z;
     cmf->xx = temp1 * cos + temp2 * sin;
     cmf->xy = temp2 * cos - temp1 * sin;
@@ -492,8 +478,8 @@ void Matrix_SetTranslateRotateYXZ(f32 translateX, f32 translateY, f32 translateZ
     MtxF* cmf = sCurrentMatrix;
     f32 temp1 = Math_SinS(rot->y);
     f32 temp2 = Math_CosS(rot->y);
-    f32 cos;
-    f32 sin;
+    f32 cos = { 0 };
+    f32 sin = { 0 };
 
     cmf->xx = temp2;
     cmf->zx = -temp1;
@@ -622,9 +608,8 @@ void Matrix_MultVec3fExt(Vec3f* src, Vec3f* dest, MtxF* mf) {
 }
 
 void Matrix_Transpose(MtxF* mf) {
-    f32 temp;
 
-    temp = mf->yx;
+    f32 temp = mf->yx;
     mf->yx = mf->xy;
     mf->xy = temp;
 
@@ -648,18 +633,15 @@ void Matrix_Transpose(MtxF* mf) {
 void Matrix_ReplaceRotation(MtxF* mf) {
     FrameInterpolation_RecordMatrixReplaceRotation(mf);
     MtxF* cmf = sCurrentMatrix;
-    f32 acc;
-    f32 temp;
-    f32 curColNorm;
 
     // compute the Euclidean norm of the first column of the current matrix
-    acc = cmf->xx;
+    f32 acc = cmf->xx;
     acc *= acc;
-    temp = cmf->yx;
+    f32 temp = cmf->yx;
     acc += SQ(temp);
     temp = cmf->zx;
     acc += SQ(temp);
-    curColNorm = sqrtf(acc);
+    f32 curColNorm = sqrtf(acc);
 
     cmf->xx = mf->xx * curColNorm;
     cmf->yx = mf->yx * curColNorm;
@@ -697,12 +679,8 @@ void Matrix_ReplaceRotation(MtxF* mf) {
  * The flag value doesn't matter for a rotation matrix. Not 0 does extra calculation.
  */
 void Matrix_MtxFToYXZRotS(MtxF* mf, Vec3s* rotDest, s32 flag) {
-    f32 temp;
-    f32 temp2;
-    f32 temp3;
-    f32 temp4;
 
-    temp = mf->xz;
+    f32 temp = mf->xz;
     temp *= temp;
     temp += SQ(mf->zz);
     rotDest->x = Math_FAtan2F(-mf->yz, sqrtf(temp)) * (0x8000 / M_PI);
@@ -718,8 +696,8 @@ void Matrix_MtxFToYXZRotS(MtxF* mf, Vec3s* rotDest, s32 flag) {
             rotDest->z = Math_FAtan2F(mf->yx, mf->yy) * (0x8000 / M_PI);
         } else {
             temp = mf->xx;
-            temp2 = mf->zx;
-            temp3 = mf->zy;
+            f32 temp2 = mf->zx;
+            f32 temp3 = mf->zy;
 
             temp *= temp;
             temp += SQ(temp2);
@@ -750,12 +728,8 @@ void Matrix_MtxFToYXZRotS(MtxF* mf, Vec3s* rotDest, s32 flag) {
  * The flag value doesn't matter for a rotation matrix. Not 0 does extra calculation.
  */
 void Matrix_MtxFToZYXRotS(MtxF* mf, Vec3s* rotDest, s32 flag) {
-    f32 temp;
-    f32 temp2;
-    f32 temp3;
-    f32 temp4;
 
-    temp = mf->xx;
+    f32 temp = mf->xx;
     temp *= temp;
     temp += SQ(mf->yx);
     rotDest->y = Math_FAtan2F(-mf->zx, sqrtf(temp)) * (0x8000 / M_PI);
@@ -771,8 +745,8 @@ void Matrix_MtxFToZYXRotS(MtxF* mf, Vec3s* rotDest, s32 flag) {
         } else {
             // see Matrix_MtxFToYXZRotS
             temp = mf->xy;
-            temp2 = mf->yy;
-            temp3 = mf->yz;
+            f32 temp2 = mf->yy;
+            f32 temp3 = mf->yz;
 
             temp *= temp;
             temp += SQ(temp2);
@@ -800,14 +774,11 @@ void Matrix_MtxFToZYXRotS(MtxF* mf, Vec3s* rotDest, s32 flag) {
  */
 void Matrix_RotateAxis(f32 angle, Vec3f* axis, u8 mode) {
     FrameInterpolation_RecordMatrixRotateAxis(angle, axis, mode);
-    MtxF* cmf;
-    f32 sin;
-    f32 cos;
-    f32 rCos;
-    f32 temp1;
-    f32 temp2;
-    f32 temp3;
-    f32 temp4;
+    MtxF* cmf = { 0 };
+    f32 sin = { 0 };
+    f32 cos = { 0 };
+    f32 temp2 = { 0 };
+    f32 temp3 = { 0 };
 
     if (mode == MTXMODE_APPLY) {
         if (angle != 0) {
@@ -816,10 +787,10 @@ void Matrix_RotateAxis(f32 angle, Vec3f* axis, u8 mode) {
             sin = sinf(angle);
             cos = cosf(angle);
 
-            temp1 = cmf->xx;
+            f32 temp1 = cmf->xx;
             temp2 = cmf->xy;
             temp3 = cmf->xz;
-            temp4 = (axis->x * temp1 + axis->y * temp2 + axis->z * temp3) * (1.0f - cos);
+            f32 temp4 = (axis->x * temp1 + axis->y * temp2 + axis->z * temp3) * (1.0f - cos);
             cmf->xx = temp1 * cos + axis->x * temp4 + sin * (temp2 * axis->z - temp3 * axis->y);
             cmf->xy = temp2 * cos + axis->y * temp4 + sin * (temp3 * axis->x - temp1 * axis->z);
             cmf->xz = temp3 * cos + axis->z * temp4 + sin * (temp1 * axis->y - temp2 * axis->x);
@@ -846,7 +817,7 @@ void Matrix_RotateAxis(f32 angle, Vec3f* axis, u8 mode) {
         if (angle != 0) {
             sin = sinf(angle);
             cos = cosf(angle);
-            rCos = 1.0f - cos;
+            f32 rCos = 1.0f - cos;
 
             cmf->xx = axis->x * axis->x * rCos + cos;
             cmf->yy = axis->y * axis->y * rCos + cos;
@@ -940,9 +911,8 @@ void Matrix_SetTranslateUniformScaleMtx(Mtx* mtx, f32 scale, f32 translateX, f32
 void Matrix_SetTranslateUniformScaleMtx2(Mtx* mtx, f32 scale, f32 translateX, f32 translateY, f32 translateZ) {
     u16* intPart = (u16*)&mtx->m[0][0];
     u16* fracPart = (u16*)&mtx->m[2][0];
-    u32 fixedPoint;
 
-    fixedPoint = (s32)(scale * 0x10000);
+    u32 fixedPoint = (s32)(scale * 0x10000);
     fracPart[0] = fixedPoint & 0xFFFF;
     intPart[0] = (fixedPoint >> 16) & 0xFFFF;
 
@@ -993,9 +963,8 @@ void Matrix_SetTranslateScaleMtx1(Mtx* mtx, f32 scaleX, f32 scaleY, f32 scaleZ, 
                                   f32 translateZ) {
     u16* intPart = (u16*)&mtx->m[0][0];
     u16* fracPart = (u16*)&mtx->m[2][0];
-    u32 fixedPoint;
 
-    fixedPoint = (s32)(scaleX * 0x10000);
+    u32 fixedPoint = (s32)(scaleX * 0x10000);
     intPart[0] = (fixedPoint >> 16) & 0xFFFF;
     fracPart[0] = fixedPoint & 0xFFFF;
 

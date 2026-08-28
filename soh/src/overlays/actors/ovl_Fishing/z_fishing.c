@@ -446,9 +446,9 @@ s32 Fishing_GetNetworkVisualState(PlayState* play, u8* castState, Vec3f* rodTipO
                                   s32* fishRoomId, s32* fishActorParams, s32* fishHomeX, s32* fishHomeY,
                                   s32* fishHomeZ,
                                   u8* sinkingLureSegmentIndex, u8* sinkingLureUnderwater) {
-    Player* player;
+    Player* player = { 0 };
     s32 i;
-    s32 firstLinePoint;
+    s32 firstLinePoint = { 0 };
 
     if (play == NULL || castState == NULL || rodTipOffset == NULL || lureOffset == NULL || lureDrawOffset == NULL ||
         rodBendY == NULL || rodBendX == NULL || rodTwist == NULL || rodCastX == NULL || lureRot == NULL ||
@@ -587,14 +587,13 @@ void Fishing_SeedRand(s32 seed0, s32 seed1, s32 seed2) {
 }
 
 f32 Fishing_RandZeroOne(void) {
-    f32 rand;
 
     // Wichmann-Hill algorithm
     sRandSeed0 = (sRandSeed0 * 171) % 30269;
     sRandSeed1 = (sRandSeed1 * 172) % 30307;
     sRandSeed2 = (sRandSeed2 * 170) % 30323;
 
-    rand = (sRandSeed0 / 30269.0f) + (sRandSeed1 / 30307.0f) + (sRandSeed2 / 30323.0f);
+    f32 rand = (sRandSeed0 / 30269.0f) + (sRandSeed1 / 30307.0f) + (sRandSeed2 / 30323.0f);
     while (rand >= 1.0f) {
         rand -= 1.0f;
     }
@@ -603,11 +602,9 @@ f32 Fishing_RandZeroOne(void) {
 }
 
 s16 Fishing_SmoothStepToS(s16* pValue, s16 target, s16 scale, s16 step) {
-    s16 stepSize;
-    s16 diff;
 
-    diff = target - *pValue;
-    stepSize = diff / scale;
+    s16 diff = target - *pValue;
+    s16 stepSize = diff / scale;
 
     if (stepSize > step) {
         stepSize = step;
@@ -909,7 +906,6 @@ static FishingPropInit sPondPropInits[POND_PROP_COUNT + 1] = {
 
 void Fishing_InitPondProps(Fishing* this, PlayState* play) {
     FishingProp* prop = &sPondProps[0];
-    Vec3f colliderPos;
     s16 i;
 
     Fishing_SeedRand(1, 29100, 9786);
@@ -940,7 +936,7 @@ void Fishing_InitPondProps(Fishing* this, PlayState* play) {
         } else if (prop->type == FS_PROP_WOOD_POST) {
             prop->scale = 0.08f;
             prop->drawDistance = 1200.0f;
-            colliderPos = prop->pos;
+            Vec3f colliderPos = prop->pos;
             colliderPos.y += 50.0f;
             Fishing_SetColliderElement(i, &sFishingMain->collider, &colliderPos, prop->scale * 3.5f);
         } else if (prop->type == FS_PROP_LILY_PAD) {
@@ -1028,7 +1024,6 @@ static s32 Fishing_FindWildFishSpawn(PlayState* play, WaterBox* waterBox, u32 se
     for (attempt = 0; attempt < 32; attempt++) {
         u32 candidateSeed = seed ^ ((u32)attempt * 0xD3A2646CU);
         Vec3f floorCheckPos;
-        f32 floorY;
 
         spawnPos->x = minX + marginX + Fishing_WildRandom01(candidateSeed) * (width - (marginX * 2.0f));
         spawnPos->z = minZ + marginZ + Fishing_WildRandom01(candidateSeed ^ 0xA511E9B3U) *
@@ -1036,7 +1031,7 @@ static s32 Fishing_FindWildFishSpawn(PlayState* play, WaterBox* waterBox, u32 se
         floorCheckPos.x = spawnPos->x;
         floorCheckPos.y = waterBox->ySurface + 10.0f;
         floorCheckPos.z = spawnPos->z;
-        floorY = BgCheck_EntityRaycastFloor3(&play->colCtx, &floorPoly, &floorBgId, &floorCheckPos);
+        f32 floorY = BgCheck_EntityRaycastFloor3(&play->colCtx, &floorPoly, &floorBgId, &floorCheckPos);
         if ((floorY != BGCHECK_Y_MIN) && (floorY <= (spawnPos->y - 20.0f))) {
             return true;
         }
@@ -1118,8 +1113,8 @@ static InitChainEntry sInitChain[] = {
 };
 
 s32 Fishing_EnsureNetworkPopulation(PlayState* play) {
-    Actor* actor;
-    Player* player;
+    Actor* actor = { 0 };
+    Player* player = { 0 };
 
     if (play == NULL) {
         return false;
@@ -1145,7 +1140,7 @@ s32 Fishing_EnsureNetworkPopulation(PlayState* play) {
 void Fishing_Init(Actor* thisx, PlayState* play2) {
     PlayState* play = play2;
     Fishing* this = (Fishing*)thisx;
-    u16 fishCount;
+    u16 fishCount = { 0 };
     s16 i;
 
     Actor_ProcessInitChain(thisx, sInitChain);
@@ -1407,7 +1402,7 @@ void Fishing_Destroy(Actor* thisx, PlayState* play2) {
 }
 
 void Fishing_UpdateEffects(FishingEffect* effect, PlayState* play) {
-    f32 rippleY;
+    f32 rippleY = { 0 };
     s16 i;
 
     for (i = 0; i < FISHING_EFFECT_COUNT; i++) {
@@ -1508,8 +1503,6 @@ void Fishing_UpdateEffects(FishingEffect* effect, PlayState* play) {
                     effect->type = FS_EFF_NONE;
                 }
             } else if (effect->type == FS_EFF_OWNER_HAT) {
-                f32 sqDistXZ;
-                f32 bottomY;
 
                 effect->scale = 10 * .001f;
 
@@ -1517,8 +1510,8 @@ void Fishing_UpdateEffects(FishingEffect* effect, PlayState* play) {
                 Math_ApproachS(&sEffOwnersHatRot.x, 0, 20, 100);
                 Math_ApproachS(&sEffOwnersHatRot.z, -0x4000, 20, 100);
 
-                sqDistXZ = SQ(effect->pos.x) + SQ(effect->pos.z);
-                bottomY = WATER_SURFACE_Y(play) + ((sqrtf(sqDistXZ) - 920.0f) * 0.147f);
+                f32 sqDistXZ = SQ(effect->pos.x) + SQ(effect->pos.z);
+                f32 bottomY = WATER_SURFACE_Y(play) + ((sqrtf(sqDistXZ) - 920.0f) * 0.147f);
 
                 if (effect->pos.y > (bottomY - 10.0f)) {
                     effect->pos.y -= 0.1f;
@@ -1554,9 +1547,8 @@ void Fishing_UpdateEffects(FishingEffect* effect, PlayState* play) {
 
 void Fishing_DrawEffects(FishingEffect* effect, PlayState* play) {
     u8 flag = 0;
-    f32 rotY;
+    f32 rotY = { 0 };
     s16 i;
-    s32 pad;
     FishingEffect* firstEffect = effect;
 
     OPEN_DISPS(play->state.gfxCtx);
@@ -1768,8 +1760,6 @@ void Fishing_DrawEffects(FishingEffect* effect, PlayState* play) {
 }
 
 void Fishing_DrawStreamSplash(PlayState* play) {
-    s32 pad;
-
     OPEN_DISPS(play->state.gfxCtx);
 
     gSPSegment(POLY_XLU_DISP++, 0x09,
@@ -1804,43 +1794,28 @@ static void Fishing_UpdateLineInternal(PlayState* play, Actor* collisionActor, V
                                        u8 lureType, f32 waterSurfaceY) {
     s16 i;
     s16 k;
-    f32 dx;
-    f32 dy;
-    f32 dz;
-    f32 rx;
-    f32 ry;
-    f32 dist;
-    f32 spD8;
-    s16 spooled;
-    s32 pad;
-    f32 temp_f20;
+    s16 spooled = { 0 };
     Vec3f posSrc = { 0.0f, 0.0f, 0.0f };
     Vec3f posStep;
-    f32 lineLength;
-    Vec3f tempPos;
-    Vec3f segPos;
-    f32 sp94;
-    f32 sp90;
-    f32 sp8C;
-    f32 sqDistXZ;
-    f32 temp_f18;
-    f32 phi_f12;
-    f32 phi_f2;
+    Vec3f tempPos = { 0 };
+    f32 sp94 = { 0 };
+    f32 sp90 = { 0 };
+    f32 sp8C = { 0 };
+    f32 phi_f12 = { 0 };
+    f32 phi_f2 = { 0 };
     CollisionPoly* floorPoly;
-    Vec3f floorCheckPos;
     s32 floorBgId;
     f32 floorY;
-    f32 segmentStartY;
 
     if (lineStraightenTimer != 0) {
         tempPos = *basePos;
-        segPos = pos[LINE_SEG_COUNT - 1];
+        Vec3f segPos = pos[LINE_SEG_COUNT - 1];
 
         sp94 = segPos.x - tempPos.x;
         sp90 = segPos.y - tempPos.y;
         sp8C = segPos.z - tempPos.z;
 
-        lineLength = sqrtf(SQ(sp94) + SQ(sp90) + SQ(sp8C)) * 0.97f;
+        f32 lineLength = sqrtf(SQ(sp94) + SQ(sp90) + SQ(sp8C)) * 0.97f;
         if (lineLength > 1000.0f) {
             lineLength = 1000.0f;
         }
@@ -1855,7 +1830,7 @@ static void Fishing_UpdateLineInternal(PlayState* play, Actor* collisionActor, V
         if (i <= spooled) {
             pos[i] = *basePos;
         } else if (lineStraightenTimer != 0) {
-            temp_f20 = (f32)(i - spooled) / (f32)(LINE_SEG_COUNT - spooled + 1);
+            f32 temp_f20 = (f32)(i - spooled) / (f32)(LINE_SEG_COUNT - spooled + 1);
             Math_ApproachF(&pos[i].x, (sp94 * temp_f20) + tempPos.x, 1.0f, 20.0f);
             Math_ApproachF(&pos[i].y, (sp90 * temp_f20) + tempPos.y, 1.0f, 20.0f);
             Math_ApproachF(&pos[i].z, (sp8C * temp_f20) + tempPos.z, 1.0f, 20.0f);
@@ -1863,13 +1838,13 @@ static void Fishing_UpdateLineInternal(PlayState* play, Actor* collisionActor, V
     }
 
     for (i = spooled + 1, k = 0; i < LINE_SEG_COUNT; i++, k++) {
-        temp_f18 = 2.0f * lineGravity;
-        segmentStartY = pos[i].y;
+        f32 temp_f18 = 2.0f * lineGravity;
+        f32 segmentStartY = pos[i].y;
 
-        dx = (pos + i)->x - (pos + i - 1)->x;
-        spD8 = (pos + i)->y;
+        f32 dx = (pos + i)->x - (pos + i - 1)->x;
+        f32 spD8 = (pos + i)->y;
 
-        sqDistXZ = SQ((pos + i)->x) + SQ((pos + i)->z);
+        f32 sqDistXZ = SQ((pos + i)->x) + SQ((pos + i)->z);
 
         if (portableFishing) {
             phi_f12 = waterSurfaceY;
@@ -1917,12 +1892,12 @@ static void Fishing_UpdateLineInternal(PlayState* play, Actor* collisionActor, V
             spD8 = 42.0f;
         }
 
-        dy = spD8 - (pos + i - 1)->y;
-        dz = (pos + i)->z - (pos + i - 1)->z;
+        f32 dy = spD8 - (pos + i - 1)->y;
+        f32 dz = (pos + i)->z - (pos + i - 1)->z;
 
-        ry = Math_Atan2F(dz, dx);
-        dist = sqrtf(SQ(dx) + SQ(dz));
-        rx = -Math_Atan2F(dist, dy);
+        f32 ry = Math_Atan2F(dz, dx);
+        f32 dist = sqrtf(SQ(dx) + SQ(dz));
+        f32 rx = -Math_Atan2F(dist, dy);
 
         (rot + i - 1)->y = ry;
         (rot + i - 1)->x = rx;
@@ -1936,7 +1911,7 @@ static void Fishing_UpdateLineInternal(PlayState* play, Actor* collisionActor, V
         (pos + i)->z = (pos + i - 1)->z + posStep.z;
 
         if (portableFishing && !portableWaterFound) {
-            floorCheckPos = pos[i];
+            Vec3f floorCheckPos = pos[i];
             floorCheckPos.y = segmentStartY;
             if (floorCheckPos.y < pos[i].y) {
                 floorCheckPos.y = pos[i].y;
@@ -1967,25 +1942,19 @@ void Fishing_UpdateLine(PlayState* play, Vec3f* basePos, Vec3f* pos, Vec3f* rot,
 
 static void Fishing_UpdateLinePosInternal(Vec3f* pos, s16 spooled) {
     s16 i;
-    f32 dx;
-    f32 dy;
-    f32 dz;
-    f32 rx;
-    f32 ry;
-    f32 dist;
     Vec3f posSrc = { 0.0f, 0.0f, 0.0f };
     Vec3f posStep;
 
     posSrc.z = 5.0f;
 
     for (i = LINE_SEG_COUNT - 2; i > spooled; i--) {
-        dx = (pos + i)->x - (pos + i + 1)->x;
-        dy = (pos + i)->y - (pos + i + 1)->y;
-        dz = (pos + i)->z - (pos + i + 1)->z;
+        f32 dx = (pos + i)->x - (pos + i + 1)->x;
+        f32 dy = (pos + i)->y - (pos + i + 1)->y;
+        f32 dz = (pos + i)->z - (pos + i + 1)->z;
 
-        ry = Math_Atan2F(dz, dx);
-        dist = sqrtf(SQ(dx) + SQ(dz));
-        rx = -Math_Atan2F(dist, dy);
+        f32 ry = Math_Atan2F(dz, dx);
+        f32 dist = sqrtf(SQ(dx) + SQ(dz));
+        f32 rx = -Math_Atan2F(dist, dy);
 
         Matrix_RotateY(ry, MTXMODE_NEW);
         Matrix_RotateX(rx, MTXMODE_APPLY);
@@ -2004,7 +1973,7 @@ void Fishing_UpdateLinePos(Vec3f* pos) {
 void Fishing_UpdateNetworkLine(PlayState* play, Actor* collisionActor, Vec3f* rodTip, Vec3f* lurePos,
                                Vec3f linePos[LINE_SEG_COUNT], Vec3f lineRot[LINE_SEG_COUNT],
                                Vec3f lineUnk[LINE_SEG_COUNT], s16 lineSpooled, u8 lureType, f32 lineGravity) {
-    f32 remoteLineSpooled;
+    f32 remoteLineSpooled = { 0 };
     bool waterFound;
     WaterBox* waterBox;
     f32 waterSurfaceY = 32000.0f;
@@ -2029,13 +1998,13 @@ void Fishing_UpdateNetworkLine(PlayState* play, Actor* collisionActor, Vec3f* ro
 }
 
 void Fishing_DrawLureHook(PlayState* play, Vec3f* pos, Vec3f* refPos, u8 hookIndex) {
-    f32 dx;
-    f32 dy;
-    f32 dz;
-    f32 rx;
-    f32 ry;
-    f32 dist;
-    f32 offsetY;
+    f32 dx = { 0 };
+    f32 dy = { 0 };
+    f32 dz = { 0 };
+    f32 rx = { 0 };
+    f32 ry = { 0 };
+    f32 dist = { 0 };
+    f32 offsetY = { 0 };
     Vec3f posSrc = { 0.0f, 0.0f, 1.0f };
     Vec3f posStep;
     Player* player = GET_PLAYER(play);
@@ -2131,19 +2100,13 @@ static void Fishing_UpdateSinkingLureInternal(Vec3f positions[SINKING_LURE_SEG_C
                                               s16 playerYaw, u8 castState, bool sinkingLureFound,
                                               bool underwater) {
     s16 i;
-    f32 dx;
-    f32 dy;
-    f32 dz;
-    f32 rx;
-    f32 ry;
-    f32 dist;
-    f32 offsetY;
+    f32 offsetY = { 0 };
     Vec3f posSrc = { 0.0f, 0.0f, 0.0f };
     Vec3f posStep;
     Vec3f sp94;
     Vec3f sp88;
-    f32 offsetX;
-    f32 offsetZ;
+    f32 offsetX = { 0 };
+    f32 offsetZ = { 0 };
 
     posSrc.z = 0.85f;
 
@@ -2175,13 +2138,13 @@ static void Fishing_UpdateSinkingLureInternal(Vec3f positions[SINKING_LURE_SEG_C
             offsetX = offsetZ = 0.0f;
         }
 
-        dx = (pos + i)->x - (pos + i - 1)->x + offsetX;
-        dy = (pos + i)->y - (pos + i - 1)->y + offsetY;
-        dz = (pos + i)->z - (pos + i - 1)->z + offsetZ;
+        f32 dx = (pos + i)->x - (pos + i - 1)->x + offsetX;
+        f32 dy = (pos + i)->y - (pos + i - 1)->y + offsetY;
+        f32 dz = (pos + i)->z - (pos + i - 1)->z + offsetZ;
 
-        ry = Math_Atan2F(dz, dx);
-        dist = sqrtf(SQ(dx) + SQ(dz));
-        rx = -Math_Atan2F(dist, dy);
+        f32 ry = Math_Atan2F(dz, dx);
+        f32 dist = sqrtf(SQ(dx) + SQ(dz));
+        f32 rx = -Math_Atan2F(dist, dy);
 
         Matrix_RotateY(ry, MTXMODE_NEW);
         Matrix_RotateX(rx, MTXMODE_APPLY);
@@ -2216,7 +2179,7 @@ static f32 sSinkingLureSizes[] = {
 
 void Fishing_DrawSinkingLure(PlayState* play) {
     s16 i;
-    f32 scale;
+    f32 scale = { 0 };
 
     OPEN_DISPS(play->state.gfxCtx);
 
@@ -2274,7 +2237,6 @@ void Fishing_DrawLureAndLine(PlayState* play, Vec3f* linePos, Vec3f* lineRot) {
     Vec3f hookPos[2];
     s16 i;
     s16 spooled = sRodLineSpooled;
-    s32 pad;
     Player* player = GET_PLAYER(play);
 
     OPEN_DISPS(play->state.gfxCtx);
@@ -2348,20 +2310,14 @@ void Fishing_DrawLureAndLine(PlayState* play, Vec3f* linePos, Vec3f* lineRot) {
     gDPSetPrimColor(POLY_XLU_DISP++, 0, 0, 255, 255, 255, 55);
 
     if ((sRodCastState == 4) && ((sLineHooked != 0) || (sLureEquipped != 2))) {
-        f32 rx;
-        f32 ry;
-        f32 dist;
-        f32 dx;
-        f32 dy;
-        f32 dz;
 
-        dx = sLurePos.x - sRodTipPos.x;
-        dy = sLurePos.y - sRodTipPos.y;
-        dz = sLurePos.z - sRodTipPos.z;
+        f32 dx = sLurePos.x - sRodTipPos.x;
+        f32 dy = sLurePos.y - sRodTipPos.y;
+        f32 dz = sLurePos.z - sRodTipPos.z;
 
-        ry = Math_FAtan2F(dx, dz);
-        dist = sqrtf(SQ(dx) + SQ(dz));
-        rx = -Math_FAtan2F(dy, dist);
+        f32 ry = Math_FAtan2F(dx, dz);
+        f32 dist = sqrtf(SQ(dx) + SQ(dz));
+        f32 rx = -Math_FAtan2F(dy, dist);
 
         dist = sqrtf(SQ(dx) + SQ(dy) + SQ(dz)) * 0.001f;
 
@@ -2375,20 +2331,14 @@ void Fishing_DrawLureAndLine(PlayState* play, Vec3f* linePos, Vec3f* lineRot) {
     } else {
         for (i = spooled; i < LINE_SEG_COUNT - 1; i++) {
             if ((i == LINE_SEG_COUNT - 3) && (sLureEquipped == FS_LURE_STOCK) && (sRodCastState == 3)) {
-                f32 rx;
-                f32 ry;
-                f32 dist;
-                f32 dx;
-                f32 dy;
-                f32 dz;
 
-                dx = sLureDrawPos.x - (linePos + i)->x;
-                dy = sLureDrawPos.y - (linePos + i)->y;
-                dz = sLureDrawPos.z - (linePos + i)->z;
+                f32 dx = sLureDrawPos.x - (linePos + i)->x;
+                f32 dy = sLureDrawPos.y - (linePos + i)->y;
+                f32 dz = sLureDrawPos.z - (linePos + i)->z;
 
-                ry = Math_FAtan2F(dx, dz);
-                dist = sqrtf(SQ(dx) + SQ(dz));
-                rx = -Math_FAtan2F(dy, dist);
+                f32 ry = Math_FAtan2F(dx, dz);
+                f32 dist = sqrtf(SQ(dx) + SQ(dz));
+                f32 rx = -Math_FAtan2F(dy, dist);
 
                 dist = sqrtf(SQ(dx) + SQ(dy) + SQ(dz)) * 0.001f;
 
@@ -2434,12 +2384,9 @@ static Vec3f sRodTipOffset = { 0.0f, 0.0f, 0.0f };
 
 void Fishing_DrawRod(PlayState* play) {
     s16 i;
-    f32 lureXZLen;
-    f32 spC4;
-    f32 spC0;
+    f32 spC0 = { 0 };
     Input* input = &play->state.input[0];
     Player* player = GET_PLAYER(play);
-    s32 pad;
 
     OPEN_DISPS(play->state.gfxCtx);
 
@@ -2470,11 +2417,11 @@ void Fishing_DrawRod(PlayState* play) {
             D_80B7A6B4 = 0.0f;
         }
 
-        lureXZLen = player->unk_85C;
+        f32 lureXZLen = player->unk_85C;
         Math_SmoothStepToF(&player->unk_85C, input->rel.stick_y * 0.02f, 0.3f, 5.0f, 0.0f);
         lureXZLen = player->unk_85C - lureXZLen;
 
-        spC4 = player->unk_858;
+        f32 spC4 = player->unk_858;
         Math_SmoothStepToF(&player->unk_858, input->rel.stick_x * 0.02f, 0.3f, 5.0f, 0.0f);
         spC4 = player->unk_858 - spC4;
 
@@ -2574,30 +2521,17 @@ void Fishing_DrawRod(PlayState* play) {
 static Vec3f sSoundPos = { 0.0f, 0.0f, 0.0f };
 
 void Fishing_UpdateLure(Fishing* this, PlayState* play) {
-    f32 spE4;
-    f32 spE0;
-    s16 timer;
-    s16 spDC;
-    f32 spD8;
-    f32 spD4;
-    f32 spD0;
-    f32 lengthCasted;
-    f32 lureXZLen;
+    f32 spE4 = { 0 };
+    f32 spE0 = { 0 };
     s16 i;
     Player* player = GET_PLAYER(play);
     Vec3f zeroVec = { 0.0f, 0.0f, 0.0f };
-    Vec3f spA8;
+    Vec3f spA8 = { 0 };
     Vec3f sp9C;
     Vec3f sp90;
     Input* input = &play->state.input[0];
-    Vec3f sp80;
-    f32 sp7C;
-    f32 sp78;
-    f32 phi_f0;
-    f32 wiggle;
+    f32 phi_f0 = { 0 };
     Vec3f sp64;
-    Vec3f sp58;
-    s32 pad;
 
     sLureTimer++;
 
@@ -2737,9 +2671,9 @@ void Fishing_UpdateLure(Fishing* this, PlayState* play) {
                 }
             }
 
-            spD8 = sLurePos.x - sRodTipPos.x;
-            spD4 = sLurePos.y - sRodTipPos.y;
-            spD0 = sLurePos.z - sRodTipPos.z;
+            f32 spD8 = sLurePos.x - sRodTipPos.x;
+            f32 spD4 = sLurePos.y - sRodTipPos.y;
+            f32 spD0 = sLurePos.z - sRodTipPos.z;
 
             if (D_80B7E0B2 != 0) {
                 sLureRot.x = sReelLineRot[LINE_SEG_COUNT - 2].x + M_PI;
@@ -2749,17 +2683,17 @@ void Fishing_UpdateLure(Fishing* this, PlayState* play) {
                 sLureRot.y = Math_Atan2F(spD0, spD8) + M_PI;
             }
 
-            lengthCasted = sqrtf(SQ(spD8) + SQ(spD4) + SQ(spD0));
+            f32 lengthCasted = sqrtf(SQ(spD8) + SQ(spD4) + SQ(spD0));
             if (lengthCasted > 1000.0f) {
                 lengthCasted = 1000.0f;
             }
             sRodLineSpooled = 200.0f - (lengthCasted * 200.0f * 0.001f);
 
-            lureXZLen = sPortableFishing ? 0.0f : SQ(sLurePos.x) + SQ(sLurePos.z);
+            f32 lureXZLen = sPortableFishing ? 0.0f : SQ(sLurePos.x) + SQ(sLurePos.z);
             if (lureXZLen > SQ(920.0f)) {
                 if ((KREG(56) != 0) || (sLurePos.y > 160.0f) || (sLurePos.x < 80.0f) || (sLurePos.x > 180.0f) ||
                     (sLurePos.z > 1350.0f) || (sLurePos.z < 1100.0f) || (sLurePos.y < 45.0f)) {
-                    sp80 = this->actor.world.pos;
+                    Vec3f sp80 = this->actor.world.pos;
                     this->actor.prevPos = this->actor.world.pos = sLurePos;
                     Actor_UpdateBgCheckInfo(play, &this->actor, 15.0f, 30.0f, 30.0f, 0x43);
                     this->actor.world.pos = sp80;
@@ -2811,8 +2745,8 @@ void Fishing_UpdateLure(Fishing* this, PlayState* play) {
                         sLurePosDelta.y *= 0.2f;
 
                         for (i = 0; i < 50; i++) {
-                            sp7C = Rand_ZeroFloat(1.5f) + 0.5f;
-                            sp78 = Rand_ZeroFloat(6.28f);
+                            f32 sp7C = Rand_ZeroFloat(1.5f) + 0.5f;
+                            f32 sp78 = Rand_ZeroFloat(6.28f);
 
                             sp9C.x = sinf(sp78) * sp7C;
                             sp9C.z = cosf(sp78) * sp7C;
@@ -2882,13 +2816,13 @@ void Fishing_UpdateLure(Fishing* this, PlayState* play) {
                 sLureRotXStep = 0.0f;
             }
 
-            spDC = 0x4000;
+            s16 spDC = 0x4000;
             spE4 = WATER_SURFACE_Y(play);
 
             lureXZLen = sPortableFishing ? 0.0f : SQ(sLurePos.x) + SQ(sLurePos.z);
             if (lureXZLen < SQ(920.0f)) {
                 if (sLurePos.y <= (spE4 + 4.0f)) {
-                    wiggle = 0.0f;
+                    f32 wiggle = 0.0f;
 
                     if (D_80B7E150 == 0) {
                         if (fabsf(input->rel.stick_x) > 30.0f) {
@@ -3001,7 +2935,7 @@ void Fishing_UpdateLure(Fishing* this, PlayState* play) {
                 }
             } else if (sReelLinePos[LINE_SEG_COUNT - 1].y < (WATER_SURFACE_Y(play) + phi_f0)) {
                 if (sLureEquipped == FS_LURE_SINKING) {
-                    sp58 = this->actor.world.pos;
+                    Vec3f sp58 = this->actor.world.pos;
                     this->actor.prevPos = this->actor.world.pos = sLurePos;
                     Actor_UpdateBgCheckInfo(play, &this->actor, 15.0f, 30.0f, 30.0f, 0x44);
                     this->actor.world.pos = sp58;
@@ -3074,7 +3008,7 @@ void Fishing_UpdateLure(Fishing* this, PlayState* play) {
 
             if ((sLurePos.y <= (WATER_SURFACE_Y(play) + 4.0f)) && (sLurePos.y >= (WATER_SURFACE_Y(play) - 4.0f))) {
 
-                timer = 63;
+                s16 timer = 63;
                 if (Fishing_IsReelHeld(input) || (sLureWigglePosY > 1.0f)) {
                     timer = 1;
                 }
@@ -3123,12 +3057,10 @@ void Fishing_UpdateLure(Fishing* this, PlayState* play) {
 
 s32 Fishing_SplashBySize(Fishing* this, PlayState* play, u8 ignorePosCheck) {
     s16 i;
-    s16 count;
-    f32 scale;
+    s16 count = { 0 };
+    f32 scale = { 0 };
     Vec3f pos;
     Vec3f vel;
-    f32 speedXZ;
-    f32 angle;
 
     if ((this->actor.world.pos.y < (WATER_SURFACE_Y(play) - 10.0f)) && !ignorePosCheck) {
         return false;
@@ -3143,8 +3075,8 @@ s32 Fishing_SplashBySize(Fishing* this, PlayState* play, u8 ignorePosCheck) {
     }
 
     for (i = 0; i < count; i++) {
-        speedXZ = (Rand_ZeroFloat(1.5f) + 0.5f) * scale;
-        angle = Rand_ZeroFloat(6.28f);
+        f32 speedXZ = (Rand_ZeroFloat(1.5f) + 0.5f) * scale;
+        f32 angle = Rand_ZeroFloat(6.28f);
 
         vel.x = sinf(angle) * speedXZ;
         vel.z = cosf(angle) * speedXZ;
@@ -3170,13 +3102,10 @@ s32 Fishing_SplashBySize(Fishing* this, PlayState* play, u8 ignorePosCheck) {
 }
 
 void Fishing_SplashBySize2(Fishing* this, PlayState* play) {
-    s16 count;
+    s16 count = { 0 };
     s16 i;
-    f32 scale;
-    Vec3f pos;
+    f32 scale = { 0 };
     Vec3f vel;
-    f32 speedXZ;
-    f32 angle;
 
     if (this->fishLength >= 45.0f) {
         count = 30;
@@ -3187,14 +3116,14 @@ void Fishing_SplashBySize2(Fishing* this, PlayState* play) {
     }
 
     for (i = 0; i < count; i++) {
-        speedXZ = (Rand_ZeroFloat(1.5f) + 0.5f) * scale;
-        angle = Rand_ZeroFloat(6.28f);
+        f32 speedXZ = (Rand_ZeroFloat(1.5f) + 0.5f) * scale;
+        f32 angle = Rand_ZeroFloat(6.28f);
 
         vel.x = sinf(angle) * speedXZ;
         vel.z = cosf(angle) * speedXZ;
         vel.y = Rand_ZeroFloat(2.0f) + 2.0f;
 
-        pos = this->actor.world.pos;
+        Vec3f pos = this->actor.world.pos;
         pos.x += (vel.x * 3.0f);
         pos.y += (vel.y * 3.0f);
         pos.z += (vel.z * 3.0f);
@@ -3207,13 +3136,12 @@ void Fishing_SplashBySize2(Fishing* this, PlayState* play) {
 void func_80B70ED4(Fishing* this, Input* input) {
     Vec3f lineVec;
     Vec3f sp28;
-    f32 lineLengthSQ;
 
     lineVec.x = sLurePos.x - this->actor.world.pos.x;
     lineVec.y = sLurePos.y - this->actor.world.pos.y;
     lineVec.z = sLurePos.z - this->actor.world.pos.z;
 
-    lineLengthSQ = SQ(lineVec.x) + SQ(lineVec.y) + SQ(lineVec.z);
+    f32 lineLengthSQ = SQ(lineVec.x) + SQ(lineVec.y) + SQ(lineVec.z);
 
     if ((sRodCastState == 3) && (this->unk_1A2 == 0) && (sIsOwnersHatHooked == 0)) {
         Matrix_RotateY((-this->actor.shape.rot.y / 32768.0f) * M_PI, MTXMODE_NEW);
@@ -3265,8 +3193,8 @@ void func_80B70ED4(Fishing* this, Input* input) {
 }
 
 void Fishing_FishLeapSfx(Fishing* this, u8 outOfWater) {
-    s16 sfxId;
-    u8 length;
+    s16 sfxId = { 0 };
+    u8 length = { 0 };
 
     if (this->isLoach == 0) {
         length = this->fishLength;
@@ -3349,42 +3277,34 @@ bool getShouldSpawnLoaches() {
 }
 
 void Fishing_UpdateFish(Actor* thisx, PlayState* play2) {
+    f32 temp = { 0 };
     s16 i;
     s16 rotXYScale = 10;
-    f32 distX;
-    f32 distY;
-    f32 distZ;
-    f32 distToTarget;
-    f32 multiplier;
-    f32 chance;
-    f32 playerSpeedMod;
+    f32 distX = { 0 };
+    f32 distY = { 0 };
+    f32 distZ = { 0 };
+    f32 distToTarget = { 0 };
+    f32 multiplier = { 0 };
+    f32 playerSpeedMod = { 0 };
     Vec3f multiVecSrc;
     Vec3f targetPosOffset;
-    s16 rotXTarget;
-    s16 rotYTarget;
+    s16 rotXTarget = { 0 };
+    s16 rotYTarget = { 0 };
     s16 rotZScale;
-    s16 timer;
-    s16 spF6;
-    s16 rotXScale;
-    s16 rotXStep;
+    s16 timer = { 0 };
+    s16 rotXScale = { 0 };
+    s16 rotXStep = { 0 };
     s16 rotYScale;
     s16 rotYStep;
     Fishing* this = (Fishing*)thisx;
     PlayState* play = play2;
     Player* player = GET_PLAYER(play);
     Input* input = &play->state.input[0];
-    f32 spD8;
-    f32 phi_f0;
-    f32 phi_f2;
     Vec3f bubblePos;
-    Vec3f spB8;
-    u8 phi_v0_2;
-    f32 temp_f0;
-    f32 temp;
-    s32 pad;
-    f32 rumbleStrength;
+    u8 phi_v0_2 = { 0 };
+    f32 rumbleStrength = { 0 };
     u16 attempts;
-    u8 rumbleStrength8;
+    u8 rumbleStrength8 = { 0 };
     f32 savedPortableWaterSurfaceY = sPortableWaterSurfaceY;
     bool savedPortableWaterFound = sPortableWaterFound;
     s32 remoteHookOwner = -1;
@@ -3544,8 +3464,8 @@ void Fishing_UpdateFish(Actor* thisx, PlayState* play2) {
     if (this->fishState == 6) {
         Math_ApproachF(&this->fishLimbRotPhaseMag, this->unk_194, 0.2f, 200.0f);
     } else {
-        phi_f0 = 1.0f;
-        phi_f2 = 1.0f;
+        f32 phi_f0 = 1.0f;
+        f32 phi_f2 = 1.0f;
         if (this->actor.world.pos.y > WATER_SURFACE_Y(play)) {
             phi_f0 = (KREG(64) * 0.1f) + 1.5f;
             phi_f2 = 3.0f;
@@ -3836,7 +3756,7 @@ void Fishing_UpdateFish(Actor* thisx, PlayState* play2) {
                         this->fishState = -25;
                         this->rotationStep = 0.0f;
 
-                        spB8 = this->fishMouthPos;
+                        Vec3f spB8 = this->fishMouthPos;
                         spB8.y = WATER_SURFACE_Y(play);
                         Fishing_SpawnRipple(&this->actor.projectedPos, play->specialEffects, &spB8, 10.0f, 300.0f, 150,
                                             90);
@@ -3956,7 +3876,7 @@ void Fishing_UpdateFish(Actor* thisx, PlayState* play2) {
                 multiplier *= 3.0f;
             }
 
-            chance = 0.03f * multiplier;
+            f32 chance = 0.03f * multiplier;
             if (sLureEquipped == FS_LURE_SINKING) {
                 chance *= 5.0f;
             }
@@ -4171,7 +4091,7 @@ void Fishing_UpdateFish(Actor* thisx, PlayState* play2) {
                 if (((input->rel.stick_y < -50) && (sStickAdjYPrev > -40)) ||
                     CHECK_BTN_ALL(input->press.button, BTN_A)) {
                     if (input->rel.stick_y < -50) {
-                        temp_f0 = 40.0f - ((this->fishLength - 30.0f) * 1.333333f);
+                        f32 temp_f0 = 40.0f - ((this->fishLength - 30.0f) * 1.333333f);
                         if (temp_f0 > 0.0f) {
                             this->unk_152 = temp_f0;
                             this->unk_154 = this->actor.yawTowardsPlayer - this->actor.shape.rot.y;
@@ -4613,7 +4533,7 @@ void Fishing_UpdateFish(Actor* thisx, PlayState* play2) {
             rotXScale = rotYScale = rotZScale = 4;
             rotXStep = rotYStep = 0x2000;
 
-            spF6 = Fishing_SmoothStepToS(&this->actor.world.rot.y, rotYTarget, rotXYScale, this->rotationStep) * 3.0f;
+            s16 spF6 = Fishing_SmoothStepToS(&this->actor.world.rot.y, rotYTarget, rotXYScale, this->rotationStep) * 3.0f;
             Math_ApproachS(&this->actor.world.rot.x, rotXTarget, rotXYScale, this->rotationStep * 0.5f);
 
             if (spF6 > 0x1F40) {
@@ -4696,7 +4616,7 @@ void Fishing_UpdateFish(Actor* thisx, PlayState* play2) {
         if ((this->actor.speedXZ > 0.0f) || (this->fishState == 5)) {
             f32 velocityY = this->actor.velocity.y;
 
-            spD8 = this->fishLength * 0.1f;
+            f32 spD8 = this->fishLength * 0.1f;
 
             this->actor.world.pos.y -= spD8;
             this->actor.prevPos.y -= spD8;
@@ -4968,7 +4888,6 @@ void Fishing_DrawPondProps(PlayState* play) {
     u8 materialFlag = 0;
     FishingProp* prop = &sPondProps[0];
     s16 i;
-    s32 pad;
 
     OPEN_DISPS(play->state.gfxCtx);
 
@@ -5084,23 +5003,14 @@ void Fishing_UpdateGroupFishes(PlayState* play) {
     s16 groupContactFlags = 0;
     Player* player = GET_PLAYER(play);
     FishingGroupFish* fish = &sGroupFishes[0];
-    f32 dy;
-    f32 dx;
-    f32 dist;
-    f32 dz;
-    f32 offset;
-    s16 groupIndex;
-    s16 groupFlag;
-    f32 spD8;
-    s16 spD6;
-    s16 spD4;
-    s16 target;
+    s16 groupIndex = { 0 };
+    s16 groupFlag = { 0 };
+    f32 spD8 = { 0 };
     s16 i;
     Vec3f basePos[3];
-    Vec3f ripplePos;
-    Vec3f* refPos;
-    f32 temp1;
-    f32 temp2;
+    Vec3f* refPos = { 0 };
+    f32 temp1 = { 0 };
+    f32 temp2 = { 0 };
 
     if ((D_80B7E114 != 0) || (sRodCastState == 4)) {
         refPos = &sLurePos;
@@ -5188,12 +5098,12 @@ void Fishing_UpdateGroupFishes(PlayState* play) {
                 groupFlag = 4;
             }
 
-            dx = fish->homePos.x - fish->pos.x;
-            dy = fish->homePos.y - fish->pos.y;
-            dz = fish->homePos.z - fish->pos.z;
-            spD4 = Math_Atan2S(dz, dx);
-            dist = sqrtf(SQ(dx) + SQ(dz));
-            spD6 = Math_Atan2S(dist, dy);
+            f32 dx = fish->homePos.x - fish->pos.x;
+            f32 dy = fish->homePos.y - fish->pos.y;
+            f32 dz = fish->homePos.z - fish->pos.z;
+            s16 spD4 = Math_Atan2S(dz, dx);
+            f32 dist = sqrtf(SQ(dx) + SQ(dz));
+            s16 spD6 = Math_Atan2S(dist, dy);
 
             if ((dist < 10.0f) || (((fish->timer % 32) == 0) && (Rand_ZeroOne() > 0.5f))) {
                 fish->homePos.y = basePos[groupIndex].y + Rand_CenteredFloat(10.0f);
@@ -5206,7 +5116,7 @@ void Fishing_UpdateGroupFishes(PlayState* play) {
                     fish->homePos.z = basePos[groupIndex].z + Rand_CenteredFloat(100.0f);
                 }
 
-                ripplePos = fish->pos;
+                Vec3f ripplePos = fish->pos;
                 ripplePos.y = WATER_SURFACE_Y(play);
                 Fishing_SpawnRipple(&fish->projectedPos, play->specialEffects, &ripplePos, 20.0f,
                                     Rand_ZeroFloat(50.0f) + 100.0f, 150, 90);
@@ -5219,7 +5129,7 @@ void Fishing_UpdateGroupFishes(PlayState* play) {
                 fish->unk_38 = 1.0f;
             }
 
-            target = Fishing_SmoothStepToS(&fish->unk_3E, spD4, 5, 0x4000) * 3.0f;
+            s16 target = Fishing_SmoothStepToS(&fish->unk_3E, spD4, 5, 0x4000) * 3.0f;
             if (target > 0x1F40) {
                 target = 0x1F40;
             } else if (target < -0x1F40) {
@@ -5228,7 +5138,7 @@ void Fishing_UpdateGroupFishes(PlayState* play) {
 
             Math_ApproachS(&fish->unk_42, target, 3, 0x1388);
 
-            offset = fish->unk_42 * -0.0001f;
+            f32 offset = fish->unk_42 * -0.0001f;
             Math_ApproachS(&fish->unk_3C, spD6, 5, 0x4000);
 
             if (groupContactFlags & groupFlag) {
@@ -5269,9 +5179,8 @@ void Fishing_UpdateGroupFishes(PlayState* play) {
 void Fishing_DrawGroupFishes(PlayState* play) {
     u8 materialFlag = 0;
     FishingGroupFish* fish = &sGroupFishes[0];
-    f32 scale;
+    f32 scale = { 0 };
     s16 i;
-    s32 pad;
 
     if (sLinkAge == LINK_AGE_CHILD) {
         scale = 0.003325f;
@@ -5621,18 +5530,15 @@ void Fishing_UpdateOwner(Actor* thisx, PlayState* play2) {
     Vec3f multiVecSrc;
     Vec3f eyeTarget;
     Vec3f lureDist;
-    s16 headRotTarget;
-    s16 playerShadowAlpha;
-    f32 target;
-    f32 subCamAtMaxVelFrac;
-    f32 lureDistXZ;
-    s32 pad;
+    s16 headRotTarget = { 0 };
+    f32 target = { 0 };
+    f32 subCamAtMaxVelFrac = { 0 };
     Player* player = GET_PLAYER(play);
     Input* input = &play->state.input[0];
 
     
 
-    playerShadowAlpha = player->actor.shape.shadowAlpha;
+    s16 playerShadowAlpha = player->actor.shape.shadowAlpha;
 
     if ((SQ(player->actor.world.pos.x) + SQ(player->actor.world.pos.z)) < SQ(920.0f)) {
         Math_ApproachS(&playerShadowAlpha, 0, 1, 40);
@@ -5770,12 +5676,11 @@ void Fishing_UpdateOwner(Actor* thisx, PlayState* play2) {
             break;
 
         case 1: {
-            Camera* mainCam;
 
             sSubCamId = Play_CreateSubCamera(play);
             Play_ChangeCameraStatus(play, MAIN_CAM, CAM_STAT_WAIT);
             Play_ChangeCameraStatus(play, sSubCamId, CAM_STAT_ACTIVE);
-            mainCam = Play_GetCamera(play, MAIN_CAM);
+            Camera* mainCam = Play_GetCamera(play, MAIN_CAM);
             sCameraEye.x = mainCam->eye.x;
             sCameraEye.y = mainCam->eye.y;
             sCameraEye.z = mainCam->eye.z;
@@ -5793,7 +5698,7 @@ void Fishing_UpdateOwner(Actor* thisx, PlayState* play2) {
 
             lureDist.x = sLurePos.x - player->actor.world.pos.x;
             lureDist.z = sLurePos.z - player->actor.world.pos.z;
-            lureDistXZ = sqrtf(SQ(lureDist.x) + SQ(lureDist.z));
+            f32 lureDistXZ = sqrtf(SQ(lureDist.x) + SQ(lureDist.z));
             Matrix_RotateY(Math_Atan2F(lureDist.z, lureDist.x), MTXMODE_NEW);
 
             multiVecSrc.x = 0.0f;
@@ -5851,11 +5756,10 @@ void Fishing_UpdateOwner(Actor* thisx, PlayState* play2) {
             }
 
             if (sLureCameraZoomLevel > 0) {
-                f32 dist;
-                f32 offset;
-                f32 factor;
+                f32 offset = { 0 };
+                f32 factor = { 0 };
 
-                dist = sqrtf(SQ(lureDist.x) + SQ(lureDist.z)) * 0.001f;
+                f32 dist = sqrtf(SQ(lureDist.x) + SQ(lureDist.z)) * 0.001f;
                 if (dist > 1.0f) {
                     dist = 1.0f;
                 }
@@ -5900,14 +5804,13 @@ void Fishing_UpdateOwner(Actor* thisx, PlayState* play2) {
         }
 
         case 10: { // owner tells you to return the rod.
-            Camera* mainCam;
 
             PlayerAction_Reset(play);
             sSubCamId = Play_CreateSubCamera(play);
             Play_ChangeCameraStatus(play, MAIN_CAM, CAM_STAT_WAIT);
             Play_ChangeCameraStatus(play, sSubCamId, CAM_STAT_ACTIVE);
             Player_SetCsActionWithHaltedActors(play, &this->actor, 5);
-            mainCam = Play_GetCamera(play, MAIN_CAM);
+            Camera* mainCam = Play_GetCamera(play, MAIN_CAM);
             sCameraEye.x = mainCam->eye.x;
             sCameraEye.y = mainCam->eye.y;
             sCameraEye.z = mainCam->eye.z;
@@ -5942,14 +5845,13 @@ void Fishing_UpdateOwner(Actor* thisx, PlayState* play2) {
             break;
 
         case 20: { // found the sinking lure
-            Camera* mainCam;
 
             PlayerAction_Reset(play);
             sSubCamId = Play_CreateSubCamera(play);
             Play_ChangeCameraStatus(play, MAIN_CAM, CAM_STAT_WAIT);
             Play_ChangeCameraStatus(play, sSubCamId, CAM_STAT_ACTIVE);
             Player_SetCsActionWithHaltedActors(play, &this->actor, 5);
-            mainCam = Play_GetCamera(play, MAIN_CAM);
+            Camera* mainCam = Play_GetCamera(play, MAIN_CAM);
             sCameraEye.x = mainCam->eye.x;
             sCameraEye.y = mainCam->eye.y;
             sCameraEye.z = mainCam->eye.z;
@@ -6088,19 +5990,16 @@ void Fishing_UpdateOwner(Actor* thisx, PlayState* play2) {
         s16 i;
 
         for (i = 0; i < 10; i++) {
-            Vec3f pos;
             Vec3f vel;
-            f32 speedXZ;
-            f32 angle;
 
-            speedXZ = Rand_ZeroFloat(1.5f) + 1.5f;
-            angle = Rand_ZeroFloat(6.28f);
+            f32 speedXZ = Rand_ZeroFloat(1.5f) + 1.5f;
+            f32 angle = Rand_ZeroFloat(6.28f);
 
             vel.x = sinf(angle) * speedXZ;
             vel.z = cosf(angle) * speedXZ;
             vel.y = Rand_ZeroFloat(3.0f) + 2.0f;
 
-            pos = player->actor.world.pos;
+            Vec3f pos = player->actor.world.pos;
             pos.x += 2.0f * vel.x;
             pos.y = WATER_SURFACE_Y(play);
             pos.z += 2.0f * vel.z;
@@ -6180,14 +6079,11 @@ void Fishing_UpdateOwner(Actor* thisx, PlayState* play2) {
         sFishingStormShade;
 
     if ((u8)sStormStrength > 0) {
-        s32 pad;
         Camera* mainCam = Play_GetCamera(play, MAIN_CAM);
         s16 i;
-        s32 pad1;
         Vec3f pos;
         Vec3f rot;
         Vec3f projectedPos;
-        s32 pad2;
 
         rot.x = M_PI / 2.0f + 0.1f;
         rot.y = 1.0f;
@@ -6261,10 +6157,9 @@ static void Fishing_UpdatePortableSurface(Fishing* this, PlayState* play) {
 
     if (!sPortableWaterFound && (sRodCastState != 0)) {
         Vec3f floorCheckPos = sLurePos;
-        f32 floorY;
 
         floorCheckPos.y += 1000.0f;
-        floorY = BgCheck_EntityRaycastFloor4(&play->colCtx, &floorPoly, &floorBgId, &this->actor, &floorCheckPos);
+        f32 floorY = BgCheck_EntityRaycastFloor4(&play->colCtx, &floorPoly, &floorBgId, &this->actor, &floorCheckPos);
         if ((floorY != BGCHECK_Y_MIN) && (sLurePos.y <= (floorY + 3.0f))) {
             sLurePos.y = floorY + 3.0f;
             if (sRodCastState != 3) {
@@ -6305,7 +6200,7 @@ static void Fishing_CollidePortableLure(PlayState* play, Vec3f* previousPos) {
 void Fishing_UpdatePortable(Actor* thisx, PlayState* play) {
     Fishing* this = (Fishing*)thisx;
     Player* player = GET_PLAYER(play);
-    Vec3f previousLurePos;
+    Vec3f previousLurePos = { 0 };
 
     // This actor renders equipment attached to Link, so it must follow Link
     // instead of remaining at the location of the first cast.
@@ -6397,7 +6292,6 @@ static void* sFishingOwnerEyeTexs[] = {
 };
 
 void Fishing_DrawOwner(Actor* thisx, PlayState* play) {
-    s32 pad;
     Fishing* this = (Fishing*)thisx;
     Input* input = &play->state.input[0];
 

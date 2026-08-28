@@ -28,12 +28,11 @@ void SoundSource_UpdateAll(PlayState* play) {
 
 void SoundSource_PlaySfxAtFixedWorldPos(PlayState* play, Vec3f* worldPos, s32 duration, u16 sfxId) {
     s32 countdown;
-    SoundSource* source;
     s32 smallestCountdown = 0xFFFF;
-    SoundSource* backupSource;
+    SoundSource* backupSource = { 0 };
     s32 i;
 
-    source = &play->soundSources[0];
+    SoundSource* source = &play->soundSources[0];
     for (i = 0; i < ARRAY_COUNT(play->soundSources); i++) {
         if (source->countdown == 0) {
             break;

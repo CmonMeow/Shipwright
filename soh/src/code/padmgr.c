@@ -56,12 +56,10 @@ void PadMgr_RumbleControl(PadMgr* padMgr) {
     static u32 errcnt = 0;
     static u32 frame;
     s32 temp = 1;
-    s32 triedRumbleComm;
     OSMesgQueue* ctrlrQ = PadMgr_LockSerialMesgQueue(padMgr);
-    s32 var4;
     s32 i;
 
-    triedRumbleComm = 0;
+    s32 triedRumbleComm = 0;
 
     for (i = 0; i < 4; i++) {
         if (padMgr->ctrlrIsConnected[i]) {
@@ -138,7 +136,7 @@ void PadMgr_RumbleControl(PadMgr* padMgr) {
         i = frame % 4;
 
         if (padMgr->ctrlrIsConnected[i] && (padMgr->padStatus[i].status & 1) && (padMgr->pakType[i] != 1)) {
-            var4 = osMotorInit(ctrlrQ, &padMgr->pfs[i], i);
+            s32 var4 = osMotorInit(ctrlrQ, &padMgr->pfs[i], i);
 
             if (var4 == 0) {
                 padMgr->pakType[i] = 1;
@@ -209,14 +207,11 @@ void PadMgr_RumbleSet(PadMgr* padMgr, u8* ctrlrRumbles) {
 #define PAUSE_BUFFER_INPUT_BLOCK_ID 0
 void PadMgr_ProcessInputs(PadMgr* padMgr) {
     s32 i;
-    Input* input;
-    OSContPad* padnow1; // original name
-    s32 buttonDiff;
 
     PadMgr_LockPadData(padMgr);
 
-    input = &padMgr->inputs[0];
-    padnow1 = &padMgr->pads[0];
+    Input* input = &padMgr->inputs[0];
+    OSContPad* padnow1 = &padMgr->pads[0];
 
     for (i = 0; i < padMgr->nControllers; i++, input++, padnow1++) {
         input->prev = input->cur;
@@ -260,7 +255,7 @@ void PadMgr_ProcessInputs(PadMgr* padMgr) {
                 Fault_AddHungupAndCrash(__FILE__, __LINE__);
         }
 
-        buttonDiff = input->prev.button ^ input->cur.button;
+        s32 buttonDiff = input->prev.button ^ input->cur.button;
         input->press.button |= (u16)(buttonDiff & input->cur.button);
         input->rel.button |= (u16)(buttonDiff & input->prev.button);
         PadUtils_UpdateRelXY(input);
@@ -281,7 +276,7 @@ void PadMgr_ProcessInputs(PadMgr* padMgr) {
 void PadMgr_HandleRetraceMsg(PadMgr* padMgr) {
     s32 i;
     OSMesgQueue* queue = PadMgr_LockSerialMesgQueue(padMgr);
-    u32 mask;
+    u32 mask = { 0 };
 
     osContStartReadData(queue);
     if (padMgr->retraceCallback) {
@@ -340,14 +335,11 @@ void PadMgr_HandlePreNMI(PadMgr* padMgr) {
 
 void PadMgr_RequestPadData(PadMgr* padMgr, Input* inputs, s32 mode) {
     s32 i;
-    Input* ogInput;
-    Input* newInput;
-    s32 buttonDiff;
 
     PadMgr_LockPadData(padMgr);
 
-    ogInput = &padMgr->inputs[0];
-    newInput = &inputs[0];
+    Input* ogInput = &padMgr->inputs[0];
+    Input* newInput = &inputs[0];
     for (i = 0; i < 4; i++) {
         if (mode != 0) {
             *newInput = *ogInput;
@@ -358,7 +350,7 @@ void PadMgr_RequestPadData(PadMgr* padMgr, Input* inputs, s32 mode) {
         } else {
             newInput->prev = newInput->cur;
             newInput->cur = ogInput->cur;
-            buttonDiff = newInput->prev.button ^ newInput->cur.button;
+            s32 buttonDiff = newInput->prev.button ^ newInput->cur.button;
             newInput->press.button = newInput->cur.button & buttonDiff;
             newInput->rel.button = newInput->prev.button & buttonDiff;
             PadUtils_UpdateRelXY(newInput);
@@ -378,11 +370,10 @@ void PadMgr_RequestPadData(PadMgr* padMgr, Input* inputs, s32 mode) {
 
 void PadMgr_ThreadEntry(PadMgr* padMgr) {
     s16* mesg = NULL;
-    s32 exit;
 
     // osSyncPrintf("コントローラスレッド実行開始\n"); // "Controller thread execution start"
 
-    exit = false;
+    s32 exit = false;
     while (!exit) {
         if ((D_8012D280 > 2) && (padMgr->interruptMsgQ.validCount == 0)) {
             // "Waiting for controller thread event"

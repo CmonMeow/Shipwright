@@ -8,7 +8,6 @@ s32 osPfsFreeBlocks(OSPfs* pfs, s32* leftoverBytes) {
     __OSInode inode;
     s32 ret = 0;
     u8 bank;
-    s32 offset;
 
     if (!(pfs->status & PFS_INITIALIZED)) {
         return (PFS_ERR_INVALID);
@@ -22,7 +21,7 @@ s32 osPfsFreeBlocks(OSPfs* pfs, s32* leftoverBytes) {
             return ret;
         }
 
-        offset = ((bank > PFS_ID_BANK_256K) ? 1 : pfs->inodeStartPage);
+        s32 offset = ((bank > PFS_ID_BANK_256K) ? 1 : pfs->inodeStartPage);
         for (j = offset; j < PFS_INODE_SIZE_PER_PAGE; j++) {
             if (inode.inodePage[j].ipage == PFS_PAGE_NOT_USED) {
                 pages++;

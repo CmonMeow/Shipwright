@@ -8,7 +8,7 @@ ListAlloc* ListAlloc_Init(ListAlloc* this) {
 
 void* ListAlloc_Alloc(ListAlloc* this, size_t size) {
     ListAlloc* ptr = SYSTEM_ARENA_MALLOC_DEBUG(size + sizeof(ListAlloc));
-    ListAlloc* next;
+    ListAlloc* next = { 0 };
 
     if (ptr == NULL) {
         return NULL;

@@ -37,7 +37,6 @@ static EffectSsUpdateFunc sUpdateFuncs[] = {
 };
 
 u32 EffectSsDust_Init(PlayState* play, u32 index, EffectSs* this, void* initParamsx) {
-    s32 randColorOffset;
     EffectSsDustInitParams* initParams = (EffectSsDustInitParams*)initParamsx;
 
     Math_Vec3f_Copy(&this->pos, &initParams->pos);
@@ -49,7 +48,7 @@ u32 EffectSsDust_Init(PlayState* play, u32 index, EffectSs* this, void* initPara
     this->draw = EffectSsDust_Draw;
 
     if (initParams->drawFlags & 4) {
-        randColorOffset = Rand_ZeroOne() * 20.0f - 10.0f;
+        s32 randColorOffset = Rand_ZeroOne() * 20.0f - 10.0f;
         this->rPrimColorR = initParams->primColor.r + randColorOffset;
         this->rPrimColorG = initParams->primColor.g + randColorOffset;
         this->rPrimColorB = initParams->primColor.b + randColorOffset;
@@ -85,20 +84,17 @@ void EffectSsDust_Draw(PlayState* play, u32 index, EffectSs* this) {
     MtxF mfScale;
     MtxF mfResult;
     MtxF mfTrans11DA0;
-    s32 pad;
-    Mtx* mtx;
-    f32 scale;
 
     OPEN_DISPS(gfxCtx);
 
-    scale = this->rScale * 0.0025f;
+    f32 scale = this->rScale * 0.0025f;
     SkinMatrix_SetTranslate(&mfTrans, this->pos.x, this->pos.y, this->pos.z);
     SkinMatrix_SetScale(&mfScale, scale, scale, 1.0f);
     SkinMatrix_MtxFMtxFMult(&mfTrans, &play->billboardMtxF, &mfTrans11DA0);
     SkinMatrix_MtxFMtxFMult(&mfTrans11DA0, &mfScale, &mfResult);
     gSPMatrix(POLY_XLU_DISP++, &gMtxClear, G_MTX_NOPUSH | G_MTX_LOAD | G_MTX_MODELVIEW);
 
-    mtx = SkinMatrix_MtxFToNewMtx(gfxCtx, &mfResult);
+    Mtx* mtx = SkinMatrix_MtxFToNewMtx(gfxCtx, &mfResult);
 
     if (mtx != NULL) {
         gSPMatrix(POLY_XLU_DISP++, mtx, G_MTX_NOPUSH | G_MTX_LOAD | G_MTX_MODELVIEW);

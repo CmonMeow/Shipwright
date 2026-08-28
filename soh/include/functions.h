@@ -962,7 +962,7 @@ s32 Player_TryCsAction(PlayState* play, Actor* actor, s32 csAction);
 s32 Player_InCsMode(PlayState* play);
 s32 Player_CheckHostileLockOn(Player* player);
 s32 Player_IsChildWithHylianShield(Player* player);
-s32 Player_ActionToModelGroup(Player* player, s32 actionParam);
+s32 Player_ActionToModelGroup(s32 actionParam);
 void Player_SetModelsForHoldingShield(Player* player);
 void Player_SetModels(Player* player, s32 modelGroup);
 void Player_SetModelGroup(Player* player, s32 modelGroup);

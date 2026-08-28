@@ -12,8 +12,7 @@ void func_800A9F30(PadMgr* a, s32 b) {
 }
 
 void func_800A9F6C(f32 a, u8 b, u8 c, u8 d) {
-    s32 temp1;
-    s32 temp2;
+    s32 temp1 = { 0 };
 
     if (1000000.0f < a) {
         temp1 = 1000;
@@ -22,7 +21,7 @@ void func_800A9F6C(f32 a, u8 b, u8 c, u8 d) {
     }
 
     if ((temp1 < 1000) && (b != 0) && (d != 0)) {
-        temp2 = b - (temp1 * 255) / 1000;
+        s32 temp2 = b - (temp1 * 255) / 1000;
         if (temp2 > 0) {
             D_80160FD0.unk_10A = temp2;
             D_80160FD0.unk_10B = c;
@@ -32,8 +31,7 @@ void func_800A9F6C(f32 a, u8 b, u8 c, u8 d) {
 }
 
 void func_800AA000(f32 a, u8 b, u8 c, u8 d) {
-    s32 temp1;
-    s32 temp2;
+    s32 temp1 = { 0 };
     s32 i;
 
     if (1000000.0f < a) {
@@ -43,7 +41,7 @@ void func_800AA000(f32 a, u8 b, u8 c, u8 d) {
     }
 
     if (temp1 < 1000 && b != 0 && d != 0) {
-        temp2 = b - (temp1 * 255) / 1000;
+        s32 temp2 = b - (temp1 * 255) / 1000;
 
         for (i = 0; i < 0x40; i++) {
             if (D_80160FD0.unk_04[i] == 0) {

@@ -147,7 +147,7 @@ s32 osAiSetFrequency(u32 freq) {
     /*
 
     s32 osAiSetFrequency(u32 frequency) {
-        u8 bitrate;
+        u8 bitrate = { 0 };
         f32 dacRateF = ((f32)osViClock / frequency) + 0.5f;
         u32 dacRate = dacRateF;
 

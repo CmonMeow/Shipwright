@@ -18,9 +18,6 @@ OSPiHandle* __osCurrentHandle[] = {
 };
 
 void osCreatePiManager(OSPri pri, OSMesgQueue* cmdQ, OSMesg* cmdBuf, s32 cmdMsgCnt) {
-    u32 prevInt;
-    OSPri newPri;
-    OSPri currentPri;
 
     if (!__osPiDevMgr.initialized) {
         osCreateMesgQueue(cmdQ, cmdBuf, cmdMsgCnt);
@@ -30,13 +27,13 @@ void osCreatePiManager(OSPri pri, OSMesgQueue* cmdQ, OSMesg* cmdBuf, s32 cmdMsgC
         }
 
         osSetEventMesg(OS_EVENT_PI, &piEventQueue, (OSMesg)0x22222222);
-        newPri = -1;
-        currentPri = osGetThreadPri(NULL);
+        OSPri newPri = -1;
+        OSPri currentPri = osGetThreadPri(NULL);
         if (currentPri < pri) {
             newPri = currentPri;
             osSetThreadPri(NULL, pri);
         }
-        prevInt = __osDisableInt();
+        u32 prevInt = __osDisableInt();
 
         __osPiDevMgr.initialized = true;
         __osPiDevMgr.cmdQueue = cmdQ;

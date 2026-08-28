@@ -136,13 +136,12 @@ void Play_Destroy(GameState* thisx) {
 void Play_Init(GameState* thisx) {
     PlayState* play = (PlayState*)thisx;
     GraphicsContext* gfxCtx = play->state.gfxCtx;
-    uintptr_t zAlloc;
-    uintptr_t zAllocAligned;
-    size_t zAllocSize;
-    Player* player;
-    s32 playerStartBgCamIndex;
+    uintptr_t zAlloc = { 0 };
+    uintptr_t zAllocAligned = { 0 };
+    size_t zAllocSize = { 0 };
+    Player* player = { 0 };
+    s32 playerStartBgCamIndex = { 0 };
     s32 i;
-    s32 pad[2];
 
     // Properly initialize the frame counter so it doesn't use garbage data
     if (!firstInit) {
@@ -301,8 +300,7 @@ void Play_Init(GameState* thisx) {
 
 void Play_Update(PlayState* play) {
     Input* input = play->state.input;
-    s32 isPaused;
-    s32 pad1;
+    s32 isPaused = { 0 };
 
     if ((SREG(1) < 0) || (DREG(0) != 0)) {
         SREG(1) = 0;
@@ -311,7 +309,6 @@ void Play_Update(PlayState* play) {
 
     if ((HREG(80) == 18) && (HREG(81) < 0)) {
         u32 i;
-        s32 pad2;
 
         HREG(81) = 0;
         osSyncPrintf("object_exchange_rom_address %u\n", gObjectTableSize);
@@ -537,7 +534,6 @@ void Play_DrawOverlayElements(PlayState* play) {
 
 void Play_Draw(PlayState* play) {
     GraphicsContext* gfxCtx = play->state.gfxCtx;
-    Lights* sp228;
     Vec3f sp21C;
 
     OPEN_DISPS(gfxCtx);
@@ -589,10 +585,9 @@ void Play_Draw(PlayState* play) {
         gSPSegment(POLY_OPA_DISP++, 0x01, play->billboardMtx);
 
         if ((HREG(80) != 10) || (HREG(92) != 0)) {
-            Gfx* gfxP;
             Gfx* sp1CC = POLY_OPA_DISP;
 
-            gfxP = Graph_GfxPlusOne(sp1CC);
+            Gfx* gfxP = Graph_GfxPlusOne(sp1CC);
             gSPDisplayList(OVERLAY_DISP++, gfxP);
             if (play->transitionMode == TRANS_MODE_INSTANCE_RUNNING) {
                 View view;
@@ -642,14 +637,14 @@ void Play_Draw(PlayState* play) {
         }
 
         if ((HREG(80) != 10) || (HREG(90) & 8)) {
-            sp228 = LightContext_NewLights(&play->lightCtx, gfxCtx);
+            Lights* sp228 = LightContext_NewLights(&play->lightCtx, gfxCtx);
             Lights_BindAll(sp228, play->lightCtx.listHead, NULL);
             Lights_Draw(sp228, gfxCtx);
         }
 
         if ((HREG(80) != 10) || (HREG(84) != 0)) {
             if (VREG(94) == 0) {
-                s32 roomDrawFlags;
+                s32 roomDrawFlags = { 0 };
 
                 if (HREG(80) != 10) {
                     roomDrawFlags = 3;
@@ -813,18 +808,16 @@ s32 Play_InCsMode(PlayState* play) {
 
 f32 func_800BFCB8(PlayState* play, MtxF* mf, Vec3f* pos) {
     CollisionPoly poly;
-    f32 temp1;
-    f32 temp2;
-    f32 temp3;
+    f32 temp2 = { 0 };
+    f32 temp3 = { 0 };
     f32 floorY = BgCheck_AnyRaycastFloor1(&play->colCtx, &poly, pos);
 
     if (floorY > BGCHECK_Y_MIN) {
         f32 nx = COLPOLY_GET_NORMAL(poly.normal.x);
         f32 ny = COLPOLY_GET_NORMAL(poly.normal.y);
         f32 nz = COLPOLY_GET_NORMAL(poly.normal.z);
-        s32 pad[5];
 
-        temp1 = sqrtf(1.0f - SQ(nx));
+        f32 temp1 = sqrtf(1.0f - SQ(nx));
 
         if (temp1 != 0.0f) {
             temp2 = ny * temp1;
@@ -873,11 +866,9 @@ f32 func_800BFCB8(PlayState* play, MtxF* mf, Vec3f* pos) {
 }
 
 void* Play_LoadFile(PlayState* play, RomFile* file) {
-    size_t size;
-    void* allocp;
 
-    size = file->vromEnd - file->vromStart;
-    allocp = GAMESTATE_ALLOC_MC(&play->state, size);
+    size_t size = file->vromEnd - file->vromStart;
+    void* allocp = GAMESTATE_ALLOC_MC(&play->state, size);
     DmaMgr_SendRequest1(allocp, file->vromStart, size, __FILE__, __LINE__);
 
     return allocp;
@@ -985,7 +976,6 @@ s32 Play_CameraSetAtEye(PlayState* play, s16 camId, Vec3f* at, Vec3f* eye) {
     s32 ret = 0;
     s16 camIdx = (camId == SUBCAM_ACTIVE) ? play->activeCamera : camId;
     Camera* camera = play->cameraPtrs[camIdx];
-    Player* player;
 
     ret |= Camera_SetParam(camera, 1, at);
     ret <<= 1;
@@ -993,7 +983,7 @@ s32 Play_CameraSetAtEye(PlayState* play, s16 camId, Vec3f* at, Vec3f* eye) {
 
     camera->dist = Math3D_Vec3f_DistXYZ(at, eye);
 
-    player = camera->player;
+    Player* player = camera->player;
     if (player != NULL) {
         camera->posOffset.x = at->x - player->actor.world.pos.x;
         camera->posOffset.y = at->y - player->actor.world.pos.y;
@@ -1011,7 +1001,6 @@ s32 Play_CameraSetAtEyeUp(PlayState* play, s16 camId, Vec3f* at, Vec3f* eye, Vec
     s32 ret = 0;
     s16 camIdx = (camId == SUBCAM_ACTIVE) ? play->activeCamera : camId;
     Camera* camera = play->cameraPtrs[camIdx];
-    Player* player;
 
     ret |= Camera_SetParam(camera, 1, at);
     ret <<= 1;
@@ -1021,7 +1010,7 @@ s32 Play_CameraSetAtEyeUp(PlayState* play, s16 camId, Vec3f* at, Vec3f* eye, Vec
 
     camera->dist = Math3D_Vec3f_DistXYZ(at, eye);
 
-    player = camera->player;
+    Player* player = camera->player;
     if (player != NULL) {
         camera->posOffset.x = at->x - player->actor.world.pos.x;
         camera->posOffset.y = at->y - player->actor.world.pos.y;
@@ -1058,7 +1047,7 @@ void Play_CopyCamera(PlayState* play, s16 camId1, s16 camId2) {
 }
 
 s32 func_800C0808(PlayState* play, s16 camId, Player* player, s16 setting) {
-    Camera* camera;
+    Camera* camera = { 0 };
     s16 camIdx = (camId == SUBCAM_ACTIVE) ? play->activeCamera : camId;
 
     camera = play->cameraPtrs[camIdx];
@@ -1138,12 +1127,10 @@ void Play_SetRespawnData(PlayState* play, s32 respawnMode, s16 entranceIndex, s3
 
 void Play_SetupRespawnPoint(PlayState* play, s32 respawnMode, s32 playerParams) {
     Player* player = GET_PLAYER(play);
-    s32 entranceIndex;
-    s8 roomIndex;
 
     if ((play->sceneNum != SCENE_FAIRYS_FOUNTAIN) && (play->sceneNum != SCENE_GROTTOS)) {
-        roomIndex = play->roomCtx.curRoom.num;
-        entranceIndex = gSaveContext.entranceIndex;
+        s8 roomIndex = play->roomCtx.curRoom.num;
+        s32 entranceIndex = gSaveContext.entranceIndex;
         Play_SetRespawnData(play, respawnMode, entranceIndex, roomIndex, playerParams, &player->actor.world.pos,
                             player->actor.shape.rot.y);
     }
@@ -1196,10 +1183,9 @@ s32 FrameAdvance_IsEnabled(PlayState* play) {
 s32 func_800C0DB4(PlayState* play, Vec3f* pos) {
     WaterBox* waterBox;
     CollisionPoly* poly;
-    Vec3f waterSurfacePos;
     s32 bgId;
 
-    waterSurfacePos = *pos;
+    Vec3f waterSurfacePos = *pos;
 
     if (WaterBox_GetSurface1(play, &play->colCtx, waterSurfacePos.x, waterSurfacePos.z, &waterSurfacePos.y,
                              &waterBox) == true &&

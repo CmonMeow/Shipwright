@@ -1,7 +1,6 @@
 #include "global.h"
 
 f32 func_8006C510(f32 arg0, f32 arg1, f32 arg2, f32 arg3, f32 arg4, f32 arg5) {
-    char pad[0x1C];
     f32 sq = SQ(arg0);
     f32 cube = sq * arg0;
 
@@ -11,7 +10,6 @@ f32 func_8006C510(f32 arg0, f32 arg1, f32 arg2, f32 arg3, f32 arg4, f32 arg5) {
 
 f32 func_8006C5A8(f32 target, TransformData* transData, s32 refIdx) {
     s32 i;
-    s32 j;
 
     if (target <= transData->unk_02) {
         return transData->unk_08;
@@ -21,7 +19,7 @@ f32 func_8006C5A8(f32 target, TransformData* transData, s32 refIdx) {
     }
 
     for (i = 0;; i++) {
-        j = i + 1;
+        s32 j = i + 1;
         if (transData[j].unk_02 > target) {
             if (transData[i].unk_00 & 1) {
                 return transData[i].unk_08;

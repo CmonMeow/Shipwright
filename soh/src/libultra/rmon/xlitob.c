@@ -7,11 +7,10 @@ u8 D_8000AF84[] = "0123456789ABCDEF";
 
 void _Litob(_Pft* args, u8 type) {
     u8 buff[BUFF_LEN];
-    const u8* numMap;
-    s32 base;
-    s32 idx;
-    u64 num;
-    lldiv_t quotrem;
+    const u8* numMap = { 0 };
+    s32 base = { 0 };
+    s32 idx = { 0 };
+    u64 num = { 0 };
 
     if (type == 'X') {
         numMap = D_8000AF84;
@@ -34,7 +33,7 @@ void _Litob(_Pft* args, u8 type) {
     args->v.ll = num / base;
 
     while (args->v.ll > 0 && idx > 0) {
-        quotrem = lldiv(args->v.ll, base);
+        lldiv_t quotrem = lldiv(args->v.ll, base);
         args->v.ll = quotrem.quot;
         buff[--idx] = numMap[quotrem.rem];
     }

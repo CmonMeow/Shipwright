@@ -1209,8 +1209,8 @@ extern "C" void NetworkGame_Update(PlayState* play) {
         return;
     }
     const uint64_t now = NowMilliseconds();
-    for (const auto& [playerId, remote] : gNetworkGame.remotes) {
-        (void)playerId;
+    for (const auto& remoteEntry : gNetworkGame.remotes) {
+        const auto& remote = remoteEntry.second;
         if (remote.hasState && remote.state.sceneId == play->sceneNum &&
             remote.state.itemAction == NETWORK_PLAYER_ITEM_FISHING_POLE) {
             Fishing_EnsureNetworkPopulation(play);

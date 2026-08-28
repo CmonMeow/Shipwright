@@ -49,9 +49,8 @@ s32 DmaMgr_DmaRomToRam(uintptr_t rom, uintptr_t ram, size_t size) {
     OSIoMesg ioMsg;
     OSMesgQueue queue;
     OSMesg msg;
-    s32 ret;
+    s32 ret = { 0 };
     u32 buffSize = gDmaMgrDmaBuffSize;
-    s32 pad[2];
 
     if (buffSize == 0) {
         buffSize = 0x2000;
@@ -122,7 +121,7 @@ end:
 }
 
 s32 DmaMgr_DmaHandler(OSPiHandle* pihandle, OSIoMesg* mb, s32 direction) {
-    s32 ret;
+    s32 ret = { 0 };
 
     assert(pihandle == gCartHandle);
     assert(direction == OS_READ);
@@ -230,10 +229,9 @@ void DmaMgr_ProcessMsg(DmaRequest* req) {
     void* ram = req->dramAddr;
     size_t size = req->size;
     uintptr_t romStart;
-    uintptr_t romSize;
     u8 found = false;
-    DmaEntry* iter;
-    const char* filename;
+    DmaEntry* iter = { 0 };
+    const char* filename = { 0 };
 
     if (0) {
         // the string is defined in .rodata but not used, suggesting
@@ -263,7 +261,7 @@ void DmaMgr_ProcessMsg(DmaRequest* req) {
                 }
             } else {
                 romStart = iter->romStart;
-                romSize = iter->romEnd - iter->romStart;
+                uintptr_t romSize = iter->romEnd - iter->romStart;
 
                 if (vrom != iter->vromStart) {
                     DmaMgr_Error(req, filename, "Can't Transfer Segment",
@@ -305,12 +303,11 @@ void DmaMgr_ProcessMsg(DmaRequest* req) {
 
 void DmaMgr_ThreadEntry(void* arg0) {
     OSMesg msg;
-    DmaRequest* req;
 
     osSyncPrintf("ＤＭＡマネージャスレッド実行開始\n");
     while (true) {
         osRecvMesg(&sDmaMgrMsgQueue, &msg, OS_MESG_BLOCK);
-        req = (DmaRequest*)msg.ptr;
+        DmaRequest* req = (DmaRequest*)msg.ptr;
         if (req == NULL) {
             break;
         }
@@ -366,10 +363,9 @@ s32 DmaMgr_SendRequest0(uintptr_t ram, uintptr_t vrom, size_t size) {
     DmaRequest req;
     OSMesgQueue queue;
     OSMesg msg;
-    s32 ret;
 
     osCreateMesgQueue(&queue, &msg, 1);
-    ret = DmaMgr_SendRequestImpl(&req, ram, vrom, size, 0, &queue, OS_MESG_PTR(NULL));
+    s32 ret = DmaMgr_SendRequestImpl(&req, ram, vrom, size, 0, &queue, OS_MESG_PTR(NULL));
     if (ret == -1) {
         return ret;
     }
@@ -379,18 +375,15 @@ s32 DmaMgr_SendRequest0(uintptr_t ram, uintptr_t vrom, size_t size) {
 }
 
 void DmaMgr_Init(void) {
-    const char** name;
-    s32 idx;
-    DmaEntry* iter;
 
     // DmaMgr_DmaRomToRam((uintptr_t)_dmadataSegmentRomStart, (uintptr_t)_dmadataSegmentStart,
     //(uintptr_t)(_dmadataSegmentRomEnd - _dmadataSegmentRomStart));
     osSyncPrintf("dma_rom_ad[]\n");
 
     sDmaMgrIsRomCompressed = false;
-    name = sDmaMgrFileNames;
-    iter = gDmaDataTable;
-    idx = 0;
+    const char** name = sDmaMgrFileNames;
+    DmaEntry* iter = gDmaDataTable;
+    s32 idx = 0;
 
     while (iter->vromEnd != 0) {
         if (iter->romEnd != 0) {
@@ -440,7 +433,6 @@ s32 DmaMgr_SendRequest1(void* ram0, uintptr_t vrom, size_t size, const char* fil
 
 #if 0
     DmaRequest req;
-    s32 ret;
     OSMesgQueue queue;
     OSMesg msg;
     uintptr_t ram = (uintptr_t)ram0;
@@ -448,7 +440,7 @@ s32 DmaMgr_SendRequest1(void* ram0, uintptr_t vrom, size_t size, const char* fil
     req.filename = file;
     req.line = line;
     osCreateMesgQueue(&queue, &msg, 1);
-    ret = DmaMgr_SendRequestImpl(&req, ram, vrom, size, 0, &queue, 0);
+    s32 ret = DmaMgr_SendRequestImpl(&req, ram, vrom, size, 0, &queue, 0);
     if (ret == -1) {
         return ret;
     }

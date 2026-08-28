@@ -43,13 +43,12 @@ void Skin_Init(PlayState* play, Skin* skin, SkeletonHeader* skeletonHeader, Anim
 
     s32 limbCount;
     s32 i;
-    SkinLimb** skeleton;
     SkeletonHeader* virtSkelHeader = SEGMENTED_TO_VIRTUAL(skeletonHeader);
 
     skin->limbCount = virtSkelHeader->limbCount;
     skin->skeletonHeader = virtSkelHeader;
 
-    skeleton = SEGMENTED_TO_VIRTUAL(skin->skeletonHeader->segment);
+    SkinLimb** skeleton = SEGMENTED_TO_VIRTUAL(skin->skeletonHeader->segment);
     limbCount = skin->skeletonHeader->limbCount;
 
     skin->vtxTable = ZELDA_ARENA_MALLOC_DEBUG(limbCount * sizeof(SkinLimbVtx));
@@ -110,10 +109,9 @@ void Skin_Free(PlayState* play, Skin* skin) {
 }
 
 s32 func_800A698C(Skin* skin, SkinLimb** skeleton, MtxF* limbMatrices, u8 parentIndex, u8 limbIndex) {
-    s32 pad;
     SkinLimb* limb = SEGMENTED_TO_VIRTUAL(skeleton[limbIndex]);
     MtxF* mtx;
-    s32 ret;
+    s32 ret = { 0 };
     MtxF sp28;
 
     if (parentIndex == LIMB_DONE) {
@@ -147,22 +145,18 @@ s32 func_800A698C(Skin* skin, SkinLimb** skeleton, MtxF* limbMatrices, u8 parent
  */
 s32 Skin_ApplyAnimTransformations(Skin* skin, MtxF* limbMatrices, Actor* actor, s32 setTranslation) {
     s32 i;
-    s32 pad;
-    f32 yRot;
-    f32 xRot;
-    f32 zRot;
-    s32 ret;
-    f32 yTransl;
-    f32 xTransl;
-    f32 zTransl;
+    s32 ret = { 0 };
+    f32 yTransl = { 0 };
+    f32 xTransl = { 0 };
+    f32 zTransl = { 0 };
     SkinLimb** skeleton = SEGMENTED_TO_VIRTUAL(skin->skeletonHeader->segment);
     Vec3s* jointRot = &skin->skelAnime.jointTable[0];
 
     jointRot++;
 
-    xRot = jointRot->x;
-    yRot = jointRot->y;
-    zRot = jointRot->z;
+    f32 xRot = jointRot->x;
+    f32 yRot = jointRot->y;
+    f32 zRot = jointRot->z;
 
     if (setTranslation) {
         jointRot--; // access joint table entry 0 for translation data

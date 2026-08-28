@@ -17,7 +17,6 @@ OSTime sRSPOtherStartTime;
 OSTime sRDPStartTime;
 
 void Sched_SwapFrameBuffer(CfbInfo* cfbInfo) {
-    u16 width;
 
     LOG_CHECK_VALID_POINTER("cfbinfo->swapbuffer", cfbInfo->swapBuffer);
     if (cfbInfo->swapBuffer != NULL) {
@@ -28,7 +27,7 @@ void Sched_SwapFrameBuffer(CfbInfo* cfbInfo) {
             osSyncPrintf("osViSwapBuffer %08x %08x %08x\n", osViGetCurrentFramebuffer(), osViGetNextFramebuffer(),
                          (cfbInfo != NULL ? cfbInfo->swapBuffer : NULL));
         }
-        width = cfbInfo->viMode != NULL ? cfbInfo->viMode->comRegs.width : (u32)gScreenWidth;
+        u16 width = cfbInfo->viMode != NULL ? cfbInfo->viMode->comRegs.width : (u32)gScreenWidth;
         Fault_SetFB(cfbInfo->swapBuffer, width, 0x10);
 
         if (HREG(80) == 0xD && HREG(95) != 0xD) {
@@ -71,10 +70,9 @@ void func_800C84E4(SchedContext* sc, CfbInfo* cfbInfo) {
 }
 
 void Sched_HandleReset(SchedContext* sc) {
-    OSTime now;
 
     if (sc->curRSPTask != NULL) {
-        now = osGetTime();
+        OSTime now = osGetTime();
 
         if (sc->curRSPTask->framebuffer == NULL) {
             LOG_TIME("(((u64)(now - audio_rsp_start_time)*(1000000LL/15625LL))/((62500000LL*3/4)/15625LL))",
@@ -292,7 +290,7 @@ void Sched_RunTask(SchedContext* sc, OSScTask* spTask, OSScTask* dpTask) {
 void Sched_HandleEntry(SchedContext* sc) {
     OSScTask* nextRSP = NULL;
     OSScTask* nextRDP = NULL;
-    s32 state;
+    s32 state = { 0 };
     OSMesg msg = OS_MESG_PTR(NULL);
 
     while (osRecvMesg(&sc->cmdQ, &msg, OS_MESG_NOBLOCK) != -1) {
@@ -392,14 +390,13 @@ void Sched_HandleRSPDone(SchedContext* sc) {
 }
 
 void Sched_HandleRDPDone(SchedContext* sc) {
-    OSScTask* curTask;
     OSScTask* nextRSP = NULL;
     OSScTask* nextRDP = NULL;
     s32 state;
 
     assert(sc->curRDPTask != NULL);
     assert(sc->curRDPTask->list.t.type == M_GFXTASK);
-    curTask = sc->curRDPTask;
+    OSScTask* curTask = sc->curRDPTask;
     sc->curRDPTask = NULL;
     curTask->state &= ~OS_SC_DP;
     Sched_IsComplete(sc, curTask);

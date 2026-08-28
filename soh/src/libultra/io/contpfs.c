@@ -161,7 +161,7 @@ s32 __osGetId(OSPfs* pfs) {
     u16 sum;
     u16 isum;
     u8 temp[BLOCKSIZE];
-    __OSPackId* id;
+    __OSPackId* id = { 0 };
     __OSPackId newid;
     s32 ret;
 
@@ -220,7 +220,7 @@ s32 __osGetId(OSPfs* pfs) {
 
 s32 __osCheckId(OSPfs* pfs) {
     u8 temp[BLOCKSIZE];
-    s32 ret;
+    s32 ret = { 0 };
 
     if (pfs->activebank != 0) {
         ret = __osPfsSelectBank(pfs, 0);
@@ -249,11 +249,10 @@ s32 __osCheckId(OSPfs* pfs) {
 }
 
 s32 __osPfsRWInode(OSPfs* pfs, __OSInode* inode, u8 flag, u8 bank) {
-    u8 sum;
     s32 j;
     s32 ret;
-    s32 offset;
-    u8* addr;
+    s32 offset = { 0 };
+    u8* addr = { 0 };
 
     if (flag == PFS_READ && bank == __osPfsInodeCacheBank && (pfs->channel == __osPfsInodeCacheChannel)) {
         bcopy(&__osPfsInodeCache, inode, sizeof(__OSInode));
@@ -285,7 +284,7 @@ s32 __osPfsRWInode(OSPfs* pfs, __OSInode* inode, u8 flag, u8 bank) {
     }
 
     if (flag == PFS_READ) {
-        sum = __osSumcalc((u8*)(inode->inodePage + offset), (PFS_INODE_SIZE_PER_PAGE - offset) * 2);
+        u8 sum = __osSumcalc((u8*)(inode->inodePage + offset), (PFS_INODE_SIZE_PER_PAGE - offset) * 2);
         if (sum != inode->inodePage[0].inode_t.page) {
             for (j = 0; j < PFS_ONE_PAGE; j++) {
                 addr = (u8*)(((u8*)inode) + (j * BLOCKSIZE));

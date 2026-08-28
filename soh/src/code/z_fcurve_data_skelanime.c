@@ -19,7 +19,6 @@ s32 SkelCurve_Init(PlayState* play, SkelAnimeCurve* skelCurve, SkelCurveLimbList
     if (ResourceMgr_OTRSigCheck(limbListSeg))
         limbListSeg = ResourceMgr_LoadSkeletonByName(limbListSeg, NULL);
 
-    SkelCurveLimb** limbs;
     SkelCurveLimbList* limbList = SEGMENTED_TO_VIRTUAL(limbListSeg);
 
     skelCurve->limbCount = limbList->limbCount;
@@ -47,18 +46,17 @@ void SkelCurve_SetAnim(SkelAnimeCurve* skelCurve, TransformUpdateIndex* transUpd
 }
 
 s32 SkelCurve_Update(PlayState* play, SkelAnimeCurve* skelCurve) {
-    s16* transforms;
-    u8* transformRefIdx;
-    TransformUpdateIndex* transformIndex;
-    u16* transformCopyValues;
+    f32 transformValue = { 0 };
+    s16* transforms = { 0 };
+    u8* transformRefIdx = { 0 };
+    u16* transformCopyValues = { 0 };
     s32 i;
     s32 ret = 0;
     s32 k;
-    TransformData* transData;
-    f32 transformValue;
+    TransformData* transData = { 0 };
     s32 j;
 
-    transformIndex = SEGMENTED_TO_VIRTUAL(skelCurve->transUpdIdx);
+    TransformUpdateIndex* transformIndex = SEGMENTED_TO_VIRTUAL(skelCurve->transUpdIdx);
 
     if (ResourceMgr_OTRSigCheck(transformIndex))
         transformIndex = ResourceMgr_LoadAnimByName(transformIndex);
@@ -103,6 +101,7 @@ s32 SkelCurve_Update(PlayState* play, SkelAnimeCurve* skelCurve) {
 
 void SkelCurve_DrawLimb(PlayState* play, s32 limbIndex, SkelAnimeCurve* skelCurve,
                         OverrideCurveLimbDraw overrideLimbDraw, PostCurveLimbDraw postLimbDraw, s32 lod, void* data) {
+    Gfx* dList = { 0 };
     SkelCurveLimb* limb = SEGMENTED_TO_VIRTUAL(skelCurve->limbList[limbIndex]);
 
     OPEN_DISPS(play->state.gfxCtx);
@@ -113,7 +112,6 @@ void SkelCurve_DrawLimb(PlayState* play, s32 limbIndex, SkelAnimeCurve* skelCurv
         Vec3f scale;
         Vec3s rot;
         Vec3f pos;
-        Gfx* dList;
         Vec3s* transform = (Vec3s*)&skelCurve->transforms[limbIndex];
 
         scale.x = transform->x / 1024.0f;
@@ -132,7 +130,6 @@ void SkelCurve_DrawLimb(PlayState* play, s32 limbIndex, SkelAnimeCurve* skelCurv
         Matrix_Scale(scale.x, scale.y, scale.z, MTXMODE_APPLY);
 
         if (lod == 0) {
-            s32 pad1;
 
             dList = limb->dList[0];
             if (dList != NULL) {
@@ -141,7 +138,6 @@ void SkelCurve_DrawLimb(PlayState* play, s32 limbIndex, SkelAnimeCurve* skelCurv
                 gSPDisplayList(POLY_OPA_DISP++, dList);
             }
         } else if (lod == 1) {
-            s32 pad2;
 
             dList = limb->dList[0];
             if (dList != NULL) {

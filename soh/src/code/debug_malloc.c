@@ -72,10 +72,9 @@ void DebugArena_FreeDebug(void* ptr, const char* file, s32 line) {
 }
 
 void* DebugArena_Calloc(size_t num, size_t size) {
-    void* ret;
     size_t n = num * size;
 
-    ret = __osMalloc(&sDebugArena, n);
+    void* ret = __osMalloc(&sDebugArena, n);
     if (ret != NULL) {
         memset(ret, 0, n);
     }

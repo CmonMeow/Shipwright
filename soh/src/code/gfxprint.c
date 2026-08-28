@@ -108,10 +108,9 @@ s32 GfxPrint_VPrintf(GfxPrint* printer, const char* format, va_list arguments) {
 
 s32 GfxPrint_Printf(GfxPrint* printer, const char* format, ...) {
     va_list arguments;
-    s32 result;
 
     va_start(arguments, format);
-    result = GfxPrint_VPrintf(printer, format, arguments);
+    s32 result = GfxPrint_VPrintf(printer, format, arguments);
     va_end(arguments);
     return result;
 }

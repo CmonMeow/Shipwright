@@ -760,8 +760,8 @@ void Interface_SetDoAction(PlayState* play, u16 action) {
 }
 
 s32 Health_ChangeBy(PlayState* play, s16 healthChange) {
-    u16 heartCount;
-    u16 healthLevel;
+    u16 heartCount = { 0 };
+    u16 healthLevel = { 0 };
 
     // "＊＊＊＊＊ Fluctuation=%d (now=%d, max=%d) ＊＊＊"
     osSyncPrintf("＊＊＊＊＊  増減=%d (now=%d, max=%d)  ＊＊＊", healthChange, gSaveContext.health,
@@ -891,8 +891,7 @@ void Interface_Update(PlayState* play) {
     MessageContext* msgCtx = &play->msgCtx;
     InterfaceContext* interfaceCtx = &play->interfaceCtx;
     Player* player = GET_PLAYER(play);
-    s16 alpha;
-    s16 alpha1;
+    s16 alpha = { 0 };
     Input* debugInput = &play->state.input[2];
 
     {
@@ -939,7 +938,7 @@ void Interface_Update(PlayState* play) {
                 alpha = 0;
             }
 
-            alpha1 = 0xFF - alpha;
+            s16 alpha1 = 0xFF - alpha;
             if (alpha1 >= 0xFF) {
                 alpha1 = 0xFF;
             }

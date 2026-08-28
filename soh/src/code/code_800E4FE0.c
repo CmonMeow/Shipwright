@@ -76,16 +76,15 @@ AudioTask* func_800E5000(void) {
 
     static s32 sMaxAbiCmdCnt = 0x80;
     static AudioTask* sWaitingAudioTask = NULL;
-    u32 samplesRemainingInAi;
+    u32 samplesRemainingInAi = { 0 };
     s32 abiCmdCnt;
-    s32 pad;
-    s32 j;
-    s32 sp5C;
-    s16* currAiBuffer;
-    OSTask_t* task;
-    s32 index;
+    s32 j = { 0 };
+    s32 sp5C = { 0 };
+    s16* currAiBuffer = { 0 };
+    OSTask_t* task = { 0 };
+    s32 index = { 0 };
     OSMesg sp4C;
-    s32 sp48;
+    s32 sp48 = { 0 };
     s32 i;
 
     gAudioContext.totalTaskCnt++;
@@ -237,10 +236,7 @@ AudioTask* func_800E5000(void) {
 
 void func_800E5584(AudioCmd* cmd) {
     s32 i;
-    s32 pad;
-    s32 pad2;
-    u32 temp_a1_5;
-    u32 temp_t7;
+    u32 temp_t7 = { 0 };
 
     switch (cmd->op) {
         case 0x81:
@@ -357,9 +353,8 @@ void func_800E5958(s32 playerIdx, s32 fadeTimer) {
 
 // SetFadeInTimer
 void func_800E59AC(s32 playerIdx, s32 fadeTimer) {
-    SequencePlayer* seqPlayer;
     if (fadeTimer != 0) {
-        seqPlayer = &gAudioContext.seqPlayers[playerIdx];
+        SequencePlayer* seqPlayer = &gAudioContext.seqPlayers[playerIdx];
         seqPlayer->state = 1;
         seqPlayer->fadeTimerUnkEu = fadeTimer;
         seqPlayer->fadeTimer = fadeTimer;
@@ -445,8 +440,6 @@ void Audio_ResetCmdQueue(void) {
 }
 
 void Audio_ProcessCmd(AudioCmd* cmd) {
-    SequencePlayer* seqPlayer;
-    u16 phi_v0;
     s32 i;
 
     if ((cmd->op & 0xF0) == 0xF0) {
@@ -455,7 +448,7 @@ void Audio_ProcessCmd(AudioCmd* cmd) {
     }
 
     if (cmd->arg0 < gAudioContext.audioBufferParameters.numSequencePlayers) {
-        seqPlayer = &gAudioContext.seqPlayers[cmd->arg0];
+        SequencePlayer* seqPlayer = &gAudioContext.seqPlayers[cmd->arg0];
         if (cmd->op & 0x80) {
             func_800E5584(cmd);
             return;
@@ -470,7 +463,7 @@ void Audio_ProcessCmd(AudioCmd* cmd) {
             return;
         }
         if (cmd->arg1 == 0xFF) {
-            phi_v0 = gAudioContext.unk_5BDC[cmd->arg0];
+            u16 phi_v0 = gAudioContext.unk_5BDC[cmd->arg0];
             for (i = 0; i < 0x10; i++) {
                 if (phi_v0 & 1) {
                     func_800E6300(seqPlayer->channels[i], cmd);
@@ -483,21 +476,19 @@ void Audio_ProcessCmd(AudioCmd* cmd) {
 
 void Audio_ProcessCmds(u32 msg) {
     static u8 curCmdRdPos = 0;
-    AudioCmd* cmd;
-    u8 endPos;
 
     if (!gAudioContext.cmdQueueFinished) {
         curCmdRdPos = msg >> 8;
     }
 
     while (true) {
-        endPos = msg & 0xFF;
+        u8 endPos = msg & 0xFF;
         if (curCmdRdPos == endPos) {
             gAudioContext.cmdQueueFinished = 0;
             return;
         }
 
-        cmd = &gAudioContext.cmdBuf[curCmdRdPos++ & 0xFF];
+        AudioCmd* cmd = &gAudioContext.cmdBuf[curCmdRdPos++ & 0xFF];
         if (cmd->op == 0xF8) {
             gAudioContext.cmdQueueFinished = 1;
             return;
@@ -529,7 +520,6 @@ void func_800E5EA4(s32 arg0, u32* arg1, u32* arg2) {
 }
 
 s32 func_800E5EDC(void) {
-    s32 pad;
     OSMesg sp18;
 
     if (osRecvMesg(gAudioContext.audioResetQueueP, &sp18, OS_MESG_NOBLOCK) == -1) {
@@ -549,12 +539,10 @@ void func_800E5F34(void) {
 }
 
 s32 func_800E5F88(s32 resetPreloadID) {
-    s32 resetStatus;
     OSMesg msg;
-    s32 pad;
 
     func_800E5F34();
-    resetStatus = gAudioContext.resetStatus;
+    s32 resetStatus = gAudioContext.resetStatus;
     if (resetStatus != 0) {
         Audio_ResetCmdQueue();
         if (gAudioContext.audioResetSpecIdToLoad == resetPreloadID) {
@@ -583,9 +571,8 @@ void Audio_PreNMIInternal(void) {
 
 s8 func_800E6070(s32 playerIdx, s32 channelIdx, s32 scriptIdx) {
     SequencePlayer* seqPlayer = &gAudioContext.seqPlayers[playerIdx];
-    SequenceChannel* channel;
     if (seqPlayer->enabled) {
-        channel = seqPlayer->channels[channelIdx];
+        SequenceChannel* channel = seqPlayer->channels[channelIdx];
         return channel->soundScriptIO[scriptIdx];
     } else {
         return -1;
@@ -614,7 +601,7 @@ float Audio_GetGameVolume(int player_id) {
 }
 
 void func_800E6128(SequencePlayer* seqPlayer, AudioCmd* cmd) {
-    f32 fadeVolume;
+    f32 fadeVolume = { 0 };
     switch (cmd->op) {
         case 0x41:
             if (seqPlayer->fadeVolumeScale != cmd->asFloat) {
@@ -763,16 +750,11 @@ void Audio_WaitForAudioTask(void) {
 }
 
 s32 func_800E6590(s32 playerIdx, s32 arg1, s32 arg2) {
-    SequencePlayer* seqPlayer;
-    SequenceLayer* layer;
     Note* note;
-    SoundFontSound* sound;
-    s32 loopEnd;
-    s32 samplePos;
 
-    seqPlayer = &gAudioContext.seqPlayers[playerIdx];
+    SequencePlayer* seqPlayer = &gAudioContext.seqPlayers[playerIdx];
     if (seqPlayer->enabled && seqPlayer->channels[arg1]->enabled) {
-        layer = seqPlayer->channels[arg1]->layers[arg2];
+        SequenceLayer* layer = seqPlayer->channels[arg1]->layers[arg2];
         if (layer == NULL) {
             return 0;
         }
@@ -788,12 +770,12 @@ s32 func_800E6590(s32 playerIdx, s32 arg1, s32 arg2) {
 
             note = layer->note;
             if (layer == note->playbackState.parentLayer) {
-                sound = note->noteSubEu.sound.soundFontSound;
+                SoundFontSound* sound = note->noteSubEu.sound.soundFontSound;
                 if (sound == NULL) {
                     return 0;
                 }
-                loopEnd = sound->sample->loop->loopEnd;
-                samplePos = note->synthesisState.samplePosInt;
+                s32 loopEnd = sound->sample->loop->loopEnd;
+                s32 samplePos = note->synthesisState.samplePosInt;
                 return loopEnd - samplePos;
             }
             return 0;
@@ -811,22 +793,17 @@ void func_800E66A0(void) {
 }
 
 s32 func_800E66C0(s32 arg0) {
-    s32 phi_v1;
-    NotePlaybackState* temp_a2;
-    NoteSubEu* temp_a3;
     s32 i;
-    Note* note;
-    SoundFontSound* sound;
 
-    phi_v1 = 0;
+    s32 phi_v1 = 0;
     for (i = 0; i < gAudioContext.numNotes; i++) {
-        note = &gAudioContext.notes[i];
-        temp_a2 = &note->playbackState;
+        Note* note = &gAudioContext.notes[i];
+        NotePlaybackState* temp_a2 = &note->playbackState;
         if (note->noteSubEu.bitField0.enabled) {
-            temp_a3 = &note->noteSubEu;
+            NoteSubEu* temp_a3 = &note->noteSubEu;
             if (temp_a2->adsr.action.s.state != 0) {
                 if (arg0 >= 2) {
-                    sound = temp_a3->sound.soundFontSound;
+                    SoundFontSound* sound = temp_a3->sound.soundFontSound;
                     if (sound == NULL || temp_a3->bitField1.isSyntheticWave) {
                         continue;
                     }

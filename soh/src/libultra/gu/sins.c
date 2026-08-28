@@ -2,7 +2,7 @@
 #include "sintable.c"
 
 s16 sins(u16 x) {
-    s16 value;
+    s16 value = { 0 };
 
     x >>= 4;
 

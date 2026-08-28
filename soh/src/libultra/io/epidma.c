@@ -2,7 +2,7 @@
 #include "ultra64/internal.h"
 
 s32 osEPiStartDma(OSPiHandle* handle, OSIoMesg* mb, s32 direction) {
-    s32 ret;
+    s32 ret = { 0 };
 
     if (!__osPiDevMgr.initialized) {
         return -1;

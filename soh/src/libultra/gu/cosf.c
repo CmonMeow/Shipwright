@@ -15,24 +15,17 @@ static const du pilo = { 0x3E6110B4, 0x611A6263 };
 static const fu zero = { 0x00000000 };
 
 f32 cosf(f32 x) {
-    f32 absx;
-    f64 dx;
-    f64 xSq;
-    f64 polyApprox;
-    f64 dn;
-    s32 n;
-    f64 result;
     s32 ix = *(s32*)&x;
     s32 xpt = (ix >> 22);
 
     xpt &= 0x1FF;
 
     if (xpt < 0x136) {
-        absx = (x > 0) ? x : -x;
-        dx = absx;
+        f32 absx = (x > 0) ? x : -x;
+        f64 dx = absx;
 
-        dn = dx * rpi.d + 0.5;
-        n = ROUND(dn);
+        f64 dn = dx * rpi.d + 0.5;
+        s32 n = ROUND(dn);
         dn = n;
 
         dn -= 0.5;
@@ -40,11 +33,11 @@ f32 cosf(f32 x) {
         dx -= dn * pihi.d;
         dx -= dn * pilo.d;
 
-        xSq = SQ(dx);
+        f64 xSq = SQ(dx);
 
-        polyApprox = ((P[4].d * xSq + P[3].d) * xSq + P[2].d) * xSq + P[1].d;
+        f64 polyApprox = ((P[4].d * xSq + P[3].d) * xSq + P[2].d) * xSq + P[1].d;
 
-        result = dx + (dx * xSq) * polyApprox;
+        f64 result = dx + (dx * xSq) * polyApprox;
 
         if (!(n & 1)) {
             return (f32)result;

@@ -3,26 +3,23 @@
 void __osViSwapContext(void) {
     register OSViMode* viMode;
     register OSViContext* viNext;
-    u32 origin;
-    u32 hStart;
-    u32 vstart;
-    u32 sp34;
-    u32 field;
+    u32 hStart = { 0 };
+    u32 vstart = { 0 };
     register u32 s2;
 
-    field = 0;
+    u32 field = 0;
     viNext = __osViNext;
     viMode = viNext->modep;
     field = HW_REG(VI_V_CURRENT_LINE_REG, u32) & 1;
     s2 = osVirtualToPhysical(viNext->buffer);
-    origin = (viMode->fldRegs[field].origin) + s2;
+    u32 origin = (viMode->fldRegs[field].origin) + s2;
     if (viNext->state & 2) {
         viNext->x.scale |= viMode->comRegs.xScale & ~0xFFF;
     } else {
         viNext->x.scale = viMode->comRegs.xScale;
     }
     if (viNext->state & 4) {
-        sp34 = (u32)(viMode->fldRegs[field].yScale & 0xFFF);
+        u32 sp34 = (u32)(viMode->fldRegs[field].yScale & 0xFFF);
         viNext->y.scale = viNext->y.factor * sp34;
         viNext->y.scale |= viMode->fldRegs[field].yScale & ~0xFFF;
     } else {

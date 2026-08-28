@@ -30,7 +30,7 @@ void Quake_UpdateShakeInfo(QuakeRequest* req, ShakeInfo* shake, f32 y, f32 x) {
     Vec3f vec;
     VecSph struc2;
     VecSph struc1;
-    Vec3f vec2;
+    Vec3f vec2 = { 0 };
 
     if (req->unk_1C) {
         vec.x = 0;
@@ -64,7 +64,6 @@ void Quake_UpdateShakeInfo(QuakeRequest* req, ShakeInfo* shake, f32 y, f32 x) {
 }
 
 s16 Quake_Callback1(QuakeRequest* req, ShakeInfo* shake) {
-    s32 pad;
 
     if (req->countdown > 0) {
         f32 a = Math_SinS(req->speed * req->countdown);
@@ -86,11 +85,9 @@ s16 Quake_Callback5(QuakeRequest* req, ShakeInfo* shake) {
 }
 
 s16 Quake_Callback6(QuakeRequest* req, ShakeInfo* shake) {
-    s32 pad;
-    f32 a;
 
     req->countdown--;
-    a = Math_SinS(req->speed * ((req->countdown & 0xF) + 500));
+    f32 a = Math_SinS(req->speed * ((req->countdown & 0xF) + 500));
     Quake_UpdateShakeInfo(req, shake, a, Rand_ZeroOne() * a);
     return 1;
 }
@@ -127,7 +124,7 @@ s16 Quake_Callback4(QuakeRequest* req, ShakeInfo* shake) {
 
 s16 Quake_GetFreeIndex(void) {
     s32 i;
-    s32 ret;
+    s32 ret = { 0 };
     s32 min = 0x10000;
 
     for (i = 0; i < ARRAY_COUNT(sQuakeRequest); i++) {
@@ -308,20 +305,12 @@ u32 Quake_RemoveFromIdx(s16 idx) {
 }
 
 s16 Quake_Calc(Camera* camera, QuakeCamCalc* camData) {
-    f32 max;
-    f32 max2;
-    QuakeRequest* req;
-    ShakeInfo shake;
-    f32 absSpeedDiv;
-    s16* temp;
-    u32 pad2;
+    ShakeInfo shake = { 0 };
     s32 idx;
-    s32 ret;
-    u32 eq;
+    s32 ret = { 0 };
     Vec3f vec;
-    PlayState* play;
 
-    play = camera->play;
+    PlayState* play = camera->play;
     vec.x = 0.0f;
     vec.y = 0.0f;
     vec.z = 0.0f;
@@ -342,16 +331,16 @@ s16 Quake_Calc(Camera* camera, QuakeCamCalc* camData) {
 
     ret = 0;
     for (idx = 0; idx < ARRAY_COUNT(sQuakeRequest); idx++) {
-        req = &sQuakeRequest[idx];
+        QuakeRequest* req = &sQuakeRequest[idx];
         if (req->callbackIdx != 0) {
             if (play->cameraPtrs[req->camPtrIdx] == NULL) {
                 osSyncPrintf(VT_COL(YELLOW, BLACK) "quake: stopped! 'coz camera [%d] killed!!\n" VT_RST,
                              req->camPtrIdx);
                 Quake_Remove(req);
             } else {
-                temp = &camera->thisIdx;
-                eq = req->cam->thisIdx != *temp;
-                absSpeedDiv = ABS(req->speed) / (f32)0x8000;
+                s16* temp = &camera->thisIdx;
+                u32 eq = req->cam->thisIdx != *temp;
+                f32 absSpeedDiv = ABS(req->speed) / (f32)0x8000;
                 if (sQuakeCallbacks[req->callbackIdx](req, &shake) == 0) {
                     Quake_Remove(req);
                 } else if (eq == 0) {
@@ -381,8 +370,8 @@ s16 Quake_Calc(Camera* camera, QuakeCamCalc* camData) {
                         camData->zoom = shake.zoom;
                     }
 
-                    max = OLib_Vec3fDist(&shake.vec1, &vec) * absSpeedDiv;
-                    max2 = OLib_Vec3fDist(&shake.vec2, &vec) * absSpeedDiv;
+                    f32 max = OLib_Vec3fDist(&shake.vec1, &vec) * absSpeedDiv;
+                    f32 max2 = OLib_Vec3fDist(&shake.vec2, &vec) * absSpeedDiv;
                     if (max < max2) {
                         max = max2;
                     }

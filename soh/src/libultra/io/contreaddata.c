@@ -1,7 +1,7 @@
 #include "global.h"
 
 s32 osContStartReadData(OSMesgQueue* mq) {
-    s32 ret;
+    s32 ret = { 0 };
 
     __osSiGetAccess();
     if (__osContLastPoll != 1) {

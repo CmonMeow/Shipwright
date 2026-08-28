@@ -428,9 +428,8 @@ void ShipwrightNetworkRuntime::Disconnect() {
     destroyPool();
 
     mClientCrypto.clear();
-    for (auto& [peer, crypto] : mServerCrypto) {
-        (void)peer;
-        crypto.clear();
+    for (auto& cryptoEntry : mServerCrypto) {
+        cryptoEntry.second.clear();
     }
     mServerCrypto.clear();
     mPeers.clear();
@@ -1071,14 +1070,14 @@ void ShipwrightNetworkRuntime::HandleServerMessage(int32_t sender, char* buffer,
         EncodeAppPacketRaw(assignmentRaw, assignment);
         SendToPeer(sender, NAMTPlayerAssign, assignmentRaw, kReliable);
         SendKnownChatKeysTo(sender);
-        for (const auto& [key, objectState] : mPersistentDynamicObjectStates) {
-            (void)key;
+        for (const auto& objectEntry : mPersistentDynamicObjectStates) {
+            const auto& objectState = objectEntry.second;
             NetworkMessageRaw objectRaw;
             EncodeAppPacketRaw(objectRaw, objectState);
             SendToPeer(sender, NAMTDynamicObjectState, objectRaw, kReliable);
         }
-        for (const auto& [corpseId, corpse] : mServerCorpses) {
-            (void)corpseId;
+        for (const auto& corpseEntry : mServerCorpses) {
+            const auto& corpse = corpseEntry.second;
             NetworkMessageRaw corpseRaw;
             EncodeAppPacketRaw(corpseRaw, corpse);
             SendToPeer(sender, NAMTPlayerState, corpseRaw, kReliable);
@@ -1114,11 +1113,13 @@ void ShipwrightNetworkRuntime::HandleServerMessage(int32_t sender, char* buffer,
         return;
     }
 
-    int32_t keyOwner = -1;
-    std::string keyName;
+    int32_t claimedKeyOwner = -1;
+    std::string claimedKeyName;
     std::string publicKey;
-    if (DecodeChatKey(message, messageSize, keyOwner, keyName, publicKey)) {
-        (void)keyOwner;
+    if (DecodeChatKey(message, messageSize, claimedKeyOwner, claimedKeyName, publicKey)) {
+        if (claimedKeyOwner != 0 || claimedKeyName != PlayerName(sender)) {
+            return;
+        }
         mPrivateChatKeys[sender] = publicKey;
         mPrivateChatNames[sender] = PlayerName(sender);
         BroadcastChatKey(sender, PlayerName(sender), publicKey);
@@ -2158,9 +2159,13 @@ void ShipwrightNetworkRuntime::SanitizeServerFishingState(
         return;
     }
 
-    const auto& [sceneId, roomId, actorId, actorParams, homeX, homeY, homeZ] = owned->first;
-    (void)roomId;
-    (void)actorId;
+    const auto& fishKey = owned->first;
+    const int32_t sceneId = std::get<0>(fishKey);
+    const int32_t roomId = std::get<1>(fishKey);
+    const int32_t actorParams = std::get<3>(fishKey);
+    const int32_t homeX = std::get<4>(fishKey);
+    const int32_t homeY = std::get<5>(fishKey);
+    const int32_t homeZ = std::get<6>(fishKey);
     if (sceneId != state.sceneId) {
         clearFish();
         return;
@@ -2312,8 +2317,8 @@ bool ShipwrightNetworkRuntime::AcceptServerActorEvent(int32_t player, NetworkAct
                     { packet.x, packet.y, packet.z }, 12.0f, 44.0f, hitRatio);
             }
             if (!authoritativeCut) {
-                for (const auto& [projectileKey, projectile] : mServerProjectiles) {
-                    (void)projectileKey;
+                for (const auto& projectileEntry : mServerProjectiles) {
+                    const auto& projectile = projectileEntry.second;
                     if (projectile.state.sceneId != packet.sceneId) {
                         continue;
                     }
@@ -2364,8 +2369,8 @@ bool ShipwrightNetworkRuntime::AcceptServerActorEvent(int32_t player, NetworkAct
         }
         if (packet.eventType == NETWORK_ACTOR_EVENT_BOULDER_BREAK) {
             bool explosionNear = false;
-            for (const auto& [projectileKey, projectile] : mServerProjectiles) {
-                (void)projectileKey;
+            for (const auto& projectileEntry : mServerProjectiles) {
+                const auto& projectile = projectileEntry.second;
                 if (projectile.state.projectileKind != NETWORK_PROJECTILE_BOMB ||
                     projectile.state.phase != NETWORK_BOMB_EXPLODING ||
                     projectile.state.sceneId != packet.sceneId) {
@@ -2891,8 +2896,8 @@ void ShipwrightNetworkRuntime::RetainServerStuckArrow(
     const int32_t owner = current->second.state.playerId;
     const int32_t scene = current->second.state.sceneId;
     size_t count = 0;
-    for (const auto& [key, projectile] : mServerProjectiles) {
-        (void)key;
+    for (const auto& projectileEntry : mServerProjectiles) {
+        const auto& projectile = projectileEntry.second;
         if (projectile.state.playerId == owner && projectile.state.sceneId == scene &&
             projectile.state.projectileKind == NETWORK_PROJECTILE_ARROW &&
             projectile.state.phase == NETWORK_ARROW_STUCK) {

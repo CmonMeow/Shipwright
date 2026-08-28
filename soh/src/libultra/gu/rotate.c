@@ -2,34 +2,25 @@
 
 void guRotateF(f32 m[4][4], f32 a, f32 x, f32 y, f32 z) {
     static f32 D_80134D10 = M_PI / 180.0f;
-    f32 sine;
-    f32 cosine;
-    f32 ab;
-    f32 bc;
-    f32 ca;
-    f32 t;
-    f32 xs;
-    f32 ys;
-    f32 zs;
 
     guNormalize(&x, &y, &z);
 
     a = a * D_80134D10;
 
-    sine = sinf(a);
-    cosine = cosf(a);
+    f32 sine = sinf(a);
+    f32 cosine = cosf(a);
 
-    ab = x * y * (1 - cosine);
-    bc = y * z * (1 - cosine);
-    ca = z * x * (1 - cosine);
+    f32 ab = x * y * (1 - cosine);
+    f32 bc = y * z * (1 - cosine);
+    f32 ca = z * x * (1 - cosine);
 
     guMtxIdentF(m);
 
-    xs = x * sine;
-    ys = y * sine;
-    zs = z * sine;
+    f32 xs = x * sine;
+    f32 ys = y * sine;
+    f32 zs = z * sine;
 
-    t = x * x;
+    f32 t = x * x;
     m[0][0] = (1 - t) * cosine + t;
     m[2][1] = bc - xs;
     m[1][2] = bc + xs;

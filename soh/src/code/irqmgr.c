@@ -17,13 +17,12 @@ u32 sIrqMgrRetraceCount = 0;
 #define STATUS_NMI 2
 
 void IrqMgr_AddClient(IrqMgr* this, IrqMgrClient* c, OSMesgQueue* msgQ) {
-    OSIntMask prevInt;
 
     LOG_CHECK_NULL_POINTER("this", this);
     LOG_CHECK_NULL_POINTER("c", c);
     LOG_CHECK_NULL_POINTER("msgQ", msgQ);
 
-    prevInt = osSetIntMask(1);
+    OSIntMask prevInt = osSetIntMask(1);
 
     c->queue = msgQ;
     c->prev = this->clients;
@@ -43,12 +42,11 @@ void IrqMgr_AddClient(IrqMgr* this, IrqMgrClient* c, OSMesgQueue* msgQ) {
 void IrqMgr_RemoveClient(IrqMgr* this, IrqMgrClient* c) {
     IrqMgrClient* iter = this->clients;
     IrqMgrClient* lastIter = NULL;
-    OSIntMask prevInt;
 
     LOG_CHECK_NULL_POINTER("this", this);
     LOG_CHECK_NULL_POINTER("c", c);
 
-    prevInt = osSetIntMask(1);
+    OSIntMask prevInt = osSetIntMask(1);
 
     while (iter != NULL) {
         if (iter == c) {
@@ -136,10 +134,9 @@ void IrqMgr_HandlePRENMI450(IrqMgr* this) {
 }
 
 void IrqMgr_HandlePRENMI480(IrqMgr* this) {
-    u32 ret;
 
     osSetTimer(&this->timer, OS_USEC_TO_CYCLES(20000), 0ull, &this->queue, OS_MESG_32(PRENMI500_MSG));
-    ret = osAfterPreNMI();
+    u32 ret = osAfterPreNMI();
     if (ret) {
         // "osAfterPreNMI returned %d !?"
         osSyncPrintf("osAfterPreNMIが %d を返しました！？\n", ret);
@@ -166,11 +163,10 @@ void IrqMgr_HandleRetrace(IrqMgr* this) {
 void IrqMgr_ThreadEntry(void* arg0) {
     OSMesg msg;
     IrqMgr* this = (IrqMgr*)arg0;
-    u8 exit;
 
     msg.data32 = 0;
     osSyncPrintf("ＩＲＱマネージャスレッド実行開始\n"); // "Start IRQ manager thread execution"
-    exit = false;
+    u8 exit = false;
 
     while (!exit) {
         osRecvMesg(&this->queue, &msg, OS_MESG_BLOCK);

@@ -29,12 +29,11 @@ void Scene_SetTransitionForNextEntrance(PlayState* play) {
 }
 
 void Scene_PrepareWater(PlayState* play) {
-    u32 gameplayFrames;
     Gfx* waterScroll;
 
     OPEN_DISPS(play->state.gfxCtx);
 
-    gameplayFrames = play->gameplayFrames;
+    u32 gameplayFrames = play->gameplayFrames;
     // test01's native water material calls display list 0x08000001. Keep
     // segment 8 populated even though the added top-facing WaterBox plane
     // binds the room texture directly.
@@ -49,16 +48,14 @@ void Scene_PrepareWater(PlayState* play) {
 
 static void Scene_DrawCalmWater(PlayState* play) {
     CollisionHeader* colHeader = play->colCtx.colHeader;
-    u32 gameplayFrames;
-    Vtx* waterVertices;
     s32 i;
 
     OPEN_DISPS(play->state.gfxCtx);
 
-    gameplayFrames = play->gameplayFrames;
+    u32 gameplayFrames = play->gameplayFrames;
 
     if ((colHeader != NULL) && (colHeader->numWaterBoxes > 0)) {
-        waterVertices = Graph_Alloc(play->state.gfxCtx, colHeader->numWaterBoxes * 4 * sizeof(Vtx));
+        Vtx* waterVertices = Graph_Alloc(play->state.gfxCtx, colHeader->numWaterBoxes * 4 * sizeof(Vtx));
         if (waterVertices != NULL) {
             Gfx_SetupDL_25Xlu(play->state.gfxCtx);
             gSPMatrix(POLY_XLU_DISP++, &gMtxClear, G_MTX_MODELVIEW | G_MTX_LOAD);

@@ -2,30 +2,26 @@
 #include "ultra64/internal.h"
 
 void __osDevMgrMain(void* arg) {
-    OSIoMesg* ioMesg;
     OSMesg sp70;
     OSMesg sp6C;
     OSMgrArgs* arg0 = (OSMgrArgs*)arg;
-    __OSTranxInfo* transfer;
-    __OSBlockInfo* block;
-    s32 phi_s2;
-    s32 phi_s0;
+    s32 phi_s0 = { 0 };
     u32 sp54;
 
-    ioMesg = NULL;
+    OSIoMesg* ioMesg = NULL;
 
     while (true) {
         osRecvMesg(arg0->cmdQueue, (OSMesg)&ioMesg, OS_MESG_BLOCK);
         if ((ioMesg->piHandle != NULL) && (ioMesg->piHandle->type == DEVICE_TYPE_64DD) &&
             ((ioMesg->piHandle->transferInfo.cmdType == 0) || (ioMesg->piHandle->transferInfo.cmdType == 1))) {
-            transfer = &ioMesg->piHandle->transferInfo;
-            block = &transfer->block[transfer->blockNum];
+            __OSTranxInfo* transfer = &ioMesg->piHandle->transferInfo;
+            __OSBlockInfo* block = &transfer->block[transfer->blockNum];
             transfer->sectorNum = -1;
             if (transfer->transferMode != 3) {
                 block->dramAddr = (void*)((uintptr_t)block->dramAddr - block->sectorSize);
             }
 
-            phi_s2 = ((transfer->transferMode == 2) && (ioMesg->piHandle->transferInfo.cmdType == 0)) ? 1 : 0;
+            s32 phi_s2 = ((transfer->transferMode == 2) && (ioMesg->piHandle->transferInfo.cmdType == 0)) ? 1 : 0;
 
             osRecvMesg(arg0->acccessQueue, &sp6C, OS_MESG_BLOCK);
             __osResetGlobalIntMask(0x00100401);

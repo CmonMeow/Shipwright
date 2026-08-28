@@ -13,9 +13,6 @@ u32 __additional_scanline = 0;
 void viMgrMain(void*);
 
 void osCreateViManager(OSPri pri) {
-    u32 prevInt;
-    OSPri newPri;
-    OSPri currentPri;
 
     if (!__osViDevMgr.initialized) {
         __osTimerServicesInit();
@@ -29,14 +26,14 @@ void osCreateViManager(OSPri pri) {
         viCounterMsg.hdr.retQueue = NULL;
         osSetEventMesg(OS_EVENT_VI, &viEventQueue, &viRetraceMsg);
         osSetEventMesg(OS_EVENT_COUNTER, &viEventQueue, &viCounterMsg);
-        newPri = -1;
-        currentPri = osGetThreadPri(NULL);
+        OSPri newPri = -1;
+        OSPri currentPri = osGetThreadPri(NULL);
         if (currentPri < pri) {
             newPri = currentPri;
             osSetThreadPri(NULL, pri);
         }
 
-        prevInt = __osDisableInt();
+        u32 prevInt = __osDisableInt();
         __osViDevMgr.initialized = true;
         __osViDevMgr.mgrThread = &viThread;
         __osViDevMgr.cmdQueue = &viEventQueue;
@@ -57,8 +54,8 @@ void osCreateViManager(OSPri pri) {
 
 void viMgrMain(void* vargs) {
     static u16 viRetrace;
-    OSMgrArgs* args;
-    u32 addTime;
+    OSMgrArgs* args = { 0 };
+    u32 addTime = { 0 };
     OSIoMesg* mesg = NULL;
     u32 temp = 0; // always 0
 

@@ -75,7 +75,7 @@ void func_80043334(CollisionContext* colCtx, Actor* actor, s32 bgId) {
  */
 s32 func_800433A4(CollisionContext* colCtx, s32 bgId, Actor* actor) {
     s32 result = false;
-    DynaPolyActor* dynaActor;
+    DynaPolyActor* dynaActor = { 0 };
 
     if (DynaPoly_IsBgIdBgActor(bgId) == false) {
         return false;

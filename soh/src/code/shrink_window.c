@@ -44,7 +44,7 @@ void ShrinkWindow_Destroy(void) {
 }
 
 void ShrinkWindow_Update(s32 updateRate) {
-    s32 off;
+    s32 off = { 0 };
 
     if (updateRate == 3) {
         off = 10;

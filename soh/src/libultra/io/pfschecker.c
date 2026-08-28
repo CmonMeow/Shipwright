@@ -8,8 +8,7 @@
 
 s32 osPfsChecker(OSPfs* pfs) {
     s32 j;
-    s32 ret;
-    __OSInodeUnit next;
+    __OSInodeUnit next = { 0 };
     __OSInode checkedInode;
     __OSInode tempInode;
     __OSDir tempDir;
@@ -18,9 +17,8 @@ s32 osPfsChecker(OSPfs* pfs) {
     s32 fixed = 0;
     u8 bank, prevBank = 254;
     s32 cc, cl;
-    s32 offset;
 
-    ret = __osCheckId(pfs);
+    s32 ret = __osCheckId(pfs);
     if (ret == PFS_ERR_NEW_PACK) {
         ret = __osGetId(pfs);
     }
@@ -95,7 +93,7 @@ s32 osPfsChecker(OSPfs* pfs) {
         if ((ret != 0) && (ret != PFS_ERR_INCONSISTENT)) {
             return (ret);
         }
-        offset = ((bank > PFS_ID_BANK_256K) ? 1 : pfs->inodeStartPage);
+        s32 offset = ((bank > PFS_ID_BANK_256K) ? 1 : pfs->inodeStartPage);
         for (j = 0; j < offset; j++) {
             checkedInode.inodePage[j].ipage = tempInode.inodePage[j].ipage;
         }
@@ -106,8 +104,7 @@ s32 osPfsChecker(OSPfs* pfs) {
         for (j = 0; j < pfs->dir_size; j++) {
             while (nextNodeInFile[j].inode_t.bank == bank &&
                    nextNodeInFile[j].ipage >= (u16)pfs->inodeStartPage) { // cast required
-                u8 val;
-                val = nextNodeInFile[j].inode_t.page;
+                u8 val = nextNodeInFile[j].inode_t.page;
                 nextNodeInFile[j] = checkedInode.inodePage[val] = tempInode.inodePage[val];
             }
         }
@@ -128,11 +125,8 @@ s32 osPfsChecker(OSPfs* pfs) {
 s32 func_80105788(OSPfs* pfs, __OSInodeCache* cache) {
     s32 i;
     s32 n;
-    s32 offset;
     u8 bank;
-    __OSInodeUnit tpage;
     __OSInode tempInode;
-    s32 ret;
 
     for (i = 0; i < PFS_INODE_DIST_MAP; i++) {
         cache->map[i] = 0;
@@ -140,14 +134,14 @@ s32 func_80105788(OSPfs* pfs, __OSInodeCache* cache) {
     cache->bank = 255;
 
     for (bank = PFS_ID_BANK_256K; bank < pfs->banks; bank++) {
-        offset = ((bank > PFS_ID_BANK_256K) ? 1 : pfs->inodeStartPage);
-        ret = __osPfsRWInode(pfs, &tempInode, PFS_READ, bank);
+        s32 offset = ((bank > PFS_ID_BANK_256K) ? 1 : pfs->inodeStartPage);
+        s32 ret = __osPfsRWInode(pfs, &tempInode, PFS_READ, bank);
         if ((ret != 0) && (ret != PFS_ERR_INCONSISTENT)) {
             return ret;
         }
 
         for (i = offset; i < PFS_INODE_SIZE_PER_PAGE; i++) {
-            tpage = tempInode.inodePage[i];
+            __OSInodeUnit tpage = tempInode.inodePage[i];
             if ((tpage.ipage >= pfs->inodeStartPage) && (tpage.inode_t.bank != bank)) {
                 n = ((tpage.inode_t.page & 0x7F) / PFS_SECTOR_SIZE) +
                     PFS_SECTOR_PER_BANK * (tpage.inode_t.bank % PFS_BANK_LAPPED_BY);
@@ -161,16 +155,14 @@ s32 func_80105788(OSPfs* pfs, __OSInodeCache* cache) {
 // original name: corrupted (probably needs a better name)
 s32 func_80105A60(OSPfs* pfs, __OSInodeUnit fpage, __OSInodeCache* cache) {
     s32 j;
-    s32 n;
     s32 hit = 0;
     u8 bank;
-    s32 offset;
     s32 ret = 0;
 
-    n = (fpage.inode_t.page / PFS_SECTOR_SIZE) + PFS_SECTOR_PER_BANK * (fpage.inode_t.bank % PFS_BANK_LAPPED_BY);
+    s32 n = (fpage.inode_t.page / PFS_SECTOR_SIZE) + PFS_SECTOR_PER_BANK * (fpage.inode_t.bank % PFS_BANK_LAPPED_BY);
 
     for (bank = PFS_ID_BANK_256K; bank < pfs->banks; bank++) {
-        offset = ((bank > PFS_ID_BANK_256K) ? 1 : pfs->inodeStartPage);
+        s32 offset = ((bank > PFS_ID_BANK_256K) ? 1 : pfs->inodeStartPage);
         if ((bank == fpage.inode_t.bank) || (cache->map[n] & (1 << (bank % PFS_BANK_LAPPED_BY))) != 0) {
             if (bank != cache->bank) {
                 ret = __osPfsRWInode(pfs, &(cache->inode), PFS_READ, bank);

@@ -70,10 +70,9 @@ void ZeldaArena_FreeDebug(void* ptr, const char* file, s32 line) {
 }
 
 void* ZeldaArena_Calloc(size_t num, size_t size) {
-    void* ret;
     size_t n = num * size;
 
-    ret = __osMalloc(&sZeldaArena, n);
+    void* ret = __osMalloc(&sZeldaArena, n);
     if (ret != NULL) {
         memset(ret, 0, n);
     }

@@ -34,7 +34,7 @@ class OTRGlobals {
     ~OTRGlobals();
 
     void Initialize();
-    void RunExtract(int argc, char* argv[]);
+    void RunExtract();
     uint32_t GetInterpolationFPS();
     std::shared_ptr<std::vector<std::string>> ListFiles(std::string path);
 

@@ -81,11 +81,8 @@ void Main(void* arg) {
     IrqMgrClient irqClient;
     OSMesgQueue irqMgrMsgQ;
     OSMesg irqMgrMsgBuf[60];
-    uintptr_t sysHeap;
-    uintptr_t fb;
-    void* debugHeap;
-    size_t debugHeapSize;
-    s16* msg;
+    void* debugHeap = { 0 };
+    size_t debugHeapSize = { 0 };
 
     osSyncPrintf("mainproc 実行開始\n"); // "Start running"
     gScreenWidth = SCREEN_WIDTH;
@@ -94,8 +91,8 @@ void Main(void* arg) {
     PreNmiBuff_Init(gAppNmiBufferPtr);
     Fault_Init();
     SysCfb_Init(0);
-    sysHeap = (uintptr_t)gSystemHeap;
-    fb = SysCfb_GetFbPtr(0);
+    uintptr_t sysHeap = (uintptr_t)gSystemHeap;
+    uintptr_t fb = SysCfb_GetFbPtr(0);
     gSystemHeapSize = 1024 * 1024 * 4;
     // "System heap initalization"
     osSyncPrintf("システムヒープ初期化 %08x-%08x %08x\n", sysHeap, fb, gSystemHeapSize);
@@ -143,7 +140,7 @@ void Main(void* arg) {
     Graph_ThreadEntry(0);
 
     while (true) {
-        msg = NULL;
+        s16* msg = NULL;
         osRecvMesg(&irqMgrMsgQ, (OSMesg*)&msg, OS_MESG_BLOCK);
         if (msg == NULL) {
             break;

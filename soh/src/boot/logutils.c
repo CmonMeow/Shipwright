@@ -22,8 +22,6 @@ s32 LogUtils_CheckIntRange(const char* exp, s32 line, const char* valueName, s32
 void LogUtils_LogHexDump(void* ptr, ptrdiff_t size0) {
     u8* addr = (u8*)ptr;
     ptrdiff_t size = size0;
-    s32 rest;
-    s32 i;
     u32 off;
 
     osSyncPrintf("dump(%08x, %u)\n", addr, size);
@@ -33,9 +31,9 @@ void LogUtils_LogHexDump(void* ptr, ptrdiff_t size0) {
     while (size > 0) {
 
         osSyncPrintf("%08x %04x", addr, off);
-        rest = (size < 0x10) ? size : 0x10;
+        s32 rest = (size < 0x10) ? size : 0x10;
 
-        i = 0;
+        s32 i = 0;
         while (true) {
             if (i < rest) {
                 osSyncPrintf(" %02x", *((u8*)addr + i));

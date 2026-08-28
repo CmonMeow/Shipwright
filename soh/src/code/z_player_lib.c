@@ -372,7 +372,7 @@ s32 Player_OverrideLimbDrawNetwork(PlayState* play, s32 limbIndex, Gfx** dList, 
     PlayerNetworkDrawData* network = data;
     u8 modelGroup = network->modelGroup;
     u8 shield = network->shield;
-    s32 type;
+    s32 type = { 0 };
     s32 dListOffset = 0;
 
     (void)play;
@@ -521,12 +521,11 @@ s32 sDListsLodOffset;
 Vec3f sGetItemRefPos;
 
 void Player_SetBootData(PlayState* play, Player* this) {
-    s16* bootRegs;
 
     REG(27) = 2000;
     REG(48) = 370;
 
-    bootRegs = sBootData[0];
+    s16* bootRegs = sBootData[0];
     REG(19) = bootRegs[0];
     REG(30) = bootRegs[1];
     REG(32) = bootRegs[2];
@@ -577,9 +576,7 @@ s32 Player_IsChildWithHylianShield(Player* this) {
     return false;
 }
 
-s32 Player_ActionToModelGroup(Player* this, s32 actionParam) {
-    (void)this;
-
+s32 Player_ActionToModelGroup(s32 actionParam) {
     switch (actionParam) {
         case PLAYER_IA_SWORD_CS:
             return PLAYER_MODELGROUP_SWORD;
@@ -651,7 +648,7 @@ void Player_SetModelGroup(Player* this, s32 modelGroup) {
 
 void func_8008EC70(Player* this) {
     this->itemAction = this->heldItemAction;
-    Player_SetModelGroup(this, Player_ActionToModelGroup(this, this->heldItemAction));
+    Player_SetModelGroup(this, Player_ActionToModelGroup(this->heldItemAction));
     this->unk_6AD = 0;
 }
 
@@ -691,7 +688,7 @@ void Player_SetEquipmentData(PlayState* play, Player* this) {
         this->currentTunic = PLAYER_TUNIC_KOKIRI;
         this->currentBoots = PLAYER_BOOTS_KOKIRI;
         this->currentSwordItemId = ITEM_SWORD_MASTER;
-        Player_SetModelGroup(this, Player_ActionToModelGroup(this, this->heldItemAction));
+        Player_SetModelGroup(this, Player_ActionToModelGroup(this->heldItemAction));
         Player_SetBootData(play, this);
     }
 }
@@ -766,7 +763,6 @@ s32 func_8008EF44(PlayState* play, s32 ammo) {
 s32 Player_IsBurningStickInRange(PlayState* play, Vec3f* pos, f32 xzRange, f32 yRange) {
     Player* this = GET_PLAYER(play);
     Vec3f diff;
-    s32 pad;
 
     if ((this->heldItemAction == PLAYER_IA_DEKU_STICK) && (this->unk_860 != 0)) {
         Math_Vec3f_Diff(&this->meleeWeaponInfo[0].tip, pos, &diff);
@@ -904,8 +900,7 @@ return_neg:
 
 s32 Player_GetEnvironmentalHazard(PlayState* play) {
     Player* this = GET_PLAYER(play);
-    TextTriggerEntry* triggerEntry;
-    s32 envHazard;
+    s32 envHazard = { 0 };
 
     if (play->roomCtx.curRoom.behaviorType2 == ROOM_BEHAVIOR_TYPE2_3) { // Room is hot
         envHazard = PLAYER_ENV_HAZARD_HOTROOM - 1;
@@ -919,7 +914,7 @@ s32 Player_GetEnvironmentalHazard(PlayState* play) {
 
     // Trigger general textboxes under certain conditions, like "It's so hot in here!"
     if (!Player_InCsMode(play)) {
-        triggerEntry = &sTextTriggers[envHazard];
+        TextTriggerEntry* triggerEntry = &sTextTriggers[envHazard];
 
         if ((triggerEntry->flag != 0) && !(gSaveContext.textTriggerFlags & triggerEntry->flag) &&
             (((envHazard == (PLAYER_ENV_HAZARD_HOTROOM - 1)) &&
@@ -1002,7 +997,7 @@ Color_RGB8 sGauntletColors[] = {
 
 void Player_DrawImpl(PlayState* play, void** skeleton, Vec3s* jointTable, s32 dListCount, s32 lod, s32 tunic, s32 boots,
                      s32 face, OverrideLimbDrawOpa overrideLimbDraw, PostLimbDrawOpa postLimbDraw, void* data) {
-    Color_RGB8* color;
+    Color_RGB8* color = { 0 };
     s32 eyeIndex = (jointTable[22].x & 0xF) - 1;
     s32 mouthIndex = (jointTable[22].x >> 4) - 1;
 
@@ -1094,29 +1089,12 @@ void func_8008F87C(PlayState* play, Player* this, SkelAnime* skelAnime, Vec3f* p
     Vec3f footprintPos;
     CollisionPoly* sp88;
     s32 sp84;
-    f32 sp80;
-    f32 sp7C;
-    f32 sp78;
-    f32 sp74;
-    f32 sp70;
-    f32 sp6C;
-    f32 sp68;
-    f32 sp64;
-    f32 sp60;
-    f32 sp5C;
-    f32 sp58;
-    f32 sp54;
-    f32 sp50;
-    s16 temp1;
-    s16 temp2;
-    s32 temp3;
 
     if ((this->actor.scale.y >= 0.0f) && !(this->stateFlags1 & PLAYER_STATE1_DEAD)) {
-        s32 pad;
 
-        sp7C = D_80126058[PLAYER_AGE];
-        sp78 = D_80126060[PLAYER_AGE];
-        sp74 = D_80126068[PLAYER_AGE] - this->unk_6C4;
+        f32 sp7C = D_80126058[PLAYER_AGE];
+        f32 sp78 = D_80126060[PLAYER_AGE];
+        f32 sp74 = D_80126068[PLAYER_AGE] - this->unk_6C4;
 
         Matrix_Push();
         Matrix_TranslateRotateZYX(pos, rot);
@@ -1129,47 +1107,47 @@ void func_8008F87C(PlayState* play, Player* this, SkelAnime* skelAnime, Vec3f* p
 
         footprintPos.y += 15.0f;
 
-        sp80 = BgCheck_EntityRaycastFloor4(&play->colCtx, &sp88, &sp84, &this->actor, &footprintPos) + sp74;
+        f32 sp80 = BgCheck_EntityRaycastFloor4(&play->colCtx, &sp88, &sp84, &this->actor, &footprintPos) + sp74;
 
         if (sp98.y < sp80) {
-            sp70 = sp98.x - spA4.x;
-            sp6C = sp98.y - spA4.y;
-            sp68 = sp98.z - spA4.z;
+            f32 sp70 = sp98.x - spA4.x;
+            f32 sp6C = sp98.y - spA4.y;
+            f32 sp68 = sp98.z - spA4.z;
 
-            sp64 = sqrtf(SQ(sp70) + SQ(sp6C) + SQ(sp68));
-            sp60 = (SQ(sp64) + sp78) / (2.0f * sp64);
+            f32 sp64 = sqrtf(SQ(sp70) + SQ(sp6C) + SQ(sp68));
+            f32 sp60 = (SQ(sp64) + sp78) / (2.0f * sp64);
 
-            sp58 = sp7C - SQ(sp60);
+            f32 sp58 = sp7C - SQ(sp60);
             sp58 = (sp7C < SQ(sp60)) ? 0.0f : sqrtf(sp58);
 
-            sp54 = Math_FAtan2F(sp58, sp60);
+            f32 sp54 = Math_FAtan2F(sp58, sp60);
 
             sp6C = sp80 - spA4.y;
 
             sp64 = sqrtf(SQ(sp70) + SQ(sp6C) + SQ(sp68));
             sp60 = (SQ(sp64) + sp78) / (2.0f * sp64);
-            sp5C = sp64 - sp60;
+            f32 sp5C = sp64 - sp60;
 
             sp58 = sp7C - SQ(sp60);
             sp58 = (sp7C < SQ(sp60)) ? 0.0f : sqrtf(sp58);
 
-            sp50 = Math_FAtan2F(sp58, sp60);
+            f32 sp50 = Math_FAtan2F(sp58, sp60);
 
-            temp1 = (M_PI - (Math_FAtan2F(sp5C, sp58) + ((M_PI / 2) - sp50))) * (0x8000 / M_PI);
+            s16 temp1 = (M_PI - (Math_FAtan2F(sp5C, sp58) + ((M_PI / 2) - sp50))) * (0x8000 / M_PI);
             temp1 = temp1 - skelAnime->jointTable[shinLimbIndex].z;
 
             if ((s16)(ABS(skelAnime->jointTable[shinLimbIndex].x) + ABS(skelAnime->jointTable[shinLimbIndex].y)) < 0) {
                 temp1 += 0x8000;
             }
 
-            temp2 = (sp50 - sp54) * (0x8000 / M_PI);
+            s16 temp2 = (sp50 - sp54) * (0x8000 / M_PI);
             rot->z -= temp2;
 
             skelAnime->jointTable[thighLimbIndex].z = skelAnime->jointTable[thighLimbIndex].z - temp2;
             skelAnime->jointTable[shinLimbIndex].z = skelAnime->jointTable[shinLimbIndex].z + temp1;
             skelAnime->jointTable[footLimbIndex].z = skelAnime->jointTable[footLimbIndex].z + temp2 - temp1;
 
-            temp3 = func_80041D4C(&play->colCtx, sp88, sp84);
+            s32 temp3 = func_80041D4C(&play->colCtx, sp88, sp84);
 
             if ((temp3 >= 2) && (temp3 < 4) && !SurfaceType_IsWallDamage(&play->colCtx, sp88, sp84)) {
                 footprintPos.y = sp80;
@@ -1611,10 +1589,9 @@ void Player_PostLimbDrawGameplay(PlayState* play, s32 limbIndex, Gfx** dList, Ve
 
             if ((this->stateFlags1 & PLAYER_STATE1_READY_TO_FIRE) && (this->unk_860 >= 0) && (this->unk_834 <= 10)) {
                 Vec3f sp90;
-                f32 distXYZ;
 
                 Matrix_MultVec3f(&sZeroVec, &sp90);
-                distXYZ = Math_Vec3f_DistXYZ(D_80160000, &sp90);
+                f32 distXYZ = Math_Vec3f_DistXYZ(D_80160000, &sp90);
 
                 this->unk_858 = distXYZ - 3.0f;
                 if (distXYZ < 3.0f) {
@@ -1650,7 +1627,6 @@ void Player_PostLimbDrawGameplay(PlayState* play, s32 limbIndex, Gfx** dList, Ve
 
                 if (heldActor != NULL) {
                     MtxF sp44;
-                    s32 pad;
 
                     Matrix_MultVec3f(&D_80126190, &heldActor->world.pos);
                     Matrix_RotateZYX(0, -0x4000, -0x4000, MTXMODE_APPLY);
@@ -1704,11 +1680,9 @@ void Player_PostLimbDrawGameplay(PlayState* play, s32 limbIndex, Gfx** dList, Ve
 
 u32 func_80091738(PlayState* play, u8* segment, SkelAnime* skelAnime) {
     const s16 linkObjectId = OBJECT_LINK_BOY;
-    size_t size;
-    void* ptr;
 
-    size = gObjectTable[OBJECT_GAMEPLAY_KEEP].vromEnd - gObjectTable[OBJECT_GAMEPLAY_KEEP].vromStart;
-    ptr = segment + 0x3800;
+    size_t size = gObjectTable[OBJECT_GAMEPLAY_KEEP].vromEnd - gObjectTable[OBJECT_GAMEPLAY_KEEP].vromStart;
+    void* ptr = segment + 0x3800;
     DmaMgr_SendRequest1(ptr, gObjectTable[OBJECT_GAMEPLAY_KEEP].vromStart, size, __FILE__, __LINE__);
 
     size = gObjectTable[linkObjectId].vromEnd - gObjectTable[linkObjectId].vromStart;
