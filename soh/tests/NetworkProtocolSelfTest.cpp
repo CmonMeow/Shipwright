@@ -110,6 +110,11 @@ bool TestPacketSerialization() {
     source.fishingFishRot[1] = 12000;
     source.fishingFishRot[2] = 900;
     source.fishingFishLength = 61.5f;
+    source.fishingFishRoomId = -1;
+    source.fishingFishActorParams = 400;
+    source.fishingFishHomeX = 125;
+    source.fishingFishHomeY = -30;
+    source.fishingFishHomeZ = 450;
     for (int limb = 0; limb < NETWORK_PLAYER_LIMB_COUNT; ++limb) {
         source.jointTable[limb][0] = static_cast<short>(limb * 3);
         source.jointTable[limb][1] = static_cast<short>(limb * -5);
@@ -118,12 +123,27 @@ bool TestPacketSerialization() {
 
     const std::string encoded = BuildAppPacket(NAMTPlayerState, source);
     NetworkPlayerStatePacket decoded{};
-    // Fishing state must fit comfortably in one ordinary UDP datagram. The
-    // segmented line and sinking lure are reconstructed by each client with
-    // native solvers instead of being sent as render geometry.
-    if (encoded.size() >= 560 ||
+    NetworkPlayerStatePacket expectedPose = source;
+    NetworkPlayerStatePacket emptyFishing{};
+    CopyNetworkFishingState(expectedPose, emptyFishing);
+    // Movement remains below the compact high-rate datagram budget even when
+    // the fishing pole is equipped.
+    if (encoded.size() >= 256 ||
         !ParseAppPacket(encoded.data(), static_cast<__int32>(encoded.size()), NAMTPlayerState, decoded) ||
-        std::memcmp(&source, &decoded, sizeof(source)) != 0) {
+        std::memcmp(&expectedPose, &decoded, sizeof(source)) != 0) {
+        return false;
+    }
+    NetworkMessageRaw fishingRaw;
+    EncodeFishingStateRaw(fishingRaw, source);
+    NetworkMessageRaw encodedFishing(fishingRaw.data(), fishingRaw.size());
+    NetworkPlayerStatePacket decodedFishing{};
+    if (fishingRaw.size() >= 256 || !DecodeFishingStateRaw(encodedFishing, decodedFishing) ||
+        decodedFishing.playerId != source.playerId || decodedFishing.sceneId != source.sceneId ||
+        decodedFishing.sequence != source.sequence || decodedFishing.fishingState != source.fishingState ||
+        decodedFishing.fishingLureDrawOffset[2] != source.fishingLureDrawOffset[2] ||
+        decodedFishing.fishingFishLength != source.fishingFishLength ||
+        decodedFishing.fishingFishActorParams != source.fishingFishActorParams ||
+        decodedFishing.fishingFishHomeZ != source.fishingFishHomeZ) {
         return false;
     }
 

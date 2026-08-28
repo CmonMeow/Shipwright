@@ -164,6 +164,8 @@ extern "C" s32 Fishing_GetNetworkVisualState(PlayState* play, u8* castState, Vec
                                                u8* lineSpooled, u8* lineHooked, u8* fishActive,
                                                u8* fishIsLoach, Vec3f* fishOffset,
                                                Vec3s* fishRot, s16 fishLimbRot[8], f32* fishLength,
+                                               s32* fishRoomId, s32* fishActorParams, s32* fishHomeX,
+                                               s32* fishHomeY, s32* fishHomeZ,
                                                u8* sinkingLureSegmentIndex, u8* sinkingLureUnderwater);
 extern "C" void Fishing_UpdateNetworkLine(PlayState* play, Actor* collisionActor, Vec3f* rodTip, Vec3f* lurePos,
                                             Vec3f linePos[NETWORK_FISHING_LINE_POINT_COUNT],
@@ -678,6 +680,10 @@ void ReceiveRemotePlayerStates() {
                                                 static_cast<uint32_t>(record.state.sequence))) {
             const bool fishingPoleWasActive =
                 record.hasState && record.state.itemAction == NETWORK_PLAYER_ITEM_FISHING_POLE;
+            if (fishingPoleWasActive && packet.itemAction == NETWORK_PLAYER_ITEM_FISHING_POLE &&
+                record.state.sceneId == packet.sceneId) {
+                CopyNetworkFishingState(packet, record.state);
+            }
             if (record.hasState) {
                 record.previousState = record.state;
                 record.hasPreviousState = true;
@@ -692,6 +698,20 @@ void ReceiveRemotePlayerStates() {
             record.lastPacketMilliseconds = NowMilliseconds();
             record.hasState = true;
         }
+    }
+    NetworkPlayerStatePacket fishingState{};
+    while (gNetworkGame.runtime && gNetworkGame.runtime->PollFishingState(fishingState)) {
+        const auto found = gNetworkGame.remotes.find(fishingState.playerId);
+        if (found == gNetworkGame.remotes.end() || !found->second.hasState ||
+            found->second.state.itemAction != NETWORK_PLAYER_ITEM_FISHING_POLE ||
+            found->second.state.sceneId != fishingState.sceneId ||
+            static_cast<int32_t>(found->second.state.sequence - fishingState.sequence) > 8) {
+            continue;
+        }
+        found->second.previousState = found->second.state;
+        found->second.hasPreviousState = true;
+        CopyNetworkFishingState(found->second.state, fishingState);
+        found->second.lastPacketMilliseconds = NowMilliseconds();
     }
     NetworkPlayerRemovePacket removal{};
     while (gNetworkGame.runtime && gNetworkGame.runtime->PollPlayerRemove(removal)) {
@@ -875,7 +895,13 @@ void SendLocalPlayerState(PlayState* play) {
         packet.stateFlags |= NETWORK_PLAYER_DEAD;
     }
     packet.modelGroup = player->modelGroup;
-    packet.itemAction = static_cast<uint8_t>(std::max<int>(0, player->itemAction));
+    // Native fishing drives the pole from heldItemAction while itemAction may
+    // temporarily return to the generic action during casting/reeling. Keep
+    // network classification aligned with the system that owns the visuals.
+    const int networkItemAction = player->heldItemAction == PLAYER_IA_FISHING_POLE
+                                      ? PLAYER_IA_FISHING_POLE
+                                      : player->itemAction;
+    packet.itemAction = static_cast<uint8_t>(std::max(0, networkItemAction));
     packet.meleeWeaponState = player->meleeWeaponState;
     packet.bowStringScale = (player->itemAction >= PLAYER_IA_BOW && player->itemAction <= PLAYER_IA_BOW_0E)
                                 ? std::clamp(player->unk_858, 0.0f, 1.0f)
@@ -911,6 +937,9 @@ void SendLocalPlayerState(PlayState* play) {
                                       &packet.fishingLineSpooled, &packet.fishingLineHooked,
                                       &packet.fishingFishActive, &packet.fishingFishIsLoach, &fishOffset,
                                       &fishRot, fishLimbRot, &packet.fishingFishLength,
+                                      &packet.fishingFishRoomId, &packet.fishingFishActorParams,
+                                      &packet.fishingFishHomeX, &packet.fishingFishHomeY,
+                                      &packet.fishingFishHomeZ,
                                        &packet.fishingSinkingLureSegmentIndex,
                                        &packet.fishingSinkingLureUnderwater)) {
         packet.fishingRodTipOffset[0] = rodTipOffset.x;
@@ -977,6 +1006,51 @@ void ProcessPlayerRespawns(PlayState* play) {
         play->gameplayFrames = 0;
         Error("Network game: respawning local player %d with three hearts",
               gNetworkGame.runtime->LocalPlayerId());
+    }
+}
+
+void QueueRemotePlayerNames(PlayState* play) {
+    if (!play || !gNetworkGame.runtime) {
+        return;
+    }
+
+    for (const auto& player : gNetworkGame.runtime->Players()) {
+        if (player.playerId <= 0 || player.name.empty()) {
+            continue;
+        }
+        const auto record = gNetworkGame.remotes.find(player.playerId);
+        if (record == gNetworkGame.remotes.end() || !record->second.actor || !record->second.hasState ||
+            (record->second.state.stateFlags & NETWORK_PLAYER_VISIBLE) == 0 ||
+            (record->second.state.stateFlags & NETWORK_PLAYER_DEAD) != 0) {
+            continue;
+        }
+
+        Vec3f worldPosition = record->second.actor->actor.world.pos;
+        worldPosition.y += 78.0f;
+        Vec3f obstruction{};
+        CollisionPoly* obstructionPoly = nullptr;
+        int32_t obstructionBgId = BGCHECK_SCENE;
+        Vec3f cameraPosition = play->view.eye;
+        if (BgCheck_AnyLineTest3(&play->colCtx, &cameraPosition, &worldPosition, &obstruction,
+                                 &obstructionPoly, true, true, true, true, &obstructionBgId)) {
+            continue;
+        }
+        Vec3f clipPosition{};
+        float clipW = 0.0f;
+        SkinMatrix_Vec3fMtxFMultXYZW(&play->viewProjectionMtxF, &worldPosition, &clipPosition, &clipW);
+        if (clipW <= 0.01f) {
+            continue;
+        }
+        const float ndcX = clipPosition.x / clipW;
+        const float ndcY = clipPosition.y / clipW;
+        if (ndcX < -1.0f || ndcX > 1.0f || ndcY < -1.0f || ndcY > 1.0f) {
+            continue;
+        }
+
+        const float screenX = (ndcX + 1.0f) * (SCREEN_WIDTH * 0.5f);
+        const float screenY = (1.0f - ndcY) * (SCREEN_HEIGHT * 0.5f);
+        Ship::PathEngineOverlay::QueueCenteredGameText(player.name.c_str(), screenX, screenY,
+                                                       0.92f, 0.96f, 1.0f, 0.95f);
     }
 }
 
@@ -1106,6 +1180,7 @@ extern "C" void NetworkGame_UpdateTransport(void) {
     if (gNetworkGame.multiplayerUI) {
         gNetworkGame.multiplayerUI->Update(*gNetworkGame.runtime);
     }
+    QueueRemotePlayerNames(gPlayState);
     // Drain high-rate pose packets even outside PlayState. Keeping only the
     // newest packet per player prevents file select and scene loads from
     // accumulating an unbounded pose backlog.
@@ -1231,6 +1306,26 @@ extern "C" int NetworkGame_ConsumeActorEventSource(PlayState* play, Actor* actor
     }
     gNetworkGame.actorEvents.erase(found);
     return true;
+}
+
+extern "C" int NetworkGame_FindRemoteFishingFishOwner(PlayState* play, Actor* actor) {
+    if (!play || !actor || actor->id != ACTOR_FISHING) {
+        return -1;
+    }
+    const DynamicObjectKey key = DynamicObjectKeyFor(play->sceneNum, actor);
+    for (const auto& [playerId, remote] : gNetworkGame.remotes) {
+        if (!remote.hasState || !remote.state.fishingFishActive || remote.state.sceneId != play->sceneNum) {
+            continue;
+        }
+        if (remote.state.fishingFishRoomId == std::get<1>(key) &&
+            remote.state.fishingFishActorParams == std::get<3>(key) &&
+            remote.state.fishingFishHomeX == std::get<4>(key) &&
+            remote.state.fishingFishHomeY == std::get<5>(key) &&
+            remote.state.fishingFishHomeZ == std::get<6>(key)) {
+            return playerId;
+        }
+    }
+    return -1;
 }
 
 extern "C" int NetworkGame_GetRemoteFishingFishState(int playerId, float* x, float* y, float* z,

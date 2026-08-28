@@ -121,7 +121,7 @@ struct PathEngineMultiplayerUI::Impl {
         const std::string argument = split == std::string::npos ? std::string() : Trim(command.substr(split + 1));
 
         if (_stricmp(name.c_str(), "/help") == 0) {
-            notice = "/host [port] /connect [address] /disconnect /users /pm name message /clear";
+            notice = "/host /connect /disconnect /pm /users /kick /ban /unban /admin /unadmin /admins /bans /clear";
         } else if (_stricmp(name.c_str(), "/host") == 0) {
             uint16_t port = DEFAULT_NETWORK_PORT;
             if (!argument.empty()) {
@@ -142,12 +142,13 @@ struct PathEngineMultiplayerUI::Impl {
         } else if (_stricmp(name.c_str(), "/clear") == 0) {
             history.clear();
             notice.clear();
-        } else if (_stricmp(name.c_str(), "/users") == 0) {
-            const auto players = runtime.Players();
-            AddLine("players: " + std::to_string(players.size()));
-            for (const auto& player : players) {
-                AddLine(std::to_string(player.playerId) + "  " + player.name);
-            }
+        } else if (_stricmp(name.c_str(), "/users") == 0 || _stricmp(name.c_str(), "/kick") == 0 ||
+                   _stricmp(name.c_str(), "/ban") == 0 || _stricmp(name.c_str(), "/unban") == 0 ||
+                   _stricmp(name.c_str(), "/gm") == 0 || _stricmp(name.c_str(), "/admin") == 0 ||
+                   _stricmp(name.c_str(), "/ungm") == 0 || _stricmp(name.c_str(), "/unadmin") == 0 ||
+                   _stricmp(name.c_str(), "/admins") == 0 || _stricmp(name.c_str(), "/gms") == 0 ||
+                   _stricmp(name.c_str(), "/bans") == 0) {
+            notice = runtime.SendChat(command) ? "command sent" : "not connected";
         } else if (_stricmp(name.c_str(), "/pm") == 0 || _stricmp(name.c_str(), "/w") == 0 ||
                    _stricmp(name.c_str(), "/tell") == 0) {
             const size_t messageSplit = argument.find(' ');

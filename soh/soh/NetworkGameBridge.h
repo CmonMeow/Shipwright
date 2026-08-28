@@ -28,6 +28,7 @@ void NetworkGame_NotifyActorEvent(struct PlayState* play, struct Actor* actor, u
 int NetworkGame_ConsumeActorEvent(struct PlayState* play, struct Actor* actor, unsigned char eventType);
 int NetworkGame_ConsumeActorEventSource(struct PlayState* play, struct Actor* actor, unsigned char eventType,
                                         int* sourcePlayerId);
+int NetworkGame_FindRemoteFishingFishOwner(struct PlayState* play, struct Actor* actor);
 int NetworkGame_GetRemoteFishingFishState(int playerId, float* x, float* y, float* z, short* rotationX,
                                           short* rotationY, short* rotationZ, short limbRot[8], float* length,
                                           unsigned char* isLoach);

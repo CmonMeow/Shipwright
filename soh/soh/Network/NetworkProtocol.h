@@ -3,6 +3,7 @@
 #include "Network/netTransport.hpp"
 #include "sodium.h"
 #include <algorithm>
+#include <cstddef>
 #include <fstream>
 #include <sstream>
 #include <string>
@@ -14,7 +15,7 @@ using std::vector;
 
 inline constexpr const char* DEFAULT_NETWORK_ADDRESS = "127.0.0.1";
 inline constexpr unsigned short DEFAULT_NETWORK_PORT = 777;
-inline constexpr __int32 APP_PROTOCOL_VERSION = 39;
+inline constexpr __int32 APP_PROTOCOL_VERSION = 41;
 inline constexpr const char* BAN_LIST_FILENAME = "resource\\banlist.txt";
 inline constexpr const char* GM_LIST_FILENAME = "resource\\gmlist.txt";
 inline constexpr size_t CHAT_MAX_MESSAGE_CHARS = 140;
@@ -165,6 +166,7 @@ inline void LoadIdentityList(const char* filename, vector<string>& list)
 
 inline void SaveIdentityList(const char* filename, const vector<string>& list)
 {
+    CreateDirectoryA("resource", NULL);
     std::ofstream f(filename, std::ios::out | std::ios::trunc);
     if (!f.good())
     {
@@ -648,6 +650,11 @@ struct NetworkPlayerStatePacket
     short fishingFishRot[3];
     short fishingFishLimbRot[8];
     float fishingFishLength;
+    __int32 fishingFishRoomId;
+    __int32 fishingFishActorParams;
+    __int32 fishingFishHomeX;
+    __int32 fishingFishHomeY;
+    __int32 fishingFishHomeZ;
     short jointTable[22][3];
 };
 
@@ -826,7 +833,10 @@ inline void EncodeAppPacketRaw(NetworkMessageRaw& raw, const NetworkPlayerStateP
     raw.putUInt32(packet.stateFlags);
     raw.putUInt8(packet.modelGroup);
     raw.putUInt8(packet.itemAction);
-    raw.putUInt8(packet.fishingState);
+    // Fishing telemetry has its own packet. Keeping the pose fixed-size means
+    // equipping the pole can never push movement above the transport's compact
+    // high-rate message budget.
+    raw.putUInt8(0);
     raw.putUInt8(static_cast<unsigned char>(packet.meleeWeaponState));
     for (unsigned char axis = 0; axis < 3; ++axis)
     {
@@ -839,46 +849,6 @@ inline void EncodeAppPacketRaw(NetworkMessageRaw& raw, const NetworkPlayerStateP
         raw.putFloat(packet.meleeTip[axis]);
     }
     raw.putFloat(packet.bowStringScale);
-    if (packet.itemAction == NETWORK_PLAYER_ITEM_FISHING_POLE)
-    {
-        for (unsigned char axis = 0; axis < 3; ++axis)
-        {
-            raw.putFloat(packet.fishingRodTipOffset[axis]);
-            raw.putFloat(packet.fishingLureOffset[axis]);
-            raw.putFloat(packet.fishingLureDrawOffset[axis]);
-        }
-        raw.putFloat(packet.fishingRodBendY);
-        raw.putFloat(packet.fishingRodBendX);
-        raw.putFloat(packet.fishingRodTwist);
-        raw.putFloat(packet.fishingRodCastX);
-        for (unsigned char axis = 0; axis < 3; ++axis)
-            raw.putFloat(packet.fishingLureRot[axis]);
-        raw.putFloat(packet.fishingLureSpin);
-        raw.putFloat(packet.fishingLureZOffset);
-        for (unsigned char hook = 0; hook < 2; ++hook)
-        {
-            for (unsigned char axis = 0; axis < 3; ++axis)
-                raw.putFloat(packet.fishingLureHookOffsets[hook][axis]);
-            for (unsigned char axis = 0; axis < 2; ++axis)
-                raw.putFloat(packet.fishingLureHookRot[hook][axis]);
-        }
-        raw.putFloat(packet.fishingLineScale);
-        raw.putFloat(packet.fishingLineGravity);
-        raw.putUInt8(packet.fishingLureType);
-        raw.putUInt8(packet.fishingLineSpooled);
-        raw.putUInt8(packet.fishingLineHooked);
-        raw.putUInt8(packet.fishingSinkingLureSegmentIndex);
-        raw.putUInt8(packet.fishingSinkingLureUnderwater);
-        raw.putUInt8(packet.fishingFishActive);
-        raw.putUInt8(packet.fishingFishIsLoach);
-        for (unsigned char axis = 0; axis < 3; ++axis)
-            raw.putFloat(packet.fishingFishOffset[axis]);
-        for (unsigned char axis = 0; axis < 3; ++axis)
-            raw.putUInt16(static_cast<unsigned short>(packet.fishingFishRot[axis]));
-        for (unsigned char limbRot = 0; limbRot < 8; ++limbRot)
-            raw.putUInt16(static_cast<unsigned short>(packet.fishingFishLimbRot[limbRot]));
-        raw.putFloat(packet.fishingFishLength);
-    }
     for (unsigned char limb = 0; limb < NETWORK_PLAYER_LIMB_COUNT; ++limb)
     {
         raw.putUInt16(static_cast<unsigned short>(packet.jointTable[limb][0]));
@@ -940,63 +910,6 @@ inline bool DecodeAppPacketRaw(NetworkMessageRaw& raw, NetworkPlayerStatePacket&
     }
     if (!raw.getFloat(packet.bowStringScale))
         return false;
-    if (packet.itemAction == NETWORK_PLAYER_ITEM_FISHING_POLE)
-    {
-        for (unsigned char axis = 0; axis < 3; ++axis)
-        {
-            if (!raw.getFloat(packet.fishingRodTipOffset[axis]) ||
-                !raw.getFloat(packet.fishingLureOffset[axis]) ||
-                !raw.getFloat(packet.fishingLureDrawOffset[axis]))
-            {
-                return false;
-            }
-        }
-        if (!raw.getFloat(packet.fishingRodBendY) || !raw.getFloat(packet.fishingRodBendX) ||
-            !raw.getFloat(packet.fishingRodTwist) || !raw.getFloat(packet.fishingRodCastX))
-            return false;
-        for (unsigned char axis = 0; axis < 3; ++axis)
-        {
-            if (!raw.getFloat(packet.fishingLureRot[axis]))
-                return false;
-        }
-        if (!raw.getFloat(packet.fishingLureSpin) || !raw.getFloat(packet.fishingLureZOffset))
-            return false;
-        for (unsigned char hook = 0; hook < 2; ++hook)
-        {
-            for (unsigned char axis = 0; axis < 3; ++axis)
-                if (!raw.getFloat(packet.fishingLureHookOffsets[hook][axis]))
-                    return false;
-            for (unsigned char axis = 0; axis < 2; ++axis)
-                if (!raw.getFloat(packet.fishingLureHookRot[hook][axis]))
-                    return false;
-        }
-        if (!raw.getFloat(packet.fishingLineScale) || !raw.getFloat(packet.fishingLineGravity) ||
-            !raw.getUInt8(packet.fishingLureType) ||
-            !raw.getUInt8(packet.fishingLineSpooled) || !raw.getUInt8(packet.fishingLineHooked) ||
-            !raw.getUInt8(packet.fishingSinkingLureSegmentIndex) ||
-            !raw.getUInt8(packet.fishingSinkingLureUnderwater) ||
-            !raw.getUInt8(packet.fishingFishActive) || !raw.getUInt8(packet.fishingFishIsLoach))
-            return false;
-        for (unsigned char axis = 0; axis < 3; ++axis)
-            if (!raw.getFloat(packet.fishingFishOffset[axis]))
-                return false;
-        for (unsigned char axis = 0; axis < 3; ++axis)
-        {
-            unsigned short fishRot = 0;
-            if (!raw.getUInt16(fishRot))
-                return false;
-            packet.fishingFishRot[axis] = static_cast<short>(fishRot);
-        }
-        for (unsigned char limbRot = 0; limbRot < 8; ++limbRot)
-        {
-            unsigned short fishLimbRot = 0;
-            if (!raw.getUInt16(fishLimbRot))
-                return false;
-            packet.fishingFishLimbRot[limbRot] = static_cast<short>(fishLimbRot);
-        }
-        if (!raw.getFloat(packet.fishingFishLength))
-            return false;
-    }
     for (unsigned char limb = 0; limb < NETWORK_PLAYER_LIMB_COUNT; ++limb)
     {
         unsigned short x = 0;
@@ -1011,6 +924,120 @@ inline bool DecodeAppPacketRaw(NetworkMessageRaw& raw, NetworkPlayerStatePacket&
         packet.jointTable[limb][2] = static_cast<short>(z);
     }
     return raw.fullyRead();
+}
+
+inline void CopyNetworkFishingState(NetworkPlayerStatePacket& destination,
+                                    const NetworkPlayerStatePacket& source)
+{
+    destination.fishingState = source.fishingState;
+    memcpy(destination.fishingRodTipOffset, source.fishingRodTipOffset,
+           offsetof(NetworkPlayerStatePacket, jointTable) -
+               offsetof(NetworkPlayerStatePacket, fishingRodTipOffset));
+}
+
+inline void EncodeFishingStateRaw(NetworkMessageRaw& raw, const NetworkPlayerStatePacket& packet)
+{
+    raw.putInt32(packet.playerId);
+    raw.putInt32(packet.sceneId);
+    raw.putInt32(packet.sequence);
+    raw.putUInt8(packet.fishingState);
+    for (unsigned char axis = 0; axis < 3; ++axis)
+    {
+        raw.putFloat(packet.fishingRodTipOffset[axis]);
+        raw.putFloat(packet.fishingLureOffset[axis]);
+        raw.putFloat(packet.fishingLureDrawOffset[axis]);
+    }
+    raw.putFloat(packet.fishingRodBendY);
+    raw.putFloat(packet.fishingRodBendX);
+    raw.putFloat(packet.fishingRodTwist);
+    raw.putFloat(packet.fishingRodCastX);
+    for (unsigned char axis = 0; axis < 3; ++axis)
+        raw.putFloat(packet.fishingLureRot[axis]);
+    raw.putFloat(packet.fishingLureSpin);
+    raw.putFloat(packet.fishingLureZOffset);
+    for (unsigned char hook = 0; hook < 2; ++hook)
+    {
+        for (unsigned char axis = 0; axis < 3; ++axis)
+            raw.putFloat(packet.fishingLureHookOffsets[hook][axis]);
+        for (unsigned char axis = 0; axis < 2; ++axis)
+            raw.putFloat(packet.fishingLureHookRot[hook][axis]);
+    }
+    raw.putFloat(packet.fishingLineScale);
+    raw.putFloat(packet.fishingLineGravity);
+    raw.putUInt8(packet.fishingLureType);
+    raw.putUInt8(packet.fishingLineSpooled);
+    raw.putUInt8(packet.fishingLineHooked);
+    raw.putUInt8(packet.fishingSinkingLureSegmentIndex);
+    raw.putUInt8(packet.fishingSinkingLureUnderwater);
+    raw.putUInt8(packet.fishingFishActive);
+    raw.putUInt8(packet.fishingFishIsLoach);
+    for (unsigned char axis = 0; axis < 3; ++axis)
+        raw.putFloat(packet.fishingFishOffset[axis]);
+    for (unsigned char axis = 0; axis < 3; ++axis)
+        raw.putUInt16(static_cast<unsigned short>(packet.fishingFishRot[axis]));
+    for (unsigned char limb = 0; limb < 8; ++limb)
+        raw.putUInt16(static_cast<unsigned short>(packet.fishingFishLimbRot[limb]));
+    raw.putFloat(packet.fishingFishLength);
+    raw.putInt32(packet.fishingFishRoomId);
+    raw.putInt32(packet.fishingFishActorParams);
+    raw.putInt32(packet.fishingFishHomeX);
+    raw.putInt32(packet.fishingFishHomeY);
+    raw.putInt32(packet.fishingFishHomeZ);
+}
+
+inline bool DecodeFishingStateRaw(NetworkMessageRaw& raw, NetworkPlayerStatePacket& packet)
+{
+    memset(&packet, 0, sizeof(packet));
+    if (!raw.getInt32(packet.playerId) || !raw.getInt32(packet.sceneId) || !raw.getInt32(packet.sequence) ||
+        !raw.getUInt8(packet.fishingState))
+        return false;
+    for (unsigned char axis = 0; axis < 3; ++axis)
+        if (!raw.getFloat(packet.fishingRodTipOffset[axis]) || !raw.getFloat(packet.fishingLureOffset[axis]) ||
+            !raw.getFloat(packet.fishingLureDrawOffset[axis]))
+            return false;
+    if (!raw.getFloat(packet.fishingRodBendY) || !raw.getFloat(packet.fishingRodBendX) ||
+        !raw.getFloat(packet.fishingRodTwist) || !raw.getFloat(packet.fishingRodCastX))
+        return false;
+    for (unsigned char axis = 0; axis < 3; ++axis)
+        if (!raw.getFloat(packet.fishingLureRot[axis]))
+            return false;
+    if (!raw.getFloat(packet.fishingLureSpin) || !raw.getFloat(packet.fishingLureZOffset))
+        return false;
+    for (unsigned char hook = 0; hook < 2; ++hook)
+    {
+        for (unsigned char axis = 0; axis < 3; ++axis)
+            if (!raw.getFloat(packet.fishingLureHookOffsets[hook][axis]))
+                return false;
+        for (unsigned char axis = 0; axis < 2; ++axis)
+            if (!raw.getFloat(packet.fishingLureHookRot[hook][axis]))
+                return false;
+    }
+    if (!raw.getFloat(packet.fishingLineScale) || !raw.getFloat(packet.fishingLineGravity) ||
+        !raw.getUInt8(packet.fishingLureType) || !raw.getUInt8(packet.fishingLineSpooled) ||
+        !raw.getUInt8(packet.fishingLineHooked) || !raw.getUInt8(packet.fishingSinkingLureSegmentIndex) ||
+        !raw.getUInt8(packet.fishingSinkingLureUnderwater) || !raw.getUInt8(packet.fishingFishActive) ||
+        !raw.getUInt8(packet.fishingFishIsLoach))
+        return false;
+    for (unsigned char axis = 0; axis < 3; ++axis)
+        if (!raw.getFloat(packet.fishingFishOffset[axis]))
+            return false;
+    for (unsigned char axis = 0; axis < 3; ++axis)
+    {
+        unsigned short value = 0;
+        if (!raw.getUInt16(value))
+            return false;
+        packet.fishingFishRot[axis] = static_cast<short>(value);
+    }
+    for (unsigned char limb = 0; limb < 8; ++limb)
+    {
+        unsigned short value = 0;
+        if (!raw.getUInt16(value))
+            return false;
+        packet.fishingFishLimbRot[limb] = static_cast<short>(value);
+    }
+    return raw.getFloat(packet.fishingFishLength) && raw.getInt32(packet.fishingFishRoomId) &&
+           raw.getInt32(packet.fishingFishActorParams) && raw.getInt32(packet.fishingFishHomeX) &&
+           raw.getInt32(packet.fishingFishHomeY) && raw.getInt32(packet.fishingFishHomeZ) && raw.fullyRead();
 }
 
 inline void EncodeAppPacketRaw(NetworkMessageRaw& raw, const NetworkDynamicObjectStatePacket& packet)

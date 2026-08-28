@@ -57,6 +57,7 @@ class ShipwrightNetworkRuntime final {
 
     bool PollChat(NetworkChatLine& line);
     bool PollPlayerState(NetworkPlayerStatePacket& packet);
+    bool PollFishingState(NetworkPlayerStatePacket& packet);
     bool PollPlayerRemove(NetworkPlayerRemovePacket& packet);
     bool PollDynamicObjectState(NetworkDynamicObjectStatePacket& packet);
     bool PollActorEvent(NetworkActorEventPacket& packet);
@@ -109,6 +110,17 @@ class ShipwrightNetworkRuntime final {
     bool DecryptPrivateText(const std::string& cipher, std::string& message) const;
     std::string PlayerName(int32_t player) const;
     void QueueChat(const std::string& text, ChatLineKind kind = CLKNormal);
+    bool IsGameMaster(int32_t player) const;
+    bool ResolvePlayerReference(const std::string& reference, int32_t& player) const;
+    void SendCommandResult(int32_t player, const std::string& message);
+    void BroadcastSystem(const std::string& message);
+    bool KickPlayer(const std::string& reference, bool ban, std::string& result);
+    bool GrantGameMaster(const std::string& reference, std::string& result);
+    bool RevokeGameMaster(const std::string& reference, std::string& result);
+    bool UnbanIdentity(const std::string& identity, std::string& result);
+    void SendUsersList(int32_t player);
+    void SendIdentityList(int32_t player, const char* label, const std::vector<std::string>& identities);
+    void RunServerCommand(int32_t player, const std::string& command);
     bool AcceptServerProjectile(int32_t player, const NetworkProjectileStatePacket& request);
     bool AcceptServerProjectileImpact(int32_t witness, const NetworkProjectileImpactPacket& impact);
     void RetainServerStuckArrow(const std::pair<int32_t, int32_t>& currentKey);
@@ -142,6 +154,9 @@ class ShipwrightNetworkRuntime final {
     std::future<ConnectAttempt> mConnectFuture;
     std::vector<int32_t> mPeers;
     std::map<int32_t, NetworkIdentity> mIdentities;
+    std::vector<std::string> mBannedIdentities;
+    std::vector<std::string> mGameMasterIdentities;
+    std::map<int32_t, std::string> mPendingLeaveMessages;
     std::map<int32_t, cCryptoSession> mServerCrypto;
     std::map<int32_t, std::string> mPrivateChatKeys;
     std::map<int32_t, std::string> mPrivateChatNames;
@@ -160,6 +175,7 @@ class ShipwrightNetworkRuntime final {
     std::chrono::steady_clock::time_point mRateSampleTime = std::chrono::steady_clock::now();
     std::deque<NetworkChatLine> mChat;
     std::deque<NetworkPlayerStatePacket> mPlayerStates;
+    std::deque<NetworkPlayerStatePacket> mFishingStates;
     std::deque<NetworkPlayerRemovePacket> mPlayerRemovals;
     std::deque<NetworkDynamicObjectStatePacket> mDynamicObjectStates;
     std::deque<NetworkActorEventPacket> mActorEvents;

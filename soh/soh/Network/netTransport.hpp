@@ -111,6 +111,7 @@ enum NetAppMessageType : unsigned char {
 	NAMTActorEvent,
 	NAMTProjectileImpact,
 	NAMTPlayerRespawn,
+	NAMTFishingState,
 	NAMTEncrypted
 };
 

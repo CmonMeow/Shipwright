@@ -6,6 +6,7 @@
 #include <windows.h>
 
 #include <atomic>
+#include <conio.h>
 #include <cstdio>
 #include <cstdlib>
 #include <string>
@@ -26,6 +27,7 @@ BOOL WINAPI ConsoleHandler(DWORD event) {
 void DrainRelayQueues(SoH::Network::ShipwrightNetworkRuntime& network) {
     NetworkChatLine chat;
     while (network.PollChat(chat)) {
+        std::printf("%s\n", chat.text.c_str());
     }
     NetworkPlayerStatePacket player;
     while (network.PollPlayerState(player)) {
@@ -45,6 +47,43 @@ void DrainRelayQueues(SoH::Network::ShipwrightNetworkRuntime& network) {
     NetworkVoicePacket voice;
     while (network.PollVoice(voice)) {
     }
+}
+
+bool PollConsoleLine(std::string& line) {
+    static std::string draft;
+    while (_kbhit()) {
+        const int character = _getch();
+        if (character == '\r' || character == '\n') {
+            std::putchar('\n');
+            line = draft;
+            draft.clear();
+            return true;
+        }
+        if (character == 8) {
+            if (!draft.empty()) {
+                draft.pop_back();
+                std::fputs("\b \b", stdout);
+            }
+            continue;
+        }
+        if (character >= 32 && character < 127 && draft.size() < CHAT_MAX_MESSAGE_CHARS) {
+            draft.push_back(static_cast<char>(character));
+            std::putchar(character);
+        }
+    }
+    return false;
+}
+
+void RunConsoleCommand(const std::string& input, SoH::Network::ShipwrightNetworkRuntime& network) {
+    const std::string line = TrimWhitespace(input);
+    if (line.empty()) {
+        return;
+    }
+    if (_stricmp(line.c_str(), "/quit") == 0 || _stricmp(line.c_str(), "/exit") == 0) {
+        gRunning = false;
+        return;
+    }
+    network.SendChat(line);
 }
 
 } // namespace
@@ -77,6 +116,10 @@ int main(int argc, char** argv) {
     while (gRunning) {
         network.Update();
         DrainRelayQueues(network);
+        std::string consoleLine;
+        if (PollConsoleLine(consoleLine)) {
+            RunConsoleCommand(consoleLine, network);
+        }
         Sleep(10);
     }
 

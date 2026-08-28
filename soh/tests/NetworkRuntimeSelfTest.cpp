@@ -150,14 +150,27 @@ NetworkActorEventPacket MakeBoulderEvent(int value) {
 }
 
 int RunHost() {
+    std::vector<std::string> originalGameMasters;
+    const bool gameMasterListExisted = GetFileAttributesA(GM_LIST_FILENAME) != INVALID_FILE_ATTRIBUTES;
+    LoadGameMasterList(originalGameMasters);
+    std::vector<std::string> testGameMasters = originalGameMasters;
+    AddUniqueString(testGameMasters, LocalIdentityId());
+    SaveGameMasterList(testGameMasters);
     ShipwrightNetworkRuntime network;
     if (!network.Host(kRuntimePort, "Shipwright secure runtime test")) {
+        if (gameMasterListExisted) {
+            SaveGameMasterList(originalGameMasters);
+        } else {
+            DeleteFileA(GM_LIST_FILENAME);
+        }
         return 10;
     }
 
     bool chatReceived = false;
     bool privateReceived = false;
     bool stateReceived = false;
+    bool fishingVisualReceived = false;
+    bool fishingEquipTransitionReceived = false;
     bool poseEquipmentReceived = false;
     bool bowStringScaleReceived = false;
     bool voiceReceived = false;
@@ -198,7 +211,7 @@ int RunHost() {
     bool clientComplete = false;
     unsigned __int64 projectileStuckAt = 0;
 
-    const unsigned __int64 timeout = GetTickCount64() + 25000;
+    const unsigned __int64 timeout = GetTickCount64() + 40000;
     while (GetTickCount64() < timeout && !clientComplete) {
         network.Update();
 
@@ -213,18 +226,14 @@ int RunHost() {
 
         NetworkPlayerStatePacket state{};
         while (network.PollPlayerState(state)) {
+            fishingEquipTransitionReceived = fishingEquipTransitionReceived ||
+                                             (state.playerId > 0 && state.sequence == 109 &&
+                                              state.sceneId == 0x49 && state.x == 666.0f &&
+                                              state.y == -87.0f && state.z == 354.0f &&
+                                              state.itemAction == NETWORK_PLAYER_ITEM_FISHING_POLE &&
+                                              state.fishingState == 0 && state.fishingLineScale == 0.0f);
             stateReceived = stateReceived || (state.playerId > 0 && state.sceneId == 0x49 &&
-                                               state.x == 666.0f && state.y == -87.0f && state.z == 354.0f &&
-                                               state.fishingLineHooked == 1 &&
-                                               state.fishingLureDrawOffset[0] == 17.25f &&
-                                               state.fishingLureSpin == 0.375f &&
-                                               state.fishingLureZOffset == -725.0f &&
-                                               state.fishingSinkingLureUnderwater == 1 &&
-                                               state.fishingLineGravity == 2.25f);
-            fishCanonicalStateReceived = fishCanonicalStateReceived ||
-                                         (state.playerId > 0 && state.sceneId == 0x49 &&
-                                          state.fishingFishActive == 1 && state.fishingFishIsLoach == 0 &&
-                                          std::fabs(state.fishingFishLength - TestPondFishLength()) < 0.001f);
+                                               state.x == 666.0f && state.y == -87.0f && state.z == 354.0f);
             bowStringScaleReceived = bowStringScaleReceived ||
                                      (state.playerId > 0 && state.itemAction == 8 &&
                                       state.bowStringScale == 0.625f &&
@@ -238,6 +247,29 @@ int RunHost() {
             corpseReceived = corpseReceived ||
                              (state.playerId < -1 && (state.stateFlags & NETWORK_PLAYER_DEAD) != 0 &&
                               state.jointTable[0][0] == 1234);
+        }
+        NetworkPlayerStatePacket fishingState{};
+        while (network.PollFishingState(fishingState)) {
+            fishingVisualReceived = fishingVisualReceived ||
+                                    (fishingState.playerId > 0 && fishingState.sceneId == 0x49 &&
+                                     fishingState.fishingLineHooked == 1 &&
+                                     fishingState.fishingLureDrawOffset[0] == 17.25f &&
+                                     fishingState.fishingLureSpin == 0.375f &&
+                                     fishingState.fishingLureZOffset == -725.0f &&
+                                     fishingState.fishingLureType == 2 &&
+                                     fishingState.fishingRodTipOffset[0] == 300.0f &&
+                                     fishingState.fishingSinkingLureUnderwater == 1 &&
+                                     fishingState.fishingLineGravity == 2.25f);
+            fishCanonicalStateReceived = fishCanonicalStateReceived ||
+                                         (fishingState.playerId > 0 && fishingState.sceneId == 0x49 &&
+                                          fishingState.fishingFishActive == 1 &&
+                                          fishingState.fishingFishIsLoach == 0 &&
+                                          std::fabs(fishingState.fishingFishLength - TestPondFishLength()) < 0.001f &&
+                                          fishingState.fishingFishRoomId == 3 &&
+                                          fishingState.fishingFishActorParams == 100 &&
+                                          fishingState.fishingFishHomeX == 666 &&
+                                          fishingState.fishingFishHomeY == -45 &&
+                                          fishingState.fishingFishHomeZ == 354);
         }
         NetworkVoicePacket voice;
         while (network.PollVoice(voice)) {
@@ -389,7 +421,8 @@ int RunHost() {
             grassRestoreAcknowledged = network.SendChat("runtime-grass-restored");
         }
 
-        if (!responseSent && network.IsSecure() && chatReceived && privateReceived && stateReceived && voiceReceived &&
+        if (!responseSent && network.IsSecure() && chatReceived && privateReceived && stateReceived &&
+            fishingVisualReceived && voiceReceived &&
             actorEventReceived && fishHookReceived) {
             const auto players = network.Players();
             int32_t clientId = -1;
@@ -421,16 +454,24 @@ int RunHost() {
     }
 
     network.Disconnect();
-    Error("Runtime host summary: chat=%d private=%d state=%d poseEquipment=%d bowString=%d voice=%d actor=%d arrowPitch=%d arrowDamage=%d "
+    if (gameMasterListExisted) {
+        SaveGameMasterList(originalGameMasters);
+    } else {
+        DeleteFileA(GM_LIST_FILENAME);
+    }
+    Error("Runtime host summary: chat=%d private=%d state=%d fishingEquip=%d poseEquipment=%d bowString=%d voice=%d actor=%d arrowPitch=%d arrowDamage=%d "
           "clientMelee=%d hostMeleeSeen=%d fishCanonical=%d impact=%d aimedPitch=%d stuckPitch=%d stuckPersistent=%d response=%d complete=%d",
-          chatReceived, privateReceived, stateReceived, poseEquipmentReceived, bowStringScaleReceived,
+          chatReceived, privateReceived, stateReceived, fishingEquipTransitionReceived, poseEquipmentReceived,
+          bowStringScaleReceived,
           voiceReceived, actorEventReceived,
           arrowNativeDisplayPitchReceived, arrowDamageReceived, clientMeleeDamageReceived, clientSawHostMeleeDamage,
           fishCanonicalStateReceived,
           projectileImpactWitnessed, arrowAimedDisplayPitchReceived, arrowStuckDisplayPitchReceived,
           !projectileRetiredUnexpectedly,
           responseSent, clientComplete);
-    return clientComplete && responseSent && fishReleaseReceived && fishCanonicalStateReceived &&
+    return clientComplete && responseSent && fishingEquipTransitionReceived && fishingVisualReceived &&
+                   fishReleaseReceived &&
+                   fishCanonicalStateReceived &&
                    poseEquipmentReceived && bowStringScaleReceived && projectileImpactSent &&
                    offAxisProjectileImpactRejected && projectileImpactWitnessed &&
                    arrowNativeDisplayPitchReceived && arrowAimedDisplayPitchReceived &&
@@ -450,7 +491,10 @@ int RunClient() {
         return 20;
     }
 
+    bool fishingEquipTransitionSent = false;
     bool initialSent = false;
+    bool adminCommandSent = false;
+    bool adminCommandAcknowledged = false;
     bool privateSent = false;
     bool chatReceived = false;
     bool privateReceived = false;
@@ -500,7 +544,23 @@ int RunClient() {
     const unsigned __int64 timeout = GetTickCount64() + 40000;
     while (GetTickCount64() < timeout) {
         network.Update();
-        if (!initialSent && network.IsSecure() && network.LocalPlayerId() > 0) {
+        if (!fishingEquipTransitionSent && network.IsSecure() && network.LocalPlayerId() > 0) {
+            NetworkPlayerStatePacket fishingEquipTransition = MakeState(109);
+            fishingEquipTransition.sceneId = 0x49;
+            fishingEquipTransition.x = 666.0f;
+            fishingEquipTransition.y = -87.0f;
+            fishingEquipTransition.z = 354.0f;
+            fishingEquipTransition.itemAction = NETWORK_PLAYER_ITEM_FISHING_POLE;
+            // An invalid optional fishing visual sample must be stripped
+            // without dropping the movement/animation packet around it. The
+            // stale inactive-melee value is also deliberately invalid: combat
+            // fields cannot suppress a fishing pose either.
+            fishingEquipTransition.fishingState = 4;
+            fishingEquipTransition.fishingLineScale = 0.0f;
+            fishingEquipTransition.meleeWeaponState = -1;
+            fishingEquipTransitionSent = network.SendPlayerState(fishingEquipTransition);
+        }
+        if (fishingEquipTransitionSent && !initialSent && network.IsSecure() && network.LocalPlayerId() > 0) {
             NetworkPlayerStatePacket initialState = MakeState(110);
             initialState.sceneId = 0x49;
             initialState.x = 666.0f;
@@ -511,6 +571,8 @@ int RunClient() {
             initialState.fishingLineGravity = 2.25f;
             initialState.fishingState = 4;
             initialState.fishingLineHooked = 1;
+            initialState.fishingLureType = 2;
+            initialState.fishingRodTipOffset[0] = 300.0f;
             initialState.fishingLureDrawOffset[0] = 17.25f;
             initialState.fishingLureSpin = 0.375f;
             initialState.fishingLureZOffset = -725.0f;
@@ -525,6 +587,9 @@ int RunClient() {
             initialActorEvent.homeZ = initialActorEvent.z = 354;
             initialSent = network.SendChat("runtime-client-chat") && network.SendPlayerState(initialState) &&
                           network.SendActorEvent(initialActorEvent) && network.SendVoice(MakeVoice(444));
+        }
+        if (initialSent && !adminCommandSent) {
+            adminCommandSent = network.SendChat("/users");
         }
         if (initialSent && !fishHookSent) {
             fishHookSent = network.SendActorEvent(MakeFishEvent(111, NETWORK_ACTOR_EVENT_FISH_HOOK));
@@ -542,6 +607,8 @@ int RunClient() {
         NetworkChatLine line;
         while (network.PollChat(line)) {
             chatReceived = chatReceived || line.text.find("runtime-host-chat") != std::string::npos;
+            adminCommandAcknowledged = adminCommandAcknowledged ||
+                                       line.text.find("system: users online:") != std::string::npos;
             privateReceived = privateReceived || line.text.find("runtime-host-private") != std::string::npos;
             projectileImpactAcknowledged = projectileImpactAcknowledged ||
                                            line.text.find("runtime-impact-complete") != std::string::npos;
@@ -790,7 +857,9 @@ int RunClient() {
         }
 
         const bool gameplayChecksComplete =
-            initialSent && privateSent && chatReceived && privateReceived && stateReceived && voiceReceived &&
+            fishingEquipTransitionSent && initialSent && adminCommandSent && adminCommandAcknowledged && privateSent &&
+            chatReceived &&
+            privateReceived && stateReceived && voiceReceived &&
             actorEventReceived && fishHookSent && fishReleaseSent && bowStateSent && projectileSent &&
             postHookStateSent && fishCanonicalAcknowledged &&
             arrowDamageAcknowledged && clientMeleeNearMissSent && clientMeleeSent && clientMeleeDamageAcknowledged &&
@@ -809,20 +878,27 @@ int RunClient() {
             GetTickCount64() - staleDeadSentAt >= NET_RESPAWN_MS + 500) {
             // Keep pumping past one complete telemetry interval so the byte
             // counters are converted into the rates shown in the title bar.
+            int32_t observedInboundRate = 0;
+            int32_t observedOutboundRate = 0;
             for (int i = 0; i < 440; ++i) {
                 if ((i % 10) == 0) {
                     network.SendChat("runtime-telemetry");
                 }
                 network.Update();
+                observedInboundRate = std::max(observedInboundRate, network.InboundBytesPerSecond());
+                observedOutboundRate = std::max(observedOutboundRate, network.OutboundBytesPerSecond());
                 Sleep(5);
             }
-            if (network.InboundBytesPerSecond() <= 0 || network.OutboundBytesPerSecond() <= 0) {
-                Error("Runtime telemetry failed: in=%d B/s out=%d B/s", network.InboundBytesPerSecond(),
-                      network.OutboundBytesPerSecond());
+            if (observedInboundRate <= 0 || observedOutboundRate <= 0) {
+                Error("Runtime telemetry failed: in=%d B/s out=%d B/s", observedInboundRate,
+                      observedOutboundRate);
                 return 22;
             }
             network.SendChat("runtime-client-complete");
             for (int i = 0; i < 100; ++i) {
+                if ((i % 20) == 0) {
+                    network.SendChat("runtime-client-complete");
+                }
                 network.Update();
                 Sleep(5);
             }
@@ -833,9 +909,11 @@ int RunClient() {
     }
 
     network.Disconnect();
-    Error("Runtime client timeout: initial=%d privateSent=%d chat=%d private=%d state=%d voice=%d actor=%d "
+    Error("Runtime client timeout: fishingEquip=%d initial=%d adminSent=%d adminAck=%d privateSent=%d chat=%d private=%d state=%d voice=%d actor=%d "
           "arrowDamage=%d clientMeleeNearMiss=%d clientMelee=%d clientMeleeAck=%d hostMeleeDamage=%d witnessArrow=%d impact=%d",
-          initialSent, privateSent, chatReceived, privateReceived, stateReceived, voiceReceived,
+          fishingEquipTransitionSent, initialSent, adminCommandSent, adminCommandAcknowledged, privateSent,
+          chatReceived, privateReceived,
+          stateReceived, voiceReceived,
           actorEventReceived, arrowDamageAcknowledged, clientMeleeNearMissSent, clientMeleeSent,
           clientMeleeDamageAcknowledged,
           hostMeleeDamageReceived, witnessProjectileSent, projectileImpactAcknowledged);

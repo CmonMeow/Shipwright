@@ -2746,14 +2746,23 @@ s32 func_808351D4(Player* this, PlayState* play) {
 }
 
 s32 func_808353D8(Player* this, PlayState* play) {
+    s32 bowUseBuffered = (this == GET_PLAYER(play)) && Ship_IsBowUseBuffered();
+
     LinkAnimation_Update(play, &this->upperSkelAnime);
 
     if (Player_HoldsHookshot(this) && !func_80834FBC(this)) {
         return true;
     }
 
+    // A rapid PC click may arrive while the native post-shot lock is still
+    // active. Do not leave this transition for the bow-lowering animation;
+    // remain here until the buffered click can start the next draw.
+    if (bowUseBuffered && func_80834758(play, this)) {
+        return true;
+    }
+
     if (!func_80834758(play, this) &&
-        (sUseHeldItem || ((this == GET_PLAYER(play)) && Ship_IsBowUseBuffered()) ||
+        (sUseHeldItem || bowUseBuffered ||
          ((this->unk_860 < 0) && sHeldItemButtonIsHeldDown) || func_80834E44(play))) {
         this->unk_860 = ABS(this->unk_860);
 
@@ -3189,13 +3198,13 @@ int Player_CanUpdateItems(Player* this) {
 s32 Player_UpdateUpperBody(Player* this, PlayState* play) {
     if (this == GET_PLAYER(play)) {
         s32 pcBowAimHeld = Ship_IsBowAimHeld() && (this->heldItemAction == PLAYER_IA_BOW);
+        s32 pcBowUseBuffered = Ship_IsBowUseBuffered() && (this->heldItemAction == PLAYER_IA_BOW);
 
-        if (pcBowAimHeld && (this->upperActionFunc != func_808351D4) &&
+        if ((pcBowAimHeld || pcBowUseBuffered) && (this->upperActionFunc != func_808351D4) &&
             (this->upperActionFunc != func_808353D8)) {
-            // RMB owns a persistent bow-ready upper-body state. Native bow
-            // aiming normally relies on its first-person movement lock to
-            // keep this state alive; without that lock, ordinary locomotion
-            // repeatedly restores the standing upper-body pose.
+            // RMB and a queued LMB shot own the same persistent bow-ready
+            // state. This lets a rapid LMB re-fire interrupt the native
+            // lowering animation instead of waiting for it to finish.
             Player_SetUpperActionFunc(this, func_808353D8);
             LinkAnimation_PlayLoop(play, &this->upperSkelAnime, &gPlayerAnim_link_bow_bow_wait);
             this->unk_834 = 10;

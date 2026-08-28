@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <atomic>
 #include <cmath>
+#include <cstdlib>
 #include <cstring>
 #include <sstream>
 
@@ -365,6 +366,8 @@ bool ShipwrightNetworkRuntime::Host(uint16_t port, const std::string& sessionNam
         destroyPool();
         return false;
     }
+    LoadBanList(mBannedIdentities);
+    LoadGameMasterList(mGameMasterIdentities);
     if (mCollisionWorld.LoadDefaultArchive()) {
         Error("Dedicated collision loaded: %zu scenes, %zu triangles, %zu authoritative wild fish",
               mCollisionWorld.SceneCount(), mCollisionWorld.TriangleCount(), mCollisionWorld.WildFishCount());
@@ -423,6 +426,7 @@ void ShipwrightNetworkRuntime::Disconnect() {
     mServerCrypto.clear();
     mPeers.clear();
     mIdentities.clear();
+    mPendingLeaveMessages.clear();
     mPrivateChatKeys.clear();
     mPrivateChatNames.clear();
     mClientIdentitySent = false;
@@ -435,6 +439,7 @@ void ShipwrightNetworkRuntime::Disconnect() {
     mOutboundBytesSinceSample = 0;
     mRateSampleTime = std::chrono::steady_clock::now();
     mPlayerStates.clear();
+    mFishingStates.clear();
     mPlayerRemovals.clear();
     mDynamicObjectStates.clear();
     mActorEvents.clear();
@@ -582,6 +587,20 @@ std::vector<NetworkPlayerInfo> ShipwrightNetworkRuntime::Players() const {
     for (const auto& [player, identity] : mIdentities) {
         result.push_back({ player, identity.id, identity.name, identity.voiceClient });
     }
+    // Clients learn peer names with the E2E private-chat public keys. Expose
+    // that roster too so name-based /pm and in-world labels work without
+    // weakening the server-owned identity exchange.
+    for (const auto& [player, name] : mPrivateChatNames) {
+        if (player == 0 || player == mLocalPlayerId || name.empty()) {
+            continue;
+        }
+        const auto existing = std::find_if(result.begin(), result.end(), [player](const NetworkPlayerInfo& info) {
+            return info.playerId == player;
+        });
+        if (existing == result.end()) {
+            result.push_back({ player, "", name, false });
+        }
+    }
     return result;
 }
 
@@ -596,6 +615,10 @@ bool ShipwrightNetworkRuntime::SendChat(const std::string& message) {
         return SendToServer(NAMTChat, raw, kReliable);
     }
     if (mServer) {
+        if (text[0] == '/') {
+            RunServerCommand(0, text);
+            return true;
+        }
         const std::string line = "system: " + text;
         NetworkMessageRaw raw;
         raw.putString(line, CHAT_MAX_LINE_CHARS);
@@ -637,18 +660,39 @@ bool ShipwrightNetworkRuntime::SendPrivateChat(int32_t targetPlayer, const std::
 }
 
 bool ShipwrightNetworkRuntime::SendPlayerState(NetworkPlayerStatePacket packet) {
-    if (!SanePlayerState(packet)) {
+    const bool meleeItem = packet.itemAction >= 3 && packet.itemAction <= 5;
+    if (!meleeItem) {
+        packet.meleeWeaponState = 0;
+        std::fill(std::begin(packet.meleeBase), std::end(packet.meleeBase), 0.0f);
+        std::fill(std::begin(packet.meleeTip), std::end(packet.meleeTip), 0.0f);
+    }
+    // Validate the compact pose independently. Fishing telemetry now travels
+    // in its own packet and must never be erased merely because a lure offset
+    // is outside the pose validator's assumptions.
+    NetworkPlayerStatePacket posePacket = packet;
+    posePacket.fishingState = 0;
+    std::memset(posePacket.fishingRodTipOffset, 0,
+                offsetof(NetworkPlayerStatePacket, jointTable) -
+                    offsetof(NetworkPlayerStatePacket, fishingRodTipOffset));
+    if (!SanePlayerState(posePacket)) {
         return false;
     }
     packet.playerId = LocalPlayerId();
+    posePacket.playerId = packet.playerId;
     const bool dead = (packet.stateFlags & NETWORK_PLAYER_DEAD) != 0;
     const bool reliableTransition = dead != mLastLocalPlayerDead;
     mLastLocalPlayerDead = dead;
     const NetMsgFlags stateFlags = reliableTransition ? kReliable : NMFHighPriority;
     if (mClient) {
-        NetworkMessageRaw raw;
-        EncodeAppPacketRaw(raw, packet);
-        return mLocalPlayerId >= 0 && SendToServer(NAMTPlayerState, raw, stateFlags);
+        NetworkMessageRaw poseRaw;
+        EncodeAppPacketRaw(poseRaw, posePacket);
+        const bool poseSent = mLocalPlayerId >= 0 && SendToServer(NAMTPlayerState, poseRaw, stateFlags);
+        if (poseSent && packet.itemAction == NETWORK_PLAYER_ITEM_FISHING_POLE) {
+            NetworkMessageRaw fishingRaw;
+            EncodeFishingStateRaw(fishingRaw, packet);
+            SendToServer(NAMTFishingState, fishingRaw, NMFHighPriority);
+        }
+        return poseSent;
     }
     if (mServer) {
         packet.playerId = 0;
@@ -666,6 +710,11 @@ bool ShipwrightNetworkRuntime::SendPlayerState(NetworkPlayerStatePacket packet) 
         NetworkMessageRaw raw;
         EncodeAppPacketRaw(raw, packet);
         Broadcast(NAMTPlayerState, raw, -1, stateFlags);
+        if (packet.itemAction == NETWORK_PLAYER_ITEM_FISHING_POLE) {
+            NetworkMessageRaw fishingRaw;
+            EncodeFishingStateRaw(fishingRaw, packet);
+            Broadcast(NAMTFishingState, fishingRaw, -1, NMFHighPriority);
+        }
         return true;
     }
     return false;
@@ -753,6 +802,15 @@ bool ShipwrightNetworkRuntime::PollPlayerState(NetworkPlayerStatePacket& packet)
     }
     packet = mPlayerStates.front();
     mPlayerStates.pop_front();
+    return true;
+}
+
+bool ShipwrightNetworkRuntime::PollFishingState(NetworkPlayerStatePacket& packet) {
+    if (mFishingStates.empty()) {
+        return false;
+    }
+    packet = mFishingStates.front();
+    mFishingStates.pop_front();
     return true;
 }
 
@@ -896,6 +954,14 @@ void ShipwrightNetworkRuntime::HandleClientMessage(char* buffer, __int32 size) {
         return;
     }
 
+    NetworkMessageRaw fishingRaw;
+    NetworkPlayerStatePacket fishingState{};
+    if (ReadRaw(message, messageSize, NAMTFishingState, fishingRaw) &&
+        DecodeFishingStateRaw(fishingRaw, fishingState) && fishingState.playerId != mLocalPlayerId) {
+        mFishingStates.push_back(fishingState);
+        return;
+    }
+
     NetworkPlayerRemovePacket removal{};
     if (ParseAppPacket(message, messageSize, NAMTPlayerRemove, removal)) {
         mPlayerRemovals.push_back(removal);
@@ -985,6 +1051,11 @@ void ShipwrightNetworkRuntime::HandleServerMessage(int32_t sender, char* buffer,
             mServer->KickOff(sender, NTRKicked, "invalid or incompatible identity");
             return;
         }
+        if (std::find(mBannedIdentities.begin(), mBannedIdentities.end(), identity.id) !=
+            mBannedIdentities.end()) {
+            mServer->KickOff(sender, NTRBanned, "banned");
+            return;
+        }
         mIdentities[sender] = identity;
         NetworkPlayerAssignPacket assignment{ sender };
         NetworkMessageRaw assignmentRaw;
@@ -1021,6 +1092,10 @@ void ShipwrightNetworkRuntime::HandleServerMessage(int32_t sender, char* buffer,
     if (ParseAppRawString(message, messageSize, NAMTChat, text, CHAT_MAX_MESSAGE_CHARS)) {
         text = SanitiseChatText(text);
         if (!text.empty()) {
+            if (text[0] == '/') {
+                RunServerCommand(sender, text);
+                return;
+            }
             const std::string line = PlayerName(sender) + ": " + text;
             NetworkMessageRaw raw;
             raw.putString(line, CHAT_MAX_LINE_CHARS);
@@ -1062,12 +1137,33 @@ void ShipwrightNetworkRuntime::HandleServerMessage(int32_t sender, char* buffer,
     NetworkPlayerStatePacket state{};
     if (ParseAppPacket(message, messageSize, NAMTPlayerState, state)) {
         state.playerId = sender;
+        const bool meleeItem = state.itemAction >= 3 && state.itemAction <= 5;
+        if (!meleeItem) {
+            state.meleeWeaponState = 0;
+            std::fill(std::begin(state.meleeBase), std::end(state.meleeBase), 0.0f);
+            std::fill(std::begin(state.meleeTip), std::end(state.meleeTip), 0.0f);
+        }
+        if (!SanePlayerState(state)) {
+            // Never let an invalid optional fishing sample discard the core
+            // movement packet. The cleared packet is validated again below,
+            // so this does not weaken pose, scene, or animation validation.
+            state.fishingState = 0;
+            std::memset(state.fishingRodTipOffset, 0,
+                        offsetof(NetworkPlayerStatePacket, jointTable) -
+                            offsetof(NetworkPlayerStatePacket, fishingRodTipOffset));
+        }
         if (SanePlayerState(state)) {
             const auto now = std::chrono::steady_clock::now();
             const auto previous = mAuthoritativePlayerStates.find(sender);
             if (previous != mAuthoritativePlayerStates.end() &&
                 !SequenceIsNewer(state.sequence, previous->second.sequence)) {
                 return;
+            }
+            if (previous != mAuthoritativePlayerStates.end() &&
+                state.itemAction == NETWORK_PLAYER_ITEM_FISHING_POLE &&
+                previous->second.itemAction == NETWORK_PLAYER_ITEM_FISHING_POLE &&
+                previous->second.sceneId == state.sceneId) {
+                CopyNetworkFishingState(state, previous->second);
             }
             const auto respawnDeadline = mRespawnDeadlines.find(sender);
             if (respawnDeadline != mRespawnDeadlines.end() && now < respawnDeadline->second &&
@@ -1127,6 +1223,33 @@ void ShipwrightNetworkRuntime::HandleServerMessage(int32_t sender, char* buffer,
         return;
     }
 
+    NetworkMessageRaw fishingRaw;
+    NetworkPlayerStatePacket fishingState{};
+    if (ReadRaw(message, messageSize, NAMTFishingState, fishingRaw) &&
+        DecodeFishingStateRaw(fishingRaw, fishingState)) {
+        const auto current = mAuthoritativePlayerStates.find(sender);
+        if (current == mAuthoritativePlayerStates.end() ||
+            current->second.itemAction != NETWORK_PLAYER_ITEM_FISHING_POLE ||
+            current->second.sceneId != fishingState.sceneId ||
+            static_cast<int32_t>(current->second.sequence - fishingState.sequence) > 8) {
+            return;
+        }
+        NetworkPlayerStatePacket merged = current->second;
+        CopyNetworkFishingState(merged, fishingState);
+        if (!SanePlayerState(merged)) {
+            return;
+        }
+        SanitizeServerFishingState(sender, merged, &current->second, 0.05f);
+        CopyNetworkFishingState(current->second, merged);
+        merged.playerId = sender;
+        merged.sequence = current->second.sequence;
+        NetworkMessageRaw forwarded;
+        EncodeFishingStateRaw(forwarded, merged);
+        Broadcast(NAMTFishingState, forwarded, sender, NMFHighPriority);
+        mFishingStates.push_back(merged);
+        return;
+    }
+
     NetworkActorEventPacket actorEvent{};
     if (ParseAppPacket(message, messageSize, NAMTActorEvent, actorEvent) && SaneActorEvent(actorEvent)) {
         if (!AcceptServerActorEvent(sender, actorEvent)) {
@@ -1175,12 +1298,17 @@ void ShipwrightNetworkRuntime::HandlePeerCreated(int32_t peer) {
 
 void ShipwrightNetworkRuntime::HandlePeerDeleted(int32_t peer) {
     const std::string name = PlayerName(peer);
+    const auto pendingLeave = mPendingLeaveMessages.find(peer);
+    const bool hasModerationReason = pendingLeave != mPendingLeaveMessages.end();
     ReleaseFishOwnedBy(peer);
     mPeers.erase(std::remove(mPeers.begin(), mPeers.end(), peer), mPeers.end());
     mIdentities.erase(peer);
     mServerCrypto.erase(peer);
     mPrivateChatKeys.erase(peer);
     mPrivateChatNames.erase(peer);
+    if (hasModerationReason) {
+        mPendingLeaveMessages.erase(pendingLeave);
+    }
     mAuthoritativePlayerStates.erase(peer);
     mPlayerWasDead.erase(peer);
     mLastDeadPlayerStates.erase(peer);
@@ -1222,7 +1350,9 @@ void ShipwrightNetworkRuntime::HandlePeerDeleted(int32_t peer) {
     EncodeAppPacketRaw(raw, removal);
     Broadcast(NAMTPlayerRemove, raw, peer, kReliable);
     mPlayerRemovals.push_back(removal);
-    QueueChat("system: " + name + " left", CLKSystem);
+    if (!hasModerationReason) {
+        QueueChat("system: " + name + " left", CLKSystem);
+    }
 }
 
 bool ShipwrightNetworkRuntime::PrepareClientMessage(char* buffer, __int32 size, std::string& decrypted,
@@ -1459,6 +1589,244 @@ std::string ShipwrightNetworkRuntime::PlayerName(int32_t player) const {
     return "player " + std::to_string(player);
 }
 
+bool ShipwrightNetworkRuntime::IsGameMaster(int32_t player) const {
+    const auto identity = mIdentities.find(player);
+    return identity != mIdentities.end() &&
+           std::find(mGameMasterIdentities.begin(), mGameMasterIdentities.end(), identity->second.id) !=
+               mGameMasterIdentities.end();
+}
+
+bool ShipwrightNetworkRuntime::ResolvePlayerReference(const std::string& reference, int32_t& player) const {
+    const std::string value = TrimWhitespace(reference);
+    if (value.empty()) {
+        return false;
+    }
+
+    char* end = nullptr;
+    const long numeric = std::strtol(value.c_str(), &end, 10);
+    if (end != value.c_str() && *end == '\0' && numeric > 0 &&
+        std::find(mPeers.begin(), mPeers.end(), static_cast<int32_t>(numeric)) != mPeers.end()) {
+        player = static_cast<int32_t>(numeric);
+        return true;
+    }
+
+    for (const auto& [candidate, identity] : mIdentities) {
+        if (_stricmp(identity.id.c_str(), value.c_str()) == 0) {
+            player = candidate;
+            return true;
+        }
+    }
+    for (const auto& [candidate, identity] : mIdentities) {
+        if (_stricmp(identity.name.c_str(), value.c_str()) == 0) {
+            player = candidate;
+            return true;
+        }
+    }
+    return false;
+}
+
+void ShipwrightNetworkRuntime::SendCommandResult(int32_t player, const std::string& message) {
+    const std::string line = "system: " + message;
+    if (player == 0) {
+        QueueChat(line, CLKSystem);
+        return;
+    }
+    NetworkMessageRaw raw;
+    raw.putString(line, CHAT_MAX_LINE_CHARS);
+    SendToPeer(player, NAMTChat, raw, kReliable);
+}
+
+void ShipwrightNetworkRuntime::BroadcastSystem(const std::string& message) {
+    const std::string line = "system: " + message;
+    NetworkMessageRaw raw;
+    raw.putString(line, CHAT_MAX_LINE_CHARS);
+    Broadcast(NAMTChat, raw);
+    QueueChat(line, CLKSystem);
+}
+
+bool ShipwrightNetworkRuntime::KickPlayer(const std::string& reference, bool ban, std::string& result) {
+    int32_t player = -1;
+    if (!mServer || !ResolvePlayerReference(reference, player)) {
+        result = mServer ? "player not found" : "host only command";
+        return false;
+    }
+
+    const auto identity = mIdentities.find(player);
+    if (ban && (identity == mIdentities.end() || identity->second.id.empty())) {
+        result = "player has no identity yet";
+        return false;
+    }
+    if (ban && AddUniqueString(mBannedIdentities, identity->second.id)) {
+        SaveBanList(mBannedIdentities);
+    }
+
+    result = PlayerName(player) + (ban ? " was banned" : " was kicked");
+    mPendingLeaveMessages[player] = result;
+    BroadcastSystem(result);
+    mServer->KickOff(player, ban ? NTRBanned : NTRKicked, result.c_str());
+    return true;
+}
+
+bool ShipwrightNetworkRuntime::GrantGameMaster(const std::string& reference, std::string& result) {
+    int32_t player = -1;
+    if (!mServer || !ResolvePlayerReference(reference, player)) {
+        result = mServer ? "player not found" : "host only command";
+        return false;
+    }
+    const auto identity = mIdentities.find(player);
+    if (identity == mIdentities.end() || identity->second.id.empty()) {
+        result = "player has no identity yet";
+        return false;
+    }
+    if (AddUniqueString(mGameMasterIdentities, identity->second.id)) {
+        SaveGameMasterList(mGameMasterIdentities);
+    }
+    result = PlayerName(player) + " is now an admin";
+    BroadcastSystem(result);
+    return true;
+}
+
+bool ShipwrightNetworkRuntime::RevokeGameMaster(const std::string& reference, std::string& result) {
+    std::string identityValue = TrimWhitespace(reference);
+    int32_t player = -1;
+    if (ResolvePlayerReference(identityValue, player)) {
+        const auto identity = mIdentities.find(player);
+        if (identity != mIdentities.end()) {
+            identityValue = identity->second.id;
+        }
+    }
+    const auto found = std::find_if(mGameMasterIdentities.begin(), mGameMasterIdentities.end(),
+                                    [&identityValue](const std::string& value) {
+                                        return _stricmp(value.c_str(), identityValue.c_str()) == 0;
+                                    });
+    if (identityValue.empty() || found == mGameMasterIdentities.end()) {
+        result = "admin identity not found";
+        return false;
+    }
+    const std::string removed = *found;
+    mGameMasterIdentities.erase(found);
+    SaveGameMasterList(mGameMasterIdentities);
+    result = removed + " is no longer an admin";
+    BroadcastSystem(result);
+    return true;
+}
+
+bool ShipwrightNetworkRuntime::UnbanIdentity(const std::string& identity, std::string& result) {
+    const std::string value = TrimWhitespace(identity);
+    const auto found = std::find_if(mBannedIdentities.begin(), mBannedIdentities.end(),
+                                    [&value](const std::string& candidate) {
+                                        return _stricmp(candidate.c_str(), value.c_str()) == 0;
+                                    });
+    if (value.empty() || found == mBannedIdentities.end()) {
+        result = "banned identity not found";
+        return false;
+    }
+    const std::string removed = *found;
+    mBannedIdentities.erase(found);
+    SaveBanList(mBannedIdentities);
+    result = removed + " was unbanned";
+    BroadcastSystem(result);
+    return true;
+}
+
+void ShipwrightNetworkRuntime::SendUsersList(int32_t player) {
+    const auto players = Players();
+    SendCommandResult(player, "users online: " + std::to_string(players.size()));
+    for (const auto& info : players) {
+        int32_t latency = 0;
+        int32_t throughput = 0;
+        if (info.playerId > 0 && mServer) {
+            mServer->GetConnectionInfo(info.playerId, latency, throughput);
+        }
+        std::ostringstream line;
+        line << "#" << info.playerId << " " << info.name;
+        if (!info.identity.empty()) {
+            line << " [" << info.identity << "]";
+        }
+        line << " " << latency << " ms";
+        SendCommandResult(player, line.str());
+    }
+}
+
+void ShipwrightNetworkRuntime::SendIdentityList(int32_t player, const char* label,
+                                                 const std::vector<std::string>& identities) {
+    SendCommandResult(player, std::string(label) + ": " + std::to_string(identities.size()));
+    for (const std::string& identity : identities) {
+        SendCommandResult(player, identity);
+    }
+}
+
+void ShipwrightNetworkRuntime::RunServerCommand(int32_t player, const std::string& command) {
+    if (player != 0 && !IsGameMaster(player)) {
+        SendCommandResult(player, "admin only command");
+        return;
+    }
+
+    const size_t split = command.find(' ');
+    const std::string name = command.substr(0, split);
+    const std::string argument = split == std::string::npos ? std::string() : TrimWhitespace(command.substr(split + 1));
+    std::string result;
+
+    if (_stricmp(name.c_str(), "/kick") == 0 || _stricmp(name.c_str(), "/ban") == 0) {
+        const bool ban = _stricmp(name.c_str(), "/ban") == 0;
+        if (argument.empty()) {
+            SendCommandResult(player, std::string("usage: ") + name + " name|identity|netId");
+            return;
+        }
+        if (!KickPlayer(argument, ban, result)) {
+            SendCommandResult(player, result);
+        }
+        return;
+    }
+    if (_stricmp(name.c_str(), "/gm") == 0 || _stricmp(name.c_str(), "/admin") == 0) {
+        if (argument.empty()) {
+            SendCommandResult(player, "usage: /admin name|identity|netId");
+            return;
+        }
+        if (!GrantGameMaster(argument, result)) {
+            SendCommandResult(player, result);
+        }
+        return;
+    }
+    if (_stricmp(name.c_str(), "/ungm") == 0 || _stricmp(name.c_str(), "/unadmin") == 0) {
+        if (argument.empty()) {
+            SendCommandResult(player, "usage: /unadmin name|identity|netId");
+            return;
+        }
+        if (!RevokeGameMaster(argument, result)) {
+            SendCommandResult(player, result);
+        }
+        return;
+    }
+    if (_stricmp(name.c_str(), "/unban") == 0) {
+        if (argument.empty()) {
+            SendCommandResult(player, "usage: /unban identity");
+            return;
+        }
+        if (!UnbanIdentity(argument, result)) {
+            SendCommandResult(player, result);
+        }
+        return;
+    }
+    if (_stricmp(name.c_str(), "/users") == 0) {
+        SendUsersList(player);
+        return;
+    }
+    if (_stricmp(name.c_str(), "/admins") == 0 || _stricmp(name.c_str(), "/gms") == 0) {
+        SendIdentityList(player, "admins", mGameMasterIdentities);
+        return;
+    }
+    if (_stricmp(name.c_str(), "/bans") == 0) {
+        SendIdentityList(player, "bans", mBannedIdentities);
+        return;
+    }
+    if (_stricmp(name.c_str(), "/help") == 0) {
+        SendCommandResult(player, "admin commands: /users /kick /ban /unban /admin /unadmin /admins /bans");
+        return;
+    }
+    SendCommandResult(player, "unknown command: " + name);
+}
+
 void ShipwrightNetworkRuntime::QueueChat(const std::string& text, ChatLineKind kind) {
     const std::string clean = SanitiseChatLine(text);
     if (clean.empty()) {
@@ -1499,6 +1867,7 @@ bool ShipwrightNetworkRuntime::SanePlayerState(const NetworkPlayerStatePacket& p
                value[0] * value[0] + value[1] * value[1] + value[2] * value[2] <= radius * radius;
     };
     const bool fishingPoleActive = packet.itemAction == NETWORK_PLAYER_ITEM_FISHING_POLE;
+    const bool fishingVisualActive = fishingPoleActive && packet.fishingState != 0;
     const bool saneFishing = packet.fishingState <= 5 &&
                              packet.fishingLineSpooled < NETWORK_FISHING_LINE_POINT_COUNT &&
                              saneFloat(packet.fishingRodTipOffset[0]) &&
@@ -1513,7 +1882,7 @@ bool ShipwrightNetworkRuntime::SanePlayerState(const NetworkPlayerStatePacket& p
                                saneFloat(packet.fishingLineScale) &&
                                saneFloat(packet.fishingLineGravity) && packet.fishingLineGravity >= 0.0f &&
                                packet.fishingLineGravity <= 520.0f &&
-                             (!fishingPoleActive ||
+                             (!fishingVisualActive ||
                               (packet.fishingLineScale >= 0.0001f && packet.fishingLineScale <= 0.01f)) &&
                               packet.fishingLureType <= 2 &&
                               packet.fishingLineHooked <= 1 && packet.fishingSinkingLureSegmentIndex < 20 &&
@@ -1521,10 +1890,10 @@ bool ShipwrightNetworkRuntime::SanePlayerState(const NetworkPlayerStatePacket& p
                               packet.fishingFishActive <= 1 &&
                              packet.fishingFishIsLoach <= 1 && saneFloat(packet.fishingFishLength) &&
                              packet.fishingFishLength >= 0.0f && packet.fishingFishLength <= 100.0f &&
-                             offsetInside(packet.fishingRodTipOffset, 250.0f) &&
-                             offsetInside(packet.fishingLureOffset, 1600.0f) &&
-                             offsetInside(packet.fishingLureDrawOffset, 1600.0f) &&
-                             offsetInside(packet.fishingFishOffset, 1800.0f) &&
+                             offsetInside(packet.fishingRodTipOffset, 5000.0f) &&
+                             offsetInside(packet.fishingLureOffset, 5000.0f) &&
+                             offsetInside(packet.fishingLureDrawOffset, 5000.0f) &&
+                             offsetInside(packet.fishingFishOffset, 5000.0f) &&
                              (fishingPoleActive ||
                               (packet.fishingState == 0 && packet.fishingFishActive == 0)) &&
                              (!packet.fishingFishActive ||
@@ -1676,6 +2045,11 @@ void ShipwrightNetworkRuntime::SanitizeServerFishingState(
         state.fishingFishActive = 0;
         state.fishingFishIsLoach = 0;
         state.fishingFishLength = 0.0f;
+        state.fishingFishRoomId = 0;
+        state.fishingFishActorParams = 0;
+        state.fishingFishHomeX = 0;
+        state.fishingFishHomeY = 0;
+        state.fishingFishHomeZ = 0;
         std::fill(std::begin(state.fishingFishOffset), std::end(state.fishingFishOffset), 0.0f);
         std::fill(std::begin(state.fishingFishRot), std::end(state.fishingFishRot), 0);
         for (auto& limb : state.fishingFishLimbRot) {
@@ -1727,8 +2101,44 @@ void ShipwrightNetworkRuntime::SanitizeServerFishingState(
     state.fishingLureOffset[1] = lure.y - state.y;
     state.fishingLureOffset[2] = lure.z - state.z;
 
-    const auto owned = std::find_if(mFishOwners.begin(), mFishOwners.end(),
-                                    [player](const auto& entry) { return entry.second == player; });
+    auto owned = std::find_if(mFishOwners.begin(), mFishOwners.end(),
+                              [player](const auto& entry) { return entry.second == player; });
+    if (owned == mFishOwners.end() && state.fishingFishActive && state.fishingState >= 4) {
+        const auto requestedKey = std::make_tuple(
+            state.sceneId, state.fishingFishRoomId, 0xFE, state.fishingFishActorParams,
+            state.fishingFishHomeX, state.fishingFishHomeY, state.fishingFishHomeZ);
+        const bool requestedLoach = state.fishingFishActorParams == 401 ||
+                                    state.fishingFishActorParams == 115 ||
+                                    state.fishingFishActorParams == 116;
+        bool validIdentity = false;
+        if (state.fishingFishActorParams == 400 || state.fishingFishActorParams == 401) {
+            const ServerWildFishSpawn* requestedFish = mCollisionWorld.FindWildFish(
+                state.sceneId, state.fishingFishActorParams, state.fishingFishHomeX,
+                state.fishingFishHomeY, state.fishingFishHomeZ);
+            validIdentity = requestedFish != nullptr && requestedFish->isLoach == requestedLoach;
+        } else {
+            constexpr int32_t fishingPondScene = 0x49;
+            const PondFishIdentity* requestedFish = FindPondFishIdentity(state.fishingFishActorParams);
+            validIdentity = state.sceneId == fishingPondScene && requestedFish != nullptr &&
+                            state.fishingFishHomeX == requestedFish->homeX &&
+                            state.fishingFishHomeY == requestedFish->homeY &&
+                            state.fishingFishHomeZ == requestedFish->homeZ &&
+                            requestedFish->isLoach == requestedLoach;
+        }
+
+        const ServerVec3 requestedFishPos{ state.x + state.fishingFishOffset[0],
+                                           state.y + state.fishingFishOffset[1],
+                                           state.z + state.fishingFishOffset[2] };
+        const float fishDx = requestedFishPos.x - lure.x;
+        const float fishDy = requestedFishPos.y - lure.y;
+        const float fishDz = requestedFishPos.z - lure.z;
+        const auto existingOwner = mFishOwners.find(requestedKey);
+        if (validIdentity && fishDx * fishDx + fishDy * fishDy + fishDz * fishDz <= 250.0f * 250.0f &&
+            (existingOwner == mFishOwners.end() || existingOwner->second == player)) {
+            mFishOwners[requestedKey] = player;
+            owned = mFishOwners.find(requestedKey);
+        }
+    }
     if (owned == mFishOwners.end() || !state.fishingFishActive || state.fishingState < 4) {
         clearFish();
         return;
@@ -1784,6 +2194,11 @@ void ShipwrightNetworkRuntime::SanitizeServerFishingState(
     state.fishingFishActive = 1;
     state.fishingFishIsLoach = static_cast<unsigned char>(isLoach);
     state.fishingFishLength = canonicalLength;
+    state.fishingFishRoomId = roomId;
+    state.fishingFishActorParams = actorParams;
+    state.fishingFishHomeX = homeX;
+    state.fishingFishHomeY = homeY;
+    state.fishingFishHomeZ = homeZ;
 }
 
 bool ShipwrightNetworkRuntime::AcceptServerActorEvent(int32_t player, NetworkActorEventPacket packet) {
@@ -1845,7 +2260,7 @@ bool ShipwrightNetworkRuntime::AcceptServerActorEvent(int32_t player, NetworkAct
                 }
                 canonicalLength = DeterministicPondFishLength(packet.sceneId, packet.actorParams, *fish);
             }
-            if (state->second.fishingState < 4 || dx * dx + dy * dy + dz * dz > 80.0f * 80.0f ||
+            if (state->second.fishingState < 4 || dx * dx + dy * dy + dz * dz > 250.0f * 250.0f ||
                 mFishOwners.count(objectKey) != 0) {
                 return false;
             }
