@@ -98,22 +98,22 @@ typedef struct {
 std::shared_ptr<Fast::Fast3dWindow> sohFast3dWindow;
 static OTRVersion DetectOTRVersion(std::string path, bool isMq);
 static bool VerifyArchiveVersion(OTRVersion version);
-std::string portArchivePath = "";
-static bool sohArchiveVersionMatch = false;
+std::string gameArchivePath = "";
+static bool gameArchiveVersionMatch = false;
 
 OTRGlobals::OTRGlobals() {
     context = Ship::Context::CreateUninitializedInstance("Ship of Harkinian", appShortName, "shipofharkinian.json");
 
-    portArchivePath = Ship::Context::LocateFileAcrossAppDirs("soh.o2r");
-    OTRVersion portArchiveVersion = DetectOTRVersion("soh.o2r", false);
-    sohArchiveVersionMatch = portArchiveVersion.major == gBuildVersionMajor &&
-                             portArchiveVersion.minor == gBuildVersionMinor &&
-                             portArchiveVersion.patch == gBuildVersionPatch;
+    gameArchivePath = Ship::Context::LocateFileAcrossAppDirs("oot.o2r", appShortName);
+    OTRVersion gameArchiveVersion = DetectOTRVersion("oot.o2r", false);
+    gameArchiveVersionMatch = gameArchiveVersion.major == gBuildVersionMajor &&
+                              gameArchiveVersion.minor == gBuildVersionMinor &&
+                              gameArchiveVersion.patch == gBuildVersionPatch;
 
     context->InitConfiguration();
     context->InitConsoleVariables();
 
-    context->InitResourceManager({ portArchivePath }, {}, 3, true);
+    context->InitResourceManager({ gameArchivePath }, {}, 3, true);
     context->InitConsole();
 
     sohFast3dWindow = std::make_shared<Fast::Fast3dWindow>();
@@ -124,23 +124,18 @@ void OTRGlobals::RunExtract(int argc, char* argv[]) {
     (void)argc;
     (void)argv;
 
-    const bool hasVanillaArchive =
-        std::filesystem::exists(Ship::Context::LocateFileAcrossAppDirs("oot.o2r", appShortName));
-    const bool hasMasterQuestArchive =
-        std::filesystem::exists(Ship::Context::LocateFileAcrossAppDirs("oot-mq.o2r", appShortName));
-
-    if (sohArchiveVersionMatch && (hasVanillaArchive || hasMasterQuestArchive)) {
+    if (gameArchiveVersionMatch && std::filesystem::exists(gameArchivePath)) {
         return;
     }
 
     std::string title;
     std::string message;
-    if (!sohArchiveVersionMatch) {
-        title = std::filesystem::exists(portArchivePath) ? "Outdated soh.o2r" : "Missing soh.o2r";
-        message = "The required soh.o2r archive is missing or incompatible.";
+    if (std::filesystem::exists(gameArchivePath)) {
+        title = "Outdated oot.o2r";
+        message = "The required combined oot.o2r archive is incompatible.";
     } else {
         title = "No Ocarina of Time archive";
-        message = "Run the OTRExporter on your supported Ocarina of Time ROM, then place oot.o2r beside the game.";
+        message = "The required combined oot.o2r archive is missing.";
     }
 
 #ifdef _WIN32
@@ -151,15 +146,6 @@ void OTRGlobals::RunExtract(int argc, char* argv[]) {
     std::exit(EXIT_FAILURE);
 }
 void OTRGlobals::Initialize() {
-    std::string mqPath = Ship::Context::LocateFileAcrossAppDirs("oot-mq.o2r", appShortName);
-    if (std::filesystem::exists(mqPath)) {
-        context->GetResourceManager()->GetArchiveManager()->AddArchive(mqPath);
-    }
-    std::string ootPath = Ship::Context::LocateFileAcrossAppDirs("oot.o2r", appShortName);
-    if (std::filesystem::exists(ootPath)) {
-        context->GetResourceManager()->GetArchiveManager()->AddArchive(ootPath);
-    }
-
     std::unordered_set<uint32_t> ValidHashes = {
         OOT_PAL_MQ,     OOT_NTSC_JP_MQ, OOT_NTSC_US_MQ, OOT_PAL_GC_MQ_DBG, OOT_NTSC_US_10,
         OOT_NTSC_US_11, OOT_NTSC_US_12, OOT_PAL_10,     OOT_PAL_11,        OOT_NTSC_JP_GC_CE,

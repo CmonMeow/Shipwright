@@ -1,6 +1,3 @@
-C:/Users/CmonMeow/Desktop/Shipwright/build/x64/CMakeFiles/ExtractAssets.dir
-C:/Users/CmonMeow/Desktop/Shipwright/build/x64/CMakeFiles/ExtractAssetHeaders.dir
-C:/Users/CmonMeow/Desktop/Shipwright/build/x64/CMakeFiles/GenerateSohOtr.dir
 C:/Users/CmonMeow/Desktop/Shipwright/build/x64/CMakeFiles/PACKAGE.dir
 C:/Users/CmonMeow/Desktop/Shipwright/build/x64/CMakeFiles/INSTALL.dir
 C:/Users/CmonMeow/Desktop/Shipwright/build/x64/CMakeFiles/ALL_BUILD.dir
@@ -27,16 +24,6 @@ C:/Users/CmonMeow/Desktop/Shipwright/build/x64/libultraship/src/libultraship/CMa
 C:/Users/CmonMeow/Desktop/Shipwright/build/x64/libultraship/src/libultraship/CMakeFiles/INSTALL.dir
 C:/Users/CmonMeow/Desktop/Shipwright/build/x64/libultraship/src/ship/CMakeFiles/PACKAGE.dir
 C:/Users/CmonMeow/Desktop/Shipwright/build/x64/libultraship/src/ship/CMakeFiles/INSTALL.dir
-C:/Users/CmonMeow/Desktop/Shipwright/build/x64/ZAPD/CMakeFiles/ZAPDLib.dir
-C:/Users/CmonMeow/Desktop/Shipwright/build/x64/ZAPD/CMakeFiles/ZAPD.dir
-C:/Users/CmonMeow/Desktop/Shipwright/build/x64/ZAPD/CMakeFiles/PACKAGE.dir
-C:/Users/CmonMeow/Desktop/Shipwright/build/x64/ZAPD/CMakeFiles/INSTALL.dir
-C:/Users/CmonMeow/Desktop/Shipwright/build/x64/OTRExporter/CMakeFiles/PACKAGE.dir
-C:/Users/CmonMeow/Desktop/Shipwright/build/x64/OTRExporter/CMakeFiles/INSTALL.dir
-C:/Users/CmonMeow/Desktop/Shipwright/build/x64/OTRExporter/CMakeFiles/ALL_BUILD.dir
-C:/Users/CmonMeow/Desktop/Shipwright/build/x64/OTRExporter/OTRExporter/CMakeFiles/OTRExporter.dir
-C:/Users/CmonMeow/Desktop/Shipwright/build/x64/OTRExporter/OTRExporter/CMakeFiles/PACKAGE.dir
-C:/Users/CmonMeow/Desktop/Shipwright/build/x64/OTRExporter/OTRExporter/CMakeFiles/INSTALL.dir
 C:/Users/CmonMeow/Desktop/Shipwright/build/x64/soh/CMakeFiles/pathengine_network.dir
 C:/Users/CmonMeow/Desktop/Shipwright/build/x64/soh/CMakeFiles/pathengine_network_test.dir
 C:/Users/CmonMeow/Desktop/Shipwright/build/x64/soh/CMakeFiles/pathengine_collision_test.dir

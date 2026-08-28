@@ -1,0 +1,2 @@
+﻿C:\Program Files\Microsoft Visual Studio\18\Community\MSBuild\Microsoft\VC\v180\Microsoft.CppBuild.targets(551,5): warning MSB8028: The intermediate directory (pathengine_dedicated_server.dir\Release\) contains files shared from another project (pathengine_dedicated_server.vcxproj).  This can lead to incorrect clean and rebuild behavior.
+  pathengine_dedicated_server.vcxproj -> C:\Users\CmonMeow\Desktop\Shipwright\x64\Release\PathEngineServer.exe

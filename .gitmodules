@@ -4,6 +4,3 @@
 [submodule "ZAPDTR"]
 	path = ZAPDTR
 	url = https://github.com/harbourmasters/ZAPDTR
-[submodule "OTRExporter"]
-	path = OTRExporter
-	url = https://github.com/harbourmasters/OTRExporter

@@ -34,16 +34,13 @@ You can verify you have dumped a supported copy of the game by using the compati
 * You should see a notification saying `Processing OTR`, then, once the process is complete, you should get a notification saying `OTR Successfully Generated`, then the game should start.
 
 #### Nintendo Switch
-* Run one of the PC releases to generate an `oot.o2r` and/or `oot-mq.o2r` file. After launching the game on PC, you will be able to find these files in the same directory as `soh.exe` or `soh.appimage`. On macOS, these files can be found in `/Users/<username>/Library/Application Support/com.shipofharkinian.soh/`
-* Copy the files to your sd card
+* Copy the combined `oot.o2r` archive from the PC release directory to your SD card.
 ```
 sdcard
 └── switch
     └── soh
-        ├── oot-mq.o2r
         ├── oot.o2r
-        ├── soh.nro
-        └── soh.o2r
+        └── soh.nro
 ```
 * Launch via Atmosphere's `Game+R` launcher method.
 

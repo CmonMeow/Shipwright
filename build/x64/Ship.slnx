@@ -5,46 +5,6 @@
 		<BuildType Name="Release"/>
 		<Platform Name="x64"/>
 	</Configurations>
-	<Project Path="ExtractAssetHeaders.vcxproj" Type="8bc9ceb8-8b4a-11d0-8d11-00a0c91bc942" Id="03cf5c8d-d86b-31fe-88a3-da46c38adb65">
-		<BuildDependency Project="ZAPD/ZAPD.vcxproj"/>
-		<BuildDependency Project="ZERO_CHECK.vcxproj"/>
-		<Build Solution="Debug|*" Project="false"/>
-		<Build Solution="Release|*" Project="false"/>
-	</Project>
-	<Project Path="ExtractAssets.vcxproj" Type="8bc9ceb8-8b4a-11d0-8d11-00a0c91bc942" Id="a77b64cf-9f6f-3170-b682-55504376cee5">
-		<BuildDependency Project="ZAPD/ZAPD.vcxproj"/>
-		<BuildDependency Project="ZERO_CHECK.vcxproj"/>
-		<Build Solution="Debug|*" Project="false"/>
-		<Build Solution="Release|*" Project="false"/>
-	</Project>
-	<Project Path="GenerateSohOtr.vcxproj" Type="8bc9ceb8-8b4a-11d0-8d11-00a0c91bc942" Id="db0c1018-2bc8-3bbf-98ee-65b3371cd0df">
-		<BuildDependency Project="ZAPD/ZAPD.vcxproj"/>
-		<BuildDependency Project="ZERO_CHECK.vcxproj"/>
-		<Build Solution="Debug|*" Project="false"/>
-		<Build Solution="Release|*" Project="false"/>
-	</Project>
-	<Project Path="OTRExporter/OTRExporter/OTRExporter.vcxproj" Type="8bc9ceb8-8b4a-11d0-8d11-00a0c91bc942" Id="e64ba336-ad65-38a9-8ed7-cc576ee085c4">
-		<BuildDependency Project="ZERO_CHECK.vcxproj"/>
-		<BuildDependency Project="libultraship/src/libultraship.vcxproj"/>
-	</Project>
-	<Project Path="ZAPD/ZAPD.vcxproj" Type="8bc9ceb8-8b4a-11d0-8d11-00a0c91bc942" Id="daf8d553-6536-3166-81fe-186fe1f3d495">
-		<BuildDependency Project="ZAPD/ZAPDLib.vcxproj"/>
-		<BuildDependency Project="ZERO_CHECK.vcxproj"/>
-		<BuildDependency Project="libultraship/libgfxd.vcxproj"/>
-		<BuildDependency Project="libultraship/src/libultraship.vcxproj"/>
-		<BuildDependency Project="_deps/prism-build/prism.vcxproj"/>
-		<BuildDependency Project="libultraship/stb.vcxproj"/>
-		<BuildDependency Project="_deps/stormlib-build/storm.vcxproj"/>
-	</Project>
-	<Project Path="ZAPD/ZAPDLib.vcxproj" Type="8bc9ceb8-8b4a-11d0-8d11-00a0c91bc942" Id="eb0c1e29-45db-36b6-8d66-052b54325d34">
-		<BuildDependency Project="OTRExporter/OTRExporter/OTRExporter.vcxproj"/>
-		<BuildDependency Project="ZERO_CHECK.vcxproj"/>
-		<BuildDependency Project="libultraship/libgfxd.vcxproj"/>
-		<BuildDependency Project="libultraship/src/libultraship.vcxproj"/>
-		<BuildDependency Project="_deps/prism-build/prism.vcxproj"/>
-		<BuildDependency Project="libultraship/stb.vcxproj"/>
-		<BuildDependency Project="_deps/stormlib-build/storm.vcxproj"/>
-	</Project>
 	<Project Path="libultraship/libgfxd.vcxproj" Type="8bc9ceb8-8b4a-11d0-8d11-00a0c91bc942" Id="e336f0a6-2313-316a-a6db-31a934f64874">
 		<BuildDependency Project="ZERO_CHECK.vcxproj"/>
 	</Project>
@@ -78,9 +38,6 @@
 	</Project>
 	<Folder Name="/CMakePredefinedTargets/">
 		<Project Path="ALL_BUILD.vcxproj" Type="8bc9ceb8-8b4a-11d0-8d11-00a0c91bc942" Id="9b7f8073-6431-3172-99c4-e4e3e24ffcaa">
-			<BuildDependency Project="OTRExporter/OTRExporter/OTRExporter.vcxproj"/>
-			<BuildDependency Project="ZAPD/ZAPD.vcxproj"/>
-			<BuildDependency Project="ZAPD/ZAPDLib.vcxproj"/>
 			<BuildDependency Project="ZERO_CHECK.vcxproj"/>
 			<BuildDependency Project="libultraship/libgfxd.vcxproj"/>
 			<BuildDependency Project="libultraship/src/libultraship.vcxproj"/>

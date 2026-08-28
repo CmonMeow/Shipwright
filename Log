@@ -18,3 +18,5 @@ Network runtime: player 1 state sequence 118 changed dead -> alive
 NetServer:finishDestroyPlayer (waiting for ProcessPlayers) - session.playerCount=1, playerId=1, |users|=0
 Runtime host summary: chat=1 private=1 state=1 poseEquipment=1 bowString=1 voice=1 actor=1 arrowPitch=1 arrowDamage=1 clientMelee=1 hostMeleeSeen=1 fishCanonical=1 impact=1 aimedPitch=1 stuckPitch=1 stuckPersistent=1 response=1 complete=1
 Secure runtime self-test passed: encrypted state, chat, private E2E text, and voice
+Dedicated collision self-test failed: scenes=1 triangles=781 wildFish=4
+Dedicated collision self-test passed: scenes=1 triangles=781 wildFish=4

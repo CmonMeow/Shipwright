@@ -39,25 +39,7 @@ endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("C:/Users/CmonMeow/Desktop/Shipwright/build/x64/ZAPD/cmake_install.cmake")
-endif()
-
-if(NOT CMAKE_INSTALL_LOCAL_ONLY)
-  # Include the install script for the subdirectory.
-  include("C:/Users/CmonMeow/Desktop/Shipwright/build/x64/OTRExporter/cmake_install.cmake")
-endif()
-
-if(NOT CMAKE_INSTALL_LOCAL_ONLY)
-  # Include the install script for the subdirectory.
   include("C:/Users/CmonMeow/Desktop/Shipwright/build/x64/soh/cmake_install.cmake")
-endif()
-
-if(CMAKE_INSTALL_COMPONENT STREQUAL "ship" OR NOT CMAKE_INSTALL_COMPONENT)
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/./assets/" TYPE DIRECTORY FILES "C:/Users/CmonMeow/Desktop/Shipwright/soh/assets/extractor/")
-endif()
-
-if(CMAKE_INSTALL_COMPONENT STREQUAL "ship" OR NOT CMAKE_INSTALL_COMPONENT)
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/./assets/xml" TYPE DIRECTORY FILES "C:/Users/CmonMeow/Desktop/Shipwright/soh/assets/xml/")
 endif()
 
 if(CMAKE_INSTALL_COMPONENT STREQUAL "ship" OR NOT CMAKE_INSTALL_COMPONENT)

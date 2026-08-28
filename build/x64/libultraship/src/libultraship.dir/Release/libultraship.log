@@ -1,3 +1,1 @@
-﻿cl : command line  warning D9025: overriding '/W3' with '/w'
-  gfx_win32_opengl.cpp
-  libultraship.vcxproj -> C:\Users\CmonMeow\Desktop\Shipwright\x64\Release\libultraship.lib
+﻿  libultraship.vcxproj -> C:\Users\CmonMeow\Desktop\Shipwright\x64\Release\libultraship.lib

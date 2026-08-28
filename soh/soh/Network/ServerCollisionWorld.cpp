@@ -202,12 +202,6 @@ bool ServerCollisionWorld::LoadDefaultArchive() {
     };
     for (const auto& candidate : candidates) {
         if (std::filesystem::is_regular_file(candidate) && LoadArchive(candidate)) {
-            // Port-owned scenes such as test01 are bundled into soh.o2r so
-            // clients and the dedicated server consume one authoritative copy.
-            const std::filesystem::path portAssets = candidate.parent_path() / "soh.o2r";
-            if (std::filesystem::is_regular_file(portAssets)) {
-                LoadArchive(portAssets);
-            }
             return true;
         }
     }

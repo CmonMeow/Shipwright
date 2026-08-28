@@ -93,10 +93,6 @@ if (NOT TARGET libultraship)
     add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/../libultraship ${CMAKE_BINARY_DIR}/libultraship)
 endif()
 
-if (NOT TARGET ZAPDLib)
-    add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/../ZAPDTR/ZAPD ${CMAKE_BINARY_DIR}/ZAPD)
-endif()
-
 set(PROJECT_NAME soh)
 
 ################################################################################
@@ -742,13 +738,13 @@ endif()
 
 if (CMAKE_SYSTEM_NAME STREQUAL "Windows")
 INSTALL(FILES $<TARGET_PDB_FILE:soh> DESTINATION ./debug COMPONENT ship)
-INSTALL(FILES ${CMAKE_BINARY_DIR}/soh/soh.o2r DESTINATION . COMPONENT ship)
+INSTALL(FILES ${CMAKE_BINARY_DIR}/soh/oot.o2r DESTINATION . COMPONENT ship)
 endif()
 
 if("${CMAKE_SYSTEM_NAME}" STREQUAL "Darwin")
 configure_file( ${CMAKE_CURRENT_SOURCE_DIR}/macosx/Info.plist.in ${CMAKE_BINARY_DIR}/macosx/Info.plist @ONLY)
 INSTALL(TARGETS soh DESTINATION ../MacOS COMPONENT ship)
-INSTALL(FILES ${CMAKE_BINARY_DIR}/soh/soh.o2r DESTINATION ../Resources COMPONENT ship)
+INSTALL(FILES ${CMAKE_BINARY_DIR}/soh/oot.o2r DESTINATION ../Resources COMPONENT ship)
 endif()
 
 if(CMAKE_SYSTEM_NAME MATCHES "NintendoSwitch|CafeOS")
