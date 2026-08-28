@@ -394,7 +394,7 @@ void ResourceFactoryXMLSoundFontV0::ParseSfxTable(AudioSoundFont* soundFont, tin
     soundFont->soundFont.numSfx = soundFont->soundEffects.size();
 }
 
-std::vector<AdsrEnvelope> SOH::ResourceFactoryXMLSoundFontV0::ParseEnvelopes(AudioSoundFont* soundFont,
+std::vector<AdsrEnvelope> SOH::ResourceFactoryXMLSoundFontV0::ParseEnvelopes(AudioSoundFont*,
                                                                              tinyxml2::XMLElement* element,
                                                                              unsigned int* count) {
     std::vector<AdsrEnvelope> envelopes;

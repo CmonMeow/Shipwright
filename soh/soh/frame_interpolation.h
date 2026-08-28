@@ -48,7 +48,7 @@ void FrameInterpolation_RecordMatrixSetTranslateRotateYXZ(float translateX, floa
 
 void FrameInterpolation_RecordMatrixMtxFToMtx(MtxF* src, Mtx* dest);
 
-void FrameInterpolation_RecordMatrixToMtx(Mtx* dest, char* file, int32_t line);
+void FrameInterpolation_RecordMatrixToMtx(Mtx* dest);
 
 void FrameInterpolation_RecordMatrixReplaceRotation(MtxF* mf);
 

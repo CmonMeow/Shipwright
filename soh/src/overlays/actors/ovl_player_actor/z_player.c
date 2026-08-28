@@ -8018,9 +8018,8 @@ int32_t func_80842DF4(PlayState* play, Player* this) {
                             int32_t sp48 = func_80041F10(&play->colCtx, sp78, sp74);
 
                             if (sp48 == 0xA) {
-                                CollisionCheck_SpawnShieldParticlesWood(play, &sp5C, &this->actor.projectedPos);
+                                CollisionCheck_PlayWoodSoundAt(&this->actor.projectedPos);
                             } else {
-                                CollisionCheck_SpawnShieldParticles(play, &sp5C);
                                 if (sp48 == 0xB) {
                                     Player_PlaySfx(this, NA_SE_IT_WALL_HIT_SOFT);
                                 } else {
@@ -11019,7 +11018,6 @@ void Player_Draw(Actor* thisx, PlayState* play2) {
         }
 
         if (this->unk_862 > 0) {
-            Player_DrawGetItem(play, this);
         }
     }
 
@@ -13766,7 +13764,7 @@ void func_8085283C(PlayState* play, Player* this, CsCmdActorCue* cue) {
         func_80852944(play, this, cue);
         // This is when link picks up the sword in the Ganon fight
     } else if (this->av2.actionVar2 == 0) {
-        Item_Give(play, ITEM_SWORD_MASTER);
+        Item_Give(ITEM_SWORD_MASTER);
         func_80846720(play, this, 0);
     } else {
         func_8084E988(this);

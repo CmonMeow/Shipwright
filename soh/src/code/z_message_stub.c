@@ -23,43 +23,11 @@ void Message_ContinueTextbox(PlayState* play, uint16_t textId) {
     Message_StartTextbox(play, textId, NULL);
 }
 
-void Message_OpenText(PlayState* play, uint16_t textId) {
-    Message_StartTextbox(play, textId, NULL);
-}
-
 void func_8010BD58(PlayState* play, uint16_t textId) {
-    Message_StartTextbox(play, textId, NULL);
-}
-
-void func_8010BD88(PlayState* play, uint16_t textId) {
     Message_StartTextbox(play, textId, NULL);
 }
 
 uint8_t Message_GetState(MessageContext* msgCtx) {
     (void)msgCtx;
     return TEXT_STATE_NONE;
-}
-
-void Message_UpdateOcarinaGame(PlayState* play) {
-    (void)play;
-}
-
-void Message_Update(PlayState* play) {
-    (void)play;
-}
-
-void Message_Draw(PlayState* play) {
-    (void)play;
-}
-
-void Message_Decode(PlayState* play) {
-    (void)play;
-}
-
-void Message_DrawText(PlayState* play, Gfx** gfxP) {
-    (void)play;
-    (void)gfxP;
-}
-
-void Message_SetTables(void) {
 }

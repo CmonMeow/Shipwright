@@ -1496,9 +1496,9 @@ void CollisionCheck_HitSolid(PlayState* play, ColliderInfo* info, Collider* coll
     } else if (flags == TOUCH_SFX_NORMAL) { // collider->colType == COLTYPE_METAL
         EffectSsHitMark_SpawnFixedScale(play, EFFECT_HITMARK_METAL, hitPos);
         if (collider->actor == NULL) {
-            CollisionCheck_SpawnShieldParticlesMetal(play, hitPos);
+            CollisionCheck_PlayMetalSound();
         } else {
-            CollisionCheck_SpawnShieldParticlesMetalSound(play, hitPos, &collider->actor->projectedPos);
+            CollisionCheck_PlayMetalSoundAt(&collider->actor->projectedPos);
         }
     } else if (flags == TOUCH_SFX_HARD) {
         EffectSsHitMark_SpawnFixedScale(play, EFFECT_HITMARK_WHITE, hitPos);
@@ -1573,11 +1573,10 @@ void CollisionCheck_HitEffects(PlayState* play, Collider* at, ColliderInfo* atIn
             CollisionCheck_HitSolid(play, atInfo, ac, hitPos);
         } else if (sHitInfo[ac->colType].effect == HIT_WOOD) {
             if (at->actor == NULL) {
-                CollisionCheck_SpawnShieldParticles(play, hitPos);
                 Audio_PlaySoundGeneral(NA_SE_IT_REFLECTION_WOOD, &gSfxDefaultPos, 4, &gSfxDefaultFreqAndVolScale,
                                        &gSfxDefaultFreqAndVolScale, &gSfxDefaultReverb);
             } else {
-                CollisionCheck_SpawnShieldParticlesWood(play, hitPos, &at->actor->projectedPos);
+                CollisionCheck_PlayWoodSoundAt(&at->actor->projectedPos);
             }
         } else if (sHitInfo[ac->colType].effect != HIT_NONE) {
             EffectSsHitMark_SpawnFixedScale(play, sHitInfo[ac->colType].effect, hitPos);
@@ -3182,45 +3181,17 @@ void Collider_UpdateSpheres(int32_t limb, ColliderJntSph* collider) {
  * No actor has a collision type that spawns water droplets.
  */
 
-/**
- * Spawns streaks of light from hits against solid objects
- */
-void CollisionCheck_SpawnShieldParticles(PlayState* play, Vec3f* v) {
-    (void)play;
-    (void)v;
-}
-
-/**
- * Spawns streaks of light and makes a metallic sound
- */
-void CollisionCheck_SpawnShieldParticlesMetal(PlayState* play, Vec3f* v) {
-    CollisionCheck_SpawnShieldParticles(play, v);
+void CollisionCheck_PlayMetalSound(void) {
     Audio_PlaySoundGeneral(NA_SE_IT_SHIELD_REFLECT_SW, &gSfxDefaultPos, 4, &gSfxDefaultFreqAndVolScale,
                            &gSfxDefaultFreqAndVolScale, &gSfxDefaultReverb);
 }
 
-/**
- * Spawns streaks of light and makes a metallic sound at the specified position
- */
-void CollisionCheck_SpawnShieldParticlesMetalSound(PlayState* play, Vec3f* v, Vec3f* pos) {
-    CollisionCheck_SpawnShieldParticles(play, v);
+void CollisionCheck_PlayMetalSoundAt(Vec3f* pos) {
     Audio_PlaySoundGeneral(NA_SE_IT_SHIELD_REFLECT_SW, pos, 4, &gSfxDefaultFreqAndVolScale, &gSfxDefaultFreqAndVolScale,
                            &gSfxDefaultReverb);
 }
 
-/**
- * Spawns streaks of light and makes a metallic sound
- */
-void CollisionCheck_SpawnShieldParticlesMetal2(PlayState* play, Vec3f* v) {
-    CollisionCheck_SpawnShieldParticlesMetal(play, v);
-}
-
-/**
- * Spawns streaks of light and makes a wooden sound
- */
-void CollisionCheck_SpawnShieldParticlesWood(PlayState* play, Vec3f* v, Vec3f* actorPos) {
-    (void)play;
-    (void)v;
+void CollisionCheck_PlayWoodSoundAt(Vec3f* actorPos) {
     Audio_PlaySoundGeneral(NA_SE_IT_REFLECTION_WOOD, actorPos, 4, &gSfxDefaultFreqAndVolScale,
                            &gSfxDefaultFreqAndVolScale, &gSfxDefaultReverb);
 }

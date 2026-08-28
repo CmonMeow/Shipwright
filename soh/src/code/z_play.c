@@ -287,7 +287,6 @@ void Play_Init(GameState* thisx) {
     } else {
         play->unk_1242B = 0;
     }
-    Interface_SetSceneRestrictions(play);
     Environment_PlaySceneSequence(play);
     gSaveContext.seqId = play->sequenceCtx.seqId;
     gSaveContext.natureAmbienceId = play->sequenceCtx.natureAmbienceId;
@@ -479,7 +478,6 @@ void Play_Update(PlayState* play) {
                 GameOver_Update(play);
             } else {
                 PLAY_LOG(3733);
-                Message_Update(play);
             }
 
             PLAY_LOG(3737);
@@ -529,7 +527,6 @@ void Play_Update(PlayState* play) {
 }
 
 void Play_DrawOverlayElements(PlayState* play) {
-    Message_Draw(play);
 }
 
 void Play_Draw(PlayState* play) {
@@ -1059,7 +1056,7 @@ int32_t Play_CameraChangeSetting(PlayState* play, int16_t camId, int16_t setting
     return Camera_ChangeSetting(Play_GetCamera(play, camId), setting);
 }
 
-void func_800C08AC(PlayState* play, int16_t camId, int16_t arg2) {
+void func_800C08AC(PlayState* play, int16_t camId) {
     int16_t camIdx = (camId == SUBCAM_ACTIVE) ? play->activeCamera : camId;
     int16_t i;
 
@@ -1074,7 +1071,6 @@ void func_800C08AC(PlayState* play, int16_t camId, int16_t arg2) {
         }
     }
 
-    (void)arg2;
     Play_ChangeCameraStatus(play, MAIN_CAM, CAM_STAT_ACTIVE);
     play->cameraPtrs[MAIN_CAM]->childCamIdx = play->cameraPtrs[MAIN_CAM]->parentCamIdx = SUBCAM_FREE;
 }
@@ -1153,7 +1149,7 @@ void Play_LoadToLastEntrance(PlayState* play) {
         (play->sceneNum == SCENE_GANONS_TOWER_COLLAPSE_EXTERIOR) ||
         (play->sceneNum == SCENE_INSIDE_GANONS_CASTLE_COLLAPSE) || (play->sceneNum == SCENE_GANON_BOSS)) {
         play->nextEntranceIndex = ENTR_GANONS_TOWER_COLLAPSE_EXTERIOR_0;
-        Item_Give(play, ITEM_SWORD_MASTER);
+        Item_Give(ITEM_SWORD_MASTER);
     } else if ((gSaveContext.entranceIndex == ENTR_HYRULE_FIELD_11) ||
                (gSaveContext.entranceIndex == ENTR_HYRULE_FIELD_12) ||
                (gSaveContext.entranceIndex == ENTR_HYRULE_FIELD_13) ||

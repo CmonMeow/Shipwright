@@ -33,6 +33,7 @@ uint8_t osAppNmiBuffer[2048];
 // }
 
 OSId osGetThreadId(OSThread* thread) {
+    return 0;
 }
 
 OSPri osGetThreadPri(OSThread* thread) {
@@ -45,33 +46,43 @@ void osCreatePiManager(OSPri pri, OSMesgQueue* cmdQ, OSMesg* cmdBuf, int32_t cmd
 }
 
 int32_t osPfsFreeBlocks(OSPfs* pfs, int32_t* leftoverBytes) {
+    return 0;
 }
 
 int32_t osEPiWriteIo(OSPiHandle* handle, uint32_t devAddr, uint32_t data) {
+    return 0;
 }
 
 int32_t osPfsReadWriteFile(OSPfs* pfs, int32_t fileNo, uint8_t flag, int32_t offset, ptrdiff_t size, uint8_t* data) {
+    return 0;
 }
 
 int32_t osPfsDeleteFile(OSPfs* pfs, uint16_t companyCode, uint32_t gameCode, uint8_t* gameName, uint8_t* extName) {
+    return 0;
 }
 
 int32_t osPfsFileState(OSPfs* pfs, int32_t fileNo, OSPfsState* state) {
+    return 0;
 }
 
 int32_t osPfsInitPak(OSMesgQueue* mq, OSPfs* pfs, int32_t channel) {
+    return 0;
 }
 
 int32_t __osPfsCheckRamArea(OSPfs* pfs) {
+    return 0;
 }
 
 int32_t osPfsChecker(OSPfs* pfs) {
+    return 0;
 }
 
 int32_t osPfsFindFile(OSPfs* pfs, uint16_t companyCode, uint32_t gameCode, uint8_t* gameName, uint8_t* extName, int32_t* fileNo) {
+    return 0;
 }
 
 int32_t osPfsAllocateFile(OSPfs* pfs, uint16_t companyCode, uint32_t gameCode, uint8_t* gameName, uint8_t* extName, int32_t length, int32_t* fileNo) {
+    return 0;
 }
 
 OSIntMask osSetIntMask(OSIntMask a) {
@@ -79,13 +90,6 @@ OSIntMask osSetIntMask(OSIntMask a) {
 }
 
 int32_t osAfterPreNMI(void) {
-    return 0;
-}
-
-int32_t osProbeRumblePak(OSMesgQueue* ctrlrqueue, OSPfs* pfs, uint32_t channel) {
-}
-
-int32_t osSetRumble(OSPfs* pfs, uint32_t vibrate) {
     return 0;
 }
 
@@ -108,6 +112,7 @@ void osInvalICache(void* vaddr, int32_t nbytes) {
 }
 
 int32_t osContStartQuery(OSMesgQueue* mq) {
+    return 0;
 }
 
 void osContGetQuery(OSContStatus* data) {
@@ -121,24 +126,21 @@ void __osSetFpcCsr(uint32_t a0) {
 }
 
 int32_t __osDisableInt(void) {
+    return 0;
 }
 
 void __osRestoreInt(int32_t a0) {
 }
 
 OSThread* __osGetActiveQueue(void) {
+    return NULL;
 }
 
 OSThread* __osGetCurrFaultedThread(void) {
+    return NULL;
 }
 
 uint32_t osMemSize = 1024 * 1024 * 1024;
-
-void Audio_osInvalDCache(void* buf, int32_t size) {
-}
-
-void Audio_osWritebackDCache(void* mem, int32_t size) {
-}
 
 int32_t osAiSetFrequency(uint32_t freq) {
     // this is based off the math from the original method
@@ -190,25 +192,26 @@ void osInvalDCache(void* vaddr, int32_t nbytes) {
 void osWritebackDCacheAll(void) {
 }
 
-void Audio_SetBGM(uint32_t bgmId) {
-}
-
 int32_t osContSetCh(uint8_t ch) {
+    return 0;
 }
 
 uint32_t osDpGetStatus(void) {
+    return 0;
 }
 
 void osDpSetStatus(uint32_t status) {
 }
 
 uint32_t __osSpGetStatus() {
+    return 0;
 }
 
 void __osSpSetStatus(uint32_t status) {
 }
 
 OSPiHandle* osDriveRomInit() {
+    return NULL;
 }
 
 void __osInitialize_common(void) {
@@ -228,15 +231,13 @@ int32_t _Printf(PrintCallback a, void* arg, const char* fmt, va_list ap) {
 
     vsnprintf(buffer, sizeof(buffer), fmt, ap);
     a(arg, buffer, strlen(buffer));
+    return 0;
 }
 
 void osSpTaskLoad(OSTask* task) {
 }
 
 void osSpTaskStartGo(OSTask* task) {
-}
-
-void osSetUpMempakWrite(int32_t channel, OSPifRam* buf) {
 }
 
 uint32_t osGetMemSize(void) {
@@ -251,9 +252,11 @@ void osSpTaskYield(void) {
 }
 
 int32_t osStopTimer(OSTimer* timer) {
+    return 0;
 }
 
 OSYieldResult osSpTaskYielded(OSTask* task) {
+    return 0;
 }
 
 void osViExtendVStart(uint32_t arg0) {

@@ -1,9 +1,9 @@
-c:\users\cmonmeow\desktop\shipwright\build\x64\_deps\prism-build\prism.dir\release\gv.obj
-c:\users\cmonmeow\desktop\shipwright\build\x64\_deps\prism-build\prism.dir\release\processor.obj
-c:\users\cmonmeow\desktop\shipwright\build\x64\_deps\prism-build\prism.dir\release\lexer.obj
-c:\users\cmonmeow\desktop\shipwright\build\x64\_deps\prism-build\prism.dir\release\ast.obj
-c:\users\cmonmeow\desktop\shipwright\build\x64\_deps\prism-build\prism.dir\release\main.obj
 c:\users\cmonmeow\desktop\shipwright\build\x64\_deps\prism-build\prism.dir\release\invoke.obj
+c:\users\cmonmeow\desktop\shipwright\build\x64\_deps\prism-build\prism.dir\release\processor.obj
+c:\users\cmonmeow\desktop\shipwright\build\x64\_deps\prism-build\prism.dir\release\gv.obj
+c:\users\cmonmeow\desktop\shipwright\build\x64\_deps\prism-build\prism.dir\release\lexer.obj
+c:\users\cmonmeow\desktop\shipwright\build\x64\_deps\prism-build\prism.dir\release\main.obj
+c:\users\cmonmeow\desktop\shipwright\build\x64\_deps\prism-build\prism.dir\release\ast.obj
 c:\users\cmonmeow\desktop\shipwright\build\x64\_deps\prism-build\cmakefiles\generate.stamp
 c:\users\cmonmeow\desktop\shipwright\build\x64\_deps\prism-build\release\prism.lib
 c:\users\cmonmeow\desktop\shipwright\build\x64\_deps\prism-build\prism.dir\release\prism.tlog\cl.command.1.tlog

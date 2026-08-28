@@ -200,7 +200,7 @@ void View_SetDistortionScale(View* view, float scaleX, float scaleY, float scale
     view->distortionScale.z = scaleZ;
 }
 
-int32_t View_SetDistortionSpeed(View* view, float speed) {
+void View_SetDistortionSpeed(View* view, float speed) {
     view->distortionSpeed = speed;
 }
 

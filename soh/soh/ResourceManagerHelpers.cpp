@@ -74,16 +74,16 @@ extern "C" uint32_t ResourceMgr_GetGameRegion(int index) {
     }
 }
 
-uint32_t IsSceneMasterQuest(int16_t sceneNum) {
+uint32_t IsSceneMasterQuest() {
     return false;
 }
 
-extern "C" uint32_t ResourceMgr_IsSceneMasterQuest(int16_t sceneNum) {
-    return IsSceneMasterQuest(sceneNum);
+extern "C" uint32_t ResourceMgr_IsSceneMasterQuest(int16_t) {
+    return IsSceneMasterQuest();
 }
 
 extern "C" uint32_t ResourceMgr_IsGameMasterQuest() {
-    return gPlayState != NULL ? IsSceneMasterQuest(gPlayState->sceneNum) : 0;
+    return gPlayState != NULL ? IsSceneMasterQuest() : 0;
 }
 
 extern "C" void ResourceMgr_LoadDirectory(const char* resName) {

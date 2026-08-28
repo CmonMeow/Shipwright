@@ -15,7 +15,7 @@ std::shared_ptr<Ship::IResource> EndMarkerFactory::ReadResource(std::shared_ptr<
 }
 
 std::shared_ptr<Ship::IResource> EndMarkerFactoryXML::ReadResource(std::shared_ptr<Ship::ResourceInitData> initData,
-                                                                   tinyxml2::XMLElement* reader) {
+                                                                   tinyxml2::XMLElement*) {
     auto endMarker = std::make_shared<EndMarker>(initData);
 
     endMarker->cmdId = SceneCommandID::EndMarker;

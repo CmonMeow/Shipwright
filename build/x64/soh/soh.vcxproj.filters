@@ -568,9 +568,6 @@
     <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\src\code\z_vr_box_draw.c">
       <Filter>src\code</Filter>
     </ClCompile>
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\src\libultra\gu\coss.c">
-      <Filter>src\libultra</Filter>
-    </ClCompile>
     <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\src\libultra\gu\guLookAt.c">
       <Filter>src\libultra</Filter>
     </ClCompile>
@@ -590,12 +587,6 @@
       <Filter>src\libultra</Filter>
     </ClCompile>
     <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\src\libultra\gu\rotate.c">
-      <Filter>src\libultra</Filter>
-    </ClCompile>
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\src\libultra\gu\sins.c">
-      <Filter>src\libultra</Filter>
-    </ClCompile>
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\src\libultra\gu\sintable.c">
       <Filter>src\libultra</Filter>
     </ClCompile>
     <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\src\overlays\actors\ovl_En_Arrow\z_en_arrow.c">

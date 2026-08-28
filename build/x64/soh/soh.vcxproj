@@ -951,10 +951,6 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(AdditionalOptions) /w</AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\src\libultra\gu\coss.c">
-      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(AdditionalOptions) /w</AdditionalOptions>
-      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
-    </ClCompile>
     <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\src\libultra\gu\guLookAt.c">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(AdditionalOptions) /w</AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
@@ -980,14 +976,6 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
     </ClCompile>
     <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\src\libultra\gu\rotate.c">
-      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(AdditionalOptions) /w</AdditionalOptions>
-      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
-    </ClCompile>
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\src\libultra\gu\sins.c">
-      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(AdditionalOptions) /w</AdditionalOptions>
-      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
-    </ClCompile>
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\src\libultra\gu\sintable.c">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(AdditionalOptions) /w</AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
     </ClCompile>

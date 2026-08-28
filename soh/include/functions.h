@@ -467,7 +467,6 @@ void func_80033E88(Actor* actor, PlayState* play, int16_t arg2, int16_t arg3);
 float Rand_ZeroFloat(float f);
 float Rand_CenteredFloat(float f);
 void Actor_DrawDoorLock(PlayState* play, int32_t arg1, int32_t arg2);
-void func_8003424C(PlayState* play, Vec3f* arg1);
 void Actor_SetColorFilter(Actor* actor, int16_t colorFlag, int16_t colorIntensityMax, int16_t xluFlag, int16_t duration);
 Hilite* func_800342EC(Vec3f* object, PlayState* play);
 Hilite* func_8003435C(Vec3f* object, PlayState* play);
@@ -773,11 +772,9 @@ void Collider_SetQuadVertices(ColliderQuad* collider, Vec3f* a, Vec3f* b, Vec3f*
 void Collider_SetTrisVertices(ColliderTris* collider, int32_t index, Vec3f* a, Vec3f* b, Vec3f* c);
 void Collider_SetTrisDim(PlayState* play, ColliderTris* collider, int32_t index, ColliderTrisElementDimInit* init);
 void Collider_UpdateSpheres(int32_t limb, ColliderJntSph* collider);
-void CollisionCheck_SpawnShieldParticles(PlayState* play, Vec3f* v);
-void CollisionCheck_SpawnShieldParticlesMetal(PlayState* play, Vec3f* v);
-void CollisionCheck_SpawnShieldParticlesMetalSound(PlayState* play, Vec3f* v, Vec3f* actorPos);
-void CollisionCheck_SpawnShieldParticlesMetal2(PlayState* play, Vec3f* v);
-void CollisionCheck_SpawnShieldParticlesWood(PlayState* play, Vec3f* b, Vec3f* actorPos);
+void CollisionCheck_PlayMetalSound(void);
+void CollisionCheck_PlayMetalSoundAt(Vec3f* actorPos);
+void CollisionCheck_PlayWoodSoundAt(Vec3f* actorPos);
 int32_t CollisionCheck_CylSideVsLineSeg(float radius, float height, float offset, Vec3f* actorPos, Vec3f* itemPos,
                                     Vec3f* itemProjPos, Vec3f* out1, Vec3f* out2);
 uint8_t CollisionCheck_GetSwordDamage(int32_t dmgFlags, PlayState* play);
@@ -930,13 +927,12 @@ VecSph* OLib_Vec3fToVecSphGeo(VecSph* arg0, Vec3f* arg1);
 VecSph* OLib_Vec3fDiffToVecSphGeo(VecSph* arg0, Vec3f* a, Vec3f* b);
 Vec3f* OLib_Vec3fDiffRad(Vec3f* dest, Vec3f* a, Vec3f* b);
 void Interface_ChangeAlpha(uint16_t alphaType);
-void Interface_SetSceneRestrictions(PlayState* play);
 void Inventory_SwapAgeEquipment(void);
 void Interface_InitHorsebackArchery(PlayState* play);
 void func_800849EC(PlayState* play);
 void Interface_LoadItemIcon1(PlayState* play, uint16_t button);
 void Interface_LoadItemIcon2(PlayState* play, uint16_t button);
-uint8_t Item_Give(PlayState* play, uint8_t item);
+uint8_t Item_Give(uint8_t item);
 uint8_t Item_CheckObtainability(uint8_t item);
 void Inventory_DeleteItem(uint16_t item, uint16_t invSlot);
 int32_t Inventory_ReplaceItem(PlayState* play, uint16_t oldItem, uint16_t newItem);
@@ -1004,7 +1000,6 @@ int32_t Player_OverrideLimbDrawNetwork(PlayState* play, int32_t limbIndex, Gfx**
 void Player_PostLimbDrawNetwork(PlayState* play, int32_t limbIndex, Gfx** dList, Vec3s* rot, void* data);
 uint8_t func_80090480(PlayState* play, ColliderQuad* collider, WeaponInfo* weaponDim, Vec3f* newTip,
                  Vec3f* newBase);
-void Player_DrawGetItem(PlayState* play, Player* player);
 void Player_PostLimbDrawGameplay(PlayState* play, int32_t limbIndex, Gfx** dList, Vec3s* rot, void* data);
 uint32_t func_80091738(PlayState* play, uint8_t* segment, SkelAnime* skelAnime);
 void PreNMI_Init(GameState* thisx);
@@ -1162,9 +1157,9 @@ void LinkAnimation_BlendToMorph(PlayState* play, SkelAnime* skelAnime, LinkAnima
                                 float frame1, LinkAnimationHeader* animation2, float frame2, float weight, Vec3s* blendTable);
 void LinkAnimation_EndLoop(SkelAnime* skelAnime);
 int32_t LinkAnimation_OnFrame(SkelAnime* skelAnime, float frame);
-int32_t SkelAnime_Init(PlayState* play, SkelAnime* skelAnime, SkeletonHeader* skeletonHeaderSeg,
+void SkelAnime_Init(PlayState* play, SkelAnime* skelAnime, SkeletonHeader* skeletonHeaderSeg,
                    AnimationHeader* animation, Vec3s* jointTable, Vec3s* morphTable, int32_t limbCount);
-int32_t SkelAnime_InitFlex(PlayState* play, SkelAnime* skelAnime, FlexSkeletonHeader* skeletonHeaderSeg,
+void SkelAnime_InitFlex(PlayState* play, SkelAnime* skelAnime, FlexSkeletonHeader* skeletonHeaderSeg,
                        AnimationHeader* animation, Vec3s* jointTable, Vec3s* morphTable, int32_t limbCount);
 int32_t SkelAnime_InitSkin(PlayState* play, SkelAnime* skelAnime, SkeletonHeader* skeletonHeaderSeg,
                        AnimationHeader* animation);
@@ -1240,7 +1235,7 @@ void View_SetViewport(View* view, Viewport* viewport);
 void View_GetViewport(View* view, Viewport* viewport);
 void View_SetDistortionOrientation(View* view, float rotX, float rotY, float rotZ);
 void View_SetDistortionScale(View* view, float scaleX, float scaleY, float scaleZ);
-int32_t View_SetDistortionSpeed(View* view, float speed);
+void View_SetDistortionSpeed(View* view, float speed);
 void View_InitDistortion(View* view);
 void View_ClearDistortion(View* view);
 void View_SetDistortion(View* view, Vec3f orientation, Vec3f scale, float speed);
@@ -1303,7 +1298,7 @@ int32_t Play_SetCameraRoll(PlayState* play, int16_t camId, int16_t roll);
 void Play_CopyCamera(PlayState* play, int16_t camId1, int16_t camId2);
 int32_t func_800C0808(PlayState* play, int16_t camId, Player* player, int16_t arg3);
 int32_t Play_CameraChangeSetting(PlayState* play, int16_t camId, int16_t arg2);
-void func_800C08AC(PlayState* play, int16_t camId, int16_t arg2);
+void func_800C08AC(PlayState* play, int16_t camId);
 void Play_SaveSceneFlags(PlayState* play);
 void Play_SetupRespawnPoint(PlayState* play, int32_t respawnMode, int32_t playerParams);
 void Play_TriggerVoidOut(PlayState* play);
@@ -1985,7 +1980,6 @@ void Sleep_Msec(uint32_t ms);
 void Sleep_Sec(uint32_t sec);
 int32_t osPfsFreeBlocks(OSPfs* pfs, int32_t* leftoverBytes);
 void guScale(Mtx* m, float x, float y, float z);
-int16_t sins(uint16_t);
 OSTask* _VirtualToPhysicalTask(OSTask* intp);
 void osSpTaskLoad(OSTask* task);
 void osSpTaskStartGo(OSTask* task);
@@ -2048,7 +2042,6 @@ int32_t osPfsDeleteFile(OSPfs* pfs, uint16_t companyCode, uint32_t gameCode, uin
 int32_t __osPfsReleasePages(OSPfs* pfs, __OSInode* inode, uint8_t initialPage, uint8_t bank, __OSInodeUnit* finalPage);
 void guOrthoF(float[4][4], float, float, float, float, float, float, float);
 void guOrtho(Mtx*, float, float, float, float, float, float, float);
-int16_t coss(uint16_t);
 void osViSetEvent(OSMesgQueue* mq, OSMesg m, uint32_t retraceCount);
 int32_t osPfsIsPlug(OSMesgQueue* mq, uint8_t* pattern);
 void __osPfsRequestData(uint8_t poll);
@@ -2086,18 +2079,13 @@ OSThread* __osGetCurrFaultedThread(void);
 uint32_t* osViGetCurrentFramebuffer(void);
 int32_t __osSpSetPc(void* pc);
 void* oot_memmove(void* dest, const void* src, size_t len);
-void Message_UpdateOcarinaGame(PlayState* play);
 uint8_t Message_ShouldAdvance(PlayState* play);
 uint8_t Message_ShouldAdvanceSilent(PlayState* play);
 void Message_CloseTextbox(PlayState*);
 void Message_StartTextbox(PlayState* play, uint16_t textId, Actor* actor);
 void Message_ContinueTextbox(PlayState* play, uint16_t textId);
 void func_8010BD58(PlayState* play, uint16_t arg1);
-void func_8010BD88(PlayState* play, uint16_t arg1);
 uint8_t Message_GetState(MessageContext* msgCtx);
-void Message_Draw(PlayState* play);
-void Message_Update(PlayState* play);
-void Message_SetTables(void);
 void GameOver_Init(PlayState* play);
 void GameOver_Update(PlayState* play);
 void func_80110990(PlayState* play);
@@ -2112,9 +2100,6 @@ void Heaps_Free(void);
 CollisionHeader* BgCheck_GetCollisionHeader(CollisionContext* colCtx, int32_t bgId);
 
 // Exposing these methods to leverage them from the file select screen to render messages
-void Message_OpenText(PlayState* play, uint16_t textId);
-void Message_Decode(PlayState* play);
-void Message_DrawText(PlayState* play, Gfx** gfxP);
 
 // #region SOH [General]
 int32_t Ship_CalcShouldDrawAndUpdate(PlayState* play, Actor* actor, Vec3f* projectedPos, float projectedW, bool* shouldDraw,

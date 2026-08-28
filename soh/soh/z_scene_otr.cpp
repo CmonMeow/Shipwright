@@ -24,7 +24,7 @@
 #include "soh/resource/type/scenecommand/SetSoundSettings.h"
 #include "soh/resource/type/scenecommand/SetEchoSettings.h"
 
-extern Ship::IResource* OTRPlay_LoadFile(PlayState* play, const char* fileName);
+extern Ship::IResource* OTRPlay_LoadFile(const char* fileName);
 extern "C" int32_t Object_Spawn(ObjectContext* objectCtx, int16_t objectId);
 int32_t OTRScene_ExecuteCommands(PlayState* play, SOH::Scene* scene);
 

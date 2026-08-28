@@ -9,7 +9,7 @@ void OTRPlay_InitScene(PlayState* play, int32_t spawn);
 int32_t OTRScene_ExecuteCommands(PlayState* play, SOH::Scene* scene);
 
 // LUS::OTRResource* OTRPlay_LoadFile(PlayState* play, RomFile* file) {
-Ship::IResource* OTRPlay_LoadFile(PlayState* play, const char* fileName) {
+Ship::IResource* OTRPlay_LoadFile(const char* fileName) {
     auto res = Ship::Context::GetInstance()->GetResourceManager()->LoadResource(fileName);
     return res.get();
 }
@@ -26,7 +26,7 @@ extern "C" void OTRPlay_SpawnScene(PlayState* play, int32_t sceneId, int32_t spa
 
     const std::string scenePath = "scenes/shared/test01_scene/test01_scene";
 
-    play->sceneSegment = OTRPlay_LoadFile(play, scenePath.c_str());
+    play->sceneSegment = OTRPlay_LoadFile(scenePath.c_str());
 
     // The reduced runtime has no fallback scene.
     if (play->sceneSegment == nullptr) {

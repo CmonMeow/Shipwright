@@ -96,7 +96,7 @@ typedef struct {
 } OTRVersion;
 
 std::shared_ptr<Fast::Fast3dWindow> sohFast3dWindow;
-static OTRVersion DetectOTRVersion(std::string path, bool isMq);
+static OTRVersion DetectOTRVersion(std::string path);
 static bool VerifyArchiveVersion(OTRVersion version);
 std::string gameArchivePath = "";
 static bool gameArchiveVersionMatch = false;
@@ -105,7 +105,7 @@ OTRGlobals::OTRGlobals() {
     context = Ship::Context::CreateUninitializedInstance("Ship of Harkinian", appShortName, "shipofharkinian.json");
 
     gameArchivePath = Ship::Context::LocateFileAcrossAppDirs("oot.o2r", appShortName);
-    OTRVersion gameArchiveVersion = DetectOTRVersion("oot.o2r", false);
+    OTRVersion gameArchiveVersion = DetectOTRVersion("oot.o2r");
     gameArchiveVersionMatch = gameArchiveVersion.major == gBuildVersionMajor &&
                               gameArchiveVersion.minor == gBuildVersionMinor &&
                               gameArchiveVersion.patch == gBuildVersionPatch;
@@ -395,7 +395,7 @@ OTRVersion ReadPortVersionFromOTR(std::string otrPath) {
 
 // Checks the program version stored in the otr and compares the major value to soh
 // For Windows/Mac/Linux if the version doesn't match, offer to
-OTRVersion DetectOTRVersion(std::string fileName, bool isMQ) {
+OTRVersion DetectOTRVersion(std::string fileName) {
     bool isOtrOld = false;
     std::string otrPath = Ship::Context::LocateFileAcrossAppDirs(fileName, appShortName);
 
@@ -600,7 +600,7 @@ extern "C" uint16_t OTRGetPixelDepth(float x, float y) {
 
 std::map<std::string, SoundFontSample*> cachedCustomSFs;
 
-extern "C" SoundFontSample* ReadCustomSample(const char* path) {
+extern "C" SoundFontSample* ReadCustomSample(const char*) {
     return nullptr;
     /*
     if (!ExtensionCache.contains(path))
@@ -664,7 +664,7 @@ extern "C" uint32_t OTRGetCurrentHeight() {
     return OTRGlobals::Instance->context->GetWindow()->GetHeight();
 }
 
-extern "C" void OTRControllerCallback(uint8_t rumble) {
+extern "C" void OTRControllerCallback(uint8_t) {
 }
 
 extern "C" float OTRGetAspectRatio() {
@@ -734,7 +734,7 @@ extern "C" void AudioPlayer_Play(const uint8_t* buf, uint32_t len) {
     AudioPlayerPlayFrame(buf, len);
 }
 
-extern "C" int Controller_ShouldRumble(size_t slot) {
+extern "C" int Controller_ShouldRumble(size_t) {
     return 0;
 }
 

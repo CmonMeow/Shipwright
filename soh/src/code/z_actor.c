@@ -3433,10 +3433,6 @@ void Actor_DrawDoorLock(PlayState* play, int32_t frame, int32_t type) {
     CLOSE_DISPS(play->state.gfxCtx);
 }
 
-void func_8003424C(PlayState* play, Vec3f* arg1) {
-    CollisionCheck_SpawnShieldParticlesMetal(play, arg1);
-}
-
 void Actor_SetColorFilter(Actor* actor, int16_t colorFlag, int16_t colorIntensityMax, int16_t xluFlag, int16_t duration) {
     if ((colorFlag == 0x8000) && !(colorIntensityMax & 0x8000)) {
         Audio_PlayActorSound2(actor, NA_SE_EN_LIGHT_ARROW_HIT);

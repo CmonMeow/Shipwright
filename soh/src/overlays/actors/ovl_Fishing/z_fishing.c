@@ -5234,7 +5234,7 @@ static void Fishing_StopCinematic(PlayState* play) {
         mainCam->eye = sCameraEye;
         mainCam->eyeNext = sCameraEye;
         mainCam->at = sCameraAt;
-        func_800C08AC(play, sSubCamId, 0);
+        func_800C08AC(play, sSubCamId);
         sSubCamId = 0;
     }
 
@@ -5792,7 +5792,7 @@ void Fishing_UpdateOwner(Actor* thisx, PlayState* play2) {
             mainCam->eye = sCameraEye;
             mainCam->eyeNext = sCameraEye;
             mainCam->at = sCameraAt;
-            func_800C08AC(play, sSubCamId, 0);
+            func_800C08AC(play, sSubCamId);
             PlayerAction_Reset(play);
             sFishingPlayerCinematicState = 0;
             sSubCamId = 0;
@@ -5833,7 +5833,7 @@ void Fishing_UpdateOwner(Actor* thisx, PlayState* play2) {
                 mainCam->eye = sCameraEye;
                 mainCam->eyeNext = sCameraEye;
                 mainCam->at = sCameraAt;
-                func_800C08AC(play, sSubCamId, 0);
+                func_800C08AC(play, sSubCamId);
                 PlayerAction_Reset(play);
                 Player_SetCsActionWithHaltedActors(play, &this->actor, 7);
                 sFishingPlayerCinematicState = 0;
@@ -5936,7 +5936,7 @@ void Fishing_UpdateOwner(Actor* thisx, PlayState* play2) {
                         mainCam->eye = sCameraEye;
                         mainCam->eyeNext = sCameraEye;
                         mainCam->at = sCameraAt;
-                        func_800C08AC(play, sSubCamId, 0);
+                        func_800C08AC(play, sSubCamId);
                         PlayerAction_Reset(play);
                         Player_SetCsActionWithHaltedActors(play, &this->actor, 7);
                         sFishingPlayerCinematicState = 0;

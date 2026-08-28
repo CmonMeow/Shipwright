@@ -1404,7 +1404,7 @@ int32_t LinkAnimation_OnFrame(SkelAnime* skelAnime, float frame) {
 /**
  * Initializes a normal skeleton to a looping animation, dynamically allocating the frame tables if not provided.
  */
-int32_t SkelAnime_Init(PlayState* play, SkelAnime* skelAnime, SkeletonHeader* skeletonHeaderSeg, AnimationHeader* animation,
+void SkelAnime_Init(PlayState* play, SkelAnime* skelAnime, SkeletonHeader* skeletonHeaderSeg, AnimationHeader* animation,
                    Vec3s* jointTable, Vec3s* morphTable, int32_t limbCount) {
     if (ResourceMgr_OTRSigCheck(skeletonHeaderSeg))
         skeletonHeaderSeg = ResourceMgr_LoadSkeletonByName(skeletonHeaderSeg, skelAnime);
@@ -1436,7 +1436,7 @@ int32_t SkelAnime_Init(PlayState* play, SkelAnime* skelAnime, SkeletonHeader* sk
 /**
  * Initializes a flex skeleton to a looping animation, dynamically allocating the frame tables if not given.
  */
-int32_t SkelAnime_InitFlex(PlayState* play, SkelAnime* skelAnime, FlexSkeletonHeader* skeletonHeaderSeg,
+void SkelAnime_InitFlex(PlayState* play, SkelAnime* skelAnime, FlexSkeletonHeader* skeletonHeaderSeg,
                        AnimationHeader* animation, Vec3s* jointTable, Vec3s* morphTable, int32_t limbCount) {
     if (ResourceMgr_OTRSigCheck(skeletonHeaderSeg) != 0)
         skeletonHeaderSeg = ResourceMgr_LoadSkeletonByName(skeletonHeaderSeg, skelAnime);

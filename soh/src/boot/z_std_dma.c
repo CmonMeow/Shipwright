@@ -425,6 +425,7 @@ int32_t DmaMgr_SendRequest2(DmaRequest* req, uintptr_t ram, uintptr_t vrom, size
     req->line = line;
     DmaMgr_SendRequestImpl(req, ram, vrom, size, unk5, queue, msg);
 #endif
+    return 0;
 }
 
 int32_t DmaMgr_SendRequest1(void* ram0, uintptr_t vrom, size_t size, const char* file, int32_t line) {

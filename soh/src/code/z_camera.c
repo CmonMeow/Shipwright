@@ -1984,7 +1984,7 @@ int32_t Camera_Parallel1(Camera* camera) {
     camera->fov = Camera_LERPCeilF(para1->fovTarget, camera->fov, camera->fovUpdateRate, 1.0f);
     camera->roll = Camera_LERPCeilS(0, camera->roll, 0.5, 0xA);
     camera->atLERPStepScale = Camera_ClampLERPScale(camera, sp6A ? para1->unk_1C : para1->unk_14);
-    //! @bug No return
+    return true;
 }
 
 int32_t Camera_Parallel2(Camera* camera) {
@@ -2003,7 +2003,7 @@ int32_t Camera_Parallel3(Camera* camera) {
     if (val & 2) {
         camera->unk_14C |= 0x10;
     }
-    //! @bug doesn't return
+    return true;
 }
 
 int32_t Camera_Parallel4(Camera* camera) {
@@ -5843,7 +5843,7 @@ int32_t Camera_Demo7(Camera* camera) {
         camera->unk_14C |= 0x1000;
         camera->animState++;
     }
-    //! @bug doesn't return
+    return true;
 }
 
 int32_t Camera_Demo8(Camera* camera) {

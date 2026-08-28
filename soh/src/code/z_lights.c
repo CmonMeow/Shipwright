@@ -184,8 +184,7 @@ LightNode* Lights_FindBufSlot() {
     return node;
 }
 
-// return type must not be void to match
-int32_t Lights_FreeNode(LightNode* light) {
+void Lights_FreeNode(LightNode* light) {
     if (light != NULL) {
         sLightsBuffer.numOccupied--;
         light->info = NULL;

@@ -1386,10 +1386,6 @@ void func_800906D4(PlayState* play, Player* this, Vec3f* newTipPos) {
     }
 }
 
-void Player_DrawGetItem(PlayState* play, Player* this) {
-    (void)play;
-    (void)this;
-}
 void func_80090A28(Player* this, Vec3f* vecs) {
     D_8012608C.x = D_80126080.x;
 

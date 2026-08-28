@@ -574,7 +574,7 @@ void FrameInterpolation_RecordMatrixMtxFToMtx(MtxF* src, Mtx* dest) {
     append(Op::MatrixMtxFToMtx).matrix_mtxf_to_mtx = { *src, dest };
 }
 
-void FrameInterpolation_RecordMatrixToMtx(Mtx* dest, char* file, int32_t line) {
+void FrameInterpolation_RecordMatrixToMtx(Mtx* dest) {
     if (!is_recording)
         return;
     auto& d = append(Op::MatrixToMtx).matrix_to_mtx = { dest };

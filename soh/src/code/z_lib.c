@@ -2,11 +2,29 @@
 #include <math.h>
 
 float Math_CosS(int16_t angle) {
-    return coss(angle) * (1.0f / INT16_MAX);
+    switch ((uint16_t)angle) {
+        case 0x0000:
+            return 1.0f;
+        case 0x4000:
+        case 0xC000:
+            return 0.0f;
+        case 0x8000:
+            return -1.0f;
+    }
+    return cosf(BINANG_TO_RAD(angle));
 }
 
 float Math_SinS(int16_t angle) {
-    return sins(angle) * (1.0f / INT16_MAX);
+    switch ((uint16_t)angle) {
+        case 0x0000:
+        case 0x8000:
+            return 0.0f;
+        case 0x4000:
+            return 1.0f;
+        case 0xC000:
+            return -1.0f;
+    }
+    return sinf(BINANG_TO_RAD(angle));
 }
 
 /**

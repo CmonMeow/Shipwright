@@ -512,11 +512,6 @@ void func_80083108(PlayState* play) {
     gSaveContext.forceRisingButtonAlphas = 0;
 }
 
-void Interface_SetSceneRestrictions(PlayState* play) {
-    (void)play;
-}
-
-
 void Inventory_SwapAgeEquipment(void) {
     // This port is adult-only; age swaps cannot replace the fixed C-button loadout.
     gSaveContext.equips.buttonItems[0] = ITEM_NONE;
@@ -572,9 +567,7 @@ void Interface_LoadItemIcon2(PlayState* play, uint16_t button) {
  * @param item
  * @return uint8_t
  */
-uint8_t Item_Give(PlayState* play, uint8_t item) {
-    (void)play;
-
+uint8_t Item_Give(uint8_t item) {
     switch (item) {
         case ITEM_SWORD_MASTER:
             gSaveContext.inventory.equipment |=
