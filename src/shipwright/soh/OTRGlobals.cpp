@@ -102,7 +102,7 @@ std::string gameArchivePath = "";
 static bool gameArchiveVersionMatch = false;
 
 OTRGlobals::OTRGlobals() {
-    context = Ship::Context::CreateUninitializedInstance("Ship of Harkinian", appShortName, "shipofharkinian.json");
+    context = Ship::Context::CreateUninitializedInstance("Ship of Harkinian", appShortName, "settings.json");
 
     gameArchivePath = Ship::Context::LocateFileAcrossAppDirs("oot.o2r", appShortName);
     OTRVersion gameArchiveVersion = DetectOTRVersion("oot.o2r");
@@ -828,11 +828,11 @@ bool SoH_HandleConfigDrop(char* filePath) {
     return false;
 }
 
-extern "C" uint32_t Ship_GetInterpolationFPS() {
+extern "C" uint32_t Interpolation_GetFPS() {
     return OTRGlobals::Instance->GetInterpolationFPS();
 }
 
 // Number of interpolated frames
-extern "C" uint32_t Ship_GetInterpolationFrameCount() {
-    return ceil((float)Ship_GetInterpolationFPS() / 20.0f);
+extern "C" uint32_t Interpolation_GetFrameCount() {
+    return ceil((float)Interpolation_GetFPS() / 20.0f);
 }

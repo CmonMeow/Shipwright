@@ -1308,13 +1308,14 @@ static uint8_t D_80854384[2] = { PLAYER_MWA_BIG_SPIN_1H, PLAYER_MWA_BIG_SPIN_2H 
 static uint16_t sItemButtons[] = { BTN_CLEFT, BTN_CDOWN, BTN_CRIGHT, BTN_CUP };
 static int32_t sPendingFishingItem = -1;
 
-extern int32_t Ship_ConsumeToggleWeapon(void);
-extern int32_t Ship_ConsumeEvade(void);
-extern int32_t Ship_GetSelectedWeaponSlot(void);
-extern int32_t Ship_ConsumeWeaponSelection(void);
-extern int32_t Ship_IsBowAimHeld(void);
-extern int32_t Ship_IsBowUseBuffered(void);
-extern void Ship_AcknowledgeBowUse(void);
+extern int32_t PCInput_ConsumeToggleWeapon(void);
+extern int32_t PCInput_ConsumeEvade(void);
+extern void PCInput_ClearBufferedActions(void);
+extern int32_t PCInput_GetSelectedWeaponSlot(void);
+extern int32_t PCInput_ConsumeWeaponSelection(void);
+extern int32_t PCInput_IsBowAimHeld(void);
+extern int32_t PCInput_IsBowUseBuffered(void);
+extern void PCInput_AcknowledgeBowUse(void);
 
 static uint16_t D_80854398[] = { NA_SE_IT_BOW_DRAW, NA_SE_IT_SLING_DRAW, NA_SE_IT_HOOKSHOT_READY };
 
@@ -2068,7 +2069,7 @@ static int32_t Player_UsesPCParallelMovement(Player* this) {
            !(this->stateFlags1 & (PLAYER_STATE1_IN_CUTSCENE | PLAYER_STATE1_DEAD | PLAYER_STATE1_IN_WATER)) &&
            (this->heldItemAction != PLAYER_IA_FISHING_POLE) &&
            ((sControlStickMagnitude >= 20.0f) || CHECK_BTN_ALL(sControlInput->cur.button, BTN_R) ||
-            (Ship_IsBowAimHeld() && (this->heldItemAction == PLAYER_IA_BOW)));
+            (PCInput_IsBowAimHeld() && (this->heldItemAction == PLAYER_IA_BOW)));
 }
 
 static int32_t Player_UsesParallelMovement(Player* this) {
@@ -2173,7 +2174,7 @@ int32_t Player_GetItemOnButton(PlayState* play, int32_t index) {
 void Player_ProcessItemButtons(Player* this, PlayState* play) {
     int32_t item = { 0 };
     int32_t i;
-    int32_t selectedSlot = Ship_ConsumeWeaponSelection();
+    int32_t selectedSlot = PCInput_ConsumeWeaponSelection();
 
     if (selectedSlot != 0) {
         item = Player_GetItemOnButton(play, selectedSlot);
@@ -2187,8 +2188,8 @@ void Player_ProcessItemButtons(Player* this, PlayState* play) {
         return;
     }
 
-    if (Ship_ConsumeToggleWeapon()) {
-        item = Player_GetItemOnButton(play, Ship_GetSelectedWeaponSlot());
+    if (PCInput_ConsumeToggleWeapon()) {
+        item = Player_GetItemOnButton(play, PCInput_GetSelectedWeaponSlot());
         if (Player_ItemToItemAction(item) == this->heldItemAction) {
             Player_UseItem(play, this, ITEM_NONE);
         } else if (item < ITEM_NONE_FE) {
@@ -2342,7 +2343,7 @@ int32_t func_8083442C(Player* this, PlayState* play) {
 
     Player_SetUpperActionFunc(this, func_808351D4);
     if ((this == GET_PLAYER(play)) && (this->heldItemAction == PLAYER_IA_BOW)) {
-        Ship_AcknowledgeBowUse();
+        PCInput_AcknowledgeBowUse();
     }
     this->stateFlags1 |= PLAYER_STATE1_READY_TO_FIRE;
     this->unk_834 = 14;
@@ -2728,7 +2729,7 @@ int32_t func_808351D4(Player* this, PlayState* play) {
 }
 
 int32_t func_808353D8(Player* this, PlayState* play) {
-    int32_t bowUseBuffered = (this == GET_PLAYER(play)) && Ship_IsBowUseBuffered();
+    int32_t bowUseBuffered = (this == GET_PLAYER(play)) && PCInput_IsBowUseBuffered();
 
     LinkAnimation_Update(play, &this->upperSkelAnime);
 
@@ -2760,7 +2761,7 @@ int32_t func_808353D8(Player* this, PlayState* play) {
         }
 
         if (Player_IsZTargeting(this) ||
-            ((this == GET_PLAYER(play)) && Ship_IsBowAimHeld() && (this->heldItemAction == PLAYER_IA_BOW)) ||
+            ((this == GET_PLAYER(play)) && PCInput_IsBowAimHeld() && (this->heldItemAction == PLAYER_IA_BOW)) ||
             (this->unk_6AD != 0) || (this->stateFlags1 & PLAYER_STATE1_FIRST_PERSON)) {
             if (this->unk_834 == 0) {
                 this->unk_834++;
@@ -3174,8 +3175,8 @@ int Player_CanUpdateItems(Player* this) {
  */
 int32_t Player_UpdateUpperBody(Player* this, PlayState* play) {
     if (this == GET_PLAYER(play)) {
-        int32_t pcBowAimHeld = Ship_IsBowAimHeld() && (this->heldItemAction == PLAYER_IA_BOW);
-        int32_t pcBowUseBuffered = Ship_IsBowUseBuffered() && (this->heldItemAction == PLAYER_IA_BOW);
+        int32_t pcBowAimHeld = PCInput_IsBowAimHeld() && (this->heldItemAction == PLAYER_IA_BOW);
+        int32_t pcBowUseBuffered = PCInput_IsBowUseBuffered() && (this->heldItemAction == PLAYER_IA_BOW);
 
         if ((pcBowAimHeld || pcBowUseBuffered) && (this->upperActionFunc != func_808351D4) &&
             (this->upperActionFunc != func_808353D8)) {
@@ -3224,7 +3225,7 @@ int32_t Player_UpdateUpperBody(Player* this, PlayState* play) {
         AnimationContext_SetInterp(play, this->skelAnime.limbCount, this->skelAnime.jointTable,
                                    this->upperSkelAnime.jointTable, 1.0f - this->upperAnimInterpWeight);
     } else if (((this == GET_PLAYER(play)) &&
-                (Ship_IsBowAimHeld() || (this->stateFlags1 & PLAYER_STATE1_READY_TO_FIRE)) &&
+                (PCInput_IsBowAimHeld() || (this->stateFlags1 & PLAYER_STATE1_READY_TO_FIRE)) &&
                 (this->heldItemAction == PLAYER_IA_BOW)) ||
                (Player_CheckForIdleAnim(this) == IDLE_ANIM_NONE) || (this->linearVelocity != 0.0f)) {
         // Only copy the upper body animation to the upper body limbs in the main skeleton.
@@ -5521,7 +5522,7 @@ void func_8083BCD0(Player* this, PlayState* play, int32_t controlStickDirection)
 int32_t Player_ActionHandler_10(Player* this, PlayState* play) {
     int32_t controlStickDirection = { 0 };
 
-    if (Ship_ConsumeEvade() && (play->roomCtx.curRoom.behaviorType1 != ROOM_BEHAVIOR_TYPE1_2) &&
+    if (PCInput_ConsumeEvade() && (play->roomCtx.curRoom.behaviorType1 != ROOM_BEHAVIOR_TYPE1_2) &&
         (sFloorType != 7) &&
         (SurfaceType_GetSlope(&play->colCtx, this->actor.floorPoly, this->actor.floorBgId) != 1)) {
         controlStickDirection = this->controlStickDirections[this->controlStickDataIndex];
@@ -5634,7 +5635,7 @@ void func_8083C148(Player* this, PlayState* play) {
  */
 int32_t Player_ActionHandler_Roll(Player* this, PlayState* play) {
 
-    if (Ship_ConsumeEvade() && (play->roomCtx.curRoom.behaviorType1 != ROOM_BEHAVIOR_TYPE1_2) &&
+    if (PCInput_ConsumeEvade() && (play->roomCtx.curRoom.behaviorType1 != ROOM_BEHAVIOR_TYPE1_2) &&
         (sFloorType != 7) &&
         (SurfaceType_GetSlope(&play->colCtx, this->actor.floorPoly, this->actor.floorBgId) != 1)) {
         int32_t controlStickDirection = this->controlStickDirections[this->controlStickDataIndex];
@@ -6261,7 +6262,7 @@ static Vec3f D_8085456C = { 0.0f, 100.0f, 40.0f };
 void func_8083DC54(Player* this, PlayState* play) {
     Vec3f sp34;
 
-    if ((this == GET_PLAYER(play)) && Ship_IsBowAimHeld() && (this->heldItemAction == PLAYER_IA_BOW)) {
+    if ((this == GET_PLAYER(play)) && PCInput_IsBowAimHeld() && (this->heldItemAction == PLAYER_IA_BOW)) {
         // Mouse aim owns focus pitch/yaw. The idle path below follows floor
         // slope and eases focus toward zero, making a stationary drawn bow
         // fight the camera every frame.
@@ -6783,7 +6784,7 @@ int32_t func_8083FD78(Player* this, float* arg1, int16_t* arg2, PlayState* play)
 
         // Bow aiming retains its deliberate walk/shuffle speed. Shielding uses
         // the same full-speed lateral movement as an unblocked player.
-        if ((this == GET_PLAYER(play)) && Ship_IsBowAimHeld() && (this->heldItemAction == PLAYER_IA_BOW)) {
+        if ((this == GET_PLAYER(play)) && PCInput_IsBowAimHeld() && (this->heldItemAction == PLAYER_IA_BOW)) {
             *arg1 = CLAMP_MAX(*arg1, 3.5f);
         }
 
@@ -7043,7 +7044,7 @@ void Player_Action_80840450(Player* this, PlayState* play) {
 void Player_Action_808407CC(Player* this, PlayState* play) {
     float speedTarget;
     int16_t yawTarget;
-    int32_t pcBowStationary = (this == GET_PLAYER(play)) && Ship_IsBowAimHeld() &&
+    int32_t pcBowStationary = (this == GET_PLAYER(play)) && PCInput_IsBowAimHeld() &&
                             (this->heldItemAction == PLAYER_IA_BOW) &&
                             (sControlStickMagnitude < 20.0f) && (this->linearVelocity == 0.0f);
 
@@ -10130,7 +10131,7 @@ void Player_UpdateCamAndSeqModes(PlayState* play, Player* this) {
 
         if (this->csAction != 0) {
             Camera_ChangeMode(Play_GetCamera(play, 0), CAM_MODE_NORMAL);
-        } else if (Ship_IsBowAimHeld() && (this->heldItemAction == PLAYER_IA_BOW)) {
+        } else if (PCInput_IsBowAimHeld() && (this->heldItemAction == PLAYER_IA_BOW)) {
             // Bow aiming has its own first-person camera while the normal
             // player action remains active for slow parallel locomotion.
             Camera_ChangeMode(Play_GetCamera(play, 0), CAM_MODE_BOWARROW);
@@ -10744,6 +10745,14 @@ void Player_Update(Actor* thisx, PlayState* play) {
     Input sp44;
     Actor* dog;
 
+    if (this->stateFlags1 &
+        (PLAYER_STATE1_HANGING_OFF_LEDGE | PLAYER_STATE1_CLIMBING_LEDGE | PLAYER_STATE1_CLIMBING_LADDER)) {
+        // PC one-shot actions are buffered until the player action code can
+        // accept them. Climbing cannot accept those actions, so discard them
+        // here instead of unexpectedly executing them after Link climbs off.
+        PCInput_ClearBufferedActions();
+    }
+
     if (gSaveContext.dogParams < 0) {
             // Disable object dependency to prevent losing dog in scenes other than market
             if (Object_GetIndex(&play->objectCtx, OBJECT_DOG) < 0) {
@@ -10814,8 +10823,8 @@ int32_t Player_BuildPCBowJointTable(Player* this, Vec3s jointTable[PLAYER_LIMB_B
 
     // Local lower-body freezing belongs only to RMB first-person aiming.
     // Network snapshots also need the upper bow pose during ordinary LMB draw.
-    bowPoseActive = freezeLowerBody ? Ship_IsBowAimHeld()
-                                    : (Ship_IsBowAimHeld() ||
+    bowPoseActive = freezeLowerBody ? PCInput_IsBowAimHeld()
+                                    : (PCInput_IsBowAimHeld() ||
                                        (this->stateFlags1 & PLAYER_STATE1_READY_TO_FIRE));
     if (!bowPoseActive || (this->heldItemAction != PLAYER_IA_BOW)) {
         sLocalLowerBodyValid = false;
@@ -10956,7 +10965,7 @@ void Player_Draw(Actor* thisx, PlayState* play2) {
         func_8002EBCC(&this->actor, play, 0);
         func_8002ED80(&this->actor, play, 0);
 
-        if ((this == GET_PLAYER(play)) && Ship_IsBowAimHeld() && (this->heldItemAction == PLAYER_IA_BOW)) {
+        if ((this == GET_PLAYER(play)) && PCInput_IsBowAimHeld() && (this->heldItemAction == PLAYER_IA_BOW)) {
             // Render native first-person arms/bow without enabling the native
             // first-person gameplay state, which would lock locomotion.
             overrideLimbDraw = Player_OverrideLimbDrawGameplayFirstPerson;
@@ -12782,7 +12791,7 @@ void Player_Action_80850AEC(Player* this, PlayState* play) {
 void Player_Action_80850C68(Player* this, PlayState* play) {
     static uint16_t weaponButtons[] = { BTN_CLEFT, BTN_CDOWN, BTN_CRIGHT };
     int32_t i;
-    int32_t selectedSlot = Ship_ConsumeWeaponSelection();
+    int32_t selectedSlot = PCInput_ConsumeWeaponSelection();
 
     if (selectedSlot != 0) {
         sPendingFishingItem = Player_GetItemOnButton(play, selectedSlot);
@@ -12790,7 +12799,7 @@ void Player_Action_80850C68(Player* this, PlayState* play) {
         return;
     }
 
-    if (Ship_ConsumeToggleWeapon()) {
+    if (PCInput_ConsumeToggleWeapon()) {
         sPendingFishingItem = ITEM_NONE;
         this->unk_860 = -1;
         return;

@@ -1,4 +1,4 @@
-//! This file is always optimized by a rule in the CMakeList. This is done because the SIMD functions are very large
+//! This file is always optimized because the SIMD functions are very large.
 //! when unoptimized and clang does not allow optimizing a single function.
 #include <stdbool.h>
 #include <stdint.h>

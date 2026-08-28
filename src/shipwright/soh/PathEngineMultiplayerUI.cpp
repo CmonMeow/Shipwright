@@ -2,6 +2,7 @@
 
 #include "Network/ShipwrightNetworkRuntime.h"
 #include "Network/VoiceChat.h"
+#include "global.h"
 
 #include <libultraship/log/PathEngineLog.h>
 #include <libultraship/bridge/windowbridge.h>
@@ -386,6 +387,40 @@ struct PathEngineMultiplayerUI::Impl {
         }
     }
 
+    void DrawLife() {
+        if (gPlayState == nullptr || gSaveContext.healthCapacity <= 0) {
+            return;
+        }
+
+        const float windowHeight = static_cast<float>(WindowGetHeight());
+        constexpr float labelX = 18.0f;
+        constexpr float barX = 72.0f;
+        constexpr float barWidth = 192.0f;
+        constexpr float barHeight = 18.0f;
+        const float barY = std::max(12.0f, windowHeight - 38.0f);
+        const int32_t capacity = gSaveContext.healthCapacity;
+        const int32_t health = std::clamp<int32_t>(gSaveContext.health, 0, capacity);
+        const float healthFraction = static_cast<float>(health) / static_cast<float>(capacity);
+
+        Ship::PathEngineOverlay::QueueText("LIFE", labelX, barY + 1.0f, 0.96f, 0.96f, 0.92f);
+        Ship::PathEngineOverlay::QueueRect(barX, barY, barX + barWidth, barY + barHeight,
+                                           0.035f, 0.025f, 0.025f, 0.88f);
+        if (health > 0) {
+            Ship::PathEngineOverlay::QueueRect(barX + 2.0f, barY + 2.0f,
+                                               barX + 2.0f + (barWidth - 4.0f) * healthFraction,
+                                               barY + barHeight - 2.0f, 0.78f, 0.06f, 0.10f, 0.96f);
+        }
+
+        const int32_t heartCount = std::max<int32_t>(1, capacity / FULL_HEART_HEALTH);
+        for (int32_t heart = 1; heart < heartCount; ++heart) {
+            const float dividerX = barX + barWidth * static_cast<float>(heart) / static_cast<float>(heartCount);
+            Ship::PathEngineOverlay::QueueRect(dividerX - 0.5f, barY + 1.0f, dividerX + 0.5f,
+                                               barY + barHeight - 1.0f, 0.18f, 0.04f, 0.05f, 0.92f);
+        }
+        Ship::PathEngineOverlay::QueueRect(barX, barY, barX + barWidth, barY + barHeight,
+                                           0.88f, 0.88f, 0.82f, 0.96f, true);
+    }
+
     void UpdateVoice(SoH::Network::ShipwrightNetworkRuntime& runtime) {
         const bool enabled = Variables().GetInteger(kVoiceEnabled, 1) != 0;
         if (enabled && !voice) {
@@ -409,6 +444,7 @@ struct PathEngineMultiplayerUI::Impl {
         UpdateInput(runtime);
         UpdateVoice(runtime);
         Draw();
+        DrawLife();
     }
 
     void Shutdown() {

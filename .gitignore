@@ -1,4 +1,7 @@
 /x64
+/build/
+/obj/
+/bin/
 *.db
 *.ipch
 *.vsidx

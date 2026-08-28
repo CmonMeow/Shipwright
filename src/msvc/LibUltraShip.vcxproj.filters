@@ -1,0 +1,230 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="18.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="$(RepoRoot)src\libultraship\src\fast\Fast3dWindow.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\libultraship\src\fast\interpreter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\libultraship\src\fast\debug\GfxDebugger.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\libultraship\src\fast\resource\type\DisplayList.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\libultraship\src\fast\resource\type\Light.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\libultraship\src\fast\resource\type\Matrix.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\libultraship\src\fast\resource\type\Texture.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\libultraship\src\fast\resource\type\Vertex.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\libultraship\src\fast\resource\factory\DisplayListFactory.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\libultraship\src\fast\resource\factory\LightFactory.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\libultraship\src\fast\resource\factory\MatrixFactory.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\libultraship\src\fast\resource\factory\TextureFactory.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\libultraship\src\fast\resource\factory\VertexFactory.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\libultraship\src\fast\backends\OpenGLExtensions.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\libultraship\src\fast\backends\gfx_opengl.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\libultraship\src\fast\backends\gfx_win32_opengl.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\libultraship\src\libultraship\bridge\audiobridge.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\libultraship\src\libultraship\bridge\consolevariablebridge.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\libultraship\src\libultraship\bridge\crashhandlerbridge.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\libultraship\src\libultraship\bridge\gfxbridge.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\libultraship\src\libultraship\bridge\gfxdebuggerbridge.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\libultraship\src\libultraship\bridge\resourcebridge.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\libultraship\src\libultraship\bridge\windowbridge.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\libultraship\src\libultraship\libultra\os.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\libultraship\src\libultraship\libultra\os_cache.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\libultraship\src\libultraship\libultra\os_eeprom.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\libultraship\src\libultraship\libultra\os_mesg.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\libultraship\src\libultraship\libultra\os_pi.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\libultraship\src\libultraship\libultra\os_time.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\libultraship\src\libultraship\libultra\os_vi.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\libultraship\src\libultraship\libultra\os_vm.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\libultraship\src\ship\Context.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\libultraship\src\ship\audio\Audio.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\libultraship\src\ship\audio\AudioPlayer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\libultraship\src\ship\audio\NullAudioPlayer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\libultraship\src\ship\audio\SoundMatrixDecoder.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\libultraship\src\ship\audio\WasapiAudioPlayer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\libultraship\src\ship\input\Win32Input.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\libultraship\src\ship\config\Config.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\libultraship\src\ship\config\ConsoleVariable.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\libultraship\src\ship\debug\Console.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\libultraship\src\ship\debug\CrashHandler.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\libultraship\src\ship\window\FileDropMgr.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\libultraship\src\ship\window\PathEngineOverlay.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\libultraship\src\ship\window\Window.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\libultraship\src\ship\utils\StrHash64.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\libultraship\src\ship\utils\StringHelper.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\libultraship\src\ship\utils\Utils.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\libultraship\src\ship\utils\binarytools\BinaryReader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\libultraship\src\ship\utils\binarytools\BinaryWriter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\libultraship\src\ship\utils\binarytools\MemoryStream.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\libultraship\src\ship\utils\binarytools\Stream.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\libultraship\src\ship\utils\glob.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\libultraship\src\ship\utils\stox.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\libultraship\src\ship\resource\Resource.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\libultraship\src\ship\resource\ResourceFactoryBinary.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\libultraship\src\ship\resource\ResourceFactoryXML.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\libultraship\src\ship\resource\ResourceLoader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\libultraship\src\ship\resource\ResourceManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\libultraship\src\ship\resource\type\Blob.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\libultraship\src\ship\resource\type\Json.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\libultraship\src\ship\resource\type\Shader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\libultraship\src\ship\resource\factory\BlobFactory.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\libultraship\src\ship\resource\factory\JsonFactory.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\libultraship\src\ship\resource\factory\ShaderFactory.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\libultraship\src\ship\resource\archive\Archive.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\libultraship\src\ship\resource\archive\ArchiveManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\libultraship\src\ship\resource\archive\FolderArchive.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\libultraship\src\ship\resource\archive\O2rArchive.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\libultraship\src\ship\resource\archive\OtrArchive.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="$(RepoRoot)src\libultraship\include\fast\backends\OpenGLExtensions.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{FBBA4402-F9B9-396F-A5B0-D4EE37A28A02}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{3A2F261D-C99D-492A-A121-3B6493BD876D}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

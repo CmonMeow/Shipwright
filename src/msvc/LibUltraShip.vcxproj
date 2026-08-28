@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="18.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <PreferredToolArchitecture>x64</PreferredToolArchitecture>
+  </PropertyGroup>
+  <ItemGroup Label="ProjectConfigurations">
+    
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{06CC8D88-1A4D-3E2C-94F1-180FC8B912DB}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <WindowsTargetPlatformVersion>10.0.26100.0</WindowsTargetPlatformVersion>
+    <Platform>x64</Platform>
+    <ProjectName>libultraship</ProjectName>
+    <VCProjectUpgraderObjectName>NoUpgrade</VCProjectUpgraderObjectName>
+    <RepoRoot>$(MSBuildThisFileDirectory)..\..\</RepoRoot>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v145</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings"></ImportGroup>
+  <ImportGroup Label="PropertySheets"></ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.20506.1</_ProjectFileVersion>
+    
+    
+    
+    
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(RepoRoot)obj\lib\$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(RepoRoot)obj\$(ProjectName)\$(Configuration)\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">libultraship</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.lib</TargetExt>
+  </PropertyGroup>
+  
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>$(RepoRoot)src\libultraship\src;$(RepoRoot)src\libultraship\src\..\include;$(RepoRoot)third_party\stormlib\src;$(RepoRoot)third_party\stb;$(RepoRoot)third_party\threadpool\include;$(RepoRoot)third_party\libgfxd;$(RepoRoot)third_party\prism;$(RepoRoot)third_party\prism\lib;$(RepoRoot)third_party\prism\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalOptions>%(AdditionalOptions) /external:I "$(RepoRoot)third_party/libsodium/include" /external:I "$(RepoRoot)third_party/opus/include" /external:I "$(RepoRoot)third_party" /external:I "$(RepoRoot)third_party/include" /utf-8 /w</AdditionalOptions>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+      <BufferSecurityCheck></BufferSecurityCheck>
+      <CallingConvention></CallingConvention>
+      <ConformanceMode>true</ConformanceMode>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <ExternalWarningLevel>TurnOffAllWarnings</ExternalWarningLevel>
+      <FloatingPointModel></FloatingPointModel>
+      <ForceConformanceInForLoopScope></ForceConformanceInForLoopScope>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <LanguageStandard_C>stdc11</LanguageStandard_C>
+      <MinimalRebuild></MinimalRebuild>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <Optimization>MaxSpeed</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RemoveUnreferencedCodeData></RemoveUnreferencedCodeData>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <SDLCheck>true</SDLCheck>
+      <SupportJustMyCode></SupportJustMyCode>
+      <TreatWChar_tAsBuiltInType></TreatWChar_tAsBuiltInType>
+      <UseFullPaths>false</UseFullPaths>
+      <UseStandardPreprocessor>true</UseStandardPreprocessor>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;F3DEX_GBI_2;_CONSOLE;_CRT_SECURE_NO_WARNINGS;ENABLE_OPENGL;NOMINMAX;GFX_DEBUG_DISASSEMBLER;INCLUDE_MPQ_SUPPORT;CVAR_PREFIX_SETTING="gSettings";CVAR_PREFIX_WINDOW="gOpenWindows";CVAR_PREFIX_GENERAL="gGeneral";CVAR_VSYNC_ENABLED="gSettings.VsyncEnabled";CVAR_Z_FIGHTING_MODE="gSettings.ZFightingMode";CVAR_INTERNAL_RESOLUTION="gSettings.InternalResolution";CVAR_MSAA_VALUE="gSettings.MSAAValue";CVAR_TEXTURE_FILTER="gSettings.TextureFilter";CVAR_AUDIO_CHANNELS_SETTING="gAudioChannelsSetting";CONTROLLERBUTTONS_T=uint32_t;STORMLIB_NO_AUTO_LINK;_FILE_OFFSET_BITS=64;SPDLOG_COMPILED_LIB;SPDLOG_FMT_EXTERNAL</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <ScanSourceForModuleDependencies>false</ScanSourceForModuleDependencies>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;F3DEX_GBI_2;_CONSOLE;_CRT_SECURE_NO_WARNINGS;ENABLE_OPENGL;NOMINMAX;GFX_DEBUG_DISASSEMBLER;INCLUDE_MPQ_SUPPORT;CVAR_PREFIX_SETTING=\"gSettings\";CVAR_PREFIX_WINDOW=\"gOpenWindows\";CVAR_PREFIX_GENERAL=\"gGeneral\";CVAR_VSYNC_ENABLED=\"gSettings.VsyncEnabled\";CVAR_Z_FIGHTING_MODE=\"gSettings.ZFightingMode\";CVAR_INTERNAL_RESOLUTION=\"gSettings.InternalResolution\";CVAR_MSAA_VALUE=\"gSettings.MSAAValue\";CVAR_TEXTURE_FILTER=\"gSettings.TextureFilter\";CVAR_AUDIO_CHANNELS_SETTING=\"gAudioChannelsSetting\";CONTROLLERBUTTONS_T=uint32_t;STORMLIB_NO_AUTO_LINK;_FILE_OFFSET_BITS=64;SPDLOG_COMPILED_LIB;SPDLOG_FMT_EXTERNAL</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(RepoRoot)src\libultraship\src;$(RepoRoot)src\libultraship\src\..\include;$(RepoRoot)third_party\stormlib\src;$(RepoRoot)third_party\stb;$(RepoRoot)third_party\threadpool\include;$(RepoRoot)third_party\libgfxd;$(RepoRoot)third_party\prism;$(RepoRoot)third_party\prism\lib;$(RepoRoot)third_party\prism\src;$(RepoRoot)third_party\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>$(RepoRoot)src\libultraship\src;$(RepoRoot)src\libultraship\src\..\include;$(RepoRoot)third_party\stormlib\src;$(RepoRoot)third_party\stb;$(RepoRoot)third_party\threadpool\include;$(RepoRoot)third_party\libgfxd;$(RepoRoot)third_party\prism;$(RepoRoot)third_party\prism\lib;$(RepoRoot)third_party\prism\src;$(RepoRoot)third_party\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <Lib>
+      <AdditionalOptions>%(AdditionalOptions) /machine:x64</AdditionalOptions>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="$(RepoRoot)src\libultraship\src\fast\Fast3dWindow.cpp" />
+    <ClCompile Include="$(RepoRoot)src\libultraship\src\fast\interpreter.cpp" />
+    <ClCompile Include="$(RepoRoot)src\libultraship\src\fast\debug\GfxDebugger.cpp" />
+    <ClCompile Include="$(RepoRoot)src\libultraship\src\fast\resource\type\DisplayList.cpp" />
+    <ClCompile Include="$(RepoRoot)src\libultraship\src\fast\resource\type\Light.cpp" />
+    <ClCompile Include="$(RepoRoot)src\libultraship\src\fast\resource\type\Matrix.cpp" />
+    <ClCompile Include="$(RepoRoot)src\libultraship\src\fast\resource\type\Texture.cpp" />
+    <ClCompile Include="$(RepoRoot)src\libultraship\src\fast\resource\type\Vertex.cpp" />
+    <ClCompile Include="$(RepoRoot)src\libultraship\src\fast\resource\factory\DisplayListFactory.cpp" />
+    <ClCompile Include="$(RepoRoot)src\libultraship\src\fast\resource\factory\LightFactory.cpp" />
+    <ClCompile Include="$(RepoRoot)src\libultraship\src\fast\resource\factory\MatrixFactory.cpp" />
+    <ClCompile Include="$(RepoRoot)src\libultraship\src\fast\resource\factory\TextureFactory.cpp" />
+    <ClCompile Include="$(RepoRoot)src\libultraship\src\fast\resource\factory\VertexFactory.cpp" />
+    <ClCompile Include="$(RepoRoot)src\libultraship\src\fast\backends\OpenGLExtensions.cpp" />
+    <ClCompile Include="$(RepoRoot)src\libultraship\src\fast\backends\gfx_opengl.cpp" />
+    <ClCompile Include="$(RepoRoot)src\libultraship\src\fast\backends\gfx_win32_opengl.cpp" />
+    <ClCompile Include="$(RepoRoot)src\libultraship\src\libultraship\bridge\audiobridge.cpp" />
+    <ClCompile Include="$(RepoRoot)src\libultraship\src\libultraship\bridge\consolevariablebridge.cpp" />
+    <ClCompile Include="$(RepoRoot)src\libultraship\src\libultraship\bridge\crashhandlerbridge.cpp" />
+    <ClCompile Include="$(RepoRoot)src\libultraship\src\libultraship\bridge\gfxbridge.cpp" />
+    <ClCompile Include="$(RepoRoot)src\libultraship\src\libultraship\bridge\gfxdebuggerbridge.cpp" />
+    <ClCompile Include="$(RepoRoot)src\libultraship\src\libultraship\bridge\resourcebridge.cpp" />
+    <ClCompile Include="$(RepoRoot)src\libultraship\src\libultraship\bridge\windowbridge.cpp" />
+    <ClCompile Include="$(RepoRoot)src\libultraship\src\libultraship\libultra\os.cpp" />
+    <ClCompile Include="$(RepoRoot)src\libultraship\src\libultraship\libultra\os_cache.cpp" />
+    <ClCompile Include="$(RepoRoot)src\libultraship\src\libultraship\libultra\os_eeprom.cpp" />
+    <ClCompile Include="$(RepoRoot)src\libultraship\src\libultraship\libultra\os_mesg.cpp" />
+    <ClCompile Include="$(RepoRoot)src\libultraship\src\libultraship\libultra\os_pi.cpp" />
+    <ClCompile Include="$(RepoRoot)src\libultraship\src\libultraship\libultra\os_time.cpp" />
+    <ClCompile Include="$(RepoRoot)src\libultraship\src\libultraship\libultra\os_vi.cpp" />
+    <ClCompile Include="$(RepoRoot)src\libultraship\src\libultraship\libultra\os_vm.cpp" />
+    <ClCompile Include="$(RepoRoot)src\libultraship\src\ship\Context.cpp" />
+    <ClCompile Include="$(RepoRoot)src\libultraship\src\ship\audio\Audio.cpp" />
+    <ClCompile Include="$(RepoRoot)src\libultraship\src\ship\audio\AudioPlayer.cpp" />
+    <ClCompile Include="$(RepoRoot)src\libultraship\src\ship\audio\NullAudioPlayer.cpp" />
+    <ClCompile Include="$(RepoRoot)src\libultraship\src\ship\audio\SoundMatrixDecoder.cpp" />
+    <ClCompile Include="$(RepoRoot)src\libultraship\src\ship\audio\WasapiAudioPlayer.cpp" />
+    <ClCompile Include="$(RepoRoot)src\libultraship\src\ship\input\Win32Input.cpp" />
+    <ClCompile Include="$(RepoRoot)src\libultraship\src\ship\config\Config.cpp" />
+    <ClCompile Include="$(RepoRoot)src\libultraship\src\ship\config\ConsoleVariable.cpp" />
+    <ClCompile Include="$(RepoRoot)src\libultraship\src\ship\debug\Console.cpp" />
+    <ClCompile Include="$(RepoRoot)src\libultraship\src\ship\debug\CrashHandler.cpp" />
+    <ClCompile Include="$(RepoRoot)src\libultraship\src\ship\window\FileDropMgr.cpp" />
+    <ClCompile Include="$(RepoRoot)src\libultraship\src\ship\window\PathEngineOverlay.cpp" />
+    <ClCompile Include="$(RepoRoot)src\libultraship\src\ship\window\Window.cpp" />
+    <ClCompile Include="$(RepoRoot)src\libultraship\src\ship\utils\StrHash64.cpp" />
+    <ClCompile Include="$(RepoRoot)src\libultraship\src\ship\utils\StringHelper.cpp" />
+    <ClCompile Include="$(RepoRoot)src\libultraship\src\ship\utils\Utils.cpp" />
+    <ClCompile Include="$(RepoRoot)src\libultraship\src\ship\utils\binarytools\BinaryReader.cpp" />
+    <ClCompile Include="$(RepoRoot)src\libultraship\src\ship\utils\binarytools\BinaryWriter.cpp" />
+    <ClCompile Include="$(RepoRoot)src\libultraship\src\ship\utils\binarytools\MemoryStream.cpp" />
+    <ClCompile Include="$(RepoRoot)src\libultraship\src\ship\utils\binarytools\Stream.cpp" />
+    <ClCompile Include="$(RepoRoot)src\libultraship\src\ship\utils\glob.c" />
+    <ClCompile Include="$(RepoRoot)src\libultraship\src\ship\utils\stox.cpp" />
+    <ClCompile Include="$(RepoRoot)src\libultraship\src\ship\resource\Resource.cpp" />
+    <ClCompile Include="$(RepoRoot)src\libultraship\src\ship\resource\ResourceFactoryBinary.cpp" />
+    <ClCompile Include="$(RepoRoot)src\libultraship\src\ship\resource\ResourceFactoryXML.cpp" />
+    <ClCompile Include="$(RepoRoot)src\libultraship\src\ship\resource\ResourceLoader.cpp" />
+    <ClCompile Include="$(RepoRoot)src\libultraship\src\ship\resource\ResourceManager.cpp" />
+    <ClCompile Include="$(RepoRoot)src\libultraship\src\ship\resource\type\Blob.cpp" />
+    <ClCompile Include="$(RepoRoot)src\libultraship\src\ship\resource\type\Json.cpp" />
+    <ClCompile Include="$(RepoRoot)src\libultraship\src\ship\resource\type\Shader.cpp" />
+    <ClCompile Include="$(RepoRoot)src\libultraship\src\ship\resource\factory\BlobFactory.cpp" />
+    <ClCompile Include="$(RepoRoot)src\libultraship\src\ship\resource\factory\JsonFactory.cpp" />
+    <ClCompile Include="$(RepoRoot)src\libultraship\src\ship\resource\factory\ShaderFactory.cpp" />
+    <ClCompile Include="$(RepoRoot)src\libultraship\src\ship\resource\archive\Archive.cpp" />
+    <ClCompile Include="$(RepoRoot)src\libultraship\src\ship\resource\archive\ArchiveManager.cpp" />
+    <ClCompile Include="$(RepoRoot)src\libultraship\src\ship\resource\archive\FolderArchive.cpp" />
+    <ClCompile Include="$(RepoRoot)src\libultraship\src\ship\resource\archive\O2rArchive.cpp" />
+    <ClCompile Include="$(RepoRoot)src\libultraship\src\ship\resource\archive\OtrArchive.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="$(RepoRoot)src\libultraship\include\fast\backends\OpenGLExtensions.h" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ItemGroup>
+    <ProjectReference Include="$(MSBuildThisFileDirectory)LibGfxd.vcxproj">
+      <Project>{E336F0A6-2313-316A-A6DB-31A934F64874}</Project>
+      <LinkLibraryDependencies>true</LinkLibraryDependencies>
+    </ProjectReference>
+    <ProjectReference Include="$(MSBuildThisFileDirectory)Stb.vcxproj">
+      <Project>{4BB74363-7DDE-3032-8F43-878476B15A43}</Project>
+      <LinkLibraryDependencies>true</LinkLibraryDependencies>
+    </ProjectReference>
+    <ProjectReference Include="$(MSBuildThisFileDirectory)Prism.vcxproj">
+      <Project>{48948160-6BFA-30FB-9401-08B164880F69}</Project>
+      <LinkLibraryDependencies>true</LinkLibraryDependencies>
+    </ProjectReference>
+    <ProjectReference Include="$(MSBuildThisFileDirectory)StormLib.vcxproj">
+      <Project>{74DBBCDD-1D2E-3C44-A3B9-1E3A05C2EFD9}</Project>
+      <LinkLibraryDependencies>true</LinkLibraryDependencies>
+    </ProjectReference>
+  </ItemGroup>
+  <ImportGroup Label="ExtensionTargets"></ImportGroup>
+</Project>

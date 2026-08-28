@@ -1,13 +1,10 @@
 # Source layout
 
 - `Ship.slnx` is the canonical Visual Studio solution.
+- `msvc/` contains the permanent MSVC project files.
 - `shipwright/` contains the game and Path Engine integration.
 - `libultraship/` contains the engine code that will be pruned and merged into the game source over time.
 
-The solution references Visual Studio project files generated in `../build/x64`. If that disposable directory is absent, configure it once from a Visual Studio Developer PowerShell opened at the repository root:
+Open `Ship.slnx` in Visual Studio, select `Release` and `x64`, then build the solution. No project-generation step is required.
 
-```powershell
-cmake -S . -B build/x64 -G "Visual Studio 18 2026" -A x64
-```
-
-Release executables, symbols, libraries, configuration, and the merged `oot.o2r` are written to `../bin`.
+Executables and symbols are written to `../bin`. Intermediate files and internal static libraries are written to `../obj`.

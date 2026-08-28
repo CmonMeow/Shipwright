@@ -74,20 +74,12 @@ Ship of Harkinian (SOH) is built atop a custom library dubbed libultraship (LUS)
 In order for the game to function, you will require a **legally acquired** ROM for Ocarina of Time. Click [here](https://ship.equipment/) to check the compatibility of your specific rom. Any copyrighted assets are extracted from the ROM and reformatted as a .o2r archive file which the code uses.
 
 ### Graphics Backends
-Currently, there are three rendering APIs supported: DirectX11 (Windows), OpenGL (all platforms), and Metal (MacOS). You can change which API to use in the `Settings` menu of the menubar, which requires a restart.  If you're having an issue with crashing, you can change the API in the `shipofharkinian.json` file by finding the line `gfxbackend:""` and changing the value to `sdl` for OpenGL. DirectX 11 is the default on Windows.
-
-# Custom Assets
-
-Custom assets are packed in `.otr` archive files. To use custom assets, place them in the `mods` folder.
-
-If you're interested in creating and/or packing your own custom asset `.otr` files, check out the following tools:
-* [**retro - OTR generator**](https://github.com/HarbourMasters64/retro)
-* [**fast64 - Blender plugin**](https://github.com/HarbourMasters/fast64)
+The Windows client uses the native Win32 OpenGL backend. DirectX, SDL graphics, the old backend-selection menu, and loose custom-asset loading are not part of this build. Runtime window and user settings are saved beside the executable in `bin/settings.json`; gameplay behavior is defined in code and the merged game assets are supplied by `bin/oot.o2r`.
 
 # Development
 ### Building
 
-If you want to manually compile SoH, please consult the [building instructions](docs/BUILDING.md).
+Open [`src/Ship.slnx`](src/Ship.slnx) in Visual Studio and build the `Release|x64` configuration. The projects use MSVC directly and require no project-generation step.
 
 ### Playtesting
 If you want to playtest a continuous integration build, you can find them at the links below. Keep in mind that these are for playtesting only, and you will likely encounter bugs and possibly crashes. 
