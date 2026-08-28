@@ -20,3 +20,5 @@ Runtime host summary: chat=1 private=1 state=1 poseEquipment=1 bowString=1 voice
 Secure runtime self-test passed: encrypted state, chat, private E2E text, and voice
 Dedicated collision self-test failed: scenes=1 triangles=781 wildFish=4
 Dedicated collision self-test passed: scenes=1 triangles=781 wildFish=4
+Dedicated collision self-test passed: scenes=1 triangles=781 wildFish=32
+Dedicated collision self-test passed: scenes=1 triangles=781 wildFish=32

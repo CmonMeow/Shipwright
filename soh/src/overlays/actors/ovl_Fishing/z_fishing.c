@@ -998,7 +998,35 @@ static f32 Fishing_GetDeterministicPondLength(PlayState* play, Actor* actor, f32
     return length;
 }
 
-static void Fishing_SpawnWildFishInWaterBox(PlayState* play, WaterBox* waterBox, s32 waterIndex, bool loach) {
+static s32 Fishing_FindWildFishSpawn(PlayState* play, WaterBox* waterBox, u32 seed, bool loach,
+                                     f32 minX, f32 minZ, f32 width, f32 depth, f32 marginX, f32 marginZ,
+                                     Vec3f* spawnPos) {
+    CollisionPoly* floorPoly;
+    s32 floorBgId;
+    s32 attempt;
+
+    spawnPos->y = waterBox->ySurface - (loach ? 45.0f : 25.0f);
+    for (attempt = 0; attempt < 32; attempt++) {
+        u32 candidateSeed = seed ^ ((u32)attempt * 0xD3A2646CU);
+        Vec3f floorCheckPos;
+        f32 floorY;
+
+        spawnPos->x = minX + marginX + Fishing_WildRandom01(candidateSeed) * (width - (marginX * 2.0f));
+        spawnPos->z = minZ + marginZ + Fishing_WildRandom01(candidateSeed ^ 0xA511E9B3U) *
+                                              (depth - (marginZ * 2.0f));
+        floorCheckPos.x = spawnPos->x;
+        floorCheckPos.y = waterBox->ySurface + 10.0f;
+        floorCheckPos.z = spawnPos->z;
+        floorY = BgCheck_EntityRaycastFloor3(&play->colCtx, &floorPoly, &floorBgId, &floorCheckPos);
+        if ((floorY != BGCHECK_Y_MIN) && (floorY <= (spawnPos->y - 20.0f))) {
+            return true;
+        }
+    }
+    return false;
+}
+
+static void Fishing_SpawnWildFishInWaterBox(PlayState* play, WaterBox* waterBox, s32 waterIndex, s32 fishIndex,
+                                            bool loach) {
     f32 width = fabsf(waterBox->xLength);
     f32 depth = fabsf(waterBox->zLength);
     f32 minX = (waterBox->xLength >= 0) ? waterBox->xMin : waterBox->xMin + waterBox->xLength;
@@ -1006,11 +1034,15 @@ static void Fishing_SpawnWildFishInWaterBox(PlayState* play, WaterBox* waterBox,
     f32 marginX = (width > 80.0f) ? 40.0f : width * 0.2f;
     f32 marginZ = (depth > 80.0f) ? 40.0f : depth * 0.2f;
     u32 seed = ((u32)play->sceneNum * 0x9E3779B9U) ^ ((u32)(waterIndex + 1) * 0x85EBCA6BU) ^
-               (loach ? 0xC2B2AE35U : 0x27D4EB2FU);
-    f32 spawnX = minX + marginX + Fishing_WildRandom01(seed) * (width - (marginX * 2.0f));
-    f32 spawnZ = minZ + marginZ + Fishing_WildRandom01(seed ^ 0xA511E9B3U) * (depth - (marginZ * 2.0f));
-    f32 spawnY = waterBox->ySurface - (loach ? 45.0f : 25.0f);
-    Fishing* fish = (Fishing*)Actor_Spawn(&play->actorCtx, play, ACTOR_FISHING, spawnX, spawnY, spawnZ, 0,
+               ((u32)(fishIndex + 1) * 0x165667B1U) ^ (loach ? 0xC2B2AE35U : 0x27D4EB2FU);
+    Vec3f spawnPos;
+    Fishing* fish;
+
+    if (!Fishing_FindWildFishSpawn(play, waterBox, seed, loach, minX, minZ, width, depth, marginX, marginZ,
+                                   &spawnPos)) {
+        return;
+    }
+    fish = (Fishing*)Actor_Spawn(&play->actorCtx, play, ACTOR_FISHING, spawnPos.x, spawnPos.y, spawnPos.z, 0,
                                           (s16)(Fishing_WildHash(seed ^ 0x63D83595U) & 0xFFFF), 0,
                                           loach ? EN_LOACH_WILD : EN_FISH_WILD);
 
@@ -1026,8 +1058,11 @@ static void Fishing_SpawnWildFishInWaterBox(PlayState* play, WaterBox* waterBox,
 }
 
 static void Fishing_SpawnWildFish(PlayState* play) {
+    const s16 normalFishCount = 12;
+    const s16 loachCount = 4;
     CollisionHeader* colHeader = play->colCtx.colHeader;
     s16 i;
+    s16 fishIndex;
 
     if ((colHeader == NULL) || (colHeader->waterBoxes == NULL)) {
         return;
@@ -1040,13 +1075,21 @@ static void Fishing_SpawnWildFish(PlayState* play) {
             continue;
         }
 
-        Fishing_SpawnWildFishInWaterBox(play, waterBox, i, false);
-        Fishing_SpawnWildFishInWaterBox(play, waterBox, i, true);
+        for (fishIndex = 0; fishIndex < normalFishCount; fishIndex++) {
+            Fishing_SpawnWildFishInWaterBox(play, waterBox, i, fishIndex, false);
+        }
+        for (fishIndex = 0; fishIndex < loachCount; fishIndex++) {
+            Fishing_SpawnWildFishInWaterBox(play, waterBox, i, fishIndex, true);
+        }
     }
 
     if (play->sceneNum == SCENE_ZORAS_DOMAIN) {
-        Fishing_SpawnWildFishInWaterBox(play, &zdWaterBox, colHeader->numWaterBoxes, false);
-        Fishing_SpawnWildFishInWaterBox(play, &zdWaterBox, colHeader->numWaterBoxes, true);
+        for (fishIndex = 0; fishIndex < normalFishCount; fishIndex++) {
+            Fishing_SpawnWildFishInWaterBox(play, &zdWaterBox, colHeader->numWaterBoxes, fishIndex, false);
+        }
+        for (fishIndex = 0; fishIndex < loachCount; fishIndex++) {
+            Fishing_SpawnWildFishInWaterBox(play, &zdWaterBox, colHeader->numWaterBoxes, fishIndex, true);
+        }
     }
 }
 
@@ -1260,7 +1303,7 @@ void Fishing_Init(Actor* thisx, PlayState* play2) {
             this->fishStateNext = 10;
             this->isWild = true;
             this->isLoach = thisx->params == EN_LOACH_WILD;
-            this->perception = this->isLoach ? 0.02f : 0.08f;
+            this->perception = this->isLoach ? 0.20f : 0.35f;
             {
                 u32 lengthSeed = ((u32)play->sceneNum * 0x9E3779B9U) ^
                                  ((u32)(s32)thisx->home.pos.x * 0x85EBCA6BU) ^
@@ -1268,6 +1311,7 @@ void Fishing_Init(Actor* thisx, PlayState* play2) {
                                  (this->isLoach ? 0xA511E9B3U : 0x63D83595U);
                 this->fishLength = (this->isLoach ? 42.0f : 34.0f) + Fishing_WildRandom01(lengthSeed) * 18.0f;
             }
+            this->fishTargetPos = thisx->home.pos;
             thisx->room = -1;
             thisx->flags |= ACTOR_FLAG_UPDATE_CULLING_DISABLED;
         } else {
@@ -2612,11 +2656,11 @@ void Fishing_UpdateLure(Fishing* this, PlayState* play) {
                     Matrix_RotateY((player->actor.shape.rot.y / 32768.0f) * M_PI, MTXMODE_NEW);
                     sp90.x = 0.0f;
                     sp90.y = 0.0f;
-                    sp90.z = 25.0f;
+                    sp90.z = sPortableFishing ? 30.0f : 25.0f;
                     Matrix_MultVec3f(&sp90, &sLurePosDelta);
                     sLurePosDelta.y = 15.0f;
                     sLureCastDelta.x = sLureCastDelta.z = 0.0f;
-                    sLureCastDelta.y = sPortableFishing ? -1.75f : -1.0f;
+                    sLureCastDelta.y = -1.0f;
                     D_80B7E148 = 0.0f;
                     D_80B7E0B2 = 5;
                     sRodReelingSpeed = 0.5f;
@@ -3128,7 +3172,7 @@ void func_80B70ED4(Fishing* this, Input* input) {
         Matrix_RotateY((-this->actor.shape.rot.y / 32768.0f) * M_PI, MTXMODE_NEW);
         Matrix_MultVec3f(&lineVec, &sp28);
 
-        if ((sp28.z > 0.0f) || (this->fishLength < 40.0f)) {
+        if ((sp28.z > 0.0f) || (this->fishLength < 40.0f) || this->isWild) {
             if ((this->fishState == 7) && (lineLengthSQ < SQ(200.0f))) {
                 this->fishState = 4;
                 this->fishTargetPos = sLurePos;
@@ -3136,7 +3180,7 @@ void func_80B70ED4(Fishing* this, Input* input) {
                 this->speedTarget = 5.0f;
             } else {
                 if ((CHECK_BTN_ALL(input->cur.button, BTN_A) || (sLureWigglePosY > 1.0f)) &&
-                    (lineLengthSQ < SQ(120.0f))) {
+                    (lineLengthSQ < SQ(this->isWild ? 500.0f : 120.0f))) {
                     this->fishState = 2;
                     this->unk_15E = 0;
                     this->timerArray[0] = 0;
@@ -3145,7 +3189,7 @@ void func_80B70ED4(Fishing* this, Input* input) {
                     this->rotationStep = 0.0f;
                 }
 
-                if ((this->timerArray[1] == 0) && (lineLengthSQ < SQ(70.0f))) {
+                if ((this->timerArray[1] == 0) && (lineLengthSQ < SQ(this->isWild ? 350.0f : 70.0f))) {
                     this->fishState = 2;
                     this->unk_15E = 0;
                     this->timerArray[0] = 0;
@@ -3523,15 +3567,25 @@ void Fishing_UpdateFish(Actor* thisx, PlayState* play2) {
             return;
 
         case 10:
-            this->fishTargetPos = this->actor.home.pos;
+            if (!this->isWild) {
+                this->fishTargetPos = this->actor.home.pos;
+            }
 
-            Math_ApproachF(&this->actor.speedXZ, 2.0f, 1.0f, 0.5f);
+            Math_ApproachF(&this->actor.speedXZ, this->isWild ? 3.0f : 2.0f, 1.0f, 0.5f);
             Math_ApproachF(&this->rotationStep, 4096.0f, 1.0f, 256.0f);
 
             if (distToTarget < 40.0f) {
-                this->fishState = 11;
-                this->unk_190 = 0.4f;
-                this->unk_194 = 500.0f;
+                if (this->isWild) {
+                    this->fishTargetPos.x = Fishing_GetRandomFishTargetX(this, 500.0f);
+                    this->fishTargetPos.y = (WATER_SURFACE_Y(play) - 50.0f) - Rand_ZeroFloat(80.0f);
+                    this->fishTargetPos.z = Fishing_GetRandomFishTargetZ(this, 500.0f);
+                    this->unk_190 = 1.0f;
+                    this->unk_194 = 2000.0f;
+                } else {
+                    this->fishState = 11;
+                    this->unk_190 = 0.4f;
+                    this->unk_194 = 500.0f;
+                }
             }
 
             func_80B70ED4(this, input);
@@ -3854,7 +3908,8 @@ void Fishing_UpdateFish(Actor* thisx, PlayState* play2) {
             }
 
             if ((sRodCastState != 3) || (this->timerArray[2] == 0) ||
-                (sqrtf(SQ(this->actor.world.pos.x) + SQ(this->actor.world.pos.z)) > 800.0f)) {
+                (!this->isWild &&
+                 (sqrtf(SQ(this->actor.world.pos.x) + SQ(this->actor.world.pos.z)) > 800.0f))) {
                 this->fishState = this->fishStateNext;
                 this->timerArray[1] = (s16)Rand_ZeroFloat(30.0f) + 50;
                 this->timerArray[0] = (s16)Rand_ZeroFloat(10.0f) + 5;
@@ -3893,7 +3948,7 @@ void Fishing_UpdateFish(Actor* thisx, PlayState* play2) {
             Math_ApproachF(&this->actor.speedXZ, this->speedTarget * 0.8f, 1.0f, 1.0f);
 
             if ((sRodCastState != 3) || (sLurePos.y > (WATER_SURFACE_Y(play) + 5.0f)) ||
-                (sqrtf(SQ(sLurePos.x) + SQ(sLurePos.z)) > 800.0f)) {
+                (!this->isWild && (sqrtf(SQ(sLurePos.x) + SQ(sLurePos.z)) > 800.0f))) {
                 this->fishState = this->fishStateNext;
                 this->timerArray[0] = 0;
                 this->unk_190 = 1.0f;
@@ -3918,7 +3973,7 @@ void Fishing_UpdateFish(Actor* thisx, PlayState* play2) {
             Math_ApproachF(&this->actor.speedXZ, this->speedTarget, 1.0f, 1.0f);
 
             if ((sRodCastState != 3) || (this->timerArray[0] == 0) || (sLurePos.y > (WATER_SURFACE_Y(play) + 5.0f)) ||
-                (sqrtf(SQ(sLurePos.x) + SQ(sLurePos.z)) > 800.0f)) {
+                (!this->isWild && (sqrtf(SQ(sLurePos.x) + SQ(sLurePos.z)) > 800.0f))) {
 
                 this->timerArray[0] = 0;
                 this->fishState = this->fishStateNext;
@@ -3982,7 +4037,7 @@ void Fishing_UpdateFish(Actor* thisx, PlayState* play2) {
             Math_ApproachF(&this->actor.speedXZ, 2.0f, 1.0f, 1.0f);
 
             if ((sRodCastState != 3) || (this->timerArray[0] == 0) || (sLurePos.y > (WATER_SURFACE_Y(play) + 5.0f)) ||
-                (sqrtf(SQ(sLurePos.x) + SQ(sLurePos.z)) > 800.0f)) {
+                (!this->isWild && (sqrtf(SQ(sLurePos.x) + SQ(sLurePos.z)) > 800.0f))) {
 
                 this->timerArray[0] = 0;
                 this->unk_190 = 1.0f;

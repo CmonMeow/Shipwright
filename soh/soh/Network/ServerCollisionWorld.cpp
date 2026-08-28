@@ -19,6 +19,8 @@ constexpr uint16_t kVertexIndexMask = 0x1FFF;
 constexpr uint16_t kIgnoreProjectiles = 4u << 13;
 constexpr int32_t kNormalWildFishParams = 400;
 constexpr int32_t kLoachWildFishParams = 401;
+constexpr int32_t kNormalWildFishPerWaterBox = 12;
+constexpr int32_t kWildLoachesPerWaterBox = 4;
 constexpr int32_t kZorasDomainScene = 0x58;
 
 #define DEFINE_SCENE(sceneName, ...) #sceneName,
@@ -151,9 +153,31 @@ float WildRandom01(uint32_t seed) {
     return static_cast<float>(WildHash(seed) & 0x00FFFFFF) / 16777216.0f;
 }
 
-void AddWildFish(std::vector<ServerWildFishSpawn>& fish, int32_t sceneId, int32_t waterIndex,
+template <typename TriangleContainer>
+bool WildFishSpawnHasDepth(const TriangleContainer& triangles, float x, float fishY, float z) {
+    float highestFloor = -std::numeric_limits<float>::infinity();
+    for (const auto& triangle : triangles) {
+        if (triangle.normal.y <= 0.01f) {
+            continue;
+        }
+        const float floorY = -(triangle.normal.x * x + triangle.normal.z * z + triangle.originDistance) /
+                             triangle.normal.y;
+        if (floorY > fishY + 30.0f) {
+            continue;
+        }
+        const ServerCollisionPoint point{ x, floorY, z };
+        if (PointInsideTriangle(point, triangle.vertices[0], triangle.vertices[1], triangle.vertices[2])) {
+            highestFloor = std::max(highestFloor, floorY);
+        }
+    }
+    return std::isfinite(highestFloor) && highestFloor <= fishY - 20.0f;
+}
+
+template <typename TriangleContainer>
+void AddWildFish(std::vector<ServerWildFishSpawn>& fish, const TriangleContainer& triangles,
+                 int32_t sceneId, int32_t waterIndex,
                  int16_t xMinRaw, int16_t ySurfaceRaw, int16_t zMinRaw, int16_t xLengthRaw,
-                 int16_t zLengthRaw, bool isLoach) {
+                 int16_t zLengthRaw, int32_t fishIndex, bool isLoach) {
     const float width = std::fabs(static_cast<float>(xLengthRaw));
     const float depth = std::fabs(static_cast<float>(zLengthRaw));
     if (width == 0.0f || depth == 0.0f) {
@@ -167,12 +191,24 @@ void AddWildFish(std::vector<ServerWildFishSpawn>& fish, int32_t sceneId, int32_
     const float marginZ = depth > 80.0f ? 40.0f : depth * 0.2f;
     const uint32_t seed = static_cast<uint32_t>(sceneId) * 0x9E3779B9U ^
                           static_cast<uint32_t>(waterIndex + 1) * 0x85EBCA6BU ^
+                          static_cast<uint32_t>(fishIndex + 1) * 0x165667B1U ^
                           (isLoach ? 0xC2B2AE35U : 0x27D4EB2FU);
     ServerWildFishSpawn spawn{};
     spawn.actorParams = isLoach ? kLoachWildFishParams : kNormalWildFishParams;
-    spawn.spawnX = minX + marginX + WildRandom01(seed) * (width - marginX * 2.0f);
     spawn.spawnY = static_cast<float>(ySurfaceRaw) - (isLoach ? 45.0f : 25.0f);
-    spawn.spawnZ = minZ + marginZ + WildRandom01(seed ^ 0xA511E9B3U) * (depth - marginZ * 2.0f);
+    bool foundSpawn = false;
+    for (uint32_t attempt = 0; attempt < 32; ++attempt) {
+        const uint32_t candidateSeed = seed ^ (attempt * 0xD3A2646CU);
+        spawn.spawnX = minX + marginX + WildRandom01(candidateSeed) * (width - marginX * 2.0f);
+        spawn.spawnZ = minZ + marginZ + WildRandom01(candidateSeed ^ 0xA511E9B3U) * (depth - marginZ * 2.0f);
+        if (WildFishSpawnHasDepth(triangles, spawn.spawnX, spawn.spawnY, spawn.spawnZ)) {
+            foundSpawn = true;
+            break;
+        }
+    }
+    if (!foundSpawn) {
+        return;
+    }
     spawn.homeX = static_cast<int32_t>(std::lround(spawn.spawnX));
     spawn.homeY = static_cast<int32_t>(std::lround(spawn.spawnY));
     spawn.homeZ = static_cast<int32_t>(std::lround(spawn.spawnZ));
@@ -350,12 +386,24 @@ bool ServerCollisionWorld::LoadArchive(const std::filesystem::path& archivePath)
                 break;
             }
             (void)properties;
-            AddWildFish(sceneFish, sceneId, waterIndex, xMin, ySurface, zMin, xLength, zLength, false);
-            AddWildFish(sceneFish, sceneId, waterIndex, xMin, ySurface, zMin, xLength, zLength, true);
+            for (int32_t fishIndex = 0; fishIndex < kNormalWildFishPerWaterBox; ++fishIndex) {
+                AddWildFish(sceneFish, triangles, sceneId, waterIndex, xMin, ySurface, zMin, xLength, zLength,
+                            fishIndex, false);
+            }
+            for (int32_t fishIndex = 0; fishIndex < kWildLoachesPerWaterBox; ++fishIndex) {
+                AddWildFish(sceneFish, triangles, sceneId, waterIndex, xMin, ySurface, zMin, xLength, zLength,
+                            fishIndex, true);
+            }
         }
         if (valid && sceneId == kZorasDomainScene) {
-            AddWildFish(sceneFish, sceneId, waterBoxCount, -348, 877, -1746, 553, 780, false);
-            AddWildFish(sceneFish, sceneId, waterBoxCount, -348, 877, -1746, 553, 780, true);
+            for (int32_t fishIndex = 0; fishIndex < kNormalWildFishPerWaterBox; ++fishIndex) {
+                AddWildFish(sceneFish, triangles, sceneId, waterBoxCount, -348, 877, -1746, 553, 780,
+                            fishIndex, false);
+            }
+            for (int32_t fishIndex = 0; fishIndex < kWildLoachesPerWaterBox; ++fishIndex) {
+                AddWildFish(sceneFish, triangles, sceneId, waterBoxCount, -348, 877, -1746, 553, 780,
+                            fishIndex, true);
+            }
         }
         if (valid && !triangles.empty()) {
             triangleCount += triangles.size();
