@@ -1,4 +1,4 @@
-# Install script for directory: C:/Users/CmonMeow/Desktop/Shipwright/libultraship/src
+# Install script for directory: C:/Users/CmonMeow/Desktop/Shipwright/src/libultraship/src
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)

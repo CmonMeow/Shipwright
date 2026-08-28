@@ -9,6 +9,15 @@ set(CMAKE_OSX_DEPLOYMENT_TARGET "10.15" CACHE STRING "Minimum OS X deployment ve
 project(Ship VERSION 9.2.3 LANGUAGES C CXX)
 include(CMake/soh-cvars.cmake)
 include(CMake/lus-cvars.cmake)
+
+set(SHIP_SOURCE_DIR "${CMAKE_SOURCE_DIR}/src")
+set(SHIP_THIRD_PARTY_DIR "${CMAKE_SOURCE_DIR}/third_party")
+set(SHIP_BIN_DIR "${CMAKE_SOURCE_DIR}/bin")
+set(FETCHCONTENT_BASE_DIR "${SHIP_THIRD_PARTY_DIR}/fetchcontent" CACHE PATH "Third-party source directory" FORCE)
+
+foreach(configuration DEBUG RELEASE RELWITHDEBINFO MINSIZEREL)
+    set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_${configuration} "${SHIP_BIN_DIR}" CACHE PATH "Runtime output directory" FORCE)
+endforeach()
 option(SUPPRESS_WARNINGS "Suppress warnings in LUS and src (decomp)" ON)
 if(SUPPRESS_WARNINGS)
     MESSAGE("Suppressing warnings in LUS and src")
@@ -77,6 +86,7 @@ add_compile_options($<$<CXX_COMPILER_ID:MSVC>:/utf-8>)
 add_compile_options($<$<CXX_COMPILER_ID:MSVC>:/Zc:preprocessor>)
 
 if (CMAKE_SYSTEM_NAME STREQUAL "Windows")
+    set(VCPKG_FALLBACK_ROOT "${SHIP_THIRD_PARTY_DIR}/vcpkg" CACHE PATH "Vcpkg directory" FORCE)
     include(CMake/automate-vcpkg.cmake)
 
     set(VCPKG_TRIPLET x64-windows-static)
@@ -169,24 +179,24 @@ add_compile_definitions(CONTROLLERBUTTONS_T=uint32_t)
 ################################################################################
 # Sub-projects
 ################################################################################
-add_subdirectory(libultraship ${CMAKE_BINARY_DIR}/libultraship)
+add_subdirectory(src/libultraship ${CMAKE_BINARY_DIR}/libultraship)
 target_compile_options(libultraship PRIVATE "${WARNING_OVERRIDE}")
 target_compile_definitions(libultraship PUBLIC INCLUDE_MPQ_SUPPORT)
-add_subdirectory(soh)
+add_subdirectory(src/shipwright ${CMAKE_BINARY_DIR}/shipwright)
 
 set_property(TARGET soh PROPERTY APPIMAGE_DESKTOP_FILE_TERMINAL YES)
 set_property(TARGET soh PROPERTY APPIMAGE_DESKTOP_FILE "${CMAKE_SOURCE_DIR}/scripts/linux/appimage/soh.desktop")
 set_property(TARGET soh PROPERTY APPIMAGE_ICON_FILE "${CMAKE_BINARY_DIR}/sohIcon.png")
 
 if("${CMAKE_SYSTEM_NAME}" STREQUAL "Linux")
-install(FILES "${CMAKE_BINARY_DIR}/soh/oot.o2r" DESTINATION . COMPONENT ship)
+install(FILES "${CMAKE_BINARY_DIR}/shipwright/oot.o2r" DESTINATION . COMPONENT ship)
 endif()
 
 if(CMAKE_SYSTEM_NAME MATCHES "Linux")
     find_package(ImageMagick COMPONENTS convert)
     if (ImageMagick_FOUND)
         execute_process (
-            COMMAND ${ImageMagick_convert_EXECUTABLE} ${CMAKE_SOURCE_DIR}/soh/macosx/sohIcon.png -resize 512x512 ${CMAKE_BINARY_DIR}/sohIcon.png
+            COMMAND ${ImageMagick_convert_EXECUTABLE} ${SHIP_SOURCE_DIR}/shipwright/macosx/sohIcon.png -resize 512x512 ${CMAKE_BINARY_DIR}/sohIcon.png
             OUTPUT_VARIABLE outVar
         )
     endif()
@@ -195,16 +205,16 @@ endif()
 if(CMAKE_SYSTEM_NAME MATCHES "Darwin")
 add_custom_target(CreateOSXIcons
     COMMAND mkdir -p ${CMAKE_BINARY_DIR}/macosx/soh.iconset
-    COMMAND sips -z 16 16     ${CMAKE_SOURCE_DIR}/soh/macosx/sohIcon.png --out ${CMAKE_BINARY_DIR}/macosx/soh.iconset/icon_16x16.png
-    COMMAND sips -z 32 32     ${CMAKE_SOURCE_DIR}/soh/macosx/sohIcon.png --out ${CMAKE_BINARY_DIR}/macosx/soh.iconset/icon_16x16@2x.png
-    COMMAND sips -z 32 32     ${CMAKE_SOURCE_DIR}/soh/macosx/sohIcon.png --out ${CMAKE_BINARY_DIR}/macosx/soh.iconset/icon_32x32.png
-    COMMAND sips -z 64 64     ${CMAKE_SOURCE_DIR}/soh/macosx/sohIcon.png --out ${CMAKE_BINARY_DIR}/macosx/soh.iconset/icon_32x32@2x.png
-    COMMAND sips -z 128 128   ${CMAKE_SOURCE_DIR}/soh/macosx/sohIcon.png --out ${CMAKE_BINARY_DIR}/macosx/soh.iconset/icon_128x128.png
-    COMMAND sips -z 256 256   ${CMAKE_SOURCE_DIR}/soh/macosx/sohIcon.png --out ${CMAKE_BINARY_DIR}/macosx/soh.iconset/icon_128x128@2x.png
-    COMMAND sips -z 256 256   ${CMAKE_SOURCE_DIR}/soh/macosx/sohIcon.png --out ${CMAKE_BINARY_DIR}/macosx/soh.iconset/icon_256x256.png
-    COMMAND sips -z 512 512   ${CMAKE_SOURCE_DIR}/soh/macosx/sohIcon.png --out ${CMAKE_BINARY_DIR}/macosx/soh.iconset/icon_256x256@2x.png
-    COMMAND sips -z 512 512   ${CMAKE_SOURCE_DIR}/soh/macosx/sohIcon.png --out ${CMAKE_BINARY_DIR}/macosx/soh.iconset/icon_512x512.png
-    COMMAND cp                ${CMAKE_SOURCE_DIR}/soh/macosx/sohIcon.png ${CMAKE_BINARY_DIR}/macosx/soh.iconset/icon_512x512@2x.png
+    COMMAND sips -z 16 16     ${SHIP_SOURCE_DIR}/shipwright/macosx/sohIcon.png --out ${CMAKE_BINARY_DIR}/macosx/soh.iconset/icon_16x16.png
+    COMMAND sips -z 32 32     ${SHIP_SOURCE_DIR}/shipwright/macosx/sohIcon.png --out ${CMAKE_BINARY_DIR}/macosx/soh.iconset/icon_16x16@2x.png
+    COMMAND sips -z 32 32     ${SHIP_SOURCE_DIR}/shipwright/macosx/sohIcon.png --out ${CMAKE_BINARY_DIR}/macosx/soh.iconset/icon_32x32.png
+    COMMAND sips -z 64 64     ${SHIP_SOURCE_DIR}/shipwright/macosx/sohIcon.png --out ${CMAKE_BINARY_DIR}/macosx/soh.iconset/icon_32x32@2x.png
+    COMMAND sips -z 128 128   ${SHIP_SOURCE_DIR}/shipwright/macosx/sohIcon.png --out ${CMAKE_BINARY_DIR}/macosx/soh.iconset/icon_128x128.png
+    COMMAND sips -z 256 256   ${SHIP_SOURCE_DIR}/shipwright/macosx/sohIcon.png --out ${CMAKE_BINARY_DIR}/macosx/soh.iconset/icon_128x128@2x.png
+    COMMAND sips -z 256 256   ${SHIP_SOURCE_DIR}/shipwright/macosx/sohIcon.png --out ${CMAKE_BINARY_DIR}/macosx/soh.iconset/icon_256x256.png
+    COMMAND sips -z 512 512   ${SHIP_SOURCE_DIR}/shipwright/macosx/sohIcon.png --out ${CMAKE_BINARY_DIR}/macosx/soh.iconset/icon_256x256@2x.png
+    COMMAND sips -z 512 512   ${SHIP_SOURCE_DIR}/shipwright/macosx/sohIcon.png --out ${CMAKE_BINARY_DIR}/macosx/soh.iconset/icon_512x512.png
+    COMMAND cp                ${SHIP_SOURCE_DIR}/shipwright/macosx/sohIcon.png ${CMAKE_BINARY_DIR}/macosx/soh.iconset/icon_512x512@2x.png
     COMMAND iconutil -c icns -o ${CMAKE_BINARY_DIR}/macosx/soh.icns ${CMAKE_BINARY_DIR}/macosx/soh.iconset
     WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
     COMMENT "Creating OSX icons ..."

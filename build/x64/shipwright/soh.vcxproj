@@ -1,0 +1,1055 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="18.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <PreferredToolArchitecture>x64</PreferredToolArchitecture>
+  </PropertyGroup>
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{9BE9808F-4839-3804-9BD4-6AB6BED0CCA7}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <VcpkgEnabled>false</VcpkgEnabled>
+    <WindowsTargetPlatformVersion>10.0.26100.0</WindowsTargetPlatformVersion>
+    <Platform>x64</Platform>
+    <ProjectName>soh</ProjectName>
+    <VCProjectUpgraderObjectName>NoUpgrade</VCProjectUpgraderObjectName>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v145</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v145</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets">
+    <Import Project="do_not_import_user.props" Condition="exists('do_not_import_user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.20506.1</_ProjectFileVersion>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:\Users\CmonMeow\Desktop\Shipwright\bin\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">soh.dir\Debug\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">soh</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">.exe</TargetExt>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</LinkIncremental>
+    <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</GenerateManifest>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:\Users\CmonMeow\Desktop\Shipwright\bin\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">soh.dir\Release\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">soh</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.exe</TargetExt>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|x64'"></LinkIncremental>
+    <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</GenerateManifest>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\assets;C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\include;C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\src;C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\soh;C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\..\libultraship\include;C:\Users\CmonMeow\Desktop\Shipwright\third_party\fetchcontent\dr_libs-src;C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\.;C:\Users\CmonMeow\Desktop\Shipwright\src\libultraship\src;C:\Users\CmonMeow\Desktop\Shipwright\src\libultraship\src\..\include;C:\Users\CmonMeow\Desktop\Shipwright\third_party\fetchcontent\stormlib-src\src;C:\Users\CmonMeow\Desktop\Shipwright\third_party\stb;C:\Users\CmonMeow\Desktop\Shipwright\third_party\fetchcontent\threadpool-src\include;C:\Users\CmonMeow\Desktop\Shipwright\third_party\fetchcontent\prism-src;C:\Users\CmonMeow\Desktop\Shipwright\third_party\fetchcontent\prism-src\lib;C:\Users\CmonMeow\Desktop\Shipwright\third_party\fetchcontent\prism-src\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalOptions>%(AdditionalOptions) /external:I "C:/Users/CmonMeow/Desktop/Shipwright/third_party/vcpkg/installed/x64-windows-static/include" /external:I "C:/Users/CmonMeow/Desktop/Shipwright/third_party/vcpkg/installed/x64-windows-static/include/opus" /utf-8 /w /bigobj</AdditionalOptions>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+      <BufferSecurityCheck></BufferSecurityCheck>
+      <CallingConvention></CallingConvention>
+      <ConformanceMode>true</ConformanceMode>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <ExternalWarningLevel>TurnOffAllWarnings</ExternalWarningLevel>
+      <FloatingPointModel></FloatingPointModel>
+      <ForceConformanceInForLoopScope></ForceConformanceInForLoopScope>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <LanguageStandard_C>stdclatest</LanguageStandard_C>
+      <MinimalRebuild></MinimalRebuild>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <Optimization>Disabled</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RemoveUnreferencedCodeData></RemoveUnreferencedCodeData>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <SDLCheck>false</SDLCheck>
+      <SupportJustMyCode></SupportJustMyCode>
+      <TreatWChar_tAsBuiltInType></TreatWChar_tAsBuiltInType>
+      <UseFullPaths>false</UseFullPaths>
+      <UseStandardPreprocessor>true</UseStandardPreprocessor>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);_DEBUG;_CRT_SECURE_NO_WARNINGS;ENABLE_OPENGL;INCLUDE_GAME_PRINTF;F3DEX_GBI_2;UNICODE;_UNICODE;STORMLIB_NO_AUTO_LINK;NOMINMAX;CVAR_PREFIX_SETTING="gSettings";CVAR_PREFIX_WINDOW="gOpenWindows";CVAR_PREFIX_GENERAL="gGeneral";CVAR_VSYNC_ENABLED="gSettings.VsyncEnabled";CVAR_Z_FIGHTING_MODE="gSettings.ZFightingMode";CVAR_INTERNAL_RESOLUTION="gSettings.InternalResolution";CVAR_MSAA_VALUE="gSettings.MSAAValue";CVAR_TEXTURE_FILTER="gSettings.TextureFilter";CVAR_AUDIO_CHANNELS_SETTING="gAudioChannelsSetting";CONTROLLERBUTTONS_T=uint32_t;INCLUDE_MPQ_SUPPORT;GLEW_STATIC;TINYXML2_DEBUG;_FILE_OFFSET_BITS=64;SPDLOG_COMPILED_LIB;SPDLOG_FMT_EXTERNAL;CMAKE_INTDIR="Debug"</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <ScanSourceForModuleDependencies>false</ScanSourceForModuleDependencies>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_DEBUG;_CRT_SECURE_NO_WARNINGS;ENABLE_OPENGL;INCLUDE_GAME_PRINTF;F3DEX_GBI_2;UNICODE;_UNICODE;STORMLIB_NO_AUTO_LINK;NOMINMAX;CVAR_PREFIX_SETTING=\"gSettings\";CVAR_PREFIX_WINDOW=\"gOpenWindows\";CVAR_PREFIX_GENERAL=\"gGeneral\";CVAR_VSYNC_ENABLED=\"gSettings.VsyncEnabled\";CVAR_Z_FIGHTING_MODE=\"gSettings.ZFightingMode\";CVAR_INTERNAL_RESOLUTION=\"gSettings.InternalResolution\";CVAR_MSAA_VALUE=\"gSettings.MSAAValue\";CVAR_TEXTURE_FILTER=\"gSettings.TextureFilter\";CVAR_AUDIO_CHANNELS_SETTING=\"gAudioChannelsSetting\";CONTROLLERBUTTONS_T=uint32_t;INCLUDE_MPQ_SUPPORT;GLEW_STATIC;TINYXML2_DEBUG;_FILE_OFFSET_BITS=64;SPDLOG_COMPILED_LIB;SPDLOG_FMT_EXTERNAL;CMAKE_INTDIR=\"Debug\"</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\assets;C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\include;C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\src;C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\soh;C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\..\libultraship\include;C:\Users\CmonMeow\Desktop\Shipwright\third_party\fetchcontent\dr_libs-src;C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\.;C:\Users\CmonMeow\Desktop\Shipwright\src\libultraship\src;C:\Users\CmonMeow\Desktop\Shipwright\src\libultraship\src\..\include;C:\Users\CmonMeow\Desktop\Shipwright\third_party\fetchcontent\stormlib-src\src;C:\Users\CmonMeow\Desktop\Shipwright\third_party\stb;C:\Users\CmonMeow\Desktop\Shipwright\third_party\fetchcontent\threadpool-src\include;C:\Users\CmonMeow\Desktop\Shipwright\third_party\fetchcontent\prism-src;C:\Users\CmonMeow\Desktop\Shipwright\third_party\fetchcontent\prism-src\lib;C:\Users\CmonMeow\Desktop\Shipwright\third_party\fetchcontent\prism-src\src;C:\Users\CmonMeow\Desktop\Shipwright\third_party\vcpkg\installed\x64-windows-static\include;C:\Users\CmonMeow\Desktop\Shipwright\third_party\vcpkg\installed\x64-windows-static\include\opus;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\assets;C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\include;C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\src;C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\soh;C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\..\libultraship\include;C:\Users\CmonMeow\Desktop\Shipwright\third_party\fetchcontent\dr_libs-src;C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\.;C:\Users\CmonMeow\Desktop\Shipwright\src\libultraship\src;C:\Users\CmonMeow\Desktop\Shipwright\src\libultraship\src\..\include;C:\Users\CmonMeow\Desktop\Shipwright\third_party\fetchcontent\stormlib-src\src;C:\Users\CmonMeow\Desktop\Shipwright\third_party\stb;C:\Users\CmonMeow\Desktop\Shipwright\third_party\fetchcontent\threadpool-src\include;C:\Users\CmonMeow\Desktop\Shipwright\third_party\fetchcontent\prism-src;C:\Users\CmonMeow\Desktop\Shipwright\third_party\fetchcontent\prism-src\lib;C:\Users\CmonMeow\Desktop\Shipwright\third_party\fetchcontent\prism-src\src;C:\Users\CmonMeow\Desktop\Shipwright\third_party\vcpkg\installed\x64-windows-static\include;C:\Users\CmonMeow\Desktop\Shipwright\third_party\vcpkg\installed\x64-windows-static\include\opus;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <PostBuildEvent>
+      <Message>	Copying merged game archive...</Message>
+      <Command>setlocal
+C:\Users\CmonMeow\Desktop\Shipwright\third_party\vcpkg\vcpkg.exe z-applocal --target-binary=C:/Users/CmonMeow/Desktop/Shipwright/bin/soh.exe --installed-bin-dir=C:/Users/CmonMeow/Desktop/Shipwright/third_party/vcpkg/installed/x64-windows-static/debug/bin
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+setlocal
+"C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" -E copy_if_different C:/Users/CmonMeow/Desktop/Shipwright/oot.o2r C:/Users/CmonMeow/Desktop/Shipwright/bin/oot.o2r
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+    </PostBuildEvent>
+    <Link>
+      <AdditionalDependencies>Debug\pathengine_network.lib;C:\Users\CmonMeow\Desktop\Shipwright\bin\libultraship.lib;glu32.lib;winmm.lib;imm32.lib;version.lib;setupapi.lib;C:\Users\CmonMeow\Desktop\Shipwright\third_party\vcpkg\installed\x64-windows-static\debug\lib\ogg.lib;C:\Users\CmonMeow\Desktop\Shipwright\third_party\vcpkg\installed\x64-windows-static\debug\lib\opus.lib;C:\Users\CmonMeow\Desktop\Shipwright\third_party\vcpkg\installed\x64-windows-static\debug\lib\vorbis.lib;C:\Users\CmonMeow\Desktop\Shipwright\third_party\vcpkg\installed\x64-windows-static\debug\lib\vorbisenc.lib;C:\Users\CmonMeow\Desktop\Shipwright\third_party\vcpkg\installed\x64-windows-static\debug\lib\vorbisfile.lib;C:\Users\CmonMeow\Desktop\Shipwright\third_party\vcpkg\installed\x64-windows-static\debug\lib\opusfile.lib;Ws2_32.lib;C:\Users\CmonMeow\Desktop\Shipwright\third_party\vcpkg\installed\x64-windows-static\debug\lib\libsodium.lib;C:\Users\CmonMeow\Desktop\Shipwright\third_party\vcpkg\installed\x64-windows-static\debug\lib\zip.lib;C:\Users\CmonMeow\Desktop\Shipwright\third_party\vcpkg\installed\x64-windows-static\debug\lib\bz2d.lib;C:\Users\CmonMeow\Desktop\Shipwright\third_party\vcpkg\installed\x64-windows-static\debug\lib\zsd.lib;C:\Users\CmonMeow\Desktop\Shipwright\third_party\fetchcontent\stormlib-build\Debug\StormLib.lib;C:\Users\CmonMeow\Desktop\Shipwright\third_party\vcpkg\installed\x64-windows-static\debug\lib\zsd.lib;C:\Users\CmonMeow\Desktop\Shipwright\third_party\vcpkg\installed\x64-windows-static\debug\lib\bz2d.lib;wininet.lib;..\libultraship\Debug\stb.lib;C:\Users\CmonMeow\Desktop\Shipwright\third_party\vcpkg\installed\x64-windows-static\debug\lib\libglew32d.lib;opengl32.lib;..\libultraship\Debug\libgfxd.lib;C:\Users\CmonMeow\Desktop\Shipwright\third_party\vcpkg\installed\x64-windows-static\debug\lib\zip.lib;advapi32.lib;bcrypt.lib;C:\Users\CmonMeow\Desktop\Shipwright\third_party\vcpkg\installed\x64-windows-static\debug\lib\bz2d.lib;C:\Users\CmonMeow\Desktop\Shipwright\third_party\vcpkg\installed\x64-windows-static\debug\lib\zsd.lib;C:\Users\CmonMeow\Desktop\Shipwright\third_party\vcpkg\installed\x64-windows-static\debug\lib\tinyxml2.lib;C:\Users\CmonMeow\Desktop\Shipwright\third_party\vcpkg\installed\x64-windows-static\debug\lib\fmtd.lib;C:\Users\CmonMeow\Desktop\Shipwright\third_party\fetchcontent\prism-build\Debug\prism.lib;C:\Users\CmonMeow\Desktop\Shipwright\third_party\vcpkg\installed\x64-windows-static\debug\lib\spdlogd.lib;C:\Users\CmonMeow\Desktop\Shipwright\third_party\vcpkg\installed\x64-windows-static\debug\lib\fmtd.lib;C:\Users\CmonMeow\Desktop\Shipwright\third_party\vcpkg\installed\x64-windows-static\debug\lib\vorbis.lib;C:\Users\CmonMeow\Desktop\Shipwright\third_party\vcpkg\installed\x64-windows-static\debug\lib\ogg.lib;C:\Users\CmonMeow\Desktop\Shipwright\third_party\vcpkg\installed\x64-windows-static\debug\lib\opus.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <DataExecutionPrevention></DataExecutionPrevention>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <ImageHasSafeExceptionHandlers></ImageHasSafeExceptionHandlers>
+      <ImportLibrary>C:/Users/CmonMeow/Desktop/Shipwright/bin/soh.lib</ImportLibrary>
+      <LinkErrorReporting></LinkErrorReporting>
+      <ProgramDataBaseFile>C:/Users/CmonMeow/Desktop/Shipwright/bin/soh.pdb</ProgramDataBaseFile>
+      <RandomizedBaseAddress></RandomizedBaseAddress>
+      <SubSystem>Windows</SubSystem>
+    </Link>
+    <ProjectReference>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\assets;C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\include;C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\src;C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\soh;C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\..\libultraship\include;C:\Users\CmonMeow\Desktop\Shipwright\third_party\fetchcontent\dr_libs-src;C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\.;C:\Users\CmonMeow\Desktop\Shipwright\src\libultraship\src;C:\Users\CmonMeow\Desktop\Shipwright\src\libultraship\src\..\include;C:\Users\CmonMeow\Desktop\Shipwright\third_party\fetchcontent\stormlib-src\src;C:\Users\CmonMeow\Desktop\Shipwright\third_party\stb;C:\Users\CmonMeow\Desktop\Shipwright\third_party\fetchcontent\threadpool-src\include;C:\Users\CmonMeow\Desktop\Shipwright\third_party\fetchcontent\prism-src;C:\Users\CmonMeow\Desktop\Shipwright\third_party\fetchcontent\prism-src\lib;C:\Users\CmonMeow\Desktop\Shipwright\third_party\fetchcontent\prism-src\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalOptions>%(AdditionalOptions) /external:I "C:/Users/CmonMeow/Desktop/Shipwright/third_party/vcpkg/installed/x64-windows-static/include" /external:I "C:/Users/CmonMeow/Desktop/Shipwright/third_party/vcpkg/installed/x64-windows-static/include/opus" /utf-8 /bigobj</AdditionalOptions>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+      <BufferSecurityCheck></BufferSecurityCheck>
+      <CallingConvention></CallingConvention>
+      <ConformanceMode>true</ConformanceMode>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <ExternalWarningLevel>TurnOffAllWarnings</ExternalWarningLevel>
+      <FloatingPointModel></FloatingPointModel>
+      <ForceConformanceInForLoopScope></ForceConformanceInForLoopScope>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <LanguageStandard_C>stdclatest</LanguageStandard_C>
+      <MinimalRebuild></MinimalRebuild>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <Optimization></Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RemoveUnreferencedCodeData></RemoveUnreferencedCodeData>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <SDLCheck>false</SDLCheck>
+      <SupportJustMyCode></SupportJustMyCode>
+      <TreatWChar_tAsBuiltInType></TreatWChar_tAsBuiltInType>
+      <UseFullPaths>false</UseFullPaths>
+      <UseStandardPreprocessor>true</UseStandardPreprocessor>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);NDEBUG;INCLUDE_GAME_PRINTF;F3DEX_GBI_2;UNICODE;_UNICODE;STORMLIB_NO_AUTO_LINK;_CRT_SECURE_NO_WARNINGS;NOMINMAX;CVAR_PREFIX_SETTING="gSettings";CVAR_PREFIX_WINDOW="gOpenWindows";CVAR_PREFIX_GENERAL="gGeneral";CVAR_VSYNC_ENABLED="gSettings.VsyncEnabled";CVAR_Z_FIGHTING_MODE="gSettings.ZFightingMode";CVAR_INTERNAL_RESOLUTION="gSettings.InternalResolution";CVAR_MSAA_VALUE="gSettings.MSAAValue";CVAR_TEXTURE_FILTER="gSettings.TextureFilter";CVAR_AUDIO_CHANNELS_SETTING="gAudioChannelsSetting";CONTROLLERBUTTONS_T=uint32_t;INCLUDE_MPQ_SUPPORT;GLEW_STATIC;_FILE_OFFSET_BITS=64;SPDLOG_COMPILED_LIB;SPDLOG_FMT_EXTERNAL;CMAKE_INTDIR="Release"</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <ScanSourceForModuleDependencies>false</ScanSourceForModuleDependencies>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;NDEBUG;INCLUDE_GAME_PRINTF;F3DEX_GBI_2;UNICODE;_UNICODE;STORMLIB_NO_AUTO_LINK;_CRT_SECURE_NO_WARNINGS;NOMINMAX;CVAR_PREFIX_SETTING=\"gSettings\";CVAR_PREFIX_WINDOW=\"gOpenWindows\";CVAR_PREFIX_GENERAL=\"gGeneral\";CVAR_VSYNC_ENABLED=\"gSettings.VsyncEnabled\";CVAR_Z_FIGHTING_MODE=\"gSettings.ZFightingMode\";CVAR_INTERNAL_RESOLUTION=\"gSettings.InternalResolution\";CVAR_MSAA_VALUE=\"gSettings.MSAAValue\";CVAR_TEXTURE_FILTER=\"gSettings.TextureFilter\";CVAR_AUDIO_CHANNELS_SETTING=\"gAudioChannelsSetting\";CONTROLLERBUTTONS_T=uint32_t;INCLUDE_MPQ_SUPPORT;GLEW_STATIC;_FILE_OFFSET_BITS=64;SPDLOG_COMPILED_LIB;SPDLOG_FMT_EXTERNAL;CMAKE_INTDIR=\"Release\"</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\assets;C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\include;C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\src;C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\soh;C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\..\libultraship\include;C:\Users\CmonMeow\Desktop\Shipwright\third_party\fetchcontent\dr_libs-src;C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\.;C:\Users\CmonMeow\Desktop\Shipwright\src\libultraship\src;C:\Users\CmonMeow\Desktop\Shipwright\src\libultraship\src\..\include;C:\Users\CmonMeow\Desktop\Shipwright\third_party\fetchcontent\stormlib-src\src;C:\Users\CmonMeow\Desktop\Shipwright\third_party\stb;C:\Users\CmonMeow\Desktop\Shipwright\third_party\fetchcontent\threadpool-src\include;C:\Users\CmonMeow\Desktop\Shipwright\third_party\fetchcontent\prism-src;C:\Users\CmonMeow\Desktop\Shipwright\third_party\fetchcontent\prism-src\lib;C:\Users\CmonMeow\Desktop\Shipwright\third_party\fetchcontent\prism-src\src;C:\Users\CmonMeow\Desktop\Shipwright\third_party\vcpkg\installed\x64-windows-static\include;C:\Users\CmonMeow\Desktop\Shipwright\third_party\vcpkg\installed\x64-windows-static\include\opus;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\assets;C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\include;C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\src;C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\soh;C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\..\libultraship\include;C:\Users\CmonMeow\Desktop\Shipwright\third_party\fetchcontent\dr_libs-src;C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\.;C:\Users\CmonMeow\Desktop\Shipwright\src\libultraship\src;C:\Users\CmonMeow\Desktop\Shipwright\src\libultraship\src\..\include;C:\Users\CmonMeow\Desktop\Shipwright\third_party\fetchcontent\stormlib-src\src;C:\Users\CmonMeow\Desktop\Shipwright\third_party\stb;C:\Users\CmonMeow\Desktop\Shipwright\third_party\fetchcontent\threadpool-src\include;C:\Users\CmonMeow\Desktop\Shipwright\third_party\fetchcontent\prism-src;C:\Users\CmonMeow\Desktop\Shipwright\third_party\fetchcontent\prism-src\lib;C:\Users\CmonMeow\Desktop\Shipwright\third_party\fetchcontent\prism-src\src;C:\Users\CmonMeow\Desktop\Shipwright\third_party\vcpkg\installed\x64-windows-static\include;C:\Users\CmonMeow\Desktop\Shipwright\third_party\vcpkg\installed\x64-windows-static\include\opus;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <PostBuildEvent>
+      <Message>	Copying merged game archive...</Message>
+      <Command>setlocal
+C:\Users\CmonMeow\Desktop\Shipwright\third_party\vcpkg\vcpkg.exe z-applocal --target-binary=C:/Users/CmonMeow/Desktop/Shipwright/bin/soh.exe --installed-bin-dir=C:/Users/CmonMeow/Desktop/Shipwright/third_party/vcpkg/installed/x64-windows-static/bin
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+setlocal
+"C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" -E copy_if_different C:/Users/CmonMeow/Desktop/Shipwright/oot.o2r C:/Users/CmonMeow/Desktop/Shipwright/bin/oot.o2r
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+    </PostBuildEvent>
+    <Link>
+      <AdditionalDependencies>Release\pathengine_network.lib;C:\Users\CmonMeow\Desktop\Shipwright\bin\libultraship.lib;glu32.lib;winmm.lib;imm32.lib;version.lib;setupapi.lib;C:\Users\CmonMeow\Desktop\Shipwright\third_party\vcpkg\installed\x64-windows-static\lib\ogg.lib;C:\Users\CmonMeow\Desktop\Shipwright\third_party\vcpkg\installed\x64-windows-static\lib\opus.lib;C:\Users\CmonMeow\Desktop\Shipwright\third_party\vcpkg\installed\x64-windows-static\lib\vorbis.lib;C:\Users\CmonMeow\Desktop\Shipwright\third_party\vcpkg\installed\x64-windows-static\lib\vorbisenc.lib;C:\Users\CmonMeow\Desktop\Shipwright\third_party\vcpkg\installed\x64-windows-static\lib\vorbisfile.lib;C:\Users\CmonMeow\Desktop\Shipwright\third_party\vcpkg\installed\x64-windows-static\lib\opusfile.lib;Ws2_32.lib;C:\Users\CmonMeow\Desktop\Shipwright\third_party\vcpkg\installed\x64-windows-static\lib\libsodium.lib;C:\Users\CmonMeow\Desktop\Shipwright\third_party\vcpkg\installed\x64-windows-static\lib\zip.lib;C:\Users\CmonMeow\Desktop\Shipwright\third_party\vcpkg\installed\x64-windows-static\lib\bz2.lib;C:\Users\CmonMeow\Desktop\Shipwright\third_party\vcpkg\installed\x64-windows-static\lib\zs.lib;C:\Users\CmonMeow\Desktop\Shipwright\third_party\fetchcontent\stormlib-build\Release\StormLib.lib;C:\Users\CmonMeow\Desktop\Shipwright\third_party\vcpkg\installed\x64-windows-static\lib\zs.lib;C:\Users\CmonMeow\Desktop\Shipwright\third_party\vcpkg\installed\x64-windows-static\lib\bz2.lib;wininet.lib;..\libultraship\Release\stb.lib;C:\Users\CmonMeow\Desktop\Shipwright\third_party\vcpkg\installed\x64-windows-static\lib\libglew32.lib;opengl32.lib;..\libultraship\Release\libgfxd.lib;C:\Users\CmonMeow\Desktop\Shipwright\third_party\vcpkg\installed\x64-windows-static\lib\zip.lib;advapi32.lib;bcrypt.lib;C:\Users\CmonMeow\Desktop\Shipwright\third_party\vcpkg\installed\x64-windows-static\lib\bz2.lib;C:\Users\CmonMeow\Desktop\Shipwright\third_party\vcpkg\installed\x64-windows-static\lib\zs.lib;C:\Users\CmonMeow\Desktop\Shipwright\third_party\vcpkg\installed\x64-windows-static\lib\tinyxml2.lib;C:\Users\CmonMeow\Desktop\Shipwright\third_party\vcpkg\installed\x64-windows-static\lib\fmt.lib;C:\Users\CmonMeow\Desktop\Shipwright\third_party\fetchcontent\prism-build\Release\prism.lib;C:\Users\CmonMeow\Desktop\Shipwright\third_party\vcpkg\installed\x64-windows-static\lib\spdlog.lib;C:\Users\CmonMeow\Desktop\Shipwright\third_party\vcpkg\installed\x64-windows-static\lib\fmt.lib;C:\Users\CmonMeow\Desktop\Shipwright\third_party\vcpkg\installed\x64-windows-static\lib\vorbis.lib;C:\Users\CmonMeow\Desktop\Shipwright\third_party\vcpkg\installed\x64-windows-static\lib\ogg.lib;C:\Users\CmonMeow\Desktop\Shipwright\third_party\vcpkg\installed\x64-windows-static\lib\opus.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <DataExecutionPrevention></DataExecutionPrevention>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <ForceFileOutput>MultiplyDefinedSymbolOnly</ForceFileOutput>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <ImageHasSafeExceptionHandlers></ImageHasSafeExceptionHandlers>
+      <ImportLibrary>C:/Users/CmonMeow/Desktop/Shipwright/bin/soh.lib</ImportLibrary>
+      <LinkErrorReporting></LinkErrorReporting>
+      <OptimizeReferences>true</OptimizeReferences>
+      <ProgramDataBaseFile>C:/Users/CmonMeow/Desktop/Shipwright/bin/soh.pdb</ProgramDataBaseFile>
+      <RandomizedBaseAddress></RandomizedBaseAddress>
+      <SubSystem>Windows</SubSystem>
+    </Link>
+    <ProjectReference>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\CMakeLists.txt">
+      <UseUtf8Encoding>Always</UseUtf8Encoding>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Building Custom Rule C:/Users/CmonMeow/Desktop/Shipwright/src/shipwright/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">setlocal
+"C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" -SC:/Users/CmonMeow/Desktop/Shipwright -BC:/Users/CmonMeow/Desktop/Shipwright/build/x64 --check-stamp-file C:/Users/CmonMeow/Desktop/Shipwright/build/x64/shipwright/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-4.3\Modules\CMakeFindDependencyMacro.cmake;C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-4.3\Modules\CMakePushCheckState.cmake;C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-4.3\Modules\CheckSymbolExists.cmake;C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-4.3\Modules\ExternalProject\shared_internal_commands.cmake;C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-4.3\Modules\FetchContent.cmake;C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-4.3\Modules\FetchContent\CMakeLists.cmake.in;C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-4.3\Modules\FindBZip2.cmake;C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-4.3\Modules\FindGit.cmake;C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-4.3\Modules\FindPackageHandleStandardArgs.cmake;C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-4.3\Modules\FindPackageMessage.cmake;C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-4.3\Modules\FindZLIB.cmake;C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-4.3\Modules\SelectLibraryConfigurations.cmake;C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\CMake\Default.cmake;C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\CMake\DefaultCXX.cmake;C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\CMake\Utils.cmake;C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\properties.h.in;C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\src\boot\build.c.in;C:\Users\CmonMeow\Desktop\Shipwright\third_party\vcpkg\installed\x64-windows-static\share\Vorbis\VorbisConfig.cmake;C:\Users\CmonMeow\Desktop\Shipwright\third_party\vcpkg\installed\x64-windows-static\share\Vorbis\VorbisConfigVersion.cmake;C:\Users\CmonMeow\Desktop\Shipwright\third_party\vcpkg\installed\x64-windows-static\share\Vorbis\VorbisTargets-debug.cmake;C:\Users\CmonMeow\Desktop\Shipwright\third_party\vcpkg\installed\x64-windows-static\share\Vorbis\VorbisTargets-release.cmake;C:\Users\CmonMeow\Desktop\Shipwright\third_party\vcpkg\installed\x64-windows-static\share\Vorbis\VorbisTargets.cmake;C:\Users\CmonMeow\Desktop\Shipwright\third_party\vcpkg\installed\x64-windows-static\share\libzip\libzip-config-version.cmake;C:\Users\CmonMeow\Desktop\Shipwright\third_party\vcpkg\installed\x64-windows-static\share\libzip\libzip-config.cmake;C:\Users\CmonMeow\Desktop\Shipwright\third_party\vcpkg\installed\x64-windows-static\share\libzip\libzip-targets-debug.cmake;C:\Users\CmonMeow\Desktop\Shipwright\third_party\vcpkg\installed\x64-windows-static\share\libzip\libzip-targets-release.cmake;C:\Users\CmonMeow\Desktop\Shipwright\third_party\vcpkg\installed\x64-windows-static\share\libzip\libzip-targets.cmake;C:\Users\CmonMeow\Desktop\Shipwright\third_party\vcpkg\installed\x64-windows-static\share\ogg\OggConfig.cmake;C:\Users\CmonMeow\Desktop\Shipwright\third_party\vcpkg\installed\x64-windows-static\share\ogg\OggConfigVersion.cmake;C:\Users\CmonMeow\Desktop\Shipwright\third_party\vcpkg\installed\x64-windows-static\share\ogg\OggTargets-debug.cmake;C:\Users\CmonMeow\Desktop\Shipwright\third_party\vcpkg\installed\x64-windows-static\share\ogg\OggTargets-release.cmake;C:\Users\CmonMeow\Desktop\Shipwright\third_party\vcpkg\installed\x64-windows-static\share\ogg\OggTargets.cmake;C:\Users\CmonMeow\Desktop\Shipwright\third_party\vcpkg\installed\x64-windows-static\share\opus\OpusConfig.cmake;C:\Users\CmonMeow\Desktop\Shipwright\third_party\vcpkg\installed\x64-windows-static\share\opus\OpusConfigVersion.cmake;C:\Users\CmonMeow\Desktop\Shipwright\third_party\vcpkg\installed\x64-windows-static\share\opus\OpusTargets-debug.cmake;C:\Users\CmonMeow\Desktop\Shipwright\third_party\vcpkg\installed\x64-windows-static\share\opus\OpusTargets-release.cmake;C:\Users\CmonMeow\Desktop\Shipwright\third_party\vcpkg\installed\x64-windows-static\share\opus\OpusTargets.cmake;C:\Users\CmonMeow\Desktop\Shipwright\third_party\vcpkg\installed\x64-windows-static\share\opusfile\OpusFileConfig.cmake;C:\Users\CmonMeow\Desktop\Shipwright\third_party\vcpkg\installed\x64-windows-static\share\opusfile\OpusFileConfigVersion.cmake;C:\Users\CmonMeow\Desktop\Shipwright\third_party\vcpkg\installed\x64-windows-static\share\opusfile\OpusFileTargets-debug.cmake;C:\Users\CmonMeow\Desktop\Shipwright\third_party\vcpkg\installed\x64-windows-static\share\opusfile\OpusFileTargets-release.cmake;C:\Users\CmonMeow\Desktop\Shipwright\third_party\vcpkg\installed\x64-windows-static\share\opusfile\OpusFileTargets.cmake;C:\Users\CmonMeow\Desktop\Shipwright\third_party\vcpkg\installed\x64-windows-static\share\unofficial-sodium\unofficial-sodiumConfig.cmake;C:\Users\CmonMeow\Desktop\Shipwright\third_party\vcpkg\installed\x64-windows-static\share\zlib\vcpkg-cmake-wrapper.cmake;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:\Users\CmonMeow\Desktop\Shipwright\build\x64\shipwright\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</LinkObjects>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Building Custom Rule C:/Users/CmonMeow/Desktop/Shipwright/src/shipwright/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">setlocal
+"C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" -SC:/Users/CmonMeow/Desktop/Shipwright -BC:/Users/CmonMeow/Desktop/Shipwright/build/x64 --check-stamp-file C:/Users/CmonMeow/Desktop/Shipwright/build/x64/shipwright/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-4.3\Modules\CMakeFindDependencyMacro.cmake;C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-4.3\Modules\CMakePushCheckState.cmake;C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-4.3\Modules\CheckSymbolExists.cmake;C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-4.3\Modules\ExternalProject\shared_internal_commands.cmake;C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-4.3\Modules\FetchContent.cmake;C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-4.3\Modules\FetchContent\CMakeLists.cmake.in;C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-4.3\Modules\FindBZip2.cmake;C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-4.3\Modules\FindGit.cmake;C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-4.3\Modules\FindPackageHandleStandardArgs.cmake;C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-4.3\Modules\FindPackageMessage.cmake;C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-4.3\Modules\FindZLIB.cmake;C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-4.3\Modules\SelectLibraryConfigurations.cmake;C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\CMake\Default.cmake;C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\CMake\DefaultCXX.cmake;C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\CMake\Utils.cmake;C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\properties.h.in;C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\src\boot\build.c.in;C:\Users\CmonMeow\Desktop\Shipwright\third_party\vcpkg\installed\x64-windows-static\share\Vorbis\VorbisConfig.cmake;C:\Users\CmonMeow\Desktop\Shipwright\third_party\vcpkg\installed\x64-windows-static\share\Vorbis\VorbisConfigVersion.cmake;C:\Users\CmonMeow\Desktop\Shipwright\third_party\vcpkg\installed\x64-windows-static\share\Vorbis\VorbisTargets-debug.cmake;C:\Users\CmonMeow\Desktop\Shipwright\third_party\vcpkg\installed\x64-windows-static\share\Vorbis\VorbisTargets-release.cmake;C:\Users\CmonMeow\Desktop\Shipwright\third_party\vcpkg\installed\x64-windows-static\share\Vorbis\VorbisTargets.cmake;C:\Users\CmonMeow\Desktop\Shipwright\third_party\vcpkg\installed\x64-windows-static\share\libzip\libzip-config-version.cmake;C:\Users\CmonMeow\Desktop\Shipwright\third_party\vcpkg\installed\x64-windows-static\share\libzip\libzip-config.cmake;C:\Users\CmonMeow\Desktop\Shipwright\third_party\vcpkg\installed\x64-windows-static\share\libzip\libzip-targets-debug.cmake;C:\Users\CmonMeow\Desktop\Shipwright\third_party\vcpkg\installed\x64-windows-static\share\libzip\libzip-targets-release.cmake;C:\Users\CmonMeow\Desktop\Shipwright\third_party\vcpkg\installed\x64-windows-static\share\libzip\libzip-targets.cmake;C:\Users\CmonMeow\Desktop\Shipwright\third_party\vcpkg\installed\x64-windows-static\share\ogg\OggConfig.cmake;C:\Users\CmonMeow\Desktop\Shipwright\third_party\vcpkg\installed\x64-windows-static\share\ogg\OggConfigVersion.cmake;C:\Users\CmonMeow\Desktop\Shipwright\third_party\vcpkg\installed\x64-windows-static\share\ogg\OggTargets-debug.cmake;C:\Users\CmonMeow\Desktop\Shipwright\third_party\vcpkg\installed\x64-windows-static\share\ogg\OggTargets-release.cmake;C:\Users\CmonMeow\Desktop\Shipwright\third_party\vcpkg\installed\x64-windows-static\share\ogg\OggTargets.cmake;C:\Users\CmonMeow\Desktop\Shipwright\third_party\vcpkg\installed\x64-windows-static\share\opus\OpusConfig.cmake;C:\Users\CmonMeow\Desktop\Shipwright\third_party\vcpkg\installed\x64-windows-static\share\opus\OpusConfigVersion.cmake;C:\Users\CmonMeow\Desktop\Shipwright\third_party\vcpkg\installed\x64-windows-static\share\opus\OpusTargets-debug.cmake;C:\Users\CmonMeow\Desktop\Shipwright\third_party\vcpkg\installed\x64-windows-static\share\opus\OpusTargets-release.cmake;C:\Users\CmonMeow\Desktop\Shipwright\third_party\vcpkg\installed\x64-windows-static\share\opus\OpusTargets.cmake;C:\Users\CmonMeow\Desktop\Shipwright\third_party\vcpkg\installed\x64-windows-static\share\opusfile\OpusFileConfig.cmake;C:\Users\CmonMeow\Desktop\Shipwright\third_party\vcpkg\installed\x64-windows-static\share\opusfile\OpusFileConfigVersion.cmake;C:\Users\CmonMeow\Desktop\Shipwright\third_party\vcpkg\installed\x64-windows-static\share\opusfile\OpusFileTargets-debug.cmake;C:\Users\CmonMeow\Desktop\Shipwright\third_party\vcpkg\installed\x64-windows-static\share\opusfile\OpusFileTargets-release.cmake;C:\Users\CmonMeow\Desktop\Shipwright\third_party\vcpkg\installed\x64-windows-static\share\opusfile\OpusFileTargets.cmake;C:\Users\CmonMeow\Desktop\Shipwright\third_party\vcpkg\installed\x64-windows-static\share\unofficial-sodium\unofficial-sodiumConfig.cmake;C:\Users\CmonMeow\Desktop\Shipwright\third_party\vcpkg\installed\x64-windows-static\share\zlib\vcpkg-cmake-wrapper.cmake;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:\Users\CmonMeow\Desktop\Shipwright\build\x64\shipwright\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</LinkObjects>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\resource.h" />
+    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\include\align_asset_macro.h" />
+    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\include\alignment.h" />
+    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\include\alloca.h" />
+    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\include\attributes.h" />
+    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\include\command_macros_base.h" />
+    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\include\functions.h" />
+    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\include\gfx.h" />
+    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\include\global.h" />
+    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\include\ichain.h" />
+    <None Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\include\macro.inc">
+    </None>
+    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\include\macros.h" />
+    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\include\message_data_fmt.h" />
+    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\include\message_data_textbox_types.h" />
+    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\include\regs.h" />
+    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\include\segment_symbols.h" />
+    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\include\sequence.h" />
+    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\include\sfx.h" />
+    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\include\unk.h" />
+    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\include\variables.h" />
+    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\include\vt.h" />
+    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\include\z64.h" />
+    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\include\z64actor.h" />
+    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\include\z64actor_enum.h" />
+    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\include\z64animation.h" />
+    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\include\z64audio.h" />
+    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\include\z64bgcheck.h" />
+    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\include\z64camera.h" />
+    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\include\z64collision_check.h" />
+    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\include\z64dma.h" />
+    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\include\z64effect.h" />
+    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\include\z64environment.h" />
+    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\include\z64interface.h" />
+    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\include\z64item.h" />
+    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\include\z64light.h" />
+    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\include\z64math.h" />
+    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\include\z64object.h" />
+    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\include\z64player.h" />
+    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\include\z64runtime_action.h" />
+    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\include\z64save.h" />
+    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\include\z64scene.h" />
+    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\include\z64scene_enum.h" />
+    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\include\z64skin.h" />
+    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\include\z64transition.h" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\soh\ActorDB.cpp" />
+    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\soh\ActorDB.h" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\soh\CrashHandlerExt.cpp" />
+    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\soh\CrashHandlerExt.h" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\soh\Enhancements\debugger\colViewer.cpp" />
+    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\soh\Enhancements\debugger\colViewer.h" />
+    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\soh\GameVersions.h" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\soh\GbiWrap.cpp" />
+    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\soh\ItemTableTypes.h" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\soh\NetworkGameBridge.cpp" />
+    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\soh\NetworkGameBridge.h" />
+    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\soh\OTRAudio.h" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\soh\OTRGlobals.cpp">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(AdditionalOptions) /utf-8</AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /utf-8</AdditionalOptions>
+    </ClCompile>
+    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\soh\OTRGlobals.h" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\soh\ObjectExtension\ActorListIndex.cpp" />
+    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\soh\ObjectExtension\ActorListIndex.h" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\soh\ObjectExtension\ObjectExtension.cpp" />
+    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\soh\ObjectExtension\ObjectExtension.h" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\soh\PathEngineMultiplayerUI.cpp" />
+    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\soh\PathEngineMultiplayerUI.h" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\soh\ResourceManagerHelpers.cpp" />
+    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\soh\ResourceManagerHelpers.h" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\soh\ShipUtils.cpp" />
+    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\soh\ShipUtils.h" />
+    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\soh\cvar_prefixes.h" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\soh\frame_interpolation.cpp" />
+    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\soh\frame_interpolation.h" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\soh\framebuffer_effects.c" />
+    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\soh\framebuffer_effects.h" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\soh\gu_pc.c" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\soh\mixer.c" />
+    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\soh\mixer.h" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\soh\resource\importer\AnimationFactory.cpp" />
+    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\soh\resource\importer\AnimationFactory.h" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\soh\resource\importer\ArrayFactory.cpp" />
+    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\soh\resource\importer\ArrayFactory.h" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\soh\resource\importer\AudioSampleFactory.cpp" />
+    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\soh\resource\importer\AudioSampleFactory.h" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\soh\resource\importer\AudioSequenceFactory.cpp" />
+    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\soh\resource\importer\AudioSequenceFactory.h" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\soh\resource\importer\AudioSoundFontFactory.cpp" />
+    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\soh\resource\importer\AudioSoundFontFactory.h" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\soh\resource\importer\CollisionHeaderFactory.cpp" />
+    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\soh\resource\importer\CollisionHeaderFactory.h" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\soh\resource\importer\PlayerAnimationFactory.cpp" />
+    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\soh\resource\importer\PlayerAnimationFactory.h" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\soh\resource\importer\SceneFactory.cpp" />
+    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\soh\resource\importer\SceneFactory.h" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\soh\resource\importer\SkeletonFactory.cpp" />
+    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\soh\resource\importer\SkeletonFactory.h" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\soh\resource\importer\SkeletonLimbFactory.cpp" />
+    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\soh\resource\importer\SkeletonLimbFactory.h" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\soh\resource\importer\TextFactory.cpp" />
+    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\soh\resource\importer\TextFactory.h" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\soh\resource\importer\scenecommand\EndMarkerFactory.cpp" />
+    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\soh\resource\importer\scenecommand\EndMarkerFactory.h" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\soh\resource\importer\scenecommand\SceneCommandFactory.cpp" />
+    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\soh\resource\importer\scenecommand\SceneCommandFactory.h" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\soh\resource\importer\scenecommand\SetCameraSettingsFactory.cpp" />
+    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\soh\resource\importer\scenecommand\SetCameraSettingsFactory.h" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\soh\resource\importer\scenecommand\SetCollisionHeaderFactory.cpp" />
+    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\soh\resource\importer\scenecommand\SetCollisionHeaderFactory.h" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\soh\resource\importer\scenecommand\SetEchoSettingsFactory.cpp" />
+    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\soh\resource\importer\scenecommand\SetEchoSettingsFactory.h" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\soh\resource\importer\scenecommand\SetEntranceListFactory.cpp" />
+    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\soh\resource\importer\scenecommand\SetEntranceListFactory.h" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\soh\resource\importer\scenecommand\SetLightingSettingsFactory.cpp" />
+    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\soh\resource\importer\scenecommand\SetLightingSettingsFactory.h" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\soh\resource\importer\scenecommand\SetMeshFactory.cpp" />
+    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\soh\resource\importer\scenecommand\SetMeshFactory.h" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\soh\resource\importer\scenecommand\SetRoomBehaviorFactory.cpp" />
+    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\soh\resource\importer\scenecommand\SetRoomBehaviorFactory.h" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\soh\resource\importer\scenecommand\SetRoomListFactory.cpp" />
+    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\soh\resource\importer\scenecommand\SetRoomListFactory.h" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\soh\resource\importer\scenecommand\SetSkyboxModifierFactory.cpp" />
+    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\soh\resource\importer\scenecommand\SetSkyboxModifierFactory.h" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\soh\resource\importer\scenecommand\SetSkyboxSettingsFactory.cpp" />
+    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\soh\resource\importer\scenecommand\SetSkyboxSettingsFactory.h" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\soh\resource\importer\scenecommand\SetSoundSettingsFactory.cpp" />
+    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\soh\resource\importer\scenecommand\SetSoundSettingsFactory.h" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\soh\resource\importer\scenecommand\SetSpecialObjectsFactory.cpp" />
+    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\soh\resource\importer\scenecommand\SetSpecialObjectsFactory.h" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\soh\resource\importer\scenecommand\SetStartPositionListFactory.cpp" />
+    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\soh\resource\importer\scenecommand\SetStartPositionListFactory.h" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\soh\resource\importer\scenecommand\SetTimeSettingsFactory.cpp" />
+    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\soh\resource\importer\scenecommand\SetTimeSettingsFactory.h" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\soh\resource\type\Animation.cpp" />
+    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\soh\resource\type\Animation.h" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\soh\resource\type\Array.cpp" />
+    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\soh\resource\type\Array.h" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\soh\resource\type\AudioSample.cpp" />
+    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\soh\resource\type\AudioSample.h" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\soh\resource\type\AudioSequence.cpp" />
+    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\soh\resource\type\AudioSequence.h" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\soh\resource\type\AudioSoundFont.cpp" />
+    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\soh\resource\type\AudioSoundFont.h" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\soh\resource\type\CollisionHeader.cpp" />
+    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\soh\resource\type\CollisionHeader.h" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\soh\resource\type\PlayerAnimation.cpp" />
+    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\soh\resource\type\PlayerAnimation.h" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\soh\resource\type\Scene.cpp" />
+    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\soh\resource\type\Scene.h" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\soh\resource\type\Skeleton.cpp" />
+    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\soh\resource\type\Skeleton.h" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\soh\resource\type\SkeletonLimb.cpp" />
+    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\soh\resource\type\SkeletonLimb.h" />
+    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\soh\resource\type\SohResourceType.h" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\soh\resource\type\Text.cpp" />
+    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\soh\resource\type\Text.h" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\soh\resource\type\scenecommand\EndMarker.cpp" />
+    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\soh\resource\type\scenecommand\EndMarker.h" />
+    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\soh\resource\type\scenecommand\RomFile.h" />
+    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\soh\resource\type\scenecommand\SceneCommand.h" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\soh\resource\type\scenecommand\SetCameraSettings.cpp" />
+    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\soh\resource\type\scenecommand\SetCameraSettings.h" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\soh\resource\type\scenecommand\SetCollisionHeader.cpp" />
+    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\soh\resource\type\scenecommand\SetCollisionHeader.h" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\soh\resource\type\scenecommand\SetEchoSettings.cpp" />
+    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\soh\resource\type\scenecommand\SetEchoSettings.h" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\soh\resource\type\scenecommand\SetEntranceList.cpp" />
+    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\soh\resource\type\scenecommand\SetEntranceList.h" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\soh\resource\type\scenecommand\SetLightingSettings.cpp" />
+    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\soh\resource\type\scenecommand\SetLightingSettings.h" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\soh\resource\type\scenecommand\SetMesh.cpp" />
+    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\soh\resource\type\scenecommand\SetMesh.h" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\soh\resource\type\scenecommand\SetRoomBehavior.cpp" />
+    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\soh\resource\type\scenecommand\SetRoomBehavior.h" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\soh\resource\type\scenecommand\SetRoomList.cpp" />
+    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\soh\resource\type\scenecommand\SetRoomList.h" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\soh\resource\type\scenecommand\SetSkyboxModifier.cpp" />
+    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\soh\resource\type\scenecommand\SetSkyboxModifier.h" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\soh\resource\type\scenecommand\SetSkyboxSettings.cpp" />
+    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\soh\resource\type\scenecommand\SetSkyboxSettings.h" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\soh\resource\type\scenecommand\SetSoundSettings.cpp" />
+    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\soh\resource\type\scenecommand\SetSoundSettings.h" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\soh\resource\type\scenecommand\SetSpecialObjects.cpp" />
+    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\soh\resource\type\scenecommand\SetSpecialObjects.h" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\soh\resource\type\scenecommand\SetStartPositionList.cpp" />
+    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\soh\resource\type\scenecommand\SetStartPositionList.h" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\soh\resource\type\scenecommand\SetTimeSettings.cpp" />
+    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\soh\resource\type\scenecommand\SetTimeSettings.h" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\soh\stubs.c" />
+    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\soh\sysdef.h" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\soh\util.cpp" />
+    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\soh\util.h" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\soh\z_play_otr.cpp" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\soh\z_scene_otr.cpp" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\src\boot\boot_main.c">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+    </ClCompile>
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\src\boot\build.c">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+    </ClCompile>
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\src\boot\idle.c">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+    </ClCompile>
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\src\boot\logutils.c">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+    </ClCompile>
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\src\boot\stackcheck.c">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+    </ClCompile>
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\src\boot\viconfig.c">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+    </ClCompile>
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\src\boot\yaz0.c">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+    </ClCompile>
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\src\boot\z_locale.c">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+    </ClCompile>
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\src\boot\z_std_dma.c">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+    </ClCompile>
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\src\buffers\gfxbuffers.c">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+    </ClCompile>
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\src\buffers\heaps.c">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+    </ClCompile>
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\src\buffers\zbuffer.c">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+    </ClCompile>
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\src\code\TwoHeadArena.c">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+    </ClCompile>
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\src\code\__osMalloc.c">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+    </ClCompile>
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\src\code\audioMgr.c">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+    </ClCompile>
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\src\code\audio_data.c">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+    </ClCompile>
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\src\code\audio_effects.c">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+    </ClCompile>
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\src\code\audio_heap.c">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+    </ClCompile>
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\src\code\audio_init_params.c">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+    </ClCompile>
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\src\code\audio_load.c">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+    </ClCompile>
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\src\code\audio_playback.c">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+    </ClCompile>
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\src\code\audio_seqplayer.c">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+    </ClCompile>
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\src\code\audio_sound_params.c">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+    </ClCompile>
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\src\code\audio_synthesis.c">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+    </ClCompile>
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\src\code\code_800430A0.c">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+    </ClCompile>
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\src\code\code_8006C3A0.c">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+    </ClCompile>
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\src\code\code_8006C510.c">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+    </ClCompile>
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\src\code\code_800A9F30.c">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+    </ClCompile>
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\src\code\code_800BB0A0.c">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+    </ClCompile>
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\src\code\code_800C3C20.c">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+    </ClCompile>
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\src\code\code_800D2E30.c">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+    </ClCompile>
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\src\code\code_800D31A0.c">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+    </ClCompile>
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\src\code\code_800E4FE0.c">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+    </ClCompile>
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\src\code\code_800E6840.c">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+    </ClCompile>
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\src\code\code_800EC960.c">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+    </ClCompile>
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\src\code\code_800F7260.c">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+    </ClCompile>
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\src\code\code_800F9280.c">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+    </ClCompile>
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\src\code\code_800FBCE0.c">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+    </ClCompile>
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\src\code\code_800FC620.c">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+    </ClCompile>
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\src\code\code_800FD970.c">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+    </ClCompile>
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\src\code\code_801067F0.c">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+    </ClCompile>
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\src\code\code_801068B0.c">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+    </ClCompile>
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\src\code\debug_malloc.c">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+    </ClCompile>
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\src\code\fault.c">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+    </ClCompile>
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\src\code\fault_drawer.c">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+    </ClCompile>
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\src\code\game.c">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+    </ClCompile>
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\src\code\gamealloc.c">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+    </ClCompile>
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\src\code\gfxprint.c">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+    </ClCompile>
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\src\code\graph.c">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+    </ClCompile>
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\src\code\irqmgr.c">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+    </ClCompile>
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\src\code\listalloc.c">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+    </ClCompile>
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\src\code\loadfragment2.c">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+    </ClCompile>
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\src\code\logseverity.c">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+    </ClCompile>
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\src\code\main.c">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+    </ClCompile>
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\src\code\mtxuty-cvt.c">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+    </ClCompile>
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\src\code\padmgr.c">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+    </ClCompile>
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\src\code\padsetup.c">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+    </ClCompile>
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\src\code\padutils.c">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+    </ClCompile>
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\src\code\printutils.c">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+    </ClCompile>
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\src\code\relocation.c">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+    </ClCompile>
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\src\code\sched.c">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+    </ClCompile>
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\src\code\shrink_window.c">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+    </ClCompile>
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\src\code\sleep.c">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+    </ClCompile>
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\src\code\sys_cfb.c">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+    </ClCompile>
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\src\code\sys_math3d.c">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+    </ClCompile>
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\src\code\sys_matrix.c">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+    </ClCompile>
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\src\code\sys_ucode.c">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+    </ClCompile>
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\src\code\system_malloc.c">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+    </ClCompile>
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\src\code\title_setup.c">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+    </ClCompile>
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\src\code\ucode_disas.c">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+    </ClCompile>
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\src\code\z_DLF.c">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+    </ClCompile>
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\src\code\z_actor.c">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+    </ClCompile>
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\src\code\z_bg_item.c">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+    </ClCompile>
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\src\code\z_bgcheck.c">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+    </ClCompile>
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\src\code\z_camera.c">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+    </ClCompile>
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\src\code\z_cheap_proc.c">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+    </ClCompile>
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\src\code\z_collision_btltbls.c">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+    </ClCompile>
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\src\code\z_collision_check.c">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+    </ClCompile>
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\src\code\z_common_data.c">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+    </ClCompile>
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\src\code\z_construct.c">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+    </ClCompile>
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\src\code\z_eff_ss_dead.c">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+    </ClCompile>
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\src\code\z_effect_soft_sprite.c">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+    </ClCompile>
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\src\code\z_effect_soft_sprite_dlftbls.c">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+    </ClCompile>
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\src\code\z_effect_soft_sprite_old_init.c">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+    </ClCompile>
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\src\code\z_fbdemo_fade.c">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+    </ClCompile>
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\src\code\z_fcurve_data_skelanime.c">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+    </ClCompile>
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\src\code\z_frame_advance.c">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+    </ClCompile>
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\src\code\z_game_dlftbls.c">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+    </ClCompile>
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\src\code\z_game_over.c">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+    </ClCompile>
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\src\code\z_inventory.c">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+    </ClCompile>
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\src\code\z_kankyo.c">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+    </ClCompile>
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\src\code\z_lib.c">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+    </ClCompile>
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\src\code\z_lifemeter.c">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+    </ClCompile>
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\src\code\z_lights.c">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+    </ClCompile>
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\src\code\z_malloc.c">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+    </ClCompile>
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\src\code\z_message_stub.c">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+    </ClCompile>
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\src\code\z_olib.c">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+    </ClCompile>
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\src\code\z_parameter.c">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+    </ClCompile>
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\src\code\z_play.c">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+    </ClCompile>
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\src\code\z_player_action.c">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+    </ClCompile>
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\src\code\z_player_call.c">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+    </ClCompile>
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\src\code\z_player_lib.c">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+    </ClCompile>
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\src\code\z_prenmi.c">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+    </ClCompile>
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\src\code\z_prenmi_buff.c">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+    </ClCompile>
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\src\code\z_quake.c">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+    </ClCompile>
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\src\code\z_rcp.c">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+    </ClCompile>
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\src\code\z_room.c">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+    </ClCompile>
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\src\code\z_scene.c">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+    </ClCompile>
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\src\code\z_scene_table.c">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+    </ClCompile>
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\src\code\z_skelanime.c">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+    </ClCompile>
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\src\code\z_skin.c">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+    </ClCompile>
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\src\code\z_skin_awb.c">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+    </ClCompile>
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\src\code\z_skin_matrix.c">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+    </ClCompile>
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\src\code\z_sound_source.c">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+    </ClCompile>
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\src\code\z_view.c">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+    </ClCompile>
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\src\code\z_vr_box.c">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+    </ClCompile>
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\src\code\z_vr_box_draw.c">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+    </ClCompile>
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\src\libultra\gu\guLookAt.c">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+    </ClCompile>
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\src\libultra\gu\guLookAtHilite.c">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+    </ClCompile>
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\src\libultra\gu\guPerspectiveF.c">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+    </ClCompile>
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\src\libultra\gu\guPosition.c">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+    </ClCompile>
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\src\libultra\gu\guS2DInitBg.c">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+    </ClCompile>
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\src\libultra\gu\ortho.c">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+    </ClCompile>
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\src\libultra\gu\rotate.c">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+    </ClCompile>
+    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\src\overlays\actors\ovl_Bg_Heavy_Block\z_bg_heavy_block.h" />
+    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\src\overlays\actors\ovl_Door_Shutter\z_door_shutter.h" />
+    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\src\overlays\actors\ovl_Elf_Msg\z_elf_msg.h" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\src\overlays\actors\ovl_En_Arrow\z_en_arrow.c">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+    </ClCompile>
+    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\src\overlays\actors\ovl_En_Arrow\z_en_arrow.h" />
+    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\src\overlays\actors\ovl_En_Boom\z_en_boom.h" />
+    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\src\overlays\actors\ovl_En_Box\z_en_box.h" />
+    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\src\overlays\actors\ovl_En_Door\z_en_door.h" />
+    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\src\overlays\actors\ovl_En_Elf\z_en_elf.h" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\src\overlays\actors\ovl_En_Fish\z_en_fish.c">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+    </ClCompile>
+    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\src\overlays\actors\ovl_En_Fish\z_en_fish.h" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\src\overlays\actors\ovl_Fishing\z_fishing.c">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+    </ClCompile>
+    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\src\overlays\actors\ovl_Fishing\z_fishing.h" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\src\overlays\actors\ovl_player_actor\z_player.c">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+    </ClCompile>
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\src\overlays\effects\ovl_Effect_Ss_Bubble\z_eff_ss_bubble.c">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+    </ClCompile>
+    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\src\overlays\effects\ovl_Effect_Ss_Bubble\z_eff_ss_bubble.h" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\src\overlays\effects\ovl_Effect_Ss_Dust\z_eff_ss_dust.c">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+    </ClCompile>
+    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\src\overlays\effects\ovl_Effect_Ss_Dust\z_eff_ss_dust.h" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\src\overlays\effects\ovl_Effect_Ss_G_Ripple\z_eff_ss_g_ripple.c">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+    </ClCompile>
+    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\src\overlays\effects\ovl_Effect_Ss_G_Ripple\z_eff_ss_g_ripple.h" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\src\overlays\effects\ovl_Effect_Ss_G_Splash\z_eff_ss_g_splash.c">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+    </ClCompile>
+    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\src\overlays\effects\ovl_Effect_Ss_G_Splash\z_eff_ss_g_splash.h" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\src\overlays\effects\ovl_Effect_Ss_HitMark\z_eff_ss_hitmark.c">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+    </ClCompile>
+    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\src\overlays\effects\ovl_Effect_Ss_HitMark\z_eff_ss_hitmark.h" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\src\overlays\effects\ovl_Effect_Ss_Sibuki\z_eff_ss_sibuki.c">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+    </ClCompile>
+    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\src\overlays\effects\ovl_Effect_Ss_Sibuki\z_eff_ss_sibuki.h" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\src\overlays\effects\ovl_Effect_Ss_Sibuki2\z_eff_ss_sibuki2.c">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+    </ClCompile>
+    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\src\overlays\effects\ovl_Effect_Ss_Sibuki2\z_eff_ss_sibuki2.h" />
+    <ResourceCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\Resource.rc" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\src\libultra\libc\sprintf.c">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
+    </ClCompile>
+    <Natvis Include="C:\Users\CmonMeow\Desktop\Shipwright\third_party\vcpkg\installed\x64-windows-static\share\nlohmann_json\nlohmann_json.natvis">
+    </Natvis>
+  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\ZERO_CHECK.vcxproj">
+      <Project>{D741AB23-4C40-3F72-98FF-D787876C4574}</Project>
+      <Name>ZERO_CHECK</Name>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </ProjectReference>
+    <ProjectReference Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\libultraship\libgfxd.vcxproj">
+      <Project>{E336F0A6-2313-316A-A6DB-31A934F64874}</Project>
+      <Name>libgfxd</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\libultraship\src\libultraship.vcxproj">
+      <Project>{06CC8D88-1A4D-3E2C-94F1-180FC8B912DB}</Project>
+      <Name>libultraship</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\shipwright\pathengine_network.vcxproj">
+      <Project>{CC8974D8-759D-3CFA-8CF0-B4F8B3D546CF}</Project>
+      <Name>pathengine_network</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\Users\CmonMeow\Desktop\Shipwright\third_party\fetchcontent\prism-build\prism.vcxproj">
+      <Project>{48948160-6BFA-30FB-9401-08B164880F69}</Project>
+      <Name>prism</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\libultraship\stb.vcxproj">
+      <Project>{4BB74363-7DDE-3032-8F43-878476B15A43}</Project>
+      <Name>stb</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\Users\CmonMeow\Desktop\Shipwright\third_party\fetchcontent\stormlib-build\storm.vcxproj">
+      <Project>{74DBBCDD-1D2E-3C44-A3B9-1E3A05C2EFD9}</Project>
+      <Name>storm</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

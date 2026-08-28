@@ -1,0 +1,46 @@
+{
+	"sources" : 
+	[
+		{
+			"file" : "C:/Users/CmonMeow/Desktop/Shipwright/third_party/fetchcontent/libgfxd-subbuild/CMakeFiles/libgfxd-populate"
+		},
+		{
+			"file" : "C:/Users/CmonMeow/Desktop/Shipwright/third_party/fetchcontent/libgfxd-subbuild/CMakeFiles/d11990deb397bdb395aee6a39b99af61/libgfxd-populate.rule"
+		},
+		{
+			"file" : "C:/Users/CmonMeow/Desktop/Shipwright/third_party/fetchcontent/libgfxd-subbuild/CMakeFiles/87a1ae9fee770e3a564bada2a3a7ea0c/libgfxd-populate-complete.rule"
+		},
+		{
+			"file" : "C:/Users/CmonMeow/Desktop/Shipwright/third_party/fetchcontent/libgfxd-subbuild/CMakeFiles/7733eadfcdf3463642ce99a5edb99781/libgfxd-populate-build.rule"
+		},
+		{
+			"file" : "C:/Users/CmonMeow/Desktop/Shipwright/third_party/fetchcontent/libgfxd-subbuild/CMakeFiles/7733eadfcdf3463642ce99a5edb99781/libgfxd-populate-configure.rule"
+		},
+		{
+			"file" : "C:/Users/CmonMeow/Desktop/Shipwright/third_party/fetchcontent/libgfxd-subbuild/CMakeFiles/7733eadfcdf3463642ce99a5edb99781/libgfxd-populate-download.rule"
+		},
+		{
+			"file" : "C:/Users/CmonMeow/Desktop/Shipwright/third_party/fetchcontent/libgfxd-subbuild/CMakeFiles/7733eadfcdf3463642ce99a5edb99781/libgfxd-populate-install.rule"
+		},
+		{
+			"file" : "C:/Users/CmonMeow/Desktop/Shipwright/third_party/fetchcontent/libgfxd-subbuild/CMakeFiles/7733eadfcdf3463642ce99a5edb99781/libgfxd-populate-mkdir.rule"
+		},
+		{
+			"file" : "C:/Users/CmonMeow/Desktop/Shipwright/third_party/fetchcontent/libgfxd-subbuild/CMakeFiles/7733eadfcdf3463642ce99a5edb99781/libgfxd-populate-patch.rule"
+		},
+		{
+			"file" : "C:/Users/CmonMeow/Desktop/Shipwright/third_party/fetchcontent/libgfxd-subbuild/CMakeFiles/7733eadfcdf3463642ce99a5edb99781/libgfxd-populate-test.rule"
+		},
+		{
+			"file" : "C:/Users/CmonMeow/Desktop/Shipwright/third_party/fetchcontent/libgfxd-subbuild/CMakeFiles/7733eadfcdf3463642ce99a5edb99781/libgfxd-populate-update.rule"
+		}
+	],
+	"target" : 
+	{
+		"labels" : 
+		[
+			"libgfxd-populate"
+		],
+		"name" : "libgfxd-populate"
+	}
+}

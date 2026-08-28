@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Solution>
+	<Configurations>
+		<BuildType Name="Debug"/>
+		<BuildType Name="Release"/>
+		<Platform Name="x64"/>
+	</Configurations>
+	<Project Path="storm.vcxproj" Type="8bc9ceb8-8b4a-11d0-8d11-00a0c91bc942" Id="74dbbcdd-1d2e-3c44-a3b9-1e3a05c2efd9">
+		<BuildDependency Project="C:/Users/CmonMeow/Desktop/Shipwright/build/x64/ZERO_CHECK.vcxproj"/>
+	</Project>
+	<Folder Name="/CMakePredefinedTargets/">
+		<Project Path="ALL_BUILD.vcxproj" Type="8bc9ceb8-8b4a-11d0-8d11-00a0c91bc942" Id="9b7f8073-6431-3172-99c4-e4e3e24ffcaa" DefaultStartup="true">
+			<BuildDependency Project="C:/Users/CmonMeow/Desktop/Shipwright/build/x64/ZERO_CHECK.vcxproj"/>
+			<BuildDependency Project="storm.vcxproj"/>
+		</Project>
+		<Project Path="INSTALL.vcxproj" Type="8bc9ceb8-8b4a-11d0-8d11-00a0c91bc942" Id="1fe2807b-cb21-3084-9b4a-a0ad26b8ab49">
+			<BuildDependency Project="ALL_BUILD.vcxproj"/>
+			<BuildDependency Project="C:/Users/CmonMeow/Desktop/Shipwright/build/x64/ZERO_CHECK.vcxproj"/>
+			<Build Solution="Debug|*" Project="false"/>
+			<Build Solution="Release|*" Project="false"/>
+		</Project>
+		<Project Path="PACKAGE.vcxproj" Type="8bc9ceb8-8b4a-11d0-8d11-00a0c91bc942" Id="8092cd7e-ff0f-3529-b64e-39acf2d3c349">
+			<BuildDependency Project="ALL_BUILD.vcxproj"/>
+			<BuildDependency Project="C:/Users/CmonMeow/Desktop/Shipwright/build/x64/ZERO_CHECK.vcxproj"/>
+			<Build Solution="Debug|*" Project="false"/>
+			<Build Solution="Release|*" Project="false"/>
+		</Project>
+		<Project Path="C:/Users/CmonMeow/Desktop/Shipwright/build/x64/ZERO_CHECK.vcxproj" Type="8bc9ceb8-8b4a-11d0-8d11-00a0c91bc942" Id="d741ab23-4c40-3f72-98ff-d787876c4574"/>
+	</Folder>
+</Solution>

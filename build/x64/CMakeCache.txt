@@ -21,13 +21,13 @@ BUILD_SHARED_LIBS:BOOL=OFF
 BUILD_UTILS:STRING=OFF
 
 //Path to a file.
-BZIP2_INCLUDE_DIR:PATH=C:/Users/CmonMeow/Desktop/Shipwright/build/x64/vcpkg/installed/x64-windows-static/include
+BZIP2_INCLUDE_DIR:PATH=C:/Users/CmonMeow/Desktop/Shipwright/third_party/vcpkg/installed/x64-windows-static/include
 
 //Path to a library.
-BZIP2_LIBRARY_DEBUG:FILEPATH=C:/Users/CmonMeow/Desktop/Shipwright/build/x64/vcpkg/installed/x64-windows-static/debug/lib/bz2d.lib
+BZIP2_LIBRARY_DEBUG:FILEPATH=C:/Users/CmonMeow/Desktop/Shipwright/third_party/vcpkg/installed/x64-windows-static/debug/lib/bz2d.lib
 
 //Path to a library.
-BZIP2_LIBRARY_RELEASE:FILEPATH=C:/Users/CmonMeow/Desktop/Shipwright/build/x64/vcpkg/installed/x64-windows-static/lib/bz2.lib
+BZIP2_LIBRARY_RELEASE:FILEPATH=C:/Users/CmonMeow/Desktop/Shipwright/third_party/vcpkg/installed/x64-windows-static/lib/bz2.lib
 
 //Path to a program.
 CMAKE_AR:FILEPATH=C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/MSVC/14.51.36231/bin/Hostx64/x64/lib.exe
@@ -124,7 +124,7 @@ CMAKE_MODULE_LINKER_FLAGS_RELEASE:STRING=/INCREMENTAL:NO
 CMAKE_MODULE_LINKER_FLAGS_RELWITHDEBINFO:STRING=/debug /INCREMENTAL
 
 //Path to a program.
-CMAKE_MT:FILEPATH=C:/Program Files (x86)/Windows Kits/10/bin/10.0.26100.0/x64/mt.exe
+CMAKE_MT:FILEPATH=CMAKE_MT-NOTFOUND
 
 //Minimum OS X deployment version
 CMAKE_OSX_DEPLOYMENT_TARGET:STRING=10.15
@@ -139,7 +139,7 @@ CMAKE_PROJECT_DESCRIPTION:STATIC=
 CMAKE_PROJECT_GIT_BRANCH:STRING=main
 
 //Git commit hash
-CMAKE_PROJECT_GIT_COMMIT_HASH:STRING=0d6fe90
+CMAKE_PROJECT_GIT_COMMIT_HASH:STRING=4bacd79
 
 //Git commit tag
 CMAKE_PROJECT_GIT_COMMIT_TAG:STRING=
@@ -169,7 +169,7 @@ CMAKE_PROJECT_VERSION_PATCH:STATIC=3
 CMAKE_PROJECT_VERSION_TWEAK:STATIC=
 
 //RC compiler
-CMAKE_RC_COMPILER:FILEPATH=C:/Program Files (x86)/Windows Kits/10/bin/10.0.26100.0/x64/rc.exe
+CMAKE_RC_COMPILER:FILEPATH=rc
 
 //Flags for Windows Resource Compiler during all build types.
 CMAKE_RC_FLAGS:STRING=-DWIN32
@@ -185,6 +185,18 @@ CMAKE_RC_FLAGS_RELEASE:STRING=
 
 //Flags for Windows Resource Compiler during RELWITHDEBINFO builds.
 CMAKE_RC_FLAGS_RELWITHDEBINFO:STRING=
+
+//Runtime output directory
+CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG:PATH=C:/Users/CmonMeow/Desktop/Shipwright/bin
+
+//Runtime output directory
+CMAKE_RUNTIME_OUTPUT_DIRECTORY_MINSIZEREL:PATH=C:/Users/CmonMeow/Desktop/Shipwright/bin
+
+//Runtime output directory
+CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE:PATH=C:/Users/CmonMeow/Desktop/Shipwright/bin
+
+//Runtime output directory
+CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELWITHDEBINFO:PATH=C:/Users/CmonMeow/Desktop/Shipwright/bin
 
 //Flags used by the linker during the creation of shared libraries
 // during all build types.
@@ -235,7 +247,7 @@ CMAKE_STATIC_LINKER_FLAGS_RELWITHDEBINFO:STRING=
 
 CMAKE_SYSTEM_VERSION:STRING=10.0
 
-CMAKE_TOOLCHAIN_FILE:STRING=C:\Users\CmonMeow\Desktop\Shipwright\build\x64\vcpkg/scripts/buildsystems/vcpkg.cmake
+CMAKE_TOOLCHAIN_FILE:STRING=C:/Users/CmonMeow/Desktop/Shipwright/third_party/vcpkg/scripts/buildsystems/vcpkg.cmake
 
 //If this value is on, makefiles will be generated without the
 // .SILENT directive, and all commands will be echoed to the console
@@ -255,46 +267,11 @@ CPACK_SOURCE_7Z:BOOL=ON
 //Enable to build ZIP source packages
 CPACK_SOURCE_ZIP:BOOL=ON
 
-//Path to the curl program.  Used to download files.
-CURL:FILEPATH=C:/Windows/System32/curl.exe
-
-CVAR_ALLOW_BACKGROUND_INPUTS:STRING=gAllowBackgroundInputs
-
 CVAR_AUDIO_CHANNELS_SETTING:STRING=gAudioChannelsSetting
-
-CVAR_CONSOLE_WINDOW_OPEN:STRING=gOpenWindows.Console
-
-CVAR_CONTROLLER_CONFIGURATION_WINDOW_OPEN:STRING=gControllerConfigurationEnabled
-
-CVAR_CONTROLLER_DISCONNECTED_WINDOW_OPEN:STRING=gOpenWindows.ControllerDisconnected
-
-CVAR_CONTROLLER_REORDERING_WINDOW_OPEN:STRING=gOpenWindows.ControllerReordering
-
-CVAR_ENABLE_MULTI_VIEWPORTS:STRING=gSettings.EnableMultiViewports
-
-CVAR_GAME_OVERLAY_FONT:STRING=gSettings.OverlayFont
-
-CVAR_GFX_DEBUGGER_WINDOW_OPEN:STRING=gOpenWindows.GfxDebugger
-
-CVAR_IMGUI_CONTROLLER_NAV:STRING=gSettings.ControlNav
 
 CVAR_INTERNAL_RESOLUTION:STRING=gSettings.InternalResolution
 
-CVAR_LOW_RES_MODE:STRING=gSettings.LowResMode
-
-CVAR_MENU_BAR_OPEN:STRING=gSettings.OpenMenuBar
-
 CVAR_MSAA_VALUE:STRING=gSettings.MSAAValue
-
-CVAR_PREFIX_ADVANCED_RESOLUTION:STRING=gSettings.AdvancedResolution
-
-CVAR_PREFIX_CONTROLLERS:STRING=gSettings.Controllers
-
-CVAR_SDL_WINDOWED_FULLSCREEN:STRING=gSettings.SdlWindowedFullscreen
-
-CVAR_SIMULATED_INPUT_LAG:STRING=gSettings.SimulatedInputLag
-
-CVAR_STATS_WINDOW_OPEN:STRING=gOpenWindows.Stats
 
 CVAR_TEXTURE_FILTER:STRING=gSettings.TextureFilter
 
@@ -308,11 +285,8 @@ DEBUG_PARSE:BOOL=OFF
 //Enable AddressSanitizer
 ENABLE_ASAN:BOOL=OFF
 
-//Path to a library.
-ESPEAK:FILEPATH=ESPEAK-NOTFOUND
-
-//Directory under which to collect all populated content
-FETCHCONTENT_BASE_DIR:PATH=C:/Users/CmonMeow/Desktop/Shipwright/build/x64/_deps
+//Third-party source directory
+FETCHCONTENT_BASE_DIR:PATH=C:/Users/CmonMeow/Desktop/Shipwright/third_party/fetchcontent
 
 //Disables all attempts to download or update content and assumes
 // source dirs already exist
@@ -324,10 +298,6 @@ FETCHCONTENT_QUIET:BOOL=ON
 //When not empty, overrides where to find pre-populated content
 // for dr_libs
 FETCHCONTENT_SOURCE_DIR_DR_LIBS:PATH=
-
-//When not empty, overrides where to find pre-populated content
-// for ImGui
-FETCHCONTENT_SOURCE_DIR_IMGUI:PATH=
 
 //When not empty, overrides where to find pre-populated content
 // for libgfxd
@@ -351,9 +321,6 @@ FETCHCONTENT_UPDATES_DISCONNECTED:BOOL=OFF
 //Enables UPDATE_DISCONNECTED behavior just for population of dr_libs
 FETCHCONTENT_UPDATES_DISCONNECTED_DR_LIBS:BOOL=OFF
 
-//Enables UPDATE_DISCONNECTED behavior just for population of ImGui
-FETCHCONTENT_UPDATES_DISCONNECTED_IMGUI:BOOL=OFF
-
 //Enables UPDATE_DISCONNECTED behavior just for population of libgfxd
 FETCHCONTENT_UPDATES_DISCONNECTED_LIBGFXD:BOOL=OFF
 
@@ -373,7 +340,7 @@ GIT_COMMIT_TAG:STRING=
 GIT_EXECUTABLE:FILEPATH=C:/Users/CmonMeow/.cache/codex-runtimes/codex-primary-runtime/dependencies/native/git/cmd/git.exe
 
 //The directory containing a CMake configuration file for GLEW.
-GLEW_DIR:PATH=C:/Users/CmonMeow/Desktop/Shipwright/build/x64/vcpkg/installed/x64-windows-static/share/glew
+GLEW_DIR:PATH=C:/Users/CmonMeow/Desktop/Shipwright/third_party/vcpkg/installed/x64-windows-static/share/glew
 
 //Build a non-portable version
 NON_PORTABLE:BOOL=OFF
@@ -384,32 +351,14 @@ OPENGL_gl_LIBRARY:STRING=opengl32
 //GLU library for win32
 OPENGL_glu_LIBRARY:STRING=glu32
 
-//Value Computed by CMake
-OTRExporter_BINARY_DIR:STATIC=C:/Users/CmonMeow/Desktop/Shipwright/build/x64/OTRExporter
-
-//Value Computed by CMake
-OTRExporter_IS_TOP_LEVEL:STATIC=OFF
-
-//Value Computed by CMake
-OTRExporter_SOURCE_DIR:STATIC=C:/Users/CmonMeow/Desktop/Shipwright/OTRExporter
-
 //The directory containing a CMake configuration file for Ogg.
-Ogg_DIR:PATH=C:/Users/CmonMeow/Desktop/Shipwright/build/x64/vcpkg/installed/x64-windows-static/share/ogg
+Ogg_DIR:PATH=C:/Users/CmonMeow/Desktop/Shipwright/third_party/vcpkg/installed/x64-windows-static/share/ogg
 
 //The directory containing a CMake configuration file for OpusFile.
-OpusFile_DIR:PATH=C:/Users/CmonMeow/Desktop/Shipwright/build/x64/vcpkg/installed/x64-windows-static/share/opusfile
+OpusFile_DIR:PATH=C:/Users/CmonMeow/Desktop/Shipwright/third_party/vcpkg/installed/x64-windows-static/share/opusfile
 
 //The directory containing a CMake configuration file for Opus.
-Opus_DIR:PATH=C:/Users/CmonMeow/Desktop/Shipwright/build/x64/vcpkg/installed/x64-windows-static/share/opus
-
-//Path to a library.
-PNG_LIBRARY_DEBUG:FILEPATH=C:/Users/CmonMeow/Desktop/Shipwright/build/x64/vcpkg/installed/x64-windows-static/debug/lib/libpng16d.lib
-
-//Path to a library.
-PNG_LIBRARY_RELEASE:FILEPATH=C:/Users/CmonMeow/Desktop/Shipwright/build/x64/vcpkg/installed/x64-windows-static/lib/libpng16.lib
-
-//Path to a file.
-PNG_PNG_INCLUDE_DIR:PATH=C:/Users/CmonMeow/Desktop/Shipwright/build/x64/vcpkg/installed/x64-windows-static/include
+Opus_DIR:PATH=C:/Users/CmonMeow/Desktop/Shipwright/third_party/vcpkg/installed/x64-windows-static/share/opus
 
 //Build as a PRISM_STANDALONE executable
 PRISM_STANDALONE:BOOL=OFF
@@ -417,18 +366,6 @@ PRISM_STANDALONE:BOOL=OFF
 PROJECT_BUILD_NAME:STRING=Ackbar Delta
 
 PROJECT_TEAM:STRING=github.com/harbourmasters
-
-//The directory containing a CMake configuration file for SDL2.
-SDL2_DIR:PATH=C:/Users/CmonMeow/Desktop/Shipwright/build/x64/vcpkg/installed/x64-windows-static/share/sdl2
-
-//No help, variable specified on the command line.
-SOH_BUILD_TYPE:UNINITIALIZED=Release
-
-//No help, variable specified on the command line.
-SOH_USE_OPENGL:UNINITIALIZED=ON
-
-//cutoff at trace
-SPDLOG_MIN_CUTOFF:STRING=SPDLOG_LEVEL_TRACE
 
 //Compile StormLib test application
 STORM_BUILD_TESTS:BOOL=OFF
@@ -452,13 +389,13 @@ Ship_IS_TOP_LEVEL:STATIC=ON
 Ship_SOURCE_DIR:STATIC=C:/Users/CmonMeow/Desktop/Shipwright
 
 //Value Computed by CMake
-StormLib_BINARY_DIR:STATIC=C:/Users/CmonMeow/Desktop/Shipwright/build/x64/_deps/stormlib-build
+StormLib_BINARY_DIR:STATIC=C:/Users/CmonMeow/Desktop/Shipwright/third_party/fetchcontent/stormlib-build
 
 //Value Computed by CMake
 StormLib_IS_TOP_LEVEL:STATIC=OFF
 
 //Value Computed by CMake
-StormLib_SOURCE_DIR:STATIC=C:/Users/CmonMeow/Desktop/Shipwright/build/x64/_deps/stormlib-src
+StormLib_SOURCE_DIR:STATIC=C:/Users/CmonMeow/Desktop/Shipwright/third_party/fetchcontent/stormlib-src
 
 //Enable GLES3
 USE_OPENGLES:BOOL=OFF
@@ -467,13 +404,12 @@ USE_OPENGLES:BOOL=OFF
 // executables.
 VCPKG_APPLOCAL_DEPS:BOOL=ON
 
-//vcpkg configuration directory to use if vcpkg was not installed
-// on the system before
-VCPKG_FALLBACK_ROOT:STRING=C:/Users/CmonMeow/Desktop/Shipwright/build/x64/vcpkg
+//Vcpkg directory
+VCPKG_FALLBACK_ROOT:PATH=C:/Users/CmonMeow/Desktop/Shipwright/third_party/vcpkg
 
 //The directory which contains the installed libraries for each
 // triplet
-VCPKG_INSTALLED_DIR:PATH=C:/Users/CmonMeow/Desktop/Shipwright/build/x64/vcpkg/installed
+VCPKG_INSTALLED_DIR:PATH=C:/Users/CmonMeow/Desktop/Shipwright/third_party/vcpkg/installed
 
 //The path to the vcpkg manifest directory.
 VCPKG_MANIFEST_DIR:PATH=
@@ -490,10 +426,10 @@ VCPKG_PREFER_SYSTEM_LIBS:BOOL=OFF
 VCPKG_SETUP_CMAKE_PROGRAM_PATH:BOOL=ON
 
 //Path to a library.
-VCPKG_SODIUM_LIBRARY_DEBUG:FILEPATH=C:/Users/CmonMeow/Desktop/Shipwright/build/x64/vcpkg/installed/x64-windows-static/debug/lib/libsodium.lib
+VCPKG_SODIUM_LIBRARY_DEBUG:FILEPATH=C:/Users/CmonMeow/Desktop/Shipwright/third_party/vcpkg/installed/x64-windows-static/debug/lib/libsodium.lib
 
 //Path to a library.
-VCPKG_SODIUM_LIBRARY_RELEASE:FILEPATH=C:/Users/CmonMeow/Desktop/Shipwright/build/x64/vcpkg/installed/x64-windows-static/lib/libsodium.lib
+VCPKG_SODIUM_LIBRARY_RELEASE:FILEPATH=C:/Users/CmonMeow/Desktop/Shipwright/third_party/vcpkg/installed/x64-windows-static/lib/libsodium.lib
 
 //Vcpkg target triplet (ex. x86-windows)
 VCPKG_TARGET_TRIPLET:STRING=x64-windows-static
@@ -508,7 +444,7 @@ VCPKG_USE_LEGACY_APPLOCAL:BOOL=OFF
 VCPKG_VERBOSE:BOOL=OFF
 
 //The directory containing a CMake configuration file for Vorbis.
-Vorbis_DIR:PATH=C:/Users/CmonMeow/Desktop/Shipwright/build/x64/vcpkg/installed/x64-windows-static/share/Vorbis
+Vorbis_DIR:PATH=C:/Users/CmonMeow/Desktop/Shipwright/third_party/vcpkg/installed/x64-windows-static/share/Vorbis
 
 //(experimental) Automatically copy dependencies into the install
 // target directory for executables. Requires CMake 3.14.
@@ -519,23 +455,20 @@ X_VCPKG_APPLOCAL_DEPS_INSTALL:BOOL=OFF
 X_VCPKG_APPLOCAL_DEPS_SERIALIZED:BOOL=OFF
 
 //Path to a file.
-ZLIB_INCLUDE_DIR:PATH=C:/Users/CmonMeow/Desktop/Shipwright/build/x64/vcpkg/installed/x64-windows-static/include
+ZLIB_INCLUDE_DIR:PATH=C:/Users/CmonMeow/Desktop/Shipwright/third_party/vcpkg/installed/x64-windows-static/include
 
 //Path to a library.
-ZLIB_LIBRARY_DEBUG:FILEPATH=C:/Users/CmonMeow/Desktop/Shipwright/build/x64/vcpkg/installed/x64-windows-static/debug/lib/zsd.lib
+ZLIB_LIBRARY_DEBUG:FILEPATH=C:/Users/CmonMeow/Desktop/Shipwright/third_party/vcpkg/installed/x64-windows-static/debug/lib/zsd.lib
 
 //Path to a library.
-ZLIB_LIBRARY_RELEASE:FILEPATH=C:/Users/CmonMeow/Desktop/Shipwright/build/x64/vcpkg/installed/x64-windows-static/lib/zs.lib
+ZLIB_LIBRARY_RELEASE:FILEPATH=C:/Users/CmonMeow/Desktop/Shipwright/third_party/vcpkg/installed/x64-windows-static/lib/zs.lib
 
 //The directory which contains the installed libraries for each
 // triplet
-_VCPKG_INSTALLED_DIR:PATH=C:/Users/CmonMeow/Desktop/Shipwright/build/x64/vcpkg/installed
+_VCPKG_INSTALLED_DIR:PATH=C:/Users/CmonMeow/Desktop/Shipwright/third_party/vcpkg/installed
 
 //The directory containing a CMake configuration file for fmt.
-fmt_DIR:PATH=C:/Users/CmonMeow/Desktop/Shipwright/build/x64/vcpkg/installed/x64-windows-static/share/fmt
-
-//The directory containing a CMake configuration file for glfw3.
-glfw3_DIR:PATH=C:/Users/CmonMeow/Desktop/Shipwright/build/x64/vcpkg/installed/x64-windows-static/share/glfw3
+fmt_DIR:PATH=C:/Users/CmonMeow/Desktop/Shipwright/third_party/vcpkg/installed/x64-windows-static/share/fmt
 
 //Value Computed by CMake
 libultraship_BINARY_DIR:STATIC=C:/Users/CmonMeow/Desktop/Shipwright/build/x64/libultraship
@@ -544,40 +477,40 @@ libultraship_BINARY_DIR:STATIC=C:/Users/CmonMeow/Desktop/Shipwright/build/x64/li
 libultraship_IS_TOP_LEVEL:STATIC=OFF
 
 //Value Computed by CMake
-libultraship_SOURCE_DIR:STATIC=C:/Users/CmonMeow/Desktop/Shipwright/libultraship
+libultraship_SOURCE_DIR:STATIC=C:/Users/CmonMeow/Desktop/Shipwright/src/libultraship
 
 //The directory containing a CMake configuration file for libzip.
-libzip_DIR:PATH=C:/Users/CmonMeow/Desktop/Shipwright/build/x64/vcpkg/installed/x64-windows-static/share/libzip
+libzip_DIR:PATH=C:/Users/CmonMeow/Desktop/Shipwright/third_party/vcpkg/installed/x64-windows-static/share/libzip
 
 //The directory containing a CMake configuration file for nlohmann_json.
-nlohmann_json_DIR:PATH=C:/Users/CmonMeow/Desktop/Shipwright/build/x64/vcpkg/installed/x64-windows-static/share/nlohmann_json
+nlohmann_json_DIR:PATH=C:/Users/CmonMeow/Desktop/Shipwright/third_party/vcpkg/installed/x64-windows-static/share/nlohmann_json
 
 //Value Computed by CMake
-prism_BINARY_DIR:STATIC=C:/Users/CmonMeow/Desktop/Shipwright/build/x64/_deps/prism-build
+prism_BINARY_DIR:STATIC=C:/Users/CmonMeow/Desktop/Shipwright/third_party/fetchcontent/prism-build
 
 //Value Computed by CMake
 prism_IS_TOP_LEVEL:STATIC=OFF
 
 //Value Computed by CMake
-prism_SOURCE_DIR:STATIC=C:/Users/CmonMeow/Desktop/Shipwright/build/x64/_deps/prism-src
+prism_SOURCE_DIR:STATIC=C:/Users/CmonMeow/Desktop/Shipwright/third_party/fetchcontent/prism-src
 
 //Value Computed by CMake
-soh_BINARY_DIR:STATIC=C:/Users/CmonMeow/Desktop/Shipwright/build/x64/soh
+soh_BINARY_DIR:STATIC=C:/Users/CmonMeow/Desktop/Shipwright/build/x64/shipwright
 
 //Value Computed by CMake
 soh_IS_TOP_LEVEL:STATIC=OFF
 
 //Value Computed by CMake
-soh_SOURCE_DIR:STATIC=C:/Users/CmonMeow/Desktop/Shipwright/soh
+soh_SOURCE_DIR:STATIC=C:/Users/CmonMeow/Desktop/Shipwright/src/shipwright
 
 //The directory containing a CMake configuration file for spdlog.
-spdlog_DIR:PATH=C:/Users/CmonMeow/Desktop/Shipwright/build/x64/vcpkg/installed/x64-windows-static/share/spdlog
+spdlog_DIR:PATH=C:/Users/CmonMeow/Desktop/Shipwright/third_party/vcpkg/installed/x64-windows-static/share/spdlog
 
 //The directory containing a CMake configuration file for tinyxml2.
-tinyxml2_DIR:PATH=C:/Users/CmonMeow/Desktop/Shipwright/build/x64/vcpkg/installed/x64-windows-static/share/tinyxml2
+tinyxml2_DIR:PATH=C:/Users/CmonMeow/Desktop/Shipwright/third_party/vcpkg/installed/x64-windows-static/share/tinyxml2
 
 //The directory containing a CMake configuration file for unofficial-sodium.
-unofficial-sodium_DIR:PATH=C:/Users/CmonMeow/Desktop/Shipwright/build/x64/vcpkg/installed/x64-windows-static/share/unofficial-sodium
+unofficial-sodium_DIR:PATH=C:/Users/CmonMeow/Desktop/Shipwright/third_party/vcpkg/installed/x64-windows-static/share/unofficial-sodium
 
 
 ########################
@@ -653,7 +586,7 @@ CMAKE_GENERATOR_INSTANCE:INTERNAL=C:/Program Files/Microsoft Visual Studio/18/Co
 //Name of generator platform.
 CMAKE_GENERATOR_PLATFORM:INTERNAL=x64
 //Name of generator toolset.
-CMAKE_GENERATOR_TOOLSET:INTERNAL=version=14.51.36231
+CMAKE_GENERATOR_TOOLSET:INTERNAL=
 //Test CMAKE_HAVE_LIBC_PTHREAD
 CMAKE_HAVE_LIBC_PTHREAD:INTERNAL=
 //Have library pthreads
@@ -733,17 +666,13 @@ CPACK_SOURCE_7Z-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: CPACK_SOURCE_ZIP
 CPACK_SOURCE_ZIP-ADVANCED:INTERNAL=1
 //Details about finding BZip2
-FIND_PACKAGE_MESSAGE_DETAILS_BZip2:INTERNAL=[optimized;C:/Users/CmonMeow/Desktop/Shipwright/build/x64/vcpkg/installed/x64-windows-static/lib/bz2.lib;debug;C:/Users/CmonMeow/Desktop/Shipwright/build/x64/vcpkg/installed/x64-windows-static/debug/lib/bz2d.lib][C:/Users/CmonMeow/Desktop/Shipwright/build/x64/vcpkg/installed/x64-windows-static/include][v1.0.8()]
-//Details about finding PNG
-FIND_PACKAGE_MESSAGE_DETAILS_PNG:INTERNAL=[optimized;C:/Users/CmonMeow/Desktop/Shipwright/build/x64/vcpkg/installed/x64-windows-static/lib/libpng16.lib;debug;C:/Users/CmonMeow/Desktop/Shipwright/build/x64/vcpkg/installed/x64-windows-static/debug/lib/libpng16d.lib][C:/Users/CmonMeow/Desktop/Shipwright/build/x64/vcpkg/installed/x64-windows-static/include][v1.6.58()]
-//Details about finding Python3
-FIND_PACKAGE_MESSAGE_DETAILS_Python3:INTERNAL=[C:/Users/CmonMeow/AppData/Local/Programs/Python/Python313/python.exe][found components: Interpreter ][v3.13.13()]
+FIND_PACKAGE_MESSAGE_DETAILS_BZip2:INTERNAL=[optimized;C:/Users/CmonMeow/Desktop/Shipwright/third_party/vcpkg/installed/x64-windows-static/lib/bz2.lib;debug;C:/Users/CmonMeow/Desktop/Shipwright/third_party/vcpkg/installed/x64-windows-static/debug/lib/bz2d.lib][C:/Users/CmonMeow/Desktop/Shipwright/third_party/vcpkg/installed/x64-windows-static/include][v1.0.8()]
 //Details about finding Threads
 FIND_PACKAGE_MESSAGE_DETAILS_Threads:INTERNAL=[TRUE][v()]
 //Details about finding ZLIB
-FIND_PACKAGE_MESSAGE_DETAILS_ZLIB:INTERNAL=[optimized;C:/Users/CmonMeow/Desktop/Shipwright/build/x64/vcpkg/installed/x64-windows-static/lib/zs.lib;debug;C:/Users/CmonMeow/Desktop/Shipwright/build/x64/vcpkg/installed/x64-windows-static/debug/lib/zsd.lib][C:/Users/CmonMeow/Desktop/Shipwright/build/x64/vcpkg/installed/x64-windows-static/include][ ][v1.3.2(1.1.2)]
+FIND_PACKAGE_MESSAGE_DETAILS_ZLIB:INTERNAL=[optimized;C:/Users/CmonMeow/Desktop/Shipwright/third_party/vcpkg/installed/x64-windows-static/lib/zs.lib;debug;C:/Users/CmonMeow/Desktop/Shipwright/third_party/vcpkg/installed/x64-windows-static/debug/lib/zsd.lib][C:/Users/CmonMeow/Desktop/Shipwright/third_party/vcpkg/installed/x64-windows-static/include][ ][v1.3.2(1.1.2)]
 //Details about finding nlohmann_json
-FIND_PACKAGE_MESSAGE_DETAILS_nlohmann_json:INTERNAL=[C:/Users/CmonMeow/Desktop/Shipwright/build/x64/vcpkg/installed/x64-windows-static/share/nlohmann_json/nlohmann_jsonConfig.cmake][v3.12.0()]
+FIND_PACKAGE_MESSAGE_DETAILS_nlohmann_json:INTERNAL=[C:/Users/CmonMeow/Desktop/Shipwright/third_party/vcpkg/installed/x64-windows-static/share/nlohmann_json/nlohmann_jsonConfig.cmake][v3.12.0()]
 //ADVANCED property for variable: GIT_EXECUTABLE
 GIT_EXECUTABLE-ADVANCED:INTERNAL=1
 //Result of TRY_COMPILE
@@ -752,16 +681,8 @@ HAVE_SIZEOF_VOID_P:INTERNAL=TRUE
 OPENGL_gl_LIBRARY-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: OPENGL_glu_LIBRARY
 OPENGL_glu_LIBRARY-ADVANCED:INTERNAL=1
-//ADVANCED property for variable: PNG_LIBRARY_DEBUG
-PNG_LIBRARY_DEBUG-ADVANCED:INTERNAL=1
-//ADVANCED property for variable: PNG_LIBRARY_RELEASE
-PNG_LIBRARY_RELEASE-ADVANCED:INTERNAL=1
-//ADVANCED property for variable: PNG_PNG_INCLUDE_DIR
-PNG_PNG_INCLUDE_DIR-ADVANCED:INTERNAL=1
 //CHECK_TYPE_SIZE: sizeof(void*)
 SIZEOF_VOID_P:INTERNAL=8
-//STRINGS property for variable: SPDLOG_MIN_CUTOFF
-SPDLOG_MIN_CUTOFF-STRINGS:INTERNAL=SPDLOG_LEVEL_TRACE;SPDLOG_LEVEL_DEBUG;SPDLOG_LEVEL_INFO;SPDLOG_LEVEL_WARN;SPDLOG_LEVEL_ERROR;SPDLOG_LEVEL_CRITICAL;SPDLOG_LEVEL_OFF
 //ADVANCED property for variable: VCPKG_VERBOSE
 VCPKG_VERBOSE-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: ZLIB_INCLUDE_DIR
@@ -773,18 +694,5 @@ ZLIB_LIBRARY_RELEASE-ADVANCED:INTERNAL=1
 //Making sure VCPKG_MANIFEST_MODE doesn't change
 Z_VCPKG_CHECK_MANIFEST_MODE:INTERNAL=OFF
 //Vcpkg root directory
-Z_VCPKG_ROOT_DIR:INTERNAL=C:/Users/CmonMeow/Desktop/Shipwright/build/x64/vcpkg
-//Compiler reason failure
-_Python3_Compiler_REASON_FAILURE:INTERNAL=
-//Development reason failure
-_Python3_Development_REASON_FAILURE:INTERNAL=
-//Path to a program.
-_Python3_EXECUTABLE:INTERNAL=C:/Users/CmonMeow/AppData/Local/Programs/Python/Python313/python.exe
-//Path to a program.
-_Python3_EXECUTABLE_DEBUG:INTERNAL=_Python3_EXECUTABLE_DEBUG-NOTFOUND
-//Python3 Properties
-_Python3_INTERPRETER_PROPERTIES:INTERNAL=Python;3;13;13;64;32;<none>;cp313-win_amd64;;C:/Users/CmonMeow/AppData/Local/Programs/Python/Python313/Lib;C:/Users/CmonMeow/AppData/Local/Programs/Python/Python313/Lib;C:/Users/CmonMeow/AppData/Local/Programs/Python/Python313/Lib/site-packages;C:/Users/CmonMeow/AppData/Local/Programs/Python/Python313/Lib/site-packages
-_Python3_INTERPRETER_SIGNATURE:INTERNAL=38ae6d282dd61a0fdea250de59a4c5fd
-//NumPy reason failure
-_Python3_NumPy_REASON_FAILURE:INTERNAL=
+Z_VCPKG_ROOT_DIR:INTERNAL=C:/Users/CmonMeow/Desktop/Shipwright/third_party/vcpkg
 

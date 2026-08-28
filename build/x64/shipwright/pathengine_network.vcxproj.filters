@@ -1,0 +1,89 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="18.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\soh\Network\Network\netapi.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\soh\Network\Network\netchannel.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\soh\Network\Network\netmessage.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\soh\Network\Network\netpeer.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\soh\Network\ReliableUdpService.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\soh\Network\ServerCollisionWorld.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\soh\Network\ShipwrightNetworkRuntime.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\soh\Network\bitmask.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\soh\Network\netTransportNet.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\soh\Network\Network\netapi.hpp">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\soh\Network\Network\netchannel.hpp">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\soh\Network\Network\netglobal.hpp">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\soh\Network\Network\netmessage.hpp">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\soh\Network\Network\netpch.hpp">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\soh\Network\Network\netpeer.hpp">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\soh\Network\NetworkProtocol.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\soh\Network\ReliableUdpService.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\soh\Network\ServerCollisionWorld.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\soh\Network\ShipwrightNetworkRuntime.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\soh\Network\VoiceChat.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\soh\Network\bitmask.hpp">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\soh\Network\netTransport.hpp">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\soh\Network\netTransportCommon.hpp">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\soh\Network\pointers.h">
+      <Filter>src</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\CmonMeow\Desktop\Shipwright\src\shipwright\CMakeLists.txt">
+      <Filter>src</Filter>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="src">
+      <UniqueIdentifier>{A5EA5780-D098-3899-A4D0-3696AFC90A38}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

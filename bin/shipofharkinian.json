@@ -1,0 +1,31 @@
+{
+    "CVars": {
+        "gSettings": {
+            "CameraInvertY": 1,
+            "CursorVisibility": 1,
+            "InterpolationFPS": 40,
+            "MultiplayerVoicePushToTalk": 1,
+            "Volume": {
+                "Fanfare": 40,
+                "MainMusic": 40,
+                "Master": 30,
+                "SubMusic": 40
+            }
+        }
+    },
+    "ConfigVersion": 6,
+    "Window": {
+        "AudioBackend": "wasapi",
+        "Backend": {
+            "Id": 0,
+            "Name": "Win32 OpenGL"
+        },
+        "Fullscreen": {
+            "Enabled": false
+        },
+        "Height": 742,
+        "PositionX": 726,
+        "PositionY": 431,
+        "Width": 832
+    }
+}

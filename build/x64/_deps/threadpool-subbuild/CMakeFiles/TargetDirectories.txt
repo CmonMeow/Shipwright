@@ -1,3 +1,0 @@
-C:/Users/CmonMeow/Desktop/Shipwright/build/x64/_deps/threadpool-subbuild/CMakeFiles/threadpool-populate.dir
-C:/Users/CmonMeow/Desktop/Shipwright/build/x64/_deps/threadpool-subbuild/CMakeFiles/ALL_BUILD.dir
-C:/Users/CmonMeow/Desktop/Shipwright/build/x64/_deps/threadpool-subbuild/CMakeFiles/ZERO_CHECK.dir

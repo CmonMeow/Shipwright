@@ -23,7 +23,6 @@
     <VCProjectUpgraderObjectName>NoUpgrade</VCProjectUpgraderObjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
-  <Import Project="C:/Program Files/Microsoft Visual Studio/18/Community/VC/Auxiliary/Build/14.51/Microsoft.VCToolsVersion.14.51.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <CharacterSet>MultiByte</CharacterSet>
@@ -54,7 +53,7 @@
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\libgfxd-src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\CmonMeow\Desktop\Shipwright\third_party\fetchcontent\libgfxd-src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalOptions>%(AdditionalOptions) /utf-8</AdditionalOptions>
       <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
@@ -83,10 +82,10 @@
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_DEBUG;_WINDOWS;CVAR_PREFIX_SETTING=\"gSettings\";CVAR_PREFIX_WINDOW=\"gOpenWindows\";CVAR_PREFIX_GENERAL=\"gGeneral\";CVAR_VSYNC_ENABLED=\"gSettings.VsyncEnabled\";CVAR_Z_FIGHTING_MODE=\"gSettings.ZFightingMode\";CVAR_INTERNAL_RESOLUTION=\"gSettings.InternalResolution\";CVAR_MSAA_VALUE=\"gSettings.MSAAValue\";CVAR_TEXTURE_FILTER=\"gSettings.TextureFilter\";CVAR_AUDIO_CHANNELS_SETTING=\"gAudioChannelsSetting\";CONTROLLERBUTTONS_T=uint32_t;CMAKE_INTDIR=\"Debug\"</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\libgfxd-src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\CmonMeow\Desktop\Shipwright\third_party\fetchcontent\libgfxd-src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
     <Midl>
-      <AdditionalIncludeDirectories>C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\libgfxd-src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\CmonMeow\Desktop\Shipwright\third_party\fetchcontent\libgfxd-src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
       <HeaderFileName>%(Filename).h</HeaderFileName>
       <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
@@ -99,7 +98,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\libgfxd-src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\CmonMeow\Desktop\Shipwright\third_party\fetchcontent\libgfxd-src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalOptions>%(AdditionalOptions) /utf-8</AdditionalOptions>
       <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
@@ -128,10 +127,10 @@
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;CVAR_PREFIX_SETTING=\"gSettings\";CVAR_PREFIX_WINDOW=\"gOpenWindows\";CVAR_PREFIX_GENERAL=\"gGeneral\";CVAR_VSYNC_ENABLED=\"gSettings.VsyncEnabled\";CVAR_Z_FIGHTING_MODE=\"gSettings.ZFightingMode\";CVAR_INTERNAL_RESOLUTION=\"gSettings.InternalResolution\";CVAR_MSAA_VALUE=\"gSettings.MSAAValue\";CVAR_TEXTURE_FILTER=\"gSettings.TextureFilter\";CVAR_AUDIO_CHANNELS_SETTING=\"gAudioChannelsSetting\";CONTROLLERBUTTONS_T=uint32_t;CMAKE_INTDIR=\"Release\"</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\libgfxd-src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\CmonMeow\Desktop\Shipwright\third_party\fetchcontent\libgfxd-src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
     <Midl>
-      <AdditionalIncludeDirectories>C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\libgfxd-src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\CmonMeow\Desktop\Shipwright\third_party\fetchcontent\libgfxd-src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
       <HeaderFileName>%(Filename).h</HeaderFileName>
       <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
@@ -143,9 +142,9 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <CustomBuild Include="C:\Users\CmonMeow\Desktop\Shipwright\libultraship\CMakeLists.txt">
+    <CustomBuild Include="C:\Users\CmonMeow\Desktop\Shipwright\src\libultraship\CMakeLists.txt">
       <UseUtf8Encoding>Always</UseUtf8Encoding>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Building Custom Rule C:/Users/CmonMeow/Desktop/Shipwright/libultraship/CMakeLists.txt</Message>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Building Custom Rule C:/Users/CmonMeow/Desktop/Shipwright/src/libultraship/CMakeLists.txt</Message>
       <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">setlocal
 "C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" -SC:/Users/CmonMeow/Desktop/Shipwright -BC:/Users/CmonMeow/Desktop/Shipwright/build/x64 --check-stamp-file C:/Users/CmonMeow/Desktop/Shipwright/build/x64/libultraship/CMakeFiles/generate.stamp
 if %errorlevel% neq 0 goto :cmEnd
@@ -155,10 +154,10 @@ endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
 exit /b %1
 :cmDone
 if %errorlevel% neq 0 goto :VCEnd</Command>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-4.3\Modules\ExternalProject\shared_internal_commands.cmake;C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-4.3\Modules\FetchContent.cmake;C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-4.3\Modules\FetchContent\CMakeLists.cmake.in;C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-4.3\Modules\FindGit.cmake;C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-4.3\Modules\FindOpenGL.cmake;C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-4.3\Modules\FindPackageHandleStandardArgs.cmake;C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-4.3\Modules\FindPackageMessage.cmake;C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-4.3\Modules\SelectLibraryConfigurations.cmake;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\vcpkg\installed\x64-windows-static\share\glew\CopyImportedTargetProperties.cmake;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\vcpkg\installed\x64-windows-static\share\glew\glew-config.cmake;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\vcpkg\installed\x64-windows-static\share\glew\glew-targets-debug.cmake;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\vcpkg\installed\x64-windows-static\share\glew\glew-targets-release.cmake;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\vcpkg\installed\x64-windows-static\share\glew\glew-targets.cmake;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\vcpkg\installed\x64-windows-static\share\glew\vcpkg-cmake-wrapper.cmake;C:\Users\CmonMeow\Desktop\Shipwright\libultraship\cmake\Utils.cmake;C:\Users\CmonMeow\Desktop\Shipwright\libultraship\cmake\dependencies\common.cmake;C:\Users\CmonMeow\Desktop\Shipwright\libultraship\cmake\dependencies\windows-vcpkg.cmake;C:\Users\CmonMeow\Desktop\Shipwright\libultraship\cmake\dependencies\windows.cmake;%(AdditionalInputs)</AdditionalInputs>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-4.3\Modules\ExternalProject\shared_internal_commands.cmake;C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-4.3\Modules\FetchContent.cmake;C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-4.3\Modules\FetchContent\CMakeLists.cmake.in;C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-4.3\Modules\FindGit.cmake;C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-4.3\Modules\FindOpenGL.cmake;C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-4.3\Modules\FindPackageHandleStandardArgs.cmake;C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-4.3\Modules\FindPackageMessage.cmake;C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-4.3\Modules\SelectLibraryConfigurations.cmake;C:\Users\CmonMeow\Desktop\Shipwright\src\libultraship\cmake\Utils.cmake;C:\Users\CmonMeow\Desktop\Shipwright\src\libultraship\cmake\dependencies\common.cmake;C:\Users\CmonMeow\Desktop\Shipwright\src\libultraship\cmake\dependencies\windows-vcpkg.cmake;C:\Users\CmonMeow\Desktop\Shipwright\src\libultraship\cmake\dependencies\windows.cmake;C:\Users\CmonMeow\Desktop\Shipwright\third_party\vcpkg\installed\x64-windows-static\share\glew\CopyImportedTargetProperties.cmake;C:\Users\CmonMeow\Desktop\Shipwright\third_party\vcpkg\installed\x64-windows-static\share\glew\glew-config.cmake;C:\Users\CmonMeow\Desktop\Shipwright\third_party\vcpkg\installed\x64-windows-static\share\glew\glew-targets-debug.cmake;C:\Users\CmonMeow\Desktop\Shipwright\third_party\vcpkg\installed\x64-windows-static\share\glew\glew-targets-release.cmake;C:\Users\CmonMeow\Desktop\Shipwright\third_party\vcpkg\installed\x64-windows-static\share\glew\glew-targets.cmake;C:\Users\CmonMeow\Desktop\Shipwright\third_party\vcpkg\installed\x64-windows-static\share\glew\vcpkg-cmake-wrapper.cmake;%(AdditionalInputs)</AdditionalInputs>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:\Users\CmonMeow\Desktop\Shipwright\build\x64\libultraship\CMakeFiles\generate.stamp</Outputs>
       <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</LinkObjects>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Building Custom Rule C:/Users/CmonMeow/Desktop/Shipwright/libultraship/CMakeLists.txt</Message>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Building Custom Rule C:/Users/CmonMeow/Desktop/Shipwright/src/libultraship/CMakeLists.txt</Message>
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">setlocal
 "C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" -SC:/Users/CmonMeow/Desktop/Shipwright -BC:/Users/CmonMeow/Desktop/Shipwright/build/x64 --check-stamp-file C:/Users/CmonMeow/Desktop/Shipwright/build/x64/libultraship/CMakeFiles/generate.stamp
 if %errorlevel% neq 0 goto :cmEnd
@@ -168,22 +167,22 @@ endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
 exit /b %1
 :cmDone
 if %errorlevel% neq 0 goto :VCEnd</Command>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-4.3\Modules\ExternalProject\shared_internal_commands.cmake;C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-4.3\Modules\FetchContent.cmake;C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-4.3\Modules\FetchContent\CMakeLists.cmake.in;C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-4.3\Modules\FindGit.cmake;C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-4.3\Modules\FindOpenGL.cmake;C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-4.3\Modules\FindPackageHandleStandardArgs.cmake;C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-4.3\Modules\FindPackageMessage.cmake;C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-4.3\Modules\SelectLibraryConfigurations.cmake;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\vcpkg\installed\x64-windows-static\share\glew\CopyImportedTargetProperties.cmake;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\vcpkg\installed\x64-windows-static\share\glew\glew-config.cmake;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\vcpkg\installed\x64-windows-static\share\glew\glew-targets-debug.cmake;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\vcpkg\installed\x64-windows-static\share\glew\glew-targets-release.cmake;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\vcpkg\installed\x64-windows-static\share\glew\glew-targets.cmake;C:\Users\CmonMeow\Desktop\Shipwright\build\x64\vcpkg\installed\x64-windows-static\share\glew\vcpkg-cmake-wrapper.cmake;C:\Users\CmonMeow\Desktop\Shipwright\libultraship\cmake\Utils.cmake;C:\Users\CmonMeow\Desktop\Shipwright\libultraship\cmake\dependencies\common.cmake;C:\Users\CmonMeow\Desktop\Shipwright\libultraship\cmake\dependencies\windows-vcpkg.cmake;C:\Users\CmonMeow\Desktop\Shipwright\libultraship\cmake\dependencies\windows.cmake;%(AdditionalInputs)</AdditionalInputs>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-4.3\Modules\ExternalProject\shared_internal_commands.cmake;C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-4.3\Modules\FetchContent.cmake;C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-4.3\Modules\FetchContent\CMakeLists.cmake.in;C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-4.3\Modules\FindGit.cmake;C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-4.3\Modules\FindOpenGL.cmake;C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-4.3\Modules\FindPackageHandleStandardArgs.cmake;C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-4.3\Modules\FindPackageMessage.cmake;C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-4.3\Modules\SelectLibraryConfigurations.cmake;C:\Users\CmonMeow\Desktop\Shipwright\src\libultraship\cmake\Utils.cmake;C:\Users\CmonMeow\Desktop\Shipwright\src\libultraship\cmake\dependencies\common.cmake;C:\Users\CmonMeow\Desktop\Shipwright\src\libultraship\cmake\dependencies\windows-vcpkg.cmake;C:\Users\CmonMeow\Desktop\Shipwright\src\libultraship\cmake\dependencies\windows.cmake;C:\Users\CmonMeow\Desktop\Shipwright\third_party\vcpkg\installed\x64-windows-static\share\glew\CopyImportedTargetProperties.cmake;C:\Users\CmonMeow\Desktop\Shipwright\third_party\vcpkg\installed\x64-windows-static\share\glew\glew-config.cmake;C:\Users\CmonMeow\Desktop\Shipwright\third_party\vcpkg\installed\x64-windows-static\share\glew\glew-targets-debug.cmake;C:\Users\CmonMeow\Desktop\Shipwright\third_party\vcpkg\installed\x64-windows-static\share\glew\glew-targets-release.cmake;C:\Users\CmonMeow\Desktop\Shipwright\third_party\vcpkg\installed\x64-windows-static\share\glew\glew-targets.cmake;C:\Users\CmonMeow\Desktop\Shipwright\third_party\vcpkg\installed\x64-windows-static\share\glew\vcpkg-cmake-wrapper.cmake;%(AdditionalInputs)</AdditionalInputs>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:\Users\CmonMeow\Desktop\Shipwright\build\x64\libultraship\CMakeFiles\generate.stamp</Outputs>
       <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</LinkObjects>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\libgfxd-src\gbi.h" />
-    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\libgfxd-src\gfxd.h" />
-    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\libgfxd-src\priv.h" />
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\libgfxd-src\gfxd.c" />
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\libgfxd-src\uc.c" />
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\libgfxd-src\uc_f3d.c" />
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\libgfxd-src\uc_f3db.c" />
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\libgfxd-src\uc_f3dex.c" />
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\libgfxd-src\uc_f3dex2.c" />
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\_deps\libgfxd-src\uc_f3dexb.c" />
+    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\third_party\fetchcontent\libgfxd-src\gbi.h" />
+    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\third_party\fetchcontent\libgfxd-src\gfxd.h" />
+    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\third_party\fetchcontent\libgfxd-src\priv.h" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\third_party\fetchcontent\libgfxd-src\gfxd.c" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\third_party\fetchcontent\libgfxd-src\uc.c" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\third_party\fetchcontent\libgfxd-src\uc_f3d.c" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\third_party\fetchcontent\libgfxd-src\uc_f3db.c" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\third_party\fetchcontent\libgfxd-src\uc_f3dex.c" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\third_party\fetchcontent\libgfxd-src\uc_f3dex2.c" />
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\third_party\fetchcontent\libgfxd-src\uc_f3dexb.c" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>

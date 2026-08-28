@@ -11,17 +11,17 @@
 	<Project Path="src/libultraship.vcxproj" Type="8bc9ceb8-8b4a-11d0-8d11-00a0c91bc942" Id="06cc8d88-1a4d-3e2c-94f1-180fc8b912db">
 		<BuildDependency Project="../ZERO_CHECK.vcxproj"/>
 		<BuildDependency Project="libgfxd.vcxproj"/>
-		<BuildDependency Project="../_deps/prism-build/prism.vcxproj"/>
+		<BuildDependency Project="C:/Users/CmonMeow/Desktop/Shipwright/third_party/fetchcontent/prism-build/prism.vcxproj"/>
 		<BuildDependency Project="stb.vcxproj"/>
-		<BuildDependency Project="../_deps/stormlib-build/storm.vcxproj"/>
+		<BuildDependency Project="C:/Users/CmonMeow/Desktop/Shipwright/third_party/fetchcontent/stormlib-build/storm.vcxproj"/>
 	</Project>
-	<Project Path="../_deps/prism-build/prism.vcxproj" Type="8bc9ceb8-8b4a-11d0-8d11-00a0c91bc942" Id="48948160-6bfa-30fb-9401-08b164880f69">
+	<Project Path="C:/Users/CmonMeow/Desktop/Shipwright/third_party/fetchcontent/prism-build/prism.vcxproj" Type="8bc9ceb8-8b4a-11d0-8d11-00a0c91bc942" Id="48948160-6bfa-30fb-9401-08b164880f69">
 		<BuildDependency Project="../ZERO_CHECK.vcxproj"/>
 	</Project>
 	<Project Path="stb.vcxproj" Type="8bc9ceb8-8b4a-11d0-8d11-00a0c91bc942" Id="4bb74363-7dde-3032-8f43-878476b15a43">
 		<BuildDependency Project="../ZERO_CHECK.vcxproj"/>
 	</Project>
-	<Project Path="../_deps/stormlib-build/storm.vcxproj" Type="8bc9ceb8-8b4a-11d0-8d11-00a0c91bc942" Id="74dbbcdd-1d2e-3c44-a3b9-1e3a05c2efd9">
+	<Project Path="C:/Users/CmonMeow/Desktop/Shipwright/third_party/fetchcontent/stormlib-build/storm.vcxproj" Type="8bc9ceb8-8b4a-11d0-8d11-00a0c91bc942" Id="74dbbcdd-1d2e-3c44-a3b9-1e3a05c2efd9">
 		<BuildDependency Project="../ZERO_CHECK.vcxproj"/>
 	</Project>
 	<Folder Name="/CMakePredefinedTargets/">
@@ -29,9 +29,9 @@
 			<BuildDependency Project="../ZERO_CHECK.vcxproj"/>
 			<BuildDependency Project="libgfxd.vcxproj"/>
 			<BuildDependency Project="src/libultraship.vcxproj"/>
-			<BuildDependency Project="../_deps/prism-build/prism.vcxproj"/>
+			<BuildDependency Project="C:/Users/CmonMeow/Desktop/Shipwright/third_party/fetchcontent/prism-build/prism.vcxproj"/>
 			<BuildDependency Project="stb.vcxproj"/>
-			<BuildDependency Project="../_deps/stormlib-build/storm.vcxproj"/>
+			<BuildDependency Project="C:/Users/CmonMeow/Desktop/Shipwright/third_party/fetchcontent/stormlib-build/storm.vcxproj"/>
 		</Project>
 		<Project Path="INSTALL.vcxproj" Type="8bc9ceb8-8b4a-11d0-8d11-00a0c91bc942" Id="1fe2807b-cb21-3084-9b4a-a0ad26b8ab49">
 			<BuildDependency Project="ALL_BUILD.vcxproj"/>

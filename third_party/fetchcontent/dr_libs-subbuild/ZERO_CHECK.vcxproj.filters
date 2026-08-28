@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="18.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\CmonMeow\Desktop\Shipwright\third_party\fetchcontent\dr_libs-subbuild\CMakeFiles\0e1773469dc83d3eadd9d2bf82535718\generate.stamp.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="CMake Rules">
+      <UniqueIdentifier>{46D3A754-7218-3CAC-A3CA-08C2E42E432C}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

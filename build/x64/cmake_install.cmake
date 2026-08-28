@@ -39,7 +39,7 @@ endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("C:/Users/CmonMeow/Desktop/Shipwright/build/x64/soh/cmake_install.cmake")
+  include("C:/Users/CmonMeow/Desktop/Shipwright/build/x64/shipwright/cmake_install.cmake")
 endif()
 
 if(CMAKE_INSTALL_COMPONENT STREQUAL "ship" OR NOT CMAKE_INSTALL_COMPONENT)

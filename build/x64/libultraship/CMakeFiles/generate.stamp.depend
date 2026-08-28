@@ -7,14 +7,14 @@ C:/Program Files/Microsoft Visual Studio/18/Community/Common7/IDE/CommonExtensio
 C:/Program Files/Microsoft Visual Studio/18/Community/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/share/cmake-4.3/Modules/FindPackageHandleStandardArgs.cmake
 C:/Program Files/Microsoft Visual Studio/18/Community/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/share/cmake-4.3/Modules/FindPackageMessage.cmake
 C:/Program Files/Microsoft Visual Studio/18/Community/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/share/cmake-4.3/Modules/SelectLibraryConfigurations.cmake
-C:/Users/CmonMeow/Desktop/Shipwright/build/x64/vcpkg/installed/x64-windows-static/share/glew/CopyImportedTargetProperties.cmake
-C:/Users/CmonMeow/Desktop/Shipwright/build/x64/vcpkg/installed/x64-windows-static/share/glew/glew-config.cmake
-C:/Users/CmonMeow/Desktop/Shipwright/build/x64/vcpkg/installed/x64-windows-static/share/glew/glew-targets-debug.cmake
-C:/Users/CmonMeow/Desktop/Shipwright/build/x64/vcpkg/installed/x64-windows-static/share/glew/glew-targets-release.cmake
-C:/Users/CmonMeow/Desktop/Shipwright/build/x64/vcpkg/installed/x64-windows-static/share/glew/glew-targets.cmake
-C:/Users/CmonMeow/Desktop/Shipwright/build/x64/vcpkg/installed/x64-windows-static/share/glew/vcpkg-cmake-wrapper.cmake
-C:/Users/CmonMeow/Desktop/Shipwright/libultraship/CMakeLists.txt
-C:/Users/CmonMeow/Desktop/Shipwright/libultraship/cmake/Utils.cmake
-C:/Users/CmonMeow/Desktop/Shipwright/libultraship/cmake/dependencies/common.cmake
-C:/Users/CmonMeow/Desktop/Shipwright/libultraship/cmake/dependencies/windows-vcpkg.cmake
-C:/Users/CmonMeow/Desktop/Shipwright/libultraship/cmake/dependencies/windows.cmake
+C:/Users/CmonMeow/Desktop/Shipwright/src/libultraship/CMakeLists.txt
+C:/Users/CmonMeow/Desktop/Shipwright/src/libultraship/cmake/Utils.cmake
+C:/Users/CmonMeow/Desktop/Shipwright/src/libultraship/cmake/dependencies/common.cmake
+C:/Users/CmonMeow/Desktop/Shipwright/src/libultraship/cmake/dependencies/windows-vcpkg.cmake
+C:/Users/CmonMeow/Desktop/Shipwright/src/libultraship/cmake/dependencies/windows.cmake
+C:/Users/CmonMeow/Desktop/Shipwright/third_party/vcpkg/installed/x64-windows-static/share/glew/CopyImportedTargetProperties.cmake
+C:/Users/CmonMeow/Desktop/Shipwright/third_party/vcpkg/installed/x64-windows-static/share/glew/glew-config.cmake
+C:/Users/CmonMeow/Desktop/Shipwright/third_party/vcpkg/installed/x64-windows-static/share/glew/glew-targets-debug.cmake
+C:/Users/CmonMeow/Desktop/Shipwright/third_party/vcpkg/installed/x64-windows-static/share/glew/glew-targets-release.cmake
+C:/Users/CmonMeow/Desktop/Shipwright/third_party/vcpkg/installed/x64-windows-static/share/glew/glew-targets.cmake
+C:/Users/CmonMeow/Desktop/Shipwright/third_party/vcpkg/installed/x64-windows-static/share/glew/vcpkg-cmake-wrapper.cmake

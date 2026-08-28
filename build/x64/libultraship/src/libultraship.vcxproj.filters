@@ -1,219 +1,219 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="18.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\libultraship\src\fast\Fast3dWindow.cpp">
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\libultraship\src\fast\Fast3dWindow.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\libultraship\src\fast\interpreter.cpp">
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\libultraship\src\fast\interpreter.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\libultraship\src\fast\debug\GfxDebugger.cpp">
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\libultraship\src\fast\debug\GfxDebugger.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\libultraship\src\fast\resource\type\DisplayList.cpp">
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\libultraship\src\fast\resource\type\DisplayList.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\libultraship\src\fast\resource\type\Light.cpp">
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\libultraship\src\fast\resource\type\Light.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\libultraship\src\fast\resource\type\Matrix.cpp">
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\libultraship\src\fast\resource\type\Matrix.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\libultraship\src\fast\resource\type\Texture.cpp">
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\libultraship\src\fast\resource\type\Texture.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\libultraship\src\fast\resource\type\Vertex.cpp">
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\libultraship\src\fast\resource\type\Vertex.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\libultraship\src\fast\resource\factory\DisplayListFactory.cpp">
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\libultraship\src\fast\resource\factory\DisplayListFactory.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\libultraship\src\fast\resource\factory\LightFactory.cpp">
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\libultraship\src\fast\resource\factory\LightFactory.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\libultraship\src\fast\resource\factory\MatrixFactory.cpp">
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\libultraship\src\fast\resource\factory\MatrixFactory.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\libultraship\src\fast\resource\factory\TextureFactory.cpp">
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\libultraship\src\fast\resource\factory\TextureFactory.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\libultraship\src\fast\resource\factory\VertexFactory.cpp">
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\libultraship\src\fast\resource\factory\VertexFactory.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\libultraship\src\fast\backends\gfx_opengl.cpp">
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\libultraship\src\fast\backends\gfx_opengl.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\libultraship\src\fast\backends\gfx_win32_opengl.cpp">
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\libultraship\src\fast\backends\gfx_win32_opengl.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\libultraship\src\libultraship\bridge\audiobridge.cpp">
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\libultraship\src\libultraship\bridge\audiobridge.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\libultraship\src\libultraship\bridge\consolevariablebridge.cpp">
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\libultraship\src\libultraship\bridge\consolevariablebridge.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\libultraship\src\libultraship\bridge\crashhandlerbridge.cpp">
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\libultraship\src\libultraship\bridge\crashhandlerbridge.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\libultraship\src\libultraship\bridge\gfxbridge.cpp">
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\libultraship\src\libultraship\bridge\gfxbridge.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\libultraship\src\libultraship\bridge\gfxdebuggerbridge.cpp">
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\libultraship\src\libultraship\bridge\gfxdebuggerbridge.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\libultraship\src\libultraship\bridge\resourcebridge.cpp">
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\libultraship\src\libultraship\bridge\resourcebridge.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\libultraship\src\libultraship\bridge\windowbridge.cpp">
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\libultraship\src\libultraship\bridge\windowbridge.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\libultraship\src\libultraship\libultra\os.cpp">
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\libultraship\src\libultraship\libultra\os.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\libultraship\src\libultraship\libultra\os_cache.cpp">
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\libultraship\src\libultraship\libultra\os_cache.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\libultraship\src\libultraship\libultra\os_eeprom.cpp">
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\libultraship\src\libultraship\libultra\os_eeprom.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\libultraship\src\libultraship\libultra\os_mesg.cpp">
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\libultraship\src\libultraship\libultra\os_mesg.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\libultraship\src\libultraship\libultra\os_pi.cpp">
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\libultraship\src\libultraship\libultra\os_pi.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\libultraship\src\libultraship\libultra\os_time.cpp">
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\libultraship\src\libultraship\libultra\os_time.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\libultraship\src\libultraship\libultra\os_vi.cpp">
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\libultraship\src\libultraship\libultra\os_vi.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\libultraship\src\libultraship\libultra\os_vm.cpp">
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\libultraship\src\libultraship\libultra\os_vm.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\libultraship\src\ship\Context.cpp">
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\libultraship\src\ship\Context.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\libultraship\src\ship\audio\Audio.cpp">
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\libultraship\src\ship\audio\Audio.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\libultraship\src\ship\audio\AudioPlayer.cpp">
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\libultraship\src\ship\audio\AudioPlayer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\libultraship\src\ship\audio\NullAudioPlayer.cpp">
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\libultraship\src\ship\audio\NullAudioPlayer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\libultraship\src\ship\audio\SoundMatrixDecoder.cpp">
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\libultraship\src\ship\audio\SoundMatrixDecoder.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\libultraship\src\ship\audio\WasapiAudioPlayer.cpp">
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\libultraship\src\ship\audio\WasapiAudioPlayer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\libultraship\src\ship\input\Win32Input.cpp">
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\libultraship\src\ship\input\Win32Input.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\libultraship\src\ship\config\Config.cpp">
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\libultraship\src\ship\config\Config.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\libultraship\src\ship\config\ConsoleVariable.cpp">
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\libultraship\src\ship\config\ConsoleVariable.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\libultraship\src\ship\debug\Console.cpp">
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\libultraship\src\ship\debug\Console.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\libultraship\src\ship\debug\CrashHandler.cpp">
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\libultraship\src\ship\debug\CrashHandler.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\libultraship\src\ship\window\FileDropMgr.cpp">
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\libultraship\src\ship\window\FileDropMgr.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\libultraship\src\ship\window\PathEngineOverlay.cpp">
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\libultraship\src\ship\window\PathEngineOverlay.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\libultraship\src\ship\window\Window.cpp">
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\libultraship\src\ship\window\Window.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\libultraship\src\ship\utils\StrHash64.cpp">
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\libultraship\src\ship\utils\StrHash64.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\libultraship\src\ship\utils\StringHelper.cpp">
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\libultraship\src\ship\utils\StringHelper.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\libultraship\src\ship\utils\Utils.cpp">
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\libultraship\src\ship\utils\Utils.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\libultraship\src\ship\utils\binarytools\BinaryReader.cpp">
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\libultraship\src\ship\utils\binarytools\BinaryReader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\libultraship\src\ship\utils\binarytools\BinaryWriter.cpp">
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\libultraship\src\ship\utils\binarytools\BinaryWriter.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\libultraship\src\ship\utils\binarytools\MemoryStream.cpp">
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\libultraship\src\ship\utils\binarytools\MemoryStream.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\libultraship\src\ship\utils\binarytools\Stream.cpp">
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\libultraship\src\ship\utils\binarytools\Stream.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\libultraship\src\ship\utils\glob.c">
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\libultraship\src\ship\utils\glob.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\libultraship\src\ship\utils\stox.cpp">
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\libultraship\src\ship\utils\stox.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\libultraship\src\ship\resource\Resource.cpp">
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\libultraship\src\ship\resource\Resource.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\libultraship\src\ship\resource\ResourceFactoryBinary.cpp">
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\libultraship\src\ship\resource\ResourceFactoryBinary.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\libultraship\src\ship\resource\ResourceFactoryXML.cpp">
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\libultraship\src\ship\resource\ResourceFactoryXML.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\libultraship\src\ship\resource\ResourceLoader.cpp">
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\libultraship\src\ship\resource\ResourceLoader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\libultraship\src\ship\resource\ResourceManager.cpp">
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\libultraship\src\ship\resource\ResourceManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\libultraship\src\ship\resource\type\Blob.cpp">
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\libultraship\src\ship\resource\type\Blob.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\libultraship\src\ship\resource\type\Json.cpp">
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\libultraship\src\ship\resource\type\Json.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\libultraship\src\ship\resource\type\Shader.cpp">
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\libultraship\src\ship\resource\type\Shader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\libultraship\src\ship\resource\factory\BlobFactory.cpp">
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\libultraship\src\ship\resource\factory\BlobFactory.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\libultraship\src\ship\resource\factory\JsonFactory.cpp">
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\libultraship\src\ship\resource\factory\JsonFactory.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\libultraship\src\ship\resource\factory\ShaderFactory.cpp">
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\libultraship\src\ship\resource\factory\ShaderFactory.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\libultraship\src\ship\resource\archive\Archive.cpp">
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\libultraship\src\ship\resource\archive\Archive.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\libultraship\src\ship\resource\archive\ArchiveManager.cpp">
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\libultraship\src\ship\resource\archive\ArchiveManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\libultraship\src\ship\resource\archive\FolderArchive.cpp">
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\libultraship\src\ship\resource\archive\FolderArchive.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\libultraship\src\ship\resource\archive\O2rArchive.cpp">
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\libultraship\src\ship\resource\archive\O2rArchive.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\libultraship\src\ship\resource\archive\OtrArchive.cpp">
+    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\src\libultraship\src\ship\resource\archive\OtrArchive.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <CustomBuild Include="C:\Users\CmonMeow\Desktop\Shipwright\libultraship\src\CMakeLists.txt" />
+    <CustomBuild Include="C:\Users\CmonMeow\Desktop\Shipwright\src\libultraship\src\CMakeLists.txt" />
   </ItemGroup>
   <ItemGroup>
-    <Natvis Include="C:\Users\CmonMeow\Desktop\Shipwright\build\x64\vcpkg\installed\x64-windows-static\share\nlohmann_json\nlohmann_json.natvis" />
+    <Natvis Include="C:\Users\CmonMeow\Desktop\Shipwright\third_party\vcpkg\installed\x64-windows-static\share\nlohmann_json\nlohmann_json.natvis" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Source Files">

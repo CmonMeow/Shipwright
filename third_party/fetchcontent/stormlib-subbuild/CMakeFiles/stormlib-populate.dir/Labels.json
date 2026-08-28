@@ -1,0 +1,46 @@
+{
+	"sources" : 
+	[
+		{
+			"file" : "C:/Users/CmonMeow/Desktop/Shipwright/third_party/fetchcontent/stormlib-subbuild/CMakeFiles/stormlib-populate"
+		},
+		{
+			"file" : "C:/Users/CmonMeow/Desktop/Shipwright/third_party/fetchcontent/stormlib-subbuild/CMakeFiles/7ea0c4e6b3182392972ace06fe542d61/stormlib-populate.rule"
+		},
+		{
+			"file" : "C:/Users/CmonMeow/Desktop/Shipwright/third_party/fetchcontent/stormlib-subbuild/CMakeFiles/20df35210c1a447464a708fe7b9cc877/stormlib-populate-complete.rule"
+		},
+		{
+			"file" : "C:/Users/CmonMeow/Desktop/Shipwright/third_party/fetchcontent/stormlib-subbuild/CMakeFiles/55e6364fde9ba14b086382e0c5308417/stormlib-populate-build.rule"
+		},
+		{
+			"file" : "C:/Users/CmonMeow/Desktop/Shipwright/third_party/fetchcontent/stormlib-subbuild/CMakeFiles/55e6364fde9ba14b086382e0c5308417/stormlib-populate-configure.rule"
+		},
+		{
+			"file" : "C:/Users/CmonMeow/Desktop/Shipwright/third_party/fetchcontent/stormlib-subbuild/CMakeFiles/55e6364fde9ba14b086382e0c5308417/stormlib-populate-download.rule"
+		},
+		{
+			"file" : "C:/Users/CmonMeow/Desktop/Shipwright/third_party/fetchcontent/stormlib-subbuild/CMakeFiles/55e6364fde9ba14b086382e0c5308417/stormlib-populate-install.rule"
+		},
+		{
+			"file" : "C:/Users/CmonMeow/Desktop/Shipwright/third_party/fetchcontent/stormlib-subbuild/CMakeFiles/55e6364fde9ba14b086382e0c5308417/stormlib-populate-mkdir.rule"
+		},
+		{
+			"file" : "C:/Users/CmonMeow/Desktop/Shipwright/third_party/fetchcontent/stormlib-subbuild/CMakeFiles/55e6364fde9ba14b086382e0c5308417/stormlib-populate-patch.rule"
+		},
+		{
+			"file" : "C:/Users/CmonMeow/Desktop/Shipwright/third_party/fetchcontent/stormlib-subbuild/CMakeFiles/55e6364fde9ba14b086382e0c5308417/stormlib-populate-test.rule"
+		},
+		{
+			"file" : "C:/Users/CmonMeow/Desktop/Shipwright/third_party/fetchcontent/stormlib-subbuild/CMakeFiles/55e6364fde9ba14b086382e0c5308417/stormlib-populate-update.rule"
+		}
+	],
+	"target" : 
+	{
+		"labels" : 
+		[
+			"stormlib-populate"
+		],
+		"name" : "stormlib-populate"
+	}
+}

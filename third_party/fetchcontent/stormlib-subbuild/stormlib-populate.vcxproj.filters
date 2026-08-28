@@ -1,0 +1,44 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="18.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\CmonMeow\Desktop\Shipwright\third_party\fetchcontent\stormlib-subbuild\CMakeFiles\55e6364fde9ba14b086382e0c5308417\stormlib-populate-mkdir.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\CmonMeow\Desktop\Shipwright\third_party\fetchcontent\stormlib-subbuild\CMakeFiles\55e6364fde9ba14b086382e0c5308417\stormlib-populate-download.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\CmonMeow\Desktop\Shipwright\third_party\fetchcontent\stormlib-subbuild\CMakeFiles\55e6364fde9ba14b086382e0c5308417\stormlib-populate-update.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\CmonMeow\Desktop\Shipwright\third_party\fetchcontent\stormlib-subbuild\CMakeFiles\55e6364fde9ba14b086382e0c5308417\stormlib-populate-patch.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\CmonMeow\Desktop\Shipwright\third_party\fetchcontent\stormlib-subbuild\CMakeFiles\55e6364fde9ba14b086382e0c5308417\stormlib-populate-configure.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\CmonMeow\Desktop\Shipwright\third_party\fetchcontent\stormlib-subbuild\CMakeFiles\55e6364fde9ba14b086382e0c5308417\stormlib-populate-build.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\CmonMeow\Desktop\Shipwright\third_party\fetchcontent\stormlib-subbuild\CMakeFiles\55e6364fde9ba14b086382e0c5308417\stormlib-populate-install.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\CmonMeow\Desktop\Shipwright\third_party\fetchcontent\stormlib-subbuild\CMakeFiles\55e6364fde9ba14b086382e0c5308417\stormlib-populate-test.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\CmonMeow\Desktop\Shipwright\third_party\fetchcontent\stormlib-subbuild\CMakeFiles\20df35210c1a447464a708fe7b9cc877\stormlib-populate-complete.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\CmonMeow\Desktop\Shipwright\third_party\fetchcontent\stormlib-subbuild\CMakeFiles\7ea0c4e6b3182392972ace06fe542d61\stormlib-populate.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\CmonMeow\Desktop\Shipwright\third_party\fetchcontent\stormlib-subbuild\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="C:\Users\CmonMeow\Desktop\Shipwright\third_party\fetchcontent\stormlib-subbuild\CMakeFiles\stormlib-populate" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="CMake Rules">
+      <UniqueIdentifier>{11BFBB1A-3504-34EB-93EA-179718AFE112}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

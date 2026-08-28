@@ -1,4 +1,4 @@
-# Install script for directory: C:/Users/CmonMeow/Desktop/Shipwright/libultraship
+# Install script for directory: C:/Users/CmonMeow/Desktop/Shipwright/src/libultraship
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -34,12 +34,12 @@ endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("C:/Users/CmonMeow/Desktop/Shipwright/build/x64/_deps/stormlib-build/cmake_install.cmake")
+  include("C:/Users/CmonMeow/Desktop/Shipwright/third_party/fetchcontent/stormlib-build/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("C:/Users/CmonMeow/Desktop/Shipwright/build/x64/_deps/prism-build/cmake_install.cmake")
+  include("C:/Users/CmonMeow/Desktop/Shipwright/third_party/fetchcontent/prism-build/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
