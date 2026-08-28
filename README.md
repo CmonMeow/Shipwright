@@ -1,105 +1,15 @@
-![Ship of Harkinian](docs/shiptitle.darkmode.png#gh-dark-mode-only)
-![Ship of Harkinian](docs/shiptitle.lightmode.png#gh-light-mode-only)
+# Ocarina
 
-## Website
+A Windows/OpenGL PC game based on the Ocarina of Time engine, customized for mouse-and-keyboard combat, fishing, and server-authoritative multiplayer.
 
-Official Website: https://www.shipofharkinian.com/
+## Build
 
-## Discord
+Open [`src/Game.slnx`](src/Game.slnx) in Visual Studio and build `Release | x64`.
 
-Official Discord: https://discord.com/invite/shipofharkinian
+Outputs are written to `bin/`:
 
-If you're having any trouble after reading through this `README`, feel free to ask for help in the Support text channels. Please keep in mind that we do not condone piracy.
+- `GameClient.exe` — game client
+- `GameServer.exe` — dedicated server
+- `VoiceClient.exe` — standalone voice and text client
 
-# Quick Start
-
-The Ship does not include any copyrighted assets.  You are required to provide a supported copy of the game.
-
-### 1. Verify your ROM dump
-You can verify you have dumped a supported copy of the game by using the compatibility checker at https://ship.equipment/. If you'd prefer to manually validate your ROM dump, you can cross-reference its `sha1` hash with the hashes [here](docs/supportedHashes.json).
-
-### 2. Download The Ship of Harkinian from [Releases](https://github.com/HarbourMasters/Shipwright/releases)
-
-### 3. Launch the Game!
-#### Windows
-* Extract the zip
-* Launch `soh.exe`
-
-#### Linux
-* Place your supported copy of the game in the same folder as the appimage.
-* Execute `soh.appimage`.  You may have to `chmod +x` the appimage via terminal.
-
-#### macOS
-* Run `soh.app`. When prompted, select your supported copy of the game.
-* You should see a notification saying `Processing OTR`, then, once the process is complete, you should get a notification saying `OTR Successfully Generated`, then the game should start.
-
-#### Nintendo Switch
-* Copy the combined `oot.o2r` archive from the PC release directory to your SD card.
-```
-sdcard
-└── switch
-    └── soh
-        ├── oot.o2r
-        └── soh.nro
-```
-* Launch via Atmosphere's `Game+R` launcher method.
-
-### 4. Play!
-
-Congratulations, you are now sailing with the Ship of Harkinian! Have fun!
-
-# Configuration
-
-### Default keyboard configuration
-| N64 | A | B | Z | Start | Analog stick | C buttons | D-Pad |
-| - | - | - | - | - | - | - | - |
-| Keyboard | X | C | Z | Space | WASD | Arrow keys | TFGH |
-
-### Other shortcuts
-| Keys | Action |
-| - | - |
-| ESC | Toggle menu |
-| F2 | Toggle capture mouse input |
-| F5 | Save state |
-| F6 | Change state |
-| F7 | Load state |
-| F9 | Toggle Text-to-Speech (Windows and Mac only) |
-| F11 | Fullscreen |
-| Tab | Toggle Alternate assets |
-| Ctrl+R | Reset |
-
-# Project Overview
-Ship of Harkinian (SOH) is built atop a custom library dubbed libultraship (LUS). Back in the N64 days, there was an SDK distributed to developers named libultra; LUS is designed to mimic the functionality of libultra on modern hardware. In addition, we are dependant on the source code provided by the OOT decompilation project.
-
-In order for the game to function, you will require a **legally acquired** ROM for Ocarina of Time. Click [here](https://ship.equipment/) to check the compatibility of your specific rom. Any copyrighted assets are extracted from the ROM and reformatted as a .o2r archive file which the code uses.
-
-### Graphics Backends
-The Windows client uses the native Win32 OpenGL backend. DirectX, SDL graphics, the old backend-selection menu, and loose custom-asset loading are not part of this build. Runtime window and user settings are saved beside the executable in `bin/settings.json`; gameplay behavior is defined in code and the merged game assets are supplied by `bin/oot.o2r`.
-
-# Development
-### Building
-
-Open [`src/Ship.slnx`](src/Ship.slnx) in Visual Studio and build the `Release|x64` configuration. The projects use MSVC directly and require no project-generation step.
-
-### Playtesting
-If you want to playtest a continuous integration build, you can find them at the links below. Keep in mind that these are for playtesting only, and you will likely encounter bugs and possibly crashes. 
-
-* [Windows](https://nightly.link/HarbourMasters/Shipwright/workflows/generate-builds/develop/soh-windows.zip)
-* [macOS](https://nightly.link/HarbourMasters/Shipwright/workflows/generate-builds/develop/soh-mac.zip)
-* [Linux](https://nightly.link/HarbourMasters/Shipwright/workflows/generate-builds/develop/soh-linux.zip)
-
-### Further Reading
-More detailed documentation can be found in the 'docs' directory, including the aforementioned [building instructions](docs/BUILDING.md).
-
-* [Credits](docs/CREDITS.md)
-* [Custom Music](docs/CUSTOM_MUSIC.md)
-* [Controller Mapping](docs/GAME_CONTROLLER_DB.md)
-* [Modding](docs/MODDING.md)
-* [Versioning](docs/VERSIONING.md)
-
-<a href="https://github.com/Kenix3/libultraship/">
-  <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="./docs/poweredbylus.darkmode.png">
-    <img alt="Powered by libultraship" src="./docs/poweredbylus.lightmode.png">
-  </picture>
-</a>
+The source tree is split into `src/game` for game code and `src/engine` for the retained PC runtime and renderer.

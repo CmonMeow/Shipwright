@@ -1,78 +1,78 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="18.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClCompile Include="$(RepoRoot)src\shipwright\soh\Network\Network\netapi.cpp">
+    <ClCompile Include="$(RepoRoot)src\game\port\Network\Network\netapi.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="$(RepoRoot)src\shipwright\soh\Network\Network\netchannel.cpp">
+    <ClCompile Include="$(RepoRoot)src\game\port\Network\Network\netchannel.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="$(RepoRoot)src\shipwright\soh\Network\Network\netmessage.cpp">
+    <ClCompile Include="$(RepoRoot)src\game\port\Network\Network\netmessage.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="$(RepoRoot)src\shipwright\soh\Network\Network\netpeer.cpp">
+    <ClCompile Include="$(RepoRoot)src\game\port\Network\Network\netpeer.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="$(RepoRoot)src\shipwright\soh\Network\ReliableUdpService.cpp">
+    <ClCompile Include="$(RepoRoot)src\game\port\Network\ReliableUdpService.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="$(RepoRoot)src\shipwright\soh\Network\ServerCollisionWorld.cpp">
+    <ClCompile Include="$(RepoRoot)src\game\port\Network\ServerCollisionWorld.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="$(RepoRoot)src\shipwright\soh\Network\ShipwrightNetworkRuntime.cpp">
+    <ClCompile Include="$(RepoRoot)src\game\port\Network\NetworkRuntime.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="$(RepoRoot)src\shipwright\soh\Network\bitmask.cpp">
+    <ClCompile Include="$(RepoRoot)src\game\port\Network\bitmask.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="$(RepoRoot)src\shipwright\soh\Network\netTransportNet.cpp">
+    <ClCompile Include="$(RepoRoot)src\game\port\Network\netTransportNet.cpp">
       <Filter>src</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="$(RepoRoot)src\shipwright\soh\Network\Network\netapi.hpp">
+    <ClInclude Include="$(RepoRoot)src\game\port\Network\Network\netapi.hpp">
       <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="$(RepoRoot)src\shipwright\soh\Network\Network\netchannel.hpp">
+    <ClInclude Include="$(RepoRoot)src\game\port\Network\Network\netchannel.hpp">
       <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="$(RepoRoot)src\shipwright\soh\Network\Network\netglobal.hpp">
+    <ClInclude Include="$(RepoRoot)src\game\port\Network\Network\netglobal.hpp">
       <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="$(RepoRoot)src\shipwright\soh\Network\Network\netmessage.hpp">
+    <ClInclude Include="$(RepoRoot)src\game\port\Network\Network\netmessage.hpp">
       <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="$(RepoRoot)src\shipwright\soh\Network\Network\netpch.hpp">
+    <ClInclude Include="$(RepoRoot)src\game\port\Network\Network\netpch.hpp">
       <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="$(RepoRoot)src\shipwright\soh\Network\Network\netpeer.hpp">
+    <ClInclude Include="$(RepoRoot)src\game\port\Network\Network\netpeer.hpp">
       <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="$(RepoRoot)src\shipwright\soh\Network\NetworkProtocol.h">
+    <ClInclude Include="$(RepoRoot)src\game\port\Network\NetworkProtocol.h">
       <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="$(RepoRoot)src\shipwright\soh\Network\ReliableUdpService.h">
+    <ClInclude Include="$(RepoRoot)src\game\port\Network\ReliableUdpService.h">
       <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="$(RepoRoot)src\shipwright\soh\Network\ServerCollisionWorld.h">
+    <ClInclude Include="$(RepoRoot)src\game\port\Network\ServerCollisionWorld.h">
       <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="$(RepoRoot)src\shipwright\soh\Network\ShipwrightNetworkRuntime.h">
+    <ClInclude Include="$(RepoRoot)src\game\port\Network\NetworkRuntime.h">
       <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="$(RepoRoot)src\shipwright\soh\Network\VoiceChat.h">
+    <ClInclude Include="$(RepoRoot)src\game\port\Network\VoiceChat.h">
       <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="$(RepoRoot)src\shipwright\soh\Network\bitmask.hpp">
+    <ClInclude Include="$(RepoRoot)src\game\port\Network\bitmask.hpp">
       <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="$(RepoRoot)src\shipwright\soh\Network\netTransport.hpp">
+    <ClInclude Include="$(RepoRoot)src\game\port\Network\netTransport.hpp">
       <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="$(RepoRoot)src\shipwright\soh\Network\netTransportCommon.hpp">
+    <ClInclude Include="$(RepoRoot)src\game\port\Network\netTransportCommon.hpp">
       <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="$(RepoRoot)src\shipwright\soh\Network\pointers.h">
+    <ClInclude Include="$(RepoRoot)src\game\port\Network\pointers.h">
       <Filter>src</Filter>
     </ClInclude>
   </ItemGroup>

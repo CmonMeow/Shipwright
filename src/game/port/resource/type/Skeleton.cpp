@@ -1,0 +1,88 @@
+#include <engine/resource/ResourceManager.h>
+#include "Skeleton.h"
+#include "port/OTRGlobals.h"
+#include "runtime/runtime.h"
+#include "macros.h"
+
+extern "C" {
+#include "variables.h"
+#include "z64.h"
+#include "z64player.h"
+extern PlayState* gPlayState;
+}
+
+namespace SOH {
+SkeletonData* Skeleton::GetPointer() {
+    return &skeletonData;
+}
+
+size_t Skeleton::GetPointerSize() {
+    switch (type) {
+        case SkeletonType::Normal:
+            return sizeof(skeletonData.skeletonHeader);
+        case SkeletonType::Flex:
+            return sizeof(skeletonData.flexSkeletonHeader);
+        case SkeletonType::Curve:
+            return sizeof(skeletonData.skelCurveLimbList);
+        default:
+            return 0;
+    }
+}
+
+std::vector<SkeletonPatchInfo> SkeletonPatcher::skeletons;
+
+void SkeletonPatcher::RegisterSkeleton(std::string& path, SkelAnime* skelAnime) {
+    SkeletonPatchInfo info;
+
+    info.skelAnime = skelAnime;
+
+    if (path.starts_with(sOtr)) {
+        path = path.substr(sOtr.length());
+    }
+
+    // Determine if we're using an alternate skeleton
+    if (path.starts_with(Engine::IResource::gAltAssetPrefix)) {
+        info.vanillaSkeletonPath = path.substr(Engine::IResource::gAltAssetPrefix.length(),
+                                               path.size() - Engine::IResource::gAltAssetPrefix.length());
+    } else {
+        info.vanillaSkeletonPath = path;
+    }
+
+    skeletons.push_back(info);
+}
+
+void SkeletonPatcher::UnregisterSkeleton(SkelAnime* skelAnime) {
+
+    // TODO: Should probably just use a dictionary here...
+    for (size_t i = 0; i < skeletons.size(); i++) {
+        auto skel = skeletons[i];
+
+        if (skel.skelAnime == skelAnime) {
+            skeletons.erase(skeletons.begin() + i);
+            break;
+        }
+    }
+}
+void SkeletonPatcher::ClearSkeletons() {
+    skeletons.clear();
+}
+
+void SkeletonPatcher::UpdateSkeletons() {
+    auto resourceMgr = Engine::Context::GetInstance()->GetResourceManager();
+    bool isAlt = resourceMgr->IsAltAssetsEnabled();
+    for (auto skel : skeletons) {
+        Skeleton* newSkel =
+            (Skeleton*)resourceMgr
+                ->LoadResource((isAlt ? Engine::IResource::gAltAssetPrefix : "") + skel.vanillaSkeletonPath, true)
+                .get();
+
+        if (newSkel != nullptr) {
+            skel.skelAnime->skeleton = newSkel->skeletonData.skeletonHeader.segment;
+            uintptr_t skelPtr = (uintptr_t)newSkel->GetPointer();
+            memcpy(&skel.skelAnime->skeletonHeader, &skelPtr,
+                   sizeof(uintptr_t)); // Dumb thing that needs to be done because cast is not cooperating
+        }
+    }
+}
+
+} // namespace SOH

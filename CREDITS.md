@@ -6,7 +6,7 @@
     Jack Walker | Lead Developer - OTR Format Programmer, Resource Load Programmer, and General Programmer
     Louist103 | Developer - Save System Programmer and General Programmer
     Emil | Developer - Fast3D Programmer
-    m4xw | Developer - Shipwright, Throwing Baguettes, and General Programmer
+    m4xw | Developer - original PC port, Throwing Baguettes, and General Programmer
     MelonSpeedruns | Developer - General Programmer
     Rozlette | Developer - General Programmer
     JoshDuMan | Developer - General Programmer

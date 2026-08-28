@@ -40,7 +40,7 @@
     
     <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(RepoRoot)bin\</OutDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(RepoRoot)obj\$(ProjectName)\$(Configuration)\</IntDir>
-    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">PathEngineServer</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">GameServer</TargetName>
     <TargetExt Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.exe</TargetExt>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</LinkIncremental>
     <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</GenerateManifest>
@@ -48,7 +48,7 @@
   
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>$(RepoRoot)src\shipwright\soh;$(RepoRoot)src\shipwright\include;$(RepoRoot)src\shipwright\..\libultraship\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(RepoRoot)src\game\port;$(RepoRoot)src\game\include;$(RepoRoot)src\game\..\engine\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalOptions>%(AdditionalOptions) /external:I "$(RepoRoot)third_party/libsodium/include" /external:I "$(RepoRoot)third_party/opus/include" /external:I "$(RepoRoot)third_party" /external:I "$(RepoRoot)third_party/include" /utf-8</AdditionalOptions>
       <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
@@ -76,10 +76,10 @@
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;_CRT_SECURE_NO_WARNINGS;NOMINMAX;CVAR_PREFIX_SETTING=\"gSettings\";CVAR_PREFIX_WINDOW=\"gOpenWindows\";CVAR_PREFIX_GENERAL=\"gGeneral\";CVAR_VSYNC_ENABLED=\"gSettings.VsyncEnabled\";CVAR_Z_FIGHTING_MODE=\"gSettings.ZFightingMode\";CVAR_INTERNAL_RESOLUTION=\"gSettings.InternalResolution\";CVAR_MSAA_VALUE=\"gSettings.MSAAValue\";CVAR_TEXTURE_FILTER=\"gSettings.TextureFilter\";CVAR_AUDIO_CHANNELS_SETTING=\"gAudioChannelsSetting\";CONTROLLERBUTTONS_T=uint32_t</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(RepoRoot)src\shipwright\soh;$(RepoRoot)src\shipwright\include;$(RepoRoot)src\shipwright\..\libultraship\include;$(RepoRoot)third_party\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(RepoRoot)src\game\port;$(RepoRoot)src\game\include;$(RepoRoot)src\game\..\engine\include;$(RepoRoot)third_party\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
     <Midl>
-      <AdditionalIncludeDirectories>$(RepoRoot)src\shipwright\soh;$(RepoRoot)src\shipwright\include;$(RepoRoot)src\shipwright\..\libultraship\include;$(RepoRoot)third_party\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(RepoRoot)src\game\port;$(RepoRoot)src\game\include;$(RepoRoot)src\game\..\engine\include;$(RepoRoot)third_party\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
       <HeaderFileName>%(Filename).h</HeaderFileName>
       <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
@@ -87,7 +87,7 @@
       <ProxyFileName>%(Filename)_p.c</ProxyFileName>
     </Midl>
     <Link>
-      <AdditionalDependencies>$(RepoRoot)obj\lib\$(Configuration)\pathengine_network.lib;Ws2_32.lib;$(RepoRoot)third_party\lib\Release\zip.lib;advapi32.lib;$(RepoRoot)third_party\lib\Release\bz2.lib;bcrypt.lib;$(RepoRoot)third_party\lib\Release\zs.lib;$(RepoRoot)third_party\libsodium\lib\x64\Release\libsodium.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib</AdditionalDependencies>
+      <AdditionalDependencies>$(RepoRoot)obj\lib\$(Configuration)\network.lib;Ws2_32.lib;$(RepoRoot)third_party\lib\Release\zip.lib;advapi32.lib;$(RepoRoot)third_party\lib\Release\bz2.lib;bcrypt.lib;$(RepoRoot)third_party\lib\Release\zs.lib;$(RepoRoot)third_party\libsodium\lib\x64\Release\libsodium.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib</AdditionalDependencies>
       <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <DataExecutionPrevention></DataExecutionPrevention>
       <GenerateDebugInformation>false</GenerateDebugInformation>
@@ -95,13 +95,13 @@
       <ImageHasSafeExceptionHandlers></ImageHasSafeExceptionHandlers>
       <ImportLibrary>$(RepoRoot)obj\lib\$(Configuration)\$(TargetName).lib</ImportLibrary>
       <LinkErrorReporting></LinkErrorReporting>
-      <ProgramDataBaseFile>$(RepoRoot)bin/PathEngineServer.pdb</ProgramDataBaseFile>
+      <ProgramDataBaseFile>$(RepoRoot)bin/GameServer.pdb</ProgramDataBaseFile>
       <RandomizedBaseAddress></RandomizedBaseAddress>
       <SubSystem>Console</SubSystem>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="$(RepoRoot)src\shipwright\clients\PathEngineDedicatedServer.cpp" />
+    <ClCompile Include="$(RepoRoot)src\game\clients\DedicatedServer.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ItemGroup>

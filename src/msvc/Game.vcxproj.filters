@@ -1,0 +1,1108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="18.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="$(RepoRoot)src\game\port\ActorDB.cpp">
+      <Filter>soh</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\port\CrashHandlerExt.cpp">
+      <Filter>soh</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\port\Enhancements\debugger\colViewer.cpp">
+      <Filter>soh\Enhancements\debugger</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\port\GbiWrap.cpp">
+      <Filter>soh</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\port\NetworkGameBridge.cpp">
+      <Filter>soh</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\port\OTRGlobals.cpp">
+      <Filter>soh</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\port\ObjectExtension\ActorListIndex.cpp">
+      <Filter>soh\ObjectExtension</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\port\ObjectExtension\ObjectExtension.cpp">
+      <Filter>soh\ObjectExtension</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\port\MultiplayerUI.cpp">
+      <Filter>soh</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\port\ResourceManagerHelpers.cpp">
+      <Filter>soh</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\port\GameUtils.cpp">
+      <Filter>soh</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\port\frame_interpolation.cpp">
+      <Filter>soh</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\port\framebuffer_effects.c">
+      <Filter>soh</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\port\gu_pc.c">
+      <Filter>soh</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\port\mixer.c">
+      <Filter>soh</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\port\resource\importer\AnimationFactory.cpp">
+      <Filter>soh\resource\importer</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\port\resource\importer\ArrayFactory.cpp">
+      <Filter>soh\resource\importer</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\port\resource\importer\AudioSampleFactory.cpp">
+      <Filter>soh\resource\importer</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\port\resource\importer\AudioSequenceFactory.cpp">
+      <Filter>soh\resource\importer</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\port\resource\importer\AudioSoundFontFactory.cpp">
+      <Filter>soh\resource\importer</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\port\resource\importer\CollisionHeaderFactory.cpp">
+      <Filter>soh\resource\importer</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\port\resource\importer\PlayerAnimationFactory.cpp">
+      <Filter>soh\resource\importer</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\port\resource\importer\SceneFactory.cpp">
+      <Filter>soh\resource\importer</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\port\resource\importer\SkeletonFactory.cpp">
+      <Filter>soh\resource\importer</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\port\resource\importer\SkeletonLimbFactory.cpp">
+      <Filter>soh\resource\importer</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\port\resource\importer\TextFactory.cpp">
+      <Filter>soh\resource\importer</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\port\resource\importer\scenecommand\EndMarkerFactory.cpp">
+      <Filter>soh\resource\importer\scenecommand</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\port\resource\importer\scenecommand\SceneCommandFactory.cpp">
+      <Filter>soh\resource\importer\scenecommand</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\port\resource\importer\scenecommand\SetCameraSettingsFactory.cpp">
+      <Filter>soh\resource\importer\scenecommand</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\port\resource\importer\scenecommand\SetCollisionHeaderFactory.cpp">
+      <Filter>soh\resource\importer\scenecommand</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\port\resource\importer\scenecommand\SetEchoSettingsFactory.cpp">
+      <Filter>soh\resource\importer\scenecommand</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\port\resource\importer\scenecommand\SetEntranceListFactory.cpp">
+      <Filter>soh\resource\importer\scenecommand</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\port\resource\importer\scenecommand\SetLightingSettingsFactory.cpp">
+      <Filter>soh\resource\importer\scenecommand</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\port\resource\importer\scenecommand\SetMeshFactory.cpp">
+      <Filter>soh\resource\importer\scenecommand</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\port\resource\importer\scenecommand\SetRoomBehaviorFactory.cpp">
+      <Filter>soh\resource\importer\scenecommand</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\port\resource\importer\scenecommand\SetRoomListFactory.cpp">
+      <Filter>soh\resource\importer\scenecommand</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\port\resource\importer\scenecommand\SetSkyboxModifierFactory.cpp">
+      <Filter>soh\resource\importer\scenecommand</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\port\resource\importer\scenecommand\SetSkyboxSettingsFactory.cpp">
+      <Filter>soh\resource\importer\scenecommand</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\port\resource\importer\scenecommand\SetSoundSettingsFactory.cpp">
+      <Filter>soh\resource\importer\scenecommand</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\port\resource\importer\scenecommand\SetSpecialObjectsFactory.cpp">
+      <Filter>soh\resource\importer\scenecommand</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\port\resource\importer\scenecommand\SetStartPositionListFactory.cpp">
+      <Filter>soh\resource\importer\scenecommand</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\port\resource\importer\scenecommand\SetTimeSettingsFactory.cpp">
+      <Filter>soh\resource\importer\scenecommand</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\port\resource\type\Animation.cpp">
+      <Filter>soh\resource\type</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\port\resource\type\Array.cpp">
+      <Filter>soh\resource\type</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\port\resource\type\AudioSample.cpp">
+      <Filter>soh\resource\type</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\port\resource\type\AudioSequence.cpp">
+      <Filter>soh\resource\type</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\port\resource\type\AudioSoundFont.cpp">
+      <Filter>soh\resource\type</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\port\resource\type\CollisionHeader.cpp">
+      <Filter>soh\resource\type</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\port\resource\type\PlayerAnimation.cpp">
+      <Filter>soh\resource\type</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\port\resource\type\Scene.cpp">
+      <Filter>soh\resource\type</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\port\resource\type\Skeleton.cpp">
+      <Filter>soh\resource\type</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\port\resource\type\SkeletonLimb.cpp">
+      <Filter>soh\resource\type</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\port\resource\type\Text.cpp">
+      <Filter>soh\resource\type</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\port\resource\type\scenecommand\EndMarker.cpp">
+      <Filter>soh\resource\type\scenecommand</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\port\resource\type\scenecommand\SetCameraSettings.cpp">
+      <Filter>soh\resource\type\scenecommand</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\port\resource\type\scenecommand\SetCollisionHeader.cpp">
+      <Filter>soh\resource\type\scenecommand</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\port\resource\type\scenecommand\SetEchoSettings.cpp">
+      <Filter>soh\resource\type\scenecommand</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\port\resource\type\scenecommand\SetEntranceList.cpp">
+      <Filter>soh\resource\type\scenecommand</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\port\resource\type\scenecommand\SetLightingSettings.cpp">
+      <Filter>soh\resource\type\scenecommand</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\port\resource\type\scenecommand\SetMesh.cpp">
+      <Filter>soh\resource\type\scenecommand</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\port\resource\type\scenecommand\SetRoomBehavior.cpp">
+      <Filter>soh\resource\type\scenecommand</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\port\resource\type\scenecommand\SetRoomList.cpp">
+      <Filter>soh\resource\type\scenecommand</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\port\resource\type\scenecommand\SetSkyboxModifier.cpp">
+      <Filter>soh\resource\type\scenecommand</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\port\resource\type\scenecommand\SetSkyboxSettings.cpp">
+      <Filter>soh\resource\type\scenecommand</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\port\resource\type\scenecommand\SetSoundSettings.cpp">
+      <Filter>soh\resource\type\scenecommand</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\port\resource\type\scenecommand\SetSpecialObjects.cpp">
+      <Filter>soh\resource\type\scenecommand</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\port\resource\type\scenecommand\SetStartPositionList.cpp">
+      <Filter>soh\resource\type\scenecommand</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\port\resource\type\scenecommand\SetTimeSettings.cpp">
+      <Filter>soh\resource\type\scenecommand</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\port\stubs.c">
+      <Filter>soh</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\port\util.cpp">
+      <Filter>soh</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\port\z_play_otr.cpp">
+      <Filter>soh</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\port\z_scene_otr.cpp">
+      <Filter>soh</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\src\boot\boot_main.c">
+      <Filter>src\boot</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\src\boot\build.c">
+      <Filter>src\boot</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\src\boot\idle.c">
+      <Filter>src\boot</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\src\boot\logutils.c">
+      <Filter>src\boot</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\src\boot\stackcheck.c">
+      <Filter>src\boot</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\src\boot\viconfig.c">
+      <Filter>src\boot</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\src\boot\yaz0.c">
+      <Filter>src\boot</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\src\boot\z_locale.c">
+      <Filter>src\boot</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\src\boot\z_std_dma.c">
+      <Filter>src\boot</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\src\buffers\gfxbuffers.c">
+      <Filter>src\buffers</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\src\buffers\heaps.c">
+      <Filter>src\buffers</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\src\buffers\zbuffer.c">
+      <Filter>src\buffers</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\src\code\TwoHeadArena.c">
+      <Filter>src\code</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\src\code\__osMalloc.c">
+      <Filter>src\code</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\src\code\audioMgr.c">
+      <Filter>src\code</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\src\code\audio_data.c">
+      <Filter>src\code</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\src\code\audio_effects.c">
+      <Filter>src\code</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\src\code\audio_heap.c">
+      <Filter>src\code</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\src\code\audio_init_params.c">
+      <Filter>src\code</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\src\code\audio_load.c">
+      <Filter>src\code</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\src\code\audio_playback.c">
+      <Filter>src\code</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\src\code\audio_seqplayer.c">
+      <Filter>src\code</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\src\code\audio_sound_params.c">
+      <Filter>src\code</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\src\code\audio_synthesis.c">
+      <Filter>src\code</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\src\code\code_800430A0.c">
+      <Filter>src\code</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\src\code\code_8006C3A0.c">
+      <Filter>src\code</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\src\code\code_8006C510.c">
+      <Filter>src\code</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\src\code\code_800A9F30.c">
+      <Filter>src\code</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\src\code\code_800BB0A0.c">
+      <Filter>src\code</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\src\code\code_800C3C20.c">
+      <Filter>src\code</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\src\code\code_800D2E30.c">
+      <Filter>src\code</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\src\code\code_800D31A0.c">
+      <Filter>src\code</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\src\code\code_800E4FE0.c">
+      <Filter>src\code</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\src\code\code_800E6840.c">
+      <Filter>src\code</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\src\code\code_800EC960.c">
+      <Filter>src\code</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\src\code\code_800F7260.c">
+      <Filter>src\code</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\src\code\code_800F9280.c">
+      <Filter>src\code</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\src\code\code_800FBCE0.c">
+      <Filter>src\code</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\src\code\code_800FC620.c">
+      <Filter>src\code</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\src\code\code_800FD970.c">
+      <Filter>src\code</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\src\code\code_801067F0.c">
+      <Filter>src\code</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\src\code\code_801068B0.c">
+      <Filter>src\code</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\src\code\debug_malloc.c">
+      <Filter>src\code</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\src\code\fault.c">
+      <Filter>src\code</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\src\code\fault_drawer.c">
+      <Filter>src\code</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\src\code\game.c">
+      <Filter>src\code</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\src\code\gamealloc.c">
+      <Filter>src\code</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\src\code\gfxprint.c">
+      <Filter>src\code</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\src\code\graph.c">
+      <Filter>src\code</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\src\code\irqmgr.c">
+      <Filter>src\code</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\src\code\listalloc.c">
+      <Filter>src\code</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\src\code\loadfragment2.c">
+      <Filter>src\code</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\src\code\logseverity.c">
+      <Filter>src\code</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\src\code\main.c">
+      <Filter>src\code</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\src\code\mtxuty-cvt.c">
+      <Filter>src\code</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\src\code\padmgr.c">
+      <Filter>src\code</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\src\code\padsetup.c">
+      <Filter>src\code</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\src\code\padutils.c">
+      <Filter>src\code</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\src\code\printutils.c">
+      <Filter>src\code</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\src\code\relocation.c">
+      <Filter>src\code</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\src\code\sched.c">
+      <Filter>src\code</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\src\code\shrink_window.c">
+      <Filter>src\code</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\src\code\sleep.c">
+      <Filter>src\code</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\src\code\sys_cfb.c">
+      <Filter>src\code</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\src\code\sys_math3d.c">
+      <Filter>src\code</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\src\code\sys_matrix.c">
+      <Filter>src\code</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\src\code\sys_ucode.c">
+      <Filter>src\code</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\src\code\system_malloc.c">
+      <Filter>src\code</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\src\code\title_setup.c">
+      <Filter>src\code</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\src\code\ucode_disas.c">
+      <Filter>src\code</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\src\code\z_DLF.c">
+      <Filter>src\code</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\src\code\z_actor.c">
+      <Filter>src\code</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\src\code\z_bg_item.c">
+      <Filter>src\code</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\src\code\z_bgcheck.c">
+      <Filter>src\code</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\src\code\z_camera.c">
+      <Filter>src\code</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\src\code\z_cheap_proc.c">
+      <Filter>src\code</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\src\code\z_collision_btltbls.c">
+      <Filter>src\code</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\src\code\z_collision_check.c">
+      <Filter>src\code</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\src\code\z_common_data.c">
+      <Filter>src\code</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\src\code\z_construct.c">
+      <Filter>src\code</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\src\code\z_eff_ss_dead.c">
+      <Filter>src\code</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\src\code\z_effect_soft_sprite.c">
+      <Filter>src\code</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\src\code\z_effect_soft_sprite_dlftbls.c">
+      <Filter>src\code</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\src\code\z_effect_soft_sprite_old_init.c">
+      <Filter>src\code</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\src\code\z_fbdemo_fade.c">
+      <Filter>src\code</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\src\code\z_fcurve_data_skelanime.c">
+      <Filter>src\code</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\src\code\z_frame_advance.c">
+      <Filter>src\code</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\src\code\z_game_dlftbls.c">
+      <Filter>src\code</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\src\code\z_game_over.c">
+      <Filter>src\code</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\src\code\z_inventory.c">
+      <Filter>src\code</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\src\code\z_kankyo.c">
+      <Filter>src\code</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\src\code\z_lib.c">
+      <Filter>src\code</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\src\code\z_lifemeter.c">
+      <Filter>src\code</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\src\code\z_lights.c">
+      <Filter>src\code</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\src\code\z_malloc.c">
+      <Filter>src\code</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\src\code\z_message_stub.c">
+      <Filter>src\code</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\src\code\z_olib.c">
+      <Filter>src\code</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\src\code\z_parameter.c">
+      <Filter>src\code</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\src\code\z_play.c">
+      <Filter>src\code</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\src\code\z_player_action.c">
+      <Filter>src\code</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\src\code\z_player_call.c">
+      <Filter>src\code</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\src\code\z_player_lib.c">
+      <Filter>src\code</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\src\code\z_prenmi.c">
+      <Filter>src\code</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\src\code\z_prenmi_buff.c">
+      <Filter>src\code</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\src\code\z_quake.c">
+      <Filter>src\code</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\src\code\z_rcp.c">
+      <Filter>src\code</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\src\code\z_room.c">
+      <Filter>src\code</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\src\code\z_scene.c">
+      <Filter>src\code</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\src\code\z_scene_table.c">
+      <Filter>src\code</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\src\code\z_skelanime.c">
+      <Filter>src\code</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\src\code\z_skin.c">
+      <Filter>src\code</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\src\code\z_skin_awb.c">
+      <Filter>src\code</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\src\code\z_skin_matrix.c">
+      <Filter>src\code</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\src\code\z_sound_source.c">
+      <Filter>src\code</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\src\code\z_view.c">
+      <Filter>src\code</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\src\code\z_vr_box.c">
+      <Filter>src\code</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\src\code\z_vr_box_draw.c">
+      <Filter>src\code</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\src\libultra\gu\guLookAt.c">
+      <Filter>src\libultra</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\src\libultra\gu\guLookAtHilite.c">
+      <Filter>src\libultra</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\src\libultra\gu\guPerspectiveF.c">
+      <Filter>src\libultra</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\src\libultra\gu\guPosition.c">
+      <Filter>src\libultra</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\src\libultra\gu\guS2DInitBg.c">
+      <Filter>src\libultra</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\src\libultra\gu\ortho.c">
+      <Filter>src\libultra</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\src\libultra\gu\rotate.c">
+      <Filter>src\libultra</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\src\overlays\actors\ovl_En_Arrow\z_en_arrow.c">
+      <Filter>src\overlays\actors</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\src\overlays\actors\ovl_En_Fish\z_en_fish.c">
+      <Filter>src\overlays\actors</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\src\overlays\actors\ovl_Fishing\z_fishing.c">
+      <Filter>src\overlays\actors</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\src\overlays\actors\ovl_player_actor\z_player.c">
+      <Filter>src\overlays\actors</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\src\overlays\effects\ovl_Effect_Ss_Bubble\z_eff_ss_bubble.c">
+      <Filter>src\overlays\effects</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\src\overlays\effects\ovl_Effect_Ss_Dust\z_eff_ss_dust.c">
+      <Filter>src\overlays\effects</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\src\overlays\effects\ovl_Effect_Ss_G_Ripple\z_eff_ss_g_ripple.c">
+      <Filter>src\overlays\effects</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\src\overlays\effects\ovl_Effect_Ss_G_Splash\z_eff_ss_g_splash.c">
+      <Filter>src\overlays\effects</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\src\overlays\effects\ovl_Effect_Ss_HitMark\z_eff_ss_hitmark.c">
+      <Filter>src\overlays\effects</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\src\overlays\effects\ovl_Effect_Ss_Sibuki\z_eff_ss_sibuki.c">
+      <Filter>src\overlays\effects</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\src\overlays\effects\ovl_Effect_Ss_Sibuki2\z_eff_ss_sibuki2.c">
+      <Filter>src\overlays\effects</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\src\libultra\libc\sprintf.c">
+      <Filter>src\libultra</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="$(RepoRoot)src\game\resource.h">
+      <Filter>headers</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\game\include\align_asset_macro.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\game\include\alignment.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\game\include\alloca.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\game\include\attributes.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\game\include\command_macros_base.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\game\include\functions.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\game\include\gfx.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\game\include\global.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\game\include\ichain.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\game\include\macros.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\game\include\message_data_fmt.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\game\include\message_data_textbox_types.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\game\include\regs.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\game\include\segment_symbols.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\game\include\sequence.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\game\include\sfx.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\game\include\unk.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\game\include\variables.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\game\include\vt.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\game\include\z64.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\game\include\z64actor.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\game\include\z64actor_enum.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\game\include\z64animation.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\game\include\z64audio.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\game\include\z64bgcheck.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\game\include\z64camera.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\game\include\z64collision_check.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\game\include\z64dma.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\game\include\z64effect.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\game\include\z64environment.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\game\include\z64interface.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\game\include\z64item.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\game\include\z64light.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\game\include\z64math.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\game\include\z64object.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\game\include\z64player.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\game\include\z64runtime_action.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\game\include\z64save.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\game\include\z64scene.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\game\include\z64scene_enum.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\game\include\z64skin.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\game\include\z64transition.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\game\port\ActorDB.h">
+      <Filter>soh</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\game\port\CrashHandlerExt.h">
+      <Filter>soh</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\game\port\Enhancements\debugger\colViewer.h">
+      <Filter>soh\Enhancements\debugger</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\game\port\GameVersions.h">
+      <Filter>soh</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\game\port\ItemTableTypes.h">
+      <Filter>soh</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\game\port\NetworkGameBridge.h">
+      <Filter>soh</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\game\port\OTRAudio.h">
+      <Filter>soh</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\game\port\OTRGlobals.h">
+      <Filter>soh</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\game\port\ObjectExtension\ActorListIndex.h">
+      <Filter>soh\ObjectExtension</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\game\port\ObjectExtension\ObjectExtension.h">
+      <Filter>soh\ObjectExtension</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\game\port\MultiplayerUI.h">
+      <Filter>soh</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\game\port\ResourceManagerHelpers.h">
+      <Filter>soh</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\game\port\GameUtils.h">
+      <Filter>soh</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\game\port\cvar_prefixes.h">
+      <Filter>soh</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\game\port\frame_interpolation.h">
+      <Filter>soh</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\game\port\framebuffer_effects.h">
+      <Filter>soh</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\game\port\mixer.h">
+      <Filter>soh</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\game\port\resource\importer\AnimationFactory.h">
+      <Filter>soh\resource\importer</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\game\port\resource\importer\ArrayFactory.h">
+      <Filter>soh\resource\importer</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\game\port\resource\importer\AudioSampleFactory.h">
+      <Filter>soh\resource\importer</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\game\port\resource\importer\AudioSequenceFactory.h">
+      <Filter>soh\resource\importer</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\game\port\resource\importer\AudioSoundFontFactory.h">
+      <Filter>soh\resource\importer</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\game\port\resource\importer\CollisionHeaderFactory.h">
+      <Filter>soh\resource\importer</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\game\port\resource\importer\PlayerAnimationFactory.h">
+      <Filter>soh\resource\importer</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\game\port\resource\importer\SceneFactory.h">
+      <Filter>soh\resource\importer</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\game\port\resource\importer\SkeletonFactory.h">
+      <Filter>soh\resource\importer</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\game\port\resource\importer\SkeletonLimbFactory.h">
+      <Filter>soh\resource\importer</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\game\port\resource\importer\TextFactory.h">
+      <Filter>soh\resource\importer</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\game\port\resource\importer\scenecommand\EndMarkerFactory.h">
+      <Filter>soh\resource\importer\scenecommand</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\game\port\resource\importer\scenecommand\SceneCommandFactory.h">
+      <Filter>soh\resource\importer\scenecommand</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\game\port\resource\importer\scenecommand\SetCameraSettingsFactory.h">
+      <Filter>soh\resource\importer\scenecommand</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\game\port\resource\importer\scenecommand\SetCollisionHeaderFactory.h">
+      <Filter>soh\resource\importer\scenecommand</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\game\port\resource\importer\scenecommand\SetEchoSettingsFactory.h">
+      <Filter>soh\resource\importer\scenecommand</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\game\port\resource\importer\scenecommand\SetEntranceListFactory.h">
+      <Filter>soh\resource\importer\scenecommand</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\game\port\resource\importer\scenecommand\SetLightingSettingsFactory.h">
+      <Filter>soh\resource\importer\scenecommand</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\game\port\resource\importer\scenecommand\SetMeshFactory.h">
+      <Filter>soh\resource\importer\scenecommand</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\game\port\resource\importer\scenecommand\SetRoomBehaviorFactory.h">
+      <Filter>soh\resource\importer\scenecommand</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\game\port\resource\importer\scenecommand\SetRoomListFactory.h">
+      <Filter>soh\resource\importer\scenecommand</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\game\port\resource\importer\scenecommand\SetSkyboxModifierFactory.h">
+      <Filter>soh\resource\importer\scenecommand</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\game\port\resource\importer\scenecommand\SetSkyboxSettingsFactory.h">
+      <Filter>soh\resource\importer\scenecommand</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\game\port\resource\importer\scenecommand\SetSoundSettingsFactory.h">
+      <Filter>soh\resource\importer\scenecommand</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\game\port\resource\importer\scenecommand\SetSpecialObjectsFactory.h">
+      <Filter>soh\resource\importer\scenecommand</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\game\port\resource\importer\scenecommand\SetStartPositionListFactory.h">
+      <Filter>soh\resource\importer\scenecommand</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\game\port\resource\importer\scenecommand\SetTimeSettingsFactory.h">
+      <Filter>soh\resource\importer\scenecommand</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\game\port\resource\type\Animation.h">
+      <Filter>soh\resource\type</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\game\port\resource\type\Array.h">
+      <Filter>soh\resource\type</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\game\port\resource\type\AudioSample.h">
+      <Filter>soh\resource\type</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\game\port\resource\type\AudioSequence.h">
+      <Filter>soh\resource\type</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\game\port\resource\type\AudioSoundFont.h">
+      <Filter>soh\resource\type</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\game\port\resource\type\CollisionHeader.h">
+      <Filter>soh\resource\type</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\game\port\resource\type\PlayerAnimation.h">
+      <Filter>soh\resource\type</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\game\port\resource\type\Scene.h">
+      <Filter>soh\resource\type</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\game\port\resource\type\Skeleton.h">
+      <Filter>soh\resource\type</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\game\port\resource\type\SkeletonLimb.h">
+      <Filter>soh\resource\type</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\game\port\resource\type\SohResourceType.h">
+      <Filter>soh\resource\type</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\game\port\resource\type\Text.h">
+      <Filter>soh\resource\type</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\game\port\resource\type\scenecommand\EndMarker.h">
+      <Filter>soh\resource\type\scenecommand</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\game\port\resource\type\scenecommand\RomFile.h">
+      <Filter>soh\resource\type\scenecommand</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\game\port\resource\type\scenecommand\SceneCommand.h">
+      <Filter>soh\resource\type\scenecommand</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\game\port\resource\type\scenecommand\SetCameraSettings.h">
+      <Filter>soh\resource\type\scenecommand</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\game\port\resource\type\scenecommand\SetCollisionHeader.h">
+      <Filter>soh\resource\type\scenecommand</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\game\port\resource\type\scenecommand\SetEchoSettings.h">
+      <Filter>soh\resource\type\scenecommand</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\game\port\resource\type\scenecommand\SetEntranceList.h">
+      <Filter>soh\resource\type\scenecommand</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\game\port\resource\type\scenecommand\SetLightingSettings.h">
+      <Filter>soh\resource\type\scenecommand</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\game\port\resource\type\scenecommand\SetMesh.h">
+      <Filter>soh\resource\type\scenecommand</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\game\port\resource\type\scenecommand\SetRoomBehavior.h">
+      <Filter>soh\resource\type\scenecommand</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\game\port\resource\type\scenecommand\SetRoomList.h">
+      <Filter>soh\resource\type\scenecommand</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\game\port\resource\type\scenecommand\SetSkyboxModifier.h">
+      <Filter>soh\resource\type\scenecommand</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\game\port\resource\type\scenecommand\SetSkyboxSettings.h">
+      <Filter>soh\resource\type\scenecommand</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\game\port\resource\type\scenecommand\SetSoundSettings.h">
+      <Filter>soh\resource\type\scenecommand</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\game\port\resource\type\scenecommand\SetSpecialObjects.h">
+      <Filter>soh\resource\type\scenecommand</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\game\port\resource\type\scenecommand\SetStartPositionList.h">
+      <Filter>soh\resource\type\scenecommand</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\game\port\resource\type\scenecommand\SetTimeSettings.h">
+      <Filter>soh\resource\type\scenecommand</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\game\port\sysdef.h">
+      <Filter>soh</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\game\port\util.h">
+      <Filter>soh</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\game\src\overlays\actors\ovl_Bg_Heavy_Block\z_bg_heavy_block.h">
+      <Filter>src\overlays\actors</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\game\src\overlays\actors\ovl_Door_Shutter\z_door_shutter.h">
+      <Filter>src\overlays\actors</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\game\src\overlays\actors\ovl_Elf_Msg\z_elf_msg.h">
+      <Filter>src\overlays\actors</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\game\src\overlays\actors\ovl_En_Arrow\z_en_arrow.h">
+      <Filter>src\overlays\actors</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\game\src\overlays\actors\ovl_En_Boom\z_en_boom.h">
+      <Filter>src\overlays\actors</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\game\src\overlays\actors\ovl_En_Box\z_en_box.h">
+      <Filter>src\overlays\actors</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\game\src\overlays\actors\ovl_En_Door\z_en_door.h">
+      <Filter>src\overlays\actors</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\game\src\overlays\actors\ovl_En_Elf\z_en_elf.h">
+      <Filter>src\overlays\actors</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\game\src\overlays\actors\ovl_En_Fish\z_en_fish.h">
+      <Filter>src\overlays\actors</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\game\src\overlays\actors\ovl_Fishing\z_fishing.h">
+      <Filter>src\overlays\actors</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\game\src\overlays\effects\ovl_Effect_Ss_Bubble\z_eff_ss_bubble.h">
+      <Filter>src\overlays\effects</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\game\src\overlays\effects\ovl_Effect_Ss_Dust\z_eff_ss_dust.h">
+      <Filter>src\overlays\effects</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\game\src\overlays\effects\ovl_Effect_Ss_G_Ripple\z_eff_ss_g_ripple.h">
+      <Filter>src\overlays\effects</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\game\src\overlays\effects\ovl_Effect_Ss_G_Splash\z_eff_ss_g_splash.h">
+      <Filter>src\overlays\effects</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\game\src\overlays\effects\ovl_Effect_Ss_HitMark\z_eff_ss_hitmark.h">
+      <Filter>src\overlays\effects</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\game\src\overlays\effects\ovl_Effect_Ss_Sibuki\z_eff_ss_sibuki.h">
+      <Filter>src\overlays\effects</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\game\src\overlays\effects\ovl_Effect_Ss_Sibuki2\z_eff_ss_sibuki2.h">
+      <Filter>src\overlays\effects</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup></ItemGroup>
+  <ItemGroup>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="$(RepoRoot)src\game\include\macro.inc">
+      <Filter>include</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="$(RepoRoot)src\game\Resource.rc">
+      <Filter>src</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="headers">
+      <UniqueIdentifier>{2DD0C893-6C51-3F82-B489-8B510829064C}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include">
+      <UniqueIdentifier>{1EB10555-F6A9-34B9-A469-0B34A5DECF49}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="soh">
+      <UniqueIdentifier>{0CEA1E87-A966-35F0-8203-3A036FA93152}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="soh\Enhancements">
+      <UniqueIdentifier>{A2C34106-92C8-37A4-8887-820F4133D858}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="soh\Enhancements\debugger">
+      <UniqueIdentifier>{86B968F3-4C8B-39C2-863A-AC1D2FD76FDD}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="soh\ObjectExtension">
+      <UniqueIdentifier>{E455F3AF-956A-34B0-81D1-60E2B0847306}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="soh\resource">
+      <UniqueIdentifier>{E1425858-E72B-38B0-96FD-1E3B69A7A1E1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="soh\resource\importer">
+      <UniqueIdentifier>{35936DF3-D083-34A1-889A-682C2BD29AA5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="soh\resource\importer\scenecommand">
+      <UniqueIdentifier>{751FD54F-6377-33A2-BC47-610238B3EF1D}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="soh\resource\type">
+      <UniqueIdentifier>{40FE4C9F-5DC9-3998-AEC7-6F69627D5224}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="soh\resource\type\scenecommand">
+      <UniqueIdentifier>{953EEF92-455D-3BF3-84FD-B0376D39864D}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src">
+      <UniqueIdentifier>{A5EA5780-D098-3899-A4D0-3696AFC90A38}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\boot">
+      <UniqueIdentifier>{EE44D025-862D-3FD6-98E7-FAF381111537}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\buffers">
+      <UniqueIdentifier>{CD53530A-5F1B-3E15-8ED3-C31137F3F372}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\code">
+      <UniqueIdentifier>{DF29A644-A816-38F3-B4D0-3C527F854681}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\libultra">
+      <UniqueIdentifier>{41875487-FB75-388F-ABBB-668AEA0DC44B}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\overlays">
+      <UniqueIdentifier>{794137F7-5535-39D2-8E97-8072AEBC0F18}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\overlays\actors">
+      <UniqueIdentifier>{CD040743-E6A5-3148-91D1-EA07191909F3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\overlays\effects">
+      <UniqueIdentifier>{D53FE8C1-45A8-323A-BAA8-8DA45906D413}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

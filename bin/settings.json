@@ -1,0 +1,19 @@
+{
+    "CVars": {
+        "gSettings": {
+            "CameraInvertY": 1,
+            "CursorVisibility": 1,
+            "InterpolationFPS": 40,
+            "MultiplayerVoicePushToTalk": 1
+        }
+    },
+    "Window": {
+        "Fullscreen": {
+            "Enabled": false
+        },
+        "Height": 742,
+        "PositionX": 669,
+        "PositionY": 124,
+        "Width": 832
+    }
+}

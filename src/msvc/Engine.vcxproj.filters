@@ -1,0 +1,230 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="18.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="$(RepoRoot)src\engine\src\fast\Fast3dWindow.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\engine\src\fast\interpreter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\engine\src\fast\debug\GfxDebugger.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\engine\src\fast\resource\type\DisplayList.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\engine\src\fast\resource\type\Light.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\engine\src\fast\resource\type\Matrix.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\engine\src\fast\resource\type\Texture.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\engine\src\fast\resource\type\Vertex.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\engine\src\fast\resource\factory\DisplayListFactory.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\engine\src\fast\resource\factory\LightFactory.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\engine\src\fast\resource\factory\MatrixFactory.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\engine\src\fast\resource\factory\TextureFactory.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\engine\src\fast\resource\factory\VertexFactory.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\engine\src\fast\backends\OpenGLExtensions.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\engine\src\fast\backends\gfx_opengl.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\engine\src\fast\backends\gfx_win32_opengl.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\engine\src\runtime\bridge\audiobridge.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\engine\src\runtime\bridge\consolevariablebridge.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\engine\src\runtime\bridge\crashhandlerbridge.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\engine\src\runtime\bridge\gfxbridge.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\engine\src\runtime\bridge\gfxdebuggerbridge.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\engine\src\runtime\bridge\resourcebridge.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\engine\src\runtime\bridge\windowbridge.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\engine\src\runtime\libultra\os.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\engine\src\runtime\libultra\os_cache.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\engine\src\runtime\libultra\os_eeprom.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\engine\src\runtime\libultra\os_mesg.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\engine\src\runtime\libultra\os_pi.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\engine\src\runtime\libultra\os_time.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\engine\src\runtime\libultra\os_vi.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\engine\src\runtime\libultra\os_vm.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\engine\src\engine\Context.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\engine\src\engine\audio\Audio.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\engine\src\engine\audio\AudioPlayer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\engine\src\engine\audio\NullAudioPlayer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\engine\src\engine\audio\SoundMatrixDecoder.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\engine\src\engine\audio\WasapiAudioPlayer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\engine\src\engine\input\Win32Input.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\engine\src\engine\config\Config.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\engine\src\engine\config\ConsoleVariable.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\engine\src\engine\debug\Console.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\engine\src\engine\debug\CrashHandler.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\engine\src\engine\window\FileDropMgr.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\engine\src\engine\window\Overlay.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\engine\src\engine\window\Window.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\engine\src\engine\utils\StrHash64.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\engine\src\engine\utils\StringHelper.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\engine\src\engine\utils\Utils.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\engine\src\engine\utils\binarytools\BinaryReader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\engine\src\engine\utils\binarytools\BinaryWriter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\engine\src\engine\utils\binarytools\MemoryStream.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\engine\src\engine\utils\binarytools\Stream.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\engine\src\engine\utils\glob.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\engine\src\engine\utils\stox.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\engine\src\engine\resource\Resource.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\engine\src\engine\resource\ResourceFactoryBinary.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\engine\src\engine\resource\ResourceFactoryXML.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\engine\src\engine\resource\ResourceLoader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\engine\src\engine\resource\ResourceManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\engine\src\engine\resource\type\Blob.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\engine\src\engine\resource\type\Json.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\engine\src\engine\resource\type\Shader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\engine\src\engine\resource\factory\BlobFactory.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\engine\src\engine\resource\factory\JsonFactory.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\engine\src\engine\resource\factory\ShaderFactory.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\engine\src\engine\resource\archive\Archive.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\engine\src\engine\resource\archive\ArchiveManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\engine\src\engine\resource\archive\FolderArchive.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\engine\src\engine\resource\archive\O2rArchive.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\engine\src\engine\resource\archive\OtrArchive.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="$(RepoRoot)src\engine\include\fast\backends\OpenGLExtensions.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{FBBA4402-F9B9-396F-A5B0-D4EE37A28A02}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{3A2F261D-C99D-492A-A121-3B6493BD876D}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>
