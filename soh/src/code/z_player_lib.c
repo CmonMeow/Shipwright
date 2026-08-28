@@ -1120,7 +1120,7 @@ void func_8008F87C(PlayState* play, Player* this, SkelAnime* skelAnime, Vec3f* p
             float sp58 = sp7C - SQ(sp60);
             sp58 = (sp7C < SQ(sp60)) ? 0.0f : sqrtf(sp58);
 
-            float sp54 = Math_FAtan2F(sp58, sp60);
+            float sp54 = atan2f(sp58, sp60);
 
             sp6C = sp80 - spA4.y;
 
@@ -1131,9 +1131,9 @@ void func_8008F87C(PlayState* play, Player* this, SkelAnime* skelAnime, Vec3f* p
             sp58 = sp7C - SQ(sp60);
             sp58 = (sp7C < SQ(sp60)) ? 0.0f : sqrtf(sp58);
 
-            float sp50 = Math_FAtan2F(sp58, sp60);
+            float sp50 = atan2f(sp58, sp60);
 
-            int16_t temp1 = (M_PI - (Math_FAtan2F(sp5C, sp58) + ((M_PI / 2) - sp50))) * (0x8000 / M_PI);
+            int16_t temp1 = (M_PI - (atan2f(sp5C, sp58) + ((M_PI / 2) - sp50))) * (0x8000 / M_PI);
             temp1 = temp1 - skelAnime->jointTable[shinLimbIndex].z;
 
             if ((int16_t)(ABS(skelAnime->jointTable[shinLimbIndex].x) + ABS(skelAnime->jointTable[shinLimbIndex].y)) < 0) {

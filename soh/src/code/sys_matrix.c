@@ -683,17 +683,17 @@ void Matrix_MtxFToYXZRotS(MtxF* mf, Vec3s* rotDest, int32_t flag) {
     float temp = mf->xz;
     temp *= temp;
     temp += SQ(mf->zz);
-    rotDest->x = Math_FAtan2F(-mf->yz, sqrtf(temp)) * (0x8000 / M_PI);
+    rotDest->x = atan2f(-mf->yz, sqrtf(temp)) * (0x8000 / M_PI);
 
     if ((rotDest->x == 0x4000) || (rotDest->x == -0x4000)) {
         rotDest->z = 0;
 
-        rotDest->y = Math_FAtan2F(-mf->zx, mf->xx) * (0x8000 / M_PI);
+        rotDest->y = atan2f(-mf->zx, mf->xx) * (0x8000 / M_PI);
     } else {
-        rotDest->y = Math_FAtan2F(mf->xz, mf->zz) * (0x8000 / M_PI);
+        rotDest->y = atan2f(mf->xz, mf->zz) * (0x8000 / M_PI);
 
         if (!flag) {
-            rotDest->z = Math_FAtan2F(mf->yx, mf->yy) * (0x8000 / M_PI);
+            rotDest->z = atan2f(mf->yx, mf->yy) * (0x8000 / M_PI);
         } else {
             temp = mf->xx;
             float temp2 = mf->zx;
@@ -718,7 +718,7 @@ void Matrix_MtxFToYXZRotS(MtxF* mf, Vec3s* rotDest, int32_t flag) {
 
             /* for a rotation matrix, temp == yx and temp2 == yy
              * which is the same as in the !flag branch */
-            rotDest->z = Math_FAtan2F(temp, temp2) * (0x8000 / M_PI);
+            rotDest->z = atan2f(temp, temp2) * (0x8000 / M_PI);
         }
     }
 }
@@ -732,16 +732,16 @@ void Matrix_MtxFToZYXRotS(MtxF* mf, Vec3s* rotDest, int32_t flag) {
     float temp = mf->xx;
     temp *= temp;
     temp += SQ(mf->yx);
-    rotDest->y = Math_FAtan2F(-mf->zx, sqrtf(temp)) * (0x8000 / M_PI);
+    rotDest->y = atan2f(-mf->zx, sqrtf(temp)) * (0x8000 / M_PI);
 
     if ((rotDest->y == 0x4000) || (rotDest->y == -0x4000)) {
         rotDest->x = 0;
-        rotDest->z = Math_FAtan2F(-mf->xy, mf->yy) * (0x8000 / M_PI);
+        rotDest->z = atan2f(-mf->xy, mf->yy) * (0x8000 / M_PI);
     } else {
-        rotDest->z = Math_FAtan2F(mf->yx, mf->xx) * (0x8000 / M_PI);
+        rotDest->z = atan2f(mf->yx, mf->xx) * (0x8000 / M_PI);
 
         if (!flag) {
-            rotDest->x = Math_FAtan2F(mf->zy, mf->zz) * (0x8000 / M_PI);
+            rotDest->x = atan2f(mf->zy, mf->zz) * (0x8000 / M_PI);
         } else {
             // see Matrix_MtxFToYXZRotS
             temp = mf->xy;
@@ -763,7 +763,7 @@ void Matrix_MtxFToZYXRotS(MtxF* mf, Vec3s* rotDest, int32_t flag) {
             temp2 = sqrtf(temp2);
             temp2 = temp3 / temp2;
 
-            rotDest->x = Math_FAtan2F(temp, temp2) * (0x8000 / M_PI);
+            rotDest->x = atan2f(temp, temp2) * (0x8000 / M_PI);
         }
     }
 }

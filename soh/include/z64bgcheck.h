@@ -5,8 +5,8 @@ struct PlayState;
 struct Actor;
 struct DynaPolyActor;
 
-#define COLPOLY_NORMAL_FRAC (1.0f / SHT_MAX)
-#define COLPOLY_SNORMAL(x) ((int16_t)((x) * SHT_MAX))
+#define COLPOLY_NORMAL_FRAC (1.0f / INT16_MAX)
+#define COLPOLY_SNORMAL(x) ((int16_t)((x) * INT16_MAX))
 #define COLPOLY_GET_NORMAL(n) ((n)*COLPOLY_NORMAL_FRAC)
 #define COLPOLY_VIA_FLAG_TEST(vIA, flags) ((vIA) & (((flags)&7) << 13))
 #define COLPOLY_VTX_INDEX(vI) ((vI)&0x1FFF)

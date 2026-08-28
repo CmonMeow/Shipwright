@@ -154,7 +154,7 @@ void ActorShadow_DrawFoot(PlayState* play, Light* light, MtxF* arg2, int32_t arg
     gDPSetPrimColor(POLY_OPA_DISP++, 0, 0, 0, 0, 0,
                     (uint32_t)(((arg3 * 0.00005f) > 1.0f ? 1.0f : (arg3 * 0.00005f)) * arg4) & 0xFF);
 
-    sp58 = Math_FAtan2F(light->l.dir[0], light->l.dir[2]);
+    sp58 = atan2f(light->l.dir[0], light->l.dir[2]);
     arg6 *= (4.5f - (light->l.dir[1] * 0.035f));
     arg6 = (arg6 < 1.0f) ? 1.0f : arg6;
     Matrix_Put(arg2);
@@ -3031,8 +3031,8 @@ void Actor_SpawnFloorDustRing(PlayState* play, Actor* actor, Vec3f* posXZ, float
     accel.y += (Rand_ZeroOne() - 0.5f) * 0.2f;
 
     for (i = amountMinusOne; i >= 0; i--) {
-        pos.x = Math_SinF(angle) * radius + posXZ->x;
-        pos.z = Math_CosF(angle) * radius + posXZ->z;
+        pos.x = sinf(angle) * radius + posXZ->x;
+        pos.z = cosf(angle) * radius + posXZ->z;
         accel.x = (Rand_ZeroOne() - 0.5f) * randAccelWeight;
         accel.z = (Rand_ZeroOne() - 0.5f) * randAccelWeight;
 
@@ -4018,12 +4018,12 @@ void func_800359B8(Actor* actor, int16_t arg1, Vec3s* arg2) {
         float sp38 = Math_SinS(arg1);
         float sp34 = Math_CosS(arg1);
         float sp28 = (-(sp44 * sp38) - (sp3C * sp34));
-        arg2->x = -(int16_t)(Math_FAtan2F(sp28 * sp40, 1.0f) * (32768 / M_PI));
+        arg2->x = -(int16_t)(atan2f(sp28 * sp40, 1.0f) * (32768 / M_PI));
 
         float sp2C = Math_SinS(arg1 - 16375);
         float sp30 = Math_CosS(arg1 - 16375);
         float sp24 = (-(sp44 * sp2C) - (sp3C * sp30));
-        arg2->z = -(int16_t)(Math_FAtan2F(sp24 * sp40, 1.0f) * (32768 / M_PI));
+        arg2->z = -(int16_t)(atan2f(sp24 * sp40, 1.0f) * (32768 / M_PI));
     }
 }
 

@@ -2,19 +2,11 @@
 #include <math.h>
 
 float Math_CosS(int16_t angle) {
-    return coss(angle) * SHT_MINV;
+    return coss(angle) * (1.0f / INT16_MAX);
 }
 
 float Math_SinS(int16_t angle) {
-    return sins(angle) * SHT_MINV;
-}
-
-float Math_AccurateCosS(int16_t angle) {
-    return cosf(DEG_TO_RAD((float)(angle & 0xFFFC) / SHT_MAX) * 180.0f);
-}
-
-float Math_AccurateSinS(int16_t angle) {
-    return sinf(DEG_TO_RAD((float)(angle & 0xFFFC) / SHT_MAX) * 180.0f);
+    return sins(angle) * (1.0f / INT16_MAX);
 }
 
 /**

@@ -334,9 +334,6 @@
     <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\src\code\code_800FC620.c">
       <Filter>src\code</Filter>
     </ClCompile>
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\src\code\code_800FCE80.c">
-      <Filter>src\code</Filter>
-    </ClCompile>
     <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\src\code\code_800FD970.c">
       <Filter>src\code</Filter>
     </ClCompile>
@@ -410,9 +407,6 @@
       <Filter>src\code</Filter>
     </ClCompile>
     <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\src\code\sys_cfb.c">
-      <Filter>src\code</Filter>
-    </ClCompile>
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\src\code\sys_math.c">
       <Filter>src\code</Filter>
     </ClCompile>
     <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\src\code\sys_math3d.c">
@@ -658,9 +652,6 @@
       <Filter>include</Filter>
     </ClInclude>
     <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\include\command_macros_base.h">
-      <Filter>include</Filter>
-    </ClInclude>
-    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\include\fp.h">
       <Filter>include</Filter>
     </ClInclude>
     <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\include\functions.h">

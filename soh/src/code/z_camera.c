@@ -664,7 +664,7 @@ float Camera_GetWaterSurface(Camera* camera, Vec3f* chkPos, int32_t* envProp) {
  * Calculates the angle between points `from` and `to`
  */
 int16_t Camera_XZAngle(Vec3f* to, Vec3f* from) {
-    return DEGF_TO_BINANG(RADF_TO_DEGF(Math_FAtan2F(from->x - to->x, from->z - to->z)));
+    return DEGF_TO_BINANG(RADF_TO_DEGF(atan2f(from->x - to->x, from->z - to->z)));
 }
 
 float D_8015CE50;
@@ -723,8 +723,8 @@ int16_t func_80044ADC(Camera* camera, int16_t yaw, int16_t arg2) {
     }
     phi_f16 = PCT(OREG(20)) * (D_8015CE50 - camera->playerGroundY);
     phi_f18 = (1.0f - PCT(OREG(20))) * (D_8015CE54 - camera->playerGroundY);
-    temp_s0 = DEGF_TO_BINANG(RADF_TO_DEGF(Math_FAtan2F(phi_f16, sp30)));
-    temp_s1 = DEGF_TO_BINANG(RADF_TO_DEGF(Math_FAtan2F(phi_f18, sp2C)));
+    temp_s0 = DEGF_TO_BINANG(RADF_TO_DEGF(atan2f(phi_f16, sp30)));
+    temp_s1 = DEGF_TO_BINANG(RADF_TO_DEGF(atan2f(phi_f18, sp2C)));
     return temp_s0 + temp_s1;
 }
 
@@ -1006,7 +1006,7 @@ int32_t func_800458D4(Camera* camera, VecSph* eyeAtDir, float arg2, float* arg3,
     }
 
     deltaY = playerPosRot->pos.y - *arg3;
-    eyeAtAngle = Math_FAtan2F(deltaY, OLib_Vec3fDistXZ(&camera->at, &camera->eye));
+    eyeAtAngle = atan2f(deltaY, OLib_Vec3fDistXZ(&camera->at, &camera->eye));
 
     if (eyeAtAngle > DEGF_TO_RADF(OREG(32))) {
         phi_f2 = 1.0f - sinf(DEGF_TO_RADF(eyeAtAngle - OREG(32)));
@@ -1092,8 +1092,8 @@ int32_t Camera_CalcAtForParallel(Camera* camera, VecSph* arg1, float yOffset, fl
             phi_f20 = playerPosRot->pos.y - *arg3;
             float sp54 = OLib_Vec3fDistXZ(at, &camera->eye);
             phi_f16 = sp54;
-            Math_FAtan2F(phi_f20, sp54);
-            temp_f2 = Math_FTanF(DEG_TO_RAD(camera->fov * 0.4f)) * phi_f16;
+            atan2f(phi_f20, sp54);
+            temp_f2 = tanf(DEG_TO_RAD(camera->fov * 0.4f)) * phi_f16;
             if (temp_f2 < phi_f20) {
                 *arg3 += phi_f20 - temp_f2;
                 phi_f20 = temp_f2;
@@ -1104,7 +1104,7 @@ int32_t Camera_CalcAtForParallel(Camera* camera, VecSph* arg1, float yOffset, fl
             posOffsetTarget.y -= phi_f20;
         } else {
             phi_f20 = playerPosRot->pos.y - *arg3;
-            temp_f2 = Math_FAtan2F(phi_f20, OLib_Vec3fDistXZ(at, eye));
+            temp_f2 = atan2f(phi_f20, OLib_Vec3fDistXZ(at, eye));
             if (DEG_TO_RAD(OREG(32)) < temp_f2) {
                 phi_f16 = 1 - sinf(temp_f2 - DEG_TO_RAD(OREG(32)));
             } else if (temp_f2 < DEG_TO_RAD(OREG(33))) {
@@ -1192,8 +1192,8 @@ int32_t Camera_CalcAtForLockOn(Camera* camera, VecSph* eyeAtDir, Vec3f* targetPo
             yPosDelta = playerPosRot->pos.y - *yPosOffset;
             float eyeAtDist = OLib_Vec3fDistXZ(at, &camera->eye);
             phi_f16 = eyeAtDist;
-            Math_FAtan2F(yPosDelta, eyeAtDist);
-            temp_f0_2 = Math_FTanF(DEG_TO_RAD(camera->fov * 0.4f)) * phi_f16;
+            atan2f(yPosDelta, eyeAtDist);
+            temp_f0_2 = tanf(DEG_TO_RAD(camera->fov * 0.4f)) * phi_f16;
             if (temp_f0_2 < yPosDelta) {
                 *yPosOffset = *yPosOffset + (yPosDelta - temp_f0_2);
                 yPosDelta = temp_f0_2;
@@ -1204,7 +1204,7 @@ int32_t Camera_CalcAtForLockOn(Camera* camera, VecSph* eyeAtDir, Vec3f* targetPo
             tmpPos0.y = tmpPos0.y - yPosDelta;
         } else {
             yPosDelta = playerPosRot->pos.y - *yPosOffset;
-            temp_f0_2 = Math_FAtan2F(yPosDelta, OLib_Vec3fDistXZ(at, &camera->eye));
+            temp_f0_2 = atan2f(yPosDelta, OLib_Vec3fDistXZ(at, &camera->eye));
 
             if (temp_f0_2 > DEG_TO_RAD(OREG(32))) {
                 phi_f16 = 1.0f - sinf(temp_f0_2 - DEG_TO_RAD(OREG(32)));

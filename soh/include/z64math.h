@@ -2,7 +2,12 @@
 #define Z64MATH_H
 
 #include <libultraship/libultra.h>
-#include <include/libc/math.h>
+#include <float.h>
+#include <math.h>
+
+#ifndef M_PI
+#define M_PI 3.14159265358979323846f
+#endif
 
 #define VEC_SET(V,X,Y,Z) (V).x=(X);(V).y=(Y);(V).z=(Z)
 

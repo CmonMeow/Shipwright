@@ -412,8 +412,8 @@ void NetworkRemotePlayer_Draw(Actor* thisx, PlayState* play) {
                     const float distance = std::sqrt(dx * dx + dy * dy + dz * dz);
                     if (distance > 0.01f) {
                         Matrix_Translate(lineStart.x, lineStart.y, lineStart.z, MTXMODE_NEW);
-                        Matrix_RotateY(Math_FAtan2F(dx, dz), MTXMODE_APPLY);
-                        Matrix_RotateX(-Math_FAtan2F(dy, horizontal), MTXMODE_APPLY);
+                        Matrix_RotateY(atan2f(dx, dz), MTXMODE_APPLY);
+                        Matrix_RotateX(-atan2f(dy, horizontal), MTXMODE_APPLY);
                         Matrix_Scale(lineScale, 1.0f, distance * 0.001f, MTXMODE_APPLY);
                         gSPMatrix(POLY_XLU_DISP++, MATRIX_NEWMTX(play->state.gfxCtx),
                                   G_MTX_NOPUSH | G_MTX_LOAD | G_MTX_MODELVIEW);

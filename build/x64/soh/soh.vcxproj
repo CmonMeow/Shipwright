@@ -293,7 +293,6 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
     <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\include\alloca.h" />
     <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\include\attributes.h" />
     <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\include\command_macros_base.h" />
-    <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\include\fp.h" />
     <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\include\functions.h" />
     <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\include\gfx.h" />
     <ClInclude Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\include\global.h" />
@@ -640,10 +639,6 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(AdditionalOptions) /w</AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\src\code\code_800FCE80.c">
-      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(AdditionalOptions) /w</AdditionalOptions>
-      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
-    </ClCompile>
     <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\src\code\code_800FD970.c">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(AdditionalOptions) /w</AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
@@ -741,10 +736,6 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
     </ClCompile>
     <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\src\code\sys_cfb.c">
-      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(AdditionalOptions) /w</AdditionalOptions>
-      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
-    </ClCompile>
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\src\code\sys_math.c">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(AdditionalOptions) /w</AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
     </ClCompile>

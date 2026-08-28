@@ -27,8 +27,6 @@ uint16_t D_0F000000[SCREEN_WIDTH * SCREEN_HEIGHT];
 
 uint8_t osAppNmiBuffer[2048];
 
-float qNaN0x10000 = 0x7F810000;
-
 // void gSPTextureRectangle(Gfx* pkt, int32_t xl, int32_t yl, int32_t xh, int32_t yh, uint32_t tile, uint32_t s, int32_t t, uint32_t dsdx, uint32_t dtdy)
 //{
 //	__gSPTextureRectangle(pkt, xl, yl, xh, yh, tile, s, t, dsdx, dtdy);

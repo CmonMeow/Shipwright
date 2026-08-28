@@ -2315,9 +2315,9 @@ void Fishing_DrawLureAndLine(PlayState* play, Vec3f* linePos, Vec3f* lineRot) {
         float dy = sLurePos.y - sRodTipPos.y;
         float dz = sLurePos.z - sRodTipPos.z;
 
-        float ry = Math_FAtan2F(dx, dz);
+        float ry = atan2f(dx, dz);
         float dist = sqrtf(SQ(dx) + SQ(dz));
-        float rx = -Math_FAtan2F(dy, dist);
+        float rx = -atan2f(dy, dist);
 
         dist = sqrtf(SQ(dx) + SQ(dy) + SQ(dz)) * 0.001f;
 
@@ -2336,9 +2336,9 @@ void Fishing_DrawLureAndLine(PlayState* play, Vec3f* linePos, Vec3f* lineRot) {
                 float dy = sLureDrawPos.y - (linePos + i)->y;
                 float dz = sLureDrawPos.z - (linePos + i)->z;
 
-                float ry = Math_FAtan2F(dx, dz);
+                float ry = atan2f(dx, dz);
                 float dist = sqrtf(SQ(dx) + SQ(dz));
-                float rx = -Math_FAtan2F(dy, dist);
+                float rx = -atan2f(dy, dist);
 
                 dist = sqrtf(SQ(dx) + SQ(dy) + SQ(dz)) * 0.001f;
 
