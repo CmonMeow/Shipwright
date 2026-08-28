@@ -91,7 +91,10 @@ s32 Fishing_GetNetworkVisualState(PlayState* play, u8* castState, Vec3f* rodTipO
                                    f32* lineGravity, u8* lureType, u8* lineSpooled, u8* lineHooked,
                                    u8* fishActive, u8* fishIsLoach,
                                    Vec3f* fishOffset, Vec3s* fishRot, s16 fishLimbRot[8], f32* fishLength,
+                                   s32* fishRoomId, s32* fishActorParams, s32* fishHomeX, s32* fishHomeY,
+                                   s32* fishHomeZ,
                                    u8* sinkingLureSegmentIndex, u8* sinkingLureUnderwater);
+s32 Fishing_EnsureNetworkPopulation(PlayState* play);
 void Fishing_UpdateNetworkLine(PlayState* play, Actor* collisionActor, Vec3f* rodTip, Vec3f* lurePos,
                                Vec3f linePos[FISHING_LINE_SEG_COUNT], Vec3f lineRot[FISHING_LINE_SEG_COUNT],
                                Vec3f lineUnk[FISHING_LINE_SEG_COUNT], s16 lineSpooled, u8 lureType, f32 lineGravity);

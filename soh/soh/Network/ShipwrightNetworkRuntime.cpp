@@ -321,6 +321,15 @@ float DeterministicPondFishLength(int32_t sceneId, int32_t actorParams,
     return length;
 }
 
+float DeterministicWildFishLength(int32_t sceneId, int32_t actorParams, int32_t homeX, int32_t homeZ) {
+    const bool isLoach = actorParams == 401;
+    const uint32_t seed = static_cast<uint32_t>(sceneId) * 0x9E3779B9U ^
+                          static_cast<uint32_t>(homeX) * 0x85EBCA6BU ^
+                          static_cast<uint32_t>(homeZ) * 0xC2B2AE35U ^
+                          (isLoach ? 0xA511E9B3U : 0x63D83595U);
+    return (isLoach ? 42.0f : 34.0f) + FishingIdentityRandom01(seed) * 18.0f;
+}
+
 bool CancelPendingConnection() {
     return gCancelConnection.load(std::memory_order_relaxed);
 }
@@ -2115,7 +2124,12 @@ void ShipwrightNetworkRuntime::SanitizeServerFishingState(
             const ServerWildFishSpawn* requestedFish = mCollisionWorld.FindWildFish(
                 state.sceneId, state.fishingFishActorParams, state.fishingFishHomeX,
                 state.fishingFishHomeY, state.fishingFishHomeZ);
-            validIdentity = requestedFish != nullptr && requestedFish->isLoach == requestedLoach;
+            // Embedded scenes can spawn deterministic portable fish from the
+            // live collision header even when that scene is absent from the
+            // dedicated server's OTR collision archive. The actor identity,
+            // active lure proximity, and deterministic size still let the
+            // server own and bound that fish without accepting client size.
+            validIdentity = requestedFish == nullptr || requestedFish->isLoach == requestedLoach;
         } else {
             constexpr int32_t fishingPondScene = 0x49;
             const PondFishIdentity* requestedFish = FindPondFishIdentity(state.fishingFishActorParams);
@@ -2157,11 +2171,8 @@ void ShipwrightNetworkRuntime::SanitizeServerFishingState(
     const ServerWildFishSpawn* wildFish = nullptr;
     if (actorParams == 400 || actorParams == 401) {
         wildFish = mCollisionWorld.FindWildFish(sceneId, actorParams, homeX, homeY, homeZ);
-        if (wildFish == nullptr) {
-            clearFish();
-            return;
-        }
-        canonicalLength = wildFish->length;
+        canonicalLength = wildFish != nullptr ? wildFish->length
+                                              : DeterministicWildFishLength(sceneId, actorParams, homeX, homeZ);
     } else {
         const PondFishIdentity* pondFish = FindPondFishIdentity(actorParams);
         if (pondFish == nullptr) {

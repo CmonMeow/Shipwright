@@ -167,6 +167,7 @@ extern "C" s32 Fishing_GetNetworkVisualState(PlayState* play, u8* castState, Vec
                                                s32* fishRoomId, s32* fishActorParams, s32* fishHomeX,
                                                s32* fishHomeY, s32* fishHomeZ,
                                                u8* sinkingLureSegmentIndex, u8* sinkingLureUnderwater);
+extern "C" s32 Fishing_EnsureNetworkPopulation(PlayState* play);
 extern "C" void Fishing_UpdateNetworkLine(PlayState* play, Actor* collisionActor, Vec3f* rodTip, Vec3f* lurePos,
                                             Vec3f linePos[NETWORK_FISHING_LINE_POINT_COUNT],
                                             Vec3f lineRot[NETWORK_FISHING_LINE_POINT_COUNT],
@@ -1208,6 +1209,14 @@ extern "C" void NetworkGame_Update(PlayState* play) {
         return;
     }
     const uint64_t now = NowMilliseconds();
+    for (const auto& [playerId, remote] : gNetworkGame.remotes) {
+        (void)playerId;
+        if (remote.hasState && remote.state.sceneId == play->sceneNum &&
+            remote.state.itemAction == NETWORK_PLAYER_ITEM_FISHING_POLE) {
+            Fishing_EnsureNetworkPopulation(play);
+            break;
+        }
+    }
     if (gNetworkGame.autoStartTest && !gNetworkGame.smokeSpawnAdjusted &&
         gNetworkGame.runtime->LocalPlayerId() > 0) {
         Player* player = GET_PLAYER(play);

@@ -1117,6 +1117,31 @@ static InitChainEntry sInitChain[] = {
     ICHAIN_F32(targetArrowOffset, 0, ICHAIN_STOP),
 };
 
+s32 Fishing_EnsureNetworkPopulation(PlayState* play) {
+    Actor* actor;
+    Player* player;
+
+    if (play == NULL) {
+        return false;
+    }
+    actor = play->actorCtx.actorLists[ACTORCAT_NPC].head;
+    while (actor != NULL) {
+        if ((actor->id == ACTOR_FISHING) &&
+            ((actor->params == EN_FISH_OWNER) || (actor->params == EN_FISH_PORTABLE))) {
+            return true;
+        }
+        actor = actor->next;
+    }
+
+    player = GET_PLAYER(play);
+    if (player == NULL) {
+        return false;
+    }
+    return Actor_Spawn(&play->actorCtx, play, ACTOR_FISHING, player->actor.world.pos.x,
+                       player->actor.world.pos.y, player->actor.world.pos.z, 0, 0, 0,
+                       EN_FISH_PORTABLE) != NULL;
+}
+
 void Fishing_Init(Actor* thisx, PlayState* play2) {
     PlayState* play = play2;
     Fishing* this = (Fishing*)thisx;
