@@ -1,37 +1,37 @@
 #include "global.h"
 #include <math.h>
 
-f32 Math_CosS(s16 angle) {
+float Math_CosS(int16_t angle) {
     return coss(angle) * SHT_MINV;
 }
 
-f32 Math_SinS(s16 angle) {
+float Math_SinS(int16_t angle) {
     return sins(angle) * SHT_MINV;
 }
 
-f32 Math_AccurateCosS(s16 angle) {
-    return cosf(DEG_TO_RAD((f32)(angle & 0xFFFC) / SHT_MAX) * 180.0f);
+float Math_AccurateCosS(int16_t angle) {
+    return cosf(DEG_TO_RAD((float)(angle & 0xFFFC) / SHT_MAX) * 180.0f);
 }
 
-f32 Math_AccurateSinS(s16 angle) {
-    return sinf(DEG_TO_RAD((f32)(angle & 0xFFFC) / SHT_MAX) * 180.0f);
+float Math_AccurateSinS(int16_t angle) {
+    return sinf(DEG_TO_RAD((float)(angle & 0xFFFC) / SHT_MAX) * 180.0f);
 }
 
 /**
  * Changes pValue by step (scaled by the update rate) towards target, setting it equal when the target is reached.
  * Returns true when target is reached, false otherwise.
  */
-s32 Math_ScaledStepToS(s16* pValue, s16 target, s16 step) {
+int32_t Math_ScaledStepToS(int16_t* pValue, int16_t target, int16_t step) {
     if (step != 0) {
-        f32 updateScale = R_UPDATE_RATE * 0.5f;
+        float updateScale = R_UPDATE_RATE * 0.5f;
 
-        if ((s16)(*pValue - target) > 0) {
+        if ((int16_t)(*pValue - target) > 0) {
             step = -step;
         }
 
-        *pValue += (s16)(step * updateScale);
+        *pValue += (int16_t)(step * updateScale);
 
-        if (((s16)(*pValue - target) * step) >= 0) {
+        if (((int16_t)(*pValue - target) * step) >= 0) {
             *pValue = target;
             return true;
         }
@@ -46,7 +46,7 @@ s32 Math_ScaledStepToS(s16* pValue, s16 target, s16 step) {
  * Changes pValue by step towards target, setting it equal when the target is reached.
  * Returns true when target is reached, false otherwise.
  */
-s32 Math_StepToS(s16* pValue, s16 target, s16 step) {
+int32_t Math_StepToS(int16_t* pValue, int16_t target, int16_t step) {
     if (step != 0) {
         if (target < *pValue) {
             step = -step;
@@ -69,7 +69,7 @@ s32 Math_StepToS(s16* pValue, s16 target, s16 step) {
  * Changes pValue by step towards target, setting it equal when the target is reached.
  * Returns true when target is reached, false otherwise.
  */
-s32 Math_StepToF(f32* pValue, f32 target, f32 step) {
+int32_t Math_StepToF(float* pValue, float target, float step) {
     if (step != 0.0f) {
         if (target < *pValue) {
             step = -step;
@@ -92,12 +92,12 @@ s32 Math_StepToF(f32* pValue, f32 target, f32 step) {
  *  Changes pValue by step. If pvalue reaches limit angle or its opposite, sets it equal to limit angle.
  * Returns true when limit angle or its opposite is reached, false otherwise.
  */
-s32 Math_StepUntilAngleS(s16* pValue, s16 limit, s16 step) {
-    s16 orig = *pValue;
+int32_t Math_StepUntilAngleS(int16_t* pValue, int16_t limit, int16_t step) {
+    int16_t orig = *pValue;
 
     *pValue += step;
 
-    if (((s16)(*pValue - limit) * (s16)(orig - limit)) <= 0) {
+    if (((int16_t)(*pValue - limit) * (int16_t)(orig - limit)) <= 0) {
         *pValue = limit;
         return true;
     }
@@ -109,8 +109,8 @@ s32 Math_StepUntilAngleS(s16* pValue, s16 limit, s16 step) {
  * Changes pValue by step. If pvalue reaches limit, sets it equal to limit.
  * Returns true when limit is reached, false otherwise.
  */
-s32 Math_StepUntilS(s16* pValue, s16 limit, s16 step) {
-    s16 orig = *pValue;
+int32_t Math_StepUntilS(int16_t* pValue, int16_t limit, int16_t step) {
+    int16_t orig = *pValue;
 
     *pValue += step;
 
@@ -126,8 +126,8 @@ s32 Math_StepUntilS(s16* pValue, s16 limit, s16 step) {
  * Changes pValue by step towards target angle, setting it equal when the target is reached.
  * Returns true when target is reached, false otherwise.
  */
-s32 Math_StepToAngleS(s16* pValue, s16 target, s16 step) {
-    s32 diff = target - *pValue;
+int32_t Math_StepToAngleS(int16_t* pValue, int16_t target, int16_t step) {
+    int32_t diff = target - *pValue;
 
     if (diff < 0) {
         step = -step;
@@ -159,8 +159,8 @@ s32 Math_StepToAngleS(s16* pValue, s16 target, s16 step) {
  * Changes pValue by step. If pvalue reaches limit, sets it equal to limit.
  * Returns true when limit is reached, false otherwise.
  */
-s32 Math_StepUntilF(f32* pValue, f32 limit, f32 step) {
-    f32 orig = *pValue;
+int32_t Math_StepUntilF(float* pValue, float limit, float step) {
+    float orig = *pValue;
 
     *pValue += step;
 
@@ -176,8 +176,8 @@ s32 Math_StepUntilF(f32* pValue, f32 limit, f32 step) {
  * Changes pValue toward target by incrStep if pValue is smaller and by decrStep if it is greater, setting it equal when
  * target is reached. Returns true when target is reached, false otherwise.
  */
-s32 Math_AsymStepToF(f32* pValue, f32 target, f32 incrStep, f32 decrStep) {
-    f32 step = (target >= *pValue) ? incrStep : decrStep;
+int32_t Math_AsymStepToF(float* pValue, float target, float incrStep, float decrStep) {
+    float step = (target >= *pValue) ? incrStep : decrStep;
 
     if (step != 0.0f) {
         if (target < *pValue) {
@@ -197,22 +197,22 @@ s32 Math_AsymStepToF(f32* pValue, f32 target, f32 incrStep, f32 decrStep) {
     return 0;
 }
 
-void func_80077D10(f32* arg0, s16* arg1, Input* input) {
-    f32 relX = input->rel.stick_x;
-    f32 relY = input->rel.stick_y;
+void func_80077D10(float* arg0, int16_t* arg1, Input* input) {
+    float relX = input->rel.stick_x;
+    float relY = input->rel.stick_y;
 
     *arg0 = sqrtf(SQ(relX) + SQ(relY));
     *arg0 = (60.0f < *arg0) ? 60.0f : *arg0;
 
-    *arg1 = Math_Atan2S(relY, -relX);
+    *arg1 = RADF_TO_BINANG(atan2f(-relX, relY));
 }
 
-s16 Rand_S16Offset(s16 base, s16 range) {
-    return (s16)(Rand_ZeroOne() * range) + base;
+int16_t Rand_S16Offset(int16_t base, int16_t range) {
+    return (int16_t)(Rand_ZeroOne() * range) + base;
 }
 
-s16 Rand_S16OffsetStride(s16 base, s16 stride, s16 range) {
-    return (s16)(Rand_ZeroOne() * range) * stride + base;
+int16_t Rand_S16OffsetStride(int16_t base, int16_t stride, int16_t range) {
+    return (int16_t)(Rand_ZeroOne() * range) * stride + base;
 }
 
 void Math_Vec3f_Copy(Vec3f* dest, Vec3f* src) {
@@ -245,21 +245,21 @@ void Math_Vec3s_DiffToVec3f(Vec3f* dest, Vec3s* a, Vec3s* b) {
     dest->z = a->z - b->z;
 }
 
-void Math_Vec3f_Scale(Vec3f* vec, f32 scaleF) {
+void Math_Vec3f_Scale(Vec3f* vec, float scaleF) {
     vec->x *= scaleF;
     vec->y *= scaleF;
     vec->z *= scaleF;
 }
 
-f32 Math_Vec3f_DistXYZ(Vec3f* a, Vec3f* b) {
-    f32 dx = b->x - a->x;
-    f32 dy = b->y - a->y;
-    f32 dz = b->z - a->z;
+float Math_Vec3f_DistXYZ(Vec3f* a, Vec3f* b) {
+    float dx = b->x - a->x;
+    float dy = b->y - a->y;
+    float dz = b->z - a->z;
 
     return sqrtf(SQ(dx) + SQ(dy) + SQ(dz));
 }
 
-f32 Math_Vec3f_DistXYZAndStoreDiff(Vec3f* a, Vec3f* b, Vec3f* dest) {
+float Math_Vec3f_DistXYZAndStoreDiff(Vec3f* a, Vec3f* b, Vec3f* dest) {
     dest->x = b->x - a->x;
     dest->y = b->y - a->y;
     dest->z = b->z - a->z;
@@ -267,41 +267,41 @@ f32 Math_Vec3f_DistXYZAndStoreDiff(Vec3f* a, Vec3f* b, Vec3f* dest) {
     return sqrtf(SQ(dest->x) + SQ(dest->y) + SQ(dest->z));
 }
 
-f32 Math_Vec3f_DistXZ(Vec3f* a, Vec3f* b) {
-    f32 dx = b->x - a->x;
-    f32 dz = b->z - a->z;
+float Math_Vec3f_DistXZ(Vec3f* a, Vec3f* b) {
+    float dx = b->x - a->x;
+    float dz = b->z - a->z;
 
     return sqrtf(SQ(dx) + SQ(dz));
 }
 
-f32 Math_Vec3f_DiffY(Vec3f* a, Vec3f* b) {
+float Math_Vec3f_DiffY(Vec3f* a, Vec3f* b) {
     return b->y - a->y;
 }
 
-s16 Math_Vec3f_Yaw(Vec3f* a, Vec3f* b) {
-    f32 dx = b->x - a->x;
-    f32 dz = b->z - a->z;
+int16_t Math_Vec3f_Yaw(Vec3f* a, Vec3f* b) {
+    float dx = b->x - a->x;
+    float dz = b->z - a->z;
 
-    return Math_Atan2S(dz, dx);
+    return RADF_TO_BINANG(atan2f(dx, dz));
 }
 
-s16 Math_Vec3f_Pitch(Vec3f* a, Vec3f* b) {
-    return Math_Atan2S(Math_Vec3f_DistXZ(a, b), a->y - b->y);
+int16_t Math_Vec3f_Pitch(Vec3f* a, Vec3f* b) {
+    return RADF_TO_BINANG(atan2f(a->y - b->y, Math_Vec3f_DistXZ(a, b)));
 }
 
-void IChain_Apply_u8(u8* ptr, InitChainEntry* ichain);
-void IChain_Apply_s8(u8* ptr, InitChainEntry* ichain);
-void IChain_Apply_u16(u8* ptr, InitChainEntry* ichain);
-void IChain_Apply_s16(u8* ptr, InitChainEntry* ichain);
-void IChain_Apply_u32(u8* ptr, InitChainEntry* ichain);
-void IChain_Apply_s32(u8* ptr, InitChainEntry* ichain);
-void IChain_Apply_f32(u8* ptr, InitChainEntry* ichain);
-void IChain_Apply_f32div1000(u8* ptr, InitChainEntry* ichain);
-void IChain_Apply_Vec3f(u8* ptr, InitChainEntry* ichain);
-void IChain_Apply_Vec3fdiv1000(u8* ptr, InitChainEntry* ichain);
-void IChain_Apply_Vec3s(u8* ptr, InitChainEntry* ichain);
+void IChain_Apply_u8(uint8_t* ptr, InitChainEntry* ichain);
+void IChain_Apply_s8(uint8_t* ptr, InitChainEntry* ichain);
+void IChain_Apply_u16(uint8_t* ptr, InitChainEntry* ichain);
+void IChain_Apply_s16(uint8_t* ptr, InitChainEntry* ichain);
+void IChain_Apply_u32(uint8_t* ptr, InitChainEntry* ichain);
+void IChain_Apply_s32(uint8_t* ptr, InitChainEntry* ichain);
+void IChain_Apply_f32(uint8_t* ptr, InitChainEntry* ichain);
+void IChain_Apply_f32div1000(uint8_t* ptr, InitChainEntry* ichain);
+void IChain_Apply_Vec3f(uint8_t* ptr, InitChainEntry* ichain);
+void IChain_Apply_Vec3fdiv1000(uint8_t* ptr, InitChainEntry* ichain);
+void IChain_Apply_Vec3s(uint8_t* ptr, InitChainEntry* ichain);
 
-void (*sInitChainHandlers[])(u8* ptr, InitChainEntry* ichain) = {
+void (*sInitChainHandlers[])(uint8_t* ptr, InitChainEntry* ichain) = {
     IChain_Apply_u8,    IChain_Apply_s8,           IChain_Apply_u16,   IChain_Apply_s16,
     IChain_Apply_u32,   IChain_Apply_s32,          IChain_Apply_f32,   IChain_Apply_f32div1000,
     IChain_Apply_Vec3f, IChain_Apply_Vec3fdiv1000, IChain_Apply_Vec3s,
@@ -309,65 +309,65 @@ void (*sInitChainHandlers[])(u8* ptr, InitChainEntry* ichain) = {
 
 void Actor_ProcessInitChain(Actor* actor, InitChainEntry* ichain) {
     do {
-        sInitChainHandlers[ichain->type]((u8*)actor, ichain);
+        sInitChainHandlers[ichain->type]((uint8_t*)actor, ichain);
     } while ((ichain++)->cont);
 }
 
-void IChain_Apply_u8(u8* ptr, InitChainEntry* ichain) {
-    *(u8*)(ptr + ichain->offset) = ichain->value;
+void IChain_Apply_u8(uint8_t* ptr, InitChainEntry* ichain) {
+    *(uint8_t*)(ptr + ichain->offset) = ichain->value;
 }
 
-void IChain_Apply_s8(u8* ptr, InitChainEntry* ichain) {
-    *(s8*)(ptr + ichain->offset) = ichain->value;
+void IChain_Apply_s8(uint8_t* ptr, InitChainEntry* ichain) {
+    *(int8_t*)(ptr + ichain->offset) = ichain->value;
 }
 
-void IChain_Apply_u16(u8* ptr, InitChainEntry* ichain) {
-    *(u16*)(ptr + ichain->offset) = ichain->value;
+void IChain_Apply_u16(uint8_t* ptr, InitChainEntry* ichain) {
+    *(uint16_t*)(ptr + ichain->offset) = ichain->value;
 }
 
-void IChain_Apply_s16(u8* ptr, InitChainEntry* ichain) {
-    *(s16*)(ptr + ichain->offset) = ichain->value;
+void IChain_Apply_s16(uint8_t* ptr, InitChainEntry* ichain) {
+    *(int16_t*)(ptr + ichain->offset) = ichain->value;
 }
 
-void IChain_Apply_u32(u8* ptr, InitChainEntry* ichain) {
-    *(u32*)(ptr + ichain->offset) = ichain->value;
+void IChain_Apply_u32(uint8_t* ptr, InitChainEntry* ichain) {
+    *(uint32_t*)(ptr + ichain->offset) = ichain->value;
 }
 
-void IChain_Apply_s32(u8* ptr, InitChainEntry* ichain) {
-    *(s32*)(ptr + ichain->offset) = ichain->value;
+void IChain_Apply_s32(uint8_t* ptr, InitChainEntry* ichain) {
+    *(int32_t*)(ptr + ichain->offset) = ichain->value;
 }
 
-void IChain_Apply_f32(u8* ptr, InitChainEntry* ichain) {
-    *(f32*)(ptr + ichain->offset) = ichain->value;
+void IChain_Apply_f32(uint8_t* ptr, InitChainEntry* ichain) {
+    *(float*)(ptr + ichain->offset) = ichain->value;
 }
 
-void IChain_Apply_f32div1000(u8* ptr, InitChainEntry* ichain) {
-    *(f32*)(ptr + ichain->offset) = ichain->value / 1000.0f;
+void IChain_Apply_f32div1000(uint8_t* ptr, InitChainEntry* ichain) {
+    *(float*)(ptr + ichain->offset) = ichain->value / 1000.0f;
 }
 
-void IChain_Apply_Vec3f(u8* ptr, InitChainEntry* ichain) {
+void IChain_Apply_Vec3f(uint8_t* ptr, InitChainEntry* ichain) {
     Vec3f* vec = (Vec3f*)(ptr + ichain->offset);
-    f32 val = ichain->value;
+    float val = ichain->value;
 
     vec->z = val;
     vec->y = val;
     vec->x = val;
 }
 
-void IChain_Apply_Vec3fdiv1000(u8* ptr, InitChainEntry* ichain) {
+void IChain_Apply_Vec3fdiv1000(uint8_t* ptr, InitChainEntry* ichain) {
     Vec3f* vec = (Vec3f*)(ptr + ichain->offset);
 
     osSyncPrintf("pp=%x data=%f\n", vec, ichain->value / 1000.0f);
-    f32 val = ichain->value / 1000.0f;
+    float val = ichain->value / 1000.0f;
 
     vec->z = val;
     vec->y = val;
     vec->x = val;
 }
 
-void IChain_Apply_Vec3s(u8* ptr, InitChainEntry* ichain) {
+void IChain_Apply_Vec3s(uint8_t* ptr, InitChainEntry* ichain) {
     Vec3s* vec = (Vec3s*)(ptr + ichain->offset);
-    s16 val = ichain->value;
+    int16_t val = ichain->value;
 
     vec->z = val;
     vec->y = val;
@@ -378,9 +378,9 @@ void IChain_Apply_Vec3s(u8* ptr, InitChainEntry* ichain) {
  * Changes pValue by step towards target. If this step is more than fraction of the remaining distance, step by that
  * instead, with a minimum step of minStep. Returns remaining distance to target.
  */
-f32 Math_SmoothStepToF(f32* pValue, f32 target, f32 fraction, f32 step, f32 minStep) {
+float Math_SmoothStepToF(float* pValue, float target, float fraction, float step, float minStep) {
     if (*pValue != target) {
-        f32 stepSize = (target - *pValue) * fraction;
+        float stepSize = (target - *pValue) * fraction;
 
         if ((stepSize >= minStep) || (stepSize <= -minStep)) {
             if (stepSize > step) {
@@ -417,9 +417,9 @@ f32 Math_SmoothStepToF(f32* pValue, f32 target, f32 fraction, f32 step, f32 minS
 /**
  * Changes pValue by step towards target. If step is more than fraction of the remaining distance, step by that instead.
  */
-void Math_ApproachF(f32* pValue, f32 target, f32 fraction, f32 step) {
+void Math_ApproachF(float* pValue, float target, float fraction, float step) {
     if (*pValue != target) {
-        f32 stepSize = (target - *pValue) * fraction;
+        float stepSize = (target - *pValue) * fraction;
 
         if (stepSize > step) {
             stepSize = step;
@@ -434,8 +434,8 @@ void Math_ApproachF(f32* pValue, f32 target, f32 fraction, f32 step) {
 /**
  * Changes pValue by step towards zero. If step is more than fraction of the remaining distance, step by that instead.
  */
-void Math_ApproachZeroF(f32* pValue, f32 fraction, f32 step) {
-    f32 stepSize = *pValue * fraction;
+void Math_ApproachZeroF(float* pValue, float fraction, float step) {
+    float stepSize = *pValue * fraction;
 
     if (stepSize > step) {
         stepSize = step;
@@ -450,9 +450,9 @@ void Math_ApproachZeroF(f32* pValue, f32 fraction, f32 step) {
  * Changes pValue by step towards target angle in degrees. If this step is more than fraction of the remaining distance,
  * step by that instead, with a minimum step of minStep. Returns the value of the step taken.
  */
-f32 Math_SmoothStepToDegF(f32* pValue, f32 target, f32 fraction, f32 step, f32 minStep) {
-    f32 stepSize = 0.0f;
-    f32 diff = target - *pValue;
+float Math_SmoothStepToDegF(float* pValue, float target, float fraction, float step, float minStep) {
+    float stepSize = 0.0f;
+    float diff = target - *pValue;
 
     if (*pValue != target) {
         if (diff > 180.0f) {
@@ -506,9 +506,9 @@ f32 Math_SmoothStepToDegF(f32* pValue, f32 target, f32 fraction, f32 step, f32 m
  * Changes pValue by step towards target. If this step is more than 1/scale of the remaining distance, step by that
  * instead, with a minimum step of minStep. Returns remaining distance to target.
  */
-s16 Math_SmoothStepToS(s16* pValue, s16 target, s16 scale, s16 step, s16 minStep) {
-    s16 stepSize = 0;
-    s16 diff = target - *pValue;
+int16_t Math_SmoothStepToS(int16_t* pValue, int16_t target, int16_t scale, int16_t step, int16_t minStep) {
+    int16_t stepSize = 0;
+    int16_t diff = target - *pValue;
 
     if (*pValue != target) {
         stepSize = diff / scale;
@@ -527,13 +527,13 @@ s16 Math_SmoothStepToS(s16* pValue, s16 target, s16 scale, s16 step, s16 minStep
             if (diff >= 0) {
                 *pValue += minStep;
 
-                if ((s16)(target - *pValue) <= 0) {
+                if ((int16_t)(target - *pValue) <= 0) {
                     *pValue = target;
                 }
             } else {
                 *pValue -= minStep;
 
-                if ((s16)(target - *pValue) >= 0) {
+                if ((int16_t)(target - *pValue) >= 0) {
                     *pValue = target;
                 }
             }
@@ -546,8 +546,8 @@ s16 Math_SmoothStepToS(s16* pValue, s16 target, s16 scale, s16 step, s16 minStep
 /**
  * Changes pValue by step towards target. If step is more than 1/scale of the remaining distance, step by that instead.
  */
-void Math_ApproachS(s16* pValue, s16 target, s16 scale, s16 maxStep) {
-    s16 diff = target - *pValue;
+void Math_ApproachS(int16_t* pValue, int16_t target, int16_t scale, int16_t maxStep) {
+    int16_t diff = target - *pValue;
 
     diff /= scale;
 
@@ -567,17 +567,17 @@ void Color_RGBA8_Copy(Color_RGBA8* dst, Color_RGBA8* src) {
     dst->a = src->a;
 }
 
-void Sfx_PlaySfxCentered(u16 sfxId) {
+void Sfx_PlaySfxCentered(uint16_t sfxId) {
     Audio_PlaySoundGeneral(sfxId, &gSfxDefaultPos, 4, &gSfxDefaultFreqAndVolScale, &gSfxDefaultFreqAndVolScale,
                            &gSfxDefaultReverb);
 }
 
-void Sfx_PlaySfxCentered2(u16 sfxId) {
+void Sfx_PlaySfxCentered2(uint16_t sfxId) {
     Audio_PlaySoundGeneral(sfxId, &gSfxDefaultPos, 4, &gSfxDefaultFreqAndVolScale, &gSfxDefaultFreqAndVolScale,
                            &gSfxDefaultReverb);
 }
 
-void Sfx_PlaySfxAtPos(Vec3f* arg0, u16 sfxId) {
+void Sfx_PlaySfxAtPos(Vec3f* arg0, uint16_t sfxId) {
     Audio_PlaySoundGeneral(sfxId, arg0, 4, &gSfxDefaultFreqAndVolScale, &gSfxDefaultFreqAndVolScale,
                            &gSfxDefaultReverb);
 }

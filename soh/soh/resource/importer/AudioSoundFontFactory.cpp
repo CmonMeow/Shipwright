@@ -402,8 +402,8 @@ std::vector<AdsrEnvelope> SOH::ResourceFactoryXMLSoundFontV0::ParseEnvelopes(Aud
     element = element->FirstChildElement("Envelope");
     while (element != nullptr) {
         AdsrEnvelope env = {
-            .delay = (s16)element->IntAttribute("Delay"),
-            .arg = (s16)element->IntAttribute("Arg"),
+            .delay = (int16_t)element->IntAttribute("Delay"),
+            .arg = (int16_t)element->IntAttribute("Arg"),
         };
         env.delay = BSWAP16(env.delay);
         env.arg = BSWAP16(env.arg);

@@ -1,13 +1,13 @@
 #include "global.h"
 
-void guPerspectiveF(f32 mf[4][4], u16* perspNorm, f32 fovy, f32 aspect, f32 near, f32 far, f32 scale) {
-    s32 row;
-    s32 col;
+void guPerspectiveF(float mf[4][4], uint16_t* perspNorm, float fovy, float aspect, float near, float far, float scale) {
+    int32_t row;
+    int32_t col;
 
     guMtxIdentF(mf);
 
     fovy *= GU_PI / 180.0;
-    f32 yscale = cosf(fovy / 2) / sinf(fovy / 2);
+    float yscale = cosf(fovy / 2) / sinf(fovy / 2);
     mf[0][0] = yscale / aspect;
     mf[1][1] = yscale;
     mf[2][2] = (near + far) / (near - far);
@@ -25,15 +25,15 @@ void guPerspectiveF(f32 mf[4][4], u16* perspNorm, f32 fovy, f32 aspect, f32 near
         if (near + far <= 2.0) {
             *perspNorm = 65535;
         } else {
-            *perspNorm = (f64)(1 << 17) / (near + far);
+            *perspNorm = (double)(1 << 17) / (near + far);
             if (*perspNorm <= 0) {
                 *perspNorm = 1;
             }
         }
     }
 }
-void guPerspective(Mtx* m, u16* perspNorm, f32 fovy, f32 aspect, f32 near, f32 far, f32 scale) {
-    f32 mf[4][4];
+void guPerspective(Mtx* m, uint16_t* perspNorm, float fovy, float aspect, float near, float far, float scale) {
+    float mf[4][4];
 
     guPerspectiveF(mf, perspNorm, fovy, aspect, near, far, scale);
     guMtxF2L((MtxF*)mf, m);

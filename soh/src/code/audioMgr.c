@@ -49,7 +49,7 @@ void AudioMgr_HandlePRENMI(AudioMgr* audioMgr) {
 
 void AudioMgr_ThreadEntry(void* arg0) {
     AudioMgr* audioMgr = (AudioMgr*)arg0;
-    s16* msg = NULL;
+    int16_t* msg = NULL;
 
     // while (true) {
     osRecvMesg(&audioMgr->unk_74, (OSMesg*)&msg, OS_MESG_BLOCK);

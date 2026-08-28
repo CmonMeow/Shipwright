@@ -1,10 +1,10 @@
 #include "global.h"
 #include "vt.h"
 
-vu32 gIrqMgrResetStatus = 0;
+volatile uint32_t gIrqMgrResetStatus = 0;
 volatile OSTime sIrqMgrResetTime = 0;
 volatile OSTime gIrqMgrRetraceTime = 0;
-u32 sIrqMgrRetraceCount = 0;
+uint32_t sIrqMgrRetraceCount = 0;
 
 #define RETRACE_MSG 666
 #define PRE_NMI_MSG 669
@@ -99,7 +99,7 @@ void IrqMgr_JamMesgForClient(IrqMgr* this, OSMesg msg) {
 }
 
 void IrqMgr_HandlePreNMI(IrqMgr* this) {
-    u64 temp = STATUS_PRENMI; // required to match
+    uint64_t temp = STATUS_PRENMI; // required to match
 
     gIrqMgrResetStatus = temp;
     this->resetStatus = STATUS_PRENMI;
@@ -125,7 +125,7 @@ void IrqMgr_CheckStack() {
 }
 
 void IrqMgr_HandlePRENMI450(IrqMgr* this) {
-    u64 temp = STATUS_NMI; // required to match
+    uint64_t temp = STATUS_NMI; // required to match
     gIrqMgrResetStatus = temp;
     this->resetStatus = STATUS_NMI;
 
@@ -136,7 +136,7 @@ void IrqMgr_HandlePRENMI450(IrqMgr* this) {
 void IrqMgr_HandlePRENMI480(IrqMgr* this) {
 
     osSetTimer(&this->timer, OS_USEC_TO_CYCLES(20000), 0ull, &this->queue, OS_MESG_32(PRENMI500_MSG));
-    u32 ret = osAfterPreNMI();
+    uint32_t ret = osAfterPreNMI();
     if (ret) {
         // "osAfterPreNMI returned %d !?"
         osSyncPrintf("osAfterPreNMIが %d を返しました！？\n", ret);
@@ -166,7 +166,7 @@ void IrqMgr_ThreadEntry(void* arg0) {
 
     msg.data32 = 0;
     osSyncPrintf("ＩＲＱマネージャスレッド実行開始\n"); // "Start IRQ manager thread execution"
-    u8 exit = false;
+    uint8_t exit = false;
 
     while (!exit) {
         osRecvMesg(&this->queue, &msg, OS_MESG_BLOCK);
@@ -209,7 +209,7 @@ void IrqMgr_ThreadEntry(void* arg0) {
     osSyncPrintf("ＩＲＱマネージャスレッド実行終了\n"); // "End of IRQ manager thread execution"
 }
 
-void IrqMgr_Init(IrqMgr* this, void* stack, OSPri pri, u8 retraceCount) {
+void IrqMgr_Init(IrqMgr* this, void* stack, OSPri pri, uint8_t retraceCount) {
     LOG_CHECK_NULL_POINTER("this", this);
     LOG_CHECK_NULL_POINTER("stack", stack);
 

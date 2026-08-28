@@ -1,8 +1,8 @@
 #include "global.h"
 
 void osStopThread(OSThread* thread) {
-    register u32 prevInt = __osDisableInt();
-    register u32 state;
+    register uint32_t prevInt = __osDisableInt();
+    register uint32_t state;
 
     if (thread == NULL) {
         state = 4;

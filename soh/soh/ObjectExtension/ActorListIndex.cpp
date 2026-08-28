@@ -2,7 +2,7 @@
 #include "soh/ObjectExtension/ObjectExtension.h"
 
 struct ActorListIndex {
-    s16 index = -1;
+    int16_t index = -1;
 };
 static ObjectExtension::Register<ActorListIndex> ActorListIndexRegister;
 

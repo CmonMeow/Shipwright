@@ -7,7 +7,7 @@ void func_80110990(PlayState* play) {
 
 void func_801109B0(PlayState* play) {
     InterfaceContext* interfaceCtx = &play->interfaceCtx;
-    u8 timerId = { 0 };
+    uint8_t timerId = { 0 };
 
     gSaveContext.sunsSongState = SUNSSONG_INACTIVE;
     gSaveContext.unk_13E8 = gSaveContext.unk_13EA = 0;
@@ -26,7 +26,7 @@ void func_801109B0(PlayState* play) {
         interfaceCtx->cDownAlpha = interfaceCtx->cRightAlpha = interfaceCtx->healthAlpha = interfaceCtx->startAlpha =
             interfaceCtx->counterAlpha = 0;
 
-    u32 parameterSize = (uintptr_t)_parameter_staticSegmentRomEnd - (uintptr_t)_parameter_staticSegmentRomStart;
+    uint32_t parameterSize = (uintptr_t)_parameter_staticSegmentRomEnd - (uintptr_t)_parameter_staticSegmentRomStart;
 
     // "Permanent PARAMETER Segment = %x"
     osSyncPrintf("常駐ＰＡＲＡＭＥＴＥＲセグメント=%x\n", parameterSize);

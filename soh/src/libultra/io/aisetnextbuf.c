@@ -3,10 +3,10 @@
 //! Note that this is not the same as the original libultra
 //! osAiSetNextBuffer, see comments in the function
 
-s32 osAiSetNextBuffer(void* buf, size_t size) {
-    static u8 D_80130500 = false;
+int32_t osAiSetNextBuffer(void* buf, size_t size) {
+    static uint8_t D_80130500 = false;
     uintptr_t bufAdjusted = (uintptr_t)buf;
-    s32 status = { 0 };
+    int32_t status = { 0 };
 
     if (D_80130500) {
         bufAdjusted = (uintptr_t)buf - 0x2000;
@@ -18,14 +18,14 @@ s32 osAiSetNextBuffer(void* buf, size_t size) {
     }
 
     // Originally a call to __osAiDeviceBusy
-    status = HW_REG(AI_STATUS_REG, s32);
+    status = HW_REG(AI_STATUS_REG, int32_t);
     if (status & AI_STATUS_AI_FULL) {
         return -1;
     }
 
     // OS_K0_TO_PHYSICAL replaces osVirtualToPhysical, this replacement
     // assumes that only KSEG0 addresses are given
-    HW_REG(AI_DRAM_ADDR_REG, u32) = OS_K0_TO_PHYSICAL(bufAdjusted);
-    HW_REG(AI_LEN_REG, u32) = size;
+    HW_REG(AI_DRAM_ADDR_REG, uint32_t) = OS_K0_TO_PHYSICAL(bufAdjusted);
+    HW_REG(AI_LEN_REG, uint32_t) = size;
     return 0;
 }

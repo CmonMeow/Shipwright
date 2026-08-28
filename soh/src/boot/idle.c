@@ -2,19 +2,19 @@
 #include "vt.h"
 
 OSThread gMainThread;
-u8 sMainStack[0x900];
+uint8_t sMainStack[0x900];
 StackEntry sMainStackInfo;
 OSMesg sPiMgrCmdBuff[50];
 OSMesgQueue gPiMgrCmdQ;
 OSViMode gViConfigMode;
-u8 D_80013960;
+uint8_t D_80013960;
 
-s8 D_80009430 = 1;
-vu8 gViConfigUseDefault = 1;
-u8 gViConfigAdditionalScanLines = 0;
-u32 gViConfigFeatures = OS_VI_DITHER_FILTER_ON | OS_VI_GAMMA_OFF;
-f32 gViConfigXScale = 1.0;
-f32 gViConfigYScale = 1.0;
+int8_t D_80009430 = 1;
+volatile uint8_t gViConfigUseDefault = 1;
+uint8_t gViConfigAdditionalScanLines = 0;
+uint32_t gViConfigFeatures = OS_VI_DITHER_FILTER_ON | OS_VI_GAMMA_OFF;
+float gViConfigXScale = 1.0;
+float gViConfigYScale = 1.0;
 
 void Main_ThreadEntry(void* arg) {
 
@@ -40,13 +40,13 @@ void Idle_ThreadEntry(void* arg) {
     osSyncPrintf("作成日時  : %s\n", gBuildDate);
     osSyncPrintf("MAKEOPTION: %s\n", gBuildMakeOption);
     osSyncPrintf(VT_FGCOL(GREEN));
-    osSyncPrintf("ＲＡＭサイズは %d キロバイトです(osMemSize/osGetMemSize)\n", (s32)osMemSize / 1024);
+    osSyncPrintf("ＲＡＭサイズは %d キロバイトです(osMemSize/osGetMemSize)\n", (int32_t)osMemSize / 1024);
     // osSyncPrintf("_bootSegmentEnd(%08x) 以降のＲＡＭ領域はクリアされました(boot)\n", _bootSegmentEnd);
     osSyncPrintf("Ｚバッファのサイズは %d キロバイトです\n", 0x96);
     osSyncPrintf("ダイナミックバッファのサイズは %d キロバイトです\n", 0x92);
     osSyncPrintf("ＦＩＦＯバッファのサイズは %d キロバイトです\n", 0x60);
     osSyncPrintf("ＹＩＥＬＤバッファのサイズは %d キロバイトです\n", 3);
-    osSyncPrintf("オーディオヒープのサイズは %d キロバイトです\n", ((s32)gSystemHeap - (s32)gAudioHeap) / 1024);
+    osSyncPrintf("オーディオヒープのサイズは %d キロバイトです\n", ((int32_t)gSystemHeap - (int32_t)gAudioHeap) / 1024);
     osSyncPrintf(VT_RST);
 
     osCreateViManager(OS_PRIORITY_VIMGR);

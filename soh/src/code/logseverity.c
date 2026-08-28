@@ -1,3 +1,3 @@
 #include "global.h"
 
-s32 gOverlayLogSeverity = 2;
+int32_t gOverlayLogSeverity = 2;

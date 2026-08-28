@@ -11,16 +11,16 @@
 // this ends up having no effect because the texture provided does not use segment 6
 #define rType regs[11]
 
-u32 EffectSsGSplash_Init(PlayState* play, u32 index, EffectSs* this, void* initParams);
-void EffectSsGSplash_Draw(PlayState* play, u32 index, EffectSs* this);
-void EffectSsGSplash_Update(PlayState* play, u32 index, EffectSs* this);
+uint32_t EffectSsGSplash_Init(PlayState* play, uint32_t index, EffectSs* this, void* initParams);
+void EffectSsGSplash_Draw(PlayState* play, uint32_t index, EffectSs* this);
+void EffectSsGSplash_Update(PlayState* play, uint32_t index, EffectSs* this);
 
 EffectSsInit Effect_Ss_G_Splash_InitVars = {
     EFFECT_SS_G_SPLASH,
     EffectSsGSplash_Init,
 };
 
-u32 EffectSsGSplash_Init(PlayState* play, u32 index, EffectSs* this, void* initParamsx) {
+uint32_t EffectSsGSplash_Init(PlayState* play, uint32_t index, EffectSs* this, void* initParamsx) {
     EffectSsGSplashInitParams* initParams = (EffectSsGSplashInitParams*)initParamsx;
     Vec3f zeroVec = { 0.0f, 0.0f, 0.0f };
 
@@ -89,12 +89,12 @@ u32 EffectSsGSplash_Init(PlayState* play, u32 index, EffectSs* this, void* initP
     return 1;
 }
 
-void EffectSsGSplash_Draw(PlayState* play, u32 index, EffectSs* this) {
+void EffectSsGSplash_Draw(PlayState* play, uint32_t index, EffectSs* this) {
     static void* waterSplashTextures[] = {
         gEffWaterSplash1Tex, gEffWaterSplash2Tex, gEffWaterSplash3Tex, gEffWaterSplash4Tex,
         gEffWaterSplash5Tex, gEffWaterSplash6Tex, gEffWaterSplash7Tex, gEffWaterSplash8Tex,
     };
-    s16 texIdx = { 0 };
+    int16_t texIdx = { 0 };
 
     switch (this->rType) {
         case 0:
@@ -126,7 +126,7 @@ void EffectSsGSplash_Draw(PlayState* play, u32 index, EffectSs* this) {
     }
 }
 
-void EffectSsGSplash_Update(PlayState* play, u32 index, EffectSs* this) {
+void EffectSsGSplash_Update(PlayState* play, uint32_t index, EffectSs* this) {
 
     if ((this->rType == 1) && (this->life == 5)) {
         Vec3f newSplashPos = this->pos;

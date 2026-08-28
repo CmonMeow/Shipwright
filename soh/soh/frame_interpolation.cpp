@@ -47,18 +47,18 @@ void Matrix_Push(void);
 void Matrix_Pop(void);
 void Matrix_Get(MtxF* dest);
 void Matrix_Put(MtxF* src);
-void Matrix_Mult(MtxF* mf, u8 mode);
-void Matrix_Translate(f32 x, f32 y, f32 z, u8 mode);
-void Matrix_Scale(f32 x, f32 y, f32 z, u8 mode);
-void Matrix_RotateX(f32 x, u8 mode);
-void Matrix_RotateY(f32 y, u8 mode);
-void Matrix_RotateZ(f32 z, u8 mode);
-void Matrix_RotateZYX(s16 x, s16 y, s16 z, u8 mode);
+void Matrix_Mult(MtxF* mf, uint8_t mode);
+void Matrix_Translate(float x, float y, float z, uint8_t mode);
+void Matrix_Scale(float x, float y, float z, uint8_t mode);
+void Matrix_RotateX(float x, uint8_t mode);
+void Matrix_RotateY(float y, uint8_t mode);
+void Matrix_RotateZ(float z, uint8_t mode);
+void Matrix_RotateZYX(int16_t x, int16_t y, int16_t z, uint8_t mode);
 void Matrix_TranslateRotateZYX(Vec3f* translation, Vec3s* rotation);
-void Matrix_SetTranslateRotateYXZ(f32 translateX, f32 translateY, f32 translateZ, Vec3s* rot);
+void Matrix_SetTranslateRotateYXZ(float translateX, float translateY, float translateZ, Vec3s* rot);
 Mtx* Matrix_MtxFToMtx(MtxF* src, Mtx* dest);
-Mtx* Matrix_ToMtx(Mtx* dest, char* file, s32 line);
-Mtx* Matrix_NewMtx(struct GraphicsContext* gfxCtx, char* file, s32 line);
+Mtx* Matrix_ToMtx(Mtx* dest, char* file, int32_t line);
+Mtx* Matrix_NewMtx(struct GraphicsContext* gfxCtx, char* file, int32_t line);
 Mtx* Matrix_MtxFToNewMtx(MtxF* src, struct GraphicsContext* gfxCtx);
 void Matrix_MultVec3f(Vec3f* src, Vec3f* dest);
 void Matrix_MtxFCopy(MtxF* dest, MtxF* src);
@@ -66,12 +66,12 @@ void Matrix_MtxToMtxF(Mtx* src, MtxF* dest);
 void Matrix_MultVec3fExt(Vec3f* src, Vec3f* dest, MtxF* mf);
 void Matrix_Transpose(MtxF* mf);
 void Matrix_ReplaceRotation(MtxF* mf);
-void Matrix_MtxFToYXZRotS(MtxF* mf, Vec3s* rotDest, s32 flag);
-void Matrix_MtxFToZYXRotS(MtxF* mf, Vec3s* rotDest, s32 flag);
-void Matrix_RotateAxis(f32 angle, Vec3f* axis, u8 mode);
-MtxF* Matrix_CheckFloats(MtxF* mf, char* file, s32 line);
-void Matrix_SetTranslateScaleMtx2(Mtx* mtx, f32 scaleX, f32 scaleY, f32 scaleZ, f32 translateX, f32 translateY,
-                                  f32 translateZ);
+void Matrix_MtxFToYXZRotS(MtxF* mf, Vec3s* rotDest, int32_t flag);
+void Matrix_MtxFToZYXRotS(MtxF* mf, Vec3s* rotDest, int32_t flag);
+void Matrix_RotateAxis(float angle, Vec3f* axis, uint8_t mode);
+MtxF* Matrix_CheckFloats(MtxF* mf, char* file, int32_t line);
+void Matrix_SetTranslateScaleMtx2(Mtx* mtx, float scaleX, float scaleY, float scaleZ, float translateX, float translateY,
+                                  float translateZ);
 
 MtxF* Matrix_GetCurrent(void);
 
@@ -117,23 +117,23 @@ union Data {
 
     struct {
         MtxF mf;
-        u8 mode;
+        uint8_t mode;
     } matrix_mult;
 
     struct {
-        f32 x, y, z;
-        u8 mode;
+        float x, y, z;
+        uint8_t mode;
     } matrix_translate, matrix_scale;
 
     struct {
-        u32 coord;
-        f32 value;
-        u8 mode;
+        uint32_t coord;
+        float value;
+        uint8_t mode;
     } matrix_rotate_1_coord;
 
     struct {
-        s16 x, y, z;
-        u8 mode;
+        int16_t x, y, z;
+        uint8_t mode;
     } matrix_rotate_zyx;
 
     struct {
@@ -142,7 +142,7 @@ union Data {
     } matrix_translate_rotate_zyx;
 
     struct {
-        f32 translateX, translateY, translateZ;
+        float translateX, translateY, translateZ;
         Vec3s rot;
         // MtxF mtx;
         bool has_mtx;
@@ -164,9 +164,9 @@ union Data {
     } matrix_replace_rotation;
 
     struct {
-        f32 angle;
+        float angle;
         Vec3f axis;
-        u8 mode;
+        uint8_t mode;
     } matrix_rotate_axis;
 
     struct {
@@ -224,7 +224,7 @@ struct InterpolateCtx {
         }
     }
 
-    float lerp(f32 o, f32 n) {
+    float lerp(float o, float n) {
         return w * o + step * n;
     }
 
@@ -234,7 +234,7 @@ struct InterpolateCtx {
         res->z = lerp(o->z, n->z);
     }
 
-    float interpolate_angle(f32 o, f32 n) {
+    float interpolate_angle(float o, float n) {
         if (o == n)
             return n;
         o = fmodf(o, 2 * M_PI);
@@ -258,18 +258,18 @@ struct InterpolateCtx {
         return lerp(o, n);
     }
 
-    s16 interpolate_angle(s16 os, s16 ns) {
+    int16_t interpolate_angle(int16_t os, int16_t ns) {
         if (os == ns)
             return ns;
-        int o = (u16)os;
-        int n = (u16)ns;
-        u16 res;
+        int o = (uint16_t)os;
+        int n = (uint16_t)ns;
+        uint16_t res;
         int diff = o - n;
         if (-0x8000 <= diff && diff <= 0x8000) {
             if (diff < -0x4000 || diff > 0x4000) {
                 return ns;
             }
-            res = (u16)(w * o + step * n);
+            res = (uint16_t)(w * o + step * n);
         } else {
             if (o < n) {
                 o += 0x10000;
@@ -280,9 +280,9 @@ struct InterpolateCtx {
             if (diff < -0x4000 || diff > 0x4000) {
                 return ns;
             }
-            res = (u16)(w * o + step * n);
+            res = (uint16_t)(w * o + step * n);
         }
-        if (os / 327 == ns / 327 && (s16)res / 327 != os / 327) {
+        if (os / 327 == ns / 327 && (int16_t)res / 327 != os / 327) {
             int bp = 0;
         }
         return res;
@@ -353,7 +353,7 @@ struct InterpolateCtx {
                         case Op::MatrixRotate1Coord: {
                             float v = interpolate_angle(old_op.matrix_rotate_1_coord.value,
                                                         new_op.matrix_rotate_1_coord.value);
-                            u8 mode = new_op.matrix_rotate_1_coord.mode;
+                            uint8_t mode = new_op.matrix_rotate_1_coord.mode;
                             switch (new_op.matrix_rotate_1_coord.coord) {
                                 case 0:
                                     Matrix_RotateX(v, mode);
@@ -517,31 +517,31 @@ void FrameInterpolation_RecordMatrixPut(MtxF* src) {
     append(Op::MatrixPut).matrix_put = { *src };
 }
 
-void FrameInterpolation_RecordMatrixMult(MtxF* mf, u8 mode) {
+void FrameInterpolation_RecordMatrixMult(MtxF* mf, uint8_t mode) {
     if (!is_recording)
         return;
     append(Op::MatrixMult).matrix_mult = { *mf, mode };
 }
 
-void FrameInterpolation_RecordMatrixTranslate(f32 x, f32 y, f32 z, u8 mode) {
+void FrameInterpolation_RecordMatrixTranslate(float x, float y, float z, uint8_t mode) {
     if (!is_recording)
         return;
     append(Op::MatrixTranslate).matrix_translate = { x, y, z, mode };
 }
 
-void FrameInterpolation_RecordMatrixScale(f32 x, f32 y, f32 z, u8 mode) {
+void FrameInterpolation_RecordMatrixScale(float x, float y, float z, uint8_t mode) {
     if (!is_recording)
         return;
     append(Op::MatrixScale).matrix_scale = { x, y, z, mode };
 }
 
-void FrameInterpolation_RecordMatrixRotate1Coord(u32 coord, f32 value, u8 mode) {
+void FrameInterpolation_RecordMatrixRotate1Coord(uint32_t coord, float value, uint8_t mode) {
     if (!is_recording)
         return;
     append(Op::MatrixRotate1Coord).matrix_rotate_1_coord = { coord, value, mode };
 }
 
-void FrameInterpolation_RecordMatrixRotateZYX(s16 x, s16 y, s16 z, u8 mode) {
+void FrameInterpolation_RecordMatrixRotateZYX(int16_t x, int16_t y, int16_t z, uint8_t mode) {
     if (!is_recording)
         return;
     append(Op::MatrixRotateZYX).matrix_rotate_zyx = { x, y, z, mode };
@@ -553,7 +553,7 @@ void FrameInterpolation_RecordMatrixTranslateRotateZYX(Vec3f* translation, Vec3s
     append(Op::MatrixTranslateRotateZYX).matrix_translate_rotate_zyx = { *translation, *rotation };
 }
 
-void FrameInterpolation_RecordMatrixSetTranslateRotateYXZ(f32 translateX, f32 translateY, f32 translateZ, Vec3s* rot) {
+void FrameInterpolation_RecordMatrixSetTranslateRotateYXZ(float translateX, float translateY, float translateZ, Vec3s* rot) {
     if (!is_recording)
         return;
     auto& d = append(Op::MatrixSetTranslateRotateYXZ).matrix_set_translate_rotate_yxz = { translateX, translateY,
@@ -574,7 +574,7 @@ void FrameInterpolation_RecordMatrixMtxFToMtx(MtxF* src, Mtx* dest) {
     append(Op::MatrixMtxFToMtx).matrix_mtxf_to_mtx = { *src, dest };
 }
 
-void FrameInterpolation_RecordMatrixToMtx(Mtx* dest, char* file, s32 line) {
+void FrameInterpolation_RecordMatrixToMtx(Mtx* dest, char* file, int32_t line) {
     if (!is_recording)
         return;
     auto& d = append(Op::MatrixToMtx).matrix_to_mtx = { dest };
@@ -592,7 +592,7 @@ void FrameInterpolation_RecordMatrixReplaceRotation(MtxF* mf) {
     append(Op::MatrixReplaceRotation).matrix_replace_rotation = { *mf };
 }
 
-void FrameInterpolation_RecordMatrixRotateAxis(f32 angle, Vec3f* axis, u8 mode) {
+void FrameInterpolation_RecordMatrixRotateAxis(float angle, Vec3f* axis, uint8_t mode) {
     if (!is_recording)
         return;
     append(Op::MatrixRotateAxis).matrix_rotate_axis = { angle, *axis, mode };

@@ -18,18 +18,18 @@
 
 typedef union {
     struct {
-        u32 hi;
-        u32 lo;
+        uint32_t hi;
+        uint32_t lo;
     } word;
 
-    f64 d;
+    double d;
 } du;
 
 typedef union {
-    u32 i;
-    f32 f;
+    uint32_t i;
+    float f;
 } fu;
 
-extern f32 __libm_qnan_f;
+extern float __libm_qnan_f;
 
 #endif

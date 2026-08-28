@@ -2,10 +2,10 @@
 
 #define BUFF_LEN 0x20
 
-s16 _Ldunscale(s16*, _Pft*);
-void _Genld(_Pft*, u8, u8*, s16, s16);
+int16_t _Ldunscale(int16_t*, _Pft*);
+void _Genld(_Pft*, uint8_t, uint8_t*, int16_t, int16_t);
 
-const f64 D_800122E0[] = { 10e0L, 10e1L, 10e3L, 10e7L, 10e15L, 10e31L, 10e63L, 10e127L, 10e255L };
+const double D_800122E0[] = { 10e0L, 10e1L, 10e3L, 10e7L, 10e15L, 10e31L, 10e63L, 10e127L, 10e255L };
 
 /* float properties */
 #define _D0 0
@@ -40,20 +40,20 @@ const f64 D_800122E0[] = { 10e0L, 10e1L, 10e3L, 10e7L, 10e15L, 10e31L, 10e63L, 1
 #define _D3 3
 #endif
 
-void _Ldtob(_Pft* args, u8 type) {
-    u8 buff[BUFF_LEN];
-    u8* ptr = buff;
-    u32 sp70;
-    f64 val = args->v.ld;
+void _Ldtob(_Pft* args, uint8_t type) {
+    uint8_t buff[BUFF_LEN];
+    uint8_t* ptr = buff;
+    uint32_t sp70;
+    double val = args->v.ld;
     /* maybe struct? */
-    s16 err = { 0 };
-    s16 nsig = { 0 };
-    s16 exp;
+    int16_t err = { 0 };
+    int16_t nsig = { 0 };
+    int16_t exp;
 
-    s32 i;
-    s32 j;
-    u8 drop = { 0 };
-    s32 n2;
+    int32_t i;
+    int32_t j;
+    uint8_t drop = { 0 };
+    int32_t n2;
 
     if (args->prec < 0) {
         args->prec = 6;
@@ -74,7 +74,7 @@ void _Ldtob(_Pft* args, u8 type) {
         }
         exp = exp * 30103 / 0x000186A0 - 4;
         if (exp < 0) {
-            s32 n = (3 - exp) & ~3;
+            int32_t n = (3 - exp) & ~3;
             exp = -n;
             for (i = 0; n > 0; n >>= 1, i++) {
                 if ((n & 1) != 0) {
@@ -82,7 +82,7 @@ void _Ldtob(_Pft* args, u8 type) {
                 }
             }
         } else if (exp > 0) {
-            f64 factor = 1;
+            double factor = 1;
             exp &= ~3;
 
             for (n = exp, i = 0; n > 0; n >>= 1, i++) {
@@ -92,13 +92,13 @@ void _Ldtob(_Pft* args, u8 type) {
             }
             val /= factor;
         }
-        s32 gen = ((type == 'f') ? exp + 10 : 6) + args->prec;
+        int32_t gen = ((type == 'f') ? exp + 10 : 6) + args->prec;
         if (gen > 0x13) {
             gen = 0x13;
         }
         *ptr++ = '0';
         while (gen > 0 && 0 < val) {
-            s32 lo = val;
+            int32_t lo = val;
             if ((gen -= 8) > 0) {
                 val = (val - lo) * 1.0e8;
             }
@@ -145,13 +145,13 @@ void _Ldtob(_Pft* args, u8 type) {
     _Genld((_Pft*)args, type, ptr, nsig, exp);
 }
 
-s16 _Ldunscale(s16* pex, _Pft* px) {
-    u16* ps = (u16*)px;
-    s16 xchar = (ps[_D0] & _DMASK) >> _DOFF;
+int16_t _Ldunscale(int16_t* pex, _Pft* px) {
+    uint16_t* ps = (uint16_t*)px;
+    int16_t xchar = (ps[_D0] & _DMASK) >> _DOFF;
 
     if (xchar == _DMAX) { /* NaN or INF */
         *pex = 0;
-        return (s16)(ps[_D0] & _DFRAC || ps[_D1] || ps[_D2] || ps[_D3] ? NAN : INF);
+        return (int16_t)(ps[_D0] & _DFRAC || ps[_D1] || ps[_D2] || ps[_D3] ? NAN : INF);
     } else if (0 < xchar) {
         ps[_D0] = (ps[_D0] & ~_DMASK) | (_DBIAS << _DOFF);
         *pex = xchar - (_DBIAS - 1);
@@ -165,13 +165,13 @@ s16 _Ldunscale(s16* pex, _Pft* px) {
     }
 }
 
-void _Genld(_Pft* px, u8 code, u8* p, s16 nsig, s16 xexp) {
-    u8 point = '.';
+void _Genld(_Pft* px, uint8_t code, uint8_t* p, int16_t nsig, int16_t xexp) {
+    uint8_t point = '.';
 
     if (nsig <= 0) {
         nsig = 1,
 
-        p = (u8*)"0";
+        p = (uint8_t*)"0";
     }
 
     if (code == 'f' || ((code == 'g' || code == 'G') && (-4 <= xexp) && (xexp < px->prec))) { /* 'f' format */
@@ -243,7 +243,7 @@ void _Genld(_Pft* px, u8 code, u8* p, s16 nsig, s16 xexp) {
             px->n1 += nsig;
             px->nz1 = px->prec - nsig;
         }
-        p = (u8*)&px->s[px->n1]; /* put exponent */
+        p = (uint8_t*)&px->s[px->n1]; /* put exponent */
         *p++ = code;
         if (0 <= xexp) {
             *p++ = '+';
@@ -259,10 +259,10 @@ void _Genld(_Pft* px, u8 code, u8* p, s16 nsig, s16 xexp) {
         }
         *p++ = xexp / 10 + '0', xexp %= 10;
         *p++ = xexp + '0';
-        px->n2 = p - (u8*)&px->s[px->n1];
+        px->n2 = p - (uint8_t*)&px->s[px->n1];
     }
     if ((px->flags & (FLAGS_ZERO | FLAGS_MINUS)) == FLAGS_ZERO) { /* pad with leading zeros */
-        s32 n = px->n0 + px->n1 + px->nz1 + px->n2 + px->nz2;
+        int32_t n = px->n0 + px->n1 + px->nz1 + px->n2 + px->nz2;
 
         if (n < px->width) {
             px->nz0 = px->width - n;

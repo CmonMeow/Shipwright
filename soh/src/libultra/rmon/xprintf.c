@@ -15,10 +15,10 @@
     }
 #define _PAD(m, src, extracond)      \
     if (extracond && m > 0) {        \
-        s32 i;                       \
-        s32 j;                       \
+        int32_t i;                       \
+        int32_t j;                       \
         for (j = m; j > 0; j -= i) { \
-            if ((u32)j > 32)         \
+            if ((uint32_t)j > 32)         \
                 i = 32;              \
             else                     \
                 i = j;               \
@@ -29,25 +29,25 @@
 char spaces[] = "                                ";
 char zeroes[] = "00000000000000000000000000000000";
 
-void _Putfld(_Pft*, va_list*, u8, u8*);
+void _Putfld(_Pft*, va_list*, uint8_t, uint8_t*);
 
-s32 _Printf(PrintCallback pfn, void* arg, const char* fmt, va_list ap) {
+int32_t _Printf(PrintCallback pfn, void* arg, const char* fmt, va_list ap) {
     _Pft x;
     x.nchar = 0;
 
     while (true) {
         static const char fchar[] = " +-#0";
-        static const u32 fbit[] = { FLAGS_SPACE, FLAGS_PLUS, FLAGS_MINUS, FLAGS_HASH, FLAGS_ZERO, 0 };
+        static const uint32_t fbit[] = { FLAGS_SPACE, FLAGS_PLUS, FLAGS_MINUS, FLAGS_HASH, FLAGS_ZERO, 0 };
 
-        const u8* s = (u8*)fmt;
-        u8 c;
+        const uint8_t* s = (uint8_t*)fmt;
+        uint8_t c;
         const char* t;
-        u8 ac[0x20];
+        uint8_t ac[0x20];
 
         while ((c = *s) != 0 && c != '%') {
             s++;
         }
-        _PROUT(fmt, s - (u8*)fmt);
+        _PROUT(fmt, s - (uint8_t*)fmt);
         if (c == 0) {
             return x.nchar;
         }
@@ -57,7 +57,7 @@ s32 _Printf(PrintCallback pfn, void* arg, const char* fmt, va_list ap) {
             x.flags |= fbit[t - fchar];
         }
         if (*s == '*') {
-            x.width = va_arg(ap, s32);
+            x.width = va_arg(ap, int32_t);
             if (x.width < 0) {
                 x.width = -x.width;
                 x.flags |= FLAGS_MINUS;
@@ -71,7 +71,7 @@ s32 _Printf(PrintCallback pfn, void* arg, const char* fmt, va_list ap) {
         } else {
             s++;
             if (*s == '*') {
-                x.prec = va_arg(ap, s32);
+                x.prec = va_arg(ap, int32_t);
                 s++;
             } else {
                 ATOI(x.prec, s);
@@ -101,26 +101,26 @@ s32 _Printf(PrintCallback pfn, void* arg, const char* fmt, va_list ap) {
     }
 }
 
-void _Putfld(_Pft* px, va_list* pap, u8 code, u8* ac) {
+void _Putfld(_Pft* px, va_list* pap, uint8_t code, uint8_t* ac) {
     px->n0 = px->nz0 = px->n1 = px->nz1 = px->n2 = px->nz2 = 0;
 
     switch (code) {
         case 'c':
-            ac[px->n0++] = va_arg(*pap, u32);
+            ac[px->n0++] = va_arg(*pap, uint32_t);
             break;
 
         case 'd':
         case 'i':
             if (px->qual == 'l') {
-                px->v.ll = va_arg(*pap, s32);
+                px->v.ll = va_arg(*pap, int32_t);
             } else if (px->qual == 'L') {
-                px->v.ll = va_arg(*pap, s64);
+                px->v.ll = va_arg(*pap, int64_t);
             } else {
-                px->v.ll = va_arg(*pap, s32);
+                px->v.ll = va_arg(*pap, int32_t);
             }
 
             if (px->qual == 'h') {
-                px->v.ll = (s16)px->v.ll;
+                px->v.ll = (int16_t)px->v.ll;
             }
 
             if (px->v.ll < 0) {
@@ -140,17 +140,17 @@ void _Putfld(_Pft* px, va_list* pap, u8 code, u8* ac) {
         case 'u':
         case 'o':
             if (px->qual == 'l') {
-                px->v.ll = va_arg(*pap, s32);
+                px->v.ll = va_arg(*pap, int32_t);
             } else if (px->qual == 'L') {
-                px->v.ll = va_arg(*pap, s64);
+                px->v.ll = va_arg(*pap, int64_t);
             } else {
-                px->v.ll = va_arg(*pap, s32);
+                px->v.ll = va_arg(*pap, int32_t);
             }
 
             if (px->qual == 'h') {
-                px->v.ll = (u16)px->v.ll;
+                px->v.ll = (uint16_t)px->v.ll;
             } else if (px->qual == 0) {
-                px->v.ll = (u32)px->v.ll;
+                px->v.ll = (uint32_t)px->v.ll;
             }
 
             if (px->flags & FLAGS_HASH) {
@@ -168,9 +168,9 @@ void _Putfld(_Pft* px, va_list* pap, u8 code, u8* ac) {
         case 'g':
         case 'E':
         case 'G':
-            px->v.ld = px->qual == 'L' ? va_arg(*pap, f64) : va_arg(*pap, f64);
+            px->v.ld = px->qual == 'L' ? va_arg(*pap, double) : va_arg(*pap, double);
 
-            if (*(u16*)&px->v.ll & 0x8000) {
+            if (*(uint16_t*)&px->v.ll & 0x8000) {
                 ac[px->n0++] = '-';
             } else {
                 if (px->flags & FLAGS_PLUS) {
@@ -185,13 +185,13 @@ void _Putfld(_Pft* px, va_list* pap, u8 code, u8* ac) {
             break;
         case 'n':
             if (px->qual == 'h') {
-                *(va_arg(*pap, u16*)) = px->nchar;
+                *(va_arg(*pap, uint16_t*)) = px->nchar;
             } else if (px->qual == 'l') {
-                *va_arg(*pap, u32*) = px->nchar;
+                *va_arg(*pap, uint32_t*) = px->nchar;
             } else if (px->qual == 'L') {
-                *va_arg(*pap, u64*) = px->nchar;
+                *va_arg(*pap, uint64_t*) = px->nchar;
             } else {
-                *va_arg(*pap, u32*) = px->nchar;
+                *va_arg(*pap, uint32_t*) = px->nchar;
             }
             break;
 

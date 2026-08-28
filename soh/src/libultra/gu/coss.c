@@ -1,5 +1,5 @@
 #include "global.h"
 
-s16 coss(u16 angle) {
+int16_t coss(uint16_t angle) {
     return sins(angle + 0x4000);
 }

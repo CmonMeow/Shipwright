@@ -2,10 +2,10 @@
 
 #include <string.h>
 
-extern const u8* PathEngineFont_GetSerifGlyph(unsigned char character);
+extern const uint8_t* PathEngineFont_GetSerifGlyph(unsigned char character);
 
 FaultDrawer sFaultDrawerDefault = {
-    (u16*)(0x80400000 - sizeof(u16[SCREEN_HEIGHT][SCREEN_WIDTH])),
+    (uint16_t*)(0x80400000 - sizeof(uint16_t[SCREEN_HEIGHT][SCREEN_WIDTH])),
     SCREEN_WIDTH,
     SCREEN_HEIGHT,
     16,
@@ -36,16 +36,16 @@ FaultDrawer sFaultDrawerDefault = {
 FaultDrawer sFaultDrawerStruct;
 char D_8016B6C0[0x20];
 
-void FaultDrawer_SetOsSyncPrintfEnabled(u32 enabled) {
+void FaultDrawer_SetOsSyncPrintfEnabled(uint32_t enabled) {
     sFaultDrawerStruct.osSyncPrintfEnabled = enabled;
 }
 
-void FaultDrawer_DrawRecImpl(s32 xStart, s32 yStart, s32 xEnd, s32 yEnd, u16 color) {
-    s32 xSize = MIN(sFaultDrawerStruct.w - xStart, xEnd - xStart + 1);
-    s32 ySize = MIN(sFaultDrawerStruct.h - yStart, yEnd - yStart + 1);
-    s32 x;
-    s32 y;
-    u16* framebuffer = { 0 };
+void FaultDrawer_DrawRecImpl(int32_t xStart, int32_t yStart, int32_t xEnd, int32_t yEnd, uint16_t color) {
+    int32_t xSize = MIN(sFaultDrawerStruct.w - xStart, xEnd - xStart + 1);
+    int32_t ySize = MIN(sFaultDrawerStruct.h - yStart, yEnd - yStart + 1);
+    int32_t x;
+    int32_t y;
+    uint16_t* framebuffer = { 0 };
 
     if (xSize <= 0 || ySize <= 0) {
         return;
@@ -62,12 +62,12 @@ void FaultDrawer_DrawRecImpl(s32 xStart, s32 yStart, s32 xEnd, s32 yEnd, u16 col
 }
 
 void FaultDrawer_DrawChar(char character) {
-    const u8* glyph = PathEngineFont_GetSerifGlyph((unsigned char)character);
-    const s32 cursorX = sFaultDrawerStruct.cursorX;
-    const s32 cursorY = sFaultDrawerStruct.cursorY;
-    s32 x;
-    s32 y;
-    u16* framebuffer = { 0 };
+    const uint8_t* glyph = PathEngineFont_GetSerifGlyph((unsigned char)character);
+    const int32_t cursorX = sFaultDrawerStruct.cursorX;
+    const int32_t cursorY = sFaultDrawerStruct.cursorY;
+    int32_t x;
+    int32_t y;
+    uint16_t* framebuffer = { 0 };
 
     if (cursorX < sFaultDrawerStruct.xStart || cursorY < sFaultDrawerStruct.yStart ||
         cursorX + 7 > sFaultDrawerStruct.xEnd || cursorY + 7 > sFaultDrawerStruct.yEnd) {
@@ -76,11 +76,11 @@ void FaultDrawer_DrawChar(char character) {
 
     framebuffer = sFaultDrawerStruct.fb + sFaultDrawerStruct.w * cursorY + cursorX;
     for (y = 0; y < 8; y++) {
-        const u16 row0 = (u16)((glyph[y * 4] << 8) | glyph[y * 4 + 1]);
-        const u16 row1 = (u16)((glyph[y * 4 + 2] << 8) | glyph[y * 4 + 3]);
+        const uint16_t row0 = (uint16_t)((glyph[y * 4] << 8) | glyph[y * 4 + 1]);
+        const uint16_t row1 = (uint16_t)((glyph[y * 4 + 2] << 8) | glyph[y * 4 + 3]);
 
         for (x = 0; x < 8; x++) {
-            const u16 mask = (u16)(0xC000 >> (x * 2));
+            const uint16_t mask = (uint16_t)(0xC000 >> (x * 2));
             if ((row0 | row1) & mask) {
                 framebuffer[x] = sFaultDrawerStruct.foreColor;
             } else if (sFaultDrawerStruct.backColor & 1) {
@@ -91,8 +91,8 @@ void FaultDrawer_DrawChar(char character) {
     }
 }
 
-s32 FaultDrawer_ColorToPrintColor(u16 color) {
-    s32 i;
+int32_t FaultDrawer_ColorToPrintColor(uint16_t color) {
+    int32_t i;
     for (i = 0; i < ARRAY_COUNT(sFaultDrawerStruct.printColors); i++) {
         if (color == sFaultDrawerStruct.printColors[i]) {
             return i;
@@ -104,26 +104,26 @@ s32 FaultDrawer_ColorToPrintColor(u16 color) {
 void FaultDrawer_UpdatePrintColor(void) {
 }
 
-void FaultDrawer_SetForeColor(u16 color) {
+void FaultDrawer_SetForeColor(uint16_t color) {
     sFaultDrawerStruct.foreColor = color;
 }
 
-void FaultDrawer_SetBackColor(u16 color) {
+void FaultDrawer_SetBackColor(uint16_t color) {
     sFaultDrawerStruct.backColor = color;
 }
 
-void FaultDrawer_SetFontColor(u16 color) {
+void FaultDrawer_SetFontColor(uint16_t color) {
     FaultDrawer_SetForeColor(color | 1);
 }
 
-void FaultDrawer_SetCharPad(s8 padW, s8 padH) {
+void FaultDrawer_SetCharPad(int8_t padW, int8_t padH) {
     sFaultDrawerStruct.charWPad = padW;
     sFaultDrawerStruct.charHPad = padH;
 }
 
-void FaultDrawer_SetCursor(s32 x, s32 y) {
-    sFaultDrawerStruct.cursorX = (u16)x;
-    sFaultDrawerStruct.cursorY = (u16)y;
+void FaultDrawer_SetCursor(int32_t x, int32_t y) {
+    sFaultDrawerStruct.cursorX = (uint16_t)x;
+    sFaultDrawerStruct.cursorY = (uint16_t)y;
 }
 
 void FaultDrawer_FillScreen(void) {
@@ -132,7 +132,7 @@ void FaultDrawer_FillScreen(void) {
     FaultDrawer_SetCursor(sFaultDrawerStruct.xStart, sFaultDrawerStruct.yStart);
 }
 
-void* FaultDrawer_FormatStringFunc(void* argument, const char* text, u32 count) {
+void* FaultDrawer_FormatStringFunc(void* argument, const char* text, uint32_t count) {
     while (count-- != 0) {
         if (sFaultDrawerStruct.escCode) {
             sFaultDrawerStruct.escCode = false;
@@ -183,7 +183,7 @@ void FaultDrawer_Printf(const char* format, ...) {
     va_end(arguments);
 }
 
-void FaultDrawer_DrawText(s32 x, s32 y, const char* format, ...) {
+void FaultDrawer_DrawText(int32_t x, int32_t y, const char* format, ...) {
     va_list arguments;
     FaultDrawer_SetCursor(x, y);
     va_start(arguments, format);
@@ -191,7 +191,7 @@ void FaultDrawer_DrawText(s32 x, s32 y, const char* format, ...) {
     va_end(arguments);
 }
 
-void FaultDrawer_SetDrawerFB(void* framebuffer, u16 width, u16 height) {
+void FaultDrawer_SetDrawerFB(void* framebuffer, uint16_t width, uint16_t height) {
     sFaultDrawerStruct.fb = framebuffer;
     sFaultDrawerStruct.w = width;
     sFaultDrawerStruct.h = height;
@@ -202,10 +202,10 @@ void FaultDrawer_SetInputCallback(void (*callback)(void)) {
 }
 
 void FaultDrawer_WritebackFBDCache(void) {
-    osWritebackDCache(sFaultDrawerStruct.fb, sFaultDrawerStruct.w * sFaultDrawerStruct.h * sizeof(u16));
+    osWritebackDCache(sFaultDrawerStruct.fb, sFaultDrawerStruct.w * sFaultDrawerStruct.h * sizeof(uint16_t));
 }
 
 void FaultDrawer_SetDefault(void) {
     memcpy(&sFaultDrawerStruct, &sFaultDrawerDefault, sizeof(sFaultDrawerStruct));
-    sFaultDrawerStruct.fb = (u16*)((osMemSize | 0x80000000) - sizeof(u16[SCREEN_HEIGHT][SCREEN_WIDTH]));
+    sFaultDrawerStruct.fb = (uint16_t*)((osMemSize | 0x80000000) - sizeof(uint16_t[SCREEN_HEIGHT][SCREEN_WIDTH]));
 }

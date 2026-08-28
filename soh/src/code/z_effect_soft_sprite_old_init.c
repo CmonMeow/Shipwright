@@ -17,7 +17,7 @@ void EffectSs_DrawGEffect(PlayState* play, EffectSs* this, void* texture) {
     void* object = play->objectCtx.status[this->rgObjBankIdx].segment;
 
     OPEN_DISPS(gfxCtx);
-    f32 scale = this->rgScale * 0.0025f;
+    float scale = this->rgScale * 0.0025f;
     SkinMatrix_SetTranslate(&mfTrans, this->pos.x, this->pos.y, this->pos.z);
     SkinMatrix_SetScale(&mfScale, scale, scale, scale);
     SkinMatrix_MtxFMtxFMult(&mfTrans, &play->billboardMtxF, &mfTrans11DA0);
@@ -37,9 +37,9 @@ void EffectSs_DrawGEffect(PlayState* play, EffectSs* this, void* texture) {
     CLOSE_DISPS(gfxCtx);
 }
 
-void EffectSsDust_Spawn(PlayState* play, u16 drawFlags, Vec3f* pos, Vec3f* velocity, Vec3f* accel,
-                        Color_RGBA8* primColor, Color_RGBA8* envColor, s16 scale, s16 scaleStep, s16 life,
-                        u8 updateMode) {
+void EffectSsDust_Spawn(PlayState* play, uint16_t drawFlags, Vec3f* pos, Vec3f* velocity, Vec3f* accel,
+                        Color_RGBA8* primColor, Color_RGBA8* envColor, int16_t scale, int16_t scaleStep, int16_t life,
+                        uint8_t updateMode) {
     EffectSsDustInitParams initParams;
 
     Math_Vec3f_Copy(&initParams.pos, pos);
@@ -56,7 +56,7 @@ void EffectSsDust_Spawn(PlayState* play, u16 drawFlags, Vec3f* pos, Vec3f* veloc
 }
 
 void func_8002836C(PlayState* play, Vec3f* pos, Vec3f* velocity, Vec3f* accel, Color_RGBA8* primColor,
-                   Color_RGBA8* envColor, s16 scale, s16 scaleStep, s16 life) {
+                   Color_RGBA8* envColor, int16_t scale, int16_t scaleStep, int16_t life) {
     EffectSsDust_Spawn(play, 0, pos, velocity, accel, primColor, envColor, scale, scaleStep, life, 0);
 }
 
@@ -67,16 +67,16 @@ void func_8002857C(PlayState* play, Vec3f* pos, Vec3f* velocity, Vec3f* accel) {
     EffectSsDust_Spawn(play, 4, pos, velocity, accel, &sDustBrownPrim, &sDustBrownEnv, 100, 5, 10, 0);
 }
 
-void func_8002865C(PlayState* play, Vec3f* pos, Vec3f* velocity, Vec3f* accel, s16 scale, s16 scaleStep) {
+void func_8002865C(PlayState* play, Vec3f* pos, Vec3f* velocity, Vec3f* accel, int16_t scale, int16_t scaleStep) {
     EffectSsDust_Spawn(play, 4, pos, velocity, accel, &sDustBrownPrim, &sDustBrownEnv, scale, scaleStep, 10, 0);
 }
 
-void func_800286CC(PlayState* play, Vec3f* pos, Vec3f* velocity, Vec3f* accel, s16 scale, s16 scaleStep) {
+void func_800286CC(PlayState* play, Vec3f* pos, Vec3f* velocity, Vec3f* accel, int16_t scale, int16_t scaleStep) {
     EffectSsDust_Spawn(play, 5, pos, velocity, accel, &sDustBrownPrim, &sDustBrownEnv, scale, scaleStep, 10, 0);
 }
 
-void EffectSsBubble_Spawn(PlayState* play, Vec3f* pos, f32 yPosOffset, f32 yPosRandScale, f32 xzPosRandScale,
-                          f32 scale) {
+void EffectSsBubble_Spawn(PlayState* play, Vec3f* pos, float yPosOffset, float yPosRandScale, float xzPosRandScale,
+                          float scale) {
     EffectSsBubbleInitParams initParams;
 
     Math_Vec3f_Copy(&initParams.pos, pos);
@@ -87,7 +87,7 @@ void EffectSsBubble_Spawn(PlayState* play, Vec3f* pos, f32 yPosOffset, f32 yPosR
     EffectSs_Spawn(play, EFFECT_SS_BUBBLE, 128, &initParams);
 }
 
-void EffectSsGRipple_Spawn(PlayState* play, Vec3f* pos, s16 radius, s16 radiusMax, s16 life) {
+void EffectSsGRipple_Spawn(PlayState* play, Vec3f* pos, int16_t radius, int16_t radiusMax, int16_t life) {
     EffectSsGRippleInitParams initParams;
 
     Math_Vec3f_Copy(&initParams.pos, pos);
@@ -97,8 +97,8 @@ void EffectSsGRipple_Spawn(PlayState* play, Vec3f* pos, s16 radius, s16 radiusMa
     EffectSs_Spawn(play, EFFECT_SS_G_RIPPLE, 128, &initParams);
 }
 
-void EffectSsGSplash_Spawn(PlayState* play, Vec3f* pos, Color_RGBA8* primColor, Color_RGBA8* envColor, s16 type,
-                           s16 scale) {
+void EffectSsGSplash_Spawn(PlayState* play, Vec3f* pos, Color_RGBA8* primColor, Color_RGBA8* envColor, int16_t type,
+                           int16_t scale) {
     EffectSsGSplashInitParams initParams;
 
     Math_Vec3f_Copy(&initParams.pos, pos);
@@ -114,8 +114,8 @@ void EffectSsGSplash_Spawn(PlayState* play, Vec3f* pos, Color_RGBA8* primColor, 
     EffectSs_Spawn(play, EFFECT_SS_G_SPLASH, 128, &initParams);
 }
 
-void EffectSsSibuki_Spawn(PlayState* play, Vec3f* pos, Vec3f* velocity, Vec3f* accel, s16 moveDelay, s16 direction,
-                          s16 scale) {
+void EffectSsSibuki_Spawn(PlayState* play, Vec3f* pos, Vec3f* velocity, Vec3f* accel, int16_t moveDelay, int16_t direction,
+                          int16_t scale) {
     EffectSsSibukiInitParams initParams;
 
     Math_Vec3f_Copy(&initParams.pos, pos);
@@ -128,16 +128,16 @@ void EffectSsSibuki_Spawn(PlayState* play, Vec3f* pos, Vec3f* velocity, Vec3f* a
 }
 
 void EffectSsSibuki_SpawnBurst(PlayState* play, Vec3f* pos) {
-    s16 i;
+    int16_t i;
     Vec3f zeroVec = { 0.0f, 0.0f, 0.0f };
-    s16 randDirection = Rand_ZeroOne() * 1.99f;
+    int16_t randDirection = Rand_ZeroOne() * 1.99f;
 
     for (i = 0; i < KREG(19) + 30; i++) {
         EffectSsSibuki_Spawn(play, pos, &zeroVec, &zeroVec, i / (KREG(27) + 6), randDirection, KREG(18) + 40);
     }
 }
 
-void EffectSsSibuki2_Spawn(PlayState* play, Vec3f* pos, Vec3f* velocity, Vec3f* accel, s16 scale) {
+void EffectSsSibuki2_Spawn(PlayState* play, Vec3f* pos, Vec3f* velocity, Vec3f* accel, int16_t scale) {
     EffectSsSibuki2InitParams initParams;
 
     Math_Vec3f_Copy(&initParams.pos, pos);
@@ -147,7 +147,7 @@ void EffectSsSibuki2_Spawn(PlayState* play, Vec3f* pos, Vec3f* velocity, Vec3f* 
     EffectSs_Spawn(play, EFFECT_SS_SIBUKI2, 128, &initParams);
 }
 
-void EffectSsHitMark_Spawn(PlayState* play, s32 type, s16 scale, Vec3f* pos) {
+void EffectSsHitMark_Spawn(PlayState* play, int32_t type, int16_t scale, Vec3f* pos) {
     EffectSsHitMarkInitParams initParams;
 
     initParams.type = type;
@@ -156,10 +156,10 @@ void EffectSsHitMark_Spawn(PlayState* play, s32 type, s16 scale, Vec3f* pos) {
     EffectSs_Spawn(play, EFFECT_SS_HITMARK, 128, &initParams);
 }
 
-void EffectSsHitMark_SpawnFixedScale(PlayState* play, s32 type, Vec3f* pos) {
+void EffectSsHitMark_SpawnFixedScale(PlayState* play, int32_t type, Vec3f* pos) {
     EffectSsHitMark_Spawn(play, type, 300, pos);
 }
 
-void EffectSsHitMark_SpawnCustomScale(PlayState* play, s32 type, s16 scale, Vec3f* pos) {
+void EffectSsHitMark_SpawnCustomScale(PlayState* play, int32_t type, int16_t scale, Vec3f* pos) {
     EffectSsHitMark_Spawn(play, type, scale, pos);
 }

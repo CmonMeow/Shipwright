@@ -2,14 +2,14 @@
 
 #define STEP 0x100000
 
-u32 osGetMemSize(void) {
+uint32_t osGetMemSize(void) {
     size_t size = 0x400000;
 
     while (size < 0x800000) {
-        u32* ptr = (u32*)(0xA0000000 + size);
+        uint32_t* ptr = (uint32_t*)(0xA0000000 + size);
 
-        u32 data0 = *ptr;
-        u32 data1 = ptr[STEP / 4 - 1];
+        uint32_t data0 = *ptr;
+        uint32_t data1 = ptr[STEP / 4 - 1];
 
         *ptr ^= ~0;
         ptr[STEP / 4 - 1] ^= ~0;

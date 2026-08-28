@@ -14,10 +14,10 @@ typedef struct EnArrow {
     /* 0x0190 */ ColliderQuad collider;
     /* 0x0210 */ Vec3f unk_210;
     /* 0x021C */ WeaponInfo weaponInfo;
-    /* 0x0238 */ u8 timer; // used for disappearing while flying or after an enemy arrow hits a wall
-    /* 0x0239 */ u8 hitFlags;
-    /* 0x023A */ u8 touchedPoly;
-    /* 0x023B */ u8 isCsNut;
+    /* 0x0238 */ uint8_t timer; // used for disappearing while flying or after an enemy arrow hits a wall
+    /* 0x0239 */ uint8_t hitFlags;
+    /* 0x023A */ uint8_t touchedPoly;
+    /* 0x023B */ uint8_t isCsNut;
     /* 0x023C */ Actor* hitActor;
     /* 0x0240 */ Vec3f unk_250;
     /* 0x024C */ EnArrowActionFunc actionFunc;

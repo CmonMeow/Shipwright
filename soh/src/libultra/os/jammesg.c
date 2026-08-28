@@ -1,7 +1,7 @@
 #include "global.h"
 
-s32 osJamMesg(OSMesgQueue* mq, OSMesg msg, s32 flag) {
-    register u32 prevInt = __osDisableInt();
+int32_t osJamMesg(OSMesgQueue* mq, OSMesg msg, int32_t flag) {
+    register uint32_t prevInt = __osDisableInt();
 
     while (mq->validCount >= mq->msgCount) {
         if (flag == OS_MESG_BLOCK) {

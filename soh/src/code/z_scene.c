@@ -2,7 +2,7 @@
 #include "vt.h"
 #include <assert.h>
 
-s32 Object_Spawn(ObjectContext* objectCtx, s16 objectId) {
+int32_t Object_Spawn(ObjectContext* objectCtx, int16_t objectId) {
 
     objectCtx->status[objectCtx->num].id = objectId;
     size_t size = gObjectTable[objectId].vromEnd - gObjectTable[objectId].vromStart;
@@ -30,11 +30,11 @@ s32 Object_Spawn(ObjectContext* objectCtx, s16 objectId) {
 }
 
 // SOH [Port] Track when objects are first loaded for a scene
-static u8 sObjectFirstUpdateSkippedForScene = false;
+static uint8_t sObjectFirstUpdateSkippedForScene = false;
 
 void Object_InitBank(PlayState* play, ObjectContext* objectCtx) {
     const size_t spaceSize = 1024000;
-    s32 i;
+    int32_t i;
 
     objectCtx->num = objectCtx->unk_09 = 0;
     objectCtx->mainKeepIndex = objectCtx->subKeepIndex = 0;
@@ -59,7 +59,7 @@ void Object_InitBank(PlayState* play, ObjectContext* objectCtx) {
 }
 
 void Object_UpdateBank(ObjectContext* objectCtx) {
-    s32 i;
+    int32_t i;
     ObjectStatus* status = &objectCtx->status[0];
 
     // SOH [Port] Skip the first object load after scene init so that actors have their init delayed by one frame
@@ -77,8 +77,8 @@ void Object_UpdateBank(ObjectContext* objectCtx) {
     }
 }
 
-s32 Object_GetIndex(ObjectContext* objectCtx, s16 objectId) {
-    s32 i;
+int32_t Object_GetIndex(ObjectContext* objectCtx, int16_t objectId) {
+    int32_t i;
 
     // return 0;
 
@@ -91,7 +91,7 @@ s32 Object_GetIndex(ObjectContext* objectCtx, s16 objectId) {
     return -1;
 }
 
-s32 Object_IsLoaded(ObjectContext* objectCtx, s32 bankIndex) {
+int32_t Object_IsLoaded(ObjectContext* objectCtx, int32_t bankIndex) {
     if (objectCtx->status[bankIndex].id > 0) {
         return true;
     } else {
@@ -106,4 +106,4 @@ RomFile gObjectTable[OBJECT_ID_MAX] = {
     [OBJECT_FISH] = ROM_FILE(object_fish),
 };
 
-u32 gObjectTableSize = ARRAY_COUNT(gObjectTable);
+uint32_t gObjectTableSize = ARRAY_COUNT(gObjectTable);

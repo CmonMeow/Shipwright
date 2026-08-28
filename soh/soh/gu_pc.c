@@ -3,12 +3,12 @@
 
 void guMtxF2L(float mf[4][4], Mtx* m) {
     unsigned int r, c;
-    s32* m1 = &m->m[0][0];
-    s32* m2 = &m->m[2][0];
+    int32_t* m1 = &m->m[0][0];
+    int32_t* m2 = &m->m[2][0];
     for (r = 0; r < 4; r++) {
         for (c = 0; c < 2; c++) {
-            s32 tmp1 = mf[r][2 * c] * 65536.0f;
-            s32 tmp2 = mf[r][2 * c + 1] * 65536.0f;
+            int32_t tmp1 = mf[r][2 * c] * 65536.0f;
+            int32_t tmp2 = mf[r][2 * c + 1] * 65536.0f;
             *m1++ = (tmp1 & 0xffff0000) | ((tmp2 >> 0x10) & 0xffff);
             *m2++ = ((tmp1 << 0x10) & 0xffff0000) | (tmp2 & 0xffff);
         }
@@ -17,22 +17,22 @@ void guMtxF2L(float mf[4][4], Mtx* m) {
 
 void guMtxL2F(float mf[4][4], Mtx* m) {
     unsigned int r, c;
-    s32 stmp1, stmp2;
-    u32* m1 = (u32*)&m->m[0][0];
-    u32* m2 = (u32*)&m->m[2][0];
+    int32_t stmp1, stmp2;
+    uint32_t* m1 = (uint32_t*)&m->m[0][0];
+    uint32_t* m2 = (uint32_t*)&m->m[2][0];
     for (r = 0; r < 4; r++) {
         for (c = 0; c < 2; c++) {
-            u32 tmp1 = (*m1 & 0xffff0000) | ((*m2 >> 0x10) & 0xffff);
-            u32 tmp2 = ((*m1++ << 0x10) & 0xffff0000) | (*m2++ & 0xffff);
-            stmp1 = *(s32*)&tmp1;
-            stmp2 = *(s32*)&tmp2;
+            uint32_t tmp1 = (*m1 & 0xffff0000) | ((*m2 >> 0x10) & 0xffff);
+            uint32_t tmp2 = ((*m1++ << 0x10) & 0xffff0000) | (*m2++ & 0xffff);
+            stmp1 = *(int32_t*)&tmp1;
+            stmp2 = *(int32_t*)&tmp2;
             mf[r][c * 2 + 0] = stmp1 / 65536.0f;
             mf[r][c * 2 + 1] = stmp2 / 65536.0f;
         }
     }
 }
 
-void guMtxIdentF(f32 mf[4][4]) {
+void guMtxIdentF(float mf[4][4]) {
     unsigned int r, c;
     for (r = 0; r < 4; r++) {
         for (c = 0; c < 4; c++) {
@@ -74,8 +74,8 @@ void guScale(Mtx* m, float x, float y, float z) {
     guMtxF2L(mf, m);
 }
 
-void guNormalize(f32* x, f32* y, f32* z) {
-    f32 tmp = 1.0f / sqrtf(*x * *x + *y * *y + *z * *z);
+void guNormalize(float* x, float* y, float* z) {
+    float tmp = 1.0f / sqrtf(*x * *x + *y * *y + *z * *z);
     *x = *x * tmp;
     *y = *y * tmp;
     *z = *z * tmp;

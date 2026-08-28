@@ -21,10 +21,10 @@
 #define rDrawFlags regs[11]
 #define rLifespan regs[12]
 
-u32 EffectSsDust_Init(PlayState* play, u32 index, EffectSs* this, void* initParamsx);
-void EffectSsDust_Update(PlayState* play, u32 index, EffectSs* this);
-void EffectSsBlast_UpdateFire(PlayState* play, u32 index, EffectSs* this);
-void EffectSsDust_Draw(PlayState* play, u32 index, EffectSs* this);
+uint32_t EffectSsDust_Init(PlayState* play, uint32_t index, EffectSs* this, void* initParamsx);
+void EffectSsDust_Update(PlayState* play, uint32_t index, EffectSs* this);
+void EffectSsBlast_UpdateFire(PlayState* play, uint32_t index, EffectSs* this);
+void EffectSsDust_Draw(PlayState* play, uint32_t index, EffectSs* this);
 
 EffectSsInit Effect_Ss_Dust_InitVars = {
     EFFECT_SS_DUST,
@@ -36,7 +36,7 @@ static EffectSsUpdateFunc sUpdateFuncs[] = {
     EffectSsBlast_UpdateFire,
 };
 
-u32 EffectSsDust_Init(PlayState* play, u32 index, EffectSs* this, void* initParamsx) {
+uint32_t EffectSsDust_Init(PlayState* play, uint32_t index, EffectSs* this, void* initParamsx) {
     EffectSsDustInitParams* initParams = (EffectSsDustInitParams*)initParamsx;
 
     Math_Vec3f_Copy(&this->pos, &initParams->pos);
@@ -48,7 +48,7 @@ u32 EffectSsDust_Init(PlayState* play, u32 index, EffectSs* this, void* initPara
     this->draw = EffectSsDust_Draw;
 
     if (initParams->drawFlags & 4) {
-        s32 randColorOffset = Rand_ZeroOne() * 20.0f - 10.0f;
+        int32_t randColorOffset = Rand_ZeroOne() * 20.0f - 10.0f;
         this->rPrimColorR = initParams->primColor.r + randColorOffset;
         this->rPrimColorG = initParams->primColor.g + randColorOffset;
         this->rPrimColorB = initParams->primColor.b + randColorOffset;
@@ -75,7 +75,7 @@ u32 EffectSsDust_Init(PlayState* play, u32 index, EffectSs* this, void* initPara
     return 1;
 }
 
-void EffectSsDust_Draw(PlayState* play, u32 index, EffectSs* this) {
+void EffectSsDust_Draw(PlayState* play, uint32_t index, EffectSs* this) {
     static void* dustTextures[] = {
         gDust1Tex, gDust2Tex, gDust3Tex, gDust4Tex, gDust5Tex, gDust6Tex, gDust7Tex, gDust8Tex,
     };
@@ -87,7 +87,7 @@ void EffectSsDust_Draw(PlayState* play, u32 index, EffectSs* this) {
 
     OPEN_DISPS(gfxCtx);
 
-    f32 scale = this->rScale * 0.0025f;
+    float scale = this->rScale * 0.0025f;
     SkinMatrix_SetTranslate(&mfTrans, this->pos.x, this->pos.y, this->pos.z);
     SkinMatrix_SetScale(&mfScale, scale, scale, 1.0f);
     SkinMatrix_MtxFMtxFMult(&mfTrans, &play->billboardMtxF, &mfTrans11DA0);
@@ -124,7 +124,7 @@ void EffectSsDust_Draw(PlayState* play, u32 index, EffectSs* this) {
     CLOSE_DISPS(gfxCtx);
 }
 
-void EffectSsDust_Update(PlayState* play, u32 index, EffectSs* this) {
+void EffectSsDust_Update(PlayState* play, uint32_t index, EffectSs* this) {
     this->accel.x = (Rand_ZeroOne() * 0.4f) - 0.2f;
     this->accel.z = (Rand_ZeroOne() * 0.4f) - 0.2f;
 
@@ -142,7 +142,7 @@ void EffectSsDust_Update(PlayState* play, u32 index, EffectSs* this) {
 }
 
 // this update mode is unused in the original game
-void EffectSsBlast_UpdateFire(PlayState* play, u32 index, EffectSs* this) {
+void EffectSsBlast_UpdateFire(PlayState* play, uint32_t index, EffectSs* this) {
     this->accel.x = (Rand_ZeroOne() * 0.4f) - 0.2f;
     this->accel.z = (Rand_ZeroOne() * 0.4f) - 0.2f;
 

@@ -5,8 +5,8 @@
 /**
  * Initialises the Vtx buffers used for limb at index `limbIndex`
  */
-void Skin_InitAnimatedLimb(PlayState* play, Skin* skin, s32 limbIndex) {
-    s32 i;
+void Skin_InitAnimatedLimb(PlayState* play, Skin* skin, int32_t limbIndex) {
+    int32_t i;
     SkinLimb** skeleton = SEGMENTED_TO_VIRTUAL(skin->skeletonHeader->segment);
     SkinAnimatedLimbData* animatedLimbData =
         SEGMENTED_TO_VIRTUAL(((SkinLimb*)SEGMENTED_TO_VIRTUAL(skeleton[limbIndex]))->segment);
@@ -41,8 +41,8 @@ void Skin_Init(PlayState* play, Skin* skin, SkeletonHeader* skeletonHeader, Anim
     if (ResourceMgr_OTRSigCheck(skeletonHeader))
         skeletonHeader = ResourceMgr_LoadSkeletonByName(skeletonHeader, NULL);
 
-    s32 limbCount;
-    s32 i;
+    int32_t limbCount;
+    int32_t i;
     SkeletonHeader* virtSkelHeader = SEGMENTED_TO_VIRTUAL(skeletonHeader);
 
     skin->limbCount = virtSkelHeader->limbCount;
@@ -87,7 +87,7 @@ void Skin_Init(PlayState* play, Skin* skin, SkeletonHeader* skeletonHeader, Anim
  */
 void Skin_Free(PlayState* play, Skin* skin) {
     if (skin->vtxTable != NULL) {
-        s32 i;
+        int32_t i;
 
         for (i = 0; i < skin->limbCount; i++) {
             if (skin->vtxTable[i].buf[0] != NULL) {
@@ -108,16 +108,16 @@ void Skin_Free(PlayState* play, Skin* skin) {
     }
 }
 
-s32 func_800A698C(Skin* skin, SkinLimb** skeleton, MtxF* limbMatrices, u8 parentIndex, u8 limbIndex) {
+int32_t func_800A698C(Skin* skin, SkinLimb** skeleton, MtxF* limbMatrices, uint8_t parentIndex, uint8_t limbIndex) {
     SkinLimb* limb = SEGMENTED_TO_VIRTUAL(skeleton[limbIndex]);
     MtxF* mtx;
-    s32 ret = { 0 };
+    int32_t ret = { 0 };
     MtxF sp28;
 
     if (parentIndex == LIMB_DONE) {
         SkinMatrix_GetClear(&mtx);
     } else {
-        mtx = &limbMatrices[(s32)parentIndex];
+        mtx = &limbMatrices[(int32_t)parentIndex];
     }
 
     SkinMatrix_MtxFMtxFMult(mtx, &limbMatrices[limbIndex], &sp28);
@@ -143,20 +143,20 @@ s32 func_800A698C(Skin* skin, SkinLimb** skeleton, MtxF* limbMatrices, u8 parent
 /**
  * Recursively applies matrix tranformations to each limb
  */
-s32 Skin_ApplyAnimTransformations(Skin* skin, MtxF* limbMatrices, Actor* actor, s32 setTranslation) {
-    s32 i;
-    s32 ret = { 0 };
-    f32 yTransl = { 0 };
-    f32 xTransl = { 0 };
-    f32 zTransl = { 0 };
+int32_t Skin_ApplyAnimTransformations(Skin* skin, MtxF* limbMatrices, Actor* actor, int32_t setTranslation) {
+    int32_t i;
+    int32_t ret = { 0 };
+    float yTransl = { 0 };
+    float xTransl = { 0 };
+    float zTransl = { 0 };
     SkinLimb** skeleton = SEGMENTED_TO_VIRTUAL(skin->skeletonHeader->segment);
     Vec3s* jointRot = &skin->skelAnime.jointTable[0];
 
     jointRot++;
 
-    f32 xRot = jointRot->x;
-    f32 yRot = jointRot->y;
-    f32 zRot = jointRot->z;
+    float xRot = jointRot->x;
+    float yRot = jointRot->y;
+    float zRot = jointRot->z;
 
     if (setTranslation) {
         jointRot--; // access joint table entry 0 for translation data

@@ -19,37 +19,37 @@ struct RotationIndex {
 };
 
 typedef struct {
-    /* 0x0000 */ u16 unk_00; // appears to be flags
-    /* 0x0002 */ s16 unk_02;
-    /* 0x0004 */ s16 unk_04;
-    /* 0x0006 */ s16 unk_06;
-    /* 0x0008 */ f32 unk_08;
+    /* 0x0000 */ uint16_t unk_00; // appears to be flags
+    /* 0x0002 */ int16_t unk_02;
+    /* 0x0004 */ int16_t unk_04;
+    /* 0x0006 */ int16_t unk_06;
+    /* 0x0008 */ float unk_08;
 } TransformData; // size = 0xC
 
 typedef struct {
-    /* 0x0000 */ u8* refIndex;
+    /* 0x0000 */ uint8_t* refIndex;
     /* 0x0004 */ TransformData* transformData;
-    /* 0x0008 */ s16* copyValues;
-    /* 0x000C */ s16 unk_0C;
-    /* 0x000E */ s16 unk_0E;
+    /* 0x0008 */ int16_t* copyValues;
+    /* 0x000C */ int16_t unk_0C;
+    /* 0x000E */ int16_t unk_0E;
 } TransformUpdateIndex; // size = 0x10
 
 typedef struct {
-    /* 0x00 */ s16 frameCount;
+    /* 0x00 */ int16_t frameCount;
 } AnimationHeaderCommon;
 
 // Index into the frame data table.
 typedef struct {
-    /* 0x00 */ u16 x;
-    /* 0x02 */ u16 y;
-    /* 0x04 */ u16 z;
+    /* 0x00 */ uint16_t x;
+    /* 0x02 */ uint16_t y;
+    /* 0x04 */ uint16_t z;
 } JointIndex; // size = 0x06
 
 typedef struct {
     /* 0x00 */ AnimationHeaderCommon common;
-    /* 0x04 */ s16* frameData;           // "tbl"
+    /* 0x04 */ int16_t* frameData;           // "tbl"
     /* 0x08 */ JointIndex* jointIndices; // "ref_tbl"
-    /* 0x0C */ u16 staticIndexMax;
+    /* 0x0C */ uint16_t staticIndexMax;
 } AnimationHeader; // size = 0x10
 
 typedef struct {

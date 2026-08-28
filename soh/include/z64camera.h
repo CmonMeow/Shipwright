@@ -228,34 +228,34 @@ typedef enum {
 typedef struct {
     /* 0x00 */ Vec3f collisionClosePoint;
     /* 0x0C */ CollisionPoly* atEyePoly;
-    /* 0x10 */ f32 swingUpdateRate;
-    /* 0x14 */ s16 unk_14;
-    /* 0x16 */ s16 unk_16;
-    /* 0x18 */ s16 unk_18;
-    /* 0x1A */ s16 swingUpdateRateTimer;
+    /* 0x10 */ float swingUpdateRate;
+    /* 0x14 */ int16_t unk_14;
+    /* 0x16 */ int16_t unk_16;
+    /* 0x18 */ int16_t unk_18;
+    /* 0x1A */ int16_t swingUpdateRateTimer;
 } SwingAnimation; // size = 0x1C
 
 typedef struct {
     /* 0x00 */ SwingAnimation swing;
-    /* 0x1C */ f32 yOffset;
-    /* 0x20 */ f32 unk_20;
-    /* 0x24 */ s16 slopePitchAdj;
-    /* 0x26 */ s16 swingYawTarget;
-    /* 0x28 */ s16 unk_28;
-    /* 0x2A */ s16 startSwingTimer;
+    /* 0x1C */ float yOffset;
+    /* 0x20 */ float unk_20;
+    /* 0x24 */ int16_t slopePitchAdj;
+    /* 0x26 */ int16_t swingYawTarget;
+    /* 0x28 */ int16_t unk_28;
+    /* 0x2A */ int16_t startSwingTimer;
 } Normal1Anim; // size = 0x2C
 
 typedef struct {
-    /* 0x00 */ f32 yOffset;
-    /* 0x04 */ f32 distMin;
-    /* 0x08 */ f32 distMax;
-    /* 0x0C */ f32 unk_0C;
-    /* 0x10 */ f32 unk_10;
-    /* 0x14 */ f32 unk_14;
-    /* 0x18 */ f32 fovTarget;
-    /* 0x1C */ f32 atLERPScaleMax;
-    /* 0x20 */ s16 pitchTarget;
-    /* 0x22 */ s16 interfaceFlags;
+    /* 0x00 */ float yOffset;
+    /* 0x04 */ float distMin;
+    /* 0x08 */ float distMax;
+    /* 0x0C */ float unk_0C;
+    /* 0x10 */ float unk_10;
+    /* 0x14 */ float unk_14;
+    /* 0x18 */ float fovTarget;
+    /* 0x1C */ float atLERPScaleMax;
+    /* 0x20 */ int16_t pitchTarget;
+    /* 0x22 */ int16_t interfaceFlags;
     /* 0x24 */ Normal1Anim anim;
 } Normal1; // size = 0x50
 
@@ -286,24 +286,24 @@ typedef struct {
 typedef struct {
     /* 0x00 */ Vec3f unk_00;
     /* 0x0C */ Vec3f unk_0C;
-    /* 0x18 */ f32 unk_18;
-    /* 0x1C */ f32 unk_1C;
-    /* 0x20 */ s16 unk_20;
-    /* 0x22 */ s16 unk_22;
-    /* 0x24 */ f32 unk_24;
-    /* 0x28 */ s16 unk_28;
+    /* 0x18 */ float unk_18;
+    /* 0x1C */ float unk_1C;
+    /* 0x20 */ int16_t unk_20;
+    /* 0x22 */ int16_t unk_22;
+    /* 0x24 */ float unk_24;
+    /* 0x28 */ int16_t unk_28;
 } Normal2Anim; // size = 0x2A
 
 typedef struct {
-    /* 0x00 */ f32 unk_00;
-    /* 0x04 */ f32 unk_04;
-    /* 0x08 */ f32 unk_08;
-    /* 0x0C */ f32 unk_0C;
-    /* 0x10 */ f32 unk_10;
-    /* 0x14 */ f32 unk_14;
-    /* 0x18 */ f32 unk_18;
-    /* 0x1C */ s16 unk_1C;
-    /* 0x1E */ s16 interfaceFlags;
+    /* 0x00 */ float unk_00;
+    /* 0x04 */ float unk_04;
+    /* 0x08 */ float unk_08;
+    /* 0x0C */ float unk_0C;
+    /* 0x10 */ float unk_10;
+    /* 0x14 */ float unk_14;
+    /* 0x18 */ float unk_18;
+    /* 0x1C */ int16_t unk_1C;
+    /* 0x1E */ int16_t interfaceFlags;
     /* 0x20 */ Normal2Anim anim;
 } Normal2; // size = 0x4A
 
@@ -320,26 +320,26 @@ typedef struct {
 
 typedef struct {
     /* 0x00 */ Vec3f unk_00;
-    /* 0x0C */ f32 yTarget;
-    /* 0x10 */ s16 unk_10;
-    /* 0x12 */ s16 yawTarget;
-    /* 0x14 */ s16 pitchTarget;
-    /* 0x16 */ s16 unk_16;
-    /* 0x18 */ s16 animTimer;
+    /* 0x0C */ float yTarget;
+    /* 0x10 */ int16_t unk_10;
+    /* 0x12 */ int16_t yawTarget;
+    /* 0x14 */ int16_t pitchTarget;
+    /* 0x16 */ int16_t unk_16;
+    /* 0x18 */ int16_t animTimer;
 } Parallel1Anim; // size = 0x1A
 
 typedef struct {
-    /* 0x00 */ f32 yOffset;
-    /* 0x04 */ f32 distTarget;
-    /* 0x08 */ f32 unk_08;
-    /* 0x0C */ f32 unk_0C;
-    /* 0x10 */ f32 fovTarget;
-    /* 0x14 */ f32 unk_14;
-    /* 0x18 */ f32 unk_18;
-    /* 0x1C */ f32 unk_1C;
-    /* 0x20 */ s16 pitchTarget;
-    /* 0x22 */ s16 yawTarget;
-    /* 0x24 */ s16 interfaceFlags;
+    /* 0x00 */ float yOffset;
+    /* 0x04 */ float distTarget;
+    /* 0x08 */ float unk_08;
+    /* 0x0C */ float unk_0C;
+    /* 0x10 */ float fovTarget;
+    /* 0x14 */ float unk_14;
+    /* 0x18 */ float unk_18;
+    /* 0x1C */ float unk_1C;
+    /* 0x20 */ int16_t pitchTarget;
+    /* 0x22 */ int16_t yawTarget;
+    /* 0x24 */ int16_t interfaceFlags;
     /* 0x28 */ Parallel1Anim anim;
 } Parallel1; // size = 0x42
 
@@ -359,19 +359,19 @@ typedef struct {
 typedef struct {
 
     /* 0x00 */ SwingAnimation swing;
-    /* 0x1C */ f32 unk_1C;
+    /* 0x1C */ float unk_1C;
     /* 0x20 */ VecSph unk_20;
 } Jump1Anim; // size = 0x28
 
 typedef struct {
-    /* 0x00 */ f32 atYOffset;
-    /* 0x04 */ f32 distMin;
-    /* 0x08 */ f32 distMax;
-    /* 0x0C */ f32 yawUpateRateTarget;
-    /* 0x10 */ f32 maxYawUpdate;
-    /* 0x14 */ f32 unk_14; // never used.
-    /* 0x18 */ f32 atLERPScaleMax;
-    /* 0x1C */ s16 interfaceFlags;
+    /* 0x00 */ float atYOffset;
+    /* 0x04 */ float distMin;
+    /* 0x08 */ float distMax;
+    /* 0x0C */ float yawUpateRateTarget;
+    /* 0x10 */ float maxYawUpdate;
+    /* 0x14 */ float unk_14; // never used.
+    /* 0x18 */ float atLERPScaleMax;
+    /* 0x1C */ int16_t interfaceFlags;
     /* 0x20 */ Jump1Anim anim;
 } Jump1; // size = 0x48
 
@@ -386,24 +386,24 @@ typedef struct {
     { flags, CAM_DATA_FLAGS }
 
 typedef struct {
-    /* 0x0 */ f32 floorY;
-    /* 0x4 */ s16 yawTarget;
-    /* 0x6 */ s16 initYawDiff; // unused, set but not read.
-    /* 0x8 */ s16 yawAdj;
-    /* 0xA */ s16 onFloor; // unused, set but not read
-    /* 0xC */ s16 animTimer;
+    /* 0x0 */ float floorY;
+    /* 0x4 */ int16_t yawTarget;
+    /* 0x6 */ int16_t initYawDiff; // unused, set but not read.
+    /* 0x8 */ int16_t yawAdj;
+    /* 0xA */ int16_t onFloor; // unused, set but not read
+    /* 0xC */ int16_t animTimer;
 } Jump2Anim; // size = 0x10
 
 typedef struct {
-    /* 0x00 */ f32 atYOffset;
-    /* 0x04 */ f32 minDist;
-    /* 0x08 */ f32 maxDist;
-    /* 0x0C */ f32 minMaxDistFactor;
-    /* 0x10 */ f32 yawUpdRateTarget;
-    /* 0x14 */ f32 xzUpdRateTarget;
-    /* 0x18 */ f32 fovTarget;
-    /* 0x1C */ f32 atLERPStepScale;
-    /* 0x20 */ s16 interfaceFlags;
+    /* 0x00 */ float atYOffset;
+    /* 0x04 */ float minDist;
+    /* 0x08 */ float maxDist;
+    /* 0x0C */ float minMaxDistFactor;
+    /* 0x10 */ float yawUpdRateTarget;
+    /* 0x14 */ float xzUpdRateTarget;
+    /* 0x18 */ float fovTarget;
+    /* 0x1C */ float atLERPStepScale;
+    /* 0x20 */ int16_t interfaceFlags;
     /* 0x24 */ Jump2Anim anim;
 } Jump2; // size = 0x34
 
@@ -420,22 +420,22 @@ typedef struct {
 
 typedef struct {
     /* 0x00 */ SwingAnimation swing;
-    /* 0x1C */ f32 unk_1C;
-    /* 0x20 */ s16 animTimer;
-    /* 0x22 */ s16 mode;
+    /* 0x1C */ float unk_1C;
+    /* 0x20 */ int16_t animTimer;
+    /* 0x22 */ int16_t mode;
 } Jump3Anim; // size = 0x24
 
 typedef struct {
-    /* 0x00 */ f32 yOffset;
-    /* 0x04 */ f32 distMin;
-    /* 0x08 */ f32 distMax;
-    /* 0x0C */ f32 swingUpdateRate;
-    /* 0x10 */ f32 unk_10;
-    /* 0x14 */ f32 unk_14;
-    /* 0x18 */ f32 fovTarget;
-    /* 0x1C */ f32 unk_1C;
-    /* 0x20 */ s16 pitchTarget;
-    /* 0x22 */ s16 interfaceFlags;
+    /* 0x00 */ float yOffset;
+    /* 0x04 */ float distMin;
+    /* 0x08 */ float distMax;
+    /* 0x0C */ float swingUpdateRate;
+    /* 0x10 */ float unk_10;
+    /* 0x14 */ float unk_14;
+    /* 0x18 */ float fovTarget;
+    /* 0x1C */ float unk_1C;
+    /* 0x20 */ int16_t pitchTarget;
+    /* 0x22 */ int16_t interfaceFlags;
     /* 0x24 */ Jump3Anim anim;
 } Jump3; // size = 0x48
 
@@ -452,31 +452,31 @@ typedef struct {
     { flags, CAM_DATA_FLAGS }
 
 typedef struct {
-    /* 0x00 */ f32 initialEyeToAtDist;
-    /* 0x04 */ f32 roll;
-    /* 0x08 */ f32 yPosOffset;
+    /* 0x00 */ float initialEyeToAtDist;
+    /* 0x04 */ float roll;
+    /* 0x08 */ float yPosOffset;
     /* 0x0C */ Actor* target;
-    /* 0x10 */ f32 unk_10;
-    /* 0x14 */ s16 unk_14; // unused
-    /* 0x16 */ s16 initialEyeToAtYaw;
-    /* 0x18 */ s16 initialEyeToAtPitch;
-    /* 0x1A */ s16 animTimer;
-    /* 0x1C */ s16 chargeTimer;
+    /* 0x10 */ float unk_10;
+    /* 0x14 */ int16_t unk_14; // unused
+    /* 0x16 */ int16_t initialEyeToAtYaw;
+    /* 0x18 */ int16_t initialEyeToAtPitch;
+    /* 0x1A */ int16_t animTimer;
+    /* 0x1C */ int16_t chargeTimer;
 } Battle1Anim; // size = 0x1E
 
 typedef struct {
-    /* 0x00 */ f32 yOffset;
-    /* 0x04 */ f32 distance;
-    /* 0x08 */ f32 swingYawInitial;
-    /* 0x0C */ f32 swingYawFinal;
-    /* 0x10 */ f32 swingPitchInitial;
-    /* 0x14 */ f32 swingPitchFinal;
-    /* 0x18 */ f32 swingPitchAdj;
-    /* 0x1C */ f32 fov;
-    /* 0x20 */ f32 atLERPScaleOnGround;
-    /* 0x24 */ f32 yOffsetOffGround;
-    /* 0x28 */ f32 atLERPScaleOffGround;
-    /* 0x2C */ s16 flags;
+    /* 0x00 */ float yOffset;
+    /* 0x04 */ float distance;
+    /* 0x08 */ float swingYawInitial;
+    /* 0x0C */ float swingYawFinal;
+    /* 0x10 */ float swingPitchInitial;
+    /* 0x14 */ float swingPitchFinal;
+    /* 0x18 */ float swingPitchAdj;
+    /* 0x1C */ float fov;
+    /* 0x20 */ float atLERPScaleOnGround;
+    /* 0x24 */ float yOffsetOffGround;
+    /* 0x28 */ float atLERPScaleOffGround;
+    /* 0x2C */ int16_t flags;
     /* 0x30 */ Battle1Anim anim;
 } Battle1; // size = 0x50
 
@@ -495,18 +495,18 @@ typedef struct {
     { groundAtLerpStepScale, CAM_DATA_GROUND_AT_LERP_STEP_SCALE }
 
 typedef struct {
-    /* 0x0 */ s16 animTimer;
+    /* 0x0 */ int16_t animTimer;
 } Battle4Anim; // size = 0x2
 
 typedef struct {
-    /* 0x00 */ f32 yOffset;
-    /* 0x04 */ f32 rTarget;
-    /* 0x08 */ s16 pitchTarget;
-    /* 0x0C */ f32 lerpUpdateRate;
-    /* 0x10 */ f32 fovTarget;
-    /* 0x14 */ f32 atLERPTarget;
-    /* 0x18 */ s16 interfaceFlags;
-    /* 0x1A */ s16 unk_1A;
+    /* 0x00 */ float yOffset;
+    /* 0x04 */ float rTarget;
+    /* 0x08 */ int16_t pitchTarget;
+    /* 0x0C */ float lerpUpdateRate;
+    /* 0x10 */ float fovTarget;
+    /* 0x14 */ float atLERPTarget;
+    /* 0x18 */ int16_t interfaceFlags;
+    /* 0x1A */ int16_t unk_1A;
     /* 0x1C */ Battle4Anim anim;
 } Battle4; // size = 0x20
 
@@ -520,30 +520,30 @@ typedef struct {
     { flags, CAM_DATA_FLAGS }
 
 typedef struct {
-    /* 0x00 */ f32 unk_00;
-    /* 0x04 */ f32 unk_04;
-    /* 0x08 */ f32 unk_08;
+    /* 0x00 */ float unk_00;
+    /* 0x04 */ float unk_04;
+    /* 0x08 */ float unk_08;
     /* 0x0C */ Actor* unk_0C;
-    /* 0x10 */ s16 unk_10;
-    /* 0x12 */ s16 unk_12;
-    /* 0x14 */ s16 unk_14;
-    /* 0x16 */ s16 unk_16;
+    /* 0x10 */ int16_t unk_10;
+    /* 0x12 */ int16_t unk_12;
+    /* 0x14 */ int16_t unk_14;
+    /* 0x16 */ int16_t unk_16;
 } Keep1Anim; // size = 0x18
 
 typedef struct {
-    /* 0x00 */ f32 unk_00;
-    /* 0x04 */ f32 unk_04;
-    /* 0x08 */ f32 unk_08;
-    /* 0x0C */ f32 unk_0C;
-    /* 0x10 */ f32 unk_10;
-    /* 0x14 */ f32 unk_14;
-    /* 0x18 */ f32 unk_18;
-    /* 0x1C */ f32 unk_1C;
-    /* 0x20 */ f32 unk_20;
-    /* 0x24 */ f32 unk_24;
-    /* 0x28 */ f32 unk_28;
-    /* 0x2C */ f32 unk_2C;
-    /* 0x30 */ s16 interfaceFlags;
+    /* 0x00 */ float unk_00;
+    /* 0x04 */ float unk_04;
+    /* 0x08 */ float unk_08;
+    /* 0x0C */ float unk_0C;
+    /* 0x10 */ float unk_10;
+    /* 0x14 */ float unk_14;
+    /* 0x18 */ float unk_18;
+    /* 0x1C */ float unk_1C;
+    /* 0x20 */ float unk_20;
+    /* 0x24 */ float unk_24;
+    /* 0x28 */ float unk_28;
+    /* 0x2C */ float unk_2C;
+    /* 0x30 */ int16_t interfaceFlags;
     /* 0x34 */ Keep1Anim anim;
 } KeepOn1; // size = 0x4C
 
@@ -566,22 +566,22 @@ typedef struct {
     /* 0x00 */ Vec3f eyeToAtTarget; // esentially a VecSph, but all floats.
     /* 0x0C */ Actor* target;
     /* 0x10 */ Vec3f atTarget;
-    /* 0x1C */ s16 animTimer;
+    /* 0x1C */ int16_t animTimer;
 } Keep3Anim; // size = 0x20
 
 typedef struct {
-    /* 0x00 */ f32 yOffset;
-    /* 0x04 */ f32 minDist;
-    /* 0x08 */ f32 maxDist;
-    /* 0x0C */ f32 swingYawInital;
-    /* 0x10 */ f32 swingYawFinal;
-    /* 0x14 */ f32 swingPitchInitial;
-    /* 0x18 */ f32 swingPitchFinal;
-    /* 0x1C */ f32 swingPitchAdj;
-    /* 0x20 */ f32 fovTarget;
-    /* 0x24 */ f32 atLERPScaleMax;
-    /* 0x28 */ s16 initTimer;
-    /* 0x2A */ s16 flags;
+    /* 0x00 */ float yOffset;
+    /* 0x04 */ float minDist;
+    /* 0x08 */ float maxDist;
+    /* 0x0C */ float swingYawInital;
+    /* 0x10 */ float swingYawFinal;
+    /* 0x14 */ float swingPitchInitial;
+    /* 0x18 */ float swingPitchFinal;
+    /* 0x1C */ float swingPitchAdj;
+    /* 0x20 */ float fovTarget;
+    /* 0x24 */ float atLERPScaleMax;
+    /* 0x28 */ int16_t initTimer;
+    /* 0x2A */ int16_t flags;
     /* 0x2C */ Keep3Anim anim;
 } KeepOn3; // size = 0x4C
 
@@ -600,26 +600,26 @@ typedef struct {
     { flags, CAM_DATA_FLAGS }
 
 typedef struct {
-    /* 0x00 */ f32 unk_00;
-    /* 0x04 */ f32 unk_04;
-    /* 0x08 */ f32 unk_08;
-    /* 0x0C */ s16 unk_0C;
-    /* 0x0E */ s16 unk_0E;
-    /* 0x10 */ s16 unk_10;
-    /* 0x12 */ s16 unk_12;
-    /* 0x14 */ s16 unk_14;
+    /* 0x00 */ float unk_00;
+    /* 0x04 */ float unk_04;
+    /* 0x08 */ float unk_08;
+    /* 0x0C */ int16_t unk_0C;
+    /* 0x0E */ int16_t unk_0E;
+    /* 0x10 */ int16_t unk_10;
+    /* 0x12 */ int16_t unk_12;
+    /* 0x14 */ int16_t unk_14;
 } KeepOn4_Unk20; // size = 0x14
 
 typedef struct {
-    /* 0x00 */ f32 unk_00;
-    /* 0x04 */ f32 unk_04;
-    /* 0x08 */ f32 unk_08;
-    /* 0x0C */ f32 unk_0C;
-    /* 0x10 */ f32 unk_10;
-    /* 0x14 */ f32 unk_14;
-    /* 0x18 */ f32 unk_18;
-    /* 0x1C */ s16 unk_1C;
-    /* 0x1E */ s16 unk_1E;
+    /* 0x00 */ float unk_00;
+    /* 0x04 */ float unk_04;
+    /* 0x08 */ float unk_08;
+    /* 0x0C */ float unk_0C;
+    /* 0x10 */ float unk_10;
+    /* 0x14 */ float unk_14;
+    /* 0x18 */ float unk_18;
+    /* 0x1C */ int16_t unk_1C;
+    /* 0x1E */ int16_t unk_1E;
     /* 0x20 */ KeepOn4_Unk20 unk_20;
 } KeepOn4; // size = 0x34
 
@@ -635,15 +635,15 @@ typedef struct {
     { unk_22, CAM_DATA_UNK_22 }
 
 typedef struct {
-    /* 0x0 */ f32 fovTarget;
-    /* 0x4 */ s16 animTimer;
+    /* 0x0 */ float fovTarget;
+    /* 0x4 */ int16_t animTimer;
 } KeepOn0Anim; // size = 0x8
 
 typedef struct {
-    /* 0x00 */ f32 fovScale;
-    /* 0x04 */ f32 yawScale;
-    /* 0x08 */ s16 timerInit;
-    /* 0x0A */ s16 interfaceFlags;
+    /* 0x00 */ float fovScale;
+    /* 0x04 */ float yawScale;
+    /* 0x08 */ int16_t timerInit;
+    /* 0x0A */ int16_t interfaceFlags;
     /* 0x0C */ KeepOn0Anim anim;
 } KeepOn0; // size = 0x14
 
@@ -655,14 +655,14 @@ typedef struct {
 
 typedef struct {
     /* 0x00 */ PosRot eyePosRotTarget;
-    /* 0x14 */ s16 fov;
+    /* 0x14 */ int16_t fov;
 } Fixed1Anim; // size = 0x18
 
 typedef struct {
-    /* 0x00 */ f32 unk_00; // seems to be unused?
-    /* 0x04 */ f32 lerpStep;
-    /* 0x08 */ f32 fov;
-    /* 0x0C */ s16 interfaceFlags;
+    /* 0x00 */ float unk_00; // seems to be unused?
+    /* 0x04 */ float lerpStep;
+    /* 0x08 */ float fov;
+    /* 0x0C */ int16_t interfaceFlags;
     /* 0x10 */ Fixed1Anim anim;
 } Fixed1; // size = 0x28
 
@@ -674,15 +674,15 @@ typedef struct {
 
 typedef struct {
     /* 0x0 */ Vec3f eye;
-    /* 0xC */ s16 fov;
+    /* 0xC */ int16_t fov;
 } Fixed2InitParams; // size = 0x10
 
 typedef struct {
-    /* 0x00 */ f32 yOffset;
-    /* 0x04 */ f32 eyeStepScale;
-    /* 0x08 */ f32 posStepScale;
-    /* 0x0C */ f32 fov;
-    /* 0x10 */ s16 interfaceFlags;
+    /* 0x00 */ float yOffset;
+    /* 0x04 */ float eyeStepScale;
+    /* 0x08 */ float posStepScale;
+    /* 0x0C */ float fov;
+    /* 0x10 */ int16_t interfaceFlags;
     /* 0x14 */ Fixed2InitParams initParams;
 } Fixed2; // size = 0x24
 
@@ -695,27 +695,27 @@ typedef struct {
 
 typedef struct {
     /* 0x0 */ Vec3s rot;
-    /* 0x6 */ s16 fov;
-    /* 0x8 */ s16 updDirTimer;
-    /* 0xA */ s16 jfifId;
+    /* 0x6 */ int16_t fov;
+    /* 0x8 */ int16_t updDirTimer;
+    /* 0xA */ int16_t jfifId;
 } Fixed3Anim; // size = 0xC
 
 typedef struct {
-    /* 0x0 */ s16 interfaceFlags;
+    /* 0x0 */ int16_t interfaceFlags;
     /* 0x4 */ Fixed3Anim anim;
 } Fixed3; // size = 0x10
 
 typedef struct {
     /* 0x0 */ Vec3f eyeTarget;
-    /* 0xC */ f32 followSpeed;
+    /* 0xC */ float followSpeed;
 } Fixed4Anim; // size = 0x10
 
 typedef struct {
-    /* 0x00 */ f32 yOffset;
-    /* 0x04 */ f32 speedToEyePos;
-    /* 0x08 */ f32 followSpeed;
-    /* 0x0C */ f32 fov;
-    /* 0x10 */ s16 interfaceFlags;
+    /* 0x00 */ float yOffset;
+    /* 0x04 */ float speedToEyePos;
+    /* 0x08 */ float followSpeed;
+    /* 0x0C */ float fov;
+    /* 0x10 */ int16_t interfaceFlags;
     /* 0x14 */ Fixed4Anim anim;
 } Fixed4; // size = 0x24
 
@@ -727,20 +727,20 @@ typedef struct {
     { flags, CAM_DATA_FLAGS }
 
 typedef struct {
-    /* 0x0 */ f32 r;
-    /* 0x4 */ s16 yaw;
-    /* 0x6 */ s16 pitch;
-    /* 0x8 */ s16 animTimer;
+    /* 0x0 */ float r;
+    /* 0x4 */ int16_t yaw;
+    /* 0x6 */ int16_t pitch;
+    /* 0x8 */ int16_t animTimer;
 } Subj3Anim; // size = 0xC
 
 typedef struct {
-    /* 0x00 */ f32 eyeNextYOffset;
-    /* 0x04 */ f32 eyeDist;
-    /* 0x08 */ f32 eyeNextDist;
-    /* 0x0C */ f32 unk_0C; // unused
+    /* 0x00 */ float eyeNextYOffset;
+    /* 0x04 */ float eyeDist;
+    /* 0x08 */ float eyeNextDist;
+    /* 0x0C */ float unk_0C; // unused
     /* 0x10 */ Vec3f atOffset;
-    /* 0x1C */ f32 fovTarget;
-    /* 0x20 */ s16 interfaceFlags;
+    /* 0x1C */ float fovTarget;
+    /* 0x20 */ int16_t interfaceFlags;
     /* 0x24 */ Subj3Anim anim;
 } Subj3; // size = 0x30
 
@@ -757,19 +757,19 @@ typedef struct {
 
 typedef struct {
     /* 0x00 */ Linef unk_00;
-    /* 0x18 */ f32 unk_18;
-    /* 0x1C */ f32 unk_1C;
-    /* 0x20 */ f32 unk_20;
-    /* 0x24 */ f32 unk_24;
-    /* 0x28 */ f32 unk_28;
-    /* 0x2C */ s16 unk_2C;
-    /* 0x2E */ s16 unk_2E;
-    /* 0x30 */ s16 unk_30;
-    /* 0x32 */ s16 unk_32;
+    /* 0x18 */ float unk_18;
+    /* 0x1C */ float unk_1C;
+    /* 0x20 */ float unk_20;
+    /* 0x24 */ float unk_24;
+    /* 0x28 */ float unk_28;
+    /* 0x2C */ int16_t unk_2C;
+    /* 0x2E */ int16_t unk_2E;
+    /* 0x30 */ int16_t unk_30;
+    /* 0x32 */ int16_t unk_32;
 } Subj4Anim; // size = 0x34
 
 typedef struct {
-    /* 0x0 */ s16 interfaceFlags;
+    /* 0x0 */ int16_t interfaceFlags;
     /* 0x4 */ Subj4Anim anim;
 } Subj4; // size = 0x38
 
@@ -784,14 +784,14 @@ typedef struct {
 typedef struct {
     /* 0x00 */ PosRot eyePosRot;
     /* 0x14 */ char unk_14[0x8];
-    /* 0x1C */ s16 fov;
-    /* 0x1E */ s16 jfifId;
+    /* 0x1C */ int16_t fov;
+    /* 0x1E */ int16_t jfifId;
 } Data4InitParams; // size = 0x20
 
 typedef struct {
-    /* 0x0 */ f32 yOffset;
-    /* 0x4 */ f32 fov;
-    /* 0x8 */ s16 interfaceFlags;
+    /* 0x0 */ float yOffset;
+    /* 0x4 */ float fov;
+    /* 0x8 */ int16_t interfaceFlags;
     /* 0xC */ Data4InitParams initParams;
 } Data4; // size = 0x2C
 
@@ -801,21 +801,21 @@ typedef struct {
     { flags, CAM_DATA_FLAGS }
 
 typedef struct {
-    /* 0x0 */ f32 unk_00; // unused
-    /* 0x4 */ s16 yawTarget;
-    /* 0x6 */ s16 yawTargetAdj;
-    /* 0x8 */ s16 timer;
+    /* 0x0 */ float unk_00; // unused
+    /* 0x4 */ int16_t yawTarget;
+    /* 0x6 */ int16_t yawTargetAdj;
+    /* 0x8 */ int16_t timer;
 } Unique1Anim; // size = 0xC
 
 typedef struct {
-    /* 0x00 */ f32 yOffset;
-    /* 0x04 */ f32 distMin;
-    /* 0x08 */ f32 distMax;
+    /* 0x00 */ float yOffset;
+    /* 0x04 */ float distMin;
+    /* 0x08 */ float distMax;
     /* 0x0C */ char unk_0C[4]; // unused
-    /* 0x10 */ f32 fovTarget;
-    /* 0x14 */ f32 atLERPScaleMax;
-    /* 0x18 */ s16 pitchTarget;
-    /* 0x1A */ s16 interfaceFlags;
+    /* 0x10 */ float fovTarget;
+    /* 0x14 */ float atLERPScaleMax;
+    /* 0x18 */ int16_t pitchTarget;
+    /* 0x1A */ int16_t interfaceFlags;
     /* 0x1C */ Unique1Anim anim;
 } Unique1; // size = 0x28
 
@@ -829,15 +829,15 @@ typedef struct {
     { flags, CAM_DATA_FLAGS }
 
 typedef struct {
-    /* 0x0 */ f32 unk_00;
-    /* 0x4 */ s16 unk_04;
+    /* 0x0 */ float unk_00;
+    /* 0x4 */ int16_t unk_04;
 } Unique2Unk10; // size = 0x8
 
 typedef struct {
-    /* 0x00 */ f32 yOffset;
-    /* 0x04 */ f32 distTarget;
-    /* 0x08 */ f32 fovTarget;
-    /* 0x0C */ s16 interfaceFlags;
+    /* 0x00 */ float yOffset;
+    /* 0x04 */ float distTarget;
+    /* 0x08 */ float fovTarget;
+    /* 0x0C */ int16_t interfaceFlags;
     /* 0x10 */ Unique2Unk10 unk_10; // unused, values set but not read.
 } Unique2; // size = 0x18
 
@@ -848,22 +848,22 @@ typedef struct {
     { flags, CAM_DATA_FLAGS }
 
 typedef struct {
-    /* 0x0 */ f32 initialFov;
-    /* 0x4 */ f32 initialDist;
+    /* 0x0 */ float initialFov;
+    /* 0x4 */ float initialDist;
 } Unique3Anim; // size = 0x8
 
 typedef struct {
-    /* 0x0 */ f32 yOffset;
-    /* 0x4 */ f32 fov;
-    /* 0x8 */ s16 interfaceFlags;
+    /* 0x0 */ float yOffset;
+    /* 0x4 */ float fov;
+    /* 0x8 */ int16_t interfaceFlags;
 } Unique3Params; // size = 0xC
 
 typedef struct {
     /* 0x0 */ struct Actor* doorActor;
-    /* 0x4 */ s16 camDataIdx;
-    /* 0x6 */ s16 timer1;
-    /* 0x8 */ s16 timer2;
-    /* 0xA */ s16 timer3;
+    /* 0x4 */ int16_t camDataIdx;
+    /* 0x6 */ int16_t timer1;
+    /* 0x8 */ int16_t timer2;
+    /* 0xA */ int16_t timer3;
 } DoorParams; // size = 0xC
 
 typedef struct {
@@ -879,12 +879,12 @@ typedef struct {
 
 typedef struct {
     /* 0x00 */ Vec3f initalPos;
-    /* 0x0C */ s16 animTimer;
+    /* 0x0C */ int16_t animTimer;
     /* 0x10 */ Linef sceneCamPosPlayerLine;
 } Unique0Anim; // size = 0x28
 
 typedef struct {
-    /* 0x0 */ s16 interfaceFlags;
+    /* 0x0 */ int16_t interfaceFlags;
     /* 0x4 */ Unique0Anim anim;
 } Unique0Params; // size = 0x2C
 
@@ -894,7 +894,7 @@ typedef struct {
 } Unique0; // size = 0x38
 
 typedef struct {
-    /* 0x0 */ s16 interfaceFlags;
+    /* 0x0 */ int16_t interfaceFlags;
 } Unique6; // size = 0x4
 
 typedef union {
@@ -902,9 +902,9 @@ typedef union {
 } Unique7Unk8; // size = 0x8
 
 typedef struct {
-    /* 0x0 */ f32 fov;
-    /* 0x4 */ s16 interfaceFlags;
-    /* 0x6 */ s16 align;
+    /* 0x0 */ float fov;
+    /* 0x4 */ int16_t interfaceFlags;
+    /* 0x6 */ int16_t align;
     /* 0x8 */ Unique7Unk8 unk_08; // unk_08 goes unused.
 } Unique7; // size = 0x10
 
@@ -921,18 +921,18 @@ typedef struct {
  *      if initFlags & 0x6060: use world for focus point
  * 0x3: Add atTargetInit to camera's at
  * 0x4: Don't update targets?
- * 0x8: flag to use atTagetInit as f32 pitch, yaw, r
+ * 0x8: flag to use atTagetInit as float pitch, yaw, r
  * 0x10: ? unused
  * 0x20: focus on player
 */
 typedef struct {
-    /* 0x00 */ u8 actionFlags;
-    /* 0x01 */ u8 unk_01;
-    /* 0x02 */ s16 initFlags;
-    /* 0x04 */ s16 timerInit;
-    /* 0x06 */ s16 rollTargetInit;
-    /* 0x08 */ f32 fovTargetInit;
-    /* 0x0C */ f32 lerpStepScale;
+    /* 0x00 */ uint8_t actionFlags;
+    /* 0x01 */ uint8_t unk_01;
+    /* 0x02 */ int16_t initFlags;
+    /* 0x04 */ int16_t timerInit;
+    /* 0x06 */ int16_t rollTargetInit;
+    /* 0x08 */ float fovTargetInit;
+    /* 0x0C */ float lerpStepScale;
     /* 0x10 */ Vec3f atTargetInit;
     /* 0x1C */ Vec3f eyeTargetInit;
 } OnePointCsFull; /* size = 0x28 */
@@ -942,47 +942,47 @@ typedef struct {
     /* 0x04 */ Vec3f atTarget;
     /* 0x10 */ Vec3f eyeTarget;
     /* 0x1C */ Vec3f playerPos;
-    /* 0x28 */ f32 fovTarget;
+    /* 0x28 */ float fovTarget;
     /* 0x2C */ VecSph atEyeOffsetTarget;
-    /* 0x34 */ s16 rollTarget;
-    /* 0x36 */ s16 curKeyFrameIdx;
-    /* 0x38 */ s16 unk_38;
-    /* 0x3A */ s16 isNewKeyFrame;
-    /* 0x3C */ s16 keyFrameTimer;
+    /* 0x34 */ int16_t rollTarget;
+    /* 0x36 */ int16_t curKeyFrameIdx;
+    /* 0x38 */ int16_t unk_38;
+    /* 0x3A */ int16_t isNewKeyFrame;
+    /* 0x3C */ int16_t keyFrameTimer;
 } Unique9Anim; // size = 0x3E
 
 typedef struct {
-    /* 0x0 */ s16 interfaceFlags;
+    /* 0x0 */ int16_t interfaceFlags;
     /* 0x4 */ Unique9Anim anim;
 } Unique9; // size = 0x40
 
 typedef struct {
-    /* 0x0 */ s32 keyFrameCnt;
+    /* 0x0 */ int32_t keyFrameCnt;
     /* 0x4 */ OnePointCsFull* keyFrames;
     /* 0x8 */ Unique9 uniq9;
 } Unique9OnePointCs; // size = 0x48
 
 typedef struct {
-    /* 0x0 */ f32 curFrame;
-    /* 0x4 */ s16 keyframe;
+    /* 0x0 */ float curFrame;
+    /* 0x4 */ int16_t keyframe;
 } Demo1Anim; // size = 0x14
 
 typedef struct {
-    /* 0x0 */ s16 interfaceFlags;
+    /* 0x0 */ int16_t interfaceFlags;
     /* 0x4 */ Demo1Anim anim;
 } Demo1; // size = 0x18
 
 typedef struct {
     /* 0x00 */ Vec3f initialAt;
-    /* 0x0C */ f32 unk_0C;
-    /* 0x10 */ s16 animFrame;
-    /* 0x12 */ s16 yawDir;
+    /* 0x0C */ float unk_0C;
+    /* 0x10 */ int16_t animFrame;
+    /* 0x12 */ int16_t yawDir;
 } Demo3Anim; // size = 0x14
 
 typedef struct {
-    /* 0x0 */ f32 fov;
-    /* 0x4 */ f32 unk_04; // unused
-    /* 0x8 */ s16 interfaceFlags;
+    /* 0x0 */ float fov;
+    /* 0x4 */ float unk_04; // unused
+    /* 0x8 */ int16_t interfaceFlags;
     /* 0xC */ Demo3Anim anim;
 } Demo3; // size = 0x20
 
@@ -992,34 +992,34 @@ typedef struct {
     { flags, CAM_DATA_FLAGS }
 
 typedef struct {
-    /* 0x0 */ s16 animTimer;
+    /* 0x0 */ int16_t animTimer;
     /* 0x4 */ Vec3f atTarget;
 } Demo6Anim; // size = 0x10
 
 typedef struct {
-    /* 0x0 */ s16 interfaceFlags;
-    /* 0x2 */ s16 unk_02;
+    /* 0x0 */ int16_t interfaceFlags;
+    /* 0x2 */ int16_t unk_02;
     /* 0x4 */ Demo6Anim anim;
 } Demo6; // size = 0x14
 
 typedef struct {
-    /* 0x0 */ f32 curFrame;
-    /* 0x4 */ s16 keyframe;
-    /* 0x6 */ s16 doLERPAt;
-    /* 0x8 */ s16 finishAction;
-    /* 0xA */ s16 animTimer;
+    /* 0x0 */ float curFrame;
+    /* 0x4 */ int16_t keyframe;
+    /* 0x6 */ int16_t doLERPAt;
+    /* 0x8 */ int16_t finishAction;
+    /* 0xA */ int16_t animTimer;
 } Demo9Anim; // size = 0xC
 
 typedef struct {
-    /* 0x0 */ s16 interfaceFlags;
+    /* 0x0 */ int16_t interfaceFlags;
     /* 0x4 */ Demo9Anim anim;
 } Demo9; // size = 0x10
 
 typedef struct {
     /* 0x0 */ CutsceneCameraPoint* atPoints;
     /* 0x4 */ CutsceneCameraPoint* eyePoints;
-    /* 0x8 */ s16 actionParameters;
-    /* 0xA */ s16 initTimer;
+    /* 0x8 */ int16_t actionParameters;
+    /* 0xA */ int16_t initTimer;
 } OnePointCsCamera; // size = 0xC
 
 typedef struct {
@@ -1028,8 +1028,8 @@ typedef struct {
 } Demo9OnePointCs; // size = 0x1C
 
 typedef struct {
-    /* 0x0 */ f32 lerpAtScale;
-    /* 0x4 */ s16 interfaceFlags;
+    /* 0x0 */ float lerpAtScale;
+    /* 0x4 */ int16_t interfaceFlags;
 } Special0; // size = 0x8
 
 #define CAM_FUNCDATA_SPEC0(yawUpdateRateTarget, flags) \
@@ -1037,23 +1037,23 @@ typedef struct {
     { flags, CAM_DATA_FLAGS }
 
 typedef struct {
-    /* 0x0 */ s16 initalTimer;
+    /* 0x0 */ int16_t initalTimer;
 } Special4; // size = 0x4
 
 typedef struct {
-    /* 0x0 */ s16 animTimer;
+    /* 0x0 */ int16_t animTimer;
 } Special5Anim; // size = 0x4
 
 typedef struct {
-    /* 0x00 */ f32 yOffset;
-    /* 0x04 */ f32 eyeDist;
-    /* 0x08 */ f32 minDistForRot;
-    /* 0x0C */ f32 fovTarget;
-    /* 0x10 */ f32 atMaxLERPScale;
-    /* 0x14 */ s16 timerInit;
-    /* 0x16 */ s16 pitch;
-    /* 0x18 */ s16 interfaceFlags;
-    /* 0x1A */ s16 unk_1A;
+    /* 0x00 */ float yOffset;
+    /* 0x04 */ float eyeDist;
+    /* 0x08 */ float minDistForRot;
+    /* 0x0C */ float fovTarget;
+    /* 0x10 */ float atMaxLERPScale;
+    /* 0x14 */ int16_t timerInit;
+    /* 0x16 */ int16_t pitch;
+    /* 0x18 */ int16_t interfaceFlags;
+    /* 0x1A */ int16_t unk_1A;
     /* 0x1C */ Special5Anim anim;
 } Special5; // size = 0x20
 
@@ -1079,28 +1079,28 @@ typedef struct {
     { flags, CAM_DATA_FLAGS }
 
 typedef struct {
-    /* 0x0 */ s16 idx;
+    /* 0x0 */ int16_t idx;
 } Special7; // size = 0x4
 
 typedef struct {
-    /* 0x0 */ f32 initalPlayerY;
-    /* 0x4 */ s16 animTimer;
+    /* 0x0 */ float initalPlayerY;
+    /* 0x4 */ int16_t animTimer;
 } Special6Anim; // size = 0x8
 
 typedef struct {
-    /* 0x0 */ s16 interfaceFlags;
+    /* 0x0 */ int16_t interfaceFlags;
     /* 0x4 */ Special6Anim anim;
 } Special6; // size = 0xC
 
 typedef struct {
-    /* 0x0 */ s16 targetYaw;
+    /* 0x0 */ int16_t targetYaw;
 } Special9Anim; // size = 0x2
 
 typedef struct {
-    /* 0x0 */ f32 yOffset;
-    /* 0x4 */ f32 unk_04;
-    /* 0x8 */ s16 interfaceFlags;
-    /* 0xA */ s16 unk_0A;
+    /* 0x0 */ float yOffset;
+    /* 0x4 */ float unk_04;
+    /* 0x8 */ int16_t interfaceFlags;
+    /* 0xA */ int16_t unk_0A;
     /* 0xC */ Special9Anim anim;
 } Special9Params; // size = 0x10
 
@@ -1119,7 +1119,7 @@ typedef struct {
     /* 0x0C */ Vec3f norm;
     /* 0x18 */ CollisionPoly* poly;
     /* 0x1C */ VecSph sphNorm;
-    /* 0x24 */ s32 bgId;
+    /* 0x24 */ int32_t bgId;
 } CamColChk; // size = 0x28
 
 typedef struct {
@@ -1134,55 +1134,55 @@ typedef struct {
     /* 0x094 */ PosRot playerPosRot;
     /* 0x0A8 */ struct Actor* target;
     /* 0x0AC */ PosRot targetPosRot;
-    /* 0x0C0 */ f32 rUpdateRateInv;
-    /* 0x0C4 */ f32 pitchUpdateRateInv;
-    /* 0x0C8 */ f32 yawUpdateRateInv;
-    /* 0x0CC */ f32 xzOffsetUpdateRate;
-    /* 0x0D0 */ f32 yOffsetUpdateRate;
-    /* 0x0D4 */ f32 fovUpdateRate;
-    /* 0x0D8 */ f32 xzSpeed;
-    /* 0x0DC */ f32 dist;
-    /* 0x0E0 */ f32 speedRatio;
+    /* 0x0C0 */ float rUpdateRateInv;
+    /* 0x0C4 */ float pitchUpdateRateInv;
+    /* 0x0C8 */ float yawUpdateRateInv;
+    /* 0x0CC */ float xzOffsetUpdateRate;
+    /* 0x0D0 */ float yOffsetUpdateRate;
+    /* 0x0D4 */ float fovUpdateRate;
+    /* 0x0D8 */ float xzSpeed;
+    /* 0x0DC */ float dist;
+    /* 0x0E0 */ float speedRatio;
     /* 0x0E4 */ Vec3f posOffset;
     /* 0x0F0 */ Vec3f playerPosDelta;
-    /* 0x0FC */ f32 fov;
-    /* 0x100 */ f32 atLERPStepScale;
-    /* 0x104 */ f32 playerGroundY;
+    /* 0x0FC */ float fov;
+    /* 0x100 */ float atLERPStepScale;
+    /* 0x104 */ float playerGroundY;
     /* 0x108 */ Vec3f floorNorm;
-    /* 0x114 */ f32 waterYPos;
-    /* 0x118 */ s32 waterPrevCamIdx;
-    /* 0x11C */ s32 waterPrevCamSetting;
-    /* 0x120 */ s32 waterQuakeId;
+    /* 0x114 */ float waterYPos;
+    /* 0x118 */ int32_t waterPrevCamIdx;
+    /* 0x11C */ int32_t waterPrevCamSetting;
+    /* 0x120 */ int32_t waterQuakeId;
     /* 0x124 */ void* data0;
     /* 0x128 */ void* data1;
-    /* 0x12C */ s16 data2;
-    /* 0x12E */ s16 data3;
-    /* 0x130 */ s16 uid;
+    /* 0x12C */ int16_t data2;
+    /* 0x12E */ int16_t data3;
+    /* 0x130 */ int16_t uid;
     /* 0x132 */ char unk_132[2];
     /* 0x134 */ Vec3s inputDir;
     /* 0x13A */ Vec3s camDir;
-    /* 0x140 */ s16 status;
-    /* 0x142 */ s16 setting;
-    /* 0x144 */ s16 mode;
-    /* 0x146 */ s16 bgCheckId;
-    /* 0x148 */ s16 camDataIdx;
-    /* 0x14A */ s16 unk_14A;
-    /* 0x14C */ s16 unk_14C;
-    /* 0x14E */ s16 childCamIdx;
-    /* 0x150 */ s16 waterDistortionTimer;
-    /* 0x152 */ s16 distortionFlags;
-    /* 0x154 */ s16 prevSetting;
-    /* 0x156 */ s16 nextCamDataIdx;
-    /* 0x158 */ s16 nextBGCheckId;
-    /* 0x15A */ s16 roll;
-    /* 0x15C */ s16 paramFlags;
-    /* 0x15E */ s16 animState;
-    /* 0x160 */ s16 timer;
-    /* 0x162 */ s16 parentCamIdx;
-    /* 0x164 */ s16 thisIdx;
-    /* 0x166 */ s16 prevCamDataIdx;
-    /* 0x168 */ s16 csId;
-    /* 0x16A */ s16 unk_16A;
+    /* 0x140 */ int16_t status;
+    /* 0x142 */ int16_t setting;
+    /* 0x144 */ int16_t mode;
+    /* 0x146 */ int16_t bgCheckId;
+    /* 0x148 */ int16_t camDataIdx;
+    /* 0x14A */ int16_t unk_14A;
+    /* 0x14C */ int16_t unk_14C;
+    /* 0x14E */ int16_t childCamIdx;
+    /* 0x150 */ int16_t waterDistortionTimer;
+    /* 0x152 */ int16_t distortionFlags;
+    /* 0x154 */ int16_t prevSetting;
+    /* 0x156 */ int16_t nextCamDataIdx;
+    /* 0x158 */ int16_t nextBGCheckId;
+    /* 0x15A */ int16_t roll;
+    /* 0x15C */ int16_t paramFlags;
+    /* 0x15E */ int16_t animState;
+    /* 0x160 */ int16_t timer;
+    /* 0x162 */ int16_t parentCamIdx;
+    /* 0x164 */ int16_t thisIdx;
+    /* 0x166 */ int16_t prevCamDataIdx;
+    /* 0x168 */ int16_t csId;
+    /* 0x16A */ int16_t unk_16A;
 } Camera; // size = 0x16C
 
 #endif

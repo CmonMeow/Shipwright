@@ -1,29 +1,29 @@
 #include "global.h"
 
-s32 D_8012CED0 = 0;
+int32_t D_8012CED0 = 0;
 
-s32 sShrinkWindowVal = 0;
-s32 sShrinkWindowCurrentVal = 0;
+int32_t sShrinkWindowVal = 0;
+int32_t sShrinkWindowCurrentVal = 0;
 
-void ShrinkWindow_SetVal(s32 value) {
+void ShrinkWindow_SetVal(int32_t value) {
     if (HREG(80) == 0x13 && HREG(81) == 1) {
         osSyncPrintf("shrink_window_setval(%d)\n", value);
     }
     sShrinkWindowVal = value;
 }
 
-u32 ShrinkWindow_GetVal(void) {
+uint32_t ShrinkWindow_GetVal(void) {
     return sShrinkWindowVal;
 }
 
-void ShrinkWindow_SetCurrentVal(s32 currentVal) {
+void ShrinkWindow_SetCurrentVal(int32_t currentVal) {
     if (HREG(80) == 0x13 && HREG(81) == 1) {
         osSyncPrintf("shrink_window_setnowval(%d)\n", currentVal);
     }
     sShrinkWindowCurrentVal = currentVal;
 }
 
-u32 ShrinkWindow_GetCurrentVal(void) {
+uint32_t ShrinkWindow_GetCurrentVal(void) {
     return sShrinkWindowCurrentVal;
 }
 
@@ -43,8 +43,8 @@ void ShrinkWindow_Destroy(void) {
     sShrinkWindowCurrentVal = 0;
 }
 
-void ShrinkWindow_Update(s32 updateRate) {
-    s32 off = { 0 };
+void ShrinkWindow_Update(int32_t updateRate) {
+    int32_t off = { 0 };
 
     if (updateRate == 3) {
         off = 10;

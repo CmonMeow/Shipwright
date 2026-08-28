@@ -270,7 +270,7 @@ uint32_t OTRGlobals::GetInterpolationFPS() {
     return CVarGetInteger(CVAR_SETTING("InterpolationFPS"), 20);
 }
 
-extern "C" void AudioMgr_CreateNextAudioBuffer(s16* samples, u32 num_samples);
+extern "C" void AudioMgr_CreateNextAudioBuffer(int16_t* samples, uint32_t num_samples);
 extern "C" void AudioPlayer_Play(const uint8_t* buf, uint32_t len);
 extern "C" int AudioPlayer_Buffered(void);
 extern "C" int AudioPlayer_GetDesiredBuffered(void);
@@ -299,16 +299,16 @@ void OTRAudio_Thread() {
 #define NUM_AUDIO_CHANNELS 2
 
         int samples_left = AudioPlayer_Buffered();
-        u32 num_audio_samples = samples_left < AudioPlayer_GetDesiredBuffered() ? SAMPLES_HIGH : SAMPLES_LOW;
+        uint32_t num_audio_samples = samples_left < AudioPlayer_GetDesiredBuffered() ? SAMPLES_HIGH : SAMPLES_LOW;
 
         // 3 is the maximum authentic frame divisor.
-        s16 audio_buffer[SAMPLES_HIGH * NUM_AUDIO_CHANNELS * 3];
+        int16_t audio_buffer[SAMPLES_HIGH * NUM_AUDIO_CHANNELS * 3];
         for (int i = 0; i < AUDIO_FRAMES_PER_UPDATE; i++) {
             AudioMgr_CreateNextAudioBuffer(audio_buffer + i * (num_audio_samples * NUM_AUDIO_CHANNELS),
                                            num_audio_samples);
         }
 
-        AudioPlayer_Play((u8*)audio_buffer,
+        AudioPlayer_Play((uint8_t*)audio_buffer,
                          num_audio_samples * (sizeof(int16_t) * NUM_AUDIO_CHANNELS * AUDIO_FRAMES_PER_UPDATE));
 
         audio.processing = false;
@@ -711,8 +711,8 @@ extern "C" uint32_t OTRGetGameRenderHeight() {
     return height;
 }
 
-f32 floorf(f32 x);
-f32 ceilf(f32 x);  // This gets annoying
+float floorf(float x);
+float ceilf(float x);  // This gets annoying
 
 extern "C" int16_t OTRGetRectDimensionFromLeftEdge(float v) {
     return ((int)floorf(OTRGetDimensionFromLeftEdge(v)));
@@ -738,7 +738,7 @@ extern "C" int Controller_ShouldRumble(size_t slot) {
     return 0;
 }
 
-extern "C" void Gfx_RegisterBlendedTexture(const char* name, u8* mask, u8* replacement) {
+extern "C" void Gfx_RegisterBlendedTexture(const char* name, uint8_t* mask, uint8_t* replacement) {
     if (auto intP = dynamic_pointer_cast<Fast::Fast3dWindow>(Ship::Context::GetInstance()->GetWindow())
                         ->GetInterpreterWeak()
                         .lock()) {

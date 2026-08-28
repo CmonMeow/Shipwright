@@ -1,7 +1,7 @@
 #include "global.h"
 
-s32 __osSiRawStartDma(s32 dir, void* addr) {
-    if (HW_REG(SI_STATUS_REG, u32) & (SI_STATUS_DMA_BUSY | SI_STATUS_IO_READ_BUSY)) {
+int32_t __osSiRawStartDma(int32_t dir, void* addr) {
+    if (HW_REG(SI_STATUS_REG, uint32_t) & (SI_STATUS_DMA_BUSY | SI_STATUS_IO_READ_BUSY)) {
         return -1;
     }
     if (dir == OS_WRITE) {

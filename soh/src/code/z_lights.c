@@ -11,14 +11,14 @@
 //#define LIGHTS_BUFFER_SIZE 1024 // Kill me
 
 typedef struct {
-    /* 0x000 */ s32 numOccupied;
-    /* 0x004 */ s32 searchIndex;
+    /* 0x000 */ int32_t numOccupied;
+    /* 0x004 */ int32_t searchIndex;
     /* 0x008 */ LightNode buf[LIGHTS_BUFFER_SIZE];
 } LightsBuffer; // size = 0x188
 
 LightsBuffer sLightsBuffer;
 
-void Lights_PointSetInfo(LightInfo* info, s16 x, s16 y, s16 z, u8 r, u8 g, u8 b, s16 radius, s32 type) {
+void Lights_PointSetInfo(LightInfo* info, int16_t x, int16_t y, int16_t z, uint8_t r, uint8_t g, uint8_t b, int16_t radius, int32_t type) {
     info->type = type;
     info->params.point.x = x;
     info->params.point.y = y;
@@ -26,22 +26,22 @@ void Lights_PointSetInfo(LightInfo* info, s16 x, s16 y, s16 z, u8 r, u8 g, u8 b,
     Lights_PointSetColorAndRadius(info, r, g, b, radius);
 }
 
-void Lights_PointNoGlowSetInfo(LightInfo* info, s16 x, s16 y, s16 z, u8 r, u8 g, u8 b, s16 radius) {
+void Lights_PointNoGlowSetInfo(LightInfo* info, int16_t x, int16_t y, int16_t z, uint8_t r, uint8_t g, uint8_t b, int16_t radius) {
     Lights_PointSetInfo(info, x, y, z, r, g, b, radius, LIGHT_POINT_NOGLOW);
 }
 
-void Lights_PointGlowSetInfo(LightInfo* info, s16 x, s16 y, s16 z, u8 r, u8 g, u8 b, s16 radius) {
+void Lights_PointGlowSetInfo(LightInfo* info, int16_t x, int16_t y, int16_t z, uint8_t r, uint8_t g, uint8_t b, int16_t radius) {
     Lights_PointSetInfo(info, x, y, z, r, g, b, radius, LIGHT_POINT_GLOW);
 }
 
-void Lights_PointSetColorAndRadius(LightInfo* info, u8 r, u8 g, u8 b, s16 radius) {
+void Lights_PointSetColorAndRadius(LightInfo* info, uint8_t r, uint8_t g, uint8_t b, int16_t radius) {
     info->params.point.color[0] = r;
     info->params.point.color[1] = g;
     info->params.point.color[2] = b;
     info->params.point.radius = radius;
 }
 
-void Lights_DirectionalSetInfo(LightInfo* info, s8 x, s8 y, s8 z, u8 r, u8 g, u8 b) {
+void Lights_DirectionalSetInfo(LightInfo* info, int8_t x, int8_t y, int8_t z, uint8_t r, uint8_t g, uint8_t b) {
     info->type = LIGHT_DIRECTIONAL;
     info->params.dir.x = x;
     info->params.dir.y = y;
@@ -52,7 +52,7 @@ void Lights_DirectionalSetInfo(LightInfo* info, s8 x, s8 y, s8 z, u8 r, u8 g, u8
 }
 
 // unused
-void Lights_Reset(Lights* lights, u8 ambentR, u8 ambentG, u8 ambentB) {
+void Lights_Reset(Lights* lights, uint8_t ambentR, uint8_t ambentG, uint8_t ambentB) {
     lights->l.a.l.col[0] = lights->l.a.l.colc[0] = ambentR;
     lights->l.a.l.col[1] = lights->l.a.l.colc[1] = ambentG;
     lights->l.a.l.col[2] = lights->l.a.l.colc[2] = ambentB;
@@ -71,7 +71,7 @@ void Lights_Draw(Lights* lights, GraphicsContext* gfxCtx) {
     gSPNumLights(POLY_OPA_DISP++, lights->numLights);
     gSPNumLights(POLY_XLU_DISP++, lights->numLights);
 
-    s32 i = 0;
+    int32_t i = 0;
     Light* light = &lights->l.l[0];
 
     while (i < lights->numLights) {
@@ -100,11 +100,11 @@ Light* Lights_FindSlot(Lights* lights) {
 void Lights_BindPoint(Lights* lights, LightParams* params, Vec3f* vec) {
 
     if (vec != NULL) {
-        f32 xDiff = params->point.x - vec->x;
-        f32 yDiff = params->point.y - vec->y;
-        f32 zDiff = params->point.z - vec->z;
-        f32 scale = params->point.radius;
-        f32 posDiff = SQ(xDiff) + SQ(yDiff) + SQ(zDiff);
+        float xDiff = params->point.x - vec->x;
+        float yDiff = params->point.y - vec->y;
+        float zDiff = params->point.z - vec->z;
+        float scale = params->point.radius;
+        float posDiff = SQ(xDiff) + SQ(yDiff) + SQ(zDiff);
 
         if (posDiff < SQ(scale)) {
             Light* light = Lights_FindSlot(lights);
@@ -185,7 +185,7 @@ LightNode* Lights_FindBufSlot() {
 }
 
 // return type must not be void to match
-s32 Lights_FreeNode(LightNode* light) {
+int32_t Lights_FreeNode(LightNode* light) {
     if (light != NULL) {
         sLightsBuffer.numOccupied--;
         light->info = NULL;
@@ -200,13 +200,13 @@ void LightContext_Init(PlayState* play, LightContext* lightCtx) {
     memset(&sLightsBuffer, 0, sizeof(sLightsBuffer));
 }
 
-void LightContext_SetAmbientColor(LightContext* lightCtx, u8 r, u8 g, u8 b) {
+void LightContext_SetAmbientColor(LightContext* lightCtx, uint8_t r, uint8_t g, uint8_t b) {
     lightCtx->ambientColor[0] = r;
     lightCtx->ambientColor[1] = g;
     lightCtx->ambientColor[2] = b;
 }
 
-void LightContext_SetFog(LightContext* lightCtx, u8 r, u8 g, u8 b, s16 fogNear, s16 fogFar) {
+void LightContext_SetFog(LightContext* lightCtx, uint8_t r, uint8_t g, uint8_t b, int16_t fogNear, int16_t fogFar) {
     lightCtx->fogColor[0] = r;
     lightCtx->fogColor[1] = g;
     lightCtx->fogColor[2] = b;
@@ -274,9 +274,9 @@ void LightContext_RemoveLight(PlayState* play, LightContext* lightCtx, LightNode
 }
 
 // unused
-Lights* Lights_NewAndDraw(GraphicsContext* gfxCtx, u8 ambientR, u8 ambientG, u8 ambientB, u8 numLights, u8 r, u8 g,
-                          u8 b, s8 x, s8 y, s8 z) {
-    s32 i;
+Lights* Lights_NewAndDraw(GraphicsContext* gfxCtx, uint8_t ambientR, uint8_t ambientG, uint8_t ambientB, uint8_t numLights, uint8_t r, uint8_t g,
+                          uint8_t b, int8_t x, int8_t y, int8_t z) {
+    int32_t i;
 
     Lights* lights = Graph_Alloc(gfxCtx, sizeof(Lights));
 
@@ -299,7 +299,7 @@ Lights* Lights_NewAndDraw(GraphicsContext* gfxCtx, u8 ambientR, u8 ambientG, u8 
     return lights;
 }
 
-Lights* Lights_New(GraphicsContext* gfxCtx, u8 ambientR, u8 ambientG, u8 ambientB) {
+Lights* Lights_New(GraphicsContext* gfxCtx, uint8_t ambientR, uint8_t ambientG, uint8_t ambientB) {
 
     Lights* lights = Graph_Alloc(gfxCtx, sizeof(Lights));
 
@@ -314,7 +314,7 @@ Lights* Lights_New(GraphicsContext* gfxCtx, u8 ambientR, u8 ambientG, u8 ambient
 void Lights_GlowCheckPrepare(PlayState* play) {
     Vec3f pos;
     Vec3f multDest;
-    f32 wDest;
+    float wDest;
 
     LightNode* node = play->lightCtx.listHead;
 
@@ -322,18 +322,18 @@ void Lights_GlowCheckPrepare(PlayState* play) {
         LightPoint* params = &node->info->params.point;
 
         if (node->info->type == LIGHT_POINT_GLOW) {
-            f32 x, y;
+            float x, y;
 
             pos.x = params->x;
             pos.y = params->y;
             pos.z = params->z;
             func_8002BE04(play, &pos, &multDest, &wDest);
-            f32 wX = multDest.x * wDest;
-            f32 wY = multDest.y * wDest;
+            float wX = multDest.x * wDest;
+            float wY = multDest.y * wDest;
 
             x = wX * 160 + 160;
             y = wY * 120 + 120;
-            u32 shrink = ShrinkWindow_GetCurrentVal();
+            uint32_t shrink = ShrinkWindow_GetCurrentVal();
 
             if ((multDest.z > 1.0f) && y >= shrink && y <= SCREEN_HEIGHT - shrink) {
                 OTRGetPixelDepthPrepare(x, y);
@@ -346,7 +346,7 @@ void Lights_GlowCheckPrepare(PlayState* play) {
 void Lights_GlowCheck(PlayState* play) {
     Vec3f pos;
     Vec3f multDest;
-    f32 wDest;
+    float wDest;
 
     LightNode* node = play->lightCtx.listHead;
 
@@ -354,23 +354,23 @@ void Lights_GlowCheck(PlayState* play) {
         LightPoint* params = &node->info->params.point;
 
         if (node->info->type == LIGHT_POINT_GLOW) {
-            f32 x, y;
+            float x, y;
 
             pos.x = params->x;
             pos.y = params->y;
             pos.z = params->z;
             func_8002BE04(play, &pos, &multDest, &wDest);
             params->drawGlow = false;
-            f32 wX = multDest.x * wDest;
-            f32 wY = multDest.y * wDest;
+            float wX = multDest.x * wDest;
+            float wY = multDest.y * wDest;
 
             x = wX * 160 + 160;
             y = wY * 120 + 120;
-            u32 shrink = ShrinkWindow_GetCurrentVal();
+            uint32_t shrink = ShrinkWindow_GetCurrentVal();
 
             if ((multDest.z > 1.0f) && y >= shrink && y <= SCREEN_HEIGHT - shrink) {
-                s32 wZ = (s32)((multDest.z * wDest) * 16352.0f) + 16352;
-                s32 zBuf = OTRGetPixelDepth(x, y) * 4;
+                int32_t wZ = (int32_t)((multDest.z * wDest) * 16352.0f) + 16352;
+                int32_t zBuf = OTRGetPixelDepth(x, y) * 4;
 
                 if (wZ < (zBuf >> 3)) {
                     params->drawGlow = true;
@@ -398,7 +398,7 @@ void Lights_DrawGlow(PlayState* play) {
         LightPoint* params = &info->params.point;
 
         if ((info->type == LIGHT_POINT_GLOW) && (params->drawGlow)) {
-            f32 scale = SQ(params->radius) * 0.0000026f;
+            float scale = SQ(params->radius) * 0.0000026f;
 
             FrameInterpolation_RecordOpenChild(node, 0);
             gDPSetPrimColor(POLY_XLU_DISP++, 0, 0, params->color[0], params->color[1], params->color[2], 50);

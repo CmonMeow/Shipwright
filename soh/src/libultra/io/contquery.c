@@ -5,8 +5,8 @@
  * Starts to read the values for SI device status and type which are connected to the controller port and joyport
  * connector.
  */
-s32 osContStartQuery(OSMesgQueue* mq) {
-    s32 ret = 0;
+int32_t osContStartQuery(OSMesgQueue* mq) {
+    int32_t ret = 0;
 
     __osSiGetAccess();
     if (__osContLastPoll != CONT_CMD_REQUEST_STATUS) {
@@ -25,6 +25,6 @@ s32 osContStartQuery(OSMesgQueue* mq) {
  * Returns the values from osContStartQuery to status. Both functions must be paired for use.
  */
 void osContGetQuery(OSContStatus* data) {
-    u8 pattern;
+    uint8_t pattern;
     __osContGetInitData(&pattern, data);
 }

@@ -8,16 +8,16 @@ union F3DVtx;
 
 namespace SOH {
 typedef union ScalarData {
-    uint8_t u8;
-    int8_t s8;
-    uint16_t u16;
-    int16_t s16;
-    uint32_t u32;
-    int32_t s32;
-    uint64_t u64;
-    int64_t s64;
-    float f32;
-    double f64;
+    uint8_t unsigned8;
+    int8_t signed8;
+    uint16_t unsigned16;
+    int16_t signed16;
+    uint32_t unsigned32;
+    int32_t signed32;
+    uint64_t unsigned64;
+    int64_t signed64;
+    float singlePrecision;
+    double doublePrecision;
 } ScalarData;
 
 enum class ScalarType {

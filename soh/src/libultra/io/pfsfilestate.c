@@ -1,13 +1,13 @@
 #include <libultraship/libultra.h>
 #include "global.h"
 
-s32 osPfsFileState(OSPfs* pfs, s32 fileNo, OSPfsState* state) {
-    s32 ret;
-    s32 pages = { 0 };
+int32_t osPfsFileState(OSPfs* pfs, int32_t fileNo, OSPfsState* state) {
+    int32_t ret;
+    int32_t pages = { 0 };
     __OSInode inode;
     __OSDir dir;
     __OSInodeUnit page = { 0 };
-    u8 bank = { 0 };
+    uint8_t bank = { 0 };
 
     if (fileNo >= pfs->dir_size || fileNo < 0) {
         return PFS_ERR_INVALID;
@@ -21,7 +21,7 @@ s32 osPfsFileState(OSPfs* pfs, s32 fileNo, OSPfsState* state) {
     if (pfs->activebank != 0 && (ret = __osPfsSelectBank(pfs, 0)) != 0) {
         return ret;
     }
-    if ((ret = __osContRamRead(pfs->queue, pfs->channel, pfs->dir_table + fileNo, (u8*)&dir)) != 0) {
+    if ((ret = __osContRamRead(pfs->queue, pfs->channel, pfs->dir_table + fileNo, (uint8_t*)&dir)) != 0) {
         return ret;
     }
     if (dir.company_code == 0 || dir.game_code == 0) {

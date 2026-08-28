@@ -17,9 +17,9 @@
 #define rEnvColorB regs[7]
 #define rScale regs[8]
 
-u32 EffectSsHitMark_Init(PlayState* play, u32 index, EffectSs* this, void* initParamsx);
-void EffectSsHitMark_Draw(PlayState* play, u32 index, EffectSs* this);
-void EffectSsHitMark_Update(PlayState* play, u32 index, EffectSs* this);
+uint32_t EffectSsHitMark_Init(PlayState* play, uint32_t index, EffectSs* this, void* initParamsx);
+void EffectSsHitMark_Draw(PlayState* play, uint32_t index, EffectSs* this);
+void EffectSsHitMark_Update(PlayState* play, uint32_t index, EffectSs* this);
 
 static Color_RGB8 sColors[] = {
     { 255, 255, 255 }, { 255, 255, 0 }, { 255, 255, 255 }, { 255, 0, 0 },   { 255, 200, 100 }, { 200, 150, 0 },
@@ -41,8 +41,8 @@ EffectSsInit Effect_Ss_HitMark_InitVars = {
     EffectSsHitMark_Init,
 };
 
-u32 EffectSsHitMark_Init(PlayState* play, u32 index, EffectSs* this, void* initParamsx) {
-    s32 colorIdx = { 0 };
+uint32_t EffectSsHitMark_Init(PlayState* play, uint32_t index, EffectSs* this, void* initParamsx) {
+    int32_t colorIdx = { 0 };
     EffectSsHitMarkInitParams* initParams = (EffectSsHitMarkInitParams*)initParamsx;
     this->pos = initParams->pos;
     this->gfx = SEGMENTED_TO_VIRTUAL(gEffHitMarkDL);
@@ -69,7 +69,7 @@ u32 EffectSsHitMark_Init(PlayState* play, u32 index, EffectSs* this, void* initP
     return 1;
 }
 
-void EffectSsHitMark_Draw(PlayState* play, u32 index, EffectSs* this) {
+void EffectSsHitMark_Draw(PlayState* play, uint32_t index, EffectSs* this) {
     GraphicsContext* gfxCtx = play->state.gfxCtx;
     MtxF mfTrans;
     MtxF mfScale;
@@ -79,7 +79,7 @@ void EffectSsHitMark_Draw(PlayState* play, u32 index, EffectSs* this) {
     OPEN_DISPS(gfxCtx);
 
     SkinMatrix_SetTranslate(&mfTrans, this->pos.x, this->pos.y, this->pos.z);
-    f32 scale = this->rScale / 100.0f;
+    float scale = this->rScale / 100.0f;
     SkinMatrix_SetScale(&mfScale, scale, scale, 1.0f);
     SkinMatrix_MtxFMtxFMult(&mfTrans, &play->billboardMtxF, &mfTrans11DA0);
     SkinMatrix_MtxFMtxFMult(&mfTrans11DA0, &mfScale, &mfResult);
@@ -98,7 +98,7 @@ void EffectSsHitMark_Draw(PlayState* play, u32 index, EffectSs* this) {
     CLOSE_DISPS(gfxCtx);
 }
 
-void EffectSsHitMark_Update(PlayState* play, u32 index, EffectSs* this) {
+void EffectSsHitMark_Update(PlayState* play, uint32_t index, EffectSs* this) {
 
     if (this->rType == EFFECT_HITMARK_DUST) {
         this->rTexIdx = (15 - this->life) / 2;
@@ -107,7 +107,7 @@ void EffectSsHitMark_Update(PlayState* play, u32 index, EffectSs* this) {
     }
 
     if (this->rTexIdx != 0) {
-        s32 colorIdx = this->rType * 4 + 2;
+        int32_t colorIdx = this->rType * 4 + 2;
         this->rPrimColorR = func_80027DD4(this->rPrimColorR, sColors[colorIdx].r, this->life + 1);
         this->rPrimColorG = func_80027DD4(this->rPrimColorG, sColors[colorIdx].g, this->life + 1);
         this->rPrimColorB = func_80027DD4(this->rPrimColorB, sColors[colorIdx].b, this->life + 1);

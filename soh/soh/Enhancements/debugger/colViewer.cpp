@@ -478,7 +478,7 @@ void DrawWaterbox(std::vector<Gfx>& dl, WaterBox* water, float water_max_depth =
 }
 
 extern "C" WaterBox zdWaterBox;
-extern "C" f32 zdWaterBoxMinY;
+extern "C" float zdWaterBoxMinY;
 
 // Draws all waterboxes
 void DrawWaterboxList() {

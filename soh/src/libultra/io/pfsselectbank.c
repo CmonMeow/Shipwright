@@ -1,10 +1,10 @@
 #include "ultra64/pfs.h"
 #include "global.h"
 
-s32 __osPfsSelectBank(OSPfs* pfs, u8 bank) {
-    u8 temp[BLOCKSIZE];
-    s32 i;
-    s32 ret = 0;
+int32_t __osPfsSelectBank(OSPfs* pfs, uint8_t bank) {
+    uint8_t temp[BLOCKSIZE];
+    int32_t i;
+    int32_t ret = 0;
 
     for (i = 0; i < BLOCKSIZE; i++) {
         temp[i] = bank;

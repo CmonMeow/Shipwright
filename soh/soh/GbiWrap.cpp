@@ -80,12 +80,12 @@ extern "C" void gDPSetTileSizeInterp(Gfx* pkt, int t, float uls, float ult, floa
     pkt->words.w0 = _SHIFTL(G_SETTILESIZE_INTERP, 24, 8);
     pkt++;
 
-    pkt->words.w0 = *(u32*)&uls;
-    pkt->words.w1 = *(u32*)&ult;
+    pkt->words.w0 = *(uint32_t*)&uls;
+    pkt->words.w1 = *(uint32_t*)&ult;
     pkt++;
 
-    pkt->words.w0 = *(u32*)&lrs;
-    pkt->words.w1 = *(u32*)&lrt;
+    pkt->words.w0 = *(uint32_t*)&lrs;
+    pkt->words.w1 = *(uint32_t*)&lrt;
     pkt++;
 }
 

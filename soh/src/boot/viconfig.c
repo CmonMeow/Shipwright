@@ -4,7 +4,7 @@
 // this should probably go elsewhere but right now viconfig.o is the only object between idle and z_std_dma
 OSPiHandle* gCartHandle = 0;
 
-void ViConfig_UpdateVi(u32 mode) {
+void ViConfig_UpdateVi(uint32_t mode) {
     if (mode != 0) {
         osSyncPrintf(VT_COL(YELLOW, BLACK) "osViSetYScale1(%f);\n" VT_RST, 1.0f);
 

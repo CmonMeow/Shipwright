@@ -5,7 +5,7 @@
 #define LOG_SEVERITY_ERROR 2
 #define LOG_SEVERITY_VERBOSE 3
 
-s32 gSystemArenaLogSeverity = LOG_SEVERITY_NOLOG;
+int32_t gSystemArenaLogSeverity = LOG_SEVERITY_NOLOG;
 Arena gSystemArena;
 
 void SystemArena_CheckPointer(void* ptr, size_t size, const char* name, const char* action) {
@@ -29,7 +29,7 @@ void* SystemArena_Malloc(size_t size) {
     return ptr;
 }
 
-void* SystemArena_MallocDebug(size_t size, const char* file, s32 line) {
+void* SystemArena_MallocDebug(size_t size, const char* file, int32_t line) {
     void* ptr = __osMallocDebug(&gSystemArena, size, file, line);
 
     SystemArena_CheckPointer(ptr, size, "malloc_DEBUG", "確保"); // "Secure"
@@ -43,7 +43,7 @@ void* SystemArena_MallocR(size_t size) {
     return ptr;
 }
 
-void* SystemArena_MallocRDebug(size_t size, const char* file, s32 line) {
+void* SystemArena_MallocRDebug(size_t size, const char* file, int32_t line) {
     void* ptr = __osMallocRDebug(&gSystemArena, size, file, line);
 
     SystemArena_CheckPointer(ptr, size, "malloc_r_DEBUG", "確保"); // "Secure"
@@ -56,7 +56,7 @@ void* SystemArena_Realloc(void* ptr, size_t newSize) {
     return ptr;
 }
 
-void* SystemArena_ReallocDebug(void* ptr, size_t newSize, const char* file, s32 line) {
+void* SystemArena_ReallocDebug(void* ptr, size_t newSize, const char* file, int32_t line) {
     ptr = __osReallocDebug(&gSystemArena, ptr, newSize, file, line);
     SystemArena_CheckPointer(ptr, newSize, "realloc_DEBUG", "再確保"); // "Re-securing"
     return ptr;
@@ -66,7 +66,7 @@ void SystemArena_Free(void* ptr) {
     __osFree(&gSystemArena, ptr);
 }
 
-void SystemArena_FreeDebug(void* ptr, const char* file, s32 line) {
+void SystemArena_FreeDebug(void* ptr, const char* file, int32_t line) {
     __osFreeDebug(&gSystemArena, ptr, file, line);
 }
 
@@ -87,7 +87,7 @@ void SystemArena_Display(void) {
     __osDisplayArena(&gSystemArena);
 }
 
-void SystemArena_GetSizes(u32* outMaxFree, u32* outFree, u32* outAlloc) {
+void SystemArena_GetSizes(uint32_t* outMaxFree, uint32_t* outFree, uint32_t* outAlloc) {
     ArenaImpl_GetSizes(&gSystemArena, outMaxFree, outFree, outAlloc);
 }
 
@@ -105,6 +105,6 @@ void SystemArena_Cleanup(void) {
     __osMallocCleanup(&gSystemArena);
 }
 
-u8 SystemArena_IsInitalized(void) {
+uint8_t SystemArena_IsInitalized(void) {
     return __osMallocIsInitialized(&gSystemArena);
 }

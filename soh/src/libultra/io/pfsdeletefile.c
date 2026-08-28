@@ -1,14 +1,14 @@
 #include "ultra64/pfs.h"
 #include "global.h"
 
-s32 osPfsDeleteFile(OSPfs* pfs, u16 companyCode, u32 gameCode, u8* gameName, u8* extName) {
-    s32 file_no;
-    s32 ret;
+int32_t osPfsDeleteFile(OSPfs* pfs, uint16_t companyCode, uint32_t gameCode, uint8_t* gameName, uint8_t* extName) {
+    int32_t file_no;
+    int32_t ret;
     __OSInode inode;
     __OSDir dir;
     __OSInodeUnit last_page;
-    u8 startpage = { 0 };
-    u8 bank;
+    uint8_t startpage = { 0 };
+    uint8_t bank;
 
     if ((companyCode == 0) || (gameCode == 0)) {
         return PFS_ERR_INVALID;
@@ -20,7 +20,7 @@ s32 osPfsDeleteFile(OSPfs* pfs, u16 companyCode, u32 gameCode, u8* gameName, u8*
         return ret;
     }
 
-    if ((ret = __osContRamRead(pfs->queue, pfs->channel, pfs->dir_table + file_no, (u8*)&dir)) != 0) {
+    if ((ret = __osContRamRead(pfs->queue, pfs->channel, pfs->dir_table + file_no, (uint8_t*)&dir)) != 0) {
         return ret;
     }
 
@@ -47,16 +47,16 @@ s32 osPfsDeleteFile(OSPfs* pfs, u16 companyCode, u32 gameCode, u8* gameName, u8*
     }
     bzero(&dir, sizeof(__OSDir));
 
-    ret = __osContRamWrite(pfs->queue, pfs->channel, pfs->dir_table + file_no, (u8*)&dir, 0);
+    ret = __osContRamWrite(pfs->queue, pfs->channel, pfs->dir_table + file_no, (uint8_t*)&dir, 0);
 
     return ret;
 }
 
-s32 __osPfsReleasePages(OSPfs* pfs, __OSInode* inode, u8 initialPage, u8 bank, __OSInodeUnit* finalPage) {
+int32_t __osPfsReleasePages(OSPfs* pfs, __OSInode* inode, uint8_t initialPage, uint8_t bank, __OSInodeUnit* finalPage) {
     __OSInodeUnit next;
-    s32 ret = 0;
+    int32_t ret = 0;
 
-    next.ipage = (u16)((bank << 8) + initialPage);
+    next.ipage = (uint16_t)((bank << 8) + initialPage);
 
     do {
         __OSInodeUnit prev = next;

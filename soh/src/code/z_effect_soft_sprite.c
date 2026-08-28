@@ -6,8 +6,8 @@
 
 EffectSsInfo sEffectSsInfo = { 0 }; // "EffectSS2Info"
 
-void EffectSs_InitInfo(PlayState* play, s32 tableSize) {
-    u32 i;
+void EffectSs_InitInfo(PlayState* play, int32_t tableSize) {
+    uint32_t i;
     EffectSs* effectSs;
     EffectSsOverlay* overlay = { 0 };
 
@@ -36,7 +36,7 @@ void EffectSs_InitInfo(PlayState* play, s32 tableSize) {
 }
 
 void EffectSs_ClearAll(PlayState* play) {
-    u32 i;
+    uint32_t i;
     EffectSs* effectSs;
     EffectSsOverlay* overlay = { 0 };
 
@@ -75,7 +75,7 @@ void EffectSs_Delete(EffectSs* effectSs) {
 }
 
 void EffectSs_Reset(EffectSs* effectSs) {
-    u32 i;
+    uint32_t i;
 
     effectSs->type = EFFECT_SS_TYPE_MAX;
     effectSs->accel.x = effectSs->accel.y = effectSs->accel.z = 0;
@@ -95,9 +95,9 @@ void EffectSs_Reset(EffectSs* effectSs) {
     }
 }
 
-s32 EffectSs_FindSlot(s32 priority, s32* pIndex) {
-    s32 foundFree = { 0 };
-    s32 i = { 0 };
+int32_t EffectSs_FindSlot(int32_t priority, int32_t* pIndex) {
+    int32_t foundFree = { 0 };
+    int32_t i = { 0 };
 
     if (sEffectSsInfo.searchStartIndex >= sEffectSsInfo.tableSize) {
         sEffectSsInfo.searchStartIndex = 0;
@@ -156,7 +156,7 @@ s32 EffectSs_FindSlot(s32 priority, s32* pIndex) {
 }
 
 void EffectSs_Insert(PlayState* play, EffectSs* effectSs) {
-    s32 index;
+    int32_t index;
 
     if (FrameAdvance_IsEnabled(play) != true) {
         if (EffectSs_FindSlot(effectSs->priority, &index) == 0) {
@@ -167,9 +167,9 @@ void EffectSs_Insert(PlayState* play, EffectSs* effectSs) {
 }
 
 // original name: "EffectSoftSprite2_makeEffect"
-void EffectSs_Spawn(PlayState* play, s32 type, s32 priority, void* initParams) {
-    s32 index;
-    u32 overlaySize = { 0 };
+void EffectSs_Spawn(PlayState* play, int32_t type, int32_t priority, void* initParams) {
+    int32_t index;
+    uint32_t overlaySize = { 0 };
     EffectSsInit* initInfo = { 0 };
 
     EffectSsOverlay* overlayEntry = &gEffectSsOverlayTable[type];
@@ -249,7 +249,7 @@ void EffectSs_Spawn(PlayState* play, s32 type, s32 priority, void* initParams) {
     }
 }
 
-void EffectSs_Update(PlayState* play, s32 index) {
+void EffectSs_Update(PlayState* play, int32_t index) {
     EffectSs* effectSs = &sEffectSsInfo.table[index];
 
     if (effectSs->update != NULL) {
@@ -266,7 +266,7 @@ void EffectSs_Update(PlayState* play, s32 index) {
 }
 
 void EffectSs_UpdateAll(PlayState* play) {
-    s32 i;
+    int32_t i;
 
     for (i = 0; i < sEffectSsInfo.tableSize; i++) {
         if (sEffectSsInfo.table[i].life > -1) {
@@ -283,7 +283,7 @@ void EffectSs_UpdateAll(PlayState* play) {
     }
 }
 
-void EffectSs_Draw(PlayState* play, s32 index) {
+void EffectSs_Draw(PlayState* play, int32_t index) {
     EffectSs* effectSs = &sEffectSsInfo.table[index];
 
     if (effectSs->draw != NULL) {
@@ -296,7 +296,7 @@ void EffectSs_Draw(PlayState* play, s32 index) {
 // original name: "EffectSoftSprite2_disp"
 void EffectSs_DrawAll(PlayState* play) {
     Lights* lights = LightContext_NewLights(&play->lightCtx, play->state.gfxCtx);
-    s32 i;
+    int32_t i;
 
     Lights_BindAll(lights, play->lightCtx.listHead, NULL);
     Lights_Draw(lights, play->state.gfxCtx);
@@ -328,16 +328,16 @@ void EffectSs_DrawAll(PlayState* play) {
     }
 }
 
-s16 func_80027DD4(s16 arg0, s16 arg1, s32 arg2) {
-    s16 ret = (arg2 == 0) ? arg1 : (arg0 + (s32)((arg1 - arg0) / (f32)arg2));
+int16_t func_80027DD4(int16_t arg0, int16_t arg1, int32_t arg2) {
+    int16_t ret = (arg2 == 0) ? arg1 : (arg0 + (int32_t)((arg1 - arg0) / (float)arg2));
 
     return ret;
 }
 
-s16 func_80027E34(s16 arg0, s16 arg1, f32 arg2) {
+int16_t func_80027E34(int16_t arg0, int16_t arg1, float arg2) {
     return (arg1 - arg0) * arg2 + arg0;
 }
 
-u8 func_80027E84(u8 arg0, u8 arg1, f32 arg2) {
-    return arg2 * ((f32)arg1 - (f32)arg0) + arg0;
+uint8_t func_80027E84(uint8_t arg0, uint8_t arg1, float arg2) {
+    return arg2 * ((float)arg1 - (float)arg0) + arg0;
 }

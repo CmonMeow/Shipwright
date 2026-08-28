@@ -8,7 +8,7 @@
 #define ENTRY_MSG 670
 
 // data
-vs32 sLogScheduler = false;
+volatile int32_t sLogScheduler = false;
 
 // bss
 OSTime sRSPGFXStartTime;
@@ -27,7 +27,7 @@ void Sched_SwapFrameBuffer(CfbInfo* cfbInfo) {
             osSyncPrintf("osViSwapBuffer %08x %08x %08x\n", osViGetCurrentFramebuffer(), osViGetNextFramebuffer(),
                          (cfbInfo != NULL ? cfbInfo->swapBuffer : NULL));
         }
-        u16 width = cfbInfo->viMode != NULL ? cfbInfo->viMode->comRegs.width : (u32)gScreenWidth;
+        uint16_t width = cfbInfo->viMode != NULL ? cfbInfo->viMode->comRegs.width : (uint32_t)gScreenWidth;
         Fault_SetFB(cfbInfo->swapBuffer, width, 0x10);
 
         if (HREG(80) == 0xD && HREG(95) != 0xD) {
@@ -75,18 +75,18 @@ void Sched_HandleReset(SchedContext* sc) {
         OSTime now = osGetTime();
 
         if (sc->curRSPTask->framebuffer == NULL) {
-            LOG_TIME("(((u64)(now - audio_rsp_start_time)*(1000000LL/15625LL))/((62500000LL*3/4)/15625LL))",
+            LOG_TIME("(((uint64_t)(now - audio_rsp_start_time)*(1000000LL/15625LL))/((62500000LL*3/4)/15625LL))",
                      OS_CYCLES_TO_USEC(now - sRSPAudioStartTime));
         } else if (OS_CYCLES_TO_USEC(now - sRSPGFXStartTime) > 1000000 ||
                    OS_CYCLES_TO_USEC(now - sRDPStartTime) > 1000000) {
             func_800FBFD8();
             if (sc->curRSPTask != NULL) {
-                LOG_TIME("(((u64)(now - graph_rsp_start_time)*(1000000LL/15625LL))/((62500000LL*3/4)/15625LL))",
+                LOG_TIME("(((uint64_t)(now - graph_rsp_start_time)*(1000000LL/15625LL))/((62500000LL*3/4)/15625LL))",
                          OS_CYCLES_TO_USEC(now - sRSPGFXStartTime));
                 osSendMesg32(&sc->interruptQ, RSP_DONE_MSG, OS_MESG_NOBLOCK);
             }
             if (sc->curRDPTask != NULL) {
-                LOG_TIME("(((u64)(now - rdp_start_time)*(1000000LL/15625LL))/((62500000LL*3/4)/15625LL))",
+                LOG_TIME("(((uint64_t)(now - rdp_start_time)*(1000000LL/15625LL))/((62500000LL*3/4)/15625LL))",
                          OS_CYCLES_TO_USEC(now - sRDPStartTime));
                 osSendMesg32(&sc->interruptQ, RDP_DONE_MSG, OS_MESG_NOBLOCK);
             }
@@ -99,7 +99,7 @@ void Sched_HandleStart(SchedContext* sc) {
 }
 
 void Sched_QueueTask(SchedContext* sc, OSScTask* task) {
-    s32 type = task->list.t.type;
+    int32_t type = task->list.t.type;
 
     assert((type == M_AUDTASK) || (type == M_GFXTASK) || (type == M_NJPEGTASK) || (type == M_NULTASK));
 
@@ -140,7 +140,7 @@ void Sched_Yield(SchedContext* sc) {
         osSpTaskYield();
 
         if (sLogScheduler) {
-            osSyncPrintf("%08d:osSpTaskYield\n", (u32)(OS_CYCLES_TO_USEC(osGetTime())));
+            osSyncPrintf("%08d:osSpTaskYield\n", (uint32_t)(OS_CYCLES_TO_USEC(osGetTime())));
         }
     }
 }
@@ -172,15 +172,15 @@ OSScTask* func_800C89D4(SchedContext* sc, OSScTask* task) {
         return NULL;
     }
 
-    if (osViGetCurrentFramebuffer() == (u32*)task->framebuffer->fb1) {
+    if (osViGetCurrentFramebuffer() == (uint32_t*)task->framebuffer->fb1) {
         return NULL;
     }
 
     return task;
 }
 
-s32 Sched_Schedule(SchedContext* sc, OSScTask** sp, OSScTask** dp, s32 state) {
-    s32 ret = state;
+int32_t Sched_Schedule(SchedContext* sc, OSScTask** sp, OSScTask** dp, int32_t state) {
+    int32_t ret = state;
     OSScTask* gfxTask = sc->gfxListHead;
     OSScTask* audioTask = sc->audioListHead;
 
@@ -228,7 +228,7 @@ void func_800C8BC4(SchedContext* sc, OSScTask* task) {
     }
 }
 
-u32 Sched_IsComplete(SchedContext* sc, OSScTask* task) {
+uint32_t Sched_IsComplete(SchedContext* sc, OSScTask* task) {
     if (!(task->state & (OS_SC_DP | OS_SC_SP))) {
         if (task->msgQ != NULL) {
             osSendMesg(task->msgQ, task->msg, OS_MESG_BLOCK);
@@ -275,7 +275,7 @@ void Sched_RunTask(SchedContext* sc, OSScTask* spTask, OSScTask* dpTask) {
         osSpTaskStartGo(&spTask->list);
         if (sLogScheduler) {
             osSyncPrintf(
-                "%08d:osSpTaskStartGo(%08x) %s\n", (u32)OS_CYCLES_TO_USEC(osGetTime()), &spTask->list,
+                "%08d:osSpTaskStartGo(%08x) %s\n", (uint32_t)OS_CYCLES_TO_USEC(osGetTime()), &spTask->list,
                 (spTask->list.t.type == M_AUDTASK ? "AUDIO" : (spTask->list.t.type == M_GFXTASK ? "GRAPH" : "OTHER")));
         }
         sc->curRSPTask = spTask;
@@ -290,7 +290,7 @@ void Sched_RunTask(SchedContext* sc, OSScTask* spTask, OSScTask* dpTask) {
 void Sched_HandleEntry(SchedContext* sc) {
     OSScTask* nextRSP = NULL;
     OSScTask* nextRDP = NULL;
-    s32 state = { 0 };
+    int32_t state = { 0 };
     OSMesg msg = OS_MESG_PTR(NULL);
 
     while (osRecvMesg(&sc->cmdQ, &msg, OS_MESG_NOBLOCK) != -1) {
@@ -316,12 +316,12 @@ void Sched_HandleEntry(SchedContext* sc) {
 
 void Sched_HandleRetrace(SchedContext* sc) {
     if (sLogScheduler) {
-        osSyncPrintf("%08d:scHandleRetrace %08x\n", (u32)OS_CYCLES_TO_USEC(osGetTime()), osViGetCurrentFramebuffer());
+        osSyncPrintf("%08d:scHandleRetrace %08x\n", (uint32_t)OS_CYCLES_TO_USEC(osGetTime()), osViGetCurrentFramebuffer());
     }
     ViConfig_UpdateBlack();
     sc->retraceCnt++;
 
-    if (osViGetCurrentFramebuffer() == (u32*)(sc->pendingSwapBuf1 != NULL ? sc->pendingSwapBuf1->swapBuffer : NULL)) {
+    if (osViGetCurrentFramebuffer() == (uint32_t*)(sc->pendingSwapBuf1 != NULL ? sc->pendingSwapBuf1->swapBuffer : NULL)) {
         if (sc->curBuf != NULL) {
             sc->curBuf->unk_10 = 0;
         }
@@ -353,7 +353,7 @@ void Sched_HandleRSPDone(SchedContext* sc) {
     OSScTask* curRSPTask;
     OSScTask* nextRSP = NULL;
     OSScTask* nextRDP = NULL;
-    s32 state;
+    int32_t state;
 
     assert(sc->curRSPTask != NULL);
 
@@ -392,7 +392,7 @@ void Sched_HandleRSPDone(SchedContext* sc) {
 void Sched_HandleRDPDone(SchedContext* sc) {
     OSScTask* nextRSP = NULL;
     OSScTask* nextRDP = NULL;
-    s32 state;
+    int32_t state;
 
     assert(sc->curRDPTask != NULL);
     assert(sc->curRDPTask->list.t.type == M_GFXTASK);
@@ -426,7 +426,7 @@ void Sched_ThreadEntry(void* arg) {
     while (true) {
         if (sLogScheduler) {
             // "%08d: standby"
-            osSyncPrintf("%08d:待機中\n", (u32)OS_CYCLES_TO_USEC(osGetTime()));
+            osSyncPrintf("%08d:待機中\n", (uint32_t)OS_CYCLES_TO_USEC(osGetTime()));
         }
 
         osRecvMesg(&sc->interruptQ, &msg, OS_MESG_BLOCK);
@@ -434,19 +434,19 @@ void Sched_ThreadEntry(void* arg) {
         switch (msg.data32) {
             case ENTRY_MSG:
                 if (sLogScheduler) {
-                    osSyncPrintf("%08d:ENTRY_MSG\n", (u32)OS_CYCLES_TO_USEC(osGetTime()));
+                    osSyncPrintf("%08d:ENTRY_MSG\n", (uint32_t)OS_CYCLES_TO_USEC(osGetTime()));
                 }
                 Sched_HandleEntry(sc);
                 continue;
             case RSP_DONE_MSG:
                 if (sLogScheduler) {
-                    osSyncPrintf("%08d:RSP_DONE_MSG\n", (u32)OS_CYCLES_TO_USEC(osGetTime()));
+                    osSyncPrintf("%08d:RSP_DONE_MSG\n", (uint32_t)OS_CYCLES_TO_USEC(osGetTime()));
                 }
                 Sched_HandleRSPDone(sc);
                 continue;
             case RDP_DONE_MSG:
                 if (sLogScheduler) {
-                    osSyncPrintf("%08d:RDP_DONE_MSG\n", (u32)OS_CYCLES_TO_USEC(osGetTime()));
+                    osSyncPrintf("%08d:RDP_DONE_MSG\n", (uint32_t)OS_CYCLES_TO_USEC(osGetTime()));
                 }
                 Sched_HandleRDPDone(sc);
                 continue;

@@ -6,19 +6,19 @@
     (((p).ipage >= pfs->inodeStartPage) && ((p).inode_t.bank < pfs->banks) && ((p).inode_t.page >= 0x01) && \
      ((p).inode_t.page < 0x80))
 
-s32 osPfsChecker(OSPfs* pfs) {
-    s32 j;
+int32_t osPfsChecker(OSPfs* pfs) {
+    int32_t j;
     __OSInodeUnit next = { 0 };
     __OSInode checkedInode;
     __OSInode tempInode;
     __OSDir tempDir;
     __OSInodeUnit nextNodeInFile[16];
     __OSInodeCache cache;
-    s32 fixed = 0;
-    u8 bank, prevBank = 254;
-    s32 cc, cl;
+    int32_t fixed = 0;
+    uint8_t bank, prevBank = 254;
+    int32_t cc, cl;
 
-    s32 ret = __osCheckId(pfs);
+    int32_t ret = __osCheckId(pfs);
     if (ret == PFS_ERR_NEW_PACK) {
         ret = __osGetId(pfs);
     }
@@ -30,7 +30,7 @@ s32 osPfsChecker(OSPfs* pfs) {
     }
 
     for (j = 0; j < pfs->dir_size; j++) {
-        if ((ret = __osContRamRead(pfs->queue, pfs->channel, pfs->dir_table + j, (u8*)&tempDir)) != 0) {
+        if ((ret = __osContRamRead(pfs->queue, pfs->channel, pfs->dir_table + j, (uint8_t*)&tempDir)) != 0) {
             return ret;
         }
         if ((tempDir.company_code != 0) || (tempDir.game_code != 0)) {
@@ -66,7 +66,7 @@ s32 osPfsChecker(OSPfs* pfs) {
                         return ret;
                     }
                 }
-                if ((ret = __osContRamWrite(pfs->queue, pfs->channel, pfs->dir_table + j, (u8*)&tempDir, 0)) != 0) {
+                if ((ret = __osContRamWrite(pfs->queue, pfs->channel, pfs->dir_table + j, (uint8_t*)&tempDir, 0)) != 0) {
                     return ret;
                 }
 
@@ -76,12 +76,12 @@ s32 osPfsChecker(OSPfs* pfs) {
     }
 
     for (j = 0; j < pfs->dir_size; j++) {
-        if ((ret = __osContRamRead(pfs->queue, pfs->channel, pfs->dir_table + j, (u8*)&tempDir)) != 0) {
+        if ((ret = __osContRamRead(pfs->queue, pfs->channel, pfs->dir_table + j, (uint8_t*)&tempDir)) != 0) {
             return ret;
         }
 
         if ((tempDir.company_code != 0) && (tempDir.game_code != 0) &&
-            (tempDir.start_page.ipage >= (u16)pfs->inodeStartPage)) { // cast required
+            (tempDir.start_page.ipage >= (uint16_t)pfs->inodeStartPage)) { // cast required
             nextNodeInFile[j].ipage = tempDir.start_page.ipage;
         } else {
             nextNodeInFile[j].ipage = 0;
@@ -93,7 +93,7 @@ s32 osPfsChecker(OSPfs* pfs) {
         if ((ret != 0) && (ret != PFS_ERR_INCONSISTENT)) {
             return (ret);
         }
-        s32 offset = ((bank > PFS_ID_BANK_256K) ? 1 : pfs->inodeStartPage);
+        int32_t offset = ((bank > PFS_ID_BANK_256K) ? 1 : pfs->inodeStartPage);
         for (j = 0; j < offset; j++) {
             checkedInode.inodePage[j].ipage = tempInode.inodePage[j].ipage;
         }
@@ -103,8 +103,8 @@ s32 osPfsChecker(OSPfs* pfs) {
 
         for (j = 0; j < pfs->dir_size; j++) {
             while (nextNodeInFile[j].inode_t.bank == bank &&
-                   nextNodeInFile[j].ipage >= (u16)pfs->inodeStartPage) { // cast required
-                u8 val = nextNodeInFile[j].inode_t.page;
+                   nextNodeInFile[j].ipage >= (uint16_t)pfs->inodeStartPage) { // cast required
+                uint8_t val = nextNodeInFile[j].inode_t.page;
                 nextNodeInFile[j] = checkedInode.inodePage[val] = tempInode.inodePage[val];
             }
         }
@@ -122,10 +122,10 @@ s32 osPfsChecker(OSPfs* pfs) {
 }
 
 // Original name: corrupted_init (probably needs better name)
-s32 func_80105788(OSPfs* pfs, __OSInodeCache* cache) {
-    s32 i;
-    s32 n;
-    u8 bank;
+int32_t func_80105788(OSPfs* pfs, __OSInodeCache* cache) {
+    int32_t i;
+    int32_t n;
+    uint8_t bank;
     __OSInode tempInode;
 
     for (i = 0; i < PFS_INODE_DIST_MAP; i++) {
@@ -134,8 +134,8 @@ s32 func_80105788(OSPfs* pfs, __OSInodeCache* cache) {
     cache->bank = 255;
 
     for (bank = PFS_ID_BANK_256K; bank < pfs->banks; bank++) {
-        s32 offset = ((bank > PFS_ID_BANK_256K) ? 1 : pfs->inodeStartPage);
-        s32 ret = __osPfsRWInode(pfs, &tempInode, PFS_READ, bank);
+        int32_t offset = ((bank > PFS_ID_BANK_256K) ? 1 : pfs->inodeStartPage);
+        int32_t ret = __osPfsRWInode(pfs, &tempInode, PFS_READ, bank);
         if ((ret != 0) && (ret != PFS_ERR_INCONSISTENT)) {
             return ret;
         }
@@ -153,16 +153,16 @@ s32 func_80105788(OSPfs* pfs, __OSInodeCache* cache) {
 }
 
 // original name: corrupted (probably needs a better name)
-s32 func_80105A60(OSPfs* pfs, __OSInodeUnit fpage, __OSInodeCache* cache) {
-    s32 j;
-    s32 hit = 0;
-    u8 bank;
-    s32 ret = 0;
+int32_t func_80105A60(OSPfs* pfs, __OSInodeUnit fpage, __OSInodeCache* cache) {
+    int32_t j;
+    int32_t hit = 0;
+    uint8_t bank;
+    int32_t ret = 0;
 
-    s32 n = (fpage.inode_t.page / PFS_SECTOR_SIZE) + PFS_SECTOR_PER_BANK * (fpage.inode_t.bank % PFS_BANK_LAPPED_BY);
+    int32_t n = (fpage.inode_t.page / PFS_SECTOR_SIZE) + PFS_SECTOR_PER_BANK * (fpage.inode_t.bank % PFS_BANK_LAPPED_BY);
 
     for (bank = PFS_ID_BANK_256K; bank < pfs->banks; bank++) {
-        s32 offset = ((bank > PFS_ID_BANK_256K) ? 1 : pfs->inodeStartPage);
+        int32_t offset = ((bank > PFS_ID_BANK_256K) ? 1 : pfs->inodeStartPage);
         if ((bank == fpage.inode_t.bank) || (cache->map[n] & (1 << (bank % PFS_BANK_LAPPED_BY))) != 0) {
             if (bank != cache->bank) {
                 ret = __osPfsRWInode(pfs, &(cache->inode), PFS_READ, bank);

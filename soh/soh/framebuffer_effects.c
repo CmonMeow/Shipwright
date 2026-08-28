@@ -5,12 +5,12 @@
 int gfx_create_framebuffer(uint32_t width, uint32_t height, uint32_t native_width, uint32_t native_height,
                            uint8_t resize);
 
-s32 gBlurFrameBuffer = -1;
+int32_t gBlurFrameBuffer = -1;
 // Scratch framebuffer used by effects that copy and draw within one frame.
-s32 gReusableFrameBuffer = -1;
+int32_t gReusableFrameBuffer = -1;
 
 // N64 resolution sized buffer (320x240), used by picto box and deku bubble
-s32 gN64ResFrameBuffer = -1;
+int32_t gN64ResFrameBuffer = -1;
 
 void FB_CreateFramebuffers(void) {
     if (gBlurFrameBuffer == -1) {
@@ -34,7 +34,7 @@ void FB_CreateFramebuffers(void) {
  * This function uses opcodes from f3dex2 but may be called when s2dex is loaded, such as during shrink window. Make
  * sure f3dex2 is loaded before this function is called.
  */
-void FB_CopyToFramebuffer(Gfx** gfxp, s32 fb_src, s32 fb_dest, u8 oncePerFrame, u8* hasCopied) {
+void FB_CopyToFramebuffer(Gfx** gfxp, int32_t fb_src, int32_t fb_dest, uint8_t oncePerFrame, uint8_t* hasCopied) {
     Gfx* gfx = *gfxp;
 
     gSPMatrix(gfx++, &gMtxClear, G_MTX_NOPUSH | G_MTX_LOAD | G_MTX_MODELVIEW);
@@ -67,7 +67,7 @@ void FB_CopyToFramebuffer(Gfx** gfxp, s32 fb_src, s32 fb_dest, u8 oncePerFrame, 
  * Specify the byteswap flag to force the buffer data to be written as BigEndian, which is
  * required if the buffer is being used as a texture in F3D.
  */
-void FB_WriteFramebufferSliceToCPU(Gfx** gfxp, void* buffer, u8 byteSwap) {
+void FB_WriteFramebufferSliceToCPU(Gfx** gfxp, void* buffer, uint8_t byteSwap) {
     Gfx* gfx = *gfxp;
 
     FB_CopyToFramebuffer(&gfx, 0, gReusableFrameBuffer, false, NULL);
@@ -109,7 +109,7 @@ void FB_WriteFramebufferSliceToCPU(Gfx** gfxp, void* buffer, u8 byteSwap) {
 /**
  * Draws the texture data from the specified frame buffer as a full screen image
  */
-void FB_DrawFromFramebuffer(Gfx** gfxp, s32 fb, u8 alpha) {
+void FB_DrawFromFramebuffer(Gfx** gfxp, int32_t fb, uint8_t alpha) {
     Gfx* gfx = *gfxp;
 
     gSPMatrix(gfx++, &gMtxClear, G_MTX_NOPUSH | G_MTX_LOAD | G_MTX_MODELVIEW);
@@ -142,7 +142,7 @@ void FB_DrawFromFramebuffer(Gfx** gfxp, s32 fb, u8 alpha) {
  * This function uses opcodes from f3dex2 but may be called when s2dex is loaded, such as during shrink window. Make
  * sure f3dex2 is loaded before this function is called.
  */
-void FB_DrawFromFramebufferScaled(Gfx** gfxp, s32 fb, u8 alpha, float scaleX, float scaleY) {
+void FB_DrawFromFramebufferScaled(Gfx** gfxp, int32_t fb, uint8_t alpha, float scaleX, float scaleY) {
     Gfx* gfx = *gfxp;
 
     gDPSetEnvColor(gfx++, 255, 255, 255, alpha);

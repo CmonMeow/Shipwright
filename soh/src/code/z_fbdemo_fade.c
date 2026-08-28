@@ -41,8 +41,8 @@ void* TransitionFade_Init(void* thisx) {
 void TransitionFade_Destroy(void* thisx) {
 }
 
-void TransitionFade_Update(void* thisx, s32 updateRate) {
-    s16 newAlpha = { 0 };
+void TransitionFade_Update(void* thisx, int32_t updateRate) {
+    int16_t newAlpha = { 0 };
     TransitionFade* this = (TransitionFade*)thisx;
 
     switch (this->fadeType) {
@@ -59,7 +59,7 @@ void TransitionFade_Update(void* thisx, s32 updateRate) {
                 osSyncPrintf(VT_COL(RED, WHITE) "０除算! ZCommonGet fade_speed に０がはいってる" VT_RST);
             }
 
-            s32 alpha = (255.0f * this->fadeTimer) / ((void)0, gSaveContext.transFadeDuration);
+            int32_t alpha = (255.0f * this->fadeTimer) / ((void)0, gSaveContext.transFadeDuration);
             this->fadeColor.a = (this->fadeDirection != 0) ? 255 - alpha : alpha;
             break;
         case 2:
@@ -96,19 +96,19 @@ void TransitionFade_Draw(void* thisx, Gfx** gfxP) {
     }
 }
 
-s32 TransitionFade_IsDone(void* thisx) {
+int32_t TransitionFade_IsDone(void* thisx) {
     TransitionFade* this = (TransitionFade*)thisx;
 
     return this->isDone;
 }
 
-void TransitionFade_SetColor(void* thisx, u32 color) {
+void TransitionFade_SetColor(void* thisx, uint32_t color) {
     TransitionFade* this = (TransitionFade*)thisx;
 
     this->fadeColor.rgba = color;
 }
 
-void TransitionFade_SetType(void* thisx, s32 type) {
+void TransitionFade_SetType(void* thisx, int32_t type) {
     TransitionFade* this = (TransitionFade*)thisx;
 
     if (type == 1) {

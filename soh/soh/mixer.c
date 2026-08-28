@@ -292,7 +292,7 @@ void aEnvSetup2Impl(uint16_t initial_vol_left, uint16_t initial_vol_right) {
 }
 
 void aEnvMixerImpl(uint16_t in_addr, uint16_t n_samples, bool swap_reverb, bool neg_3, bool neg_2, bool neg_left,
-                   bool neg_right, int32_t wet_dry_addr, u32 unk) {
+                   bool neg_right, int32_t wet_dry_addr, uint32_t unk) {
     int16_t* in = BUF_S16(in_addr);
     int16_t* dry[2] = { BUF_S16(((wet_dry_addr >> 24) & 0xFF) << 4), BUF_S16(((wet_dry_addr >> 16) & 0xFF) << 4) };
     int16_t* wet[2] = { BUF_S16(((wet_dry_addr >> 8) & 0xFF) << 4), BUF_S16(((wet_dry_addr)&0xFF) << 4) };

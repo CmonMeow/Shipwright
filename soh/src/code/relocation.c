@@ -1,15 +1,15 @@
 #include "global.h"
 
 void Overlay_Relocate(void* allocatedVRamAddress, OverlayRelocationSection* overlayInfo, void* vRamAddress) {
-    u32 sections[4] = { 0 };
-    u32 i;
-    u32* luiRefs[32] = { 0 };
-    u32 luiVals[32] = { 0 };
-    u32* luiInstRef = { 0 };
+    uint32_t sections[4] = { 0 };
+    uint32_t i;
+    uint32_t* luiRefs[32] = { 0 };
+    uint32_t luiVals[32] = { 0 };
+    uint32_t* luiInstRef = { 0 };
     uintptr_t allocu32 = (uintptr_t)allocatedVRamAddress;
 
-    u32 relocOffset = 0;
-    u32 relocatedValue = 0;
+    uint32_t relocOffset = 0;
+    uint32_t relocatedValue = 0;
     uintptr_t unrelocatedAddress = 0;
     uintptr_t relocatedAddress = 0;
 
@@ -25,9 +25,9 @@ void Overlay_Relocate(void* allocatedVRamAddress, OverlayRelocationSection* over
     sections[3] = sections[2] + overlayInfo->dataSize;
 
     for (i = 0; i < overlayInfo->nRelocations; i++) {
-        u32 reloc = overlayInfo->relocations[i];
-        uintptr_t* relocDataP = (u32*)(sections[reloc >> 0x1E] + (reloc & 0xFFFFFF));
-        u32 relocData = *relocDataP;
+        uint32_t reloc = overlayInfo->relocations[i];
+        uintptr_t* relocDataP = (uint32_t*)(sections[reloc >> 0x1E] + (reloc & 0xFFFFFF));
+        uint32_t relocData = *relocDataP;
         switch (reloc & 0x3F000000) {
             case 0x2000000:
                 /* R_MIPS_32
@@ -67,28 +67,28 @@ void Overlay_Relocate(void* allocatedVRamAddress, OverlayRelocationSection* over
                  * The full address is calculated from the LUI and lo parts, and then updated.
                  * if the lo part is negative, add 1 to the lui.
                  */
-                u32* regValP = &luiVals[((*relocDataP >> 0x15) & 0x1F)];
-                uintptr_t vaddr = (*regValP << 0x10) + (s16)*relocDataP;
+                uint32_t* regValP = &luiVals[((*relocDataP >> 0x15) & 0x1F)];
+                uintptr_t vaddr = (*regValP << 0x10) + (int16_t)*relocDataP;
                 luiInstRef = luiRefs[((*relocDataP >> 0x15) & 0x1F)];
                 if (luiInstRef == NULL) {
                     break;
                 }
                 if ((vaddr & 0xF000000) == 0) {
                     relocOffset = vaddr - (uintptr_t)vRamAddress;
-                    vaddr = (s16)relocData;
-                    u32 isLoNeg = (((relocOffset + allocu32) & 0x8000) ? 1 : 0);
+                    vaddr = (int16_t)relocData;
+                    uint32_t isLoNeg = (((relocOffset + allocu32) & 0x8000) ? 1 : 0);
                     unrelocatedAddress = (*luiInstRef << 0x10) + vaddr;
                     *luiInstRef =
                         (*luiInstRef & 0xFFFF0000) | ((((relocOffset + allocu32) >> 0x10) & 0xFFFF) + isLoNeg);
                     relocatedValue = (*relocDataP & 0xFFFF0000) | ((relocOffset + allocu32) & 0xFFFF);
 
-                    relocatedAddress = (*luiInstRef << 0x10) + (s16)relocatedValue;
+                    relocatedAddress = (*luiInstRef << 0x10) + (int16_t)relocatedValue;
                     *relocDataP = relocatedValue;
                 }
                 break;
         }
 
-        u32 dbg = 0x10;
+        uint32_t dbg = 0x10;
         switch (reloc & 0x3F000000) {
             case 0x2000000:
                 dbg = 0x16;

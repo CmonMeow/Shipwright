@@ -1,7 +1,7 @@
 #include "global.h"
 
 void osSetThreadPri(OSThread* thread, OSPri pri) {
-    register u32 prevInt = __osDisableInt();
+    register uint32_t prevInt = __osDisableInt();
 
     if (thread == NULL) {
         thread = __osRunningThread;

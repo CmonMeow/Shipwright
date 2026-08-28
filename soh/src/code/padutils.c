@@ -14,64 +14,64 @@ void PadUtils_ResetPressRel(Input* input) {
     input->rel.button = 0;
 }
 
-u32 PadUtils_CheckCurExact(Input* input, u16 value) {
+uint32_t PadUtils_CheckCurExact(Input* input, uint16_t value) {
     return value == input->cur.button;
 }
 
-u32 PadUtils_CheckCur(Input* input, u16 key) {
+uint32_t PadUtils_CheckCur(Input* input, uint16_t key) {
     return key == (input->cur.button & key);
 }
 
-u32 PadUtils_CheckPressed(Input* input, u16 key) {
+uint32_t PadUtils_CheckPressed(Input* input, uint16_t key) {
     return key == (input->press.button & key);
 }
 
-u32 PadUtils_CheckReleased(Input* input, u16 key) {
+uint32_t PadUtils_CheckReleased(Input* input, uint16_t key) {
     return key == (input->rel.button & key);
 }
 
-u16 PadUtils_GetCurButton(Input* input) {
+uint16_t PadUtils_GetCurButton(Input* input) {
     return input->cur.button;
 }
 
-u16 PadUtils_GetPressButton(Input* input) {
+uint16_t PadUtils_GetPressButton(Input* input) {
     return input->press.button;
 }
 
-s8 PadUtils_GetCurX(Input* input) {
+int8_t PadUtils_GetCurX(Input* input) {
     return input->cur.stick_x;
 }
 
-s8 PadUtils_GetCurY(Input* input) {
+int8_t PadUtils_GetCurY(Input* input) {
     return input->cur.stick_y;
 }
 
-void PadUtils_SetRelXY(Input* input, s32 x, s32 y) {
+void PadUtils_SetRelXY(Input* input, int32_t x, int32_t y) {
     input->rel.stick_x = x;
     input->rel.stick_y = y;
 }
 
-s8 PadUtils_GetRelXImpl(Input* input) {
+int8_t PadUtils_GetRelXImpl(Input* input) {
     return input->rel.stick_x;
 }
 
-s8 PadUtils_GetRelYImpl(Input* input) {
+int8_t PadUtils_GetRelYImpl(Input* input) {
     return input->rel.stick_y;
 }
 
-s8 PadUtils_GetRelX(Input* input) {
+int8_t PadUtils_GetRelX(Input* input) {
     return PadUtils_GetRelXImpl(input);
 }
 
-s8 PadUtils_GetRelY(Input* input) {
+int8_t PadUtils_GetRelY(Input* input) {
     return PadUtils_GetRelYImpl(input);
 }
 
 void PadUtils_UpdateRelXY(Input* input) {
-    s32 curX = PadUtils_GetCurX(input);
-    s32 curY = PadUtils_GetCurY(input);
-    s32 relX = { 0 };
-    s32 relY = { 0 };
+    int32_t curX = PadUtils_GetCurX(input);
+    int32_t curY = PadUtils_GetCurY(input);
+    int32_t relX = { 0 };
+    int32_t relY = { 0 };
 
     if (curX > 7) {
         relX = (curX < 0x43) ? curX - 7 : 0x43 - 7;
@@ -94,40 +94,40 @@ void PadUtils_UpdateRelXY(Input* input) {
 }
 
 // PC controller right-stick helpers.
-s8 PadUtils_GetCurRX(Input* input) {
+int8_t PadUtils_GetCurRX(Input* input) {
     return input->cur.right_stick_x;
 }
 
-s8 PadUtils_GetCurRY(Input* input) {
+int8_t PadUtils_GetCurRY(Input* input) {
     return input->cur.right_stick_y;
 }
 
-void PadUtils_SetRelRXY(Input* input, s32 x, s32 y) {
+void PadUtils_SetRelRXY(Input* input, int32_t x, int32_t y) {
     input->rel.right_stick_x = x;
     input->rel.right_stick_y = y;
 }
 
-s8 PadUtils_GetRelRXImpl(Input* input) {
+int8_t PadUtils_GetRelRXImpl(Input* input) {
     return input->rel.right_stick_x;
 }
 
-s8 PadUtils_GetRelRYImpl(Input* input) {
+int8_t PadUtils_GetRelRYImpl(Input* input) {
     return input->rel.right_stick_y;
 }
 
-s8 PadUtils_GetRelRX(Input* input) {
+int8_t PadUtils_GetRelRX(Input* input) {
     return PadUtils_GetRelRXImpl(input);
 }
 
-s8 PadUtils_GetRelRY(Input* input) {
+int8_t PadUtils_GetRelRY(Input* input) {
     return PadUtils_GetRelRYImpl(input);
 }
 
 void PadUtils_UpdateRelRXY(Input* input) {
-    s32 curX = PadUtils_GetCurRX(input);
-    s32 curY = PadUtils_GetCurRY(input);
-    s32 relX = { 0 };
-    s32 relY = { 0 };
+    int32_t curX = PadUtils_GetCurRX(input);
+    int32_t curY = PadUtils_GetCurRY(input);
+    int32_t relX = { 0 };
+    int32_t relY = { 0 };
 
     if (curX > 7) {
         relX = (curX < 0x43) ? curX - 7 : 0x43 - 7;

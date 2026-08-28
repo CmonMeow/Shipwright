@@ -1,7 +1,7 @@
 #include "global.h"
 #include "vt.h"
 
-u32 gCurrentRegion = 0;
+uint32_t gCurrentRegion = 0;
 LocaleCartInfo sCartInfo;
 
 void Locale_Init(void) {
@@ -33,7 +33,7 @@ void Locale_ResetRegion(void) {
     gCurrentRegion = REGION_NULL;
 }
 
-u32 func_80001F48(void) {
+uint32_t func_80001F48(void) {
     if (gCurrentRegion == REGION_NATIVE) {
         return 0;
     }
@@ -45,7 +45,7 @@ u32 func_80001F48(void) {
     return 1;
 }
 
-u32 func_80001F8C(void) {
+uint32_t func_80001F8C(void) {
     if (gCurrentRegion == REGION_NATIVE) {
         return 0;
     }
@@ -58,6 +58,6 @@ u32 func_80001F8C(void) {
 }
 
 // This function appears to be unused?
-u32 Locale_IsRegionNative(void) {
+uint32_t Locale_IsRegionNative(void) {
     return gCurrentRegion == REGION_NATIVE;
 }

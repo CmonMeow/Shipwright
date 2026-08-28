@@ -3,10 +3,10 @@
 /**
  * Calculates the distances between `a` and `b`
  */
-f32 OLib_Vec3fDist(Vec3f* a, Vec3f* b) {
-    f32 dx = a->x - b->x;
-    f32 dy = a->y - b->y;
-    f32 dz = a->z - b->z;
+float OLib_Vec3fDist(Vec3f* a, Vec3f* b) {
+    float dx = a->x - b->x;
+    float dy = a->y - b->y;
+    float dz = a->z - b->z;
 
     return sqrtf(SQ(dx) + SQ(dy) + SQ(dz));
 }
@@ -16,7 +16,7 @@ f32 OLib_Vec3fDist(Vec3f* a, Vec3f* b) {
  * created by the difference into `dest`
  */
 
-f32 OLib_Vec3fDistOutDiff(Vec3f* a, Vec3f* b, Vec3f* dest) {
+float OLib_Vec3fDistOutDiff(Vec3f* a, Vec3f* b, Vec3f* dest) {
     dest->x = a->x - b->x;
     dest->y = a->y - b->y;
     dest->z = a->z - b->z;
@@ -27,7 +27,7 @@ f32 OLib_Vec3fDistOutDiff(Vec3f* a, Vec3f* b, Vec3f* dest) {
 /**
  * Calculates the distances on the xz plane between `a` and `b`
  */
-f32 OLib_Vec3fDistXZ(Vec3f* a, Vec3f* b) {
+float OLib_Vec3fDistXZ(Vec3f* a, Vec3f* b) {
     return sqrtf(SQ(a->x - b->x) + SQ(a->z - b->z));
 }
 
@@ -35,7 +35,7 @@ f32 OLib_Vec3fDistXZ(Vec3f* a, Vec3f* b) {
  * Clamps `val` to a maximum of -`min` as `val` approaches zero, and a minimum of
  * `min` as `val` approaches zero
  */
-f32 OLib_ClampMinDist(f32 val, f32 min) {
+float OLib_ClampMinDist(float val, float min) {
     return (min <= fabsf(val)) ? val : ((val >= 0) ? min : -min);
 }
 
@@ -43,7 +43,7 @@ f32 OLib_ClampMinDist(f32 val, f32 min) {
  * Clamps `val` to a minimum of -`max` as `val` approaches -`max`, and a maximum of `max`
  * as `val` approaches `max`
  */
-f32 OLib_ClampMaxDist(f32 val, f32 max) {
+float OLib_ClampMaxDist(float val, float max) {
     return (fabsf(val) <= max) ? val : ((val >= 0) ? max : -max);
 }
 
@@ -58,7 +58,7 @@ Vec3f* OLib_Vec3fDistNormalize(Vec3f* dest, Vec3f* a, Vec3f* b) {
     v1.y = b->y - a->y;
     v1.z = b->z - a->z;
 
-    f32 dist = OLib_ClampMinDist(sqrtf(SQ(v1.x) + SQ(v1.y) + SQ(v1.z)), 0.01f);
+    float dist = OLib_ClampMinDist(sqrtf(SQ(v1.x) + SQ(v1.y) + SQ(v1.z)), 0.01f);
 
     v2.x = v1.x / dist;
     v2.y = v1.y / dist;
@@ -75,10 +75,10 @@ Vec3f* OLib_Vec3fDistNormalize(Vec3f* dest, Vec3f* a, Vec3f* b) {
 Vec3f* OLib_VecSphToVec3f(Vec3f* dest, VecSph* sph) {
     Vec3f v;
 
-    f32 cosPitch = Math_CosS(sph->pitch);
-    f32 cosYaw = Math_CosS(sph->yaw);
-    f32 sinPitch = Math_SinS(sph->pitch);
-    f32 sinYaw = Math_SinS(sph->yaw);
+    float cosPitch = Math_CosS(sph->pitch);
+    float cosYaw = Math_CosS(sph->yaw);
+    float sinPitch = Math_SinS(sph->pitch);
+    float sinYaw = Math_SinS(sph->yaw);
 
     v.x = sph->r * sinPitch * sinYaw;
     v.y = sph->r * cosPitch;
@@ -108,8 +108,8 @@ Vec3f* OLib_VecSphGeoToVec3f(Vec3f* dest, VecSph* sph) {
 VecSph* OLib_Vec3fToVecSph(VecSph* dest, Vec3f* vec) {
     VecSph sph;
 
-    f32 distSquared = SQ(vec->x) + SQ(vec->z);
-    f32 dist = sqrtf(distSquared);
+    float distSquared = SQ(vec->x) + SQ(vec->z);
+    float dist = sqrtf(distSquared);
 
     if ((dist == 0.0f) && (vec->y == 0.0f)) {
         sph.pitch = 0;

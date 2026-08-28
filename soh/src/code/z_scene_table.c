@@ -33,7 +33,7 @@ void Scene_PrepareWater(PlayState* play) {
 
     OPEN_DISPS(play->state.gfxCtx);
 
-    u32 gameplayFrames = play->gameplayFrames;
+    uint32_t gameplayFrames = play->gameplayFrames;
     // test01's native water material calls display list 0x08000001. Keep
     // segment 8 populated even though the added top-facing WaterBox plane
     // binds the room texture directly.
@@ -48,11 +48,11 @@ void Scene_PrepareWater(PlayState* play) {
 
 static void Scene_DrawCalmWater(PlayState* play) {
     CollisionHeader* colHeader = play->colCtx.colHeader;
-    s32 i;
+    int32_t i;
 
     OPEN_DISPS(play->state.gfxCtx);
 
-    u32 gameplayFrames = play->gameplayFrames;
+    uint32_t gameplayFrames = play->gameplayFrames;
 
     if ((colHeader != NULL) && (colHeader->numWaterBoxes > 0)) {
         Vtx* waterVertices = Graph_Alloc(play->state.gfxCtx, colHeader->numWaterBoxes * 4 * sizeof(Vtx));
@@ -69,8 +69,8 @@ static void Scene_DrawCalmWater(PlayState* play) {
             for (i = 0; i < colHeader->numWaterBoxes; i++) {
                 WaterBox* waterBox = &colHeader->waterBoxes[i];
                 Vtx* vtx = &waterVertices[i * 4];
-                s32 room = WATERBOX_ROOM(waterBox->properties);
-                s32 j;
+                int32_t room = WATERBOX_ROOM(waterBox->properties);
+                int32_t j;
 
                 if ((waterBox->properties & 0x80000) ||
                     ((room != 0x3F) && (room != play->roomCtx.curRoom.num))) {
@@ -92,8 +92,8 @@ static void Scene_DrawCalmWater(PlayState* play) {
 
                 for (j = 0; j < 4; j++) {
                     vtx[j].v.flag = 0;
-                    vtx[j].v.tc[0] = (s16)((vtx[j].v.ob[0] * 4) + (gameplayFrames * 2));
-                    vtx[j].v.tc[1] = (s16)((vtx[j].v.ob[2] * 4) + gameplayFrames);
+                    vtx[j].v.tc[0] = (int16_t)((vtx[j].v.ob[0] * 4) + (gameplayFrames * 2));
+                    vtx[j].v.tc[1] = (int16_t)((vtx[j].v.ob[2] * 4) + gameplayFrames);
                     vtx[j].v.cn[0] = 255;
                     vtx[j].v.cn[1] = 255;
                     vtx[j].v.cn[2] = 255;

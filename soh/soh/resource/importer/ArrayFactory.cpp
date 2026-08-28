@@ -45,10 +45,10 @@ ResourceFactoryBinaryArrayV0::ReadResource(std::shared_ptr<Ship::File> file,
 
                 switch (array->ArrayScalarType) {
                     case ScalarType::ZSCALAR_S16:
-                        data.s16 = reader->ReadInt16();
+                        data.signed16 = reader->ReadInt16();
                         break;
                     case ScalarType::ZSCALAR_U16:
-                        data.u16 = reader->ReadUInt16();
+                        data.unsigned16 = reader->ReadUInt16();
                         break;
                     default:
                         // OTRTODO: IMPLEMENT OTHER TYPES!

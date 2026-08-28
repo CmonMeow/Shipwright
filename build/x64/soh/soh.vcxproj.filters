@@ -418,9 +418,6 @@
     <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\src\code\sys_math3d.c">
       <Filter>src\code</Filter>
     </ClCompile>
-    <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\src\code\sys_math_atan.c">
-      <Filter>src\code</Filter>
-    </ClCompile>
     <ClCompile Include="C:\Users\CmonMeow\Desktop\Shipwright\soh\src\code\sys_matrix.c">
       <Filter>src\code</Filter>
     </ClCompile>

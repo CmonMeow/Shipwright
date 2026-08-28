@@ -2,9 +2,9 @@
 
 OSTimer __osBaseTimer;
 OSTime __osCurrentTime;
-u32 __osBaseCounter;
-u32 __osViIntrCount;
-u32 __osTimerCounter;
+uint32_t __osBaseCounter;
+uint32_t __osViIntrCount;
+uint32_t __osTimerCounter;
 OSTimer* __osTimerList = &__osBaseTimer;
 
 void __osTimerServicesInit(void) {
@@ -33,8 +33,8 @@ void __osTimerInterrupt(void) {
             break;
         }
 
-        u32 sp20 = osGetCount();
-        u32 sp1c = sp20 - __osTimerCounter;
+        uint32_t sp20 = osGetCount();
+        uint32_t sp1c = sp20 - __osTimerCounter;
         __osTimerCounter = sp20;
         if (sp1c < timer->value) {
             timer->value -= sp1c;
@@ -58,7 +58,7 @@ void __osTimerInterrupt(void) {
 
 void __osSetTimerIntr(OSTime time) {
     OSTime newTime = { 0 };
-    u32 prevInt = { 0 };
+    uint32_t prevInt = { 0 };
 
     if (time < 468) {
         time = 468;
@@ -68,14 +68,14 @@ void __osSetTimerIntr(OSTime time) {
 
     __osTimerCounter = osGetCount();
     newTime = time + __osTimerCounter;
-    __osSetCompare((u32)newTime);
+    __osSetCompare((uint32_t)newTime);
     __osRestoreInt(prevInt);
 }
 
 OSTime __osInsertTimer(OSTimer* timer) {
     OSTimer* nextTimer;
-    u64 timerValue;
-    u32 prevInt = __osDisableInt();
+    uint64_t timerValue;
+    uint32_t prevInt = __osDisableInt();
 
     for (nextTimer = __osTimerList->next, timerValue = timer->value;
          nextTimer != __osTimerList && timerValue > nextTimer->value;

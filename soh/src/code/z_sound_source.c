@@ -2,7 +2,7 @@
 
 void SoundSource_InitAll(PlayState* play) {
     SoundSource* sources = &play->soundSources[0];
-    s32 i;
+    int32_t i;
 
     // clang-format off
     for (i = 0; i < ARRAY_COUNT(play->soundSources); i++) { sources[i].countdown = 0; }
@@ -11,7 +11,7 @@ void SoundSource_InitAll(PlayState* play) {
 
 void SoundSource_UpdateAll(PlayState* play) {
     SoundSource* source = &play->soundSources[0];
-    s32 i;
+    int32_t i;
 
     for (i = 0; i < ARRAY_COUNT(play->soundSources); i++) {
         if (source->countdown != 0) {
@@ -26,11 +26,11 @@ void SoundSource_UpdateAll(PlayState* play) {
     }
 }
 
-void SoundSource_PlaySfxAtFixedWorldPos(PlayState* play, Vec3f* worldPos, s32 duration, u16 sfxId) {
-    s32 countdown;
-    s32 smallestCountdown = 0xFFFF;
+void SoundSource_PlaySfxAtFixedWorldPos(PlayState* play, Vec3f* worldPos, int32_t duration, uint16_t sfxId) {
+    int32_t countdown;
+    int32_t smallestCountdown = 0xFFFF;
     SoundSource* backupSource = { 0 };
-    s32 i;
+    int32_t i;
 
     SoundSource* source = &play->soundSources[0];
     for (i = 0; i < ARRAY_COUNT(play->soundSources); i++) {

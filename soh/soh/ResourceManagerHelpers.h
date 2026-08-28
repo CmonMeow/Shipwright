@@ -20,7 +20,7 @@ extern "C" {
 #include "z64audio.h"
 #include "z64bgcheck.h"
 uint32_t ResourceMgr_IsGameMasterQuest();
-uint32_t ResourceMgr_IsSceneMasterQuest(s16 sceneNum);
+uint32_t ResourceMgr_IsSceneMasterQuest(int16_t sceneNum);
 uint32_t ResourceMgr_GetNumGameVersions();
 uint32_t ResourceMgr_GetGameVersion(int index);
 uint32_t ResourceMgr_GetGamePlatform(int index);
@@ -58,7 +58,7 @@ bool ResourceMgr_IsAltAssetsEnabled();
 SkeletonHeader* ResourceMgr_LoadSkeletonByName(const char* path, SkelAnime* skelAnime);
 void ResourceMgr_UnregisterSkeleton(SkelAnime* skelAnime);
 void ResourceMgr_ClearSkeletons();
-s32* ResourceMgr_LoadCSByName(const char* path);
+int32_t* ResourceMgr_LoadCSByName(const char* path);
 int ResourceMgr_OTRSigCheck(char* imgData);
 char* ResourceMgr_GetResourceDataByNameHandlingMQ(const char* path);
 #ifdef __cplusplus

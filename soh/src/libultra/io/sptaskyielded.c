@@ -1,8 +1,8 @@
 #include "global.h"
 
-u32 osSpTaskYielded(OSTask* task) {
-    u32 ret = { 0 };
-    u32 status = __osSpGetStatus();
+uint32_t osSpTaskYielded(OSTask* task) {
+    uint32_t ret = { 0 };
+    uint32_t status = __osSpGetStatus();
 
     if (status & SP_STATUS_YIELDED) {
         ret = OS_TASK_YIELDED;

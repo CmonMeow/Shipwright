@@ -1,48 +1,48 @@
 #include "global.h"
 #include "fp.h"
 
-s32 gUseAtanContFrac;
+int32_t gUseAtanContFrac;
 
-f32 Math_FTanF(f32 x) {
-    f32 sin = sinf(x);
-    f32 cos = cosf(x);
+float Math_FTanF(float x) {
+    float sin = sinf(x);
+    float cos = cosf(x);
 
     return sin / cos;
 }
 
-f32 Math_FFloorF(f32 x) {
+float Math_FFloorF(float x) {
     return floorf(x);
 }
 
-f32 Math_FCeilF(f32 x) {
+float Math_FCeilF(float x) {
     return ceilf(x);
 }
 
-f32 Math_FRoundF(f32 x) {
+float Math_FRoundF(float x) {
     return roundf(x);
 }
 
-f32 Math_FTruncF(f32 x) {
+float Math_FTruncF(float x) {
     return truncf(x);
 }
 
-f32 Math_FNearbyIntF(f32 x) {
+float Math_FNearbyIntF(float x) {
     return nearbyintf(x);
 }
 
 /* Arctangent approximation using a Taylor series (one quadrant) */
-f32 Math_FAtanTaylorQF(f32 x) {
-    static const f32 coeffs[] = {
+float Math_FAtanTaylorQF(float x) {
+    static const float coeffs[] = {
         -1.0f / 3, +1.0f / 5, -1.0f / 7, +1.0f / 9, -1.0f / 11, +1.0f / 13, -1.0f / 15, +1.0f / 17, 0.0f,
     };
 
-    f32 poly = x;
-    f32 sq = SQ(x);
-    f32 exp = x * sq;
-    const f32* c = coeffs;
+    float poly = x;
+    float sq = SQ(x);
+    float exp = x * sq;
+    const float* c = coeffs;
 
     while (1) {
-        f32 term = *c++ * exp;
+        float term = *c++ * exp;
         if (poly + term == poly) {
             break;
         }
@@ -54,9 +54,9 @@ f32 Math_FAtanTaylorQF(f32 x) {
 }
 
 /* Ditto for two quadrants */
-f32 Math_FAtanTaylorF(f32 x) {
-    f32 t = { 0 };
-    f32 q = { 0 };
+float Math_FAtanTaylorF(float x) {
+    float t = { 0 };
+    float q = { 0 };
 
     if (x > 0.0f) {
         t = x;
@@ -86,12 +86,12 @@ f32 Math_FAtanTaylorF(f32 x) {
 }
 
 /* Arctangent approximation using a continued fraction */
-f32 Math_FAtanContFracF(f32 x) {
-    s32 sector = { 0 };
-    f32 z = { 0 };
-    f32 conv = { 0 };
-    f32 sq = { 0 };
-    s32 i;
+float Math_FAtanContFracF(float x) {
+    int32_t sector = { 0 };
+    float z = { 0 };
+    float conv = { 0 };
+    float sq = { 0 };
+    int32_t i;
 
     if (x >= -1.0f && x <= 1.0f) {
         sector = 0;
@@ -123,7 +123,7 @@ f32 Math_FAtanContFracF(f32 x) {
     }
 }
 
-f32 Math_FAtanF(f32 x) {
+float Math_FAtanF(float x) {
     if (!gUseAtanContFrac) {
         return Math_FAtanTaylorF(x);
     } else {
@@ -131,7 +131,7 @@ f32 Math_FAtanF(f32 x) {
     }
 }
 
-f32 Math_FAtan2F(f32 y, f32 x) {
+float Math_FAtan2F(float y, float x) {
     if (x == 0.0f) {
         if (y == 0.0f) {
             return 0.0f;
@@ -151,10 +151,10 @@ f32 Math_FAtan2F(f32 y, f32 x) {
     }
 }
 
-f32 Math_FAsinF(f32 x) {
+float Math_FAsinF(float x) {
     return Math_FAtan2F(x, sqrtf(1.0f - SQ(x)));
 }
 
-f32 Math_FAcosF(f32 x) {
+float Math_FAcosF(float x) {
     return M_PI / 2 - Math_FAsinF(x);
 }

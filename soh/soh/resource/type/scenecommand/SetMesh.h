@@ -9,12 +9,12 @@
 
 namespace SOH {
 typedef struct {
-    /* 0x00 */ u8 type;
+    /* 0x00 */ uint8_t type;
 } PolygonBase;
 
 typedef struct {
     /* 0x00 */ PolygonBase base;
-    /* 0x01 */ u8 num; // number of dlist entries
+    /* 0x01 */ uint8_t num; // number of dlist entries
     /* 0x04 */ void* start;
     /* 0x08 */ void* end;
 } PolygonType0; // size = 0xC

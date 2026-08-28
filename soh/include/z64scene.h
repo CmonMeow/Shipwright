@@ -13,18 +13,18 @@ typedef struct {
 typedef struct {
     /* 0x00 */ RomFile sceneFile;
     /* 0x08 */ RomFile titleFile;
-    /* 0x10 */ u8  unk_10;
-    /* 0x11 */ u8  config;
-    /* 0x12 */ u8  unk_12;
-    /* 0x13 */ u8  unk_13;
+    /* 0x10 */ uint8_t  unk_10;
+    /* 0x11 */ uint8_t  config;
+    /* 0x12 */ uint8_t  unk_12;
+    /* 0x13 */ uint8_t  unk_13;
 } SceneTableEntry; // size = 0x14
 typedef struct {
-    u8 headerType;
+    uint8_t headerType;
 } MeshHeaderBase;
 
 typedef struct {
     MeshHeaderBase base;
-    u8 numEntries;
+    uint8_t numEntries;
     Gfx* dListStart;
     Gfx* dListEnd;
 } MeshHeader0;
@@ -36,70 +36,70 @@ typedef struct {
 
 typedef struct {
     MeshHeaderBase base;
-    u8 format;
-    u32 entryRecord;
+    uint8_t format;
+    uint32_t entryRecord;
 } MeshHeader1Base;
 
 typedef struct {
     MeshHeader1Base base;
     void* imagePtr; // 0x08
-    u32 unknown; // 0x0C
-    u32 unknown2; // 0x10
-    u16 bgWidth; // 0x14
-    u16 bgHeight; // 0x16
-    u8 imageFormat; // 0x18
-    u8 imageSize; // 0x19
-    u16 imagePal; // 0x1A
-    u16 imageFlip; // 0x1C
+    uint32_t unknown; // 0x0C
+    uint32_t unknown2; // 0x10
+    uint16_t bgWidth; // 0x14
+    uint16_t bgHeight; // 0x16
+    uint8_t imageFormat; // 0x18
+    uint8_t imageSize; // 0x19
+    uint16_t imagePal; // 0x1A
+    uint16_t imageFlip; // 0x1C
 } MeshHeader1Single;
 
 typedef struct {
     MeshHeader1Base base;
-    u8 bgCnt;
+    uint8_t bgCnt;
     void* bgRecordPtr;
 } MeshHeader1Multi;
 
 typedef struct {
-    u16 unknown; // 0x00
-    s8 bgID; // 0x02
+    uint16_t unknown; // 0x00
+    int8_t bgID; // 0x02
     void* imagePtr; // 0x04
-    u32 unknown2; // 0x08
-    u32 unknown3; // 0x0C
-    u16 bgWidth; // 0x10
-    u16 bgHeight; // 0x12
-    u8 imageFmt; // 0x14
-    u8 imageSize; // 0x15
-    u16 imagePal; // 0x16
-    u16 imageFlip; // 0x18
+    uint32_t unknown2; // 0x08
+    uint32_t unknown3; // 0x0C
+    uint16_t bgWidth; // 0x10
+    uint16_t bgHeight; // 0x12
+    uint8_t imageFmt; // 0x14
+    uint8_t imageSize; // 0x15
+    uint16_t imagePal; // 0x16
+    uint16_t imageFlip; // 0x18
 } BackgroundRecord;
 
 typedef struct {
-    s16 playerXMax, playerZMax;
-    s16 playerXMin, playerZMin;
+    int16_t playerXMax, playerZMax;
+    int16_t playerXMin, playerZMin;
     Gfx* opaqueDList;
     Gfx* translucentDList;
 } MeshEntry2;
 
 typedef struct {
     MeshHeaderBase base;
-    u8 numEntries;
+    uint8_t numEntries;
     Gfx* dListStart;
     Gfx* dListEnd;
 } MeshHeader2;
 
 typedef struct {
-    /* 0x00 */ u8 ambientColor[3];
-    /* 0x03 */ s8 diffuseDir1[3];
-    /* 0x06 */ u8 diffuseColor1[3];
-    /* 0x09 */ s8 diffuseDir2[3];
-    /* 0x0C */ u8 diffuseColor2[3];
-    /* 0x0F */ u8 fogColor[3];
-    /* 0x12 */ u16 fogNear;
-    /* 0x14 */ u16 fogFar;
+    /* 0x00 */ uint8_t ambientColor[3];
+    /* 0x03 */ int8_t diffuseDir1[3];
+    /* 0x06 */ uint8_t diffuseColor1[3];
+    /* 0x09 */ int8_t diffuseDir2[3];
+    /* 0x0C */ uint8_t diffuseColor2[3];
+    /* 0x0F */ uint8_t fogColor[3];
+    /* 0x12 */ uint16_t fogNear;
+    /* 0x14 */ uint16_t fogFar;
 } LightSettings; // size = 0x16
 
 typedef struct {
-    /* 0x00 */ u8 count; // number of points in the path
+    /* 0x00 */ uint8_t count; // number of points in the path
     /* 0x04 */ Vec3s* points; // Segment Address to the array of points
 } Path; // size = 0x8
 

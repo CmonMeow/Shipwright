@@ -8,8 +8,8 @@
     osSyncPrintf(#name " ")
 
 void func_800FBCE0() {
-    u32 spStatus = __osSpGetStatus();
-    u32 dpStatus = osDpGetStatus();
+    uint32_t spStatus = __osSpGetStatus();
+    uint32_t dpStatus = osDpGetStatus();
 
     osSyncPrintf("osSpGetStatus=%08x: ", spStatus);
     printSpStatus(spStatus, HALT);

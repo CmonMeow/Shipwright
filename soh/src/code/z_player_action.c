@@ -1,7 +1,7 @@
 #include "global.h"
 
 void PlayerAction_Reset(PlayState* play) {
-    s16 index;
+    int16_t index;
 
     gSaveContext.cutsceneTrigger = 0;
     gSaveContext.cutsceneTransitionControl = 0;

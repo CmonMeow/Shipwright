@@ -2,7 +2,7 @@
 
 OSMesg osSiMesgBuff[SIAccessQueueSize];
 OSMesgQueue gOSSiMessageQueue;
-u32 gOSSiAccessQueueCreated = 0;
+uint32_t gOSSiAccessQueueCreated = 0;
 
 void __osSiCreateAccessQueue(void) {
     gOSSiAccessQueueCreated = 1;

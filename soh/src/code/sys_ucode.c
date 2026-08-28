@@ -3,7 +3,7 @@
 #include <libultraship/bridge/gfxbridge.h>
 
 UcodeHandlers sDefaultGSPUCodeText = ucode_f3dex2;
-// u64* sDefaultGSPUCodeData = gspF3DZEX2_NoN_PosLight_fifoDataStart;
+// uint64_t* sDefaultGSPUCodeData = gspF3DZEX2_NoN_PosLight_fifoDataStart;
 
 uintptr_t SysUcode_GetUCodeBoot(void) {
     // return rspbootTextStart;

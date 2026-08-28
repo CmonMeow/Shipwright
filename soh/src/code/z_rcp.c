@@ -849,7 +849,7 @@ Gfx gEmptyDL[] = {
     gsSPEndDisplayList(),
 };
 
-Gfx* Gfx_SetFog(Gfx* gfx, s32 r, s32 g, s32 b, s32 a, s32 near, s32 far) {
+Gfx* Gfx_SetFog(Gfx* gfx, int32_t r, int32_t g, int32_t b, int32_t a, int32_t near, int32_t far) {
     if (far == near) {
         far++;
     }
@@ -871,7 +871,7 @@ Gfx* Gfx_SetFog(Gfx* gfx, s32 r, s32 g, s32 b, s32 a, s32 near, s32 far) {
     return gfx;
 }
 
-Gfx* Gfx_SetFogWithSync(Gfx* gfx, s32 r, s32 g, s32 b, s32 a, s32 near, s32 far) {
+Gfx* Gfx_SetFogWithSync(Gfx* gfx, int32_t r, int32_t g, int32_t b, int32_t a, int32_t near, int32_t far) {
     if (far == near) {
         far++;
     }
@@ -893,23 +893,23 @@ Gfx* Gfx_SetFogWithSync(Gfx* gfx, s32 r, s32 g, s32 b, s32 a, s32 near, s32 far)
     return gfx;
 }
 
-Gfx* Gfx_SetFog2(Gfx* gfx, s32 r, s32 g, s32 b, s32 a, s32 near, s32 far) {
+Gfx* Gfx_SetFog2(Gfx* gfx, int32_t r, int32_t g, int32_t b, int32_t a, int32_t near, int32_t far) {
     return Gfx_SetFog(gfx, r, g, b, a, near, far);
 }
 
-Gfx* Gfx_SetupDLImpl(Gfx* gfx, u32 i) {
-    s32 dListIndex = 6 * i;
+Gfx* Gfx_SetupDLImpl(Gfx* gfx, uint32_t i) {
+    int32_t dListIndex = 6 * i;
 
     gSPDisplayList(gfx++, &((Gfx*)sSetupDL)[dListIndex]);
     // Equivalent to gSPDisplayList(gfx++, sSetupDL[i])
     return gfx;
 }
 
-Gfx* Gfx_SetupDL(Gfx* gfx, u32 i) {
+Gfx* Gfx_SetupDL(Gfx* gfx, uint32_t i) {
     return Gfx_SetupDLImpl(gfx, i);
 }
 
-void Gfx_SetupDLAtPtr(Gfx** gfxp, u32 i) {
+void Gfx_SetupDLAtPtr(Gfx** gfxp, uint32_t i) {
     *gfxp = Gfx_SetupDL(*gfxp, i);
 }
 
@@ -1363,7 +1363,7 @@ void Gfx_SetupDL_59Opa(GraphicsContext* gfxCtx) {
     CLOSE_DISPS(gfxCtx);
 }
 
-Gfx* Gfx_BranchTexScroll(Gfx** gfxp, u32 x, u32 y, s32 width, s32 height) {
+Gfx* Gfx_BranchTexScroll(Gfx** gfxp, uint32_t x, uint32_t y, int32_t width, int32_t height) {
     Gfx* displayList = Graph_DlistAlloc(gfxp, 3 * sizeof(Gfx));
 
     gDPTileSync(displayList);
@@ -1373,15 +1373,15 @@ Gfx* Gfx_BranchTexScroll(Gfx** gfxp, u32 x, u32 y, s32 width, s32 height) {
     return displayList;
 }
 
-Gfx* func_80094E54(Gfx** gfxp, u32 x, u32 y) {
+Gfx* func_80094E54(Gfx** gfxp, uint32_t x, uint32_t y) {
     return Gfx_BranchTexScroll(gfxp, x, y, 0, 0);
 }
 
-Gfx* func_80094E78(GraphicsContext* gfxCtx, u32 x, u32 y) {
+Gfx* func_80094E78(GraphicsContext* gfxCtx, uint32_t x, uint32_t y) {
     return Gfx_TexScroll(gfxCtx, x, y, 0, 0);
 }
 
-Gfx* Gfx_TexScroll(GraphicsContext* gfxCtx, u32 x, u32 y, s32 width, s32 height) {
+Gfx* Gfx_TexScroll(GraphicsContext* gfxCtx, uint32_t x, uint32_t y, int32_t width, int32_t height) {
     Gfx* displayList = Graph_Alloc(gfxCtx, 3 * sizeof(Gfx));
 
     x %= 512 << 2;
@@ -1394,7 +1394,7 @@ Gfx* Gfx_TexScroll(GraphicsContext* gfxCtx, u32 x, u32 y, s32 width, s32 height)
     return displayList;
 }
 
-Gfx* Gfx_TexScrollEx(GraphicsContext* gfxCtx, u32 x, u32 y, s32 width, s32 height, s32 xStep, s32 yStep) {
+Gfx* Gfx_TexScrollEx(GraphicsContext* gfxCtx, uint32_t x, uint32_t y, int32_t width, int32_t height, int32_t xStep, int32_t yStep) {
     int interpFrames = Ship_GetInterpolationFrameCount();
 
     Gfx* gfx = Graph_Alloc(gfxCtx, (2 + (interpFrames * 4)) * sizeof(Gfx));
@@ -1426,8 +1426,8 @@ Gfx* Gfx_TexScrollEx(GraphicsContext* gfxCtx, u32 x, u32 y, s32 width, s32 heigh
     return gfx;
 }
 
-Gfx* Gfx_TwoTexScroll(GraphicsContext* gfxCtx, s32 tile1, u32 x1, u32 y1, s32 width1, s32 height1, s32 tile2, u32 x2,
-                      u32 y2, s32 width2, s32 height2) {
+Gfx* Gfx_TwoTexScroll(GraphicsContext* gfxCtx, int32_t tile1, uint32_t x1, uint32_t y1, int32_t width1, int32_t height1, int32_t tile2, uint32_t x2,
+                      uint32_t y2, int32_t width2, int32_t height2) {
     Gfx* displayList = Graph_Alloc(gfxCtx, 5 * sizeof(Gfx));
 
     x1 %= 512 << 2;
@@ -1444,8 +1444,8 @@ Gfx* Gfx_TwoTexScroll(GraphicsContext* gfxCtx, s32 tile1, u32 x1, u32 y1, s32 wi
     return displayList;
 }
 
-Gfx* Gfx_TwoTexScrollEx(GraphicsContext* gfxCtx, s32 tile1, u32 x1, u32 y1, s32 width1, s32 height1, s32 tile2, u32 x2,
-                        u32 y2, s32 width2, s32 height2, s32 xStep1, s32 yStep1, s32 xStep2, s32 yStep2) {
+Gfx* Gfx_TwoTexScrollEx(GraphicsContext* gfxCtx, int32_t tile1, uint32_t x1, uint32_t y1, int32_t width1, int32_t height1, int32_t tile2, uint32_t x2,
+                        uint32_t y2, int32_t width2, int32_t height2, int32_t xStep1, int32_t yStep1, int32_t xStep2, int32_t yStep2) {
     int interpFrames = Ship_GetInterpolationFrameCount();
 
     Gfx* gfx = Graph_Alloc(gfxCtx, (5 + (interpFrames * 7)) * sizeof(Gfx));
@@ -1490,8 +1490,8 @@ Gfx* Gfx_TwoTexScrollEx(GraphicsContext* gfxCtx, s32 tile1, u32 x1, u32 y1, s32 
     return gfx;
 }
 
-Gfx* Gfx_TwoTexScrollEnvColor(GraphicsContext* gfxCtx, s32 tile1, u32 x1, u32 y1, s32 width1, s32 height1, s32 tile2,
-                              u32 x2, u32 y2, s32 width2, s32 height2, s32 r, s32 g, s32 b, s32 a) {
+Gfx* Gfx_TwoTexScrollEnvColor(GraphicsContext* gfxCtx, int32_t tile1, uint32_t x1, uint32_t y1, int32_t width1, int32_t height1, int32_t tile2,
+                              uint32_t x2, uint32_t y2, int32_t width2, int32_t height2, int32_t r, int32_t g, int32_t b, int32_t a) {
     Gfx* displayList = Graph_Alloc(gfxCtx, 6 * sizeof(Gfx));
 
     x1 %= 512 << 2;
@@ -1509,9 +1509,9 @@ Gfx* Gfx_TwoTexScrollEnvColor(GraphicsContext* gfxCtx, s32 tile1, u32 x1, u32 y1
     return displayList;
 }
 
-Gfx* Gfx_TwoTexScrollEnvColorEx(GraphicsContext* gfxCtx, s32 tile1, u32 x1, u32 y1, s32 width1, s32 height1, s32 tile2,
-                                u32 x2, u32 y2, s32 width2, s32 height2, s32 r, s32 g, s32 b, s32 a, s32 xStep1,
-                                s32 yStep1, s32 xStep2, s32 yStep2) {
+Gfx* Gfx_TwoTexScrollEnvColorEx(GraphicsContext* gfxCtx, int32_t tile1, uint32_t x1, uint32_t y1, int32_t width1, int32_t height1, int32_t tile2,
+                                uint32_t x2, uint32_t y2, int32_t width2, int32_t height2, int32_t r, int32_t g, int32_t b, int32_t a, int32_t xStep1,
+                                int32_t yStep1, int32_t xStep2, int32_t yStep2) {
     int interpFrames = Ship_GetInterpolationFrameCount();
 
     Gfx* gfx = Graph_Alloc(gfxCtx, (6 + (interpFrames * 7)) * sizeof(Gfx));
@@ -1557,7 +1557,7 @@ Gfx* Gfx_TwoTexScrollEnvColorEx(GraphicsContext* gfxCtx, s32 tile1, u32 x1, u32 
     return gfx;
 }
 
-Gfx* Gfx_EnvColor(GraphicsContext* gfxCtx, s32 r, s32 g, s32 b, s32 a) {
+Gfx* Gfx_EnvColor(GraphicsContext* gfxCtx, int32_t r, int32_t g, int32_t b, int32_t a) {
     Gfx* displayList = Graph_Alloc(gfxCtx, 2 * sizeof(Gfx));
 
     gDPSetEnvColor(displayList, r, g, b, a);
@@ -1573,7 +1573,7 @@ Gfx* Gfx_EnvColor(GraphicsContext* gfxCtx, s32 r, s32 g, s32 b, s32 a) {
  * The whole screen is filled with the color supplied as arguments.
  * Letterbox is also applied here, and will share the color of the screen base.
  */
-void Gfx_SetupFrame(GraphicsContext* gfxCtx, u8 r, u8 g, u8 b) {
+void Gfx_SetupFrame(GraphicsContext* gfxCtx, uint8_t r, uint8_t g, uint8_t b) {
     OPEN_DISPS(gfxCtx);
 
     // Set up the RDP render state for rectangles in FILL mode
@@ -1598,7 +1598,7 @@ void Gfx_SetupFrame(GraphicsContext* gfxCtx, u8 r, u8 g, u8 b) {
     gDPSetDepthImage(OVERLAY_DISP++, gZBuffer);
 
     {
-        s32 letterboxSize = ShrinkWindow_GetCurrentVal(); // Upstream TODO: Letterbox
+        int32_t letterboxSize = ShrinkWindow_GetCurrentVal(); // Upstream TODO: Letterbox
 
         if (HREG(80) == 16) {
             if (HREG(95) != 16) {

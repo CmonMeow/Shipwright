@@ -57,7 +57,7 @@ void func_800C49F4(GraphicsContext* gfxCtx) {
     CLOSE_DISPS(gfxCtx);
 }
 
-void PadMgr_RequestPadData(PadMgr*, Input*, s32);
+void PadMgr_RequestPadData(PadMgr*, Input*, int32_t);
 
 void GameState_ReqPadData(GameState* gameState) {
     PadMgr_RequestPadData(&gPadMgr, &gameState->input[0], 1);
@@ -93,9 +93,9 @@ void GameState_InitArena(GameState* gameState, size_t size) {
 void GameState_Realloc(GameState* gameState, size_t size) {
     GameAlloc* alloc = &gameState->alloc;
     void* gameArena = { 0 };
-    u32 systemMaxFree;
-    u32 systemFree;
-    u32 systemAlloc;
+    uint32_t systemMaxFree;
+    uint32_t systemFree;
+    uint32_t systemAlloc;
     void* thaBufp = gameState->tha.bufp;
 
     THA_Dt(&gameState->tha);
@@ -202,11 +202,11 @@ size_t GameState_GetSize(GameState* gameState) {
     return gameState->size;
 }
 
-u32 GameState_IsRunning(GameState* gameState) {
+uint32_t GameState_IsRunning(GameState* gameState) {
     return gameState->running;
 }
 
-void* GameState_Alloc(GameState* gameState, size_t size, char* file, s32 line) {
+void* GameState_Alloc(GameState* gameState, size_t size, char* file, int32_t line) {
     void* ret = { 0 };
 
     if (THA_IsCrash(&gameState->tha)) {
@@ -236,6 +236,6 @@ void* GameState_AllocEndAlign16(GameState* gameState, size_t size) {
     return THA_AllocEndAlign16(&gameState->tha, size);
 }
 
-s32 GameState_GetArenaSize(GameState* gameState) {
+int32_t GameState_GetArenaSize(GameState* gameState) {
     return THA_GetSize(&gameState->tha);
 }

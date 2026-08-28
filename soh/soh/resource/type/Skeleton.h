@@ -15,8 +15,8 @@ enum class SkeletonType {
 
 // typedef struct {
 //     /* 0x00 */ Vec3s jointPos; // Root is position in model space, children are relative to parent
-//     /* 0x06 */ u8 child;
-//     /* 0x07 */ u8 sibling;
+//     /* 0x06 */ uint8_t child;
+//     /* 0x07 */ uint8_t sibling;
 //     /* 0x08 */ Gfx* dList;
 // } StandardLimb; // size = 0xC
 
@@ -34,8 +34,8 @@ typedef struct {
 } FlexSkeletonHeader; // size = 0xC
 
 // typedef struct {
-//     /* 0x0000 */ u8 firstChildIdx;
-//     /* 0x0001 */ u8 nextLimbIdx;
+//     /* 0x0000 */ uint8_t firstChildIdx;
+//     /* 0x0001 */ uint8_t nextLimbIdx;
 //     /* 0x0004 */ Gfx* dList[2];
 // } SkelCurveLimb; // size = 0xC
 

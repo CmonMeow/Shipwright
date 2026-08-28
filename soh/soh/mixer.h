@@ -45,7 +45,7 @@ void aResampleImpl(uint8_t flags, uint16_t pitch, RESAMPLE_STATE state);
 void aEnvSetup1Impl(uint8_t initial_vol_wet, uint16_t rate_wet, uint16_t rate_left, uint16_t rate_right);
 void aEnvSetup2Impl(uint16_t initial_vol_left, uint16_t initial_vol_right);
 void aEnvMixerImpl(uint16_t in_addr, uint16_t n_samples, bool swap_reverb, bool neg_3, bool neg_2, bool neg_left,
-                   bool neg_right, int32_t wet_dry_addr, u32 unk);
+                   bool neg_right, int32_t wet_dry_addr, uint32_t unk);
 void aMixImpl(uint16_t count, int16_t gain, uint16_t in_addr, uint16_t out_addr);
 void aS8DecImpl(uint8_t flags, ADPCM_STATE state);
 void aAddMixerImpl(uint16_t count, uint16_t in_addr, uint16_t out_addr);

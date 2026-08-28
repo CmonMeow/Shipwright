@@ -2,9 +2,9 @@
 
 StackEntry sBootThreadInfo;
 OSThread sIdleThread;
-u8 sIdleThreadStack[0x400];
+uint8_t sIdleThreadStack[0x400];
 StackEntry sIdleThreadInfo;
-u8 sBootThreadStack[0x400];
+uint8_t sBootThreadStack[0x400];
 
 void cleararena(void) {
     // bzero(_dmadataSegmentStart, osMemSize - OS_K0_TO_PHYSICAL(_dmadataSegmentStart));

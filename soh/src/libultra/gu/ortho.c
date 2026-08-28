@@ -2,8 +2,8 @@
 
 #include "soh/frame_interpolation.h"
 
-void guOrthoF(f32 mf[4][4], f32 left, f32 right, f32 bottom, f32 top, f32 near, f32 far, f32 scale) {
-    s32 i, j;
+void guOrthoF(float mf[4][4], float left, float right, float bottom, float top, float near, float far, float scale) {
+    int32_t i, j;
 
     guMtxIdentF(mf);
 
@@ -22,8 +22,8 @@ void guOrthoF(f32 mf[4][4], f32 left, f32 right, f32 bottom, f32 top, f32 near, 
     }
 }
 
-void guOrtho(Mtx* mtx, f32 left, f32 right, f32 bottom, f32 top, f32 near, f32 far, f32 scale) {
-    f32 mf[4][4];
+void guOrtho(Mtx* mtx, float left, float right, float bottom, float top, float near, float far, float scale) {
+    float mf[4][4];
 
     guOrthoF(mf, left, right, bottom, top, near, far, scale);
 

@@ -15,13 +15,13 @@ extern char** sequenceMap;
 #define PORTAMENTO_MODE_4 4
 #define PORTAMENTO_MODE_5 5
 
-u8 AudioSeq_ScriptReadU8(SeqScriptState* state);
-s16 AudioSeq_ScriptReadS16(SeqScriptState* state);
-u16 AudioSeq_ScriptReadCompressedU16(SeqScriptState* state);
+uint8_t AudioSeq_ScriptReadU8(SeqScriptState* state);
+int16_t AudioSeq_ScriptReadS16(SeqScriptState* state);
+uint16_t AudioSeq_ScriptReadCompressedU16(SeqScriptState* state);
 
-u8 AudioSeq_GetInstrument(SequenceChannel* channel, u8 instId, Instrument** instOut, AdsrSettings* adsr);
+uint8_t AudioSeq_GetInstrument(SequenceChannel* channel, uint8_t instId, Instrument** instOut, AdsrSettings* adsr);
 
-u8 D_80130520[] = {
+uint8_t D_80130520[] = {
     0x81, 0x00, 0x81, 0x01, 0x00, 0x00, 0x00, 0x81, 0x01, 0x01, 0x01, 0x42, 0x81, 0xC2, 0x00, 0x00,
     0x00, 0x01, 0x81, 0x00, 0x00, 0x00, 0x01, 0x42, 0x01, 0x01, 0x01, 0x81, 0x01, 0x01, 0x81, 0x81,
     0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x81, 0x01, 0x01, 0x01, 0x81, 0x01,
@@ -29,10 +29,10 @@ u8 D_80130520[] = {
     0x00, 0x01, 0x01, 0x01, 0x01, 0x81, 0x00, 0x00, 0x01, 0x81, 0x81, 0x81, 0x81, 0x00, 0x00, 0x00,
 };
 
-u16 AudioSeq_GetScriptControlFlowArgument(SeqScriptState* state, u8 arg1) {
-    u8 temp_v0 = D_80130520[arg1 - 0xB0];
-    u8 loBits = temp_v0 & 3;
-    u16 ret = 0;
+uint16_t AudioSeq_GetScriptControlFlowArgument(SeqScriptState* state, uint8_t arg1) {
+    uint8_t temp_v0 = D_80130520[arg1 - 0xB0];
+    uint8_t loBits = temp_v0 & 3;
+    uint16_t ret = 0;
 
     if (loBits == 1) {
         if ((temp_v0 & 0x80) == 0) {
@@ -44,7 +44,7 @@ u16 AudioSeq_GetScriptControlFlowArgument(SeqScriptState* state, u8 arg1) {
     return ret;
 }
 
-s32 AudioSeq_HandleScriptFlowControl(SequencePlayer* seqPlayer, SeqScriptState* state, s32 cmd, s32 arg) {
+int32_t AudioSeq_HandleScriptFlowControl(SequencePlayer* seqPlayer, SeqScriptState* state, int32_t cmd, int32_t arg) {
     switch (cmd) {
         case 0xFF:
             if (state->depth == 0) {
@@ -61,7 +61,7 @@ s32 AudioSeq_HandleScriptFlowControl(SequencePlayer* seqPlayer, SeqScriptState* 
 
         case 0xFC:
             state->stack[state->depth++] = state->pc;
-            state->pc = seqPlayer->seqData + (u16)arg;
+            state->pc = seqPlayer->seqData + (uint16_t)arg;
             break;
 
         case 0xF8:
@@ -95,7 +95,7 @@ s32 AudioSeq_HandleScriptFlowControl(SequencePlayer* seqPlayer, SeqScriptState* 
             if (cmd == 0xF5 && state->value < 0) {
                 break;
             }
-            state->pc = seqPlayer->seqData + (u16)arg;
+            state->pc = seqPlayer->seqData + (uint16_t)arg;
             break;
 
         case 0xF2:
@@ -107,7 +107,7 @@ s32 AudioSeq_HandleScriptFlowControl(SequencePlayer* seqPlayer, SeqScriptState* 
             if (cmd == 0xF2 && state->value >= 0) {
                 break;
             }
-            state->pc += (s8)(arg & 0xFF);
+            state->pc += (int8_t)(arg & 0xFF);
             break;
     }
 
@@ -115,7 +115,7 @@ s32 AudioSeq_HandleScriptFlowControl(SequencePlayer* seqPlayer, SeqScriptState* 
 }
 
 void AudioSeq_InitSequenceChannel(SequenceChannel* channel) {
-    s32 i;
+    int32_t i;
 
     if (channel == &gAudioContext.sequenceChannelNone) {
         return;
@@ -169,7 +169,7 @@ void AudioSeq_InitSequenceChannel(SequenceChannel* channel) {
     Audio_InitNoteLists(&channel->notePool);
 }
 
-s32 AudioSeq_SeqChannelSetLayer(SequenceChannel* channel, s32 layerIdx) {
+int32_t AudioSeq_SeqChannelSetLayer(SequenceChannel* channel, int32_t layerIdx) {
     SequenceLayer* layer;
 
     if (channel->layers[layerIdx] == NULL) {
@@ -225,7 +225,7 @@ void AudioSeq_SeqLayerDisable(SequenceLayer* layer) {
     }
 }
 
-void AudioSeq_SeqLayerFree(SequenceChannel* channel, s32 layerIdx) {
+void AudioSeq_SeqLayerFree(SequenceChannel* channel, int32_t layerIdx) {
     SequenceLayer* layer = channel->layers[layerIdx];
 
     if (layer != NULL) {
@@ -236,7 +236,7 @@ void AudioSeq_SeqLayerFree(SequenceChannel* channel, s32 layerIdx) {
 }
 
 void AudioSeq_SequenceChannelDisable(SequenceChannel* channel) {
-    s32 i;
+    int32_t i;
 
     for (i = 0; i < 4; i++) {
         AudioSeq_SeqLayerFree(channel, i);
@@ -247,8 +247,8 @@ void AudioSeq_SequenceChannelDisable(SequenceChannel* channel) {
     channel->finished = true;
 }
 
-void AudioSeq_SequencePlayerSetupChannels(SequencePlayer* seqPlayer, u16 channelBits) {
-    s32 i;
+void AudioSeq_SequencePlayerSetupChannels(SequencePlayer* seqPlayer, uint16_t channelBits) {
+    int32_t i;
 
     for (i = 0; i < 0x10; i++) {
         if (channelBits & 1) {
@@ -261,8 +261,8 @@ void AudioSeq_SequencePlayerSetupChannels(SequencePlayer* seqPlayer, u16 channel
     }
 }
 
-void AudioSeq_SequencePlayerDisableChannels(SequencePlayer* seqPlayer, u16 channelBitsUnused) {
-    s32 i;
+void AudioSeq_SequencePlayerDisableChannels(SequencePlayer* seqPlayer, uint16_t channelBitsUnused) {
+    int32_t i;
 
     for (i = 0; i < 0x10; i++) {
         SequenceChannel* channel = seqPlayer->channels[i];
@@ -272,9 +272,9 @@ void AudioSeq_SequencePlayerDisableChannels(SequencePlayer* seqPlayer, u16 chann
     }
 }
 
-void AudioSeq_SequenceChannelEnable(SequencePlayer* seqPlayer, u8 channelIdx, void* script) {
+void AudioSeq_SequenceChannelEnable(SequencePlayer* seqPlayer, uint8_t channelIdx, void* script) {
     SequenceChannel* channel = seqPlayer->channels[channelIdx];
-    s32 i;
+    int32_t i;
 
     channel->enabled = true;
     channel->finished = false;
@@ -343,7 +343,7 @@ void* AudioSeq_AudioListPopBack(AudioListItem* list) {
 }
 
 void AudioSeq_InitLayerFreelist(void) {
-    s32 i;
+    int32_t i;
 
     gAudioContext.layerFreeList.prev = &gAudioContext.layerFreeList;
     gAudioContext.layerFreeList.next = &gAudioContext.layerFreeList;
@@ -357,19 +357,19 @@ void AudioSeq_InitLayerFreelist(void) {
     }
 }
 
-u8 AudioSeq_ScriptReadU8(SeqScriptState* state) {
+uint8_t AudioSeq_ScriptReadU8(SeqScriptState* state) {
     return *(state->pc++);
 }
 
-s16 AudioSeq_ScriptReadS16(SeqScriptState* state) {
-    s16 ret = *(state->pc++) << 8;
+int16_t AudioSeq_ScriptReadS16(SeqScriptState* state) {
+    int16_t ret = *(state->pc++) << 8;
 
     ret = *(state->pc++) | ret;
     return ret;
 }
 
-u16 AudioSeq_ScriptReadCompressedU16(SeqScriptState* state) {
-    u16 ret = *(state->pc++);
+uint16_t AudioSeq_ScriptReadCompressedU16(SeqScriptState* state) {
+    uint16_t ret = *(state->pc++);
 
     if (ret & 0x80) {
         ret = (ret << 8) & 0x7F00;
@@ -379,13 +379,13 @@ u16 AudioSeq_ScriptReadCompressedU16(SeqScriptState* state) {
 }
 
 void AudioSeq_SeqLayerProcessScriptStep1(SequenceLayer* layer);
-s32 AudioSeq_SeqLayerProcessScriptStep2(SequenceLayer* layer);
-s32 AudioSeq_SeqLayerProcessScriptStep3(SequenceLayer* layer, s32 cmd);
-s32 AudioSeq_SeqLayerProcessScriptStep4(SequenceLayer* layer, s32 cmd);
-s32 AudioSeq_SeqLayerProcessScriptStep5(SequenceLayer* layer, s32 sameSound);
+int32_t AudioSeq_SeqLayerProcessScriptStep2(SequenceLayer* layer);
+int32_t AudioSeq_SeqLayerProcessScriptStep3(SequenceLayer* layer, int32_t cmd);
+int32_t AudioSeq_SeqLayerProcessScriptStep4(SequenceLayer* layer, int32_t cmd);
+int32_t AudioSeq_SeqLayerProcessScriptStep5(SequenceLayer* layer, int32_t sameSound);
 
 void AudioSeq_SeqLayerProcessScript(SequenceLayer* layer) {
-    s32 val = { 0 };
+    int32_t val = { 0 };
 
     if (!layer->enabled) {
         return;
@@ -435,7 +435,7 @@ void AudioSeq_SeqLayerProcessScriptStep1(SequenceLayer* layer) {
     layer->notePropertiesNeedInit = true;
 }
 
-s32 AudioSeq_SeqLayerProcessScriptStep5(SequenceLayer* layer, s32 sameSound) {
+int32_t AudioSeq_SeqLayerProcessScriptStep5(SequenceLayer* layer, int32_t sameSound) {
     if (!layer->stopSomething && layer->sound != NULL && layer->sound->sample->codec == CODEC_S16_INMEMORY &&
         layer->sound->sample->medium != MEDIUM_RAM) {
         layer->stopSomething = true;
@@ -468,19 +468,19 @@ s32 AudioSeq_SeqLayerProcessScriptStep5(SequenceLayer* layer, s32 sameSound) {
     return 0;
 }
 
-s32 AudioSeq_SeqLayerProcessScriptStep2(SequenceLayer* layer) {
+int32_t AudioSeq_SeqLayerProcessScriptStep2(SequenceLayer* layer) {
     SequenceChannel* channel = layer->channel;
     SeqScriptState* state = &layer->scriptState;
     SequencePlayer* seqPlayer = channel->seqPlayer;
-    u16 sp3A = { 0 };
+    uint16_t sp3A = { 0 };
 
     for (;;) {
-        u8 cmd = AudioSeq_ScriptReadU8(state);
+        uint8_t cmd = AudioSeq_ScriptReadU8(state);
         if (cmd < 0xC1) {
             return cmd;
         }
         if (cmd >= 0xF2) {
-            u16 arg = AudioSeq_GetScriptControlFlowArgument(state, cmd);
+            uint16_t arg = AudioSeq_GetScriptControlFlowArgument(state, cmd);
 
             if (AudioSeq_HandleScriptFlowControl(seqPlayer, state, cmd, arg) == 0) {
                 continue;
@@ -493,10 +493,10 @@ s32 AudioSeq_SeqLayerProcessScriptStep2(SequenceLayer* layer) {
             case 0xC1: // layer_setshortnotevelocity
             case 0xCA: // layer_setpan
             {
-                u8 tempByte = *(state->pc++);
+                uint8_t tempByte = *(state->pc++);
 
                 if (cmd == 0xC1) {
-                    layer->velocitySquare = (f32)(tempByte * tempByte) / 16129.0f;
+                    layer->velocitySquare = (float)(tempByte * tempByte) / 16129.0f;
                 } else {
                     layer->pan = tempByte;
                 }
@@ -506,7 +506,7 @@ s32 AudioSeq_SeqLayerProcessScriptStep2(SequenceLayer* layer) {
             case 0xC9: // layer_setshortnotegatetime
             case 0xC2: // layer_transpose; set transposition in semitones
             {
-                u8 tempByte = *(state->pc++);
+                uint8_t tempByte = *(state->pc++);
 
                 if (cmd == 0xC9) {
                     layer->gateTime = tempByte;
@@ -570,7 +570,7 @@ s32 AudioSeq_SeqLayerProcessScriptStep2(SequenceLayer* layer) {
 
                 layer->portamentoTargetNote = cmd;
 
-                // If special, the next param is u8 instead of var
+                // If special, the next param is uint8_t instead of var
                 if (PORTAMENTO_IS_SPECIAL(layer->portamento)) {
                     layer->portamentoTime = *(state->pc++);
                     break;
@@ -602,7 +602,7 @@ s32 AudioSeq_SeqLayerProcessScriptStep2(SequenceLayer* layer) {
                 break;
 
             case 0xCE: {
-                u8 tempByte = AudioSeq_ScriptReadU8(state);
+                uint8_t tempByte = AudioSeq_ScriptReadU8(state);
                 layer->unk_34 = gBendPitchTwoSemitonesFrequencies[(tempByte + 0x80) & 0xFF];
                 break;
             }
@@ -611,29 +611,29 @@ s32 AudioSeq_SeqLayerProcessScriptStep2(SequenceLayer* layer) {
                 switch (cmd & 0xF0) {
                     case 0xD0: // layer_setshortnotevelocityfromtable
                         sp3A = seqPlayer->shortNoteVelocityTable[cmd & 0xF];
-                        layer->velocitySquare = (f32)(sp3A * sp3A) / 16129.0f;
+                        layer->velocitySquare = (float)(sp3A * sp3A) / 16129.0f;
                         break;
                     case 0xE0: // layer_setshortnotegatetimefromtable
-                        layer->gateTime = (u8)seqPlayer->shortNoteGateTimeTable[cmd & 0xF];
+                        layer->gateTime = (uint8_t)seqPlayer->shortNoteGateTimeTable[cmd & 0xF];
                         break;
                 }
         }
     }
 }
 
-s32 AudioSeq_SeqLayerProcessScriptStep4(SequenceLayer* layer, s32 cmd) {
-    s32 sameSound = true;
-    s32 speed = { 0 };
+int32_t AudioSeq_SeqLayerProcessScriptStep4(SequenceLayer* layer, int32_t cmd) {
+    int32_t sameSound = true;
+    int32_t speed = { 0 };
     Portamento* portamento = &layer->portamento;
-    f32 freqScale;
-    f32 freqScale2 = { 0 };
+    float freqScale;
+    float freqScale2 = { 0 };
     SoundFontSound* sound = { 0 };
     Instrument* instrument = { 0 };
-    u8 semitone = cmd;
-    f32 time = { 0 };
-    f32 tuning;
+    uint8_t semitone = cmd;
+    float time = { 0 };
+    float tuning;
 
-    s32 instOrWave = layer->instOrWave;
+    int32_t instOrWave = layer->instOrWave;
     SequenceChannel* channel = layer->channel;
     SequencePlayer* seqPlayer = channel->seqPlayer;
 
@@ -656,7 +656,7 @@ s32 AudioSeq_SeqLayerProcessScriptStep4(SequenceLayer* layer, s32 cmd) {
             }
             sound = &drum->sound;
             layer->adsr.envelope = drum->envelope;
-            layer->adsr.releaseRate = (u8)drum->releaseRate;
+            layer->adsr.releaseRate = (uint8_t)drum->releaseRate;
             if (!layer->ignoreDrumPan) {
                 layer->pan = drum->pan;
             }
@@ -666,7 +666,7 @@ s32 AudioSeq_SeqLayerProcessScriptStep4(SequenceLayer* layer, s32 cmd) {
 
         case 1:
             layer->semitone = semitone;
-            u16 sfxId = (layer->transposition << 6) + semitone;
+            uint16_t sfxId = (layer->transposition << 6) + semitone;
             sound = Audio_GetSfx(channel->fontId, sfxId);
             if (sound == NULL) {
                 layer->stopSomething = true;
@@ -679,7 +679,7 @@ s32 AudioSeq_SeqLayerProcessScriptStep4(SequenceLayer* layer, s32 cmd) {
 
         default:
             semitone += seqPlayer->transposition + channel->transposition + layer->transposition;
-            s32 semitone2 = semitone;
+            int32_t semitone2 = semitone;
             layer->semitone = semitone;
             if (semitone >= 0x80) {
                 layer->stopSomething = true;
@@ -692,7 +692,7 @@ s32 AudioSeq_SeqLayerProcessScriptStep4(SequenceLayer* layer, s32 cmd) {
             }
 
             if (layer->portamento.mode != 0) {
-                s32 vel = (semitone > layer->portamentoTargetNote) ? semitone : layer->portamentoTargetNote;
+                int32_t vel = (semitone > layer->portamentoTargetNote) ? semitone : layer->portamentoTargetNote;
 
                 if (instrument != NULL) {
                     sound = Audio_InstrumentGetSound(instrument, vel);
@@ -707,8 +707,8 @@ s32 AudioSeq_SeqLayerProcessScriptStep4(SequenceLayer* layer, s32 cmd) {
                     }
                 }
 
-                f32 temp_f2 = gNoteFrequencies[semitone2] * tuning;
-                f32 temp_f14 = gNoteFrequencies[layer->portamentoTargetNote] * tuning;
+                float temp_f2 = gNoteFrequencies[semitone2] * tuning;
+                float temp_f14 = gNoteFrequencies[layer->portamentoTargetNote] * tuning;
 
                 switch (PORTAMENTO_MODE(*portamento)) {
                     case PORTAMENTO_MODE_1:
@@ -773,7 +773,7 @@ s32 AudioSeq_SeqLayerProcessScriptStep4(SequenceLayer* layer, s32 cmd) {
     layer->freqScale *= layer->unk_34;
     if (layer->delay == 0) {
         if (layer->sound != NULL) {
-            time = (f32)layer->sound->sample->loop->loopEnd;
+            time = (float)layer->sound->sample->loop->loopEnd;
         } else {
             time = 0.0f;
         }
@@ -784,12 +784,12 @@ s32 AudioSeq_SeqLayerProcessScriptStep4(SequenceLayer* layer, s32 cmd) {
             time = 32766.0f;
         }
         layer->gateDelay = 0;
-        layer->delay = (u16)(s32)time + 1;
+        layer->delay = (uint16_t)(int32_t)time + 1;
         if (layer->portamento.mode != 0) {
             // (It's a bit unclear if 'portamento' has actually always been
             // set when this is reached...)
             if (PORTAMENTO_IS_SPECIAL(*portamento)) {
-                s32 speed2 = seqPlayer->tempo * 0x8000 / gAudioContext.tempoInternalToExternal;
+                int32_t speed2 = seqPlayer->tempo * 0x8000 / gAudioContext.tempoInternalToExternal;
                 speed2 = speed2 * 0x100 / (layer->delay * layer->portamentoTime);
                 if (speed2 >= 0x7FFF) {
                     speed2 = 0x7FFF;
@@ -803,13 +803,13 @@ s32 AudioSeq_SeqLayerProcessScriptStep4(SequenceLayer* layer, s32 cmd) {
     return sameSound;
 }
 
-s32 AudioSeq_SeqLayerProcessScriptStep3(SequenceLayer* layer, s32 cmd) {
+int32_t AudioSeq_SeqLayerProcessScriptStep3(SequenceLayer* layer, int32_t cmd) {
     SeqScriptState* state = &layer->scriptState;
-    u16 delay;
-    s32 velocity = { 0 };
+    uint16_t delay;
+    int32_t velocity = { 0 };
     SequenceChannel* channel = layer->channel;
     SequencePlayer* seqPlayer = channel->seqPlayer;
-    f32 floatDelta;
+    float floatDelta;
 
     if (cmd == 0xC0) {
         layer->delay = AudioSeq_ScriptReadCompressedU16(state);
@@ -845,7 +845,7 @@ s32 AudioSeq_SeqLayerProcessScriptStep3(SequenceLayer* layer, s32 cmd) {
         if (velocity > 0x7F || velocity < 0) {
             velocity = 0x7F;
         }
-        layer->velocitySquare = (f32)velocity * (f32)velocity / 16129.0f;
+        layer->velocitySquare = (float)velocity * (float)velocity / 16129.0f;
         cmd -= (cmd & 0xC0);
     } else {
         switch (cmd & 0xC0) {
@@ -867,7 +867,7 @@ s32 AudioSeq_SeqLayerProcessScriptStep3(SequenceLayer* layer, s32 cmd) {
 
     if (channel->velocityRandomVariance != 0) {
         floatDelta =
-            layer->velocitySquare * (f32)(gAudioContext.audioRandom % channel->velocityRandomVariance) / 100.0f;
+            layer->velocitySquare * (float)(gAudioContext.audioRandom % channel->velocityRandomVariance) / 100.0f;
         if ((gAudioContext.audioRandom & 0x8000) != 0) {
             floatDelta = -floatDelta;
         }
@@ -885,7 +885,7 @@ s32 AudioSeq_SeqLayerProcessScriptStep3(SequenceLayer* layer, s32 cmd) {
     layer->gateDelay = (layer->gateTime * delay) >> 8;
     if (channel->gateTimeRandomVariance != 0) {
         //! @bug should probably be gateTimeRandomVariance
-        s32 intDelta = (layer->gateDelay * (gAudioContext.audioRandom % channel->velocityRandomVariance)) / 100;
+        int32_t intDelta = (layer->gateDelay * (gAudioContext.audioRandom % channel->velocityRandomVariance)) / 100;
         if ((gAudioContext.audioRandom & 0x4000) != 0) {
             intDelta = -intDelta;
         }
@@ -908,7 +908,7 @@ s32 AudioSeq_SeqLayerProcessScriptStep3(SequenceLayer* layer, s32 cmd) {
     return cmd;
 }
 
-void AudioSeq_SetChannelPriorities(SequenceChannel* channel, u8 arg1) {
+void AudioSeq_SetChannelPriorities(SequenceChannel* channel, uint8_t arg1) {
     if ((arg1 & 0xF) != 0) {
         channel->notePriority = arg1 & 0xF;
     }
@@ -918,7 +918,7 @@ void AudioSeq_SetChannelPriorities(SequenceChannel* channel, u8 arg1) {
     }
 }
 
-u8 AudioSeq_GetInstrument(SequenceChannel* channel, u8 instId, Instrument** instOut, AdsrSettings* adsr) {
+uint8_t AudioSeq_GetInstrument(SequenceChannel* channel, uint8_t instId, Instrument** instOut, AdsrSettings* adsr) {
     Instrument* inst = Audio_GetInstrumentInner(channel->fontId, instId);
 
     if (inst == NULL) {
@@ -938,7 +938,7 @@ u8 AudioSeq_GetInstrument(SequenceChannel* channel, u8 instId, Instrument** inst
     return instId;
 }
 
-void AudioSeq_SetInstrument(SequenceChannel* channel, u8 instId) {
+void AudioSeq_SetInstrument(SequenceChannel* channel, uint8_t instId) {
     if (instId >= 0x80) {
         channel->instOrWave = instId;
         channel->instrument = NULL;
@@ -956,15 +956,15 @@ void AudioSeq_SetInstrument(SequenceChannel* channel, u8 instId) {
     channel->hasInstrument = true;
 }
 
-void AudioSeq_SequenceChannelSetVolume(SequenceChannel* channel, u8 volume) {
-    channel->volume = (f32)(s32)volume / 127.0f;
+void AudioSeq_SequenceChannelSetVolume(SequenceChannel* channel, uint8_t volume) {
+    channel->volume = (float)(int32_t)volume / 127.0f;
 }
 
 void AudioSeq_SequenceChannelProcessScript(SequenceChannel* channel) {
-    s32 result = { 0 };
-    u8 lowBits = { 0 };
-    s32 i;
-    u8* data = { 0 };
+    int32_t result = { 0 };
+    uint8_t lowBits = { 0 };
+    int32_t i;
+    uint8_t* data = { 0 };
     SequencePlayer* seqPlayer = { 0 };
 
     if (channel->stopScript) {
@@ -982,14 +982,14 @@ void AudioSeq_SequenceChannelProcessScript(SequenceChannel* channel) {
 
     while (true) {
         SeqScriptState* scriptState = &channel->scriptState;
-        s16 pad1 = { 0 };
-        u16 offset = { 0 };
-        u32 parameters[3];
-        s8 signedParam = { 0 };
-        u8 command = AudioSeq_ScriptReadU8(scriptState);
+        int16_t pad1 = { 0 };
+        uint16_t offset = { 0 };
+        uint32_t parameters[3];
+        int8_t signedParam = { 0 };
+        uint8_t command = AudioSeq_ScriptReadU8(scriptState);
 
         if (command >= 0xB0) {
-            u8 highBits = D_80130520[(s32)command - 0xB0];
+            uint8_t highBits = D_80130520[(int32_t)command - 0xB0];
             lowBits = highBits & 3;
 
             for (i = 0; i < lowBits; i++, highBits <<= 1) {
@@ -1017,28 +1017,28 @@ void AudioSeq_SequenceChannelProcessScript(SequenceChannel* channel) {
                         goto exit_loop;
                     case 0xF1:
                         Audio_NotePoolClear(&channel->notePool);
-                        command = (u8)parameters[0];
+                        command = (uint8_t)parameters[0];
                         Audio_NotePoolFill(&channel->notePool, command);
                         break;
                     case 0xF0:
                         Audio_NotePoolClear(&channel->notePool);
                         break;
                     case 0xC2:
-                        offset = (u16)parameters[0];
+                        offset = (uint16_t)parameters[0];
                         channel->dynTable = (void*)&seqPlayer->seqData[offset];
                         break;
                     case 0xC5:
                         if (scriptState->value != -1) {
 
                             data = (*channel->dynTable)[scriptState->value];
-                            offset = (u16)((data[0] << 8) + data[1]);
+                            offset = (uint16_t)((data[0] << 8) + data[1]);
 
                             channel->dynTable = (void*)&seqPlayer->seqData[offset];
                         }
                         break;
                     case 0xEB:
-                        result = (u8)parameters[0];
-                        command = (u8)parameters[0];
+                        result = (uint8_t)parameters[0];
+                        command = (uint8_t)parameters[0];
 
                         if (seqPlayer->defaultFont != 0xFF) {
                             SequenceData sDat = ResourceMgr_LoadSeqByName(sequenceMap[seqPlayer->seqId]);
@@ -1052,7 +1052,7 @@ void AudioSeq_SequenceChannelProcessScript(SequenceChannel* channel) {
                         parameters[0] = parameters[1];
                         // NOTE: Intentional fallthrough
                     case 0xC1:
-                        command = (u8)parameters[0];
+                        command = (uint8_t)parameters[0];
                         AudioSeq_SetInstrument(channel, command);
                         break;
                     case 0xC3:
@@ -1062,93 +1062,93 @@ void AudioSeq_SequenceChannelProcessScript(SequenceChannel* channel) {
                         channel->largeNotes = true;
                         break;
                     case 0xDF:
-                        command = (u8)parameters[0];
+                        command = (uint8_t)parameters[0];
                         AudioSeq_SequenceChannelSetVolume(channel, command);
                         channel->changes.s.volume = true;
                         break;
                     case 0xE0:
-                        command = (u8)parameters[0];
-                        channel->volumeScale = (f32)(s32)command / 128.0f;
+                        command = (uint8_t)parameters[0];
+                        channel->volumeScale = (float)(int32_t)command / 128.0f;
                         channel->changes.s.volume = true;
                         break;
                     case 0xDE:
-                        offset = (u16)parameters[0];
-                        channel->freqScale = (f32)(s32)offset / 32768.0f;
+                        offset = (uint16_t)parameters[0];
+                        channel->freqScale = (float)(int32_t)offset / 32768.0f;
                         channel->changes.s.freqScale = true;
                         break;
                     case 0xD3:
-                        command = (u8)parameters[0];
+                        command = (uint8_t)parameters[0];
                         command += 0x80;
                         channel->freqScale = gBendPitchOneOctaveFrequencies[command];
                         channel->changes.s.freqScale = true;
                         break;
                     case 0xEE:
-                        command = (u8)parameters[0];
+                        command = (uint8_t)parameters[0];
                         command += 0x80;
                         channel->freqScale = gBendPitchTwoSemitonesFrequencies[command];
                         channel->changes.s.freqScale = true;
                         break;
                     case 0xDD:
-                        command = (u8)parameters[0];
+                        command = (uint8_t)parameters[0];
                         channel->newPan = command;
                         channel->changes.s.pan = true;
                         break;
                     case 0xDC:
-                        command = (u8)parameters[0];
+                        command = (uint8_t)parameters[0];
                         channel->panChannelWeight = command;
                         channel->changes.s.pan = true;
                         break;
                     case 0xDB:
-                        signedParam = (s8)parameters[0];
+                        signedParam = (int8_t)parameters[0];
                         channel->transposition = signedParam;
                         break;
                     case 0xDA:
-                        offset = (u16)parameters[0];
+                        offset = (uint16_t)parameters[0];
                         channel->adsr.envelope = (AdsrEnvelope*)&seqPlayer->seqData[offset];
                         break;
                     case 0xD9:
-                        command = (u8)parameters[0];
+                        command = (uint8_t)parameters[0];
                         channel->adsr.releaseRate = command;
                         break;
                     case 0xD8:
-                        command = (u8)parameters[0];
+                        command = (uint8_t)parameters[0];
                         channel->vibratoExtentTarget = command * 8;
                         channel->vibratoExtentStart = 0;
                         channel->vibratoExtentChangeDelay = 0;
                         break;
                     case 0xD7:
-                        command = (u8)parameters[0];
+                        command = (uint8_t)parameters[0];
                         channel->vibratoRateChangeDelay = 0;
                         channel->vibratoRateTarget = command * 32;
                         channel->vibratoRateStart = command * 32;
                         break;
                     case 0xE2:
-                        command = (u8)parameters[0];
+                        command = (uint8_t)parameters[0];
                         channel->vibratoExtentStart = command * 8;
-                        command = (u8)parameters[1];
+                        command = (uint8_t)parameters[1];
                         channel->vibratoExtentTarget = command * 8;
-                        command = (u8)parameters[2];
+                        command = (uint8_t)parameters[2];
                         channel->vibratoExtentChangeDelay = command * 16;
                         break;
                     case 0xE1:
-                        command = (u8)parameters[0];
+                        command = (uint8_t)parameters[0];
                         channel->vibratoRateStart = command * 32;
-                        command = (u8)parameters[1];
+                        command = (uint8_t)parameters[1];
                         channel->vibratoRateTarget = command * 32;
-                        command = (u8)parameters[2];
+                        command = (uint8_t)parameters[2];
                         channel->vibratoRateChangeDelay = command * 16;
                         break;
                     case 0xE3:
-                        command = (u8)parameters[0];
+                        command = (uint8_t)parameters[0];
                         channel->vibratoDelay = command * 16;
                         break;
                     case 0xD4:
-                        command = (u8)parameters[0];
+                        command = (uint8_t)parameters[0];
                         channel->reverb = command;
                         break;
                     case 0xC6:
-                        result = (u8)parameters[0];
-                        command = (u8)parameters[0];
+                        result = (uint8_t)parameters[0];
+                        command = (uint8_t)parameters[0];
 
                         if (seqPlayer->defaultFont != 0xFF) {
                             SequenceData sDat = ResourceMgr_LoadSeqByName(sequenceMap[seqPlayer->seqId]);
@@ -1167,15 +1167,15 @@ void AudioSeq_SequenceChannelProcessScript(SequenceChannel* channel) {
 
                         break;
                     case 0xC7:
-                        command = (u8)parameters[0];
-                        offset = (u16)parameters[1];
-                        u8* test = &seqPlayer->seqData[offset];
-                        test[0] = (u8)scriptState->value + command;
+                        command = (uint8_t)parameters[0];
+                        offset = (uint16_t)parameters[1];
+                        uint8_t* test = &seqPlayer->seqData[offset];
+                        test[0] = (uint8_t)scriptState->value + command;
                         break;
                     case 0xC8:
                     case 0xCC:
                     case 0xC9:
-                        signedParam = (s8)parameters[0];
+                        signedParam = (int8_t)parameters[0];
 
                         if (command == 0xC8) {
                             scriptState->value -= signedParam;
@@ -1186,31 +1186,31 @@ void AudioSeq_SequenceChannelProcessScript(SequenceChannel* channel) {
                         }
                         break;
                     case 0xCD:
-                        command = (u8)parameters[0];
+                        command = (uint8_t)parameters[0];
                         AudioSeq_SequenceChannelDisable(seqPlayer->channels[command]);
                         break;
                     case 0xCA:
-                        command = (u8)parameters[0];
+                        command = (uint8_t)parameters[0];
                         channel->muteBehavior = command;
                         channel->changes.s.volume = true;
                         break;
                     case 0xCB:
-                        offset = (u16)parameters[0];
+                        offset = (uint16_t)parameters[0];
 
                         scriptState->value = *(seqPlayer->seqData + (uintptr_t)(offset + scriptState->value));
                         break;
                     case 0xCE:
-                        offset = (u16)parameters[0];
+                        offset = (uint16_t)parameters[0];
                         channel->unk_22 = offset;
                         break;
                     case 0xCF:
-                        offset = (u16)parameters[0];
+                        offset = (uint16_t)parameters[0];
                         test = &seqPlayer->seqData[offset];
                         test[0] = (channel->unk_22 >> 8) & 0xFF;
                         test[1] = channel->unk_22 & 0xFF;
                         break;
                     case 0xD0:
-                        command = (u8)parameters[0];
+                        command = (uint8_t)parameters[0];
                         if (command & 0x80) {
                             channel->stereoHeadsetEffects = true;
                         } else {
@@ -1219,15 +1219,15 @@ void AudioSeq_SequenceChannelProcessScript(SequenceChannel* channel) {
                         channel->stereo.asByte = command & 0x7F;
                         break;
                     case 0xD1:
-                        command = (u8)parameters[0];
+                        command = (uint8_t)parameters[0];
                         channel->noteAllocPolicy = command;
                         break;
                     case 0xD2:
-                        command = (u8)parameters[0];
+                        command = (uint8_t)parameters[0];
                         channel->adsr.sustain = command;
                         break;
                     case 0xE5:
-                        command = (u8)parameters[0];
+                        command = (uint8_t)parameters[0];
                         channel->reverbIndex = command;
                         break;
                     case 0xE4:
@@ -1235,22 +1235,22 @@ void AudioSeq_SequenceChannelProcessScript(SequenceChannel* channel) {
                             data = (*channel->dynTable)[scriptState->value];
                             //! @bug: Missing a stack depth check here
                             scriptState->stack[scriptState->depth++] = scriptState->pc;
-                            offset = (u16)((data[0] << 8) + data[1]);
+                            offset = (uint16_t)((data[0] << 8) + data[1]);
                             scriptState->pc = seqPlayer->seqData + offset;
                         }
                         break;
                     case 0xE6:
-                        command = (u8)parameters[0];
+                        command = (uint8_t)parameters[0];
                         channel->bookOffset = command;
                         break;
                     case 0xE7:
-                        offset = (u16)parameters[0];
+                        offset = (uint16_t)parameters[0];
                         data = &seqPlayer->seqData[offset];
                         channel->muteBehavior = data[0];
                         data += 3;
                         channel->noteAllocPolicy = data[-2];
                         AudioSeq_SetChannelPriorities(channel, data[-1]);
-                        channel->transposition = (s8)data[0];
+                        channel->transposition = (int8_t)data[0];
                         data += 4;
                         channel->newPan = data[-3];
                         channel->panChannelWeight = data[-2];
@@ -1262,9 +1262,9 @@ void AudioSeq_SequenceChannelProcessScript(SequenceChannel* channel) {
                     case 0xE8:
                         channel->muteBehavior = parameters[0];
                         channel->noteAllocPolicy = parameters[1];
-                        command = (u8)parameters[2];
+                        command = (uint8_t)parameters[2];
                         AudioSeq_SetChannelPriorities(channel, command);
-                        channel->transposition = (s8)AudioSeq_ScriptReadU8(scriptState);
+                        channel->transposition = (int8_t)AudioSeq_ScriptReadU8(scriptState);
                         channel->newPan = AudioSeq_ScriptReadU8(scriptState);
                         channel->panChannelWeight = AudioSeq_ScriptReadU8(scriptState);
                         channel->reverb = AudioSeq_ScriptReadU8(scriptState);
@@ -1290,16 +1290,16 @@ void AudioSeq_SequenceChannelProcessScript(SequenceChannel* channel) {
                         channel->freqScale = 1.0f;
                         break;
                     case 0xE9:
-                        AudioSeq_SetChannelPriorities(channel, (u8)parameters[0]);
+                        AudioSeq_SetChannelPriorities(channel, (uint8_t)parameters[0]);
                         break;
                     case 0xED:
-                        command = (u8)parameters[0];
+                        command = (uint8_t)parameters[0];
                         channel->unk_0C = command;
                         break;
                     case 0xB0:
-                        offset = (u16)parameters[0];
+                        offset = (uint16_t)parameters[0];
                         data = seqPlayer->seqData + offset;
-                        channel->filter = (s16*)data;
+                        channel->filter = (int16_t*)data;
                         break;
                     case 0xB1:
                         channel->filter = NULL;
@@ -1314,15 +1314,15 @@ void AudioSeq_SequenceChannelProcessScript(SequenceChannel* channel) {
                         }
                         break;
                     case 0xB2:
-                        offset = (u16)parameters[0];
+                        offset = (uint16_t)parameters[0];
                         channel->unk_22 =
-                            BE16SWAP(*(u16*)(seqPlayer->seqData + (uintptr_t)(offset + scriptState->value * 2)));
+                            BE16SWAP(*(uint16_t*)(seqPlayer->seqData + (uintptr_t)(offset + scriptState->value * 2)));
                         break;
                     case 0xB4:
                         channel->dynTable = (void*)&seqPlayer->seqData[channel->unk_22];
                         break;
                     case 0xB5:
-                        channel->unk_22 = BE16SWAP(((u16*)(channel->dynTable))[scriptState->value]);
+                        channel->unk_22 = BE16SWAP(((uint16_t*)(channel->dynTable))[scriptState->value]);
                         break;
                     case 0xB6:
                         scriptState->value = (*channel->dynTable)[0][scriptState->value];
@@ -1337,10 +1337,10 @@ void AudioSeq_SequenceChannelProcessScript(SequenceChannel* channel) {
                         break;
                     case 0xBD: {
                         result = Audio_NextRandom();
-                        channel->unk_22 = (parameters[0] == 0) ? (u32)result & 0xFFFF : (u32)result % parameters[0];
+                        channel->unk_22 = (parameters[0] == 0) ? (uint32_t)result & 0xFFFF : (uint32_t)result % parameters[0];
                         channel->unk_22 += parameters[1];
-                        s32 pad2 = (channel->unk_22 / 0x100) + 0x80;
-                        s32 param = channel->unk_22 % 0x100;
+                        int32_t pad2 = (channel->unk_22 / 0x100) + 0x80;
+                        int32_t param = channel->unk_22 % 0x100;
                         channel->unk_22 = (pad2 << 8) | param;
                     } break;
                     case 0xB9:
@@ -1459,13 +1459,13 @@ exit_loop:
 }
 
 void AudioSeq_SequencePlayerProcessSequence(SequencePlayer* seqPlayer) {
-    u8 commandLow = { 0 };
+    uint8_t commandLow = { 0 };
     SeqScriptState* seqScript = &seqPlayer->scriptState;
-    s16 tempS = { 0 };
-    u16 temp = { 0 };
-    s32 i;
-    s32 value = { 0 };
-    u8* data2 = { 0 };
+    int16_t tempS = { 0 };
+    uint16_t temp = { 0 };
+    int32_t i;
+    int32_t value = { 0 };
+    uint8_t* data2 = { 0 };
 
     if (!seqPlayer->enabled) {
         return;
@@ -1485,13 +1485,13 @@ void AudioSeq_SequencePlayerProcessSequence(SequencePlayer* seqPlayer) {
 
     seqPlayer->scriptCounter++;
     seqPlayer->tempoAcc += seqPlayer->tempo;
-    seqPlayer->tempoAcc += (s16)seqPlayer->unk_0C;
+    seqPlayer->tempoAcc += (int16_t)seqPlayer->unk_0C;
 
     if (seqPlayer->tempoAcc < gAudioContext.tempoInternalToExternal) {
         return;
     }
 
-    seqPlayer->tempoAcc -= (u16)gAudioContext.tempoInternalToExternal;
+    seqPlayer->tempoAcc -= (uint16_t)gAudioContext.tempoInternalToExternal;
 
     if (seqPlayer->stopScript == true) {
         return;
@@ -1503,11 +1503,11 @@ void AudioSeq_SequencePlayerProcessSequence(SequencePlayer* seqPlayer) {
         seqPlayer->recalculateVolume = true;
 
         while (true) {
-            u8 command = AudioSeq_ScriptReadU8(seqScript);
+            uint8_t command = AudioSeq_ScriptReadU8(seqScript);
 
             // 0xF2 and above are "flow control" commands, including termination.
             if (command >= 0xF2) {
-                s32 scriptHandled = AudioSeq_HandleScriptFlowControl(
+                int32_t scriptHandled = AudioSeq_HandleScriptFlowControl(
                     seqPlayer, seqScript, command,
                     AudioSeq_GetScriptControlFlowArgument(&seqPlayer->scriptState, command));
 
@@ -1515,7 +1515,7 @@ void AudioSeq_SequencePlayerProcessSequence(SequencePlayer* seqPlayer) {
                     if (scriptHandled == -1) {
                         AudioSeq_SequencePlayerDisable(seqPlayer);
                     } else {
-                        seqPlayer->delay = (u16)scriptHandled;
+                        seqPlayer->delay = (uint16_t)scriptHandled;
                     }
                     break;
                 }
@@ -1527,7 +1527,7 @@ void AudioSeq_SequencePlayerProcessSequence(SequencePlayer* seqPlayer) {
                         Audio_NotePoolFill(&seqPlayer->notePool, command);
                         // Fake-match: the asm has two breaks in a row here,
                         // which the compiler normally optimizes out.
-                        s32 dummy = -1;
+                        int32_t dummy = -1;
                         if (dummy < 0) {
                             dummy = 0;
                         }
@@ -1543,19 +1543,19 @@ void AudioSeq_SequencePlayerProcessSequence(SequencePlayer* seqPlayer) {
                         seqPlayer->transposition = 0;
                         // Note: intentional fallthrough, also executes below command
                     case 0xDE:
-                        seqPlayer->transposition += (s8)AudioSeq_ScriptReadU8(seqScript);
+                        seqPlayer->transposition += (int8_t)AudioSeq_ScriptReadU8(seqScript);
                         break;
                     case 0xDD:
                         seqPlayer->tempo = AudioSeq_ScriptReadU8(seqScript) * 48;
                         if (seqPlayer->tempo > gAudioContext.tempoInternalToExternal) {
-                            seqPlayer->tempo = (u16)gAudioContext.tempoInternalToExternal;
+                            seqPlayer->tempo = (uint16_t)gAudioContext.tempoInternalToExternal;
                         }
-                        if ((s16)seqPlayer->tempo <= 0) {
+                        if ((int16_t)seqPlayer->tempo <= 0) {
                             seqPlayer->tempo = 1;
                         }
                         break;
                     case 0xDC:
-                        seqPlayer->unk_0C = (s8)AudioSeq_ScriptReadU8(seqScript) * 48;
+                        seqPlayer->unk_0C = (int8_t)AudioSeq_ScriptReadU8(seqScript) * 48;
                         break;
                     case 0xDA:
                         command = AudioSeq_ScriptReadU8(seqScript);
@@ -1571,7 +1571,7 @@ void AudioSeq_SequencePlayerProcessSequence(SequencePlayer* seqPlayer) {
                             case 2:
                                 seqPlayer->fadeTimer = temp;
                                 seqPlayer->state = command;
-                                seqPlayer->fadeVelocity = (0 - seqPlayer->fadeVolume) / (s32)seqPlayer->fadeTimer;
+                                seqPlayer->fadeVelocity = (0 - seqPlayer->fadeVolume) / (int32_t)seqPlayer->fadeTimer;
                                 break;
                         }
                         break;
@@ -1586,9 +1586,9 @@ void AudioSeq_SequencePlayerProcessSequence(SequencePlayer* seqPlayer) {
                                 seqPlayer->fadeTimer = seqPlayer->fadeTimerUnkEu;
                                 if (seqPlayer->fadeTimerUnkEu != 0) {
                                     seqPlayer->fadeVelocity =
-                                        ((value / 127.0f) - seqPlayer->fadeVolume) / (s32)(seqPlayer->fadeTimer);
+                                        ((value / 127.0f) - seqPlayer->fadeVolume) / (int32_t)(seqPlayer->fadeTimer);
                                 } else {
-                                    seqPlayer->fadeVolume = (s32)value / 127.0f;
+                                    seqPlayer->fadeVolume = (int32_t)value / 127.0f;
                                 }
                                 break;
                             case 2:
@@ -1596,7 +1596,7 @@ void AudioSeq_SequencePlayerProcessSequence(SequencePlayer* seqPlayer) {
                         }
                         break;
                     case 0xD9:
-                        seqPlayer->fadeVolumeScale = (s8)AudioSeq_ScriptReadU8(seqScript) / 127.0f;
+                        seqPlayer->fadeVolumeScale = (int8_t)AudioSeq_ScriptReadU8(seqScript) / 127.0f;
                         break;
                     case 0xD7:
                         temp = AudioSeq_ScriptReadS16(seqScript);
@@ -1606,7 +1606,7 @@ void AudioSeq_SequencePlayerProcessSequence(SequencePlayer* seqPlayer) {
                         AudioSeq_ScriptReadS16(seqScript);
                         break;
                     case 0xD5:
-                        seqPlayer->muteVolumeScale = (s8)AudioSeq_ScriptReadU8(seqScript) / 127.0f;
+                        seqPlayer->muteVolumeScale = (int8_t)AudioSeq_ScriptReadU8(seqScript) / 127.0f;
                         break;
                     case 0xD4:
                         seqPlayer->muted = true;
@@ -1617,7 +1617,7 @@ void AudioSeq_SequencePlayerProcessSequence(SequencePlayer* seqPlayer) {
                     case 0xD1:
                     case 0xD2:
                         temp = AudioSeq_ScriptReadS16(seqScript);
-                        u8* data3 = &seqPlayer->seqData[temp];
+                        uint8_t* data3 = &seqPlayer->seqData[temp];
                         if (command == 0xD2) {
                             seqPlayer->shortNoteVelocityTable = data3;
                         } else {
@@ -1639,7 +1639,7 @@ void AudioSeq_SequencePlayerProcessSequence(SequencePlayer* seqPlayer) {
                         temp = AudioSeq_ScriptReadS16(seqScript);
 
                         if ((seqScript->value != -1) && (seqScript->depth != 3)) {
-                            u8* data = seqPlayer->seqData + (u32)(temp + (seqScript->value << 1));
+                            uint8_t* data = seqPlayer->seqData + (uint32_t)(temp + (seqScript->value << 1));
                             seqScript->stack[seqScript->depth] = seqScript->pc;
                             seqScript->depth++;
 
@@ -1661,13 +1661,13 @@ void AudioSeq_SequencePlayerProcessSequence(SequencePlayer* seqPlayer) {
                         command = AudioSeq_ScriptReadU8(seqScript);
                         temp = AudioSeq_ScriptReadS16(seqScript);
                         data2 = &seqPlayer->seqData[temp];
-                        *data2 = (u8)seqScript->value + command;
+                        *data2 = (uint8_t)seqScript->value + command;
                         break;
                     case 0xC6:
                         seqPlayer->stopScript = true;
                         return;
                     case 0xC5:
-                        seqPlayer->scriptCounter = (u16)AudioSeq_ScriptReadS16(seqScript);
+                        seqPlayer->scriptCounter = (uint16_t)AudioSeq_ScriptReadS16(seqScript);
                         break;
                     case 0xEF:
                         AudioSeq_ScriptReadS16(seqScript);
@@ -1680,7 +1680,7 @@ void AudioSeq_SequencePlayerProcessSequence(SequencePlayer* seqPlayer) {
                         }
                         commandLow = AudioSeq_ScriptReadU8(seqScript);
                         AudioLoad_SyncInitSeqPlayer(command, commandLow, 0);
-                        if (command == (u8)seqPlayer->playerIdx) {
+                        if (command == (uint8_t)seqPlayer->playerIdx) {
                             return;
                         }
                         break;
@@ -1741,12 +1741,12 @@ void AudioSeq_SequencePlayerProcessSequence(SequencePlayer* seqPlayer) {
     }
 }
 
-void AudioSeq_ProcessSequences(s32 arg0) {
-    u32 i;
+void AudioSeq_ProcessSequences(int32_t arg0) {
+    uint32_t i;
 
     gAudioContext.noteSubEuOffset =
         (gAudioContext.audioBufferParameters.updatesPerFrame - arg0 - 1) * gAudioContext.numNotes;
-    for (i = 0; i < (u32)gAudioContext.audioBufferParameters.numSequencePlayers; i++) {
+    for (i = 0; i < (uint32_t)gAudioContext.audioBufferParameters.numSequencePlayers; i++) {
         SequencePlayer* seqPlayer = &gAudioContext.seqPlayers[i];
         if (seqPlayer->enabled == 1) {
             AudioSeq_SequencePlayerProcessSequence(seqPlayer);
@@ -1765,7 +1765,7 @@ void AudioSeq_SkipForwardSequence(SequencePlayer* seqPlayer) {
 }
 
 void AudioSeq_ResetSequencePlayer(SequencePlayer* seqPlayer) {
-    s32 i;
+    int32_t i;
 
     AudioSeq_SequencePlayerDisable(seqPlayer);
     seqPlayer->stopScript = false;
@@ -1791,9 +1791,9 @@ void AudioSeq_ResetSequencePlayer(SequencePlayer* seqPlayer) {
     }
 }
 
-void AudioSeq_InitSequencePlayerChannels(s32 playerIdx) {
+void AudioSeq_InitSequencePlayerChannels(int32_t playerIdx) {
     SequencePlayer* seqPlayer = &gAudioContext.seqPlayers[playerIdx];
-    s32 i, j;
+    int32_t i, j;
 
     for (i = 0; i < 0x10; i++) {
         seqPlayer->channels[i] = AudioHeap_AllocZeroed(&gAudioContext.notesAndBuffersPool, sizeof(SequenceChannel));
@@ -1812,7 +1812,7 @@ void AudioSeq_InitSequencePlayerChannels(s32 playerIdx) {
 }
 
 void AudioSeq_InitSequencePlayer(SequencePlayer* seqPlayer) {
-    s32 i, j;
+    int32_t i, j;
 
     for (i = 0; i < 0x10; i++) {
         seqPlayer->channels[i] = &gAudioContext.sequenceChannelNone;
@@ -1835,7 +1835,7 @@ void AudioSeq_InitSequencePlayer(SequencePlayer* seqPlayer) {
 }
 
 void AudioSeq_InitSequencePlayers(void) {
-    s32 i;
+    int32_t i;
 
     AudioSeq_InitLayerFreelist();
     for (i = 0; i < 64; i++) {

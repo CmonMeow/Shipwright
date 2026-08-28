@@ -4,24 +4,24 @@
 
 
 typedef struct {
-    u8 unk_0;
-    u8 unk_1; // importance?
+    uint8_t unk_0;
+    uint8_t unk_1; // importance?
 } Struct_8016E320;
 
 #define GET_PLAYER_IDX(cmd) (cmd & 0xF000000) >> 24
 
 Struct_8016E320 D_8016E320[4][5];
-u8 sNumSeqRequests[4];
-u32 sAudioSeqCmds[0x100];
+uint8_t sNumSeqRequests[4];
+uint32_t sAudioSeqCmds[0x100];
 ActiveSequence gActiveSeqs[4];
 
-u8 sSeqCmdWrPos = 0;
-u8 sSeqCmdRdPos = 0;
-u8 D_80133408 = 0;
-u8 D_8013340C = 1;
-u8 D_80133410[] = { 0, 1, 2, 3 };
-u8 gAudioSpecId = 0;
-u8 D_80133418 = 0;
+uint8_t sSeqCmdWrPos = 0;
+uint8_t sSeqCmdRdPos = 0;
+uint8_t D_80133408 = 0;
+uint8_t D_8013340C = 1;
+uint8_t D_80133410[] = { 0, 1, 2, 3 };
+uint8_t gAudioSpecId = 0;
+uint8_t D_80133418 = 0;
 
 // TODO: clean up these macros. They are similar to ones in code_800EC960.c but without casts.
 #define Audio_StartSeq(playerIdx, fadeTimer, seqId) \
@@ -33,19 +33,19 @@ u8 D_80133418 = 0;
 #define Audio_SeqCmd5(playerIdx, a, b) Audio_QueueSeqCmd(0x50000000 | ((playerIdx) << 24) | ((a) << 16) | (b))
 #define Audio_SeqCmd4(playerIdx, a, b) Audio_QueueSeqCmd(0x40000000 | ((playerIdx) << 24) | ((a) << 16) | (b))
 #define Audio_SetVolScaleNow(playerIdx, volFadeTimer, volScale) \
-    Audio_ProcessSeqCmd(0x40000000 | ((u8)playerIdx << 24) | ((u8)volFadeTimer << 16) | ((u8)(volScale * 127.0f)));
+    Audio_ProcessSeqCmd(0x40000000 | ((uint8_t)playerIdx << 24) | ((uint8_t)volFadeTimer << 16) | ((uint8_t)(volScale * 127.0f)));
 
-void func_800F9280(u8 playerIdx, u8 seqId, u8 arg2, u16 fadeTimer) {
-    u8 i;
+void func_800F9280(uint8_t playerIdx, uint8_t seqId, uint8_t arg2, uint16_t fadeTimer) {
+    uint8_t i;
 
     if (D_80133408 == 0 || playerIdx == SEQ_PLAYER_SFX) {
         arg2 &= 0x7F;
         if (arg2 == 0x7F) {
-            u16 dur = (fadeTimer >> 3) * 60 * gAudioContext.audioBufferParameters.updatesPerFrame;
+            uint16_t dur = (fadeTimer >> 3) * 60 * gAudioContext.audioBufferParameters.updatesPerFrame;
             Audio_QueueCmdS32(0x85000000 | _SHIFTL(playerIdx, 16, 8) | _SHIFTL(seqId, 8, 8), dur);
         } else {
             Audio_QueueCmdS32(0x82000000 | _SHIFTL(playerIdx, 16, 8) | _SHIFTL(seqId, 8, 8),
-                              (fadeTimer * (u16)gAudioContext.audioBufferParameters.updatesPerFrame) / 4);
+                              (fadeTimer * (uint16_t)gAudioContext.audioBufferParameters.updatesPerFrame) / 4);
         }
 
         gActiveSeqs[playerIdx].seqId = seqId | (arg2 << 8);
@@ -71,9 +71,9 @@ void func_800F9280(u8 playerIdx, u8 seqId, u8 arg2, u16 fadeTimer) {
     }
 }
 
-void func_800F9474(u8 playerIdx, u16 arg1) {
-    Audio_QueueCmdS32(0x83000000 | ((u8)playerIdx << 16),
-                      (arg1 * (u16)gAudioContext.audioBufferParameters.updatesPerFrame) / 4);
+void func_800F9474(uint8_t playerIdx, uint16_t arg1) {
+    Audio_QueueCmdS32(0x83000000 | ((uint8_t)playerIdx << 16),
+                      (arg1 * (uint16_t)gAudioContext.audioBufferParameters.updatesPerFrame) / 4);
     gActiveSeqs[playerIdx].seqId = NA_BGM_DISABLED;
 }
 
@@ -96,14 +96,14 @@ typedef enum {
     CMDF
 } SeqCmdType;
 
-void Audio_ProcessSeqCmd(u32 cmd) {
-    u8 op = { 0 };
-    u8 playerIdx = { 0 };
-    u8 i;
+void Audio_ProcessSeqCmd(uint32_t cmd) {
+    uint8_t op = { 0 };
+    uint8_t playerIdx = { 0 };
+    uint8_t i;
 
     if (D_8013340C && (cmd & 0xF0000000) != 0x70000000) {
-        AudioDebug_ScrPrt((const s8*)D_80133390, (cmd >> 16) & 0xFFFF); // "SEQ H"
-        AudioDebug_ScrPrt((const s8*)D_80133398, cmd & 0xFFFF);         // "    L"
+        AudioDebug_ScrPrt((const int8_t*)D_80133390, (cmd >> 16) & 0xFFFF); // "SEQ H"
+        AudioDebug_ScrPrt((const int8_t*)D_80133398, cmd & 0xFFFF);         // "    L"
     }
 
     op = cmd >> 28;
@@ -112,9 +112,9 @@ void Audio_ProcessSeqCmd(u32 cmd) {
     switch (op) {
         case 0x0:
             // play sequence immediately
-            u16 seqId = cmd & 0xFF;
-            u8 seqArgs = (cmd & 0xFF00) >> 8;
-            u16 fadeTimer = (cmd & 0xFF0000) >> 13;
+            uint16_t seqId = cmd & 0xFF;
+            uint8_t seqArgs = (cmd & 0xFF00) >> 8;
+            uint16_t fadeTimer = (cmd & 0xFF0000) >> 13;
             if ((gActiveSeqs[playerIdx].isWaitingForFonts == 0) && (seqArgs < 0x80)) {
                 func_800F9280(playerIdx, seqId, seqArgs, fadeTimer);
             }
@@ -131,7 +131,7 @@ void Audio_ProcessSeqCmd(u32 cmd) {
             seqId = cmd & 0xFF;
             seqArgs = (cmd & 0xFF00) >> 8;
             fadeTimer = (cmd & 0xFF0000) >> 13;
-            s32 new_var = seqArgs;
+            int32_t new_var = seqArgs;
             for (i = 0; i < sNumSeqRequests[playerIdx]; i++) {
                 if (D_8016E320[playerIdx][i].unk_0 == seqId) {
                     if (i == 0) {
@@ -141,7 +141,7 @@ void Audio_ProcessSeqCmd(u32 cmd) {
                 }
             }
 
-            u8 found = sNumSeqRequests[playerIdx];
+            uint8_t found = sNumSeqRequests[playerIdx];
             for (i = 0; i < sNumSeqRequests[playerIdx]; i++) {
                 if (D_8016E320[playerIdx][i].unk_1 <= new_var) {
                     found = i;
@@ -195,15 +195,15 @@ void Audio_ProcessSeqCmd(u32 cmd) {
 
         case 0x4:
             // transition seq volume
-            u8 duration = (cmd & 0xFF0000) >> 15;
-            u16 val = cmd & 0xFF;
+            uint8_t duration = (cmd & 0xFF0000) >> 15;
+            uint16_t val = cmd & 0xFF;
             if (duration == 0) {
                 duration++;
             }
-            gActiveSeqs[playerIdx].volTarget = (f32)val / 127.0f;
+            gActiveSeqs[playerIdx].volTarget = (float)val / 127.0f;
             if (gActiveSeqs[playerIdx].volCur != gActiveSeqs[playerIdx].volTarget) {
                 gActiveSeqs[playerIdx].volStep =
-                    (gActiveSeqs[playerIdx].volCur - gActiveSeqs[playerIdx].volTarget) / (f32)duration;
+                    (gActiveSeqs[playerIdx].volCur - gActiveSeqs[playerIdx].volTarget) / (float)duration;
                 gActiveSeqs[playerIdx].volTimer = duration;
             }
             break;
@@ -215,12 +215,12 @@ void Audio_ProcessSeqCmd(u32 cmd) {
             if (duration == 0) {
                 duration++;
             }
-            f32 freqScale = (f32)val / 1000.0f;
+            float freqScale = (float)val / 1000.0f;
             for (i = 0; i < 16; i++) {
                 gActiveSeqs[playerIdx].channelData[i].freqScaleTarget = freqScale;
                 gActiveSeqs[playerIdx].channelData[i].freqScaleTimer = duration;
                 gActiveSeqs[playerIdx].channelData[i].freqScaleStep =
-                    (gActiveSeqs[playerIdx].channelData[i].freqScaleCur - freqScale) / (f32)duration;
+                    (gActiveSeqs[playerIdx].channelData[i].freqScaleCur - freqScale) / (float)duration;
             }
             gActiveSeqs[playerIdx].freqScaleChannelFlags = 0xFFFF;
             break;
@@ -228,15 +228,15 @@ void Audio_ProcessSeqCmd(u32 cmd) {
         case 0xD:
             // transition freq scale
             duration = (cmd & 0xFF0000) >> 15;
-            u8 chanIdx = (cmd & 0xF000) >> 12;
+            uint8_t chanIdx = (cmd & 0xF000) >> 12;
             val = cmd & 0xFFF;
             if (duration == 0) {
                 duration++;
             }
-            freqScale = (f32)val / 1000.0f;
+            freqScale = (float)val / 1000.0f;
             gActiveSeqs[playerIdx].channelData[chanIdx].freqScaleTarget = freqScale;
             gActiveSeqs[playerIdx].channelData[chanIdx].freqScaleStep =
-                (gActiveSeqs[playerIdx].channelData[chanIdx].freqScaleCur - freqScale) / (f32)duration;
+                (gActiveSeqs[playerIdx].channelData[chanIdx].freqScaleCur - freqScale) / (float)duration;
             gActiveSeqs[playerIdx].channelData[chanIdx].freqScaleTimer = duration;
             gActiveSeqs[playerIdx].freqScaleChannelFlags |= 1 << chanIdx;
             break;
@@ -249,13 +249,13 @@ void Audio_ProcessSeqCmd(u32 cmd) {
             if (duration == 0) {
                 duration++;
             }
-            gActiveSeqs[playerIdx].channelData[chanIdx].volTarget = (f32)val / 127.0f;
+            gActiveSeqs[playerIdx].channelData[chanIdx].volTarget = (float)val / 127.0f;
             if (gActiveSeqs[playerIdx].channelData[chanIdx].volCur !=
                 gActiveSeqs[playerIdx].channelData[chanIdx].volTarget) {
                 gActiveSeqs[playerIdx].channelData[chanIdx].volStep =
                     (gActiveSeqs[playerIdx].channelData[chanIdx].volCur -
                      gActiveSeqs[playerIdx].channelData[chanIdx].volTarget) /
-                    (f32)duration;
+                    (float)duration;
                 gActiveSeqs[playerIdx].channelData[chanIdx].volTimer = duration;
                 gActiveSeqs[playerIdx].volChannelFlags |= 1 << chanIdx;
             }
@@ -263,7 +263,7 @@ void Audio_ProcessSeqCmd(u32 cmd) {
 
         case 0x7:
             // set global io port
-            u8 port = (cmd & 0xFF0000) >> 16;
+            uint8_t port = (cmd & 0xFF0000) >> 16;
             val = cmd & 0xFF;
             Audio_QueueCmdS8(0x46000000 | _SHIFTL(playerIdx, 16, 8) | _SHIFTL(port, 0, 8), val);
             break;
@@ -286,7 +286,7 @@ void Audio_ProcessSeqCmd(u32 cmd) {
 
         case 0xA:
             // set channel stop mask
-            u16 channelMask = cmd & 0xFFFF;
+            uint16_t channelMask = cmd & 0xFFFF;
             if (channelMask != 0) {
                 // with channel mask channelMask...
                 Audio_QueueCmdU16(0x90000000 | _SHIFTL(playerIdx, 16, 8), channelMask);
@@ -308,7 +308,7 @@ void Audio_ProcessSeqCmd(u32 cmd) {
 
         case 0xC:
             // start sequence with setup commands
-            u8 subOp = (cmd & 0xF00000) >> 20;
+            uint8_t subOp = (cmd & 0xF00000) >> 20;
             if (subOp != 0xF) {
                 if (gActiveSeqs[playerIdx].setupCmdNum < 7) {
                     found = gActiveSeqs[playerIdx].setupCmdNum++;
@@ -339,9 +339,9 @@ void Audio_ProcessSeqCmd(u32 cmd) {
 
         case 0xF:
             // change spec
-            u8 spec = cmd & 0xFF;
+            uint8_t spec = cmd & 0xFF;
             gSfxChannelLayout = (cmd & 0xFF00) >> 8;
-            u8 oldSpec = gAudioSpecId;
+            uint8_t oldSpec = gAudioSpecId;
             gAudioSpecId = spec;
             func_800E5F88(spec);
             func_800F71BC(oldSpec);
@@ -350,10 +350,10 @@ void Audio_ProcessSeqCmd(u32 cmd) {
     }
 }
 
-extern f32 D_80130F24;
-extern f32 D_80130F28;
+extern float D_80130F24;
+extern float D_80130F28;
 
-void Audio_QueueSeqCmd(u32 cmd) {
+void Audio_QueueSeqCmd(uint32_t cmd) {
     sAudioSeqCmds[sSeqCmdWrPos++] = cmd;
 }
 
@@ -363,15 +363,15 @@ void Audio_ProcessSeqCmds(void) {
     }
 }
 
-u16 func_800FA0B4(u8 playerIdx) {
+uint16_t func_800FA0B4(uint8_t playerIdx) {
     if (!gAudioContext.seqPlayers[playerIdx].enabled) {
         return NA_BGM_DISABLED;
     }
     return gActiveSeqs[playerIdx].seqId;
 }
 
-s32 func_800FA11C(u32 arg0, u32 arg1) {
-    u8 i;
+int32_t func_800FA11C(uint32_t arg0, uint32_t arg1) {
+    uint8_t i;
 
     for (i = sSeqCmdRdPos; i != sSeqCmdWrPos; i++) {
         if (arg0 == (sAudioSeqCmds[i] & arg1)) {
@@ -382,15 +382,15 @@ s32 func_800FA11C(u32 arg0, u32 arg1) {
     return true;
 }
 
-void func_800FA174(u8 playerIdx) {
+void func_800FA174(uint8_t playerIdx) {
     sNumSeqRequests[playerIdx] = 0;
 }
 
-void func_800FA18C(u8 playerIdx, u8 arg1) {
-    u8 i;
+void func_800FA18C(uint8_t playerIdx, uint8_t arg1) {
+    uint8_t i;
 
     for (i = 0; i < gActiveSeqs[playerIdx].setupCmdNum; i++) {
-        u8 unkb = (gActiveSeqs[playerIdx].setupCmd[i] & 0xF00000) >> 20;
+        uint8_t unkb = (gActiveSeqs[playerIdx].setupCmd[i] & 0xF00000) >> 20;
 
         if (unkb == arg1) {
             gActiveSeqs[playerIdx].setupCmd[i] = 0xFF000000;
@@ -398,9 +398,9 @@ void func_800FA18C(u8 playerIdx, u8 arg1) {
     }
 }
 
-void Audio_SetVolScale(u8 playerIdx, u8 scaleIdx, u8 targetVol, u8 volFadeTimer) {
-    f32 volScale;
-    u8 i;
+void Audio_SetVolScale(uint8_t playerIdx, uint8_t scaleIdx, uint8_t targetVol, uint8_t volFadeTimer) {
+    float volScale;
+    uint8_t i;
 
     gActiveSeqs[playerIdx].volScales[scaleIdx] = targetVol & 0x7F;
 
@@ -417,11 +417,11 @@ void Audio_SetVolScale(u8 playerIdx, u8 scaleIdx, u8 targetVol, u8 volFadeTimer)
 }
 
 void func_800FA3DC(void) {
-    u16 temp_v1 = { 0 };
-    u32 dummy;
-    u8 playerIdx;
-    u8 j;
-    u8 k;
+    uint16_t temp_v1 = { 0 };
+    uint32_t dummy;
+    uint8_t playerIdx;
+    uint8_t j;
+    uint8_t k;
 
     for (playerIdx = 0; playerIdx < 4; playerIdx++) {
         if (gActiveSeqs[playerIdx].isWaitingForFonts != 0) {
@@ -437,11 +437,11 @@ void func_800FA3DC(void) {
         }
 
         if (gActiveSeqs[playerIdx].fadeVolUpdate) {
-            f32 phi_f0 = 1.0f;
+            float phi_f0 = 1.0f;
             for (j = 0; j < 4; j++) {
                 phi_f0 *= (gActiveSeqs[playerIdx].volScales[j] / 127.0f);
             }
-            Audio_SeqCmd4(playerIdx, gActiveSeqs[playerIdx].volFadeTimer, (u8)(phi_f0 * 127.0f));
+            Audio_SeqCmd4(playerIdx, gActiveSeqs[playerIdx].volFadeTimer, (uint8_t)(phi_f0 * 127.0f));
             gActiveSeqs[playerIdx].fadeVolUpdate = 0;
         }
 
@@ -458,16 +458,16 @@ void func_800FA3DC(void) {
         }
 
         if (gActiveSeqs[playerIdx].tempoCmd != 0) {
-            u32 temp_a1 = gActiveSeqs[playerIdx].tempoCmd;
-            u8 phi_t0 = (temp_a1 & 0xFF0000) >> 15;
-            u16 phi_a2 = temp_a1 & 0xFFF;
+            uint32_t temp_a1 = gActiveSeqs[playerIdx].tempoCmd;
+            uint8_t phi_t0 = (temp_a1 & 0xFF0000) >> 15;
+            uint16_t phi_a2 = temp_a1 & 0xFFF;
             if (phi_t0 == 0) {
                 phi_t0++;
             }
 
             if (gAudioContext.seqPlayers[playerIdx].enabled) {
-                u16 temp_lo = gAudioContext.seqPlayers[playerIdx].tempo / 0x30;
-                u8 temp_v0_4 = (temp_a1 & 0xF000) >> 12;
+                uint16_t temp_lo = gAudioContext.seqPlayers[playerIdx].tempo / 0x30;
+                uint8_t temp_v0_4 = (temp_a1 & 0xF000) >> 12;
                 switch (temp_v0_4) {
                     case 1:
                         phi_a2 += temp_lo;
@@ -569,10 +569,10 @@ void func_800FA3DC(void) {
             }
 
             for (j = 0; j < gActiveSeqs[playerIdx].setupCmdNum; j++) {
-                u8 temp_a0 = (gActiveSeqs[playerIdx].setupCmd[j] & 0x00F00000) >> 20;
-                u8 temp_s1 = (gActiveSeqs[playerIdx].setupCmd[j] & 0x000F0000) >> 16;
-                u8 temp_s0_3 = (gActiveSeqs[playerIdx].setupCmd[j] & 0xFF00) >> 8;
-                u8 temp_a3_3 = gActiveSeqs[playerIdx].setupCmd[j] & 0xFF;
+                uint8_t temp_a0 = (gActiveSeqs[playerIdx].setupCmd[j] & 0x00F00000) >> 20;
+                uint8_t temp_s1 = (gActiveSeqs[playerIdx].setupCmd[j] & 0x000F0000) >> 16;
+                uint8_t temp_s0_3 = (gActiveSeqs[playerIdx].setupCmd[j] & 0xFF00) >> 8;
+                uint8_t temp_a3_3 = gActiveSeqs[playerIdx].setupCmd[j] & 0xFF;
 
                 switch (temp_a0) {
                     case 0:
@@ -635,7 +635,7 @@ void func_800FA3DC(void) {
     }
 }
 
-u8 func_800FAD34(void) {
+uint8_t func_800FAD34(void) {
     if (D_80133418 != 0) {
         if (D_80133418 == 1) {
             if (func_800E5EDC() == 1) {
@@ -655,8 +655,8 @@ u8 func_800FAD34(void) {
 }
 
 void Audio_ResetActiveSequences(void) {
-    u8 seqPlayerIndex;
-    u8 scaleIndex;
+    uint8_t seqPlayerIndex;
+    uint8_t scaleIndex;
 
     for (seqPlayerIndex = 0; seqPlayerIndex < 4; seqPlayerIndex++) {
         sNumSeqRequests[seqPlayerIndex] = 0;
@@ -681,7 +681,7 @@ void Audio_ResetActiveSequences(void) {
 }
 
 void func_800FAEB4(void) {
-    u8 playerIdx, j;
+    uint8_t playerIdx, j;
 
     for (playerIdx = 0; playerIdx < 4; playerIdx++) {
         gActiveSeqs[playerIdx].volCur = 1.0f;

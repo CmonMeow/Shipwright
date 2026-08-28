@@ -1,18 +1,18 @@
 #include "global.h"
 #include <string.h>
 
-u8 sYaz0DataBuffer[0x400];
+uint8_t sYaz0DataBuffer[0x400];
 uintptr_t sYaz0CurDataEnd;
 uintptr_t sYaz0CurRomStart;
-u32 sYaz0CurSize;
+uint32_t sYaz0CurSize;
 uintptr_t sYaz0MaxPtr;
 
 void* Yaz0_FirstDMA(void) {
 
     sYaz0MaxPtr = sYaz0CurDataEnd - 0x19;
 
-    u32 curSize = sYaz0CurDataEnd - (uintptr_t)sYaz0DataBuffer;
-    u32 dmaSize = (curSize > sYaz0CurSize) ? sYaz0CurSize : curSize;
+    uint32_t curSize = sYaz0CurDataEnd - (uintptr_t)sYaz0DataBuffer;
+    uint32_t dmaSize = (curSize > sYaz0CurSize) ? sYaz0CurSize : curSize;
 
     DmaMgr_DmaRomToRam(sYaz0CurRomStart, sYaz0DataBuffer, dmaSize);
     sYaz0CurRomStart += dmaSize;
@@ -21,10 +21,10 @@ void* Yaz0_FirstDMA(void) {
 }
 
 void* Yaz0_NextDMA(void* curSrcPos) {
-    u32 dmaSize = { 0 };
+    uint32_t dmaSize = { 0 };
 
-    u32 restSize = sYaz0CurDataEnd - (uintptr_t)curSrcPos;
-    u8* dst = (restSize & 7) ? (sYaz0DataBuffer - (restSize & 7)) + 8 : sYaz0DataBuffer;
+    uint32_t restSize = sYaz0CurDataEnd - (uintptr_t)curSrcPos;
+    uint8_t* dst = (restSize & 7) ? (sYaz0DataBuffer - (restSize & 7)) + 8 : sYaz0DataBuffer;
 
     memcpy(dst, curSrcPos, restSize);
     dmaSize = (sYaz0CurDataEnd - (uintptr_t)dst) - restSize;
@@ -44,12 +44,12 @@ void* Yaz0_NextDMA(void* curSrcPos) {
     return dst;
 }
 
-void Yaz0_DecompressImpl(Yaz0Header* hdr, u8* dst) {
-    u32 bitIdx = 0;
-    u8* src = (u8*)hdr->data;
-    u8* dstEnd = dst + hdr->decSize;
-    u32 chunkHeader = { 0 };
-    u32 chunkSize;
+void Yaz0_DecompressImpl(Yaz0Header* hdr, uint8_t* dst) {
+    uint32_t bitIdx = 0;
+    uint8_t* src = (uint8_t*)hdr->data;
+    uint8_t* dstEnd = dst + hdr->decSize;
+    uint32_t chunkHeader = { 0 };
+    uint32_t chunkSize;
 
     do {
         if (bitIdx == 0) {
@@ -66,13 +66,13 @@ void Yaz0_DecompressImpl(Yaz0Header* hdr, u8* dst) {
             dst++;
             src++;
         } else { // compressed
-            u32 off = ((*src & 0xF) << 8 | *(src + 1));
-            u32 nibble = *src >> 4;
-            u8* backPtr = dst - off;
+            uint32_t off = ((*src & 0xF) << 8 | *(src + 1));
+            uint32_t nibble = *src >> 4;
+            uint8_t* backPtr = dst - off;
             src += 2;
 
             chunkSize = (nibble == 0)              // N = chunkSize; B = back offset
-                            ? (u32)(*src++ + 0x12) // 3 bytes 0B BB NN
+                            ? (uint32_t)(*src++ + 0x12) // 3 bytes 0B BB NN
                             : nibble + 2;          // 2 bytes NB BB
 
             do {

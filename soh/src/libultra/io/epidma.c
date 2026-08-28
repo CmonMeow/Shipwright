@@ -1,8 +1,8 @@
 #include "global.h"
 #include "ultra64/internal.h"
 
-s32 osEPiStartDma(OSPiHandle* handle, OSIoMesg* mb, s32 direction) {
-    s32 ret = { 0 };
+int32_t osEPiStartDma(OSPiHandle* handle, OSIoMesg* mb, int32_t direction) {
+    int32_t ret = { 0 };
 
     if (!__osPiDevMgr.initialized) {
         return -1;

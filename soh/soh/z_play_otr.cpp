@@ -4,9 +4,9 @@
 #include "global.h"
 #include "vt.h"
 
-extern "C" void Play_InitEnvironment(PlayState* play, s16 skyboxId);
-void OTRPlay_InitScene(PlayState* play, s32 spawn);
-s32 OTRScene_ExecuteCommands(PlayState* play, SOH::Scene* scene);
+extern "C" void Play_InitEnvironment(PlayState* play, int16_t skyboxId);
+void OTRPlay_InitScene(PlayState* play, int32_t spawn);
+int32_t OTRScene_ExecuteCommands(PlayState* play, SOH::Scene* scene);
 
 // LUS::OTRResource* OTRPlay_LoadFile(PlayState* play, RomFile* file) {
 Ship::IResource* OTRPlay_LoadFile(PlayState* play, const char* fileName) {
@@ -14,7 +14,7 @@ Ship::IResource* OTRPlay_LoadFile(PlayState* play, const char* fileName) {
     return res.get();
 }
 
-extern "C" void OTRPlay_SpawnScene(PlayState* play, s32 sceneId, s32 spawn) {
+extern "C" void OTRPlay_SpawnScene(PlayState* play, int32_t sceneId, int32_t spawn) {
     SceneTableEntry* scene = &gSceneTable[sceneId];
 
     scene->unk_13 = 0;
@@ -47,7 +47,7 @@ extern "C" void OTRPlay_SpawnScene(PlayState* play, s32 sceneId, s32 spawn) {
     PathEngineLog("Scene Init - sceneNum: {0:#x}, entranceIndex: {1:#x}", play->sceneNum, gSaveContext.entranceIndex);
 }
 
-void OTRPlay_InitScene(PlayState* play, s32 spawn) {
+void OTRPlay_InitScene(PlayState* play, int32_t spawn) {
     play->curSpawn = spawn;
     play->linkActorEntry = nullptr;
     play->unk_11DFC = nullptr;

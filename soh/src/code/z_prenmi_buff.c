@@ -22,6 +22,6 @@ void PreNmiBuff_SetReset(PreNmiBuff* this) {
     this->resetTime = osGetTime();
 }
 
-u32 PreNmiBuff_IsResetting(PreNmiBuff* this) {
+uint32_t PreNmiBuff_IsResetting(PreNmiBuff* this) {
     return this->resetting;
 }

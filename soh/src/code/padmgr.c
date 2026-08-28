@@ -4,7 +4,7 @@
 #include "soh/OTRGlobals.h"
 #include "soh/ResourceManagerHelpers.h"
 
-s32 D_8012D280 = 1;
+int32_t D_8012D280 = 1;
 
 void OTRControllerCallback(uint8_t rumble);
 
@@ -53,13 +53,13 @@ void PadMgr_UnlockPadData(PadMgr* padMgr) {
 }
 
 void PadMgr_RumbleControl(PadMgr* padMgr) {
-    static u32 errcnt = 0;
-    static u32 frame;
-    s32 temp = 1;
+    static uint32_t errcnt = 0;
+    static uint32_t frame;
+    int32_t temp = 1;
     OSMesgQueue* ctrlrQ = PadMgr_LockSerialMesgQueue(padMgr);
-    s32 i;
+    int32_t i;
 
-    s32 triedRumbleComm = 0;
+    int32_t triedRumbleComm = 0;
 
     for (i = 0; i < 4; i++) {
         if (padMgr->ctrlrIsConnected[i]) {
@@ -136,7 +136,7 @@ void PadMgr_RumbleControl(PadMgr* padMgr) {
         i = frame % 4;
 
         if (padMgr->ctrlrIsConnected[i] && (padMgr->padStatus[i].status & 1) && (padMgr->pakType[i] != 1)) {
-            s32 var4 = osMotorInit(ctrlrQ, &padMgr->pfs[i], i);
+            int32_t var4 = osMotorInit(ctrlrQ, &padMgr->pfs[i], i);
 
             if (var4 == 0) {
                 padMgr->pakType[i] = 1;
@@ -163,7 +163,7 @@ void PadMgr_RumbleControl(PadMgr* padMgr) {
 }
 
 void PadMgr_RumbleStop(PadMgr* padMgr) {
-    s32 i;
+    int32_t i;
     OSMesgQueue* ctrlrQ = PadMgr_LockSerialMesgQueue(padMgr);
 
     for (i = 0; i < 4; i++) {
@@ -189,13 +189,13 @@ void PadMgr_RumbleReset(PadMgr* padMgr) {
     padMgr->rumbleOffFrames = 3;
 }
 
-void PadMgr_RumbleSetSingle(PadMgr* padMgr, u32 ctrlr, u32 rumble) {
+void PadMgr_RumbleSetSingle(PadMgr* padMgr, uint32_t ctrlr, uint32_t rumble) {
     padMgr->rumbleEnable[ctrlr] = rumble;
     padMgr->rumbleOnFrames = 240;
 }
 
-void PadMgr_RumbleSet(PadMgr* padMgr, u8* ctrlrRumbles) {
-    s32 i;
+void PadMgr_RumbleSet(PadMgr* padMgr, uint8_t* ctrlrRumbles) {
+    int32_t i;
 
     for (i = 0; i < 4; i++) {
         padMgr->rumbleEnable[i] = ctrlrRumbles[i];
@@ -206,7 +206,7 @@ void PadMgr_RumbleSet(PadMgr* padMgr, u8* ctrlrRumbles) {
 
 #define PAUSE_BUFFER_INPUT_BLOCK_ID 0
 void PadMgr_ProcessInputs(PadMgr* padMgr) {
-    s32 i;
+    int32_t i;
 
     PadMgr_LockPadData(padMgr);
 
@@ -255,16 +255,16 @@ void PadMgr_ProcessInputs(PadMgr* padMgr) {
                 Fault_AddHungupAndCrash(__FILE__, __LINE__);
         }
 
-        s32 buttonDiff = input->prev.button ^ input->cur.button;
-        input->press.button |= (u16)(buttonDiff & input->cur.button);
-        input->rel.button |= (u16)(buttonDiff & input->prev.button);
+        int32_t buttonDiff = input->prev.button ^ input->cur.button;
+        input->press.button |= (uint16_t)(buttonDiff & input->cur.button);
+        input->rel.button |= (uint16_t)(buttonDiff & input->prev.button);
         PadUtils_UpdateRelXY(input);
-        input->press.stick_x += (s8)(input->cur.stick_x - input->prev.stick_x);
-        input->press.stick_y += (s8)(input->cur.stick_y - input->prev.stick_y);
+        input->press.stick_x += (int8_t)(input->cur.stick_x - input->prev.stick_x);
+        input->press.stick_y += (int8_t)(input->cur.stick_y - input->prev.stick_y);
         // PC controller right-stick state.
         PadUtils_UpdateRelRXY(input);
-        input->press.right_stick_x += (s8)(input->cur.right_stick_x - input->prev.right_stick_x);
-        input->press.right_stick_y += (s8)(input->cur.right_stick_y - input->prev.right_stick_y);
+        input->press.right_stick_x += (int8_t)(input->cur.right_stick_x - input->prev.right_stick_x);
+        input->press.right_stick_y += (int8_t)(input->cur.right_stick_y - input->prev.right_stick_y);
     }
 
     uint8_t rumble = (padMgr->rumbleEnable[0] > 0);
@@ -274,9 +274,9 @@ void PadMgr_ProcessInputs(PadMgr* padMgr) {
 }
 
 void PadMgr_HandleRetraceMsg(PadMgr* padMgr) {
-    s32 i;
+    int32_t i;
     OSMesgQueue* queue = PadMgr_LockSerialMesgQueue(padMgr);
-    u32 mask = { 0 };
+    uint32_t mask = { 0 };
 
     osContStartReadData(queue);
     if (padMgr->retraceCallback) {
@@ -333,8 +333,8 @@ void PadMgr_HandlePreNMI(PadMgr* padMgr) {
     PadMgr_RumbleReset(padMgr);
 }
 
-void PadMgr_RequestPadData(PadMgr* padMgr, Input* inputs, s32 mode) {
-    s32 i;
+void PadMgr_RequestPadData(PadMgr* padMgr, Input* inputs, int32_t mode) {
+    int32_t i;
 
     PadMgr_LockPadData(padMgr);
 
@@ -350,16 +350,16 @@ void PadMgr_RequestPadData(PadMgr* padMgr, Input* inputs, s32 mode) {
         } else {
             newInput->prev = newInput->cur;
             newInput->cur = ogInput->cur;
-            s32 buttonDiff = newInput->prev.button ^ newInput->cur.button;
+            int32_t buttonDiff = newInput->prev.button ^ newInput->cur.button;
             newInput->press.button = newInput->cur.button & buttonDiff;
             newInput->rel.button = newInput->prev.button & buttonDiff;
             PadUtils_UpdateRelXY(newInput);
-            newInput->press.stick_x += (s8)(newInput->cur.stick_x - newInput->prev.stick_x);
-            newInput->press.stick_y += (s8)(newInput->cur.stick_y - newInput->prev.stick_y);
+            newInput->press.stick_x += (int8_t)(newInput->cur.stick_x - newInput->prev.stick_x);
+            newInput->press.stick_y += (int8_t)(newInput->cur.stick_y - newInput->prev.stick_y);
             // PC controller right-stick state.
             PadUtils_UpdateRelRXY(newInput);
-            newInput->press.right_stick_x += (s8)(newInput->cur.right_stick_x - newInput->prev.right_stick_x);
-            newInput->press.right_stick_y += (s8)(newInput->cur.right_stick_y - newInput->prev.right_stick_y);
+            newInput->press.right_stick_x += (int8_t)(newInput->cur.right_stick_x - newInput->prev.right_stick_x);
+            newInput->press.right_stick_y += (int8_t)(newInput->cur.right_stick_y - newInput->prev.right_stick_y);
         }
         ogInput++;
         newInput++;
@@ -369,11 +369,11 @@ void PadMgr_RequestPadData(PadMgr* padMgr, Input* inputs, s32 mode) {
 }
 
 void PadMgr_ThreadEntry(PadMgr* padMgr) {
-    s16* mesg = NULL;
+    int16_t* mesg = NULL;
 
     // osSyncPrintf("コントローラスレッド実行開始\n"); // "Controller thread execution start"
 
-    s32 exit = false;
+    int32_t exit = false;
     while (!exit) {
         if ((D_8012D280 > 2) && (padMgr->interruptMsgQ.validCount == 0)) {
             // "Waiting for controller thread event"
@@ -429,7 +429,7 @@ void PadMgr_Init(PadMgr* padMgr, OSMesgQueue* siIntMsgQ, IrqMgr* irqMgr, OSId id
     PadMgr_UnlockSerialMesgQueue(padMgr, siIntMsgQ);
     osCreateMesgQueue(&padMgr->lockMsgQ, padMgr->lockMsgBuf, 1);
     PadMgr_UnlockPadData(padMgr);
-    PadSetup_Init(siIntMsgQ, (u8*)&padMgr->validCtrlrsMask, padMgr->padStatus);
+    PadSetup_Init(siIntMsgQ, (uint8_t*)&padMgr->validCtrlrsMask, padMgr->padStatus);
 
     padMgr->nControllers = 4;
     osContSetCh(padMgr->nControllers);

@@ -1,35 +1,35 @@
 #include "global.h"
 
 typedef struct {
-    u32 ins_00; // lui     k0, 0x8000
-    u32 ins_04; // addiu   k0, k0, 0x39E0
-    u32 ins_08; // jr      k0 ; __osException
-    u32 ins_0C; // nop
+    uint32_t ins_00; // lui     k0, 0x8000
+    uint32_t ins_04; // addiu   k0, k0, 0x39E0
+    uint32_t ins_08; // jr      k0 ; __osException
+    uint32_t ins_0C; // nop
 } struct_exceptionPreamble;
 
-u64 osClockRate = OS_CLOCK_RATE;
-s32 osViClock = VI_NTSC_CLOCK;
-u32 __osShutdown = 0;
+uint64_t osClockRate = OS_CLOCK_RATE;
+int32_t osViClock = VI_NTSC_CLOCK;
+uint32_t __osShutdown = 0;
 OSHWIntr __OSGlobalIntMask = OS_IM_ALL;
 
-u32 D_800145C0;
+uint32_t D_800145C0;
 
 void __createSpeedParam(void) {
     __Dom1SpeedParam.type = DEVICE_TYPE_INIT;
-    __Dom1SpeedParam.latency = HW_REG(PI_BSD_DOM1_LAT_REG, u32);
-    __Dom1SpeedParam.pulse = HW_REG(PI_BSD_DOM1_PWD_REG, u32);
-    __Dom1SpeedParam.pageSize = HW_REG(PI_BSD_DOM1_PGS_REG, u32);
-    __Dom1SpeedParam.relDuration = HW_REG(PI_BSD_DOM1_RLS_REG, u32);
+    __Dom1SpeedParam.latency = HW_REG(PI_BSD_DOM1_LAT_REG, uint32_t);
+    __Dom1SpeedParam.pulse = HW_REG(PI_BSD_DOM1_PWD_REG, uint32_t);
+    __Dom1SpeedParam.pageSize = HW_REG(PI_BSD_DOM1_PGS_REG, uint32_t);
+    __Dom1SpeedParam.relDuration = HW_REG(PI_BSD_DOM1_RLS_REG, uint32_t);
 
     __Dom2SpeedParam.type = DEVICE_TYPE_INIT;
-    __Dom2SpeedParam.latency = HW_REG(PI_BSD_DOM2_LAT_REG, u32);
-    __Dom2SpeedParam.pulse = HW_REG(PI_BSD_DOM2_PWD_REG, u32);
-    __Dom2SpeedParam.pageSize = HW_REG(PI_BSD_DOM2_PGS_REG, u32);
-    __Dom2SpeedParam.relDuration = HW_REG(PI_BSD_DOM2_RLS_REG, u32);
+    __Dom2SpeedParam.latency = HW_REG(PI_BSD_DOM2_LAT_REG, uint32_t);
+    __Dom2SpeedParam.pulse = HW_REG(PI_BSD_DOM2_PWD_REG, uint32_t);
+    __Dom2SpeedParam.pageSize = HW_REG(PI_BSD_DOM2_PGS_REG, uint32_t);
+    __Dom2SpeedParam.relDuration = HW_REG(PI_BSD_DOM2_RLS_REG, uint32_t);
 }
 
 void __osInitialize_common(void) {
-    u32 sp2C;
+    uint32_t sp2C;
 
     D_800145C0 = 1;
     __osSetSR(__osGetSR() | SR_CU1);
@@ -55,7 +55,7 @@ void __osInitialize_common(void) {
     osUnmapTLBAll();
     osMapTLBRdb();
 
-    osClockRate = (u64)((osClockRate * 3ll) / 4ull);
+    osClockRate = (uint64_t)((osClockRate * 3ll) / 4ull);
 
     if (!osResetType) {
         bzero(osAppNmiBuffer, sizeof(osAppNmiBuffer));
@@ -76,9 +76,9 @@ void __osInitialize_common(void) {
         }
     }
 
-    HW_REG(AI_CONTROL_REG, u32) = 1;
-    HW_REG(AI_DACRATE_REG, u32) = 0x3FFF;
-    HW_REG(AI_BITRATE_REG, u32) = 0xF;
+    HW_REG(AI_CONTROL_REG, uint32_t) = 1;
+    HW_REG(AI_DACRATE_REG, uint32_t) = 0x3FFF;
+    HW_REG(AI_BITRATE_REG, uint32_t) = 0xF;
 }
 
 void __osInitialize_autodetect(void) {

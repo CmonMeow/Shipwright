@@ -2,25 +2,25 @@
 #include "global.h"
 
 typedef struct {
-    s16 val;
-    s16 dataType;
+    int16_t val;
+    int16_t dataType;
 } CameraModeValue;
 
 typedef struct {
-    s16 funcIdx;
-    s16 valueCnt;
+    int16_t funcIdx;
+    int16_t valueCnt;
     CameraModeValue* values;
 } CameraMode;
 
 typedef struct {
     union {
-        u32 unk_00;
+        uint32_t unk_00;
         struct {
             // SoH [Port] These bitfield values are unused and led to shifting in validModes for little endian systems
             // Removing those so that validModes can be a complete 32 bit value
-            // u32 unk_bit0 : 1;
-            // u32 unk_bit1 : 1;
-            u32 validModes;
+            // uint32_t unk_bit0 : 1;
+            // uint32_t unk_bit1 : 1;
+            uint32_t validModes;
         };
     };
     CameraMode* cameraModes;
@@ -28,15 +28,15 @@ typedef struct {
 
 /*==================================================================*/
 // Data
-s16 sOREGInit[] = {
+int16_t sOREGInit[] = {
     0,   1,   5,  5,  5,   14500, 20,  16, 150, 25,   150, 6,  10, 10, 0,  0,   1,     100,
     250, 120, 80, 30, 120, 4,     1,   50, 20,  1800, 50,  50, 50, 20, 20, -10, -5460, -9100,
     -6,  8,   15, 75, 60,  12,    110, 40, 50,  250,  -10, 30, 30, 70, 20, 20,  20,
 };
 
-s16 sOREGInitCnt = 53;
+int16_t sOREGInitCnt = 53;
 
-s16 sCamDataRegsInit[CAM_DATA_MAX] = {
+int16_t sCamDataRegsInit[CAM_DATA_MAX] = {
     -20, // CAM_DATA_Y_OFFSET
     200, // CAM_DATA_EYE_DIST
     300, // CAM_DATA_EYE_DIST_NEXT
@@ -66,7 +66,7 @@ s16 sCamDataRegsInit[CAM_DATA_MAX] = {
     5,   // CAM_DATA_UNK_26
 };
 
-s16 sCamDataRegsInitCount = ARRAY_COUNT(sCamDataRegsInit);
+int16_t sCamDataRegsInitCount = ARRAY_COUNT(sCamDataRegsInit);
 
 char sCameraSettingNames[][12] = {
     "NONE      ",  "NORMAL0    ", "NORMAL1    ", "DUNGEON0   ", "DUNGEON1   ", "NORMAL3    ", "HORSE0     ",
@@ -2037,77 +2037,77 @@ CameraSetting sCameraSettings[] = {
     { { 0x051FFFFF }, sCamSetNormal4Modes },
 };
 
-s32 Camera_Normal0(Camera* camera);
-s32 Camera_Normal1(Camera* camera);
-s32 Camera_Normal2(Camera* camera);
-s32 Camera_Normal4(Camera* camera);
-s32 Camera_Parallel0(Camera* camera);
-s32 Camera_Parallel1(Camera* camera);
-s32 Camera_Parallel2(Camera* camera);
-s32 Camera_Parallel3(Camera* camera);
-s32 Camera_Parallel4(Camera* camera);
-s32 Camera_KeepOn0(Camera* camera);
-s32 Camera_KeepOn1(Camera* camera);
-s32 Camera_KeepOn2(Camera* camera);
-s32 Camera_KeepOn3(Camera* camera);
-s32 Camera_KeepOn4(Camera* camera);
-s32 Camera_Subj0(Camera* camera);
-s32 Camera_Subj1(Camera* camera);
-s32 Camera_Subj2(Camera* camera);
-s32 Camera_Subj3(Camera* camera);
-s32 Camera_Subj4(Camera* camera);
-s32 Camera_Jump0(Camera* camera);
-s32 Camera_Jump1(Camera* camera);
-s32 Camera_Jump2(Camera* camera);
-s32 Camera_Jump3(Camera* camera);
-s32 Camera_Jump4(Camera* camera);
-s32 Camera_Battle0(Camera* camera);
-s32 Camera_Battle1(Camera* camera);
-s32 Camera_Battle2(Camera* camera);
-s32 Camera_Battle3(Camera* camera);
-s32 Camera_Battle4(Camera* camera);
-s32 Camera_Fixed0(Camera* camera);
-s32 Camera_Fixed1(Camera* camera);
-s32 Camera_Fixed2(Camera* camera);
-s32 Camera_Fixed3(Camera* camera);
-s32 Camera_Fixed4(Camera* camera);
-s32 Camera_Data0(Camera* camera);
-s32 Camera_Data1(Camera* camera);
-s32 Camera_Data2(Camera* camera);
-s32 Camera_Data3(Camera* camera);
-s32 Camera_Data4(Camera* camera);
-s32 Camera_Unique0(Camera* camera);
-s32 Camera_Unique1(Camera* camera);
-s32 Camera_Unique2(Camera* camera);
-s32 Camera_Unique3(Camera* camera);
-s32 Camera_Unique4(Camera* camera);
-s32 Camera_Unique5(Camera* camera);
-s32 Camera_Unique6(Camera* camera);
-s32 Camera_Unique7(Camera* camera);
-s32 Camera_Unique8(Camera* camera);
-s32 Camera_Unique9(Camera* camera);
-s32 Camera_Demo0(Camera* camera);
-s32 Camera_Demo1(Camera* camera);
-s32 Camera_Demo2(Camera* camera);
-s32 Camera_Demo3(Camera* camera);
-s32 Camera_Demo4(Camera* camera);
-s32 Camera_Demo5(Camera* camera);
-s32 Camera_Demo6(Camera* camera);
-s32 Camera_Demo7(Camera* camera);
-s32 Camera_Demo8(Camera* camera);
-s32 Camera_Demo9(Camera* camera);
-s32 Camera_Special0(Camera* camera);
-s32 Camera_Special1(Camera* camera);
-s32 Camera_Special2(Camera* camera);
-s32 Camera_Special3(Camera* camera);
-s32 Camera_Special4(Camera* camera);
-s32 Camera_Special5(Camera* camera);
-s32 Camera_Special6(Camera* camera);
-s32 Camera_Special7(Camera* camera);
-s32 Camera_Special8(Camera* camera);
-s32 Camera_Special9(Camera* camera);
+int32_t Camera_Normal0(Camera* camera);
+int32_t Camera_Normal1(Camera* camera);
+int32_t Camera_Normal2(Camera* camera);
+int32_t Camera_Normal4(Camera* camera);
+int32_t Camera_Parallel0(Camera* camera);
+int32_t Camera_Parallel1(Camera* camera);
+int32_t Camera_Parallel2(Camera* camera);
+int32_t Camera_Parallel3(Camera* camera);
+int32_t Camera_Parallel4(Camera* camera);
+int32_t Camera_KeepOn0(Camera* camera);
+int32_t Camera_KeepOn1(Camera* camera);
+int32_t Camera_KeepOn2(Camera* camera);
+int32_t Camera_KeepOn3(Camera* camera);
+int32_t Camera_KeepOn4(Camera* camera);
+int32_t Camera_Subj0(Camera* camera);
+int32_t Camera_Subj1(Camera* camera);
+int32_t Camera_Subj2(Camera* camera);
+int32_t Camera_Subj3(Camera* camera);
+int32_t Camera_Subj4(Camera* camera);
+int32_t Camera_Jump0(Camera* camera);
+int32_t Camera_Jump1(Camera* camera);
+int32_t Camera_Jump2(Camera* camera);
+int32_t Camera_Jump3(Camera* camera);
+int32_t Camera_Jump4(Camera* camera);
+int32_t Camera_Battle0(Camera* camera);
+int32_t Camera_Battle1(Camera* camera);
+int32_t Camera_Battle2(Camera* camera);
+int32_t Camera_Battle3(Camera* camera);
+int32_t Camera_Battle4(Camera* camera);
+int32_t Camera_Fixed0(Camera* camera);
+int32_t Camera_Fixed1(Camera* camera);
+int32_t Camera_Fixed2(Camera* camera);
+int32_t Camera_Fixed3(Camera* camera);
+int32_t Camera_Fixed4(Camera* camera);
+int32_t Camera_Data0(Camera* camera);
+int32_t Camera_Data1(Camera* camera);
+int32_t Camera_Data2(Camera* camera);
+int32_t Camera_Data3(Camera* camera);
+int32_t Camera_Data4(Camera* camera);
+int32_t Camera_Unique0(Camera* camera);
+int32_t Camera_Unique1(Camera* camera);
+int32_t Camera_Unique2(Camera* camera);
+int32_t Camera_Unique3(Camera* camera);
+int32_t Camera_Unique4(Camera* camera);
+int32_t Camera_Unique5(Camera* camera);
+int32_t Camera_Unique6(Camera* camera);
+int32_t Camera_Unique7(Camera* camera);
+int32_t Camera_Unique8(Camera* camera);
+int32_t Camera_Unique9(Camera* camera);
+int32_t Camera_Demo0(Camera* camera);
+int32_t Camera_Demo1(Camera* camera);
+int32_t Camera_Demo2(Camera* camera);
+int32_t Camera_Demo3(Camera* camera);
+int32_t Camera_Demo4(Camera* camera);
+int32_t Camera_Demo5(Camera* camera);
+int32_t Camera_Demo6(Camera* camera);
+int32_t Camera_Demo7(Camera* camera);
+int32_t Camera_Demo8(Camera* camera);
+int32_t Camera_Demo9(Camera* camera);
+int32_t Camera_Special0(Camera* camera);
+int32_t Camera_Special1(Camera* camera);
+int32_t Camera_Special2(Camera* camera);
+int32_t Camera_Special3(Camera* camera);
+int32_t Camera_Special4(Camera* camera);
+int32_t Camera_Special5(Camera* camera);
+int32_t Camera_Special6(Camera* camera);
+int32_t Camera_Special7(Camera* camera);
+int32_t Camera_Special8(Camera* camera);
+int32_t Camera_Special9(Camera* camera);
 
-s32 (*sCameraFunctions[])(Camera*) = {
+int32_t (*sCameraFunctions[])(Camera*) = {
     NULL,
     Camera_Normal0,
     Camera_Normal1,
@@ -2181,31 +2181,31 @@ s32 (*sCameraFunctions[])(Camera*) = {
     Camera_Special9,
 };
 
-s32 sInitRegs = 1;
+int32_t sInitRegs = 1;
 
-s32 gDbgCamEnabled = 0;
-s32 sDbgModeIdx = -1;
-s16 sNextUID = 0;
+int32_t gDbgCamEnabled = 0;
+int32_t sDbgModeIdx = -1;
+int16_t sNextUID = 0;
 
-s32 sCameraInterfaceFlags = 1;
+int32_t sCameraInterfaceFlags = 1;
 
-s32 sCameraInterfaceAlpha = 0x02;
-s32 sCameraShrinkWindowVal = 0x20;
-s32 D_8011D3AC = -1;
+int32_t sCameraInterfaceAlpha = 0x02;
+int32_t sCameraShrinkWindowVal = 0x20;
+int32_t D_8011D3AC = -1;
 
-s16 D_8011D3B0[] = {
+int16_t D_8011D3B0[] = {
     0x0AAA, 0xF556, 0x1555, 0xEAAB, 0x2AAA, 0xD556, 0x3FFF, 0xC001, 0x5555, 0xAAAB, 0x6AAA, 0x9556, 0x7FFF, 0x0000,
 };
 
-s16 D_8011D3CC[] = {
+int16_t D_8011D3CC[] = {
     0x0000, 0x02C6, 0x058C, 0x0000, 0x0000, 0xFD3A, 0x0000, 0x0852, 0x0000, 0x0000, 0x0B18, 0x02C6, 0xFA74, 0x0000,
 };
 
-s32 sUpdateCameraDirection = 0;
-s32 D_8011D3EC = 0;
-s32 D_8011D3F0 = 0;
+int32_t sUpdateCameraDirection = 0;
+int32_t D_8011D3EC = 0;
+int32_t D_8011D3F0 = 0;
 
-s32 sDemo5PrevAction12Frame = -16;
+int32_t sDemo5PrevAction12Frame = -16;
 
 char sCameraFunctionNames[][8] = {
     "NONE   ", "NORM0()", "NORM1()", "NORM2()", "NORM3()", "NORM4()", "PARA0()", "PARA1()", "PARA2()", "PARA3()",
@@ -2235,7 +2235,7 @@ Vec3f D_8011D678[] = {
 /*******************************************************
  * OnePoint initalization values for Demo5
  ********************************************************/
-s32 sDemo5PrevSfxFrame = -200;
+int32_t sDemo5PrevSfxFrame = -200;
 
 // target is player, far from eye
 OnePointCsFull D_8011D6AC[] = {
@@ -2351,13 +2351,13 @@ Vec3f D_8011DA9C[] = {
     { -50.0f, 600.0f, -75.0f },
 };
 
-f32 D_8011DACC[] = { 1570.0f, 3680.0f, 3700.0f, 395.0f };
+float D_8011DACC[] = { 1570.0f, 3680.0f, 3700.0f, 395.0f };
 
-f32 D_8011DADC[] = { 320.0f, 320.0f, 320.0f, 0.0f };
+float D_8011DADC[] = { 320.0f, 320.0f, 320.0f, 0.0f };
 
-s16 D_8011DAEC[] = { -2000, -1000, 0, 0, 0, 0, 0, 0 };
+int16_t D_8011DAEC[] = { -2000, -1000, 0, 0, 0, 0, 0, 0 };
 
-s16 D_8011DAFC[] = {
+int16_t D_8011DAFC[] = {
     CAM_SET_NORMAL0, CAM_SET_NORMAL1, CAM_SET_NORMAL2, CAM_SET_DUNGEON0, CAM_SET_DUNGEON1, CAM_SET_DUNGEON2,
 };
 

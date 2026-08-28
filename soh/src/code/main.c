@@ -12,8 +12,8 @@
 #include <libultraship/bridge.h>
 #include "soh/CrashHandlerExt.h"
 
-s32 gScreenWidth = SCREEN_WIDTH;
-s32 gScreenHeight = SCREEN_HEIGHT;
+int32_t gScreenWidth = SCREEN_WIDTH;
+int32_t gScreenHeight = SCREEN_HEIGHT;
 size_t gSystemHeapSize = 0;
 
 PreNmiBuff* gAppNmiBufferPtr;
@@ -22,11 +22,11 @@ PadMgr gPadMgr;
 IrqMgr gIrqMgr;
 uintptr_t gSegments[NUM_SEGMENTS];
 OSThread sGraphThread;
-u8 sGraphStack[0x1800];
-u8 sSchedStack[0x600];
-u8 sAudioStack[0x800];
-u8 sPadMgrStack[0x500];
-u8 sIrqMgrStack[0x500];
+uint8_t sGraphStack[0x1800];
+uint8_t sSchedStack[0x600];
+uint8_t sAudioStack[0x800];
+uint8_t sPadMgrStack[0x500];
+uint8_t sIrqMgrStack[0x500];
 StackEntry sGraphStackInfo;
 StackEntry sSchedStackInfo;
 StackEntry sAudioStackInfo;
@@ -140,7 +140,7 @@ void Main(void* arg) {
     Graph_ThreadEntry(0);
 
     while (true) {
-        s16* msg = NULL;
+        int16_t* msg = NULL;
         osRecvMesg(&irqMgrMsgQ, (OSMesg*)&msg, OS_MESG_BLOCK);
         if (msg == NULL) {
             break;

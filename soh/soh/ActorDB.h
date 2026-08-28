@@ -4,18 +4,18 @@
 typedef struct {
     const char* name;
     const char* desc;
-    u32 valid;
-    s32 id;
-    s32 category;
-    u32 flags;
-    s32 objectId;
+    uint32_t valid;
+    int32_t id;
+    int32_t category;
+    uint32_t flags;
+    int32_t objectId;
     size_t instanceSize;
     ActorFunc init;
     ActorFunc destroy;
     ActorFunc update;
     ActorFunc draw;
     ActorResetFunc reset;
-    s32 numLoaded;
+    int32_t numLoaded;
 } ActorDBEntry;
 
 #ifdef __cplusplus
@@ -28,7 +28,7 @@ struct ActorDBInit {
     std::string name;
     std::string desc;
     int category = 0;
-    u32 flags = 0;
+    uint32_t flags = 0;
     int objectId = 0;
     size_t instanceSize = sizeof(Actor);
     ActorFunc init = nullptr;

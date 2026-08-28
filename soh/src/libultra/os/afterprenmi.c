@@ -1,6 +1,6 @@
 #include <libultraship/libultra.h>
 #include "global.h"
 
-s32 osAfterPreNMI(void) {
+int32_t osAfterPreNMI(void) {
     return __osSpSetPc(0);
 }

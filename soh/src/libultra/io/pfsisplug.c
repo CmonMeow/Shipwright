@@ -1,14 +1,14 @@
 #include <libultraship/libultra.h>
 #include "global.h"
 
-s32 osPfsIsPlug(OSMesgQueue* mq, u8* pattern) {
-    s32 ret = 0;
+int32_t osPfsIsPlug(OSMesgQueue* mq, uint8_t* pattern) {
+    int32_t ret = 0;
     OSMesg msg;
-    u8 bitpattern;
+    uint8_t bitpattern;
     OSContStatus contData[MAXCONTROLLERS];
-    s32 channel;
-    u8 bits = 0;
-    s32 crcErrorCount = 3;
+    int32_t channel;
+    uint8_t bits = 0;
+    int32_t crcErrorCount = 3;
 
     __osSiGetAccess();
 
@@ -44,10 +44,10 @@ s32 osPfsIsPlug(OSMesgQueue* mq, u8* pattern) {
     return ret;
 }
 
-void __osPfsRequestData(u8 poll) {
-    u8* bufPtr = (u8*)&gPifMempakBuf;
+void __osPfsRequestData(uint8_t poll) {
+    uint8_t* bufPtr = (uint8_t*)&gPifMempakBuf;
     __OSContRequestHeader req;
-    s32 i;
+    int32_t i;
 
     __osContLastPoll = poll;
 
@@ -66,15 +66,15 @@ void __osPfsRequestData(u8 poll) {
         *((__OSContRequestHeader*)bufPtr) = req;
         bufPtr += sizeof(req);
     }
-    *((u8*)bufPtr) = CONT_CMD_END;
+    *((uint8_t*)bufPtr) = CONT_CMD_END;
 }
 
-void __osPfsGetInitData(u8* pattern, OSContStatus* contData) {
+void __osPfsGetInitData(uint8_t* pattern, OSContStatus* contData) {
     __OSContRequestHeader req;
-    s32 i;
-    u8 bits = 0;
+    int32_t i;
+    uint8_t bits = 0;
 
-    u8* bufptr = (u8*)&gPifMempakBuf;
+    uint8_t* bufptr = (uint8_t*)&gPifMempakBuf;
 
     for (i = 0; i < __osMaxControllers; i++, bufptr += sizeof(req), contData++) {
         req = *((__OSContRequestHeader*)bufptr);

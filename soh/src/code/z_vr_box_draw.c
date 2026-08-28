@@ -4,7 +4,7 @@
 
 Mtx* sSkyboxDrawMatrix;
 
-Mtx* SkyboxDraw_UpdateMatrix(SkyboxContext* skyboxCtx, f32 x, f32 y, f32 z) {
+Mtx* SkyboxDraw_UpdateMatrix(SkyboxContext* skyboxCtx, float x, float y, float z) {
     Matrix_Translate(x, y, z, MTXMODE_NEW);
     Matrix_Scale(1.0f, 1.0f, 1.0f, MTXMODE_APPLY);
     Matrix_RotateX(skyboxCtx->rot.x, MTXMODE_APPLY);
@@ -13,7 +13,7 @@ Mtx* SkyboxDraw_UpdateMatrix(SkyboxContext* skyboxCtx, f32 x, f32 y, f32 z) {
     return MATRIX_TOMTX(sSkyboxDrawMatrix);
 }
 
-void SkyboxDraw_Draw(SkyboxContext* skyboxCtx, GraphicsContext* gfxCtx, s16 skyboxId, s16 blend, f32 x, f32 y, f32 z) {
+void SkyboxDraw_Draw(SkyboxContext* skyboxCtx, GraphicsContext* gfxCtx, int16_t skyboxId, int16_t blend, float x, float y, float z) {
     OPEN_DISPS(gfxCtx);
     FrameInterpolation_RecordOpenChild(NULL, FrameInterpolation_GetCameraEpoch());
 

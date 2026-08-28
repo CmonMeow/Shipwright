@@ -1,12 +1,12 @@
 #include "global.h"
 
 typedef void (*arg3_800FC868)(void*);
-typedef void (*arg3_800FC8D8)(void*, u32);
-typedef void (*arg3_800FC948)(void*, u32, u32, u32, u32, u32, u32, u32, u32);
-typedef void (*arg3_800FCA18)(void*, u32);
+typedef void (*arg3_800FC8D8)(void*, uint32_t);
+typedef void (*arg3_800FC948)(void*, uint32_t, uint32_t, uint32_t, uint32_t, uint32_t, uint32_t, uint32_t, uint32_t);
+typedef void (*arg3_800FCA18)(void*, uint32_t);
 
 typedef struct InitFunc {
-    s32 nextOffset;
+    int32_t nextOffset;
     void (*func)(void);
 } InitFunc;
 
@@ -20,15 +20,15 @@ char D_80134488[0x18] = {
     0xFF, 0x80, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x80, 0x00, 0x00, 0x00,
 };
 
-s32 Overlay_Load(uintptr_t vRomStart, uintptr_t vRomEnd, void* vRamStart, void* vRamEnd, void* allocatedVRamAddr) {
+int32_t Overlay_Load(uintptr_t vRomStart, uintptr_t vRomEnd, void* vRamStart, void* vRamEnd, void* allocatedVRamAddr) {
     return 0;
 
 #if 0
-    s32 pad;
+    int32_t pad;
     uintptr_t end = { 0 };
-    u32 bssSize;
+    uint32_t bssSize;
     OverlayRelocationSection* ovl = { 0 };
-    u32 ovlOffset = { 0 };
+    uint32_t ovlOffset = { 0 };
     size_t size = { 0 };
 
     if (gOverlayLogSeverity >= 3) {
@@ -47,7 +47,7 @@ s32 Overlay_Load(uintptr_t vRomStart, uintptr_t vRomEnd, void* vRamStart, void* 
     end = (uintptr_t)allocatedVRamAddr + size;
     DmaMgr_SendRequest0(allocatedVRamAddr, vRomStart, size);
 
-    ovlOffset = ((s32*)end)[-1];
+    ovlOffset = ((int32_t*)end)[-1];
 
     ovl = (OverlayRelocationSection*)((uintptr_t)end - ovlOffset);
     if (gOverlayLogSeverity >= 3) {
@@ -109,7 +109,7 @@ void func_800FC83C(void* ptr) {
     }
 }
 
-void func_800FC868(void* blk, u32 nBlk, u32 blkSize, arg3_800FC868 arg3) {
+void func_800FC868(void* blk, uint32_t nBlk, uint32_t blkSize, arg3_800FC868 arg3) {
     uintptr_t pos;
 
     for (pos = (uintptr_t)blk; pos < (uintptr_t)blk + (nBlk * blkSize); pos = (uintptr_t)pos + (blkSize & ~0)) {
@@ -117,7 +117,7 @@ void func_800FC868(void* blk, u32 nBlk, u32 blkSize, arg3_800FC868 arg3) {
     }
 }
 
-void func_800FC8D8(void* blk, u32 nBlk, s32 blkSize, arg3_800FC8D8 arg3) {
+void func_800FC8D8(void* blk, uint32_t nBlk, int32_t blkSize, arg3_800FC8D8 arg3) {
     uintptr_t pos;
 
     for (pos = (uintptr_t)blk; pos < (uintptr_t)blk + (nBlk * blkSize); pos = (uintptr_t)pos + (blkSize & ~0)) {
@@ -125,7 +125,7 @@ void func_800FC8D8(void* blk, u32 nBlk, s32 blkSize, arg3_800FC8D8 arg3) {
     }
 }
 
-void* func_800FC948(void* blk, u32 nBlk, u32 blkSize, arg3_800FC948 arg3) {
+void* func_800FC948(void* blk, uint32_t nBlk, uint32_t blkSize, arg3_800FC948 arg3) {
 
     if (blk == NULL) {
         blk = func_800FC800(nBlk * blkSize);
@@ -141,14 +141,14 @@ void* func_800FC948(void* blk, u32 nBlk, u32 blkSize, arg3_800FC948 arg3) {
     return blk;
 }
 
-void func_800FCA18(void* blk, u32 nBlk, u32 blkSize, arg3_800FCA18 arg3, s32 arg4) {
+void func_800FCA18(void* blk, uint32_t nBlk, uint32_t blkSize, arg3_800FCA18 arg3, int32_t arg4) {
 
     if (blk == 0) {
         return;
     }
     if (arg3 != 0) {
         uintptr_t end = (uintptr_t)blk;
-        s32 masked_arg2 = (s32)(blkSize & ~0);
+        int32_t masked_arg2 = (int32_t)(blkSize & ~0);
         uintptr_t pos = (uintptr_t)end + (nBlk * blkSize);
 
         if (masked_arg2) {}
@@ -168,18 +168,18 @@ void func_800FCA18(void* blk, u32 nBlk, u32 blkSize, arg3_800FCA18 arg3, s32 arg
 
 void func_800FCB34(void) {
     InitFunc* initFunc = (InitFunc*)&sInitFuncs;
-    u32 nextOffset = initFunc->nextOffset;
+    uint32_t nextOffset = initFunc->nextOffset;
     InitFunc* prev = NULL;
 
     while (nextOffset != 0) {
-        initFunc = (InitFunc*)((s32)initFunc + nextOffset);
+        initFunc = (InitFunc*)((int32_t)initFunc + nextOffset);
 
         if (initFunc->func != NULL) {
             (*initFunc->func)();
         }
 
         nextOffset = initFunc->nextOffset;
-        initFunc->nextOffset = (s32)prev;
+        initFunc->nextOffset = (int32_t)prev;
         prev = initFunc;
     }
 

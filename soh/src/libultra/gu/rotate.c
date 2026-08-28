@@ -1,26 +1,26 @@
 #include "global.h"
 
-void guRotateF(f32 m[4][4], f32 a, f32 x, f32 y, f32 z) {
-    static f32 D_80134D10 = M_PI / 180.0f;
+void guRotateF(float m[4][4], float a, float x, float y, float z) {
+    static float D_80134D10 = M_PI / 180.0f;
 
     guNormalize(&x, &y, &z);
 
     a = a * D_80134D10;
 
-    f32 sine = sinf(a);
-    f32 cosine = cosf(a);
+    float sine = sinf(a);
+    float cosine = cosf(a);
 
-    f32 ab = x * y * (1 - cosine);
-    f32 bc = y * z * (1 - cosine);
-    f32 ca = z * x * (1 - cosine);
+    float ab = x * y * (1 - cosine);
+    float bc = y * z * (1 - cosine);
+    float ca = z * x * (1 - cosine);
 
     guMtxIdentF(m);
 
-    f32 xs = x * sine;
-    f32 ys = y * sine;
-    f32 zs = z * sine;
+    float xs = x * sine;
+    float ys = y * sine;
+    float zs = z * sine;
 
-    f32 t = x * x;
+    float t = x * x;
     m[0][0] = (1 - t) * cosine + t;
     m[2][1] = bc - xs;
     m[1][2] = bc + xs;
@@ -34,8 +34,8 @@ void guRotateF(f32 m[4][4], f32 a, f32 x, f32 y, f32 z) {
     m[0][1] = ab + zs;
 }
 
-void guRotate(Mtx* m, f32 a, f32 x, f32 y, f32 z) {
-    f32 mf[4][4];
+void guRotate(Mtx* m, float a, float x, float y, float z) {
+    float mf[4][4];
 
     guRotateF(mf, a, x, y, z);
     guMtxF2L((MtxF*)mf, m);

@@ -2,8 +2,8 @@
 
 // Linker symbol declarations (used in the table below)
 #define DEFINE_DMA_ENTRY(name)            \
-    extern u8 _##name##SegmentRomStart[]; \
-    extern u8 _##name##SegmentRomEnd[];
+    extern uint8_t _##name##SegmentRomStart[]; \
+    extern uint8_t _##name##SegmentRomEnd[];
 
 #include "tables/dmadata_table.h"
 
@@ -21,4 +21,4 @@ DmaEntry gDmaDataTable[] = {
 #undef DEFINE_DMA_ENTRY
 
 // Additional padding?
-u8 sDmaDataPadding[0xF0] = { 0 };
+uint8_t sDmaDataPadding[0xF0] = { 0 };

@@ -18,8 +18,8 @@
     if (this->enableLog) \
     osSyncPrintf
 
-u32 UCodeDisas_TranslateAddr(UCodeDisas* this, u32 addr) {
-    u32 physical = this->segments[SEGMENT_NUMBER(addr)] + SEGMENT_OFFSET(addr);
+uint32_t UCodeDisas_TranslateAddr(UCodeDisas* this, uint32_t addr) {
+    uint32_t physical = this->segments[SEGMENT_NUMBER(addr)] + SEGMENT_OFFSET(addr);
 
     return PHYSICAL_TO_VIRTUAL(physical);
 }
@@ -39,7 +39,7 @@ F3dzexFlag sUCodeDisasMtxFlags[] = {
     F3DZEX_FLAG(G_MTX_PUSH, G_MTX_NOPUSH),
 };
 
-const char* UCodeDisas_ParseCombineColor(u32 value, u32 idx) {
+const char* UCodeDisas_ParseCombineColor(uint32_t value, uint32_t idx) {
     const char* ret = "?";
 
     switch (value) {
@@ -105,7 +105,7 @@ const char* UCodeDisas_ParseCombineColor(u32 value, u32 idx) {
     return ret;
 }
 
-const char* UCodeDisas_ParseCombineAlpha(u32 value, u32 idx) {
+const char* UCodeDisas_ParseCombineAlpha(uint32_t value, uint32_t idx) {
     const char* ret = "?";
     switch (value) {
         case 0:
@@ -137,7 +137,7 @@ const char* UCodeDisas_ParseCombineAlpha(u32 value, u32 idx) {
 }
 
 void UCodeDisas_Init(UCodeDisas* this) {
-    u32 i;
+    uint32_t i;
 
     memset(this,0, sizeof(UCodeDisas));
     for (i = 0; i < NUM_SEGMENTS; i++) {
@@ -149,7 +149,7 @@ void UCodeDisas_Destroy(UCodeDisas* this) {
 }
 
 void UCodeDisas_SetCurUCodeImpl(UCodeDisas* this, void* ptr) {
-    s32 i;
+    int32_t i;
 
     for (i = 0; i < this->ucodeInfoCount; i++) {
         if (ptr == this->ucodeInfo[i].ptr) {
@@ -163,9 +163,9 @@ void UCodeDisas_SetCurUCodeImpl(UCodeDisas* this, void* ptr) {
     }
 }
 
-void UCodeDisas_ParseGeometryMode(UCodeDisas* this, u32 mode) {
-    u32 first = true;
-    s32 i;
+void UCodeDisas_ParseGeometryMode(UCodeDisas* this, uint32_t mode) {
+    uint32_t first = true;
+    int32_t i;
 
     for (i = 0; i < ARRAY_COUNT(sUCodeDisasGeometryModes); i++) {
         if ((sUCodeDisasGeometryModes[i].value & mode) == 0) {
@@ -182,7 +182,7 @@ void UCodeDisas_ParseGeometryMode(UCodeDisas* this, u32 mode) {
     }
 }
 
-void UCodeDisas_ParseRenderMode(UCodeDisas* this, u32 mode) {
+void UCodeDisas_ParseRenderMode(UCodeDisas* this, uint32_t mode) {
     static F3dzexRenderMode sUCodeDisasRenderModeFlags[] = {
         F3DZEX_RENDERMODE(AA_EN, 0x8),
         F3DZEX_RENDERMODE(Z_CMP, 0x10),
@@ -208,9 +208,9 @@ void UCodeDisas_ParseRenderMode(UCodeDisas* this, u32 mode) {
         { "G_BL_1MA", "G_BL_A_MEM", "G_BL_1", "G_BL_0" },
     };
 
-    s32 i;
-    s32 a = { 0 };
-    s32 b = { 0 };
+    int32_t i;
+    int32_t a = { 0 };
+    int32_t b = { 0 };
 
     for (i = 0; i < ARRAY_COUNT(sUCodeDisasRenderModeFlags); i++) {
         if ((mode & sUCodeDisasRenderModeFlags[i].mask) != sUCodeDisasRenderModeFlags[i].value) {
@@ -234,8 +234,8 @@ void UCodeDisas_ParseRenderMode(UCodeDisas* this, u32 mode) {
     }
 }
 
-void UCodeDisas_PrintVertices(UCodeDisas* this, Vtx* vtx, s32 count, s32 start) {
-    s32 i;
+void UCodeDisas_PrintVertices(UCodeDisas* this, Vtx* vtx, int32_t count, int32_t start) {
+    int32_t i;
     for (i = 0; i < count; i++) {
         if (this->geometryMode & G_LIGHTING) {
             DISAS_LOG("\n{{%6d, %6d, %6d, %d, %6d, %6d, %3d, %3d, %3d, %3d}}, /* vc%d */", vtx->n.ob[0], vtx->n.ob[1],
@@ -253,26 +253,26 @@ void UCodeDisas_PrintVertices(UCodeDisas* this, Vtx* vtx, s32 count, s32 start) 
 // Todo: clean this up
 
 typedef struct {
-    s8 cmd;
-    u8 v0;
-    u8 v1;
-    u8 wd;
-    u32 pad;
+    int8_t cmd;
+    uint8_t v0;
+    uint8_t v1;
+    uint8_t wd;
+    uint32_t pad;
 } Gline3DFix;
 
 typedef struct {
     int cmd : 8;
-    u32 pad : 4;
-    u32 numv : 8;
-    s32 pad2 : 4;
-    u8 vbidx;
+    uint32_t pad : 4;
+    uint32_t numv : 8;
+    int32_t pad2 : 4;
+    uint8_t vbidx;
 } Gvtx;
 
 typedef struct {
-    u8 pad : 8;
-    u8 v0 : 8;
-    u8 v1 : 8;
-    u8 v2 : 8;
+    uint8_t pad : 8;
+    uint8_t v0 : 8;
+    uint8_t v1 : 8;
+    uint8_t v2 : 8;
 } Gtrimod;
 
 typedef struct {
@@ -287,114 +287,114 @@ typedef struct {
 } Gtri2;
 
 typedef struct {
-    u8 pad : 8;
-    u8 v0 : 8;
-    u8 v1 : 8;
-    u8 v2 : 8;
-    u8 pad1 : 8;
-    u8 pad2 : 8;
-    u8 pad3 : 8;
-    u8 v3 : 8;
+    uint8_t pad : 8;
+    uint8_t v0 : 8;
+    uint8_t v1 : 8;
+    uint8_t v2 : 8;
+    uint8_t pad1 : 8;
+    uint8_t pad2 : 8;
+    uint8_t pad3 : 8;
+    uint8_t v3 : 8;
 } Gquadmod;
 
 typedef struct {
-    u16 pad;
-    u16 vstart;
-    u16 pad2;
-    u16 vend;
+    uint16_t pad;
+    uint16_t vstart;
+    uint16_t pad2;
+    uint16_t vend;
 } Gcull;
 
 typedef struct {
-    u16 pad;
-    u16 vstart;
-    u16 pad2;
-    u16 vend;
+    uint16_t pad;
+    uint16_t vstart;
+    uint16_t pad2;
+    uint16_t vend;
 } Gbranchz;
 
 typedef struct {
     int cmd : 8;
-    u8 pad;
-    u8 prim_min_level;
-    u8 prim_level;
-    u8 r;
-    u8 g;
-    u8 b;
-    u8 a;
+    uint8_t pad;
+    uint8_t prim_min_level;
+    uint8_t prim_level;
+    uint8_t r;
+    uint8_t g;
+    uint8_t b;
+    uint8_t a;
 } GsetcolorMod;
 
 typedef struct {
-    u8 cmd;
+    uint8_t cmd;
     char pad[3];
-    u16 z;
-    u16 d;
+    uint16_t z;
+    uint16_t d;
 } Gsetprimdepth;
 
 typedef struct {
-    u8 cmd;
-    u8 type;
-    u16 len;
+    uint8_t cmd;
+    uint8_t type;
+    uint16_t len;
     union {
-        u32 u32;
-        f32 f32;
+        uint32_t unsigned32;
+        float singlePrecision;
     } value;
 } Gnoop;
 
 typedef struct {
-    u8 cmd;
-    u8 pad[2];
-    u8 params;
-    u32 addr;
+    uint8_t cmd;
+    uint8_t pad[2];
+    uint8_t params;
+    uint32_t addr;
 } Gmatrix;
 
 typedef struct {
-    u8 cmd;
-    u32 a : 4;
-    u32 c : 5;
-    u32 z : 3;
-    u32 x : 3;
-    u32 e : 4;
-    u32 g : 5;
-    u32 b : 4;
-    u32 f : 4;
-    u32 v : 3;
-    u32 t : 3;
-    u32 d : 3;
-    u32 y : 3;
-    u32 w : 3;
-    u32 h : 3;
-    u32 u : 3;
-    u32 s : 3;
+    uint8_t cmd;
+    uint32_t a : 4;
+    uint32_t c : 5;
+    uint32_t z : 3;
+    uint32_t x : 3;
+    uint32_t e : 4;
+    uint32_t g : 5;
+    uint32_t b : 4;
+    uint32_t f : 4;
+    uint32_t v : 3;
+    uint32_t t : 3;
+    uint32_t d : 3;
+    uint32_t y : 3;
+    uint32_t w : 3;
+    uint32_t h : 3;
+    uint32_t u : 3;
+    uint32_t s : 3;
 } GsetcombineMod;
 
 typedef struct {
-    u32 cmd : 8;
-    u32 pad0 : 8;
-    u32 sft : 8;
-    u32 len : 8;
-    u32 data : 32;
+    uint32_t cmd : 8;
+    uint32_t pad0 : 8;
+    uint32_t sft : 8;
+    uint32_t len : 8;
+    uint32_t data : 32;
 } GsetothermodeMod;
 
 typedef struct {
-    s32 cmd : 8;
-    u32 offset : 16;
-    u32 index : 8;
-    u32 data;
+    int32_t cmd : 8;
+    uint32_t offset : 16;
+    uint32_t index : 8;
+    uint32_t data;
 } Gmovewd;
 
 typedef struct {
-    s32 cmd : 8;
+    int32_t cmd : 8;
     size_t size : 8;
-    u32 offset : 8;
-    u32 index : 8;
-    u32 data;
+    uint32_t offset : 8;
+    uint32_t index : 8;
+    uint32_t data;
 } Gmovemem;
 
 typedef struct {
-    u8 cmd : 8;
-    u8 lodscale : 8;
-    u8 pad : 2;
-    u8 level : 3;
-    u8 tile : 3;
+    uint8_t cmd : 8;
+    uint8_t lodscale : 8;
+    uint8_t pad : 2;
+    uint8_t level : 3;
+    uint8_t tile : 3;
 
     unsigned char on;
     unsigned short s;
@@ -404,7 +404,7 @@ typedef struct {
 typedef struct {
     int cmd : 8;
     int pad1 : 24;
-    u32 param : 26;
+    uint32_t param : 26;
     unsigned char pad3 : 6;
 } Gpopmtxmod;
 
@@ -444,14 +444,14 @@ typedef union {
 } GfxMod;
 
 void UCodeDisas_Disassemble(UCodeDisas* this, GfxMod* ptr) {
-    u32 pad;
-    u32 rdpHalf = { 0 };
-    u16 linkDlLow = { 0 };
-    u8 sid = { 0 };
-    s32 i0;
+    uint32_t pad;
+    uint32_t rdpHalf = { 0 };
+    uint16_t linkDlLow = { 0 };
+    uint8_t sid = { 0 };
+    int32_t i0;
     GfxMod curGfx[1];
 
-    u32 exit = false;
+    uint32_t exit = false;
 
     while (!exit) {
         this->dlCnt++;
@@ -460,8 +460,8 @@ void UCodeDisas_Disassemble(UCodeDisas* this, GfxMod* ptr) {
         DISAS_LOG("%08x:", ptr);
 
         *curGfx = *ptr;
-        u8 cmd = curGfx->dma.cmd;
-        u32 addr = UCodeDisas_TranslateAddr(this, curGfx->dma.addr);
+        uint8_t cmd = curGfx->dma.cmd;
+        uint32_t addr = UCodeDisas_TranslateAddr(this, curGfx->dma.addr);
 
         DISAS_LOG("%08x-%08x:", curGfx->words.w0, curGfx->words.w1);
 
@@ -619,11 +619,11 @@ void UCodeDisas_Disassemble(UCodeDisas* this, GfxMod* ptr) {
                                           -1),
                 };
 
-                u32 len = curGfx->setothermode.len + 1;
-                u32 sft = (-curGfx->setothermode.sft - len) + 32;
-                u32 s2 = curGfx->setothermode.data * 1;
-                u32 i1;
-                u32 i2;
+                uint32_t len = curGfx->setothermode.len + 1;
+                uint32_t sft = (-curGfx->setothermode.sft - len) + 32;
+                uint32_t s2 = curGfx->setothermode.data * 1;
+                uint32_t i1;
+                uint32_t i2;
 
                 for (i1 = 0; i1 < ARRAY_COUNTU(sUCodeDisasModeHMacros); i1++) {
                     if (sft == sUCodeDisasModeHMacros[i1].shift) {
@@ -656,11 +656,11 @@ void UCodeDisas_Disassemble(UCodeDisas* this, GfxMod* ptr) {
                     F3DZEX_SETRENDERMACRO("gsDPSetDepthSource", G_MDSFT_ZSRCSEL, 1, G_ZS_PIXEL, G_ZS_PRIM, -1, -1),
                 };
 
-                u32 len = curGfx->setothermode.len + 1;
-                u32 sft = (-curGfx->setothermode.sft - len) + 32;
-                u32 s2 = curGfx->setothermode.data * 1;
-                u32 i1;
-                u32 i2;
+                uint32_t len = curGfx->setothermode.len + 1;
+                uint32_t sft = (-curGfx->setothermode.sft - len) + 32;
+                uint32_t s2 = curGfx->setothermode.data * 1;
+                uint32_t i1;
+                uint32_t i2;
 
                 if (sft == G_MDSFT_RENDERMODE) {
                     DISAS_LOG("\ngsDPSetRenderBlender(");
@@ -730,8 +730,8 @@ void UCodeDisas_Disassemble(UCodeDisas* this, GfxMod* ptr) {
             } break;
 
             case G_SETCIMG: {
-                u32 fmt = ((curGfx->words.w0 & 0xE00000) >> 0x15) & 0xFF;
-                u32 siz = ((curGfx->words.w0 & 0x180000) >> 0x13) & 0xFF;
+                uint32_t fmt = ((curGfx->words.w0 & 0xE00000) >> 0x15) & 0xFF;
+                uint32_t siz = ((curGfx->words.w0 & 0x180000) >> 0x13) & 0xFF;
 
                 DISAS_LOG("gsDPSetColorImage(G_IM_FMT_%s, G_IM_SIZ_%s, %d, 0x%08x(0x%08x) ),",
                           (fmt == G_IM_FMT_RGBA)  ? "RGBA"
@@ -761,8 +761,8 @@ void UCodeDisas_Disassemble(UCodeDisas* this, GfxMod* ptr) {
             } break;
 
             case G_SETTIMG: {
-                u32 fmt = ((curGfx->words.w0 & 0xE00000) >> 0x15) & 0xFF;
-                u32 siz = ((curGfx->words.w0 & 0x180000) >> 0x13) & 0xFF;
+                uint32_t fmt = ((curGfx->words.w0 & 0xE00000) >> 0x15) & 0xFF;
+                uint32_t siz = ((curGfx->words.w0 & 0x180000) >> 0x13) & 0xFF;
 
                 DISAS_LOG("gsDPSetTextureImage(G_IM_FMT_%s, G_IM_SIZ_%s, %d, 0x%08x(0x%08x)),",
                           (fmt == G_IM_FMT_RGBA)  ? "RGBA"
@@ -858,36 +858,40 @@ void UCodeDisas_Disassemble(UCodeDisas* this, GfxMod* ptr) {
             case G_NOOP: {
                 switch (curGfx->noop.type) {
                     case 0: {
-                        if (curGfx->noop.value.u32 == 0) {
+                        if (curGfx->noop.value.unsigned32 == 0) {
                             DISAS_LOG("gsDPNoOp(),");
                         } else {
-                            DISAS_LOG("gsDPNoOpTag(%08x),", curGfx->noop.value.u32);
+                            DISAS_LOG("gsDPNoOpTag(%08x),", curGfx->noop.value.unsigned32);
                         }
                     } break;
 
                     case 1: {
-                        DISAS_LOG("count_gsDPNoOpHere([%s:%d]),", curGfx->noop.value.u32, curGfx->noop.len);
+                        DISAS_LOG("count_gsDPNoOpHere([%s:%d]),", curGfx->noop.value.unsigned32, curGfx->noop.len);
                     } break;
 
                     case 7: {
-                        DISAS_LOG("count_gsDPNoOpOpenDisp([%s:%d]),", curGfx->noop.value.u32, curGfx->noop.len);
+                        DISAS_LOG("count_gsDPNoOpOpenDisp([%s:%d]),", curGfx->noop.value.unsigned32,
+                                  curGfx->noop.len);
                     } break;
 
                     case 8: {
-                        DISAS_LOG("count_gsDPNoOpCloseDisp([%s:%d]),", curGfx->noop.value.u32, curGfx->noop.len);
+                        DISAS_LOG("count_gsDPNoOpCloseDisp([%s:%d]),", curGfx->noop.value.unsigned32,
+                                  curGfx->noop.len);
                     } break;
 
                     case 2: {
-                        DISAS_LOG("count_gsDPNoOpString(%c%s%c, %d),", '"', curGfx->noop.value.u32, '"',
+                        DISAS_LOG("count_gsDPNoOpString(%c%s%c, %d),", '"', curGfx->noop.value.unsigned32, '"',
                                   curGfx->noop.len);
                     } break;
 
                     case 3: {
-                        DISAS_LOG("count_gsDPNoOpWord(0x%08x, %d),", curGfx->noop.value.u32, curGfx->noop.len);
+                        DISAS_LOG("count_gsDPNoOpWord(0x%08x, %d),", curGfx->noop.value.unsigned32,
+                                  curGfx->noop.len);
                     } break;
 
                     case 4: {
-                        DISAS_LOG("count_gsDPNoOpFloat(%8.3f, %d),", curGfx->noop.value.f32, curGfx->noop.len);
+                        DISAS_LOG("count_gsDPNoOpFloat(%8.3f, %d),", curGfx->noop.value.singlePrecision,
+                                  curGfx->noop.len);
                     } break;
 
                     case 5: {
@@ -902,11 +906,12 @@ void UCodeDisas_Disassemble(UCodeDisas* this, GfxMod* ptr) {
                     case 6: {
                         /*! @bug arguments are not printed */
                         DISAS_LOG("count_gsDPNoOpCallBack(%08x,%d),");
-                        ((void (*)(UCodeDisas*, u32))curGfx->noop.value.u32)(this, curGfx->noop.len);
+                        ((void (*)(UCodeDisas*, uint32_t))curGfx->noop.value.unsigned32)(this, curGfx->noop.len);
                     } break;
 
                     default: {
-                        DISAS_LOG("gsDPNoOpTag3(%02x, %08x, %04x),", curGfx->noop.type, curGfx->noop.value.u32,
+                        DISAS_LOG("gsDPNoOpTag3(%02x, %08x, %04x),", curGfx->noop.type,
+                                  curGfx->noop.value.unsigned32,
                                   curGfx->noop.len);
                     } break;
                 }
@@ -920,11 +925,11 @@ void UCodeDisas_Disassemble(UCodeDisas* this, GfxMod* ptr) {
                             case G_MTX: {
                                 Gmatrix gmtx = ptr->matrix;
                                 MtxF mtx;
-                                s32 i1 = 0;
+                                int32_t i1 = 0;
 
                                 DISAS_LOG("gsSPMatrix(0x%08x(%08x), 0", gmtx.addr, addr);
 
-                                u32 params = (gmtx.params ^ G_MTX_PUSH);
+                                uint32_t params = (gmtx.params ^ G_MTX_PUSH);
 
                                 for (; i1 != ARRAY_COUNT(sUCodeDisasMtxFlags); i1++) {
                                     DISAS_LOG("|%s", (sUCodeDisasMtxFlags[i1].value & params)
@@ -969,11 +974,11 @@ void UCodeDisas_Disassemble(UCodeDisas* this, GfxMod* ptr) {
                             } break;
 
                             case G_VTX: {
-                                u32 numv = curGfx->words.w0;
+                                uint32_t numv = curGfx->words.w0;
 
                                 numv >>= 12;
                                 numv &= 0xFF;
-                                u32 vbidx = (curGfx->vtx.vbidx >> 1) - numv;
+                                uint32_t vbidx = (curGfx->vtx.vbidx >> 1) - numv;
 
                                 DISAS_LOG("gsSPVertex(0x%08x(0x%08x), %d, %d),", curGfx->words.w1, addr, numv, vbidx);
 
@@ -1021,8 +1026,8 @@ void UCodeDisas_Disassemble(UCodeDisas* this, GfxMod* ptr) {
 
                             case G_TRI2: {
                                 Gtri2 tri2 = ptr->tri2;
-                                u32 v0, v1, v2;
-                                u32 v3, v4, v5;
+                                uint32_t v0, v1, v2;
+                                uint32_t v3, v4, v5;
 
                                 v0 = tri2.tri1.v0 / 2;
                                 v1 = tri2.tri1.v1 / 2;
@@ -1040,7 +1045,7 @@ void UCodeDisas_Disassemble(UCodeDisas* this, GfxMod* ptr) {
 
                             case G_QUAD: {
                                 Gquadmod quad = ptr->quad;
-                                u32 v0, v1, v2, v3;
+                                uint32_t v0, v1, v2, v3;
 
                                 v0 = quad.v0 / 2;
                                 v1 = quad.v1 / 2;
@@ -1089,8 +1094,8 @@ void UCodeDisas_Disassemble(UCodeDisas* this, GfxMod* ptr) {
                             } break;
 
                             case G_GEOMETRYMODE: {
-                                u32 clearbits = curGfx->words.w0 & 0xFFFFFF;
-                                u32 setbits = curGfx->words.w1 & 0xFFFFFF;
+                                uint32_t clearbits = curGfx->words.w0 & 0xFFFFFF;
+                                uint32_t setbits = curGfx->words.w1 & 0xFFFFFF;
 
                                 if (clearbits == 0) {
                                     DISAS_LOG("gsSPLoadGeometryMode(");
@@ -1119,7 +1124,7 @@ void UCodeDisas_Disassemble(UCodeDisas* this, GfxMod* ptr) {
                             }
 
                             case G_MOVEWORD: {
-                                u32 pad;
+                                uint32_t pad;
                                 Gdma dma = ptr->dma;
                                 Gmovewd movewd = ptr->movewd;
 
@@ -1291,8 +1296,8 @@ void UCodeDisas_Disassemble(UCodeDisas* this, GfxMod* ptr) {
 
                             case G_SELECT_DL: {
                                 Gdma dma = ptr->dma;
-                                u32 dlAddr = UCodeDisas_TranslateAddr(this, (dma.len << 16) | (linkDlLow));
-                                u32 dmaAddr = dma.addr;
+                                uint32_t dlAddr = UCodeDisas_TranslateAddr(this, (dma.len << 16) | (linkDlLow));
+                                uint32_t dmaAddr = dma.addr;
 
                                 if (dma.par == 0) {
                                     DISAS_LOG("gsSPSelectDL(0x%08x, %d, 0x%08x, 0x%08x),", dlAddr, sid, rdpHalf,
@@ -1304,12 +1309,12 @@ void UCodeDisas_Disassemble(UCodeDisas* this, GfxMod* ptr) {
                             } break;
 
                             case G_MOVEWORD: {
-                                u32 pad[2];
+                                uint32_t pad[2];
                                 Gmovewd movewd = ptr->movewd;
 
                                 switch (movewd.index) {
                                     case 6: {
-                                        u32 segId = movewd.offset / 4;
+                                        uint32_t segId = movewd.offset / 4;
 
                                         DISAS_LOG("gsSPSegment(%d, 0x%08x),", segId, movewd.data);
                                         this->segments[segId] = movewd.data & 0xFFFFFF;
@@ -1346,7 +1351,7 @@ void UCodeDisas_Disassemble(UCodeDisas* this, GfxMod* ptr) {
     }
 }
 
-void UCodeDisas_RegisterUCode(UCodeDisas* this, s32 count, UCodeInfo* ucodeArray) {
+void UCodeDisas_RegisterUCode(UCodeDisas* this, int32_t count, UCodeInfo* ucodeArray) {
     this->ucodeInfoCount = count;
     this->ucodeInfo = ucodeArray;
 }

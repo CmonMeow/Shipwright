@@ -1,6 +1,6 @@
 #include "global.h"
 
-static s16 sRespawnFreezeTimer;
+static int16_t sRespawnFreezeTimer;
 
 void GameOver_Init(PlayState* play) {
     play->gameOverCtx.state = GAMEOVER_INACTIVE;

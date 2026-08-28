@@ -10,12 +10,12 @@ struct PlayState;
 
 struct EffectSs;
 
-typedef u32 (*EffectSsInitFunc)(struct PlayState* play, u32 index, struct EffectSs* effectSs, void* initParams);
-typedef void (*EffectSsUpdateFunc)(struct PlayState* play, u32 index, struct EffectSs* effectSs);
-typedef void (*EffectSsDrawFunc)(struct PlayState* play, u32 index, struct EffectSs* effectSs);
+typedef uint32_t (*EffectSsInitFunc)(struct PlayState* play, uint32_t index, struct EffectSs* effectSs, void* initParams);
+typedef void (*EffectSsUpdateFunc)(struct PlayState* play, uint32_t index, struct EffectSs* effectSs);
+typedef void (*EffectSsDrawFunc)(struct PlayState* play, uint32_t index, struct EffectSs* effectSs);
 
 typedef struct {
-    /* 0x00 */ u32 type;
+    /* 0x00 */ uint32_t type;
     /* 0x04 */ EffectSsInitFunc init;
 } EffectSsInit; // size = 0x08
 
@@ -26,7 +26,7 @@ typedef struct {
     /* 0x0C */ void* vramEnd;
     /* 0x10 */ void* loadedRamAddr;
     /* 0x14 */ EffectSsInit* initInfo;
-    /* 0x18 */ u8 unk_18;
+    /* 0x18 */ uint8_t unk_18;
 } EffectSsOverlay; // size = 0x1C
 
 typedef struct EffectSs {
@@ -38,18 +38,18 @@ typedef struct EffectSs {
     /* 0x2C */ Vec3f vec; // usage specific per effect
     /* 0x38 */ void* gfx; // mostly used for display lists, sometimes textures
     /* 0x3C */ Actor* actor; // interfacing actor, usually the actor that spawned the effect
-    /* 0x40 */ s16 regs[13]; // specific per effect
-    /* 0x5A */ u16 flags;
-    /* 0x5C */ s16 life; // -1 means this entry is free
-    /* 0x5E */ u8 priority; // Lower value means higher priority
-    /* 0x5F */ u8 type;
-    u32 epoch;
+    /* 0x40 */ int16_t regs[13]; // specific per effect
+    /* 0x5A */ uint16_t flags;
+    /* 0x5C */ int16_t life; // -1 means this entry is free
+    /* 0x5E */ uint8_t priority; // Lower value means higher priority
+    /* 0x5F */ uint8_t type;
+    uint32_t epoch;
 } EffectSs; // size = 0x60
 
 typedef struct {
     /* 0x00 */ EffectSs* table; // "data_table"
-    /* 0x04 */ s32 searchStartIndex;
-    /* 0x08 */ s32 tableSize;
+    /* 0x04 */ int32_t searchStartIndex;
+    /* 0x08 */ int32_t tableSize;
 } EffectSsInfo; // size = 0x0C
 
 /* G Effect Regs */

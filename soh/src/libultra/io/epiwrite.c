@@ -1,7 +1,7 @@
 #include "global.h"
 
-s32 osEPiWriteIo(OSPiHandle* handle, u32 devAddr, u32 data) {
-    register s32 ret;
+int32_t osEPiWriteIo(OSPiHandle* handle, uint32_t devAddr, uint32_t data) {
+    register int32_t ret;
 
     __osPiGetAccess();
     ret = __osEPiRawWriteIo(handle, devAddr, data);

@@ -7,19 +7,19 @@
 #include <libultraship/color.h>
 
 typedef struct {
-    /* 0x0 */ s16 x;
-    /* 0x2 */ s16 y;
-    /* 0x4 */ s16 z;
-    /* 0x6 */ u8 color[3];
-    /* 0x9 */ u8 drawGlow;
-    /* 0xA */ s16 radius;
+    /* 0x0 */ int16_t x;
+    /* 0x2 */ int16_t y;
+    /* 0x4 */ int16_t z;
+    /* 0x6 */ uint8_t color[3];
+    /* 0x9 */ uint8_t drawGlow;
+    /* 0xA */ int16_t radius;
 } LightPoint; // size = 0xC
 
 typedef struct {
-    /* 0x0 */ s8 x;
-    /* 0x1 */ s8 y;
-    /* 0x2 */ s8 z;
-    /* 0x3 */ u8 color[3];
+    /* 0x0 */ int8_t x;
+    /* 0x1 */ int8_t y;
+    /* 0x2 */ int8_t z;
+    /* 0x3 */ uint8_t color[3];
 } LightDirectional; // size = 0x6
 
 typedef union {
@@ -28,12 +28,12 @@ typedef union {
 } LightParams; // size = 0xC
 
 typedef struct {
-    /* 0x0 */ u8 type;
+    /* 0x0 */ uint8_t type;
     /* 0x2 */ LightParams params;
 } LightInfo; // size = 0xE
 
 typedef struct Lights {
-    /* 0x00 */ u8 numLights;
+    /* 0x00 */ uint8_t numLights;
     /* 0x08 */ Lightsn l;
 } Lights; // size = 0x80
 
@@ -45,10 +45,10 @@ typedef struct LightNode {
 
 typedef struct {
     /* 0x0 */ LightNode* listHead;
-    /* 0x4 */ u8 ambientColor[3];
-    /* 0x7 */ u8 fogColor[3];
-    /* 0xA */ s16 fogNear; // how close until fog starts taking effect. range 0 - 1000
-    /* 0xC */ s16 fogFar; // how far until fog starts to saturate. range 0 - 1000
+    /* 0x4 */ uint8_t ambientColor[3];
+    /* 0x7 */ uint8_t fogColor[3];
+    /* 0xA */ int16_t fogNear; // how close until fog starts taking effect. range 0 - 1000
+    /* 0xC */ int16_t fogFar; // how far until fog starts to saturate. range 0 - 1000
 } LightContext; // size = 0x10
 
 typedef enum {

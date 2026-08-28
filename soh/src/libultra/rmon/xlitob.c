@@ -2,15 +2,15 @@
 
 #define BUFF_LEN 0x18
 
-u8 D_8000AF70[] = "0123456789abcdef";
-u8 D_8000AF84[] = "0123456789ABCDEF";
+uint8_t D_8000AF70[] = "0123456789abcdef";
+uint8_t D_8000AF84[] = "0123456789ABCDEF";
 
-void _Litob(_Pft* args, u8 type) {
-    u8 buff[BUFF_LEN];
-    const u8* numMap = { 0 };
-    s32 base = { 0 };
-    s32 idx = { 0 };
-    u64 num = { 0 };
+void _Litob(_Pft* args, uint8_t type) {
+    uint8_t buff[BUFF_LEN];
+    const uint8_t* numMap = { 0 };
+    int32_t base = { 0 };
+    int32_t idx = { 0 };
+    uint64_t num = { 0 };
 
     if (type == 'X') {
         numMap = D_8000AF84;

@@ -4,6 +4,6 @@
 #define __builtin_sqrtf sqrtf
 #endif
 
-f32 sqrtf(f32 f) {
+float sqrtf(float f) {
     return __builtin_sqrtf(f);
 }

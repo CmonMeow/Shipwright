@@ -5,13 +5,13 @@
 
 static Vec3f sRoomOrigin = { 0.0f, 0.0f, 0.0f };
 
-s32 OTRfunc_8009728C(PlayState* play, RoomContext* roomCtx, s32 roomNum);
-s32 OTRfunc_800973FC(PlayState* play, RoomContext* roomCtx);
+int32_t OTRfunc_8009728C(PlayState* play, RoomContext* roomCtx, int32_t roomNum);
+int32_t OTRfunc_800973FC(PlayState* play, RoomContext* roomCtx);
 
-static void Room_DrawTest01Mesh(PlayState* play, Room* room, u32 flags) {
+static void Room_DrawTest01Mesh(PlayState* play, Room* room, uint32_t flags) {
     PolygonType0* mesh = &room->meshHeader->polygon0;
     PolygonDlist* dlist = SEGMENTED_TO_VIRTUAL(mesh->start);
-    s32 i;
+    int32_t i;
 
     OPEN_DISPS(play->state.gfxCtx);
 
@@ -46,12 +46,12 @@ void func_80096FD4(PlayState* play, Room* room) {
     room->segment = NULL;
 }
 
-u32 func_80096FE8(PlayState* play, RoomContext* roomCtx) {
-    u32 maxRoomSize = 0;
-    s32 i;
+uint32_t func_80096FE8(PlayState* play, RoomContext* roomCtx) {
+    uint32_t maxRoomSize = 0;
+    int32_t i;
 
     for (i = 0; i < play->numRooms; i++) {
-        u32 roomSize = play->roomList[i].vromEnd - play->roomList[i].vromStart;
+        uint32_t roomSize = play->roomList[i].vromEnd - play->roomList[i].vromStart;
         if (maxRoomSize < roomSize) {
             maxRoomSize = roomSize;
         }
@@ -66,15 +66,15 @@ u32 func_80096FE8(PlayState* play, RoomContext* roomCtx) {
     return maxRoomSize;
 }
 
-s32 func_8009728C(PlayState* play, RoomContext* roomCtx, s32 roomNum) {
+int32_t func_8009728C(PlayState* play, RoomContext* roomCtx, int32_t roomNum) {
     return OTRfunc_8009728C(play, roomCtx, roomNum);
 }
 
-s32 func_800973FC(PlayState* play, RoomContext* roomCtx) {
+int32_t func_800973FC(PlayState* play, RoomContext* roomCtx) {
     return OTRfunc_800973FC(play, roomCtx);
 }
 
-void Room_Draw(PlayState* play, Room* room, u32 flags) {
+void Room_Draw(PlayState* play, Room* room, uint32_t flags) {
     if (room->segment == NULL) {
         return;
     }

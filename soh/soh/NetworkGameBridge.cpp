@@ -154,30 +154,30 @@ CollisionCheckInfoInit2 sRemotePlayerCollisionInfo = { 0, 0, 0, 0, MASS_IMMOVABL
 
 NetworkGameState gNetworkGame;
 
-extern "C" s32 Fishing_GetNetworkVisualState(PlayState* play, u8* castState, Vec3f* rodTipOffset,
+extern "C" int32_t Fishing_GetNetworkVisualState(PlayState* play, uint8_t* castState, Vec3f* rodTipOffset,
                                                Vec3f* lureOffset, Vec3f* lureDrawOffset,
-                                               f32* rodBendY, f32* rodBendX, f32* rodTwist, f32* rodCastX, Vec3f* lureRot,
-                                               f32* lureSpin, f32* lureZOffset,
-                                               Vec3f lureHookOffsets[2], Vec3f lureHookRot[2], f32* lineScale,
-                                               f32* lineGravity,
-                                               u8* lureType,
-                                               u8* lineSpooled, u8* lineHooked, u8* fishActive,
-                                               u8* fishIsLoach, Vec3f* fishOffset,
-                                               Vec3s* fishRot, s16 fishLimbRot[8], f32* fishLength,
-                                               s32* fishRoomId, s32* fishActorParams, s32* fishHomeX,
-                                               s32* fishHomeY, s32* fishHomeZ,
-                                               u8* sinkingLureSegmentIndex, u8* sinkingLureUnderwater);
-extern "C" s32 Fishing_EnsureNetworkPopulation(PlayState* play);
+                                               float* rodBendY, float* rodBendX, float* rodTwist, float* rodCastX, Vec3f* lureRot,
+                                               float* lureSpin, float* lureZOffset,
+                                               Vec3f lureHookOffsets[2], Vec3f lureHookRot[2], float* lineScale,
+                                               float* lineGravity,
+                                               uint8_t* lureType,
+                                               uint8_t* lineSpooled, uint8_t* lineHooked, uint8_t* fishActive,
+                                               uint8_t* fishIsLoach, Vec3f* fishOffset,
+                                               Vec3s* fishRot, int16_t fishLimbRot[8], float* fishLength,
+                                               int32_t* fishRoomId, int32_t* fishActorParams, int32_t* fishHomeX,
+                                               int32_t* fishHomeY, int32_t* fishHomeZ,
+                                               uint8_t* sinkingLureSegmentIndex, uint8_t* sinkingLureUnderwater);
+extern "C" int32_t Fishing_EnsureNetworkPopulation(PlayState* play);
 extern "C" void Fishing_UpdateNetworkLine(PlayState* play, Actor* collisionActor, Vec3f* rodTip, Vec3f* lurePos,
                                             Vec3f linePos[NETWORK_FISHING_LINE_POINT_COUNT],
                                             Vec3f lineRot[NETWORK_FISHING_LINE_POINT_COUNT],
-                                            Vec3f lineUnk[NETWORK_FISHING_LINE_POINT_COUNT], s16 lineSpooled,
-                                            u8 lureType, f32 lineGravity);
-extern "C" void Fishing_UpdateNetworkSinkingLure(Vec3f* lurePos, Vec3f positions[20], s16 playerYaw,
-                                                   u8 castState, u8 underwater);
-extern "C" s32 Ship_IsBowAimHeld(void);
-extern "C" s32 Player_BuildPCBowJointTable(Player* player, Vec3s jointTable[PLAYER_LIMB_BUF_COUNT],
-                                             s32 freezeLowerBody);
+                                            Vec3f lineUnk[NETWORK_FISHING_LINE_POINT_COUNT], int16_t lineSpooled,
+                                            uint8_t lureType, float lineGravity);
+extern "C" void Fishing_UpdateNetworkSinkingLure(Vec3f* lurePos, Vec3f positions[20], int16_t playerYaw,
+                                                   uint8_t castState, uint8_t underwater);
+extern "C" int32_t Ship_IsBowAimHeld(void);
+extern "C" int32_t Player_BuildPCBowJointTable(Player* player, Vec3s jointTable[PLAYER_LIMB_BUF_COUNT],
+                                             int32_t freezeLowerBody);
 
 uint64_t NowMilliseconds() {
     return static_cast<uint64_t>(std::chrono::duration_cast<std::chrono::milliseconds>(
@@ -273,9 +273,9 @@ void NetworkRemotePlayer_Update(Actor* thisx, PlayState* play) {
     thisx->world.pos.x += (state.x - thisx->world.pos.x) * positionBlend;
     thisx->world.pos.y += (state.y - thisx->world.pos.y) * positionBlend;
     thisx->world.pos.z += (state.z - thisx->world.pos.z) * positionBlend;
-    thisx->shape.rot.x += static_cast<s16>(static_cast<s16>(state.rotationX - thisx->shape.rot.x) * positionBlend);
-    thisx->shape.rot.y += static_cast<s16>(static_cast<s16>(state.rotationY - thisx->shape.rot.y) * positionBlend);
-    thisx->shape.rot.z += static_cast<s16>(static_cast<s16>(state.rotationZ - thisx->shape.rot.z) * positionBlend);
+    thisx->shape.rot.x += static_cast<int16_t>(static_cast<int16_t>(state.rotationX - thisx->shape.rot.x) * positionBlend);
+    thisx->shape.rot.y += static_cast<int16_t>(static_cast<int16_t>(state.rotationY - thisx->shape.rot.y) * positionBlend);
+    thisx->shape.rot.z += static_cast<int16_t>(static_cast<int16_t>(state.rotationZ - thisx->shape.rot.z) * positionBlend);
     thisx->world.rot = thisx->shape.rot;
     if ((state.stateFlags & (NETWORK_PLAYER_VISIBLE | NETWORK_PLAYER_DEAD)) == NETWORK_PLAYER_VISIBLE) {
         Collider_UpdateCylinder(thisx, &remote->bodyCollider);
@@ -310,7 +310,7 @@ void NetworkRemotePlayer_Draw(Actor* thisx, PlayState* play) {
         return previous + (current - previous) * fishingBlend;
     };
     PlayerNetworkDrawData drawData = { remote->modelGroup, PLAYER_SHIELD_MIRROR, remote->itemAction, fishingState,
-                                       static_cast<u8>((stateRecord != gNetworkGame.remotes.end() &&
+                                       static_cast<uint8_t>((stateRecord != gNetworkGame.remotes.end() &&
                                                         (stateRecord->second.state.stateFlags & NETWORK_PLAYER_READY_TO_FIRE)) != 0),
                                        { 0, 0, 0 }, remote->upperLimbRot, remote->headLimbRot,
                                        stateRecord == gNetworkGame.remotes.end() ? 0.0f :
@@ -392,7 +392,7 @@ void NetworkRemotePlayer_Draw(Actor* thisx, PlayState* play) {
             }
             const float lineGravity = fishingValue(previous.fishingLineGravity, state.fishingLineGravity);
             Fishing_UpdateNetworkLine(play, thisx, &rodTip, &lure, record.fishingLinePos,
-                                      record.fishingLineRot, record.fishingLineUnk, static_cast<s16>(spooled),
+                                      record.fishingLineRot, record.fishingLineUnk, static_cast<int16_t>(spooled),
                                       state.fishingLureType, lineGravity);
             const auto linePoint = [&](size_t point) { return record.fishingLinePos[point]; };
             const bool drawTautLine = state.fishingState == 4 &&
@@ -579,7 +579,7 @@ void NetworkRemoteProjectile_Update(Actor* thisx, PlayState* play) {
         thisx->world.pos.z += (state.z - thisx->world.pos.z) * 0.7f;
         if (state.projectileKind == NETWORK_PROJECTILE_ARROW && state.phase == NETWORK_ARROW_FLYING) {
             CollisionPoly* hitPoly = nullptr;
-            s32 bgId = BGCHECK_SCENE;
+            int32_t bgId = BGCHECK_SCENE;
             Vec3f hitPoint{};
             if (BgCheck_ProjectileLineTest(&play->colCtx, &thisx->prevPos, &thisx->world.pos, &hitPoint,
                                            &hitPoly, true, true, true, true, &bgId)) {
@@ -638,7 +638,7 @@ void SpawnOrCullRemoteActors(PlayState* play) {
         if (!record.actor && gNetworkGame.remoteActorId >= 0 && it->first >= INT16_MIN && it->first <= INT16_MAX) {
             Actor_Spawn(&play->actorCtx, play, gNetworkGame.remoteActorId, record.state.x, record.state.y,
                         record.state.z, record.state.rotationX, record.state.rotationY, record.state.rotationZ,
-                        static_cast<s16>(it->first));
+                        static_cast<int16_t>(it->first));
         }
         ++it;
     }
@@ -927,7 +927,7 @@ void SendLocalPlayerState(PlayState* play) {
     Vec3f lureHookRot[2]{};
     Vec3f fishOffset{};
     Vec3s fishRot{};
-    s16 fishLimbRot[8]{};
+    int16_t fishLimbRot[8]{};
     if (Fishing_GetNetworkVisualState(play, &packet.fishingState, &rodTipOffset, &lureOffset, &lureDrawOffset,
                                       &packet.fishingRodBendY, &packet.fishingRodBendX,
                                        &packet.fishingRodTwist, &packet.fishingRodCastX, &lureRot,
@@ -1251,7 +1251,7 @@ extern "C" void NetworkGame_Update(PlayState* play) {
     while (gNetworkGame.runtime->PollPlayerDamage(damage)) {
         Player* player = GET_PLAYER(play);
         if (player && player->invincibilityTimer == 0) {
-            player->actor.colChkInfo.damage = static_cast<u8>(std::clamp<short>(damage.damage, 0, UINT8_MAX));
+            player->actor.colChkInfo.damage = static_cast<uint8_t>(std::clamp<short>(damage.damage, 0, UINT8_MAX));
             player->actor.colChkInfo.acHitEffect = 0;
             // Match the native cylinder-hit path before entering Link's normal
             // damage response: clear/apply the standard hit effect and voice,

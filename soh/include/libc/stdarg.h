@@ -27,14 +27,14 @@ typedef char* va_list;
 
 #define __va_double_arg(list, mode)                                                                    \
     (                                                                                                  \
-        (((s32)list & 0x1) /* 1 byte aligned? */                                                      \
-             ? (list = (char*)((s32)list + 7), (char*)((s32)list - 6 - _VA_FP_SAVE_AREA))          \
-             : (((s32)list & 0x2) /* 2 byte aligned? */                                               \
-                    ? (list = (char*)((s32)list + 10), (char*)((s32)list - 24 - _VA_FP_SAVE_AREA)) \
+        (((int32_t)list & 0x1) /* 1 byte aligned? */                                                      \
+             ? (list = (char*)((int32_t)list + 7), (char*)((int32_t)list - 6 - _VA_FP_SAVE_AREA))          \
+             : (((int32_t)list & 0x2) /* 2 byte aligned? */                                               \
+                    ? (list = (char*)((int32_t)list + 10), (char*)((int32_t)list - 24 - _VA_FP_SAVE_AREA)) \
                     : __va_stack_arg(list, mode))))
 
 #define va_arg(list, mode) ((mode*)(((__builtin_classof(mode) == _FP &&          \
-                                       __builtin_alignof(mode) == sizeof(f64)) \
+                                       __builtin_alignof(mode) == sizeof(double)) \
                                           ? __va_double_arg(list, mode)           \
                                           : __va_stack_arg(list, mode))))[-1]
 #define va_end(__list)

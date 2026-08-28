@@ -1,7 +1,7 @@
 #include "global.h"
 #include "vt.h"
 
-u32 gIsCtrlr2Valid = false;
+uint32_t gIsCtrlr2Valid = false;
 
 void func_800D31A0(void) {
     osSyncPrintf(VT_FGCOL(RED) "\n**** Freeze!! ****\n" VT_RST);

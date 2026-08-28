@@ -2,24 +2,24 @@
 #include "textures/parameter_static/parameter_static.h"
 #include "soh/frame_interpolation.h"
 #include "soh/OTRGlobals.h"
-s16 Top_LM_Margin = 0;
-s16 Left_LM_Margin = 0;
-s16 Right_LM_Margin = 0;
-s16 Bottom_LM_Margin = 0;
+int16_t Top_LM_Margin = 0;
+int16_t Left_LM_Margin = 0;
+int16_t Right_LM_Margin = 0;
+int16_t Bottom_LM_Margin = 0;
 
-static s16 sHeartsPrimColors[3][3] = {
+static int16_t sHeartsPrimColors[3][3] = {
     { HEARTS_PRIM_R, HEARTS_PRIM_G, HEARTS_PRIM_B },
     { HEARTS_BURN_PRIM_R, HEARTS_BURN_PRIM_G, HEARTS_BURN_PRIM_B },    // unused
     { HEARTS_DROWN_PRIM_R, HEARTS_DROWN_PRIM_G, HEARTS_DROWN_PRIM_B }, // unused
 };
 
-static s16 sHeartsEnvColors[3][3] = {
+static int16_t sHeartsEnvColors[3][3] = {
     { HEARTS_ENV_R, HEARTS_ENV_G, HEARTS_ENV_B },
     { HEARTS_BURN_ENV_R, HEARTS_BURN_ENV_G },                       // unused
     { HEARTS_DROWN_ENV_R, HEARTS_DROWN_ENV_G, HEARTS_DROWN_ENV_B }, // unused
 };
 
-static s16 sHeartsPrimFactors[3][3] = {
+static int16_t sHeartsPrimFactors[3][3] = {
     {
         HEARTS_PRIM_R - HEARTS_PRIM_R,
         HEARTS_PRIM_G - HEARTS_PRIM_G,
@@ -39,7 +39,7 @@ static s16 sHeartsPrimFactors[3][3] = {
     },
 };
 
-static s16 sHeartsEnvFactors[3][3] = {
+static int16_t sHeartsEnvFactors[3][3] = {
     {
         HEARTS_ENV_R - HEARTS_ENV_R,
         HEARTS_ENV_G - HEARTS_ENV_G,
@@ -59,19 +59,19 @@ static s16 sHeartsEnvFactors[3][3] = {
     },
 };
 
-static s16 sHeartsDDPrimColors[3][3] = {
+static int16_t sHeartsDDPrimColors[3][3] = {
     { HEARTS_DD_PRIM_R, HEARTS_DD_PRIM_G, HEARTS_DD_PRIM_B },
     { HEARTS_BURN_PRIM_R, HEARTS_BURN_PRIM_G, HEARTS_BURN_PRIM_B },    // unused
     { HEARTS_DROWN_PRIM_R, HEARTS_DROWN_PRIM_G, HEARTS_DROWN_PRIM_B }, // unused
 };
 
-static s16 sHeartsDDEnvColors[3][3] = {
+static int16_t sHeartsDDEnvColors[3][3] = {
     { HEARTS_DD_ENV_R, HEARTS_DD_ENV_G, HEARTS_DD_ENV_B },
     { HEARTS_BURN_ENV_R, HEARTS_BURN_ENV_G, HEARTS_BURN_ENV_B },    // unused
     { HEARTS_DROWN_ENV_R, HEARTS_DROWN_ENV_G, HEARTS_DROWN_ENV_B }, // unused
 };
 
-static s16 sHeartsDDPrimFactors[3][3] = {
+static int16_t sHeartsDDPrimFactors[3][3] = {
     {
         HEARTS_DD_PRIM_R - HEARTS_DD_PRIM_R,
         HEARTS_DD_PRIM_G - HEARTS_DD_PRIM_G,
@@ -91,7 +91,7 @@ static s16 sHeartsDDPrimFactors[3][3] = {
     },
 };
 
-static s16 sHeartsDDEnvFactors[3][3] = {
+static int16_t sHeartsDDEnvFactors[3][3] = {
     {
         HEARTS_DD_ENV_R - HEARTS_DD_ENV_R,
         HEARTS_DD_ENV_G - HEARTS_DD_ENV_G,
@@ -112,21 +112,21 @@ static s16 sHeartsDDEnvFactors[3][3] = {
 };
 
 // Current colors for the double defense hearts
-s16 sBeatingHeartsDDPrim[3];
-s16 sBeatingHeartsDDEnv[3];
-s16 sHeartsDDPrim[2][3];
-s16 sHeartsDDEnv[2][3];
+int16_t sBeatingHeartsDDPrim[3];
+int16_t sBeatingHeartsDDEnv[3];
+int16_t sHeartsDDPrim[2][3];
+int16_t sHeartsDDEnv[2][3];
 
 void HealthMeter_Init(PlayState* play) {
     InterfaceContext* interfaceCtx = &play->interfaceCtx;
     Color_RGB8 mainColor = { HEARTS_PRIM_R, HEARTS_PRIM_G, HEARTS_PRIM_B };
-    
+
     Color_RGB8 mainBorder = { HEARTS_ENV_R, HEARTS_ENV_G, HEARTS_ENV_B };
-    
+
     Color_RGB8 ddColor = { HEARTS_DD_ENV_R, HEARTS_DD_ENV_G, HEARTS_DD_ENV_B };
-    
+
     Color_RGB8 ddBorder = { HEARTS_DD_PRIM_R, HEARTS_DD_PRIM_G, HEARTS_DD_PRIM_B };
-    
+
 
     interfaceCtx->unk_228 = 0x140;
     interfaceCtx->unk_226 = gSaveContext.health;
@@ -160,13 +160,13 @@ void HealthMeter_Init(PlayState* play) {
 
 void HealthMeter_Update(PlayState* play) {
     InterfaceContext* interfaceCtx = &play->interfaceCtx;
-    f32 factor = interfaceCtx->unk_1FE * 0.1f;
-    f32 ddFactor = { 0 };
-    s32 type = 0;
-    s32 ddType = { 0 };
-    s16 rFactor = { 0 };
-    s16 gFactor = { 0 };
-    s16 bFactor = { 0 };
+    float factor = interfaceCtx->unk_1FE * 0.1f;
+    float ddFactor = { 0 };
+    int32_t type = 0;
+    int32_t ddType = { 0 };
+    int16_t rFactor = { 0 };
+    int16_t gFactor = { 0 };
+    int16_t bFactor = { 0 };
 
     Top_LM_Margin = (0);
     Left_LM_Margin = (0);
@@ -174,13 +174,13 @@ void HealthMeter_Update(PlayState* play) {
     Bottom_LM_Margin = (0);
 
     Color_RGB8 mainColor = { HEARTS_PRIM_R, HEARTS_PRIM_G, HEARTS_PRIM_B };
-    
+
     Color_RGB8 mainBorder = { HEARTS_ENV_R, HEARTS_ENV_G, HEARTS_ENV_B };
-    
+
     Color_RGB8 ddColor = { HEARTS_DD_ENV_R, HEARTS_DD_ENV_G, HEARTS_DD_ENV_B };
-    
+
     Color_RGB8 ddBorder = { HEARTS_DD_PRIM_R, HEARTS_DD_PRIM_G, HEARTS_DD_PRIM_B };
-    
+
 
     if (interfaceCtx->unk_200 != 0) {
         interfaceCtx->unk_1FE--;
@@ -218,20 +218,20 @@ void HealthMeter_Update(PlayState* play) {
     gFactor = sHeartsPrimFactors[0][1] * factor;
     bFactor = sHeartsPrimFactors[0][2] * factor;
 
-    interfaceCtx->beatingHeartPrim[0] = (u8)(rFactor + mainColor.r) & 0xFF;
-    interfaceCtx->beatingHeartPrim[1] = (u8)(gFactor + mainColor.g) & 0xFF;
-    interfaceCtx->beatingHeartPrim[2] = (u8)(bFactor + mainColor.b) & 0xFF;
+    interfaceCtx->beatingHeartPrim[0] = (uint8_t)(rFactor + mainColor.r) & 0xFF;
+    interfaceCtx->beatingHeartPrim[1] = (uint8_t)(gFactor + mainColor.g) & 0xFF;
+    interfaceCtx->beatingHeartPrim[2] = (uint8_t)(bFactor + mainColor.b) & 0xFF;
 
     rFactor = sHeartsEnvFactors[0][0] * factor;
     gFactor = sHeartsEnvFactors[0][1] * factor;
     bFactor = sHeartsEnvFactors[0][2] * factor;
 
-    
+
     ddType = type;
 
-    interfaceCtx->beatingHeartEnv[0] = (u8)(rFactor + mainBorder.r) & 0xFF;
-    interfaceCtx->beatingHeartEnv[1] = (u8)(gFactor + mainBorder.g) & 0xFF;
-    interfaceCtx->beatingHeartEnv[2] = (u8)(bFactor + mainBorder.b) & 0xFF;
+    interfaceCtx->beatingHeartEnv[0] = (uint8_t)(rFactor + mainBorder.r) & 0xFF;
+    interfaceCtx->beatingHeartEnv[1] = (uint8_t)(gFactor + mainBorder.g) & 0xFF;
+    interfaceCtx->beatingHeartEnv[2] = (uint8_t)(bFactor + mainBorder.b) & 0xFF;
 
     sHeartsDDPrim[0][0] = ddBorder.r;
     sHeartsDDPrim[0][1] = ddBorder.g;
@@ -253,25 +253,25 @@ void HealthMeter_Update(PlayState* play) {
     gFactor = sHeartsDDPrimFactors[ddType][1] * ddFactor;
     bFactor = sHeartsDDPrimFactors[ddType][2] * ddFactor;
 
-    sBeatingHeartsDDPrim[0] = (u8)(rFactor + ddBorder.r) & 0xFF;
-    sBeatingHeartsDDPrim[1] = (u8)(gFactor + ddBorder.g) & 0xFF;
-    sBeatingHeartsDDPrim[2] = (u8)(bFactor + ddBorder.b) & 0xFF;
+    sBeatingHeartsDDPrim[0] = (uint8_t)(rFactor + ddBorder.r) & 0xFF;
+    sBeatingHeartsDDPrim[1] = (uint8_t)(gFactor + ddBorder.g) & 0xFF;
+    sBeatingHeartsDDPrim[2] = (uint8_t)(bFactor + ddBorder.b) & 0xFF;
 
     rFactor = sHeartsDDEnvFactors[ddType][0] * ddFactor;
     gFactor = sHeartsDDEnvFactors[ddType][1] * ddFactor;
     bFactor = sHeartsDDEnvFactors[ddType][2] * ddFactor;
 
-    sBeatingHeartsDDEnv[0] = (u8)(rFactor + ddColor.r) & 0xFF;
-    sBeatingHeartsDDEnv[1] = (u8)(gFactor + ddColor.g) & 0xFF;
-    sBeatingHeartsDDEnv[2] = (u8)(bFactor + ddColor.b) & 0xFF;
+    sBeatingHeartsDDEnv[0] = (uint8_t)(rFactor + ddColor.r) & 0xFF;
+    sBeatingHeartsDDEnv[1] = (uint8_t)(gFactor + ddColor.g) & 0xFF;
+    sBeatingHeartsDDEnv[2] = (uint8_t)(bFactor + ddColor.b) & 0xFF;
 }
 
-s32 func_80078E18(PlayState* play) {
+int32_t func_80078E18(PlayState* play) {
     gSaveContext.health = play->interfaceCtx.unk_226;
     return 1;
 }
 
-s32 func_80078E34(PlayState* play) {
+int32_t func_80078E34(PlayState* play) {
     InterfaceContext* interfaceCtx = &play->interfaceCtx;
 
     interfaceCtx->unk_228 = 0x140;
@@ -285,7 +285,7 @@ s32 func_80078E34(PlayState* play) {
     return 0;
 }
 
-s32 func_80078E84(PlayState* play) {
+int32_t func_80078E84(PlayState* play) {
     InterfaceContext* interfaceCtx = &play->interfaceCtx;
 
     if (interfaceCtx->unk_228 != 0) {
@@ -318,43 +318,43 @@ static void* sHeartDDTextures[] = {
     gDefenseHeartThreeQuarterTex,
 };
 
-s16 getHealthMeterXOffset() {
-    s16 X_Margins = 0;
+int16_t getHealthMeterXOffset() {
+    int16_t X_Margins = 0;
 
-    
+
         return OTRGetDimensionFromLeftEdge(0.0f) + X_Margins;
-    
+
 }
 
-s16 getHealthMeterYOffset() {
-    s16 Y_Margins = 0;
+int16_t getHealthMeterYOffset() {
+    int16_t Y_Margins = 0;
 
-    f32 HeartsScale = 0.7f;
-    
+    float HeartsScale = 0.7f;
+
         return 0.0f + Y_Margins;
-    
+
 }
 
 void HealthMeter_Draw(PlayState* play) {
     void* heartBgImg = { 0 };
-    u32 curColorSet = { 0 };
-    f32 PosX_anchor;
-    f32 offsetX = { 0 };
-    f32 offsetY = { 0 };
-    s32 i;
+    uint32_t curColorSet = { 0 };
+    float PosX_anchor;
+    float offsetX = { 0 };
+    float offsetY = { 0 };
+    int32_t i;
     InterfaceContext* interfaceCtx = &play->interfaceCtx;
     GraphicsContext* gfxCtx = play->state.gfxCtx;
     Vtx* sp154 = interfaceCtx->beatingHeartVtx;
-    s32 curHeartFraction = gSaveContext.health % FULL_HEART_HEALTH;
-    s16 totalHeartCount = gSaveContext.healthCapacity / FULL_HEART_HEALTH;
-    s16 fullHeartCount = gSaveContext.health / FULL_HEART_HEALTH;
-    f32 sp144 = interfaceCtx->unk_22A * 0.1f;
-    s32 curCombineModeSet = 0;
-    u8* curBgImgLoaded = NULL;
-    s32 ddHeartCountMinusOne = gSaveContext.isDoubleDefenseAcquired ? totalHeartCount - 1 : -1;
-    f32 HeartsScale = 0.7f;
-    
-    static u32 epoch = 0;
+    int32_t curHeartFraction = gSaveContext.health % FULL_HEART_HEALTH;
+    int16_t totalHeartCount = gSaveContext.healthCapacity / FULL_HEART_HEALTH;
+    int16_t fullHeartCount = gSaveContext.health / FULL_HEART_HEALTH;
+    float sp144 = interfaceCtx->unk_22A * 0.1f;
+    int32_t curCombineModeSet = 0;
+    uint8_t* curBgImgLoaded = NULL;
+    int32_t ddHeartCountMinusOne = gSaveContext.isDoubleDefenseAcquired ? totalHeartCount - 1 : -1;
+    float HeartsScale = 0.7f;
+
+    static uint32_t epoch = 0;
     epoch++;
 
     OPEN_DISPS(gfxCtx);
@@ -365,16 +365,16 @@ void HealthMeter_Draw(PlayState* play) {
 
     curColorSet = -1;
     /*
-        
-            s16 X_Margins = 0;
-            s16 Y_Margins = 0;
-        
-        s16 PosX_original = OTRGetDimensionFromLeftEdge(0.0f)+X_Margins;
-        s16 PosY_original = 0.0f+Y_Margins;
-        
+
+            int16_t X_Margins = 0;
+            int16_t Y_Margins = 0;
+
+        int16_t PosX_original = OTRGetDimensionFromLeftEdge(0.0f)+X_Margins;
+        int16_t PosY_original = 0.0f+Y_Margins;
+
             offsetY = PosY_original;
             offsetX = PosX_original;
-        
+
     */
     offsetX = PosX_anchor = getHealthMeterXOffset();
     offsetY = getHealthMeterYOffset();
@@ -498,16 +498,16 @@ void HealthMeter_Draw(PlayState* play) {
                 }
             }
 
-            f32 temp3 = offsetY;
-            f32 temp2 = offsetX;
-            f32 temp4 = 1.0f;
+            float temp3 = offsetY;
+            float temp2 = offsetX;
+            float temp4 = 1.0f;
             temp4 /= 0.68f; // Hearts Scaled size
             temp4 *= 1 << 10;
-            f32 temp1 = 8.0f;
+            float temp1 = 8.0f;
             temp1 *= 0.68f;
-            /*gSPWideTextureRectangle(OVERLAY_DISP++, (s32)((temp2 - temp1) * 4), (s32)((temp3 - temp1) * 4),
-                                (s32)((temp2 + temp1) * 4), (s32)((temp3 + temp1) * 4), G_TX_RENDERTILE, 0, 0,
-                                (s32)temp4, (s32)temp4);*/
+            /*gSPWideTextureRectangle(OVERLAY_DISP++, (int32_t)((temp2 - temp1) * 4), (int32_t)((temp3 - temp1) * 4),
+                                (int32_t)((temp2 + temp1) * 4), (int32_t)((temp3 + temp1) * 4), G_TX_RENDERTILE, 0, 0,
+                                (int32_t)temp4, (int32_t)temp4);*/
             Mtx* matrix = Graph_Alloc(gfxCtx, sizeof(Mtx));
             Matrix_SetTranslateScaleMtx2(matrix,
                                          HeartsScale,          // Scale X
@@ -553,7 +553,7 @@ void HealthMeter_Draw(PlayState* play) {
         }
 
         offsetX += 10.0f;
-        s32 lineLength = (10);
+        int32_t lineLength = (10);
         if (lineLength != 0 && (i + 1) % lineLength == 0) {
             offsetX = PosX_anchor;
             offsetY += 10.0f;
@@ -586,8 +586,8 @@ void HealthMeter_HandleCriticalAlarm(PlayState* play) {
     }
 }
 
-u32 HealthMeter_IsCritical(void) {
-    s32 var = { 0 };
+uint32_t HealthMeter_IsCritical(void) {
+    int32_t var = { 0 };
 
     if (gSaveContext.healthCapacity <= 0x50) {
         var = 0x10;

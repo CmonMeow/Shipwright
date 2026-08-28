@@ -4,19 +4,19 @@
 
 
 typedef struct {
-    /* 0x00 */ u16 sfxId;
+    /* 0x00 */ uint16_t sfxId;
     /* 0x04 */ Vec3f* pos;
-    /* 0x08 */ u8 token;
-    /* 0x0C */ f32* freqScale;
-    /* 0x10 */ f32* vol;
-    /* 0x14 */ s8* reverbAdd;
+    /* 0x08 */ uint8_t token;
+    /* 0x0C */ float* freqScale;
+    /* 0x10 */ float* vol;
+    /* 0x14 */ int8_t* reverbAdd;
 } SoundRequest; // size = 0x18
 
 typedef struct {
-    /* 0x00 */ f32 value;
-    /* 0x04 */ f32 target;
-    /* 0x08 */ f32 step;
-    /* 0x0C */ u16 remainingFrames;
+    /* 0x00 */ float value;
+    /* 0x04 */ float target;
+    /* 0x08 */ float step;
+    /* 0x0C */ uint16_t remainingFrames;
 } UnusedBankLerp; // size = 0x10
 
 // rodata for Audio_ProcessSoundRequest (this file)
@@ -27,7 +27,7 @@ char D_80133340[] = "SE";
 char D_80133344[] = VT_COL(RED, WHITE) "<INAGAKI CHECK> dist over! flag:%04X ptr:%08X pos:%f-%f-%f" VT_RST "\n";
 
 // file padding
-s32 D_8013338C = 0;
+int32_t D_8013338C = 0;
 
 // rodata for Audio_ProcessSeqCmd (code_800F9280.c)
 char D_80133390[] = "SEQ H";
@@ -41,20 +41,20 @@ SoundBankEntry D_8016C6A0[8];
 SoundBankEntry D_8016C820[3];
 SoundBankEntry D_8016C8B0[5];
 SoundRequest sSoundRequests[0x100];
-u8 sSoundBankListEnd[7];
-u8 sSoundBankFreeListStart[7];
-u8 sSoundBankUnused[7];
+uint8_t sSoundBankListEnd[7];
+uint8_t sSoundBankFreeListStart[7];
+uint8_t sSoundBankUnused[7];
 ActiveSound gActiveSounds[7][3];
-u8 sCurSfxPlayerChannelIdx;
-u8 gSoundBankMuted[7];
+uint8_t sCurSfxPlayerChannelIdx;
+uint8_t gSoundBankMuted[7];
 UnusedBankLerp sUnusedBankLerp[7];
-u16 gAudioSfxSwapSource[10];
-u16 gAudioSfxSwapTarget[10];
-u8 gAudioSfxSwapMode[10];
+uint16_t gAudioSfxSwapSource[10];
+uint16_t gAudioSfxSwapTarget[10];
+uint8_t gAudioSfxSwapMode[10];
 
 // sSoundRequests ring buffer endpoints. read index <= write index, wrapping around mod 256.
-u8 sSoundRequestWriteIndex = 0;
-u8 sSoundRequestReadIndex = 0;
+uint8_t sSoundRequestWriteIndex = 0;
+uint8_t sSoundRequestReadIndex = 0;
 
 /**
  * Array of pointers to arrays of SoundBankEntry of sizes: 9, 12, 22, 20, 8, 3, 5
@@ -71,33 +71,33 @@ SoundBankEntry* gSoundBanks[7] = {
     D_8016BAD0, D_8016BC80, D_8016BEC0, D_8016C2E0, D_8016C6A0, D_8016C820, D_8016C8B0,
 };
 
-u8 sBankSizes[ARRAY_COUNT(gSoundBanks)] = {
+uint8_t sBankSizes[ARRAY_COUNT(gSoundBanks)] = {
     ARRAY_COUNT(D_8016BAD0), ARRAY_COUNT(D_8016BC80), ARRAY_COUNT(D_8016BEC0), ARRAY_COUNT(D_8016C2E0),
     ARRAY_COUNT(D_8016C6A0), ARRAY_COUNT(D_8016C820), ARRAY_COUNT(D_8016C8B0),
 };
 
-u8 gSfxChannelLayout = 0;
+uint8_t gSfxChannelLayout = 0;
 
-u16 D_801333D0 = 0;
+uint16_t D_801333D0 = 0;
 
 Vec3f gSfxDefaultPos = { 0.0f, 0.0f, 0.0f }; // default pos
 
-f32 gSfxDefaultFreqAndVolScale = 1.0f; // default freqScale
+float gSfxDefaultFreqAndVolScale = 1.0f; // default freqScale
 
-s32 D_801333E4 = 0; // unused
+int32_t D_801333E4 = 0; // unused
 
-s8 gSfxDefaultReverb = 0; // default reverbAdd
+int8_t gSfxDefaultReverb = 0; // default reverbAdd
 
-s32 D_801333EC = 0; // unused
+int32_t D_801333EC = 0; // unused
 
-u8 D_801333F0 = 0;
+uint8_t D_801333F0 = 0;
 
-u8 gAudioSfxSwapOff = 0;
+uint8_t gAudioSfxSwapOff = 0;
 
-u8 D_801333F8 = 0;
+uint8_t D_801333F8 = 0;
 
-void Audio_SetSoundBanksMute(u16 muteMask) {
-    u8 bankId;
+void Audio_SetSoundBanksMute(uint16_t muteMask) {
+    uint8_t bankId;
 
     for (bankId = 0; bankId < ARRAY_COUNT(gSoundBanks); bankId++) {
         if (muteMask & 1) {
@@ -109,13 +109,13 @@ void Audio_SetSoundBanksMute(u16 muteMask) {
     }
 }
 
-void Audio_QueueSeqCmdMute(u8 channelIdx) {
+void Audio_QueueSeqCmdMute(uint8_t channelIdx) {
     D_801333D0 |= (1 << channelIdx);
     Audio_SetVolScale(SEQ_PLAYER_BGM_MAIN, 2, 0x40, 0xF);
     Audio_SetVolScale(SEQ_PLAYER_BGM_SUB, 2, 0x40, 0xF);
 }
 
-void Audio_ClearBGMMute(u8 channelIdx) {
+void Audio_ClearBGMMute(uint8_t channelIdx) {
     D_801333D0 &= ((1 << channelIdx) ^ 0xFFFF);
     if (D_801333D0 == 0) {
         Audio_SetVolScale(SEQ_PLAYER_BGM_MAIN, 2, 0x7F, 0xF);
@@ -123,7 +123,7 @@ void Audio_ClearBGMMute(u8 channelIdx) {
     }
 }
 
-void Audio_PlaySoundGeneral(u16 sfxId, Vec3f* pos, u8 token, f32* freqScale, f32* vol, s8* reverbAdd) {
+void Audio_PlaySoundGeneral(uint16_t sfxId, Vec3f* pos, uint8_t token, float* freqScale, float* vol, int8_t* reverbAdd) {
     size_t i;
 
     if (!gSoundBankMuted[SFX_BANK_SHIFT(sfxId)]) {
@@ -157,11 +157,11 @@ void Audio_PlaySoundGeneral(u16 sfxId, Vec3f* pos, u8 token, f32* freqScale, f32
     }
 }
 
-void Audio_RemoveMatchingSoundRequests(u8 aspect, SoundBankEntry* cmp) {
-    u8 i = sSoundRequestReadIndex;
+void Audio_RemoveMatchingSoundRequests(uint8_t aspect, SoundBankEntry* cmp) {
+    uint8_t i = sSoundRequestReadIndex;
 
     for (; i != sSoundRequestWriteIndex; i++) {
-        s32 remove = false;
+        int32_t remove = false;
         SoundRequest* req = &sSoundRequests[i];
         switch (aspect) {
             case 0:
@@ -202,21 +202,21 @@ void Audio_RemoveMatchingSoundRequests(u8 aspect, SoundBankEntry* cmp) {
 }
 
 void Audio_ProcessSoundRequest(void) {
-    u16 sfxId;
-    u8 count = { 0 };
-    u8 index = { 0 };
+    uint16_t sfxId;
+    uint8_t count = { 0 };
+    uint8_t index = { 0 };
     SoundParams* soundParams = { 0 };
-    s32 bankId = { 0 };
-    u8 evictImportance = { 0 };
+    int32_t bankId = { 0 };
+    uint8_t evictImportance = { 0 };
 
     SoundRequest* req = &sSoundRequests[sSoundRequestReadIndex];
-    u8 evictIndex = 0x80;
+    uint8_t evictIndex = 0x80;
     if (req->sfxId == 0) {
         return;
     }
     bankId = SFX_BANK(req->sfxId);
     if ((1 << bankId) & D_801333F0) {
-        AudioDebug_ScrPrt((const s8*)D_80133340, req->sfxId);
+        AudioDebug_ScrPrt((const int8_t*)D_80133340, req->sfxId);
         bankId = SFX_BANK(req->sfxId);
     }
     count = 0;
@@ -300,9 +300,9 @@ void Audio_ProcessSoundRequest(void) {
     }
 }
 
-void Audio_RemoveSoundBankEntry(u8 bankId, u8 entryIndex) {
+void Audio_RemoveSoundBankEntry(uint8_t bankId, uint8_t entryIndex) {
     SoundBankEntry* entry = &gSoundBanks[bankId][entryIndex];
-    u8 i;
+    uint8_t i;
 
     if (entry->sfxParams & 8) {
         Audio_ClearBGMMute(entry->channelIdx);
@@ -327,16 +327,16 @@ void Audio_RemoveSoundBankEntry(u8 bankId, u8 entryIndex) {
     }
 }
 
-void Audio_ChooseActiveSounds(u8 bankId) {
-    u8 numChannels = { 0 };
-    u8 entryIndex;
-    u8 i;
-    u8 j;
-    u8 k = { 0 };
+void Audio_ChooseActiveSounds(uint8_t bankId) {
+    uint8_t numChannels = { 0 };
+    uint8_t entryIndex;
+    uint8_t i;
+    uint8_t j;
+    uint8_t k = { 0 };
     SoundBankEntry* entry = { 0 };
     ActiveSound chosenSounds[MAX_CHANNELS_PER_BANK];
 
-    u8 numChosenSounds = 0;
+    uint8_t numChosenSounds = 0;
     for (i = 0; i < MAX_CHANNELS_PER_BANK; i++) {
         chosenSounds[i].priority = 0x7FFFFFFF;
         chosenSounds[i].entryIndex = 0xFF;
@@ -360,10 +360,10 @@ void Audio_ChooseActiveSounds(u8 bankId) {
             if (&gSfxDefaultPos.x == entry[0].posX) {
                 entry->dist = 0.0f;
             } else {
-                f32 tempf1 = *entry->posY * 1;
+                float tempf1 = *entry->posY * 1;
                 entry->dist = (SQ(*entry->posX) + SQ(tempf1) + SQ(*entry->posZ)) * 1;
             }
-            u8 sfxImportance = entry->sfxImportance;
+            uint8_t sfxImportance = entry->sfxImportance;
             if (entry->sfxParams & 0x10) {
                 entry->priority = SQ(0xFF - sfxImportance) * SQ(76);
             } else {
@@ -372,10 +372,10 @@ void Audio_ChooseActiveSounds(u8 bankId) {
                     osSyncPrintf(D_80133344, entry->sfxId, entry->posX, entry->posZ, *entry->posX, *entry->posY,
                                  *entry->posZ);
                 }
-                u16 temp3 = entry->sfxId;
-                entry->priority = (u32)entry->dist + (SQ(0xFF - sfxImportance) * SQ(76)) + temp3 - temp3;
+                uint16_t temp3 = entry->sfxId;
+                entry->priority = (uint32_t)entry->dist + (SQ(0xFF - sfxImportance) * SQ(76)) + temp3 - temp3;
                 if (*entry->posZ < 0.0f) {
-                    entry->priority += (s32)(-*entry->posZ * 6.0f);
+                    entry->priority += (int32_t)(-*entry->posZ * 6.0f);
                 }
             }
             if (entry->dist > SQ(1e5f)) {
@@ -419,7 +419,7 @@ void Audio_ChooseActiveSounds(u8 bankId) {
     // Pick something to play for all channels.
     numChannels = gChannelsPerBank[gSfxChannelLayout][bankId];
     for (i = 0; i < numChannels; i++) {
-        u8 needNewSound = false;
+        uint8_t needNewSound = false;
         ActiveSound* activeSound = &gActiveSounds[bankId][i];
 
         if (activeSound->entryIndex == 0xFF) {
@@ -450,7 +450,7 @@ void Audio_ChooseActiveSounds(u8 bankId) {
 
         if (needNewSound == true) {
             for (j = 0; j < numChannels; j++) {
-                u8 chosenEntryIndex = chosenSounds[j].entryIndex;
+                uint8_t chosenEntryIndex = chosenSounds[j].entryIndex;
                 if ((chosenEntryIndex != 0xFF) &&
                     (gSoundBanks[bankId][chosenEntryIndex].state != SFX_STATE_PLAYING_REFRESH)) {
                     for (k = 0; k < numChannels; k++) {
@@ -475,11 +475,11 @@ void Audio_ChooseActiveSounds(u8 bankId) {
     }
 }
 
-void Audio_PlayActiveSounds(u8 bankId) {
-    u8 i;
+void Audio_PlayActiveSounds(uint8_t bankId) {
+    uint8_t i;
 
     for (i = 0; i < gChannelsPerBank[gSfxChannelLayout][bankId]; i++) {
-        u8 entryIndex = gActiveSounds[bankId][i].entryIndex;
+        uint8_t entryIndex = gActiveSounds[bankId][i].entryIndex;
         if (entryIndex != 0xFF) {
             SoundBankEntry* entry = &gSoundBanks[bankId][entryIndex];
             SequenceChannel* channel = gAudioContext.seqPlayers[SEQ_PLAYER_SFX].channels[sCurSfxPlayerChannelIdx];
@@ -517,7 +517,7 @@ void Audio_PlayActiveSounds(u8 bankId) {
                 } else {
                     entry->state = SFX_STATE_PLAYING_2;
                 }
-            } else if ((u8)channel->soundScriptIO[1] == 0xFF) {
+            } else if ((uint8_t)channel->soundScriptIO[1] == 0xFF) {
                 Audio_RemoveSoundBankEntry(bankId, entryIndex);
             } else if (entry->state == SFX_STATE_PLAYING_REFRESH) {
                 Audio_SetSoundProperties(bankId, entryIndex, sCurSfxPlayerChannelIdx);
@@ -532,9 +532,9 @@ void Audio_PlayActiveSounds(u8 bankId) {
     }
 }
 
-void Audio_StopSfxByBank(u8 bankId) {
+void Audio_StopSfxByBank(uint8_t bankId) {
     SoundBankEntry cmp;
-    u8 entryIndex = gSoundBanks[bankId][0].next;
+    uint8_t entryIndex = gSoundBanks[bankId][0].next;
 
     while (entryIndex != 0xFF) {
         SoundBankEntry* entry = &gSoundBanks[bankId][entryIndex];
@@ -550,9 +550,9 @@ void Audio_StopSfxByBank(u8 bankId) {
     Audio_RemoveMatchingSoundRequests(0, &cmp);
 }
 
-void func_800F8884(u8 bankId, Vec3f* pos) {
-    u8 entryIndex = gSoundBanks[bankId][0].next;
-    u8 prevEntryIndex = 0;
+void func_800F8884(uint8_t bankId, Vec3f* pos) {
+    uint8_t entryIndex = gSoundBanks[bankId][0].next;
+    uint8_t prevEntryIndex = 0;
 
     while (entryIndex != 0xFF) {
         SoundBankEntry* entry = &gSoundBanks[bankId][entryIndex];
@@ -570,7 +570,7 @@ void func_800F8884(u8 bankId, Vec3f* pos) {
     }
 }
 
-void Audio_StopSfxByPosAndBank(u8 bankId, Vec3f* pos) {
+void Audio_StopSfxByPosAndBank(uint8_t bankId, Vec3f* pos) {
     SoundBankEntry cmp;
 
     func_800F8884(bankId, pos);
@@ -580,7 +580,7 @@ void Audio_StopSfxByPosAndBank(u8 bankId, Vec3f* pos) {
 }
 
 void Audio_StopSfxByPos(Vec3f* pos) {
-    u8 i;
+    uint8_t i;
     SoundBankEntry cmp;
 
     for (i = 0; i < ARRAY_COUNT(gSoundBanks); i++) {
@@ -590,9 +590,9 @@ void Audio_StopSfxByPos(Vec3f* pos) {
     Audio_RemoveMatchingSoundRequests(2, &cmp);
 }
 
-void Audio_StopSfxByPosAndId(Vec3f* pos, u16 sfxId) {
-    u8 entryIndex = gSoundBanks[SFX_BANK(sfxId)][0].next;
-    u8 prevEntryIndex = 0;
+void Audio_StopSfxByPosAndId(Vec3f* pos, uint16_t sfxId) {
+    uint8_t entryIndex = gSoundBanks[SFX_BANK(sfxId)][0].next;
+    uint8_t prevEntryIndex = 0;
     SoundBankEntry cmp;
 
     while (entryIndex != 0xFF) {
@@ -617,9 +617,9 @@ void Audio_StopSfxByPosAndId(Vec3f* pos, u16 sfxId) {
     Audio_RemoveMatchingSoundRequests(3, &cmp);
 }
 
-void Audio_StopSfxByTokenAndId(u8 token, u16 sfxId) {
-    u8 entryIndex = gSoundBanks[SFX_BANK(sfxId)][0].next;
-    u8 prevEntryIndex = 0;
+void Audio_StopSfxByTokenAndId(uint8_t token, uint16_t sfxId) {
+    uint8_t entryIndex = gSoundBanks[SFX_BANK(sfxId)][0].next;
+    uint8_t prevEntryIndex = 0;
     SoundBankEntry cmp;
 
     while (entryIndex != 0xFF) {
@@ -643,9 +643,9 @@ void Audio_StopSfxByTokenAndId(u8 token, u16 sfxId) {
     Audio_RemoveMatchingSoundRequests(4, &cmp);
 }
 
-void Audio_StopSfxById(u32 sfxId) {
-    u8 entryIndex = gSoundBanks[SFX_BANK(sfxId)][0].next;
-    u8 prevEntryIndex = 0;
+void Audio_StopSfxById(uint32_t sfxId) {
+    uint8_t entryIndex = gSoundBanks[SFX_BANK(sfxId)][0].next;
+    uint8_t prevEntryIndex = 0;
     SoundBankEntry cmp;
 
     while (entryIndex != 0xFF) {
@@ -673,7 +673,7 @@ void Audio_ProcessSoundRequests(void) {
     }
 }
 
-void Audio_SetUnusedBankLerp(u8 bankId, u8 target, u16 delay) {
+void Audio_SetUnusedBankLerp(uint8_t bankId, uint8_t target, uint16_t delay) {
     if (delay == 0) {
         delay++;
     }
@@ -682,7 +682,7 @@ void Audio_SetUnusedBankLerp(u8 bankId, u8 target, u16 delay) {
     sUnusedBankLerp[bankId].step = ((sUnusedBankLerp[bankId].value - sUnusedBankLerp[bankId].target) / delay);
 }
 
-void Audio_StepUnusedBankLerp(u8 bankId) {
+void Audio_StepUnusedBankLerp(uint8_t bankId) {
     if (sUnusedBankLerp[bankId].remainingFrames != 0) {
         sUnusedBankLerp[bankId].remainingFrames--;
         if (sUnusedBankLerp[bankId].remainingFrames != 0) {
@@ -694,7 +694,7 @@ void Audio_StepUnusedBankLerp(u8 bankId) {
 }
 
 void func_800F8F88(void) {
-    u8 bankId;
+    uint8_t bankId;
 
     if (IS_SEQUENCE_CHANNEL_VALID(gAudioContext.seqPlayers[SEQ_PLAYER_SFX].channels[0])) {
         sCurSfxPlayerChannelIdx = 0;
@@ -706,8 +706,8 @@ void func_800F8F88(void) {
     }
 }
 
-u8 Audio_IsSfxPlaying(u32 sfxId) {
-    u8 entryIndex = gSoundBanks[SFX_BANK(sfxId)][0].next;
+uint8_t Audio_IsSfxPlaying(uint32_t sfxId) {
+    uint8_t entryIndex = gSoundBanks[SFX_BANK(sfxId)][0].next;
 
     while (entryIndex != 0xFF) {
         SoundBankEntry* entry = &gSoundBanks[SFX_BANK(sfxId)][entryIndex];
@@ -720,8 +720,8 @@ u8 Audio_IsSfxPlaying(u32 sfxId) {
 }
 
 void Audio_ResetSounds(void) {
-    u8 bankId;
-    u8 i;
+    uint8_t bankId;
+    uint8_t i;
 
     sSoundRequestWriteIndex = 0;
     sSoundRequestReadIndex = 0;

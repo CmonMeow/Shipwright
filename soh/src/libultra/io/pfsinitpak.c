@@ -1,16 +1,16 @@
 #include <libultraship/libultra.h>
 #include "global.h"
 
-s32 osPfsInitPak(OSMesgQueue* queue, OSPfs* pfs, s32 channel) {
-    u16 sum;
-    u16 isum;
-    u8 temp[BLOCKSIZE];
+int32_t osPfsInitPak(OSMesgQueue* queue, OSPfs* pfs, int32_t channel) {
+    uint16_t sum;
+    uint16_t isum;
+    uint8_t temp[BLOCKSIZE];
     __OSPackId* id = { 0 };
     __OSPackId newid;
 
     __osSiGetAccess();
 
-    s32 ret = __osPfsGetStatus(queue, channel);
+    int32_t ret = __osPfsGetStatus(queue, channel);
 
     __osSiRelAccess();
 
@@ -32,7 +32,7 @@ s32 osPfsInitPak(OSMesgQueue* queue, OSPfs* pfs, s32 channel) {
         return (ret);
     }
 
-    __osIdCheckSum((u16*)temp, &sum, &isum);
+    __osIdCheckSum((uint16_t*)temp, &sum, &isum);
     id = (__OSPackId*)temp;
     if ((id->checksum != sum) || (id->invertedChecksum != isum)) {
         if ((ret = __osCheckPackId(pfs, id)) != 0) {
@@ -75,12 +75,12 @@ s32 osPfsInitPak(OSMesgQueue* queue, OSPfs* pfs, s32 channel) {
     return ret;
 }
 
-s32 __osPfsCheckRamArea(OSPfs* pfs) {
-    s32 i = 0;
-    s32 ret = 0;
-    u8 temp1[BLOCKSIZE];
-    u8 temp2[BLOCKSIZE];
-    u8 saveReg[BLOCKSIZE];
+int32_t __osPfsCheckRamArea(OSPfs* pfs) {
+    int32_t i = 0;
+    int32_t ret = 0;
+    uint8_t temp1[BLOCKSIZE];
+    uint8_t temp2[BLOCKSIZE];
+    uint8_t saveReg[BLOCKSIZE];
 
     if ((ret = __osPfsSelectBank(pfs, PFS_ID_BANK_256K)) != 0) {
         return ret;

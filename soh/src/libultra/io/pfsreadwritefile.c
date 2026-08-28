@@ -7,8 +7,8 @@
 
 __OSInode __osPfsInodeCache;
 
-s32 __osPfsGetNextPage(OSPfs* pfs, u8* bank, __OSInode* inode, __OSInodeUnit* page) {
-    s32 ret;
+int32_t __osPfsGetNextPage(OSPfs* pfs, uint8_t* bank, __OSInode* inode, __OSInodeUnit* page) {
+    int32_t ret;
 
     if (page->inode_t.bank != *bank) {
         *bank = page->inode_t.bank;
@@ -27,15 +27,15 @@ s32 __osPfsGetNextPage(OSPfs* pfs, u8* bank, __OSInode* inode, __OSInodeUnit* pa
     return 0;
 }
 
-s32 osPfsReadWriteFile(OSPfs* pfs, s32 fileNo, u8 flag, s32 offset, ssize_t size, u8* data) {
-    s32 ret;
+int32_t osPfsReadWriteFile(OSPfs* pfs, int32_t fileNo, uint8_t flag, int32_t offset, ssize_t size, uint8_t* data) {
+    int32_t ret;
     __OSDir dir;
     __OSInode inode;
     __OSInodeUnit curPage = { 0 };
-    s32 curBlock = { 0 };
-    s32 blockSize;
-    u8* buffer = { 0 };
-    u8 bank = { 0 };
+    int32_t curBlock = { 0 };
+    int32_t blockSize;
+    uint8_t* buffer = { 0 };
+    uint8_t bank = { 0 };
 
     if ((fileNo >= pfs->dir_size) || (fileNo < 0)) {
         return PFS_ERR_INVALID;
@@ -55,7 +55,7 @@ s32 osPfsReadWriteFile(OSPfs* pfs, s32 fileNo, u8 flag, s32 offset, ssize_t size
     if (pfs->activebank != 0 && (ret = __osPfsSelectBank(pfs, 0)) != 0) {
         return ret;
     }
-    if ((ret = __osContRamRead(pfs->queue, pfs->channel, pfs->dir_table + fileNo, (u8*)&dir)) != 0) {
+    if ((ret = __osContRamRead(pfs->queue, pfs->channel, pfs->dir_table + fileNo, (uint8_t*)&dir)) != 0) {
         return ret;
     }
     if ((dir.company_code == 0) || (dir.game_code == 0)) {
@@ -96,7 +96,7 @@ s32 osPfsReadWriteFile(OSPfs* pfs, s32 fileNo, u8 flag, s32 offset, ssize_t size
             return ret;
         }
 
-        u16 blockno = curPage.inode_t.page * PFS_ONE_PAGE + curBlock;
+        uint16_t blockno = curPage.inode_t.page * PFS_ONE_PAGE + curBlock;
         if (flag == PFS_READ) {
             ret = __osContRamRead(pfs->queue, pfs->channel, blockno, buffer);
         } else {
@@ -116,7 +116,7 @@ s32 osPfsReadWriteFile(OSPfs* pfs, s32 fileNo, u8 flag, s32 offset, ssize_t size
         if (pfs->activebank != 0 && (ret = __osPfsSelectBank(pfs, 0)) != 0) {
             return ret;
         }
-        if ((ret = __osContRamWrite(pfs->queue, pfs->channel, pfs->dir_table + fileNo, (u8*)&dir, 0)) != 0) {
+        if ((ret = __osContRamWrite(pfs->queue, pfs->channel, pfs->dir_table + fileNo, (uint8_t*)&dir, 0)) != 0) {
             return ret;
         }
     }

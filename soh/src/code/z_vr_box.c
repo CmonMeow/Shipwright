@@ -70,57 +70,57 @@
 #include "assets/textures/skyboxes/vr_holy0_pal_static.h"
 #include "assets/textures/skyboxes/vr_holy1_static.h"
 #include "assets/textures/skyboxes/vr_holy1_pal_static.h"
-u32 D_8012AC90[4] = {
+uint32_t D_8012AC90[4] = {
     0x00000000,
     0x00010000,
     0x00020000,
     0x00030000,
 };
 
-u16 D_8012ACA0[2][0x20] = {
+uint16_t D_8012ACA0[2][0x20] = {
     { 0x00, 0x02, 0x0A, 0x0C, 0x02, 0x04, 0x0C, 0x0E, 0x0A, 0x0C, 0x14, 0x16, 0x0C, 0x0E, 0x16, 0x18,
       0x01, 0x03, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0B, 0x0D, 0x0F, 0x10, 0x11, 0x12, 0x13, 0x15, 0x17 },
     { 0x14, 0x16, 0x1E, 0x20, 0x16, 0x18, 0x20, 0x22, 0x1E, 0x20, 0x28, 0x2A, 0x20, 0x22, 0x2A, 0x2C,
       0x15, 0x17, 0x19, 0x1A, 0x1B, 0x1C, 0x1D, 0x1F, 0x21, 0x23, 0x24, 0x25, 0x26, 0x27, 0x29, 0x2B },
 };
 
-s16 D_8012AD20[5] = {
+int16_t D_8012AD20[5] = {
     0x0000, 0x0FC0, 0x1F80, 0x2F40, 0x3F00,
 };
 
-s16 D_8012AD2C[9] = {
+int16_t D_8012AD2C[9] = {
     0x0000, 0x07C0, 0x0F80, 0x1740, 0x1F00, 0x26C0, 0x2E80, 0x3640, 0x3E00,
 };
 
-s16 D_8012AD40[0x40] = {
+int16_t D_8012AD40[0x40] = {
     0x00, 0x10, 0x13, 0x12, 0x10, 0x01, 0x14, 0x13, 0x01, 0x11, 0x15, 0x14, 0x11, 0x05, 0x16, 0x15,
     0x12, 0x13, 0x17, 0x02, 0x13, 0x14, 0x03, 0x17, 0x14, 0x15, 0x18, 0x03, 0x15, 0x16, 0x07, 0x18,
     0x02, 0x17, 0x1A, 0x19, 0x17, 0x03, 0x1B, 0x1A, 0x03, 0x18, 0x1C, 0x1B, 0x18, 0x07, 0x1D, 0x1C,
     0x19, 0x1A, 0x1E, 0x0A, 0x1A, 0x1B, 0x0B, 0x1E, 0x1B, 0x1C, 0x1F, 0x0B, 0x1C, 0x1D, 0x0F, 0x1F,
 };
 
-u32 D_8012ADC0[6] = {
+uint32_t D_8012ADC0[6] = {
     0x00000000, 0x00002000, 0x00004000, 0x00006000, 0x00008000, 0x0000C000,
 };
 
-u16 D_8012ADD8[0x20] = {
+uint16_t D_8012ADD8[0x20] = {
     0x00, 0x02, 0x0A, 0x0C, 0x02, 0x04, 0x0C, 0x0E, 0x0A, 0x0C, 0x14, 0x16, 0x0C, 0x0E, 0x16, 0x18,
     0x01, 0x03, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0B, 0x0D, 0x0F, 0x10, 0x11, 0x12, 0x13, 0x15, 0x17,
 };
 
-s16 D_8012AE18[5] = {
+int16_t D_8012AE18[5] = {
     0x0000, 0x07C0, 0x0F80, 0x1740, 0x1F00,
 };
 
-s16 D_8012AE24[5] = {
+int16_t D_8012AE24[5] = {
     0x0000, 0x07C0, 0x0F80, 0x1740, 0x1F00,
 };
 
-s16 D_8012AE30[5] = {
+int16_t D_8012AE30[5] = {
     0x0000, 0x07C0, 0x0F80, 0x07C0, 0x0000,
 };
 
-s16 D_8012AE3C[0x40] = {
+int16_t D_8012AE3C[0x40] = {
     0x00, 0x10, 0x13, 0x12, 0x10, 0x01, 0x14, 0x13, 0x01, 0x11, 0x15, 0x14, 0x11, 0x05, 0x16, 0x15,
     0x12, 0x13, 0x17, 0x02, 0x13, 0x14, 0x03, 0x17, 0x14, 0x15, 0x18, 0x03, 0x15, 0x16, 0x07, 0x18,
     0x02, 0x17, 0x1A, 0x19, 0x17, 0x03, 0x1B, 0x1A, 0x03, 0x18, 0x1C, 0x1B, 0x18, 0x07, 0x1D, 0x1C,
@@ -128,11 +128,11 @@ s16 D_8012AE3C[0x40] = {
 };
 
 typedef struct {
-    /* 0x000 */ s32 unk_0;
-    /* 0x004 */ s32 unk_4;
-    /* 0x008 */ s32 unk_8;
-    /* 0x00C */ s32 unk_C;
-    /* 0x010 */ s32 unk_10;
+    /* 0x000 */ int32_t unk_0;
+    /* 0x004 */ int32_t unk_4;
+    /* 0x008 */ int32_t unk_8;
+    /* 0x00C */ int32_t unk_C;
+    /* 0x010 */ int32_t unk_10;
 } Struct_8012AF0C; // size = 0x14
 
 Struct_8012AF0C D_8012AEBC[4] = {
@@ -147,24 +147,24 @@ Struct_8012AF0C D_8012AF0C[6] = {
     { 0x40, 0x40, -0x40, 0x20, -0x20 },  { -0x40, 0x40, 0x40, 0x20, -0x20 }, { -0x40, -0x40, -0x40, 0x20, 0x20 },
 };
 
-s32 func_800ADBB0(SkyboxContext* skyboxCtx, Vtx* roomVtx, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6, s32 arg7,
-                  s32 arg8, s32 arg9) {
-    u32 pad42C = { 0 };
-    s32 pad428 = { 0 };
-    s32 sp424;
-    s32 i;
-    s32 j;
-    s32 k;
-    s16 phi_t1;
-    s16 phi_a2_4;
-    s16 phi_a0_4;
-    s16 phi_t2_4;
-    s16 phi_ra;
-    s32 sp358[9 * 5] = { 0 };
-    s32 sp2A4[9 * 5] = { 0 };
-    s32 sp1F0[9 * 5] = { 0 };
-    s32 sp13C[9 * 5] = { 0 };
-    s32 sp88[9 * 5] = { 0 };
+int32_t func_800ADBB0(SkyboxContext* skyboxCtx, Vtx* roomVtx, int32_t arg2, int32_t arg3, int32_t arg4, int32_t arg5, int32_t arg6, int32_t arg7,
+                  int32_t arg8, int32_t arg9) {
+    uint32_t pad42C = { 0 };
+    int32_t pad428 = { 0 };
+    int32_t sp424;
+    int32_t i;
+    int32_t j;
+    int32_t k;
+    int16_t phi_t1;
+    int16_t phi_a2_4;
+    int16_t phi_a0_4;
+    int16_t phi_t2_4;
+    int16_t phi_ra;
+    int32_t sp358[9 * 5] = { 0 };
+    int32_t sp2A4[9 * 5] = { 0 };
+    int32_t sp1F0[9 * 5] = { 0 };
+    int32_t sp13C[9 * 5] = { 0 };
+    int32_t sp88[9 * 5] = { 0 };
 
     switch (arg8) {
         case 0:
@@ -226,7 +226,7 @@ s32 func_800ADBB0(SkyboxContext* skyboxCtx, Vtx* roomVtx, s32 arg2, s32 arg3, s3
         skyboxCtx->unk_138 = skyboxCtx->dListBuf[arg9 + sp424];
 
         for (i = 0; i < 0x20; i++) {
-            u16 index = D_8012ACA0[sp424][i];
+            uint16_t index = D_8012ACA0[sp424][i];
 
             roomVtx[arg2 + i].v.ob[0] = sp358[index];
             roomVtx[arg2 + i].v.ob[1] = sp2A4[index];
@@ -257,23 +257,23 @@ s32 func_800ADBB0(SkyboxContext* skyboxCtx, Vtx* roomVtx, s32 arg2, s32 arg3, s3
     return arg2;
 }
 
-s32 func_800AE2C0(SkyboxContext* skyboxCtx, Vtx* roomVtx, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6, s32 arg7,
-                  s32 arg8) {
-    s16 phi_a2_4 = { 0 };
-    s32 i;
-    s32 j;
-    s32 k;
-    s16 phi_a0_4;
-    s16 phi_t1;
-    s32 temp1 = { 0 };
-    s16 phi_ra;
-    s16 phi_t2_4;
-    s32 temp2 = { 0 };
-    s32 sp2B4[5 * 5] = { 0 };
-    s32 sp250[5 * 5] = { 0 };
-    s32 sp1EC[5 * 5] = { 0 };
-    s32 sp188[5 * 5] = { 0 };
-    s32 sp124[5 * 5] = { 0 };
+int32_t func_800AE2C0(SkyboxContext* skyboxCtx, Vtx* roomVtx, int32_t arg2, int32_t arg3, int32_t arg4, int32_t arg5, int32_t arg6, int32_t arg7,
+                  int32_t arg8) {
+    int16_t phi_a2_4 = { 0 };
+    int32_t i;
+    int32_t j;
+    int32_t k;
+    int16_t phi_a0_4;
+    int16_t phi_t1;
+    int32_t temp1 = { 0 };
+    int16_t phi_ra;
+    int16_t phi_t2_4;
+    int32_t temp2 = { 0 };
+    int32_t sp2B4[5 * 5] = { 0 };
+    int32_t sp250[5 * 5] = { 0 };
+    int32_t sp1EC[5 * 5] = { 0 };
+    int32_t sp188[5 * 5] = { 0 };
+    int32_t sp124[5 * 5] = { 0 };
 
     switch (arg8) {
         case 0:
@@ -333,7 +333,7 @@ s32 func_800AE2C0(SkyboxContext* skyboxCtx, Vtx* roomVtx, s32 arg2, s32 arg3, s3
     skyboxCtx->unk_138 = &skyboxCtx->dListBuf[2 * arg8];
 
     for (i = 0; i < 0x20; i++) {
-        u16 index = D_8012ADD8[i];
+        uint16_t index = D_8012ADD8[i];
 
         roomVtx[arg2 + i].v.ob[0] = sp2B4[index];
         roomVtx[arg2 + i].v.ob[1] = sp250[index];
@@ -404,10 +404,10 @@ s32 func_800AE2C0(SkyboxContext* skyboxCtx, Vtx* roomVtx, s32 arg2, s32 arg3, s3
     return arg2;
 }
 
-void func_800AEFC8(SkyboxContext* skyboxCtx, s16 skyboxId) {
-    s32 i;
-    s32 j;
-    s32 phi_s3 = 0;
+void func_800AEFC8(SkyboxContext* skyboxCtx, int16_t skyboxId) {
+    int32_t i;
+    int32_t j;
+    int32_t phi_s3 = 0;
 
     //! @bug All shops only provide 2 faces for their sky box. Mask shop is missing from the condition
     // meaning that the Mask shop will calculate 4 faces
@@ -432,9 +432,9 @@ void func_800AEFC8(SkyboxContext* skyboxCtx, s16 skyboxId) {
     }
 }
 
-void func_800AF178(SkyboxContext* skyboxCtx, s32 arg1) {
-    s32 phi_s2 = 0;
-    s32 i;
+void func_800AF178(SkyboxContext* skyboxCtx, int32_t arg1) {
+    int32_t phi_s2 = 0;
+    int32_t i;
 
     for (i = 0; i < arg1; i++) {
         phi_s2 = func_800AE2C0(skyboxCtx, skyboxCtx->roomVtx, phi_s2, D_8012AF0C[i].unk_0, D_8012AF0C[i].unk_4,
@@ -444,23 +444,23 @@ void func_800AF178(SkyboxContext* skyboxCtx, s32 arg1) {
 
 void LoadSkyboxTex(SkyboxContext* skyboxCtx, int segmentIndex, int imageIndex, char* tex, int width, int height,
                    int offsetW, int offsetH) {
-    
+
         skyboxCtx->textures[segmentIndex][imageIndex] = tex;
-    
+
 }
 
 void LoadSkyboxTexAtOffset(SkyboxContext* skyboxCtx, int segmentIndex, int imageIndex, char* tex, int width, int height,
                            int offset) {
-    
+
         skyboxCtx->textures[segmentIndex][imageIndex] = tex;
-    
+
 }
 
 void LoadSkyboxPalette(SkyboxContext* skyboxCtx, int paletteIndex, char* palTex, int width, int height) {
-    
+
         skyboxCtx->palettes[paletteIndex] = palTex;
         skyboxCtx->palette_size = width * height;
-    
+
 }
 
 static const char* sSBVRFine0Tex[] = { gSunriseSkybox1Tex, gSunriseSkybox2Tex, gSunriseSkybox3Tex, gSunriseSkybox4Tex,
@@ -537,11 +537,11 @@ SkyboxTableEntry sSkyboxTable[] = {
     },
 };
 
-void Skybox_Setup(PlayState* play, SkyboxContext* skyboxCtx, s16 skyboxId) {
-    s16 i;
-    u8 sp41; // imageIdx
-    u8 sp40; // imageIdx2
-    s32 phi_v1 = { 0 };
+void Skybox_Setup(PlayState* play, SkyboxContext* skyboxCtx, int16_t skyboxId) {
+    int16_t i;
+    uint8_t sp41; // imageIdx
+    uint8_t sp40; // imageIdx2
+    int32_t phi_v1 = { 0 };
 
     switch (skyboxId) {
         case SKYBOX_NORMAL_SKY:
@@ -879,7 +879,7 @@ void Skybox_Setup(PlayState* play, SkyboxContext* skyboxCtx, s16 skyboxId) {
     }
 }
 
-void Skybox_Init(GameState* state, SkyboxContext* skyboxCtx, s16 skyboxId) {
+void Skybox_Init(GameState* state, SkyboxContext* skyboxCtx, int16_t skyboxId) {
     PlayState* play = (PlayState*)state;
 
     skyboxCtx->skyboxId = skyboxId;

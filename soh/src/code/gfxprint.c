@@ -16,34 +16,34 @@ static void GfxPrint_QueueSpan(GfxPrint* printer, const char* text, size_t lengt
         PathEngineOverlay_QueueGameText(line, printer->posX * 0.25f, printer->posY * 0.25f,
                                         printer->color.r / 255.0f, printer->color.g / 255.0f,
                                         printer->color.b / 255.0f, printer->color.a / 255.0f);
-        printer->posX += (u16)(count * 32);
+        printer->posX += (uint16_t)(count * 32);
         text += count;
         length -= count;
     }
 }
 
-void GfxPrint_SetColor(GfxPrint* printer, u32 r, u32 g, u32 b, u32 a) {
-    printer->color.r = (u8)r;
-    printer->color.g = (u8)g;
-    printer->color.b = (u8)b;
-    printer->color.a = (u8)a;
+void GfxPrint_SetColor(GfxPrint* printer, uint32_t r, uint32_t g, uint32_t b, uint32_t a) {
+    printer->color.r = (uint8_t)r;
+    printer->color.g = (uint8_t)g;
+    printer->color.b = (uint8_t)b;
+    printer->color.a = (uint8_t)a;
 }
 
-void GfxPrint_SetPosPx(GfxPrint* printer, s32 x, s32 y) {
-    printer->posX = printer->baseX + (u16)(x * 4);
-    printer->posY = printer->baseY + (u16)(y * 4);
+void GfxPrint_SetPosPx(GfxPrint* printer, int32_t x, int32_t y) {
+    printer->posX = printer->baseX + (uint16_t)(x * 4);
+    printer->posY = printer->baseY + (uint16_t)(y * 4);
 }
 
-void GfxPrint_SetPos(GfxPrint* printer, s32 x, s32 y) {
+void GfxPrint_SetPos(GfxPrint* printer, int32_t x, int32_t y) {
     GfxPrint_SetPosPx(printer, x * 8, y * 8);
 }
 
-void GfxPrint_SetBasePosPx(GfxPrint* printer, s32 x, s32 y) {
-    printer->baseX = (u16)(x * 4);
-    printer->baseY = (u8)(y * 4);
+void GfxPrint_SetBasePosPx(GfxPrint* printer, int32_t x, int32_t y) {
+    printer->baseX = (uint16_t)(x * 4);
+    printer->baseY = (uint8_t)(y * 4);
 }
 
-void GfxPrint_PrintStringWithSize(GfxPrint* printer, const void* buffer, u32 charSize, u32 charCount) {
+void GfxPrint_PrintStringWithSize(GfxPrint* printer, const void* buffer, uint32_t charSize, uint32_t charCount) {
     const char* cursor = (const char*)buffer;
     size_t remaining = (size_t)charSize * charCount;
 
@@ -67,12 +67,12 @@ void GfxPrint_PrintStringWithSize(GfxPrint* printer, const void* buffer, u32 cha
 
 void GfxPrint_PrintString(GfxPrint* printer, const char* text) {
     if (text != NULL) {
-        GfxPrint_PrintStringWithSize(printer, text, sizeof(char), (u32)strlen(text));
+        GfxPrint_PrintStringWithSize(printer, text, sizeof(char), (uint32_t)strlen(text));
     }
 }
 
 static void* GfxPrint_Callback(void* argument, const char* text, size_t size) {
-    GfxPrint_PrintStringWithSize((GfxPrint*)argument, text, sizeof(char), (u32)size);
+    GfxPrint_PrintStringWithSize((GfxPrint*)argument, text, sizeof(char), (uint32_t)size);
     return argument;
 }
 
@@ -102,15 +102,15 @@ Gfx* GfxPrint_Close(GfxPrint* printer) {
     return displayList;
 }
 
-s32 GfxPrint_VPrintf(GfxPrint* printer, const char* format, va_list arguments) {
+int32_t GfxPrint_VPrintf(GfxPrint* printer, const char* format, va_list arguments) {
     return PrintUtils_VPrintf(&printer->callback, format, arguments);
 }
 
-s32 GfxPrint_Printf(GfxPrint* printer, const char* format, ...) {
+int32_t GfxPrint_Printf(GfxPrint* printer, const char* format, ...) {
     va_list arguments;
 
     va_start(arguments, format);
-    s32 result = GfxPrint_VPrintf(printer, format, arguments);
+    int32_t result = GfxPrint_VPrintf(printer, format, arguments);
     va_end(arguments);
     return result;
 }

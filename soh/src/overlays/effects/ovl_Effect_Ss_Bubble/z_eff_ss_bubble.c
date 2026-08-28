@@ -9,16 +9,16 @@
 
 #define rScale regs[0]
 
-u32 EffectSsBubble_Init(PlayState* play, u32 index, EffectSs* this, void* initParamsx);
-void EffectSsBubble_Draw(PlayState* play, u32 index, EffectSs* this);
-void EffectSsBubble_Update(PlayState* play, u32 index, EffectSs* this);
+uint32_t EffectSsBubble_Init(PlayState* play, uint32_t index, EffectSs* this, void* initParamsx);
+void EffectSsBubble_Draw(PlayState* play, uint32_t index, EffectSs* this);
+void EffectSsBubble_Update(PlayState* play, uint32_t index, EffectSs* this);
 
 EffectSsInit Effect_Ss_Bubble_InitVars = {
     EFFECT_SS_BUBBLE,
     EffectSsBubble_Init,
 };
 
-u32 EffectSsBubble_Init(PlayState* play, u32 index, EffectSs* this, void* initParamsx) {
+uint32_t EffectSsBubble_Init(PlayState* play, uint32_t index, EffectSs* this, void* initParamsx) {
     EffectSsBubbleInitParams* initParams = (EffectSsBubbleInitParams*)initParamsx;
 
     //! @bug Rand_ZeroOne in the macro means a random number is generated for both parts of the macro.
@@ -37,9 +37,9 @@ u32 EffectSsBubble_Init(PlayState* play, u32 index, EffectSs* this, void* initPa
     return 1;
 }
 
-void EffectSsBubble_Draw(PlayState* play, u32 index, EffectSs* this) {
+void EffectSsBubble_Draw(PlayState* play, uint32_t index, EffectSs* this) {
     GraphicsContext* gfxCtx = play->state.gfxCtx;
-    f32 scale = this->rScale / 100.0f;
+    float scale = this->rScale / 100.0f;
 
     OPEN_DISPS(gfxCtx);
 
@@ -55,11 +55,11 @@ void EffectSsBubble_Draw(PlayState* play, u32 index, EffectSs* this) {
     CLOSE_DISPS(gfxCtx);
 }
 
-void EffectSsBubble_Update(PlayState* play, u32 index, EffectSs* this) {
+void EffectSsBubble_Update(PlayState* play, uint32_t index, EffectSs* this) {
     WaterBox* waterBox;
     Vec3f ripplePos;
 
-    f32 waterSurfaceY = this->pos.y;
+    float waterSurfaceY = this->pos.y;
 
     // kill bubble if it's out of range of a water box
     if (!WaterBox_GetSurface1(play, &play->colCtx, this->pos.x, this->pos.z, &waterSurfaceY, &waterBox)) {

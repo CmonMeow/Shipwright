@@ -5,8 +5,8 @@
 uintptr_t sSysCfbFbPtr[2];
 uintptr_t sSysCfbEnd;
 
-void SysCfb_Init(s32 n64dd) {
-    u32 screenSize = { 0 };
+void SysCfb_Init(int32_t n64dd) {
+    uint32_t screenSize = { 0 };
 
     /*
     if (osMemSize >= 0x800000) {
@@ -51,7 +51,7 @@ void SysCfb_Reset() {
     sSysCfbEnd = 0;
 }
 
-uintptr_t SysCfb_GetFbPtr(s32 idx) {
+uintptr_t SysCfb_GetFbPtr(int32_t idx) {
     if (idx < 2) {
         return sSysCfbFbPtr[idx];
     }

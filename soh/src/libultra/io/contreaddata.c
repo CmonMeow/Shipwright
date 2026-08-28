@@ -1,7 +1,7 @@
 #include "global.h"
 
-s32 osContStartReadData(OSMesgQueue* mq) {
-    s32 ret = { 0 };
+int32_t osContStartReadData(OSMesgQueue* mq) {
+    int32_t ret = { 0 };
 
     __osSiGetAccess();
     if (__osContLastPoll != 1) {
@@ -16,9 +16,9 @@ s32 osContStartReadData(OSMesgQueue* mq) {
 }
 
 void osContGetReadData(OSContPad* contData) {
-    u8* bufptr = (u8*)(&__osPifInternalBuff);
+    uint8_t* bufptr = (uint8_t*)(&__osPifInternalBuff);
     __OSContReadHeader read;
-    s32 i;
+    int32_t i;
 
     for (i = 0; i < __osMaxControllers; i++, bufptr += sizeof(read), contData++) {
         read = *((__OSContReadHeader*)bufptr);
@@ -32,9 +32,9 @@ void osContGetReadData(OSContPad* contData) {
 }
 
 void __osPackReadData(void) {
-    u8* bufptr = (u8*)(&__osPifInternalBuff);
+    uint8_t* bufptr = (uint8_t*)(&__osPifInternalBuff);
     __OSContReadHeader read;
-    s32 i;
+    int32_t i;
 
     for (i = 0; i < 0xF; i++) {
         __osPifInternalBuff.ram[i] = 0;
@@ -51,5 +51,5 @@ void __osPackReadData(void) {
         *((__OSContReadHeader*)bufptr) = read;
         bufptr += sizeof(read);
     }
-    *((u8*)bufptr) = CONT_CMD_END;
+    *((uint8_t*)bufptr) = CONT_CMD_END;
 }

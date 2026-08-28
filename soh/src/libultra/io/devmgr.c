@@ -5,8 +5,8 @@ void __osDevMgrMain(void* arg) {
     OSMesg sp70;
     OSMesg sp6C;
     OSMgrArgs* arg0 = (OSMgrArgs*)arg;
-    s32 phi_s0 = { 0 };
-    u32 sp54;
+    int32_t phi_s0 = { 0 };
+    uint32_t sp54;
 
     OSIoMesg* ioMesg = NULL;
 
@@ -21,7 +21,7 @@ void __osDevMgrMain(void* arg) {
                 block->dramAddr = (void*)((uintptr_t)block->dramAddr - block->sectorSize);
             }
 
-            s32 phi_s2 = ((transfer->transferMode == 2) && (ioMesg->piHandle->transferInfo.cmdType == 0)) ? 1 : 0;
+            int32_t phi_s2 = ((transfer->transferMode == 2) && (ioMesg->piHandle->transferInfo.cmdType == 0)) ? 1 : 0;
 
             osRecvMesg(arg0->acccessQueue, &sp6C, OS_MESG_BLOCK);
             __osResetGlobalIntMask(0x00100401);
@@ -39,7 +39,7 @@ void __osDevMgrMain(void* arg) {
                         __osEPiRawWriteIo(ioMesg->piHandle, 0x05000510, transfer->bmCtlShadow | 0x1000000);
                     }
                     block->errStatus = 4;
-                    HW_REG(PI_STATUS_REG, u32) = PI_STATUS_CLEAR_INTR;
+                    HW_REG(PI_STATUS_REG, uint32_t) = PI_STATUS_CLEAR_INTR;
                     __osSetGlobalIntMask(0x00100C01);
                 }
                 osSendMesg(ioMesg->hdr.retQueue, ioMesg, OS_MESG_NOBLOCK);

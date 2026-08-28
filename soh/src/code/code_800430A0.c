@@ -1,7 +1,7 @@
 #include "global.h"
 #include "vt.h"
 
-void func_800430A0(CollisionContext* colCtx, s32 bgId, Actor* actor) {
+void func_800430A0(CollisionContext* colCtx, int32_t bgId, Actor* actor) {
     MtxF prevTransform;
     MtxF prevTransformInv;
     MtxF curTransform;
@@ -43,9 +43,9 @@ void func_800430A0(CollisionContext* colCtx, s32 bgId, Actor* actor) {
 /**
  * Rotate actor
  */
-void func_800432A0(CollisionContext* colCtx, s32 bgId, Actor* actor) {
+void func_800432A0(CollisionContext* colCtx, int32_t bgId, Actor* actor) {
     if (DynaPoly_IsBgIdBgActor(bgId)) {
-        s16 rot = colCtx->dyna.bgActors[bgId].curTransform.rot.y - colCtx->dyna.bgActors[bgId].prevTransform.rot.y;
+        int16_t rot = colCtx->dyna.bgActors[bgId].curTransform.rot.y - colCtx->dyna.bgActors[bgId].prevTransform.rot.y;
 
         if (actor->id == ACTOR_PLAYER) {
             ((Player*)actor)->yaw += rot;
@@ -56,7 +56,7 @@ void func_800432A0(CollisionContext* colCtx, s32 bgId, Actor* actor) {
     }
 }
 
-void func_80043334(CollisionContext* colCtx, Actor* actor, s32 bgId) {
+void func_80043334(CollisionContext* colCtx, Actor* actor, int32_t bgId) {
     if (DynaPoly_IsBgIdBgActor(bgId)) {
         DynaPolyActor* dynaActor = DynaPoly_GetActor(colCtx, bgId);
         if (dynaActor != NULL) {
@@ -73,8 +73,8 @@ void func_80043334(CollisionContext* colCtx, Actor* actor, s32 bgId) {
  * Transform actor's position
  * `actor` is the actor to update
  */
-s32 func_800433A4(CollisionContext* colCtx, s32 bgId, Actor* actor) {
-    s32 result = false;
+int32_t func_800433A4(CollisionContext* colCtx, int32_t bgId, Actor* actor) {
+    int32_t result = false;
     DynaPolyActor* dynaActor = { 0 };
 
     if (DynaPoly_IsBgIdBgActor(bgId) == false) {

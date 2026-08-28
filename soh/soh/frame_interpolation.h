@@ -32,27 +32,27 @@ void FrameInterpolation_RecordMatrixPop(void);
 
 void FrameInterpolation_RecordMatrixPut(MtxF* src);
 
-void FrameInterpolation_RecordMatrixMult(MtxF* mf, u8 mode);
+void FrameInterpolation_RecordMatrixMult(MtxF* mf, uint8_t mode);
 
-void FrameInterpolation_RecordMatrixTranslate(f32 x, f32 y, f32 z, u8 mode);
+void FrameInterpolation_RecordMatrixTranslate(float x, float y, float z, uint8_t mode);
 
-void FrameInterpolation_RecordMatrixScale(f32 x, f32 y, f32 z, u8 mode);
+void FrameInterpolation_RecordMatrixScale(float x, float y, float z, uint8_t mode);
 
-void FrameInterpolation_RecordMatrixRotate1Coord(u32 coord, f32 value, u8 mode);
+void FrameInterpolation_RecordMatrixRotate1Coord(uint32_t coord, float value, uint8_t mode);
 
-void FrameInterpolation_RecordMatrixRotateZYX(s16 x, s16 y, s16 z, u8 mode);
+void FrameInterpolation_RecordMatrixRotateZYX(int16_t x, int16_t y, int16_t z, uint8_t mode);
 
 void FrameInterpolation_RecordMatrixTranslateRotateZYX(Vec3f* translation, Vec3s* rotation);
 
-void FrameInterpolation_RecordMatrixSetTranslateRotateYXZ(f32 translateX, f32 translateY, f32 translateZ, Vec3s* rot);
+void FrameInterpolation_RecordMatrixSetTranslateRotateYXZ(float translateX, float translateY, float translateZ, Vec3s* rot);
 
 void FrameInterpolation_RecordMatrixMtxFToMtx(MtxF* src, Mtx* dest);
 
-void FrameInterpolation_RecordMatrixToMtx(Mtx* dest, char* file, s32 line);
+void FrameInterpolation_RecordMatrixToMtx(Mtx* dest, char* file, int32_t line);
 
 void FrameInterpolation_RecordMatrixReplaceRotation(MtxF* mf);
 
-void FrameInterpolation_RecordMatrixRotateAxis(f32 angle, Vec3f* axis, u8 mode);
+void FrameInterpolation_RecordMatrixRotateAxis(float angle, Vec3f* axis, uint8_t mode);
 
 void FrameInterpolation_RecordSkinMatrixMtxFToMtx(MtxF* src, Mtx* dest);
 

@@ -6,9 +6,9 @@
 #include "OTRGlobals.h"
 //#include <math.h>
 
-u32 osResetType;
-u32 osTvType = OS_TV_NTSC;
-// u32 osTvType = OS_TV_PAL;
+uint32_t osResetType;
+uint32_t osTvType = OS_TV_NTSC;
+// uint32_t osTvType = OS_TV_PAL;
 OSViMode osViModeNtscLan1;
 OSViMode osViModeMpalLan1;
 OSViMode osViModeFpalLan1;
@@ -16,20 +16,20 @@ OSViMode osViModePalLan1;
 // AudioContext gAudioContext;
 // unk_D_8016E750 D_8016E750[4];
 DmaEntry gDmaDataTable[0x60C];
-// u8 D_80133418;
-u16 gAudioSEFlagSwapSource[64];
-u16 gAudioSEFlagSwapTarget[64];
-u8 gAudioSEFlagSwapMode[64];
+// uint8_t D_80133418;
+uint16_t gAudioSEFlagSwapSource[64];
+uint16_t gAudioSEFlagSwapTarget[64];
+uint8_t gAudioSEFlagSwapMode[64];
 
 // Zbuffer and Color framebuffer
-u16 D_0E000000[SCREEN_WIDTH * SCREEN_HEIGHT];
-u16 D_0F000000[SCREEN_WIDTH * SCREEN_HEIGHT];
+uint16_t D_0E000000[SCREEN_WIDTH * SCREEN_HEIGHT];
+uint16_t D_0F000000[SCREEN_WIDTH * SCREEN_HEIGHT];
 
-u8 osAppNmiBuffer[2048];
+uint8_t osAppNmiBuffer[2048];
 
-f32 qNaN0x10000 = 0x7F810000;
+float qNaN0x10000 = 0x7F810000;
 
-// void gSPTextureRectangle(Gfx* pkt, s32 xl, s32 yl, s32 xh, s32 yh, u32 tile, u32 s, s32 t, u32 dsdx, u32 dtdy)
+// void gSPTextureRectangle(Gfx* pkt, int32_t xl, int32_t yl, int32_t xh, int32_t yh, uint32_t tile, uint32_t s, int32_t t, uint32_t dsdx, uint32_t dtdy)
 //{
 //	__gSPTextureRectangle(pkt, xl, yl, xh, yh, tile, s, t, dsdx, dtdy);
 // }
@@ -43,51 +43,51 @@ OSPri osGetThreadPri(OSThread* thread) {
 void osSetThreadPri(OSThread* thread, OSPri pri) {
 }
 
-void osCreatePiManager(OSPri pri, OSMesgQueue* cmdQ, OSMesg* cmdBuf, s32 cmdMsgCnt) {
+void osCreatePiManager(OSPri pri, OSMesgQueue* cmdQ, OSMesg* cmdBuf, int32_t cmdMsgCnt) {
 }
 
-s32 osPfsFreeBlocks(OSPfs* pfs, s32* leftoverBytes) {
+int32_t osPfsFreeBlocks(OSPfs* pfs, int32_t* leftoverBytes) {
 }
 
-s32 osEPiWriteIo(OSPiHandle* handle, u32 devAddr, u32 data) {
+int32_t osEPiWriteIo(OSPiHandle* handle, uint32_t devAddr, uint32_t data) {
 }
 
-s32 osPfsReadWriteFile(OSPfs* pfs, s32 fileNo, u8 flag, s32 offset, ptrdiff_t size, u8* data) {
+int32_t osPfsReadWriteFile(OSPfs* pfs, int32_t fileNo, uint8_t flag, int32_t offset, ptrdiff_t size, uint8_t* data) {
 }
 
-s32 osPfsDeleteFile(OSPfs* pfs, u16 companyCode, u32 gameCode, u8* gameName, u8* extName) {
+int32_t osPfsDeleteFile(OSPfs* pfs, uint16_t companyCode, uint32_t gameCode, uint8_t* gameName, uint8_t* extName) {
 }
 
-s32 osPfsFileState(OSPfs* pfs, s32 fileNo, OSPfsState* state) {
+int32_t osPfsFileState(OSPfs* pfs, int32_t fileNo, OSPfsState* state) {
 }
 
-s32 osPfsInitPak(OSMesgQueue* mq, OSPfs* pfs, s32 channel) {
+int32_t osPfsInitPak(OSMesgQueue* mq, OSPfs* pfs, int32_t channel) {
 }
 
-s32 __osPfsCheckRamArea(OSPfs* pfs) {
+int32_t __osPfsCheckRamArea(OSPfs* pfs) {
 }
 
-s32 osPfsChecker(OSPfs* pfs) {
+int32_t osPfsChecker(OSPfs* pfs) {
 }
 
-s32 osPfsFindFile(OSPfs* pfs, u16 companyCode, u32 gameCode, u8* gameName, u8* extName, s32* fileNo) {
+int32_t osPfsFindFile(OSPfs* pfs, uint16_t companyCode, uint32_t gameCode, uint8_t* gameName, uint8_t* extName, int32_t* fileNo) {
 }
 
-s32 osPfsAllocateFile(OSPfs* pfs, u16 companyCode, u32 gameCode, u8* gameName, u8* extName, s32 length, s32* fileNo) {
+int32_t osPfsAllocateFile(OSPfs* pfs, uint16_t companyCode, uint32_t gameCode, uint8_t* gameName, uint8_t* extName, int32_t length, int32_t* fileNo) {
 }
 
 OSIntMask osSetIntMask(OSIntMask a) {
     return 0;
 }
 
-s32 osAfterPreNMI(void) {
+int32_t osAfterPreNMI(void) {
     return 0;
 }
 
-s32 osProbeRumblePak(OSMesgQueue* ctrlrqueue, OSPfs* pfs, u32 channel) {
+int32_t osProbeRumblePak(OSMesgQueue* ctrlrqueue, OSPfs* pfs, uint32_t channel) {
 }
 
-s32 osSetRumble(OSPfs* pfs, u32 vibrate) {
+int32_t osSetRumble(OSPfs* pfs, uint32_t vibrate) {
     return 0;
 }
 
@@ -103,29 +103,29 @@ void osStopThread(OSThread* thread) {
 void osDestroyThread(OSThread* thread) {
 }
 
-void osWritebackDCache(void* vaddr, s32 nbytes) {
+void osWritebackDCache(void* vaddr, int32_t nbytes) {
 }
 
-void osInvalICache(void* vaddr, s32 nbytes) {
+void osInvalICache(void* vaddr, int32_t nbytes) {
 }
 
-s32 osContStartQuery(OSMesgQueue* mq) {
+int32_t osContStartQuery(OSMesgQueue* mq) {
 }
 
 void osContGetQuery(OSContStatus* data) {
 }
 
-u32 __osGetFpcCsr() {
+uint32_t __osGetFpcCsr() {
     return 0;
 }
 
-void __osSetFpcCsr(u32 a0) {
+void __osSetFpcCsr(uint32_t a0) {
 }
 
-s32 __osDisableInt(void) {
+int32_t __osDisableInt(void) {
 }
 
-void __osRestoreInt(s32 a0) {
+void __osRestoreInt(int32_t a0) {
 }
 
 OSThread* __osGetActiveQueue(void) {
@@ -134,22 +134,22 @@ OSThread* __osGetActiveQueue(void) {
 OSThread* __osGetCurrFaultedThread(void) {
 }
 
-u32 osMemSize = 1024 * 1024 * 1024;
+uint32_t osMemSize = 1024 * 1024 * 1024;
 
-void Audio_osInvalDCache(void* buf, s32 size) {
+void Audio_osInvalDCache(void* buf, int32_t size) {
 }
 
-void Audio_osWritebackDCache(void* mem, s32 size) {
+void Audio_osWritebackDCache(void* mem, int32_t size) {
 }
 
-s32 osAiSetFrequency(u32 freq) {
+int32_t osAiSetFrequency(uint32_t freq) {
     // this is based off the math from the original method
     /*
 
-    s32 osAiSetFrequency(u32 frequency) {
-        u8 bitrate = { 0 };
-        f32 dacRateF = ((f32)osViClock / frequency) + 0.5f;
-        u32 dacRate = dacRateF;
+    int32_t osAiSetFrequency(uint32_t frequency) {
+        uint8_t bitrate = { 0 };
+        float dacRateF = ((float)osViClock / frequency) + 0.5f;
+        uint32_t dacRate = dacRateF;
 
         if (dacRate < 132) {
             return -1;
@@ -160,9 +160,9 @@ s32 osAiSetFrequency(u32 freq) {
             bitrate = 16;
         }
 
-        HW_REG(AI_DACRATE_REG, u32) = dacRate - 1;
-        HW_REG(AI_BITRATE_REG, u32) = bitrate - 1;
-        return osViClock / (s32)dacRate;
+        HW_REG(AI_DACRATE_REG, uint32_t) = dacRate - 1;
+        HW_REG(AI_BITRATE_REG, uint32_t) = bitrate - 1;
+        return osViClock / (int32_t)dacRate;
     }
 
     */
@@ -171,12 +171,12 @@ s32 osAiSetFrequency(u32 freq) {
 
     // osViClock comes from
     // #define VI_NTSC_CLOCK 48681812 /* Hz = 48.681812 MHz */
-    // s32 osViClock = VI_NTSC_CLOCK;
+    // int32_t osViClock = VI_NTSC_CLOCK;
 
     // frequency was originally 32000
 
     // given all of that, dacRate is
-    // (u32)(((f32)48681812 / 32000) + 0.5f)
+    // (uint32_t)(((float)48681812 / 32000) + 0.5f)
     // which evaluates to 1521 (which is > 132)
 
     // this leaves us with a final calculation of
@@ -186,28 +186,28 @@ s32 osAiSetFrequency(u32 freq) {
     return 32006;
 }
 
-void osInvalDCache(void* vaddr, s32 nbytes) {
+void osInvalDCache(void* vaddr, int32_t nbytes) {
 }
 
 void osWritebackDCacheAll(void) {
 }
 
-void Audio_SetBGM(u32 bgmId) {
+void Audio_SetBGM(uint32_t bgmId) {
 }
 
-s32 osContSetCh(u8 ch) {
+int32_t osContSetCh(uint8_t ch) {
 }
 
-u32 osDpGetStatus(void) {
+uint32_t osDpGetStatus(void) {
 }
 
-void osDpSetStatus(u32 status) {
+void osDpSetStatus(uint32_t status) {
 }
 
-u32 __osSpGetStatus() {
+uint32_t __osSpGetStatus() {
 }
 
-void __osSpSetStatus(u32 status) {
+void __osSpSetStatus(uint32_t status) {
 }
 
 OSPiHandle* osDriveRomInit() {
@@ -225,7 +225,7 @@ void __osExceptionPreamble() {
 void __osCleanupThread(void) {
 }
 
-s32 _Printf(PrintCallback a, void* arg, const char* fmt, va_list ap) {
+int32_t _Printf(PrintCallback a, void* arg, const char* fmt, va_list ap) {
     unsigned char buffer[4096];
 
     vsnprintf(buffer, sizeof(buffer), fmt, ap);
@@ -238,25 +238,25 @@ void osSpTaskLoad(OSTask* task) {
 void osSpTaskStartGo(OSTask* task) {
 }
 
-void osSetUpMempakWrite(s32 channel, OSPifRam* buf) {
+void osSetUpMempakWrite(int32_t channel, OSPifRam* buf) {
 }
 
-u32 osGetMemSize(void) {
+uint32_t osGetMemSize(void) {
     return 1024 * 1024 * 1024;
 }
 
-s32 osEPiReadIo(OSPiHandle* handle, u32 devAddr, u32* data) {
+int32_t osEPiReadIo(OSPiHandle* handle, uint32_t devAddr, uint32_t* data) {
     return 0;
 }
 
 void osSpTaskYield(void) {
 }
 
-s32 osStopTimer(OSTimer* timer) {
+int32_t osStopTimer(OSTimer* timer) {
 }
 
 OSYieldResult osSpTaskYielded(OSTask* task) {
 }
 
-void osViExtendVStart(u32 arg0) {
+void osViExtendVStart(uint32_t arg0) {
 }

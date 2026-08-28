@@ -10,8 +10,8 @@
 
 namespace SOH {
 typedef struct {
-    /* 0x00 */ u8 spawn;
-    /* 0x01 */ u8 room;
+    /* 0x00 */ uint8_t spawn;
+    /* 0x01 */ uint8_t room;
 } EntranceEntry;
 
 class SetEntranceList : public SceneCommand<EntranceEntry> {

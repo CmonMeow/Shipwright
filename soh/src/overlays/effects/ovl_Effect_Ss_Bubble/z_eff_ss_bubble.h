@@ -6,10 +6,10 @@
 
 typedef struct {
     /* 0x00 */ Vec3f pos;
-    /* 0x0C */ f32 yPosOffset;
-    /* 0x10 */ f32 yPosRandScale;
-    /* 0x14 */ f32 xzPosRandScale;
-    /* 0x18 */ f32 scale;
+    /* 0x0C */ float yPosOffset;
+    /* 0x10 */ float yPosRandScale;
+    /* 0x14 */ float xzPosRandScale;
+    /* 0x18 */ float scale;
 } EffectSsBubbleInitParams; // size = 0x1C
 
 #endif

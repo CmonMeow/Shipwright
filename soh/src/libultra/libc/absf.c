@@ -1,5 +1,5 @@
 #include "global.h"
 
-f32 absf(f32 a) {
+float absf(float a) {
     return fabsf(a);
 }

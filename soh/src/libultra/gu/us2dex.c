@@ -1,8 +1,8 @@
 #include "global.h"
 
 void guS2DInitBg(uObjBg* bg) {
-    s32 tmem = (bg->b.imageFmt == G_IM_FMT_CI) ? 0x100 : 0x200;
-    u16 shift = (6 - bg->b.imageSiz);
+    int32_t tmem = (bg->b.imageFmt == G_IM_FMT_CI) ? 0x100 : 0x200;
+    uint16_t shift = (6 - bg->b.imageSiz);
 
     if (bg->b.imageLoad == G_BGLT_LOADBLOCK) {
         bg->b.tmemW = bg->b.imageW >> shift;

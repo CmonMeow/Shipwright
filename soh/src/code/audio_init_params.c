@@ -1,11 +1,11 @@
 #include "global.h"
 
-u8 D_8016F0E0[0xA0]; // unused
+uint8_t D_8016F0E0[0xA0]; // unused
 AudioContext gAudioContext;
 void (*D_801755D0)(void);
-s32 D_801755D8[3]; // unused
+int32_t D_801755D8[3]; // unused
 
-const s16 D_8014A6C0[] = {
+const int16_t D_8014A6C0[] = {
     0x1C00, // unused
     0x0030, // gTatumsPerBeat
 };

@@ -14,18 +14,18 @@ static const du pilo = { 0x3E6110B4, 0x611A6263 };
 
 static const fu zero = { 0x00000000 };
 
-f32 cosf(f32 x) {
-    s32 ix = *(s32*)&x;
-    s32 xpt = (ix >> 22);
+float cosf(float x) {
+    int32_t ix = *(int32_t*)&x;
+    int32_t xpt = (ix >> 22);
 
     xpt &= 0x1FF;
 
     if (xpt < 0x136) {
-        f32 absx = (x > 0) ? x : -x;
-        f64 dx = absx;
+        float absx = (x > 0) ? x : -x;
+        double dx = absx;
 
-        f64 dn = dx * rpi.d + 0.5;
-        s32 n = ROUND(dn);
+        double dn = dx * rpi.d + 0.5;
+        int32_t n = ROUND(dn);
         dn = n;
 
         dn -= 0.5;
@@ -33,16 +33,16 @@ f32 cosf(f32 x) {
         dx -= dn * pihi.d;
         dx -= dn * pilo.d;
 
-        f64 xSq = SQ(dx);
+        double xSq = SQ(dx);
 
-        f64 polyApprox = ((P[4].d * xSq + P[3].d) * xSq + P[2].d) * xSq + P[1].d;
+        double polyApprox = ((P[4].d * xSq + P[3].d) * xSq + P[2].d) * xSq + P[1].d;
 
-        f64 result = dx + (dx * xSq) * polyApprox;
+        double result = dx + (dx * xSq) * polyApprox;
 
         if (!(n & 1)) {
-            return (f32)result;
+            return (float)result;
         }
-        return -(f32)result;
+        return -(float)result;
     }
     if (x != x) {
         return __libm_qnan_f;

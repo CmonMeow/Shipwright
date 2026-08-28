@@ -19,16 +19,16 @@
 #define rDirection regs[9]
 #define rScale regs[10]
 
-u32 EffectSsSibuki_Init(PlayState* play, u32 index, EffectSs* this, void* initParamsx);
-void EffectSsSibuki_Draw(PlayState* play, u32 index, EffectSs* this);
-void EffectSsSibuki_Update(PlayState* play, u32 index, EffectSs* this);
+uint32_t EffectSsSibuki_Init(PlayState* play, uint32_t index, EffectSs* this, void* initParamsx);
+void EffectSsSibuki_Draw(PlayState* play, uint32_t index, EffectSs* this);
+void EffectSsSibuki_Update(PlayState* play, uint32_t index, EffectSs* this);
 
 EffectSsInit Effect_Ss_Sibuki_InitVars = {
     EFFECT_SS_SIBUKI,
     EffectSsSibuki_Init,
 };
 
-u32 EffectSsSibuki_Init(PlayState* play, u32 index, EffectSs* this, void* initParamsx) {
+uint32_t EffectSsSibuki_Init(PlayState* play, uint32_t index, EffectSs* this, void* initParamsx) {
     EffectSsSibukiInitParams* initParams = (EffectSsSibukiInitParams*)initParamsx;
 
     this->pos = initParams->pos;
@@ -41,7 +41,7 @@ u32 EffectSsSibuki_Init(PlayState* play, u32 index, EffectSs* this, void* initPa
         this->gfx = SEGMENTED_TO_VIRTUAL(gEffBubble1Tex);
     }
 
-    this->life = ((s16)((Rand_ZeroOne() * (500.0f + KREG(64))) * 0.01f)) + KREG(65) + 10;
+    this->life = ((int16_t)((Rand_ZeroOne() * (500.0f + KREG(64))) * 0.01f)) + KREG(65) + 10;
     this->rMoveDelay = initParams->moveDelay + 1;
     this->draw = EffectSsSibuki_Draw;
     this->update = EffectSsSibuki_Update;
@@ -59,9 +59,9 @@ u32 EffectSsSibuki_Init(PlayState* play, u32 index, EffectSs* this, void* initPa
     return 1;
 }
 
-void EffectSsSibuki_Draw(PlayState* play, u32 index, EffectSs* this) {
+void EffectSsSibuki_Draw(PlayState* play, uint32_t index, EffectSs* this) {
     GraphicsContext* gfxCtx = play->state.gfxCtx;
-    f32 scale = this->rScale / 100.0f;
+    float scale = this->rScale / 100.0f;
 
     OPEN_DISPS(gfxCtx);
 
@@ -77,7 +77,7 @@ void EffectSsSibuki_Draw(PlayState* play, u32 index, EffectSs* this) {
     CLOSE_DISPS(gfxCtx);
 }
 
-void EffectSsSibuki_Update(PlayState* play, u32 index, EffectSs* this) {
+void EffectSsSibuki_Update(PlayState* play, uint32_t index, EffectSs* this) {
     Player* player = GET_PLAYER(play);
 
     if (this->pos.y <= player->actor.floorHeight) {
@@ -88,8 +88,8 @@ void EffectSsSibuki_Update(PlayState* play, u32 index, EffectSs* this) {
         this->rMoveDelay--;
 
         if (this->rMoveDelay == 0) {
-            s16 yaw = Camera_GetInputDirYaw(Play_GetCamera(play, 0));
-            f32 xzVelScale = ((200.0f + KREG(20)) * 0.01f) + ((0.1f * Rand_ZeroOne()) * (KREG(23) + 20.0f));
+            int16_t yaw = Camera_GetInputDirYaw(Play_GetCamera(play, 0));
+            float xzVelScale = ((200.0f + KREG(20)) * 0.01f) + ((0.1f * Rand_ZeroOne()) * (KREG(23) + 20.0f));
 
             if (this->rDirection != 0) {
                 xzVelScale *= -1.0f;

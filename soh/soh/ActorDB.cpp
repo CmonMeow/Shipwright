@@ -33,7 +33,7 @@ static constexpr AddPair initialActorTable[] = {
 #undef DEFINE_ACTOR
 
 // https://wiki.cloudmodding.com/oot/Actor_List_(Variables)
-static constexpr std::pair<u16, const char*> actorDescriptionData[] = {
+static constexpr std::pair<uint16_t, const char*> actorDescriptionData[] = {
     { ACTOR_PLAYER, "Link" },
     { ACTOR_EN_TEST, "Stalfos" },
     { ACTOR_EN_GIRLA, "Shop Items" },
@@ -457,8 +457,8 @@ static constexpr std::pair<u16, const char*> actorDescriptionData[] = {
     { ACTOR_BG_JYA_BLOCK, "Silver Block (Child Era)" },
     { ACTOR_OBJ_WARP2BLOCK, "Navi Infospot (Green, Time Block)" },
 };
-static std::unordered_map<u16, const char*> actorDescriptions =
-    std::unordered_map<u16, const char*>(std::begin(actorDescriptionData), std::end(actorDescriptionData));
+static std::unordered_map<uint16_t, const char*> actorDescriptions =
+    std::unordered_map<uint16_t, const char*>(std::begin(actorDescriptionData), std::end(actorDescriptionData));
 
 ActorDB::ActorDB() {
     db.reserve(ACTOR_NUMBER_MAX); // reserve size for all initial entries so we don't do it for each

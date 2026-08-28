@@ -17,11 +17,11 @@ extern "C" {
 struct PlayState;
 struct Actor;
 
-f32 Ship_GetExtendedAspectRatioMultiplier();
+float Ship_GetExtendedAspectRatioMultiplier();
 void Ship_ExtendedCullingActorRestoreProjectedPos(PlayState* play, Actor* actor);
 
 bool Ship_IsCStringEmpty(const char* str);
-void Ship_CreateQuadVertexGroup(Vtx* vtxList, s32 xStart, s32 yStart, s32 width, s32 height, u8 flippedH);
+void Ship_CreateQuadVertexGroup(Vtx* vtxList, int32_t xStart, int32_t yStart, int32_t width, int32_t height, uint8_t flippedH);
 
 #ifdef __cplusplus
 }

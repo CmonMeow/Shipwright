@@ -11,61 +11,61 @@ struct Fishing;
 typedef struct Fishing {
     /* 0x0000 */ Actor actor;
     /* 0x014C */ char unk_14C[0x004];
-    /* 0x0150 */ u8 isLoach;
-    /* 0x0151 */ u8 lilyTimer; // if near lily and >0, lily moves. Move more if >20
-    /* 0x0152 */ u8 unk_152;
-    /* 0x0154 */ s16 unk_154;
-    /* 0x0156 */ u8 unk_156;
-    /* 0x0157 */ u8 unk_157;
-    /* 0x0158 */ s16 fishState;  // negative index for loach behavior
-    /* 0x015A */ s16 fishStateNext;
-    /* 0x015C */ s16 stateAndTimer; // fish use as timer that's AND'd, owner as talking state
-    /* 0x015E */ s16 unk_15E;
-    /* 0x0160 */ s16 unk_160; // fish use as rotateX, owner as index of eye texture
-    /* 0x0162 */ s16 unk_162; // fish use as rotateY, owner as index of eye texture
-    /* 0x0164 */ s16 unk_164; // fish use as rotateZ, owner as rotation of head
+    /* 0x0150 */ uint8_t isLoach;
+    /* 0x0151 */ uint8_t lilyTimer; // if near lily and >0, lily moves. Move more if >20
+    /* 0x0152 */ uint8_t unk_152;
+    /* 0x0154 */ int16_t unk_154;
+    /* 0x0156 */ uint8_t unk_156;
+    /* 0x0157 */ uint8_t unk_157;
+    /* 0x0158 */ int16_t fishState;  // negative index for loach behavior
+    /* 0x015A */ int16_t fishStateNext;
+    /* 0x015C */ int16_t stateAndTimer; // fish use as timer that's AND'd, owner as talking state
+    /* 0x015E */ int16_t unk_15E;
+    /* 0x0160 */ int16_t unk_160; // fish use as rotateX, owner as index of eye texture
+    /* 0x0162 */ int16_t unk_162; // fish use as rotateY, owner as index of eye texture
+    /* 0x0164 */ int16_t unk_164; // fish use as rotateZ, owner as rotation of head
     /* 0x0166 */ Vec3s rotationTarget;
-    /* 0x016C */ s16 fishLimb23RotYDelta;
-    /* 0x016E */ s16 unk_16E;
-    /* 0x0170 */ s16 fishLimbDRotZDelta;
-    /* 0x0172 */ s16 fishLimbEFRotYDelta;
-    /* 0x0174 */ s16 fishLimb89RotYDelta;
-    /* 0x0176 */ s16 fishLimb4RotYDelta;
-    /* 0x0178 */ s16 unk_178;
-    /* 0x017A */ s16 timerArray[4];
-    /* 0x0184 */ f32 unk_184;
-    /* 0x0188 */ f32 speedTarget;
-    /* 0x018C */ f32 fishLimbRotPhase;
-    /* 0x0190 */ f32 unk_190; // fishLimbRotPhaseStep target
-    /* 0x0194 */ f32 unk_194; // fishLimbRotPhaseMag target
-    /* 0x0198 */ f32 fishLimbRotPhaseStep;
-    /* 0x019C */ f32 fishLimbRotPhaseMag;
-    /* 0x01A0 */ s16 bumpTimer; // set when hitting a wall.
-    /* 0x01A2 */ s16 unk_1A2; // "scared" timer?
-    /* 0x01A4 */ s16 unk_1A4; // "scared" timer? set at same time as above
-    /* 0x01A8 */ f32 perception; // how easily they are drawn to the lure.
-    /* 0x01AC */ f32 fishLength; // fish are (x^2*.0036+.5) lbs, loach double that.
-    /* 0x01B0 */ f32 rotationStep;
+    /* 0x016C */ int16_t fishLimb23RotYDelta;
+    /* 0x016E */ int16_t unk_16E;
+    /* 0x0170 */ int16_t fishLimbDRotZDelta;
+    /* 0x0172 */ int16_t fishLimbEFRotYDelta;
+    /* 0x0174 */ int16_t fishLimb89RotYDelta;
+    /* 0x0176 */ int16_t fishLimb4RotYDelta;
+    /* 0x0178 */ int16_t unk_178;
+    /* 0x017A */ int16_t timerArray[4];
+    /* 0x0184 */ float unk_184;
+    /* 0x0188 */ float speedTarget;
+    /* 0x018C */ float fishLimbRotPhase;
+    /* 0x0190 */ float unk_190; // fishLimbRotPhaseStep target
+    /* 0x0194 */ float unk_194; // fishLimbRotPhaseMag target
+    /* 0x0198 */ float fishLimbRotPhaseStep;
+    /* 0x019C */ float fishLimbRotPhaseMag;
+    /* 0x01A0 */ int16_t bumpTimer; // set when hitting a wall.
+    /* 0x01A2 */ int16_t unk_1A2; // "scared" timer?
+    /* 0x01A4 */ int16_t unk_1A4; // "scared" timer? set at same time as above
+    /* 0x01A8 */ float perception; // how easily they are drawn to the lure.
+    /* 0x01AC */ float fishLength; // fish are (x^2*.0036+.5) lbs, loach double that.
+    /* 0x01B0 */ float rotationStep;
     /* 0x01B4 */ Vec3f fishTargetPos;
     /* 0x01C0 */ Vec3f fishMouthPos;
-    /* 0x01CC */ s16 loachRotYDelta[3]; // adds rotation to the loach limb 3-5.
-    /* 0x01D2 */ u8 bubbleTime; // spawn bubbles while >0
-    /* 0x01D3 */ u8 isAquariumMessage;
-    /* 0x01D4 */ u8 aquariumWaitTimer;
+    /* 0x01CC */ int16_t loachRotYDelta[3]; // adds rotation to the loach limb 3-5.
+    /* 0x01D2 */ uint8_t bubbleTime; // spawn bubbles while >0
+    /* 0x01D3 */ uint8_t isAquariumMessage;
+    /* 0x01D4 */ uint8_t aquariumWaitTimer;
     /* 0x01D8 */ SkelAnime skelAnime;
     /* 0x021C */ LightNode* lightNode;
     /* 0x0220 */ LightInfo lightInfo;
     /* 0x0230 */ ColliderJntSph collider;
     /* 0x0250 */ ColliderJntSphElement colliderElements[12];
-    u8 isWild;
+    uint8_t isWild;
     WaterBox* wildWaterBox;
-    f32 wildWaterSurfaceY;
-    f32 wildMinX;
-    f32 wildMaxX;
-    f32 wildMinZ;
-    f32 wildMaxZ;
-    s32 networkOwnerPlayerId;
-    u8 networkHookAnnounced;
+    float wildWaterSurfaceY;
+    float wildMinX;
+    float wildMaxX;
+    float wildMinZ;
+    float wildMaxZ;
+    int32_t networkOwnerPlayerId;
+    uint8_t networkHookAnnounced;
 } Fishing;
 
 #define EN_FISH_OWNER 1      // param for owner of pond. default if params<100
@@ -77,28 +77,28 @@ typedef struct Fishing {
 
 struct VBFishingData {
     Fishing* actor;
-    u8* sFishOnHandIsLoach;
-    u8* sSinkingLureLocation;
-    f32* sFishOnHandLength;
-    f32 fishWeight;
-    f32 sFishingRecordLength;
+    uint8_t* sFishOnHandIsLoach;
+    uint8_t* sSinkingLureLocation;
+    float* sFishOnHandLength;
+    float fishWeight;
+    float sFishingRecordLength;
 };
 
-s32 Fishing_GetNetworkVisualState(PlayState* play, u8* castState, Vec3f* rodTipOffset, Vec3f* lureOffset,
-                                   Vec3f* lureDrawOffset, f32* rodBendY, f32* rodBendX, f32* rodTwist,
-                                   f32* rodCastX, Vec3f* lureRot, f32* lureSpin, f32* lureZOffset,
-                                   Vec3f lureHookOffsets[2], Vec3f lureHookRot[2], f32* lineScale,
-                                   f32* lineGravity, u8* lureType, u8* lineSpooled, u8* lineHooked,
-                                   u8* fishActive, u8* fishIsLoach,
-                                   Vec3f* fishOffset, Vec3s* fishRot, s16 fishLimbRot[8], f32* fishLength,
-                                   s32* fishRoomId, s32* fishActorParams, s32* fishHomeX, s32* fishHomeY,
-                                   s32* fishHomeZ,
-                                   u8* sinkingLureSegmentIndex, u8* sinkingLureUnderwater);
-s32 Fishing_EnsureNetworkPopulation(PlayState* play);
+int32_t Fishing_GetNetworkVisualState(PlayState* play, uint8_t* castState, Vec3f* rodTipOffset, Vec3f* lureOffset,
+                                   Vec3f* lureDrawOffset, float* rodBendY, float* rodBendX, float* rodTwist,
+                                   float* rodCastX, Vec3f* lureRot, float* lureSpin, float* lureZOffset,
+                                   Vec3f lureHookOffsets[2], Vec3f lureHookRot[2], float* lineScale,
+                                   float* lineGravity, uint8_t* lureType, uint8_t* lineSpooled, uint8_t* lineHooked,
+                                   uint8_t* fishActive, uint8_t* fishIsLoach,
+                                   Vec3f* fishOffset, Vec3s* fishRot, int16_t fishLimbRot[8], float* fishLength,
+                                   int32_t* fishRoomId, int32_t* fishActorParams, int32_t* fishHomeX, int32_t* fishHomeY,
+                                   int32_t* fishHomeZ,
+                                   uint8_t* sinkingLureSegmentIndex, uint8_t* sinkingLureUnderwater);
+int32_t Fishing_EnsureNetworkPopulation(PlayState* play);
 void Fishing_UpdateNetworkLine(PlayState* play, Actor* collisionActor, Vec3f* rodTip, Vec3f* lurePos,
                                Vec3f linePos[FISHING_LINE_SEG_COUNT], Vec3f lineRot[FISHING_LINE_SEG_COUNT],
-                               Vec3f lineUnk[FISHING_LINE_SEG_COUNT], s16 lineSpooled, u8 lureType, f32 lineGravity);
-void Fishing_UpdateNetworkSinkingLure(Vec3f* lurePos, Vec3f positions[20], s16 playerYaw, u8 castState,
-                                      u8 underwater);
+                               Vec3f lineUnk[FISHING_LINE_SEG_COUNT], int16_t lineSpooled, uint8_t lureType, float lineGravity);
+void Fishing_UpdateNetworkSinkingLure(Vec3f* lurePos, Vec3f positions[20], int16_t playerYaw, uint8_t castState,
+                                      uint8_t underwater);
 
 #endif

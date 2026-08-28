@@ -26,12 +26,12 @@
 // #define UNUSED __attribute__((unused))
 // #define FALLTHROUGH __attribute__((fallthrough))
 
-#define ARRAY_COUNT(arr) (s32)(sizeof(arr) / sizeof(arr[0]))
-#define ARRAY_COUNTU(arr) (u32)(sizeof(arr) / sizeof(arr[0]))
-#define ARRAY_COUNT_2D(arr) (s32)(sizeof(arr) / sizeof(arr[0][0]))
+#define ARRAY_COUNT(arr) (int32_t)(sizeof(arr) / sizeof(arr[0]))
+#define ARRAY_COUNTU(arr) (uint32_t)(sizeof(arr) / sizeof(arr[0]))
+#define ARRAY_COUNT_2D(arr) (int32_t)(sizeof(arr) / sizeof(arr[0][0]))
 
 #define PHYSICAL_TO_VIRTUAL(addr) (void*)((uintptr_t)(addr) + 0x80000000)
-#define VIRTUAL_TO_PHYSICAL(addr) (uintptr_t)((u8*)(addr) - 0x80000000)
+#define VIRTUAL_TO_PHYSICAL(addr) (uintptr_t)((uint8_t*)(addr) - 0x80000000)
 // Upstream TODO: Document reasoning for change
 //#define SEGMENTED_TO_VIRTUAL(addr) PHYSICAL_TO_VIRTUAL(gSegments[SEGMENT_NUMBER(addr)] + SEGMENT_OFFSET(addr))
 #define SEGMENTED_TO_VIRTUAL(addr) addr
@@ -64,7 +64,7 @@
 #define YEARS_ADULT 17
 #define LINK_AGE_IN_YEARS (PLAYER_IS_ADULT ? YEARS_ADULT : YEARS_CHILD)
 
-#define CLOCK_TIME(hr, min) ((s32)(((hr) * 60 + (min)) * (f32)0x10000 / (24 * 60) + 0.5f))
+#define CLOCK_TIME(hr, min) ((int32_t)(((hr) * 60 + (min)) * (float)0x10000 / (24 * 60) + 0.5f))
 
 #define IS_DAY (gSaveContext.nightFlag == 0)
 #define IS_NIGHT (gSaveContext.nightFlag == 1)
@@ -74,8 +74,8 @@
 #define AMMO(item) gSaveContext.inventory.ammo[SLOT(item)]
 #define BEANS_BOUGHT AMMO(ITEM_BEAN + 1)
 
-#define ALL_EQUIP_VALUE(equip) ((s32)(gSaveContext.inventory.equipment & gEquipMasks[equip]) >> gEquipShifts[equip])
-#define CUR_EQUIP_VALUE(equip) ((s32)(gSaveContext.equips.equipment & gEquipMasks[equip]) >> gEquipShifts[equip])
+#define ALL_EQUIP_VALUE(equip) ((int32_t)(gSaveContext.inventory.equipment & gEquipMasks[equip]) >> gEquipShifts[equip])
+#define CUR_EQUIP_VALUE(equip) ((int32_t)(gSaveContext.equips.equipment & gEquipMasks[equip]) >> gEquipShifts[equip])
 #define OWNED_EQUIP_FLAG(equip, value) (gBitFlags[value] << gEquipShifts[equip])
 #define OWNED_EQUIP_FLAG_ALT(equip, value) ((1 << (value)) << gEquipShifts[equip])
 #define CHECK_OWNED_EQUIP(equip, value) (OWNED_EQUIP_FLAG(equip, value) & gSaveContext.inventory.equipment)
@@ -86,7 +86,7 @@
 #define TUNIC_EQUIP_TO_PLAYER(tunicEquip) ((tunicEquip) - 1)
 #define BOOTS_EQUIP_TO_PLAYER(bootsEquip) ((bootsEquip) - 1)
 
-#define CUR_UPG_VALUE(upg) ((s32)(gSaveContext.inventory.upgrades & gUpgradeMasks[upg]) >> gUpgradeShifts[upg])
+#define CUR_UPG_VALUE(upg) ((int32_t)(gSaveContext.inventory.upgrades & gUpgradeMasks[upg]) >> gUpgradeShifts[upg])
 #define CAPACITY(upg, value) gUpgradeCapacities[upg][value]
 #define CUR_CAPACITY(upg) CAPACITY(upg, CUR_UPG_VALUE(upg))
 

@@ -4,10 +4,10 @@
 
 #define ROUND(num) floorf((num)*100) / 100;
 
-void Audio_SequenceChannelProcessSound(SequenceChannel* channel, s32 recalculateVolume, s32 b) {
-    f32 channelVolume;
-    f32 chanFreqScale = { 0 };
-    s32 i;
+void Audio_SequenceChannelProcessSound(SequenceChannel* channel, int32_t recalculateVolume, int32_t b) {
+    float channelVolume;
+    float chanFreqScale = { 0 };
+    int32_t i;
 
     if (channel->changes.s.volume || recalculateVolume) {
         channelVolume = ROUND((channel->volume * (channel->volumeScale * channel->seqPlayer->appliedFadeVolume)) *
@@ -53,7 +53,7 @@ void Audio_SequenceChannelProcessSound(SequenceChannel* channel, s32 recalculate
 }
 
 void Audio_SequencePlayerProcessSound(SequencePlayer* seqPlayer) {
-    s32 i;
+    int32_t i;
 
     if (seqPlayer->fadeTimer != 0) {
         seqPlayer->fadeVolume += seqPlayer->fadeVelocity;
@@ -85,11 +85,11 @@ void Audio_SequencePlayerProcessSound(SequencePlayer* seqPlayer) {
     seqPlayer->recalculateVolume = false;
 }
 
-f32 Audio_GetPortamentoFreqScale(Portamento* p) {
-    f32 result = { 0 };
+float Audio_GetPortamentoFreqScale(Portamento* p) {
+    float result = { 0 };
 
     p->cur += p->speed;
-    u32 loResCur = (p->cur >> 8) & 0xFF;
+    uint32_t loResCur = (p->cur >> 8) & 0xFF;
 
     if (loResCur >= 127) {
         loResCur = 127;
@@ -100,20 +100,20 @@ f32 Audio_GetPortamentoFreqScale(Portamento* p) {
     return result;
 }
 
-s16 Audio_GetVibratoPitchChange(VibratoState* vib) {
-    vib->time += (s32)vib->rate;
-    s32 index = (vib->time >> 10) & 0x3F;
+int16_t Audio_GetVibratoPitchChange(VibratoState* vib) {
+    vib->time += (int32_t)vib->rate;
+    int32_t index = (vib->time >> 10) & 0x3F;
     return vib->curve[index];
 }
 
-f32 Audio_GetVibratoFreqScale(VibratoState* vib) {
-    static f32 D_80130510 = 0.0f;
-    static s32 D_80130514 = 0;
-    f32 pitchChange = { 0 };
-    f32 extent;
-    f32 invExtent = { 0 };
-    f32 result = { 0 };
-    f32 temp = { 0 };
+float Audio_GetVibratoFreqScale(VibratoState* vib) {
+    static float D_80130510 = 0.0f;
+    static int32_t D_80130514 = 0;
+    float pitchChange = { 0 };
+    float extent;
+    float invExtent = { 0 };
+    float result = { 0 };
+    float temp = { 0 };
     SequenceChannel* channel = vib->channel;
 
     if (vib->delay != 0) {
@@ -126,29 +126,29 @@ f32 Audio_GetVibratoFreqScale(VibratoState* vib) {
     if (channel != ((SequenceChannel*)(-1))) {
         if (vib->extentChangeTimer) {
             if (vib->extentChangeTimer == 1) {
-                vib->extent = (s32)channel->vibratoExtentTarget;
+                vib->extent = (int32_t)channel->vibratoExtentTarget;
             } else {
-                vib->extent += ((s32)channel->vibratoExtentTarget - vib->extent) / (s32)vib->extentChangeTimer;
+                vib->extent += ((int32_t)channel->vibratoExtentTarget - vib->extent) / (int32_t)vib->extentChangeTimer;
             }
 
             vib->extentChangeTimer--;
-        } else if (channel->vibratoExtentTarget != (s32)vib->extent) {
+        } else if (channel->vibratoExtentTarget != (int32_t)vib->extent) {
             if ((vib->extentChangeTimer = channel->vibratoExtentChangeDelay) == 0) {
-                vib->extent = (s32)channel->vibratoExtentTarget;
+                vib->extent = (int32_t)channel->vibratoExtentTarget;
             }
         }
 
         if (vib->rateChangeTimer) {
             if (vib->rateChangeTimer == 1) {
-                vib->rate = (s32)channel->vibratoRateTarget;
+                vib->rate = (int32_t)channel->vibratoRateTarget;
             } else {
-                vib->rate += ((s32)channel->vibratoRateTarget - vib->rate) / (s32)vib->rateChangeTimer;
+                vib->rate += ((int32_t)channel->vibratoRateTarget - vib->rate) / (int32_t)vib->rateChangeTimer;
             }
 
             vib->rateChangeTimer--;
-        } else if (channel->vibratoRateTarget != (s32)vib->rate) {
+        } else if (channel->vibratoRateTarget != (int32_t)vib->rate) {
             if ((vib->rateChangeTimer = channel->vibratoRateChangeDelay) == 0) {
-                vib->rate = (s32)channel->vibratoRateTarget;
+                vib->rate = (int32_t)channel->vibratoRateTarget;
             }
         }
     }
@@ -193,15 +193,15 @@ void Audio_NoteVibratoInit(Note* note) {
     vib->channel = note->playbackState.parentLayer->channel;
     channel = vib->channel;
     if ((vib->extentChangeTimer = channel->vibratoExtentChangeDelay) == 0) {
-        vib->extent = (s32)channel->vibratoExtentTarget;
+        vib->extent = (int32_t)channel->vibratoExtentTarget;
     } else {
-        vib->extent = (s32)channel->vibratoExtentStart;
+        vib->extent = (int32_t)channel->vibratoExtentStart;
     }
 
     if ((vib->rateChangeTimer = channel->vibratoRateChangeDelay) == 0) {
-        vib->rate = (s32)channel->vibratoRateTarget;
+        vib->rate = (int32_t)channel->vibratoRateTarget;
     } else {
-        vib->rate = (s32)channel->vibratoRateStart;
+        vib->rate = (int32_t)channel->vibratoRateStart;
     }
     vib->delay = channel->vibratoDelay;
 }
@@ -211,7 +211,7 @@ void Audio_NotePortamentoInit(Note* note) {
     note->portamento = note->playbackState.parentLayer->portamento;
 }
 
-void Audio_AdsrInit(AdsrState* adsr, AdsrEnvelope* envelope, s16* volOut) {
+void Audio_AdsrInit(AdsrState* adsr, AdsrEnvelope* envelope, int16_t* volOut) {
     adsr->action.asByte = 0;
     adsr->delay = 0;
     adsr->envelope = envelope;
@@ -222,8 +222,8 @@ void Audio_AdsrInit(AdsrState* adsr, AdsrEnvelope* envelope, s16* volOut) {
     // removed, but the function parameter was forgotten and remains.)
 }
 
-f32 Audio_AdsrUpdate(AdsrState* adsr) {
-    u8 state = adsr->action.s.state;
+float Audio_AdsrUpdate(AdsrState* adsr) {
+    uint8_t state = adsr->action.s.state;
     switch (state) {
         case ADSR_STATE_DISABLED:
             return 0.0f;
@@ -243,7 +243,7 @@ f32 Audio_AdsrUpdate(AdsrState* adsr) {
 
         retry:
         case ADSR_STATE_LOOP:
-            adsr->delay = (s16)BE16SWAP(adsr->envelope[adsr->envIndex].delay);
+            adsr->delay = (int16_t)BE16SWAP(adsr->envelope[adsr->envIndex].delay);
             switch (adsr->delay) {
                 case ADSR_DISABLE:
                     adsr->action.s.state = ADSR_STATE_DISABLED;
@@ -252,7 +252,7 @@ f32 Audio_AdsrUpdate(AdsrState* adsr) {
                     adsr->action.s.state = ADSR_STATE_HANG;
                     break;
                 case ADSR_GOTO:
-                    adsr->envIndex = (s16)BE16SWAP(adsr->envelope[adsr->envIndex].arg);
+                    adsr->envIndex = (int16_t)BE16SWAP(adsr->envelope[adsr->envIndex].arg);
                     goto retry;
                 case ADSR_RESTART:
                     adsr->action.s.state = ADSR_STATE_INITIAL;
@@ -263,7 +263,7 @@ f32 Audio_AdsrUpdate(AdsrState* adsr) {
                     if (adsr->delay == 0) {
                         adsr->delay = 1;
                     }
-                    adsr->target = (s16)BE16SWAP(adsr->envelope[adsr->envIndex].arg) / 32767.0f;
+                    adsr->target = (int16_t)BE16SWAP(adsr->envelope[adsr->envIndex].arg) / 32767.0f;
                     adsr->target = adsr->target * adsr->target;
                     adsr->velocity = (adsr->target - adsr->current) / adsr->delay;
                     adsr->action.s.state = ADSR_STATE_FADE;

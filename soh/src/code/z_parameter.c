@@ -9,20 +9,20 @@
 // So, when indexing into it with a item button index, we need to adjust
 #define BUTTON_STATUS_INDEX(button) ((button) >= 4) ? ((button) + 1) : (button)
 
-static s16 sHBAScoreTier = 0;
-static u16 sHBAScoreDigits[] = { 0, 0, 0, 0 };
+static int16_t sHBAScoreTier = 0;
+static uint16_t sHBAScoreDigits[] = { 0, 0, 0, 0 };
 
-static u16 sCUpInvisible = 0;
-static u16 sCUpTimer = 0;
+static uint16_t sCUpInvisible = 0;
+static uint16_t sCUpTimer = 0;
 
-s16 gSpoilingItems[] = { ITEM_ODD_MUSHROOM, ITEM_FROG, ITEM_EYEDROPS };
-s16 gSpoilingItemReverts[] = { ITEM_COJIRO, ITEM_PRESCRIPTION, ITEM_PRESCRIPTION };
+int16_t gSpoilingItems[] = { ITEM_ODD_MUSHROOM, ITEM_FROG, ITEM_EYEDROPS };
+int16_t gSpoilingItemReverts[] = { ITEM_COJIRO, ITEM_PRESCRIPTION, ITEM_PRESCRIPTION };
 
-static s16 sEnvHazard = PLAYER_ENV_HAZARD_NONE;
-static s16 sEnvHazardActive = false;
+static int16_t sEnvHazard = PLAYER_ENV_HAZARD_NONE;
+static int16_t sEnvHazardActive = false;
 
 // original name: "alpha_change"
-void Interface_ChangeAlpha(u16 alphaType) {
+void Interface_ChangeAlpha(uint16_t alphaType) {
     if (alphaType != gSaveContext.unk_13EA) {
         osSyncPrintf("ＡＬＰＨＡーＴＹＰＥ＝%d  LAST_TIME_TYPE=%d\n", alphaType, gSaveContext.unk_13EE);
         gSaveContext.unk_13EA = gSaveContext.unk_13E8 = alphaType;
@@ -30,7 +30,7 @@ void Interface_ChangeAlpha(u16 alphaType) {
     }
 }
 
-void func_80082644(PlayState* play, s16 alpha) {
+void func_80082644(PlayState* play, int16_t alpha) {
     InterfaceContext* interfaceCtx = &play->interfaceCtx;
 
     if (gSaveContext.buttonStatus[0] == BTN_DISABLED) {
@@ -85,7 +85,7 @@ void func_80082644(PlayState* play, s16 alpha) {
 
 }
 
-void func_8008277C(PlayState* play, s16 maxAlpha, s16 alpha) {
+void func_8008277C(PlayState* play, int16_t maxAlpha, int16_t alpha) {
     InterfaceContext* interfaceCtx = &play->interfaceCtx;
 
     if (gSaveContext.forceRisingButtonAlphas != 0) {
@@ -118,9 +118,9 @@ void func_8008277C(PlayState* play, s16 maxAlpha, s16 alpha) {
 
 }
 
-void func_80082850(PlayState* play, s16 maxAlpha) {
+void func_80082850(PlayState* play, int16_t maxAlpha) {
     InterfaceContext* interfaceCtx = &play->interfaceCtx;
-    s16 alpha = 255 - maxAlpha;
+    int16_t alpha = 255 - maxAlpha;
 
     switch (gSaveContext.unk_13E8) {
         case 1:
@@ -539,7 +539,7 @@ void func_800849EC(PlayState* play) {
     gSaveContext.equips.buttonItems[0] = ITEM_NONE;
 }
 
-void Interface_LoadItemIcon1(PlayState* play, u16 button) {
+void Interface_LoadItemIcon1(PlayState* play, uint16_t button) {
     InterfaceContext* interfaceCtx = &play->interfaceCtx;
 
     osCreateMesgQueue(&interfaceCtx->loadQueue, &interfaceCtx->loadMsg, OS_MESG_BLOCK);
@@ -550,7 +550,7 @@ void Interface_LoadItemIcon1(PlayState* play, u16 button) {
     osRecvMesg(&interfaceCtx->loadQueue, NULL, OS_MESG_BLOCK);
 }
 
-void Interface_LoadItemIcon2(PlayState* play, u16 button) {
+void Interface_LoadItemIcon2(PlayState* play, uint16_t button) {
     InterfaceContext* interfaceCtx = &play->interfaceCtx;
 
     osCreateMesgQueue(&interfaceCtx->loadQueue, &interfaceCtx->loadMsg, OS_MESG_BLOCK);
@@ -570,16 +570,16 @@ void Interface_LoadItemIcon2(PlayState* play, u16 button) {
  *
  * @param play
  * @param item
- * @return u8
+ * @return uint8_t
  */
-u8 Item_Give(PlayState* play, u8 item) {
+uint8_t Item_Give(PlayState* play, uint8_t item) {
     (void)play;
 
     switch (item) {
         case ITEM_SWORD_MASTER:
             gSaveContext.inventory.equipment |=
                 OWNED_EQUIP_FLAG(EQUIP_TYPE_SWORD, EQUIP_INV_SWORD_MASTER);
-            gSaveContext.equips.equipment &= (u16)~(0xF << (EQUIP_TYPE_SWORD * 4));
+            gSaveContext.equips.equipment &= (uint16_t)~(0xF << (EQUIP_TYPE_SWORD * 4));
             gSaveContext.equips.equipment |= EQUIP_VALUE_SWORD_MASTER << (EQUIP_TYPE_SWORD * 4);
             return ITEM_NONE;
 
@@ -613,7 +613,7 @@ u8 Item_Give(PlayState* play, u8 item) {
     }
 }
 
-u8 Item_CheckObtainability(u8 item) {
+uint8_t Item_CheckObtainability(uint8_t item) {
     switch (item) {
         case ITEM_SWORD_MASTER:
             return CHECK_OWNED_EQUIP(EQUIP_TYPE_SWORD, EQUIP_INV_SWORD_MASTER) ? item : ITEM_NONE;
@@ -637,8 +637,8 @@ u8 Item_CheckObtainability(u8 item) {
             return ITEM_NONE;
     }
 }
-void Inventory_DeleteItem(u16 item, u16 invSlot) {
-    s16 i;
+void Inventory_DeleteItem(uint16_t item, uint16_t invSlot) {
+    int16_t i;
 
     if (item == ITEM_BEAN) {
         BEANS_BOUGHT = 0;
@@ -656,8 +656,8 @@ void Inventory_DeleteItem(u16 item, u16 invSlot) {
     }
 }
 
-s32 Inventory_ReplaceItem(PlayState* play, u16 oldItem, u16 newItem) {
-    s16 i;
+int32_t Inventory_ReplaceItem(PlayState* play, uint16_t oldItem, uint16_t newItem) {
+    int16_t i;
 
     for (i = 0; i < ARRAY_COUNT(gSaveContext.inventory.items); i++) {
         if (gSaveContext.inventory.items[i] == oldItem) {
@@ -677,8 +677,8 @@ s32 Inventory_ReplaceItem(PlayState* play, u16 oldItem, u16 newItem) {
     return 0;
 }
 
-s32 Inventory_HasEmptyBottle(void) {
-    u8* items = gSaveContext.inventory.items;
+int32_t Inventory_HasEmptyBottle(void) {
+    uint8_t* items = gSaveContext.inventory.items;
 
     if (items[SLOT_BOTTLE_1] == ITEM_BOTTLE) {
         return 1;
@@ -694,14 +694,14 @@ s32 Inventory_HasEmptyBottle(void) {
 }
 
 bool Inventory_HasEmptyBottleSlot(void) {
-    u8* items = gSaveContext.inventory.items;
+    uint8_t* items = gSaveContext.inventory.items;
 
     return (items[SLOT_BOTTLE_1] == ITEM_NONE || items[SLOT_BOTTLE_2] == ITEM_NONE ||
             items[SLOT_BOTTLE_3] == ITEM_NONE || items[SLOT_BOTTLE_4] == ITEM_NONE);
 }
 
-s32 Inventory_HasSpecificBottle(u8 bottleItem) {
-    u8* items = gSaveContext.inventory.items;
+int32_t Inventory_HasSpecificBottle(uint8_t bottleItem) {
+    uint8_t* items = gSaveContext.inventory.items;
 
     if (items[SLOT_BOTTLE_1] == bottleItem) {
         return 1;
@@ -716,7 +716,7 @@ s32 Inventory_HasSpecificBottle(u8 bottleItem) {
     }
 }
 
-void Inventory_UpdateBottleItem(PlayState* play, u8 item, u8 button) {
+void Inventory_UpdateBottleItem(PlayState* play, uint8_t item, uint8_t button) {
     osSyncPrintf("item_no=%x,  c_no=%x,  Pt=%x  Item_Register=%x\n", item, button,
                  gSaveContext.equips.cButtonSlots[button - 1],
                  gSaveContext.inventory.items[gSaveContext.equips.cButtonSlots[button - 1]]);
@@ -727,9 +727,9 @@ void Inventory_UpdateBottleItem(PlayState* play, u8 item, u8 button) {
         item = ITEM_MILK_HALF;
     }
 
-    
+
         gSaveContext.inventory.items[gSaveContext.equips.cButtonSlots[button - 1]] = item;
-    
+
 
     gSaveContext.equips.buttonItems[button] = item;
 
@@ -743,13 +743,13 @@ bool Inventory_HatchPocketCucco(PlayState* play) {
     return Inventory_ReplaceItem(play, ITEM_POCKET_EGG, ITEM_POCKET_CUCCO);
 }
 
-void func_80086D5C(s32* buf, u16 size) {
-    for (u16 i = 0; i < size; i++) {
+void func_80086D5C(int32_t* buf, uint16_t size) {
+    for (uint16_t i = 0; i < size; i++) {
         buf[i] = 0;
     }
 }
 
-void Interface_SetDoAction(PlayState* play, u16 action) {
+void Interface_SetDoAction(PlayState* play, uint16_t action) {
     InterfaceContext* interfaceCtx = &play->interfaceCtx;
 
     if (interfaceCtx->unk_1F0 != action) {
@@ -759,9 +759,9 @@ void Interface_SetDoAction(PlayState* play, u16 action) {
     }
 }
 
-s32 Health_ChangeBy(PlayState* play, s16 healthChange) {
-    u16 heartCount = { 0 };
-    u16 healthLevel = { 0 };
+int32_t Health_ChangeBy(PlayState* play, int16_t healthChange) {
+    uint16_t heartCount = { 0 };
+    uint16_t healthLevel = { 0 };
 
     // "＊＊＊＊＊ Fluctuation=%d (now=%d, max=%d) ＊＊＊"
     osSyncPrintf("＊＊＊＊＊  増減=%d (now=%d, max=%d)  ＊＊＊", healthChange, gSaveContext.health,
@@ -807,7 +807,7 @@ s32 Health_ChangeBy(PlayState* play, s16 healthChange) {
     }
 }
 
-void Rupees_ChangeBy(s64 rupeeChange) {
+void Rupees_ChangeBy(int64_t rupeeChange) {
     if (rupeeChange > 0) {
         if (gSaveContext.rupees > RUPEE_BALANCE_MAX - rupeeChange) {
             gSaveContext.rupees = RUPEE_BALANCE_MAX;
@@ -827,7 +827,7 @@ void Rupees_ChangeBy(s64 rupeeChange) {
     gSaveContext.rupeeAccumulator = 0;
 }
 
-void Inventory_ChangeAmmo(s16 item, s16 ammoChange) {
+void Inventory_ChangeAmmo(int16_t item, int16_t ammoChange) {
     // "Item = (%d)    Amount = (%d + %d)"
     osSyncPrintf("アイテム = (%d)    数 = (%d + %d)  ", item, AMMO(item), ammoChange);
 
@@ -886,12 +886,12 @@ void Inventory_ChangeAmmo(s16 item, s16 ammoChange) {
 }
 
 void Interface_Update(PlayState* play) {
-    static u8 D_80125B60 = 0;
-    static s16 sPrevTimeIncrement = 0;
+    static uint8_t D_80125B60 = 0;
+    static int16_t sPrevTimeIncrement = 0;
     MessageContext* msgCtx = &play->msgCtx;
     InterfaceContext* interfaceCtx = &play->interfaceCtx;
     Player* player = GET_PLAYER(play);
-    s16 alpha = { 0 };
+    int16_t alpha = { 0 };
     Input* debugInput = &play->state.input[2];
 
     {
@@ -938,7 +938,7 @@ void Interface_Update(PlayState* play) {
                 alpha = 0;
             }
 
-            s16 alpha1 = 0xFF - alpha;
+            int16_t alpha1 = 0xFF - alpha;
             if (alpha1 >= 0xFF) {
                 alpha1 = 0xFF;
             }
@@ -1184,7 +1184,7 @@ void Interface_Update(PlayState* play) {
             play->transitionTrigger = TRANS_TRIGGER_START;
             gSaveContext.sunsSongState = SUNSSONG_INACTIVE;
             func_800F6964(30);
-            gSaveContext.seqId = (u8)NA_BGM_DISABLED;
+            gSaveContext.seqId = (uint8_t)NA_BGM_DISABLED;
             gSaveContext.natureAmbienceId = NATURE_ID_DISABLED;
         } else {
             gSaveContext.sunsSongState = SUNSSONG_SPECIAL;

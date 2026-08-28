@@ -1,7 +1,7 @@
 #include "global.h"
 
 void TitleSetup_InitImpl(GameState* gameState) {
-    s32 buttonIndex;
+    int32_t buttonIndex;
 
     SaveContext_Init();
     gSaveContext.fileNum = 0xFF;
@@ -36,7 +36,7 @@ void TitleSetup_InitImpl(GameState* gameState) {
     gSaveContext.savedSceneNum = SCENE_TEST01;
     gSaveContext.respawnFlag = 0;
     gSaveContext.respawn[RESPAWN_MODE_DOWN].entranceIndex = ENTR_TEST01_0;
-    gSaveContext.seqId = (u8)NA_BGM_DISABLED;
+    gSaveContext.seqId = (uint8_t)NA_BGM_DISABLED;
     gSaveContext.natureAmbienceId = NATURE_ID_DISABLED;
     gSaveContext.showTitleCard = false;
     gWeatherMode = 0;

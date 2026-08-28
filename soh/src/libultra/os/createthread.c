@@ -7,15 +7,15 @@ OSThread* __osRunningThread = NULL;
 OSThread* __osFaultedThread = NULL;
 
 void osCreateThread(OSThread* thread, OSId id, void (*entry)(void*), void* arg, void* sp, OSPri pri) {
-    register u32 prevInt;
+    register uint32_t prevInt;
 
     thread->id = id;
     thread->priority = pri;
     thread->next = NULL;
     thread->queue = NULL;
-    thread->context.pc = (u32)entry;
+    thread->context.pc = (uint32_t)entry;
     thread->context.a0 = arg;
-    thread->context.sp = (u64)(s32)sp - 16;
+    thread->context.sp = (uint64_t)(int32_t)sp - 16;
     thread->context.ra = __osCleanupThread;
 
     OSIntMask mask = OS_IM_ALL;

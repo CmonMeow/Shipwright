@@ -30,7 +30,7 @@ static const ALIGN_ASSET(2) char sCarpetEvenVtx[] = dsCarpetEvenVtx;
 #define dsCol "__OTR__overlays/ovl_En_Jsjutan/sCol"
 static const ALIGN_ASSET(2) char sCol[] = dsCol;
 
-extern u8 sShadowTex[2048];
+extern uint8_t sShadowTex[2048];
 
 
 #endif // OVERLAYS_OVL_EN_JSJUTAN_H

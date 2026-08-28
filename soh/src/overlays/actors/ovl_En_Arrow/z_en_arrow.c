@@ -59,7 +59,7 @@ static InitChainEntry sInitChain[] = {
 #define MAX_STUCK_PLAYER_ARROWS 99
 
 static EnArrow* sStuckPlayerArrows[MAX_STUCK_PLAYER_ARROWS];
-static s32 sNextStuckPlayerArrow;
+static int32_t sNextStuckPlayerArrow;
 
 static void EnArrow_RetainStuckPlayerArrow(EnArrow* this) {
     EnArrow* oldest = sStuckPlayerArrows[sNextStuckPlayerArrow];
@@ -77,7 +77,7 @@ void EnArrow_SetupAction(EnArrow* this, EnArrowActionFunc actionFunc) {
 }
 
 void EnArrow_Init(Actor* thisx, PlayState* play) {
-    static u32 dmgFlags[] = {
+    static uint32_t dmgFlags[] = {
         0x00000800, 0x00000020, 0x00000020, 0x00000800, 0x00001000,
         0x00002000, 0x00010000, 0x00004000, 0x00008000, 0x00000004,
     };
@@ -117,7 +117,7 @@ void EnArrow_Init(Actor* thisx, PlayState* play) {
 
 void EnArrow_Destroy(Actor* thisx, PlayState* play) {
     EnArrow* this = (EnArrow*)thisx;
-    s32 i;
+    int32_t i;
 
     for (i = 0; i < MAX_STUCK_PLAYER_ARROWS; i++) {
         if (sStuckPlayerArrows[i] == this) {
@@ -177,7 +177,7 @@ void EnArrow_Shoot(EnArrow* this, PlayState* play) {
 void func_809B3CEC(PlayState* play, EnArrow* this) {
     EnArrow_SetupAction(this, func_809B4640);
     Animation_PlayOnce(&this->skelAnime, &gArrow1Anim);
-    this->actor.world.rot.y += (s32)(24576.0f * (Rand_ZeroOne() - 0.5f)) + 0x8000;
+    this->actor.world.rot.y += (int32_t)(24576.0f * (Rand_ZeroOne() - 0.5f)) + 0x8000;
     this->actor.velocity.y += (this->actor.speedXZ * (0.4f + (0.4f * Rand_ZeroOne())));
     this->actor.speedXZ *= (0.04f + 0.3f * Rand_ZeroOne());
     this->timer = 50;
@@ -189,8 +189,8 @@ void EnArrow_CarryActor(EnArrow* this, PlayState* play) {
     Vec3f posDiffLastFrame;
     Vec3f actorNextPos;
     Vec3f hitPos;
-    f32 temp_f12;
-    s32 bgId;
+    float temp_f12;
+    int32_t bgId;
 
     Math_Vec3f_Diff(&this->actor.world.pos, &this->unk_210, &posDiffLastFrame);
 
@@ -199,7 +199,7 @@ void EnArrow_CarryActor(EnArrow* this, PlayState* play) {
                ((this->actor.world.pos.z - this->hitActor->world.pos.z) * posDiffLastFrame.z);
 
     if (!(temp_f12 < 0.0f)) {
-        f32 scale = Math3D_Vec3fMagnitudeSq(&posDiffLastFrame);
+        float scale = Math3D_Vec3fMagnitudeSq(&posDiffLastFrame);
 
         if (!(scale < 1.0f)) {
             scale = temp_f12 / scale;
@@ -220,11 +220,11 @@ void EnArrow_CarryActor(EnArrow* this, PlayState* play) {
 
 void EnArrow_Fly(EnArrow* this, PlayState* play) {
     CollisionPoly* hitPoly;
-    s32 bgId;
+    int32_t bgId;
     Vec3f hitPoint;
     Vec3f posCopy;
-    s32 atTouched;
-    u16 sfxId = { 0 };
+    int32_t atTouched;
+    uint16_t sfxId = { 0 };
     Actor* hitActor = { 0 };
     Vec3f sp60;
     Vec3f sp54;
@@ -315,7 +315,7 @@ void EnArrow_Fly(EnArrow* this, PlayState* play) {
         }
 
         if (this->actor.params <= ARROW_0E) {
-            this->actor.shape.rot.x = Math_Atan2S(this->actor.speedXZ, -this->actor.velocity.y);
+            this->actor.shape.rot.x = RADF_TO_BINANG(atan2f(-this->actor.velocity.y, this->actor.speedXZ));
         }
     }
 
@@ -394,14 +394,14 @@ void func_809B4800(EnArrow* this, PlayState* play) {
 
 void EnArrow_Draw(Actor* thisx, PlayState* play) {
     EnArrow* this = (EnArrow*)thisx;
-    f32 scale = { 0 };
+    float scale = { 0 };
 
     if (this->actor.params <= ARROW_0E) {
         Gfx_SetupDL_25Opa(play->state.gfxCtx);
         SkelAnime_DrawLod(play, this->skelAnime.skeleton, this->skelAnime.jointTable, NULL, NULL, this,
                           (this->actor.projectedPos.z < MREG(95)) ? 0 : 1);
     } else if (this->actor.speedXZ != 0.0f) {
-        u8 alpha = (Math_CosS(this->timer * 5000) * 127.5f) + 127.5f;
+        uint8_t alpha = (Math_CosS(this->timer * 5000) * 127.5f) + 127.5f;
 
         OPEN_DISPS(play->state.gfxCtx);
 

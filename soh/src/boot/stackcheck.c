@@ -4,7 +4,7 @@
 StackEntry* sStackInfoListStart = NULL;
 StackEntry* sStackInfoListEnd = NULL;
 
-void StackCheck_Init(StackEntry* entry, void* stackTop, void* stackBottom, u32 initValue, s32 minSpace,
+void StackCheck_Init(StackEntry* entry, void* stackTop, void* stackBottom, uint32_t initValue, int32_t minSpace,
                      const char* name) {
 
     if (entry == NULL) {
@@ -37,7 +37,7 @@ void StackCheck_Init(StackEntry* entry, void* stackTop, void* stackBottom, u32 i
         }
 
         if (entry->minSpace != -1) {
-            u32* addr = (u32*)entry->head;
+            uint32_t* addr = (uint32_t*)entry->head;
             while ((uintptr_t)addr < entry->tail) {
                 *addr++ = entry->initValue;
             }
@@ -46,7 +46,7 @@ void StackCheck_Init(StackEntry* entry, void* stackTop, void* stackBottom, u32 i
 }
 
 void StackCheck_Cleanup(StackEntry* entry) {
-    u32 inconsistency = false;
+    uint32_t inconsistency = false;
 
     if (!entry->prev) {
         if (entry == sStackInfoListStart) {
@@ -70,11 +70,11 @@ void StackCheck_Cleanup(StackEntry* entry) {
     }
 }
 
-s32 StackCheck_GetState(StackEntry* entry) {
-    u32* last;
+int32_t StackCheck_GetState(StackEntry* entry) {
+    uint32_t* last;
     size_t used = { 0 };
     size_t free = { 0 };
-    s32 ret = { 0 };
+    int32_t ret = { 0 };
 
     for (last = (uintptr_t*)entry->head; (uintptr_t)last < entry->tail; last++) {
         if (entry->initValue != *last) {
@@ -88,7 +88,7 @@ s32 StackCheck_GetState(StackEntry* entry) {
     if (free == 0) {
         ret = STACK_STATUS_OVERFLOW;
         osSyncPrintf(VT_FGCOL(RED));
-    } else if (free < (u32)entry->minSpace && entry->minSpace != -1) {
+    } else if (free < (uint32_t)entry->minSpace && entry->minSpace != -1) {
         ret = STACK_STATUS_WARNING;
         osSyncPrintf(VT_FGCOL(YELLOW));
     } else {
@@ -107,12 +107,12 @@ s32 StackCheck_GetState(StackEntry* entry) {
     return ret;
 }
 
-u32 StackCheck_CheckAll(void) {
-    u32 ret = 0;
+uint32_t StackCheck_CheckAll(void) {
+    uint32_t ret = 0;
     StackEntry* iter = sStackInfoListStart;
 
     while (iter) {
-        u32 state = StackCheck_GetState(iter);
+        uint32_t state = StackCheck_GetState(iter);
 
         if (state != STACK_STATUS_OK) {
             ret = 1;
@@ -123,7 +123,7 @@ u32 StackCheck_CheckAll(void) {
     return ret;
 }
 
-u32 StackCheck_Check(StackEntry* entry) {
+uint32_t StackCheck_Check(StackEntry* entry) {
     if (entry == NULL) {
         return StackCheck_CheckAll();
     } else {

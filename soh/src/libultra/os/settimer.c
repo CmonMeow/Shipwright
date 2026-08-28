@@ -1,10 +1,10 @@
 #include "global.h"
 
-s32 osSetTimer(OSTimer* timer, OSTime countdown, OSTime interval, OSMesgQueue* mq, OSMesg msg) {
+int32_t osSetTimer(OSTimer* timer, OSTime countdown, OSTime interval, OSMesgQueue* mq, OSMesg msg) {
     OSTime time = { 0 };
     OSTimer* next;
-    u32 value;
-    u32 prevInt = { 0 };
+    uint32_t value;
+    uint32_t prevInt = { 0 };
 
     timer->next = NULL;
     timer->prev = NULL;
@@ -22,7 +22,7 @@ s32 osSetTimer(OSTimer* timer, OSTime countdown, OSTime interval, OSMesgQueue* m
     if (__osTimerList->next != __osTimerList) {
 
         next = __osTimerList->next;
-        u32 count = osGetCount();
+        uint32_t count = osGetCount();
         value = count - __osTimerCounter;
 
         if (value < next->value) {

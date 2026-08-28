@@ -2,10 +2,10 @@
 #define ICHAIN_H
 
 typedef struct {
-    u32 cont:   1;
-    u32 type:   4;
-    u32 offset: 11;
-    s32 value:  16;
+    uint32_t cont:   1;
+    uint32_t type:   4;
+    uint32_t offset: 11;
+    int32_t value:  16;
 } InitChainEntry;
 
 typedef enum {
@@ -32,7 +32,7 @@ typedef enum {
  * Arguments:
  * * type ----- value from enum `InitChainType`
  * * member --- name of member inside `Actor` structure to use as the offset
- * * value ---- s16 value to use
+ * * value ---- int16_t value to use
  * * cont ----- ICHAIN_CONTINUE (or ICHAIN_STOP) to continue (or stop) parsing
  */
 #define ICHAIN(type, member, value, cont)      \

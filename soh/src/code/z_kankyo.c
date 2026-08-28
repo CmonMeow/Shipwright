@@ -20,25 +20,25 @@ typedef enum {
 } LightningBoltState;
 
 typedef struct {
-    /* 0x00 */ u16 startTime;
-    /* 0x02 */ u16 endTime;
-    /* 0x04 */ u8 unk_04;
-    /* 0x05 */ u8 unk_05;
+    /* 0x00 */ uint16_t startTime;
+    /* 0x02 */ uint16_t endTime;
+    /* 0x04 */ uint8_t unk_04;
+    /* 0x05 */ uint8_t unk_05;
 } struct_8011FB48; // size = 0x6
 
 typedef struct {
-    /* 0x00 */ u8 state;
+    /* 0x00 */ uint8_t state;
     /* 0x04 */ Vec3f offset;
     /* 0x10 */ Vec3f pos;
-    /* 0x1C */ s8 pitch;
-    /* 0x1D */ s8 roll;
-    /* 0x1E */ u8 textureIndex;
-    /* 0x1F */ u8 delayTimer;
+    /* 0x1C */ int8_t pitch;
+    /* 0x1D */ int8_t roll;
+    /* 0x1E */ uint8_t textureIndex;
+    /* 0x1F */ uint8_t delayTimer;
 } LightningBolt; // size = 0x20
 
 typedef struct {
-    /* 0x00 */ s32 unk_00;
-    /* 0x04 */ s32 unk_04;
+    /* 0x00 */ int32_t unk_00;
+    /* 0x04 */ int32_t unk_04;
 } Struct_8011FAF0; // size = 0x8
 
 Struct_8011FAF0 D_8011FAF0[] = {
@@ -46,17 +46,17 @@ Struct_8011FAF0 D_8011FAF0[] = {
     { 2, 0x0003C000 }, { 1, 0x0003E000 }, { 0, 0x0003F000 }, { 0, 0x0003F800 },
 };
 
-u8 gWeatherMode = 0; // "E_wether_flg"
+uint8_t gWeatherMode = 0; // "E_wether_flg"
 
-u8 D_8011FB34 = 0;
+uint8_t D_8011FB34 = 0;
 
-u8 D_8011FB38 = 0;
+uint8_t D_8011FB38 = 0;
 
-u8 gSkyboxBlendingEnabled = false;
+uint8_t gSkyboxBlendingEnabled = false;
 
-u16 gTimeIncrement = 0;
+uint16_t gTimeIncrement = 0;
 
-u16 D_8011FB44 = 0xFFFC;
+uint16_t D_8011FB44 = 0xFFFC;
 
 struct_8011FB48 D_8011FB48[][7] = {
     {
@@ -193,40 +193,40 @@ SkyboxFile gSkyboxFiles[] = {
     },
 };
 
-u8 D_8011FDCC = 0;
-u8 D_8011FDD0 = 0;
-f32 D_8011FDD4 = 0.0f;
+uint8_t D_8011FDCC = 0;
+uint8_t D_8011FDD0 = 0;
+float D_8011FDD4 = 0.0f;
 
-u8 gCustomLensFlareOn;
+uint8_t gCustomLensFlareOn;
 Vec3f gCustomLensFlarePos;
-s16 gLensFlareUnused;
-s16 gLensFlareScale;
-f32 gLensFlareColorIntensity;
-s16 gLensFlareScreenFillAlpha;
+int16_t gLensFlareUnused;
+int16_t gLensFlareScale;
+float gLensFlareColorIntensity;
+int16_t gLensFlareScreenFillAlpha;
 LightningBolt sLightningBolts[3];
 LightningStrike gLightningStrike;
-s16 sLightningFlashAlpha;
-s16 D_8015FD7E;
-s16 D_8015FD80;
+int16_t sLightningFlashAlpha;
+int16_t D_8015FD7E;
+int16_t D_8015FD80;
 LightNode* sNGameOverLightNode;
 LightInfo sNGameOverLightInfo;
 LightNode* sSGameOverLightNode;
 LightInfo sSGameOverLightInfo;
-u8 sGameOverLightsIntensity;
-u16 D_8015FDB0;
+uint8_t sGameOverLightsIntensity;
+uint16_t D_8015FDB0;
 
 void LoadSkyboxPalette(SkyboxContext* skyboxCtx, int paletteIndex, char* palTex, int width, int height);
 void LoadSkyboxTex(SkyboxContext* skyboxCtx, int segmentIndex, int imageIndex, char* tex, int width, int height,
                    int offsetW, int offsetH);
 void Skybox_Update(SkyboxContext* skyboxCtx);
 
-s32 func_8006F0A0(s32 a0) {
-    s32 ret = ((a0 >> 4 & 0x7FF) << D_8011FAF0[a0 >> 15 & 7].unk_00) + D_8011FAF0[a0 >> 15 & 7].unk_04;
+int32_t func_8006F0A0(int32_t a0) {
+    int32_t ret = ((a0 >> 4 & 0x7FF) << D_8011FAF0[a0 >> 15 & 7].unk_00) + D_8011FAF0[a0 >> 15 & 7].unk_04;
 
     return ret;
 }
 
-u16 Environment_GetPixelDepth(s32 x, s32 y) {
+uint16_t Environment_GetPixelDepth(int32_t x, int32_t y) {
     return OTRGetPixelDepth(x, y);
 }
 
@@ -240,8 +240,8 @@ void Environment_GraphCallback(GraphicsContext* gfxCtx, void* param) {
     Lights_GlowCheck(play);
 }
 
-void Environment_Init(PlayState* play2, EnvironmentContext* envCtx, s32 unused) {
-    u8 i;
+void Environment_Init(PlayState* play2, EnvironmentContext* envCtx, int32_t unused) {
+    uint8_t i;
     PlayState* play = play2;
 
     gSaveContext.sunsSongState = SUNSSONG_INACTIVE;
@@ -419,31 +419,31 @@ void Environment_Init(PlayState* play2, EnvironmentContext* envCtx, s32 unused) 
     func_800AA15C();
 }
 
-u8 Environment_SmoothStepToU8(u8* pvalue, u8 target, u8 scale, u8 step, u8 minStep) {
-    s16 stepSize = 0;
-    s16 diff = target - *pvalue;
+uint8_t Environment_SmoothStepToU8(uint8_t* pvalue, uint8_t target, uint8_t scale, uint8_t step, uint8_t minStep) {
+    int16_t stepSize = 0;
+    int16_t diff = target - *pvalue;
 
     if (target != *pvalue) {
         stepSize = diff / scale;
-        if ((stepSize >= (s16)minStep) || ((s16)-minStep >= stepSize)) {
-            if ((s16)step < stepSize) {
+        if ((stepSize >= (int16_t)minStep) || ((int16_t)-minStep >= stepSize)) {
+            if ((int16_t)step < stepSize) {
                 stepSize = step;
             }
-            if ((s16)-step > stepSize) {
+            if ((int16_t)-step > stepSize) {
                 stepSize = -step;
             }
-            *pvalue += (u8)stepSize;
+            *pvalue += (uint8_t)stepSize;
         } else {
-            if (stepSize < (s16)minStep) {
+            if (stepSize < (int16_t)minStep) {
                 stepSize = minStep;
-                *pvalue += (u8)stepSize;
+                *pvalue += (uint8_t)stepSize;
                 if (target < *pvalue) {
                     *pvalue = target;
                 }
             }
-            if ((s16)-minStep < stepSize) {
+            if ((int16_t)-minStep < stepSize) {
                 stepSize = -minStep;
-                *pvalue += (u8)stepSize;
+                *pvalue += (uint8_t)stepSize;
                 if (*pvalue < target) {
                     *pvalue = target;
                 }
@@ -453,31 +453,31 @@ u8 Environment_SmoothStepToU8(u8* pvalue, u8 target, u8 scale, u8 step, u8 minSt
     return diff;
 }
 
-u8 Environment_SmoothStepToS8(s8* pvalue, s8 target, u8 scale, u8 step, u8 minStep) {
-    s16 stepSize = 0;
-    s16 diff = target - *pvalue;
+uint8_t Environment_SmoothStepToS8(int8_t* pvalue, int8_t target, uint8_t scale, uint8_t step, uint8_t minStep) {
+    int16_t stepSize = 0;
+    int16_t diff = target - *pvalue;
 
     if (target != *pvalue) {
         stepSize = diff / scale;
-        if ((stepSize >= (s16)minStep) || ((s16)-minStep >= stepSize)) {
-            if ((s16)step < stepSize) {
+        if ((stepSize >= (int16_t)minStep) || ((int16_t)-minStep >= stepSize)) {
+            if ((int16_t)step < stepSize) {
                 stepSize = step;
             }
-            if ((s16)-step > stepSize) {
+            if ((int16_t)-step > stepSize) {
                 stepSize = -step;
             }
-            *pvalue += (s8)stepSize;
+            *pvalue += (int8_t)stepSize;
         } else {
-            if (stepSize < (s16)minStep) {
+            if (stepSize < (int16_t)minStep) {
                 stepSize = minStep;
-                *pvalue += (s8)stepSize;
+                *pvalue += (int8_t)stepSize;
                 if (target < *pvalue) {
                     *pvalue = target;
                 }
             }
-            if ((s16)-minStep < stepSize) {
+            if ((int16_t)-minStep < stepSize) {
                 stepSize = -minStep;
-                *pvalue += (s8)stepSize;
+                *pvalue += (int8_t)stepSize;
                 if (*pvalue < target) {
                     *pvalue = target;
                 }
@@ -487,11 +487,11 @@ u8 Environment_SmoothStepToS8(s8* pvalue, s8 target, u8 scale, u8 step, u8 minSt
     return diff;
 }
 
-f32 Environment_LerpWeight(u16 max, u16 min, u16 val) {
-    f32 diff = max - min;
+float Environment_LerpWeight(uint16_t max, uint16_t min, uint16_t val) {
+    float diff = max - min;
 
     if (diff != 0.0f) {
-        f32 ret = 1.0f - (max - val) / diff;
+        float ret = 1.0f - (max - val) / diff;
 
         if (!(ret >= 1.0f)) {
             return ret;
@@ -501,16 +501,16 @@ f32 Environment_LerpWeight(u16 max, u16 min, u16 val) {
     return 1.0f;
 }
 
-f32 Environment_LerpWeightAccelDecel(u16 endFrame, u16 startFrame, u16 curFrame, u16 accelDuration, u16 decelDuration) {
-    f32 endFrameF = { 0 };
-    f32 startFrameF = { 0 };
-    f32 curFrameF = { 0 };
-    f32 accelDurationF = { 0 };
-    f32 decelDurationF = { 0 };
-    f32 totalFrames = { 0 };
-    f32 temp = { 0 };
-    f32 framesElapsed = { 0 };
-    f32 ret = { 0 };
+float Environment_LerpWeightAccelDecel(uint16_t endFrame, uint16_t startFrame, uint16_t curFrame, uint16_t accelDuration, uint16_t decelDuration) {
+    float endFrameF = { 0 };
+    float startFrameF = { 0 };
+    float curFrameF = { 0 };
+    float accelDurationF = { 0 };
+    float decelDurationF = { 0 };
+    float totalFrames = { 0 };
+    float temp = { 0 };
+    float framesElapsed = { 0 };
+    float ret = { 0 };
 
     if (curFrame <= startFrame) {
         return 0.0f;
@@ -520,13 +520,13 @@ f32 Environment_LerpWeightAccelDecel(u16 endFrame, u16 startFrame, u16 curFrame,
         return 1.0f;
     }
 
-    endFrameF = (s32)endFrame;
-    startFrameF = (s32)startFrame;
-    curFrameF = (s32)curFrame;
+    endFrameF = (int32_t)endFrame;
+    startFrameF = (int32_t)startFrame;
+    curFrameF = (int32_t)curFrame;
     totalFrames = endFrameF - startFrameF;
     framesElapsed = curFrameF - startFrameF;
-    accelDurationF = (s32)accelDuration;
-    decelDurationF = (s32)decelDuration;
+    accelDurationF = (int32_t)accelDuration;
+    decelDurationF = (int32_t)decelDuration;
 
     if ((startFrameF >= endFrameF) || (accelDurationF + decelDurationF > totalFrames)) {
         // "The frame relation between end_frame and start_frame is wrong!!!"
@@ -564,7 +564,7 @@ f32 Environment_LerpWeightAccelDecel(u16 endFrame, u16 startFrame, u16 curFrame,
     return ret;
 }
 
-void func_8006FB94(EnvironmentContext* envCtx, u8 unused) {
+void func_8006FB94(EnvironmentContext* envCtx, uint8_t unused) {
     if (envCtx->gloomySkyMode != 0) {
         switch (envCtx->unk_DE) {
             case 0:
@@ -604,11 +604,11 @@ void func_8006FB94(EnvironmentContext* envCtx, u8 unused) {
 
 extern SkyboxTableEntry sSkyboxTable[];
 
-void Environment_UpdateSkybox(PlayState* play, u8 skyboxId, EnvironmentContext* envCtx, SkyboxContext* skyboxCtx) {
-    u8 i;
-    u8 newSkybox1Index = 0xFF;
-    u8 newSkybox2Index = 0xFF;
-    u8 skyboxBlend = 0;
+void Environment_UpdateSkybox(PlayState* play, uint8_t skyboxId, EnvironmentContext* envCtx, SkyboxContext* skyboxCtx) {
+    uint8_t i;
+    uint8_t newSkybox1Index = 0xFF;
+    uint8_t newSkybox2Index = 0xFF;
+    uint8_t skyboxBlend = 0;
 
     if (skyboxId == SKYBOX_CUTSCENE_MAP) {
         envCtx->unk_17 = 3;
@@ -665,7 +665,7 @@ void Environment_UpdateSkybox(PlayState* play, u8 skyboxId, EnvironmentContext* 
             newSkybox1Index = D_8011FC1C[envCtx->unk_17][i].skybox1Index;
             newSkybox2Index = D_8011FC1C[envCtx->unk_18][i].skybox2Index;
 
-            skyboxBlend = ((f32)envCtx->unk_24 - envCtx->unk_1A--) / (f32)envCtx->unk_24 * 255;
+            skyboxBlend = ((float)envCtx->unk_24 - envCtx->unk_1A--) / (float)envCtx->unk_24 * 255;
 
             if (envCtx->unk_1A <= 0) {
                 envCtx->unk_19 = 0;
@@ -782,7 +782,7 @@ void Environment_UpdateSkybox(PlayState* play, u8 skyboxId, EnvironmentContext* 
     }
 }
 
-void Environment_EnableUnderwaterLights(PlayState* play, s32 waterLightsIndex) {
+void Environment_EnableUnderwaterLights(PlayState* play, int32_t waterLightsIndex) {
     if (waterLightsIndex == 0x1F) {
         waterLightsIndex = 0;
         // "Underwater color is not set in the water poly data!"
@@ -829,7 +829,7 @@ void Environment_PrintDebugInfo(PlayState* play, Gfx** gfx) {
     GfxPrint_Printf(&printer, "%s", "ZELDATIME ");
 
     GfxPrint_SetColor(&printer, 255, 255, 255, 64);
-    GfxPrint_Printf(&printer, "%02d", (u8)(24 * 60 / (f32)0x10000 * ((void)0, gSaveContext.dayTime) / 60.0f));
+    GfxPrint_Printf(&printer, "%02d", (uint8_t)(24 * 60 / (float)0x10000 * ((void)0, gSaveContext.dayTime) / 60.0f));
 
     if ((gSaveContext.dayTime & 0x1F) >= 0x10 || gTimeIncrement >= 6) {
         GfxPrint_Printf(&printer, "%s", ":");
@@ -837,14 +837,14 @@ void Environment_PrintDebugInfo(PlayState* play, Gfx** gfx) {
         GfxPrint_Printf(&printer, "%s", " ");
     }
 
-    GfxPrint_Printf(&printer, "%02d", (s16)(24 * 60 / (f32)0x10000 * ((void)0, gSaveContext.dayTime)) % 60);
+    GfxPrint_Printf(&printer, "%02d", (int16_t)(24 * 60 / (float)0x10000 * ((void)0, gSaveContext.dayTime)) % 60);
 
     GfxPrint_SetColor(&printer, 255, 255, 55, 64);
     GfxPrint_SetPos(&printer, 22, 9);
     GfxPrint_Printf(&printer, "%s", "VRBOXTIME ");
 
     GfxPrint_SetColor(&printer, 255, 255, 255, 64);
-    GfxPrint_Printf(&printer, "%02d", (u8)(24 * 60 / (f32)0x10000 * ((void)0, gSaveContext.skyboxTime) / 60.0f));
+    GfxPrint_Printf(&printer, "%02d", (uint8_t)(24 * 60 / (float)0x10000 * ((void)0, gSaveContext.skyboxTime) / 60.0f));
 
     if ((((void)0, gSaveContext.skyboxTime) & 0x1F) >= 0x10 || gTimeIncrement >= 6) {
         GfxPrint_Printf(&printer, "%s", ":");
@@ -852,7 +852,7 @@ void Environment_PrintDebugInfo(PlayState* play, Gfx** gfx) {
         GfxPrint_Printf(&printer, "%s", " ");
     }
 
-    GfxPrint_Printf(&printer, "%02d", (s16)(24 * 60 / (f32)0x10000 * ((void)0, gSaveContext.skyboxTime)) % 60);
+    GfxPrint_Printf(&printer, "%02d", (int16_t)(24 * 60 / (float)0x10000 * ((void)0, gSaveContext.skyboxTime)) % 60);
 
     GfxPrint_SetColor(&printer, 55, 255, 255, 64);
     GfxPrint_SetPos(&printer, 22, 6);
@@ -875,10 +875,10 @@ void func_800766C4(PlayState* play);
 
 void Environment_Update(PlayState* play, EnvironmentContext* envCtx, LightContext* lightCtx, MessageContext* msgCtx,
                         GameOverContext* gameOverCtx, GraphicsContext* gfxCtx) {
-    f32 sp8C;
-    f32 sp88 = 0.0f;
-    u16 i;
-    u16 j;
+    float sp8C;
+    float sp88 = 0.0f;
+    uint16_t i;
+    uint16_t j;
     EnvLightSettings* lightSettingsList = play->envCtx.lightSettingsList;
 
     if ((((void)0, gSaveContext.gameMode) != GAMEMODE_NORMAL) &&
@@ -933,7 +933,7 @@ void Environment_Update(PlayState* play, EnvironmentContext* envCtx, LightContex
             gSaveContext.skyboxTime = ((void)0, gSaveContext.dayTime);
         }
 
-        u16 time = gSaveContext.dayTime;
+        uint16_t time = gSaveContext.dayTime;
 
         if (time > 0xC000 || time < 0x4555) {
             gSaveContext.nightFlag = 1;
@@ -966,8 +966,8 @@ void Environment_Update(PlayState* play, EnvironmentContext* envCtx, LightContex
                 for (i = 0; i < ARRAY_COUNT(D_8011FB48[envCtx->unk_1F]); i++) {
                     if ((gSaveContext.skyboxTime >= TIME_ENTRY_1F.startTime) &&
                         ((gSaveContext.skyboxTime < TIME_ENTRY_1F.endTime) || TIME_ENTRY_1F.endTime == 0xFFFF)) {
-                        u8 blend8[2];
-                        s16 blend16[2];
+                        uint8_t blend8[2];
+                        int16_t blend16[2];
 
                         sp8C = Environment_LerpWeight(TIME_ENTRY_1F.endTime, TIME_ENTRY_1F.startTime,
                                                       ((void)0, gSaveContext.skyboxTime));
@@ -977,7 +977,7 @@ void Environment_Update(PlayState* play, EnvironmentContext* envCtx, LightContex
                         D_8011FDD4 = sp8C;
 
                         if (envCtx->unk_21) {
-                            sp88 = ((f32)envCtx->unk_24 - envCtx->unk_22) / envCtx->unk_24;
+                            sp88 = ((float)envCtx->unk_24 - envCtx->unk_22) / envCtx->unk_24;
                             envCtx->unk_22--;
 
                             if (envCtx->unk_22 <= 0) {
@@ -1073,7 +1073,7 @@ void Environment_Update(PlayState* play, EnvironmentContext* envCtx, LightContex
                     envCtx->lightSettings.fogFar = lightSettingsList[envCtx->unk_BD].fogFar;
                     envCtx->unk_D8 = 1.0f;
                 } else {
-                    u8 blendRate = (lightSettingsList[envCtx->unk_BD].fogNear >> 0xA) * 4;
+                    uint8_t blendRate = (lightSettingsList[envCtx->unk_BD].fogNear >> 0xA) * 4;
 
                     if (blendRate == 0) {
                         blendRate++;
@@ -1133,38 +1133,38 @@ void Environment_Update(PlayState* play, EnvironmentContext* envCtx, LightContex
 
         // Apply lighting adjustments
         for (i = 0; i < 3; i++) {
-            if ((s16)(envCtx->lightSettings.ambientColor[i] + envCtx->adjAmbientColor[i]) > 255) {
+            if ((int16_t)(envCtx->lightSettings.ambientColor[i] + envCtx->adjAmbientColor[i]) > 255) {
                 lightCtx->ambientColor[i] = 255;
-            } else if ((s16)(envCtx->lightSettings.ambientColor[i] + envCtx->adjAmbientColor[i]) < 0) {
+            } else if ((int16_t)(envCtx->lightSettings.ambientColor[i] + envCtx->adjAmbientColor[i]) < 0) {
                 lightCtx->ambientColor[i] = 0;
             } else {
-                lightCtx->ambientColor[i] = (s16)(envCtx->lightSettings.ambientColor[i] + envCtx->adjAmbientColor[i]);
+                lightCtx->ambientColor[i] = (int16_t)(envCtx->lightSettings.ambientColor[i] + envCtx->adjAmbientColor[i]);
             }
 
-            if ((s16)(envCtx->lightSettings.light1Color[i] + envCtx->adjLight1Color[i]) > 255) {
+            if ((int16_t)(envCtx->lightSettings.light1Color[i] + envCtx->adjLight1Color[i]) > 255) {
                 envCtx->dirLight1.params.dir.color[i] = 255;
-            } else if ((s16)(envCtx->lightSettings.light1Color[i] + envCtx->adjLight1Color[i]) < 0) {
+            } else if ((int16_t)(envCtx->lightSettings.light1Color[i] + envCtx->adjLight1Color[i]) < 0) {
                 envCtx->dirLight1.params.dir.color[i] = 0;
             } else {
                 envCtx->dirLight1.params.dir.color[i] =
-                    (s16)(envCtx->lightSettings.light1Color[i] + envCtx->adjLight1Color[i]);
+                    (int16_t)(envCtx->lightSettings.light1Color[i] + envCtx->adjLight1Color[i]);
             }
 
-            if ((s16)(envCtx->lightSettings.light2Color[i] + envCtx->adjLight1Color[i]) > 255) {
+            if ((int16_t)(envCtx->lightSettings.light2Color[i] + envCtx->adjLight1Color[i]) > 255) {
                 envCtx->dirLight2.params.dir.color[i] = 255;
-            } else if ((s16)(envCtx->lightSettings.light2Color[i] + envCtx->adjLight1Color[i]) < 0) {
+            } else if ((int16_t)(envCtx->lightSettings.light2Color[i] + envCtx->adjLight1Color[i]) < 0) {
                 envCtx->dirLight2.params.dir.color[i] = 0;
             } else {
                 envCtx->dirLight2.params.dir.color[i] =
-                    (s16)(envCtx->lightSettings.light2Color[i] + envCtx->adjLight1Color[i]);
+                    (int16_t)(envCtx->lightSettings.light2Color[i] + envCtx->adjLight1Color[i]);
             }
 
-            if ((s16)(envCtx->lightSettings.fogColor[i] + envCtx->adjFogColor[i]) > 255) {
+            if ((int16_t)(envCtx->lightSettings.fogColor[i] + envCtx->adjFogColor[i]) > 255) {
                 lightCtx->fogColor[i] = 255;
-            } else if ((s16)(envCtx->lightSettings.fogColor[i] + envCtx->adjFogColor[i]) < 0) {
+            } else if ((int16_t)(envCtx->lightSettings.fogColor[i] + envCtx->adjFogColor[i]) < 0) {
                 lightCtx->fogColor[i] = 0;
             } else {
-                lightCtx->fogColor[i] = (s16)(envCtx->lightSettings.fogColor[i] + envCtx->adjFogColor[i]);
+                lightCtx->fogColor[i] = (int16_t)(envCtx->lightSettings.fogColor[i] + envCtx->adjFogColor[i]);
             }
         }
 
@@ -1178,7 +1178,7 @@ void Environment_Update(PlayState* play, EnvironmentContext* envCtx, LightContex
         envCtx->dirLight2.params.dir.z = envCtx->lightSettings.light2Dir[2];
 
         // Adjust fog near and far if necessary
-        s32 adjustment = envCtx->lightSettings.fogNear + envCtx->adjFogNear;
+        int32_t adjustment = envCtx->lightSettings.fogNear + envCtx->adjFogNear;
 
         if (adjustment <= 996) {
             lightCtx->fogNear = adjustment;
@@ -1288,7 +1288,7 @@ void Environment_Update(PlayState* play, EnvironmentContext* envCtx, LightContex
 }
 
 void Environment_DrawSunAndMoon(PlayState* play) {
-    f32 y;
+    float y;
 
     OPEN_DISPS(play->state.gfxCtx);
 
@@ -1312,9 +1312,9 @@ void Environment_DrawSunAndMoon(PlayState* play) {
                          play->view.eye.z + play->envCtx.sunPos.z, MTXMODE_NEW);
 
         y = play->envCtx.sunPos.y / 25.0f;
-        f32 temp = y / 80.0f;
+        float temp = y / 80.0f;
 
-        f32 alpha = temp * 255.0f;
+        float alpha = temp * 255.0f;
         if (alpha < 0.0f) {
             alpha = 0.0f;
         }
@@ -1324,7 +1324,7 @@ void Environment_DrawSunAndMoon(PlayState* play) {
 
         alpha = 255.0f - alpha;
 
-        f32 color = temp;
+        float color = temp;
         if (color < 0.0f) {
             color = 0.0f;
         }
@@ -1333,10 +1333,10 @@ void Environment_DrawSunAndMoon(PlayState* play) {
             color = 1.0f;
         }
 
-        gDPSetPrimColor(POLY_OPA_DISP++, 0, 0, 255, (u8)(color * 75.0f) + 180, (u8)(color * 155.0f) + 100, 255);
-        gDPSetEnvColor(POLY_OPA_DISP++, 255, (u8)(color * 255.0f), (u8)(color * 255.0f), alpha);
+        gDPSetPrimColor(POLY_OPA_DISP++, 0, 0, 255, (uint8_t)(color * 75.0f) + 180, (uint8_t)(color * 155.0f) + 100, 255);
+        gDPSetEnvColor(POLY_OPA_DISP++, 255, (uint8_t)(color * 255.0f), (uint8_t)(color * 255.0f), alpha);
 
-        f32 scale = (color * 2.0f) + 10.0f;
+        float scale = (color * 2.0f) + 10.0f;
         Matrix_Scale(scale, scale, scale, MTXMODE_APPLY);
         gSPMatrix(POLY_OPA_DISP++, MATRIX_NEWMTX(play->state.gfxCtx), G_MTX_LOAD);
         Gfx_SetupDL_54Opa(play->state.gfxCtx);
@@ -1377,10 +1377,10 @@ void Environment_DrawSunAndMoon(PlayState* play) {
             gSPMatrix(POLY_OPA_DISP++, MATRIX_NEWMTX(play->state.gfxCtx), G_MTX_LOAD);
             Gfx_SetupDL_51Opa(play->state.gfxCtx);
             gDPPipeSync(POLY_OPA_DISP++);
-            
+
                 gDPSetPrimColor(POLY_OPA_DISP++, 0, 0, 240, 255, 180, alpha);
                 gDPSetEnvColor(POLY_OPA_DISP++, 80, 70, 20, alpha);
-            
+
             gSPDisplayList(POLY_OPA_DISP++, gMoonDL);
         }
     }
@@ -1389,24 +1389,24 @@ void Environment_DrawSunAndMoon(PlayState* play) {
 }
 
 void Environment_DrawSunLensFlare(PlayState* play, EnvironmentContext* envCtx, View* view, GraphicsContext* gfxCtx,
-                                  Vec3f pos, s32 unused) {
+                                  Vec3f pos, int32_t unused) {
     if ((play->envCtx.unk_EE[1] == 0) && (play->envCtx.unk_17 == 0)) {
         Environment_DrawLensFlare(play, &play->envCtx, &play->view, play->state.gfxCtx, pos, 2000, 370,
                                   Math_CosS(((void)0, gSaveContext.dayTime) - 0x8000) * 120.0f, 400, 1);
     }
 }
 
-f32 sLensFlareScales[] = { 23.0f, 12.0f, 7.0f, 5.0f, 3.0f, 10.0f, 6.0f, 2.0f, 3.0f, 1.0f };
+float sLensFlareScales[] = { 23.0f, 12.0f, 7.0f, 5.0f, 3.0f, 10.0f, 6.0f, 2.0f, 3.0f, 1.0f };
 
 void Environment_DrawLensFlare(PlayState* play, EnvironmentContext* envCtx, View* view, GraphicsContext* gfxCtx,
-                               Vec3f pos, s32 unused, s16 scale, f32 colorIntensity, s16 screenFillAlpha, u8 arg9) {
-    s16 i;
-    f32 cosAngle;
-    u32 isOffScreen = false;
-    f32 alpha = { 0 };
+                               Vec3f pos, int32_t unused, int16_t scale, float colorIntensity, int16_t screenFillAlpha, uint8_t arg9) {
+    int16_t i;
+    float cosAngle;
+    uint32_t isOffScreen = false;
+    float alpha = { 0 };
     Vec3f screenPos;
-    f32 fogInfluence = { 0 };
-    f32 temp = { 0 };
+    float fogInfluence = { 0 };
+    float temp = { 0 };
     Color_RGB8 lensFlareColors[] = {
         { 155, 205, 255 }, // blue
         { 255, 255, 205 }, // yellow
@@ -1419,50 +1419,50 @@ void Environment_DrawLensFlare(PlayState* play, EnvironmentContext* envCtx, View
         { 175, 255, 205 }, // light green
         { 255, 155, 235 }, // pink
     };
-    u32 lensFlareAlphas[] = {
+    uint32_t lensFlareAlphas[] = {
         50, 10, 25, 40, 70, 30, 50, 70, 50, 40,
     };
-    u32 lensFlareTypes[] = {
+    uint32_t lensFlareTypes[] = {
         LENS_FLARE_RING,    LENS_FLARE_CIRCLE1, LENS_FLARE_CIRCLE1, LENS_FLARE_CIRCLE1, LENS_FLARE_CIRCLE1,
         LENS_FLARE_CIRCLE1, LENS_FLARE_CIRCLE1, LENS_FLARE_CIRCLE1, LENS_FLARE_CIRCLE1, LENS_FLARE_CIRCLE1,
     };
 
     OPEN_DISPS(gfxCtx);
 
-    f32 dist = Math3D_Vec3f_DistXYZ(&pos, &view->eye) / 12.0f;
+    float dist = Math3D_Vec3f_DistXYZ(&pos, &view->eye) / 12.0f;
 
     // compute a unit vector in the look direction
-    f32 tempX = view->lookAt.x - view->eye.x;
-    f32 tempY = view->lookAt.y - view->eye.y;
-    f32 tempZ = view->lookAt.z - view->eye.z;
+    float tempX = view->lookAt.x - view->eye.x;
+    float tempY = view->lookAt.y - view->eye.y;
+    float tempZ = view->lookAt.z - view->eye.z;
 
-    f32 length = sqrtf(SQ(tempX) + SQ(tempY) + SQ(tempZ));
+    float length = sqrtf(SQ(tempX) + SQ(tempY) + SQ(tempZ));
 
-    f32 lookDirX = tempX / length;
-    f32 lookDirY = tempY / length;
-    f32 lookDirZ = tempZ / length;
+    float lookDirX = tempX / length;
+    float lookDirY = tempY / length;
+    float lookDirZ = tempZ / length;
 
     // compute a position along the look vector half as far as pos
-    f32 halfPosX = view->eye.x + lookDirX * (dist * 6.0f);
-    f32 halfPosY = view->eye.y + lookDirY * (dist * 6.0f);
-    f32 halfPosZ = view->eye.z + lookDirZ * (dist * 6.0f);
+    float halfPosX = view->eye.x + lookDirX * (dist * 6.0f);
+    float halfPosY = view->eye.y + lookDirY * (dist * 6.0f);
+    float halfPosZ = view->eye.z + lookDirZ * (dist * 6.0f);
 
     // compute a unit vector in the direction from halfPos to pos
-    f32 tempX2 = pos.x - halfPosX;
-    f32 tempY2 = pos.y - halfPosY;
-    f32 tempZ2 = pos.z - halfPosZ;
+    float tempX2 = pos.x - halfPosX;
+    float tempY2 = pos.y - halfPosY;
+    float tempZ2 = pos.z - halfPosZ;
 
     length = sqrtf(SQ(tempX2) + SQ(tempY2) + SQ(tempZ2));
 
-    f32 posDirX = tempX2 / length;
-    f32 posDirY = tempY2 / length;
-    f32 posDirZ = tempZ2 / length;
+    float posDirX = tempX2 / length;
+    float posDirY = tempY2 / length;
+    float posDirZ = tempZ2 / length;
 
     // compute the cosine of the angle between lookDir and posDir
     cosAngle = (lookDirX * posDirX + lookDirY * posDirY + lookDirZ * posDirZ) /
                sqrtf((SQ(lookDirX) + SQ(lookDirY) + SQ(lookDirZ)) * (SQ(posDirX) + SQ(posDirY) + SQ(posDirZ)));
 
-    f32 unk88Target = cosAngle * 3.5f;
+    float unk88Target = cosAngle * 3.5f;
     unk88Target = CLAMP_MAX(unk88Target, 1.0f);
 
     if (arg9 == 0) {
@@ -1471,10 +1471,10 @@ void Environment_DrawLensFlare(PlayState* play, EnvironmentContext* envCtx, View
 
     if (!(cosAngle < 0.0f)) {
         if (arg9) {
-            u32 shrink = ShrinkWindow_GetCurrentVal();
+            uint32_t shrink = ShrinkWindow_GetCurrentVal();
             func_800C016C(play, &pos, &screenPos);
-            D_8015FD7E = (s16)screenPos.x;
-            D_8015FD80 = (s16)screenPos.y - 5.0f;
+            D_8015FD7E = (int16_t)screenPos.x;
+            D_8015FD80 = (int16_t)screenPos.y - 5.0f;
             if (D_8011FB44 != 0xFFFC || screenPos.x < 0.0f || screenPos.y < shrink || screenPos.x > SCREEN_WIDTH ||
                 screenPos.y > (SCREEN_HEIGHT - shrink)) {
                 isOffScreen = true;
@@ -1492,7 +1492,7 @@ void Environment_DrawLensFlare(PlayState* play, EnvironmentContext* envCtx, View
 
             Matrix_Translate(-posDirX * i * dist, -posDirY * i * dist, -posDirZ * i * dist, MTXMODE_APPLY);
 
-            f32 adjScale = sLensFlareScales[i] * cosAngle;
+            float adjScale = sLensFlareScales[i] * cosAngle;
 
             if (arg9) {
                 adjScale *= 0.001 * (scale + 630.0f * temp);
@@ -1542,7 +1542,7 @@ void Environment_DrawLensFlare(PlayState* play, EnvironmentContext* envCtx, View
             FrameInterpolation_RecordCloseChild();
         }
 
-        f32 alphaScale = cosAngle - (1.5f - cosAngle);
+        float alphaScale = cosAngle - (1.5f - cosAngle);
 
         if (screenFillAlpha != 0) {
             if (alphaScale > 0.0f) {
@@ -1571,8 +1571,8 @@ void Environment_DrawLensFlare(PlayState* play, EnvironmentContext* envCtx, View
                 temp = colorIntensity / 120.0f;
                 temp = CLAMP_MIN(temp, 0.0f);
 
-                gDPSetPrimColor(POLY_XLU_DISP++, 0, 0, 255, (u8)(temp * 75.0f) + 180, (u8)(temp * 155.0f) + 100,
-                                (u8)envCtx->unk_84);
+                gDPSetPrimColor(POLY_XLU_DISP++, 0, 0, 255, (uint8_t)(temp * 75.0f) + 180, (uint8_t)(temp * 155.0f) + 100,
+                                (uint8_t)envCtx->unk_84);
                 gDPFillRectangle(POLY_XLU_DISP++, 0, 0, SCREEN_WIDTH - 1, SCREEN_HEIGHT - 1);
             } else {
                 envCtx->unk_84 = 0.0f;
@@ -1583,12 +1583,12 @@ void Environment_DrawLensFlare(PlayState* play, EnvironmentContext* envCtx, View
     CLOSE_DISPS(gfxCtx);
 }
 
-f32 func_800746DC(void) {
+float func_800746DC(void) {
     return Rand_ZeroOne() - 0.5f;
 }
 
 void Environment_DrawRain(PlayState* play, View* view, GraphicsContext* gfxCtx) {
-    s16 i;
+    int16_t i;
     Vec3f vec;
     Vec3f unused = { 0.0f, 0.0f, 0.0f };
     Vec3f windDirection = { 0.0f, 0.0f, 0.0f };
@@ -1601,18 +1601,18 @@ void Environment_DrawRain(PlayState* play, View* view, GraphicsContext* gfxCtx) 
         vec.y = view->lookAt.y - view->eye.y;
         vec.z = view->lookAt.z - view->eye.z;
 
-        f32 length = sqrtf(SQXYZ(vec));
+        float length = sqrtf(SQXYZ(vec));
 
-        f32 temp1 = vec.x / length;
-        f32 temp2 = vec.y / length;
-        f32 temp3 = vec.z / length;
+        float temp1 = vec.x / length;
+        float temp2 = vec.y / length;
+        float temp3 = vec.z / length;
 
-        f32 x50 = view->eye.x + temp1 * 50.0f;
-        f32 y50 = view->eye.y + temp2 * 50.0f;
-        f32 z50 = view->eye.z + temp3 * 50.0f;
+        float x50 = view->eye.x + temp1 * 50.0f;
+        float y50 = view->eye.y + temp2 * 50.0f;
+        float z50 = view->eye.z + temp3 * 50.0f;
 
-        f32 x280 = view->eye.x + temp1 * 280.0f;
-        f32 z280 = view->eye.z + temp3 * 280.0f;
+        float x280 = view->eye.x + temp1 * 280.0f;
+        float z280 = view->eye.z + temp3 * 280.0f;
 
         if (play->envCtx.unk_EE[1]) {
             gDPPipeSync(POLY_XLU_DISP++);
@@ -1641,8 +1641,8 @@ void Environment_DrawRain(PlayState* play, View* view, GraphicsContext* gfxCtx) 
             length = sqrtf(SQXZ(vec));
 
             gSPMatrix(POLY_XLU_DISP++, SEG_ADDR(1, 0), G_MTX_NOPUSH | G_MTX_MUL | G_MTX_MODELVIEW);
-            f32 rotX = Math_Atan2F(length, -vec.y);
-            f32 rotY = Math_Atan2F(vec.z, vec.x);
+            float rotX = atan2f(-vec.y, length);
+            float rotY = atan2f(vec.x, vec.z);
             Matrix_RotateY(-rotY, MTXMODE_APPLY);
             Matrix_RotateX(M_PI / 2 - rotX, MTXMODE_APPLY);
             Matrix_Scale(0.4f, 1.2f, 0.4f, MTXMODE_APPLY);
@@ -1654,7 +1654,7 @@ void Environment_DrawRain(PlayState* play, View* view, GraphicsContext* gfxCtx) 
 
         // draw droplet rings on the ground
         if (player->actor.world.pos.y < view->eye.y) {
-            u8 firstDone = false;
+            uint8_t firstDone = false;
 
             for (i = 0; i < play->envCtx.unk_EE[1]; i++) {
                 FrameInterpolation_RecordOpenChild("Droplet Ring", i);
@@ -1687,7 +1687,7 @@ void Environment_DrawRain(PlayState* play, View* view, GraphicsContext* gfxCtx) 
     }
 }
 
-void func_80074CE8(PlayState* play, u32 arg1) {
+void func_80074CE8(PlayState* play, uint32_t arg1) {
     if ((play->envCtx.unk_BD != arg1) && (play->envCtx.unk_D8 >= 1.0f) && (play->envCtx.unk_BF == 0xFF)) {
         if (arg1 > 30) {
             arg1 = 0;
@@ -1718,7 +1718,7 @@ void Environment_DrawSkyboxFilters(PlayState* play) {
 
         Gfx_SetupDL_57Opa(play->state.gfxCtx);
 
-        f32 alpha = (1000 - play->lightCtx.fogNear) * 0.02f;
+        float alpha = (1000 - play->lightCtx.fogNear) * 0.02f;
 
         if (play->skyboxId == SKYBOX_UNSET_1D) {
             alpha = 1.0f;
@@ -1747,7 +1747,7 @@ void Environment_DrawSkyboxFilters(PlayState* play) {
     }
 }
 
-void Environment_DrawLightningFlash(PlayState* play, u8 red, u8 green, u8 blue, u8 alpha) {
+void Environment_DrawLightningFlash(PlayState* play, uint8_t red, uint8_t green, uint8_t blue, uint8_t alpha) {
     OPEN_DISPS(play->state.gfxCtx);
 
     Gfx_SetupDL_57Opa(play->state.gfxCtx);
@@ -1776,7 +1776,7 @@ void Environment_UpdateLightningStrike(PlayState* play) {
 
                     gLightningStrike.delayTimer = 0.0f;
                     Environment_AddLightningBolts(play,
-                                                  (u8)(Rand_ZeroOne() * (ARRAY_COUNT(sLightningBolts) - 0.1f)) + 1);
+                                                  (uint8_t)(Rand_ZeroOne() * (ARRAY_COUNT(sLightningBolts) - 0.1f)) + 1);
                     sLightningFlashAlpha = 0;
                     gLightningStrike.state++;
                 }
@@ -1835,9 +1835,9 @@ void Environment_UpdateLightningStrike(PlayState* play) {
  * Request the number of lightning bolts specified by `num`
  * Note: only 3 lightning bolts can be active at the same time.
  */
-void Environment_AddLightningBolts(PlayState* play, u8 num) {
-    s16 boltsAdded = 0;
-    s16 i;
+void Environment_AddLightningBolts(PlayState* play, uint8_t num) {
+    int16_t boltsAdded = 0;
+    int16_t i;
 
     for (i = 0; i < ARRAY_COUNT(sLightningBolts); i++) {
         if (sLightningBolts[i].state == LIGHTNING_BOLT_INACTIVE) {
@@ -1854,16 +1854,16 @@ void Environment_AddLightningBolts(PlayState* play, u8 num) {
 /**
  * Draw any active lightning bolt entries contained in `sLightningBolts`
  */
-void Environment_DrawLightning(PlayState* play, s32 unused) {
+void Environment_DrawLightning(PlayState* play, int32_t unused) {
     static void* lightningTextures[] = {
         gEffLightning1Tex, gEffLightning2Tex, gEffLightning3Tex,
         gEffLightning4Tex, gEffLightning5Tex, gEffLightning6Tex,
         gEffLightning7Tex, gEffLightning8Tex, NULL,
     };
-    s16 i;
-    f32 dx = { 0 };
-    f32 x;
-    f32 z;
+    int16_t i;
+    float dx = { 0 };
+    float x;
+    float z;
     Vec3f unused1 = { 0.0f, 0.0f, 0.0f };
     Vec3f unused2 = { 0.0f, 0.0f, 0.0f };
 
@@ -1875,7 +1875,7 @@ void Environment_DrawLightning(PlayState* play, s32 unused) {
         switch (sLightningBolts[i].state) {
             case LIGHTNING_BOLT_START:
                 dx = play->view.lookAt.x - play->view.eye.x;
-                f32 dz = play->view.lookAt.z - play->view.eye.z;
+                float dz = play->view.lookAt.z - play->view.eye.z;
 
                 x = dx / sqrtf(SQ(dx) + SQ(dz));
                 z = dz / sqrtf(SQ(dx) + SQ(dz));
@@ -1941,7 +1941,7 @@ void Environment_PlaySceneSequence(PlayState* play) {
         Audio_PlayNatureAmbienceSequence(NATURE_ID_KOKIRI_REGION);
     } else if (((void)0, gSaveContext.forcedSeqId) != NA_BGM_GENERAL_SFX) {
         if (!Environment_IsForcedSequenceDisabled()) {
-            Audio_QueueSeqCmd(SEQ_PLAYER_BGM_MAIN << 24 | (s32)((void)0, gSaveContext.forcedSeqId));
+            Audio_QueueSeqCmd(SEQ_PLAYER_BGM_MAIN << 24 | (int32_t)((void)0, gSaveContext.forcedSeqId));
         }
         gSaveContext.forcedSeqId = NA_BGM_GENERAL_SFX;
     } else if (play->sequenceCtx.seqId == NA_BGM_NO_MUSIC) {
@@ -2082,7 +2082,7 @@ void Environment_DrawCustomLensFlare(PlayState* play) {
 
 
 void func_800766C4(PlayState* play) {
-    u8 max = MAX(play->envCtx.unk_EE[0], play->envCtx.unk_F2[0]);
+    uint8_t max = MAX(play->envCtx.unk_EE[0], play->envCtx.unk_F2[0]);
 
     if (play->envCtx.unk_EE[1] != max && ((play->state.frames % 8) == 0)) {
         if (play->envCtx.unk_EE[1] < max) {
@@ -2093,7 +2093,7 @@ void func_800766C4(PlayState* play) {
     }
 }
 
-void Environment_FillScreen(GraphicsContext* gfxCtx, u8 red, u8 green, u8 blue, u8 alpha, u8 drawFlags) {
+void Environment_FillScreen(GraphicsContext* gfxCtx, uint8_t red, uint8_t green, uint8_t blue, uint8_t alpha, uint8_t drawFlags) {
     if (alpha != 0) {
         OPEN_DISPS(gfxCtx);
 
@@ -2109,7 +2109,7 @@ void Environment_FillScreen(GraphicsContext* gfxCtx, u8 red, u8 green, u8 blue, 
             POLY_XLU_DISP = Gfx_SetupDL_57(POLY_XLU_DISP);
             gDPSetPrimColor(POLY_XLU_DISP++, 0, 0, red, green, blue, alpha);
 
-            if ((u32)alpha == 255) {
+            if ((uint32_t)alpha == 255) {
                 gDPSetRenderMode(POLY_XLU_DISP++, G_RM_OPA_SURF, G_RM_OPA_SURF2);
             }
 
@@ -2136,7 +2136,7 @@ Color_RGB8 sSandstormEnvColors[] = {
     { 50, 40, 0 },
 };
 
-u16 previousPatchedSandstormScreenSize = 0;
+uint16_t previousPatchedSandstormScreenSize = 0;
 
 void Environment_PatchSandstorm(PlayState* play) {
     if (previousPatchedSandstormScreenSize ==
@@ -2157,17 +2157,17 @@ void Environment_PatchSandstorm(PlayState* play) {
         ABS(OTRGetRectDimensionFromLeftEdge(0)) + ABS(OTRGetRectDimensionFromRightEdge(SCREEN_WIDTH));
 }
 
-void Environment_DrawSandstorm(PlayState* play, u8 sandstormState) {
-    s32 primA1 = { 0 };
-    s32 envA1 = { 0 };
-    s32 primA = play->envCtx.sandstormPrimA;
-    s32 envA = play->envCtx.sandstormEnvA;
+void Environment_DrawSandstorm(PlayState* play, uint8_t sandstormState) {
+    int32_t primA1 = { 0 };
+    int32_t envA1 = { 0 };
+    int32_t primA = play->envCtx.sandstormPrimA;
+    int32_t envA = play->envCtx.sandstormEnvA;
     Color_RGBA8 primColor;
     Color_RGBA8 envColor;
-    f32 sp98 = { 0 };
-    u16 sp96 = { 0 };
-    u16 sp94 = { 0 };
-    u16 sp92 = { 0 };
+    float sp98 = { 0 };
+    uint16_t sp96 = { 0 };
+    uint16_t sp94 = { 0 };
+    uint16_t sp92 = { 0 };
 
     Environment_PatchSandstorm(play);
 
@@ -2250,21 +2250,21 @@ void Environment_DrawSandstorm(PlayState* play, u8 sandstormState) {
         envColor.g = sSandstormEnvColors[D_8011FDCC].g;
         envColor.b = sSandstormEnvColors[D_8011FDCC].b;
     } else {
-        primColor.r = (s32)F32_LERP(sSandstormPrimColors[D_8011FDCC].r, sSandstormPrimColors[D_8011FDD0].r, D_8011FDD4);
-        primColor.g = (s32)F32_LERP(sSandstormPrimColors[D_8011FDCC].g, sSandstormPrimColors[D_8011FDD0].g, D_8011FDD4);
-        primColor.b = (s32)F32_LERP(sSandstormPrimColors[D_8011FDCC].b, sSandstormPrimColors[D_8011FDD0].b, D_8011FDD4);
-        envColor.r = (s32)F32_LERP(sSandstormEnvColors[D_8011FDCC].r, sSandstormEnvColors[D_8011FDD0].r, D_8011FDD4);
-        envColor.g = (s32)F32_LERP(sSandstormEnvColors[D_8011FDCC].g, sSandstormEnvColors[D_8011FDD0].g, D_8011FDD4);
-        envColor.b = (s32)F32_LERP(sSandstormEnvColors[D_8011FDCC].b, sSandstormEnvColors[D_8011FDD0].b, D_8011FDD4);
+        primColor.r = (int32_t)F32_LERP(sSandstormPrimColors[D_8011FDCC].r, sSandstormPrimColors[D_8011FDD0].r, D_8011FDD4);
+        primColor.g = (int32_t)F32_LERP(sSandstormPrimColors[D_8011FDCC].g, sSandstormPrimColors[D_8011FDD0].g, D_8011FDD4);
+        primColor.b = (int32_t)F32_LERP(sSandstormPrimColors[D_8011FDCC].b, sSandstormPrimColors[D_8011FDD0].b, D_8011FDD4);
+        envColor.r = (int32_t)F32_LERP(sSandstormEnvColors[D_8011FDCC].r, sSandstormEnvColors[D_8011FDD0].r, D_8011FDD4);
+        envColor.g = (int32_t)F32_LERP(sSandstormEnvColors[D_8011FDCC].g, sSandstormEnvColors[D_8011FDD0].g, D_8011FDD4);
+        envColor.b = (int32_t)F32_LERP(sSandstormEnvColors[D_8011FDCC].b, sSandstormEnvColors[D_8011FDD0].b, D_8011FDD4);
     }
 
     envColor.r = ((envColor.r * sp98) + ((6.0f - sp98) * primColor.r)) * (1.0f / 6.0f);
     envColor.g = ((envColor.g * sp98) + ((6.0f - sp98) * primColor.g)) * (1.0f / 6.0f);
     envColor.b = ((envColor.b * sp98) + ((6.0f - sp98) * primColor.b)) * (1.0f / 6.0f);
 
-    sp96 = (s32)(D_8015FDB0 * (11.0f / 6.0f));
-    sp94 = (s32)(D_8015FDB0 * (9.0f / 6.0f));
-    sp92 = (s32)(D_8015FDB0 * (6.0f / 6.0f));
+    sp96 = (int32_t)(D_8015FDB0 * (11.0f / 6.0f));
+    sp94 = (int32_t)(D_8015FDB0 * (9.0f / 6.0f));
+    sp92 = (int32_t)(D_8015FDB0 * (6.0f / 6.0f));
 
     OPEN_DISPS(play->state.gfxCtx);
 
@@ -2274,24 +2274,24 @@ void Environment_DrawSandstorm(PlayState* play, u8 sandstormState) {
     gDPSetPrimColor(POLY_XLU_DISP++, 0, 0x80, primColor.r, primColor.g, primColor.b, play->envCtx.sandstormPrimA);
     gDPSetEnvColor(POLY_XLU_DISP++, envColor.r, envColor.g, envColor.b, play->envCtx.sandstormEnvA);
     gSPSegment(POLY_XLU_DISP++, 0x08,
-               Gfx_TwoTexScrollEx(play->state.gfxCtx, 0, (u32)sp96 % 0x1000, 0, 0x200, 0x20, 1, (u32)sp94 % 0x1000,
-                                  0xFFF - ((u32)sp92 % 0x1000), 0x100, 0x40, sp98, 0, sp98 * 1.5f, -sp98));
+               Gfx_TwoTexScrollEx(play->state.gfxCtx, 0, (uint32_t)sp96 % 0x1000, 0, 0x200, 0x20, 1, (uint32_t)sp94 % 0x1000,
+                                  0xFFF - ((uint32_t)sp92 % 0x1000), 0x100, 0x40, sp98, 0, sp98 * 1.5f, -sp98));
     gDPSetTextureLUT(POLY_XLU_DISP++, G_TT_NONE);
 
     gSPDisplayList(POLY_XLU_DISP++, gFieldSandstormDL);
     CLOSE_DISPS(play->state.gfxCtx);
 
-    D_8015FDB0 += (s32)sp98;
+    D_8015FDB0 += (int32_t)sp98;
 }
 
-void Environment_AdjustLights(PlayState* play, f32 arg1, f32 arg2, f32 arg3, f32 arg4) {
-    s32 i;
+void Environment_AdjustLights(PlayState* play, float arg1, float arg2, float arg3, float arg4) {
+    int32_t i;
 
     if (play->roomCtx.curRoom.behaviorType1 != ROOM_BEHAVIOR_TYPE1_5 && func_800C0CB8(play)) {
         arg1 = CLAMP_MIN(arg1, 0.0f);
         arg1 = CLAMP_MAX(arg1, 1.0f);
 
-        f32 temp = arg1 - arg3;
+        float temp = arg1 - arg3;
         if (arg1 < arg3) {
             temp = 0.0f;
         }
@@ -2307,7 +2307,7 @@ void Environment_AdjustLights(PlayState* play, f32 arg1, f32 arg2, f32 arg3, f32
             temp = CLAMP_MAX(temp, 1.0f);
 
             for (i = 0; i < 3; i++) {
-                play->envCtx.adjFogColor[i] = -(s16)(play->envCtx.lightSettings.fogColor[i] * temp);
+                play->envCtx.adjFogColor[i] = -(int16_t)(play->envCtx.lightSettings.fogColor[i] * temp);
             }
         }
 
@@ -2318,13 +2318,13 @@ void Environment_AdjustLights(PlayState* play, f32 arg1, f32 arg2, f32 arg3, f32
         arg1 *= arg4;
 
         for (i = 0; i < 3; i++) {
-            play->envCtx.adjAmbientColor[i] = -(s16)(play->envCtx.lightSettings.ambientColor[i] * arg1);
-            play->envCtx.adjLight1Color[i] = -(s16)(play->envCtx.lightSettings.light1Color[i] * arg1);
+            play->envCtx.adjAmbientColor[i] = -(int16_t)(play->envCtx.lightSettings.ambientColor[i] * arg1);
+            play->envCtx.adjLight1Color[i] = -(int16_t)(play->envCtx.lightSettings.light1Color[i] * arg1);
         }
     }
 }
 
-s32 Environment_GetBgsDayCount(void) {
+int32_t Environment_GetBgsDayCount(void) {
     return gSaveContext.bgsDayCount;
 }
 
@@ -2332,16 +2332,16 @@ void Environment_ClearBgsDayCount(void) {
     gSaveContext.bgsDayCount = 0;
 }
 
-s32 Environment_GetTotalDays(void) {
+int32_t Environment_GetTotalDays(void) {
     return gSaveContext.totalDays;
 }
 
-void Environment_ForcePlaySequence(u16 seqId) {
+void Environment_ForcePlaySequence(uint16_t seqId) {
     gSaveContext.forcedSeqId = seqId;
 }
 
-s32 Environment_IsForcedSequenceDisabled(void) {
-    s32 isDisabled = false;
+int32_t Environment_IsForcedSequenceDisabled(void) {
+    int32_t isDisabled = false;
 
     if (gSaveContext.forcedSeqId == NA_BGM_DISABLED) {
         isDisabled = true;

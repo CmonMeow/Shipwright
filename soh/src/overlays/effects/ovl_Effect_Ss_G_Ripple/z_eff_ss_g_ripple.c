@@ -20,16 +20,16 @@
 #define rEnvColorA regs[10]
 #define rLifespan regs[11]
 
-u32 EffectSsGRipple_Init(PlayState* play, u32 index, EffectSs* this, void* initParamsx);
-void EffectSsGRipple_Draw(PlayState* play, u32 index, EffectSs* this);
-void EffectSsGRipple_Update(PlayState* play, u32 index, EffectSs* this);
+uint32_t EffectSsGRipple_Init(PlayState* play, uint32_t index, EffectSs* this, void* initParamsx);
+void EffectSsGRipple_Draw(PlayState* play, uint32_t index, EffectSs* this);
+void EffectSsGRipple_Update(PlayState* play, uint32_t index, EffectSs* this);
 
 EffectSsInit Effect_Ss_G_Ripple_InitVars = {
     EFFECT_SS_G_RIPPLE,
     EffectSsGRipple_Init,
 };
 
-u32 EffectSsGRipple_Init(PlayState* play, u32 index, EffectSs* this, void* initParamsx) {
+uint32_t EffectSsGRipple_Init(PlayState* play, uint32_t index, EffectSs* this, void* initParamsx) {
     Vec3f zeroVec = { 0.0f, 0.0f, 0.0f };
     EffectSsGRippleInitParams* initParams = (EffectSsGRippleInitParams*)initParamsx;
 
@@ -59,12 +59,12 @@ u32 EffectSsGRipple_Init(PlayState* play, u32 index, EffectSs* this, void* initP
 
 void EffectSsGRipple_DrawRipple(PlayState* play, EffectSs* this, void* segment) {
     GraphicsContext* gfxCtx = play->state.gfxCtx;
-    f32 radius = { 0 };
+    float radius = { 0 };
     MtxF mfTrans;
     MtxF mfScale;
     MtxF mfResult;
     Mtx* mtx = { 0 };
-    f32 yPos = { 0 };
+    float yPos = { 0 };
 
     OPEN_DISPS(gfxCtx);
 
@@ -98,21 +98,21 @@ void EffectSsGRipple_DrawRipple(PlayState* play, EffectSs* this, void* segment) 
     CLOSE_DISPS(gfxCtx);
 }
 
-void EffectSsGRipple_Draw(PlayState* play, u32 index, EffectSs* this) {
+void EffectSsGRipple_Draw(PlayState* play, uint32_t index, EffectSs* this) {
     if (this->rLifespan == 0) {
         EffectSsGRipple_DrawRipple(play, this, gEffWaterRippleTex);
     }
 }
 
-void EffectSsGRipple_Update(PlayState* play, u32 index, EffectSs* this) {
+void EffectSsGRipple_Update(PlayState* play, uint32_t index, EffectSs* this) {
 
     if (DECR(this->rLifespan) == 0) {
-        f32 radius = this->rRadius;
+        float radius = this->rRadius;
         Math_SmoothStepToF(&radius, this->rRadiusMax, 0.2f, 30.0f, 1.0f);
         this->rRadius = radius;
 
-        f32 primAlpha = this->rPrimColorA;
-        f32 envAlpha = this->rEnvColorA;
+        float primAlpha = this->rPrimColorA;
+        float envAlpha = this->rEnvColorA;
 
         Math_SmoothStepToF(&primAlpha, 0.0f, 0.2f, 15.0f, 7.0f);
         Math_SmoothStepToF(&envAlpha, 0.0f, 0.2f, 15.0f, 7.0f);

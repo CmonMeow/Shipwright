@@ -29,23 +29,23 @@ typedef enum {
     /* 5 */ ANIMMODE_LOOP_PARTIAL_INTERP
 } AnimationMode;
 
-typedef enum { 
-    /* -1 */ ANIMTAPER_DECEL = -1, 
-    /*  0 */ ANIMTAPER_NONE, 
+typedef enum {
+    /* -1 */ ANIMTAPER_DECEL = -1,
+    /*  0 */ ANIMTAPER_NONE,
     /*  1 */ ANIMTAPER_ACCEL
 } AnimationTapers;
 
 typedef struct {
     /* 0x00 */ Vec3s jointPos; // Root is position in model space, children are relative to parent
-    /* 0x06 */ u8 child;
-    /* 0x07 */ u8 sibling;
+    /* 0x06 */ uint8_t child;
+    /* 0x07 */ uint8_t sibling;
     /* 0x08 */ Gfx* dList;
 } StandardLimb; // size = 0xC
 
 typedef struct {
     /* 0x00 */ Vec3s jointPos; // Root is position in model space, children are relative to parent
-    /* 0x06 */ u8 child;
-    /* 0x07 */ u8 sibling;
+    /* 0x06 */ uint8_t child;
+    /* 0x07 */ uint8_t sibling;
     /* 0x08 */ Gfx* dLists[2]; // Near and far
 } LodLimb; // size = 0x10
 
@@ -60,25 +60,25 @@ typedef struct LegacyLimb {
 // Model has limbs with only rigid meshes
 typedef struct {
     /* 0x00 */ void** segment;
-    /* 0x04 */ u8 limbCount;
-               u8 skeletonType;
+    /* 0x04 */ uint8_t limbCount;
+               uint8_t skeletonType;
 } SkeletonHeader; // size = 0x8
 
 // Model has limbs with flexible meshes
 typedef struct {
     /* 0x00 */ SkeletonHeader sh;
-    /* 0x08 */ u8 dListCount;
+    /* 0x08 */ uint8_t dListCount;
 } FlexSkeletonHeader; // size = 0xC
 
-// Index into the frame data table. 
+// Index into the frame data table.
 typedef struct {
-    /* 0x00 */ u16 x;
-    /* 0x02 */ u16 y;
-    /* 0x04 */ u16 z;
+    /* 0x00 */ uint16_t x;
+    /* 0x02 */ uint16_t y;
+    /* 0x04 */ uint16_t z;
 } JointIndex; // size = 0x06
 
 typedef struct {
-    /* 0x00 */ s16 frameCount;
+    /* 0x00 */ int16_t frameCount;
 } AnimationHeaderCommon;
 
 typedef struct {
@@ -88,38 +88,38 @@ typedef struct {
 
 typedef struct {
     /* 0x00 */ AnimationHeaderCommon common;
-    /* 0x04 */ s16* frameData; // "tbl"
+    /* 0x04 */ int16_t* frameData; // "tbl"
     /* 0x08 */ JointIndex* jointIndices; // "ref_tbl"
-    /* 0x0C */ u16 staticIndexMax;
+    /* 0x0C */ uint16_t staticIndexMax;
 } AnimationHeader; // size = 0x10
 
 // Unused
 typedef struct {
-    /* 0x00 */ s16 xMax;
-    /* 0x02 */ s16 x;
-    /* 0x04 */ s16 yMax;
-    /* 0x06 */ s16 y;
-    /* 0x08 */ s16 zMax;
-    /* 0x0A */ s16 z;
+    /* 0x00 */ int16_t xMax;
+    /* 0x02 */ int16_t x;
+    /* 0x04 */ int16_t yMax;
+    /* 0x06 */ int16_t y;
+    /* 0x08 */ int16_t zMax;
+    /* 0x0A */ int16_t z;
 } JointKey; // size = 0x0C
 
 // Unused
 typedef struct {
-    /* 0x00 */ s16 frameCount;
-    /* 0x02 */ s16 limbCount;
-    /* 0x04 */ s16* frameData;
+    /* 0x00 */ int16_t frameCount;
+    /* 0x02 */ int16_t limbCount;
+    /* 0x04 */ int16_t* frameData;
     /* 0x08 */ JointKey* jointKey;
 } LegacyAnimationHeader; // size = 0xC
 
-typedef s32 (*OverrideLimbDrawOpa)(struct PlayState* play, s32 limbIndex, Gfx** dList, Vec3f* pos, Vec3s* rot,
+typedef int32_t (*OverrideLimbDrawOpa)(struct PlayState* play, int32_t limbIndex, Gfx** dList, Vec3f* pos, Vec3s* rot,
                                    void*);
 
-typedef void (*PostLimbDrawOpa)(struct PlayState* play, s32 limbIndex, Gfx** dList, Vec3s* rot, void*);
+typedef void (*PostLimbDrawOpa)(struct PlayState* play, int32_t limbIndex, Gfx** dList, Vec3s* rot, void*);
 
-typedef s32 (*OverrideLimbDraw)(struct PlayState* play, s32 limbIndex, Gfx** dList, Vec3f* pos, Vec3s* rot,
+typedef int32_t (*OverrideLimbDraw)(struct PlayState* play, int32_t limbIndex, Gfx** dList, Vec3f* pos, Vec3s* rot,
                                 void*, Gfx** gfx);
 
-typedef void (*PostLimbDraw)(struct PlayState* play, s32 limbIndex, Gfx** dList, Vec3s* rot, void*, Gfx** gfx);
+typedef void (*PostLimbDraw)(struct PlayState* play, int32_t limbIndex, Gfx** dList, Vec3s* rot, void*, Gfx** gfx);
 
 typedef enum {
     ANIMENTRY_LOADFRAME,
@@ -137,40 +137,40 @@ typedef struct {
 } AnimEntryLoadFrame; // size = 0x3C
 
 typedef struct {
-    /* 0x000 */ u8 queueFlag;
-    /* 0x001 */ u8 vecCount;
+    /* 0x000 */ uint8_t queueFlag;
+    /* 0x001 */ uint8_t vecCount;
     /* 0x004 */ Vec3s* dst;
     /* 0x008 */ Vec3s* src;
 } AnimEntryCopyAll; // size = 0xC
 
 typedef struct {
-    /* 0x000 */ u8 queueFlag;
-    /* 0x001 */ u8 vecCount;
+    /* 0x000 */ uint8_t queueFlag;
+    /* 0x001 */ uint8_t vecCount;
     /* 0x004 */ Vec3s* base;
     /* 0x008 */ Vec3s* mod;
-    /* 0x00C */ f32 weight;
+    /* 0x00C */ float weight;
 } AnimEntryInterp; // size = 0x10
 
 typedef struct {
-    /* 0x000 */ u8 queueFlag;
-    /* 0x001 */ u8 vecCount;
+    /* 0x000 */ uint8_t queueFlag;
+    /* 0x001 */ uint8_t vecCount;
     /* 0x004 */ Vec3s* dst;
     /* 0x008 */ Vec3s* src;
-    /* 0x00C */ u8* copyFlag;
+    /* 0x00C */ uint8_t* copyFlag;
 } AnimEntryCopyTrue; // size = 0x10
 
 typedef struct {
-    /* 0x000 */ u8 queueFlag;
-    /* 0x001 */ u8 vecCount;
+    /* 0x000 */ uint8_t queueFlag;
+    /* 0x001 */ uint8_t vecCount;
     /* 0x004 */ Vec3s* dst;
     /* 0x008 */ Vec3s* src;
-    /* 0x00C */ u8* copyFlag;
+    /* 0x00C */ uint8_t* copyFlag;
 } AnimEntryCopyFalse; // size = 0x10
 
 typedef struct {
     /* 0x000 */ struct Actor* actor;
     /* 0x004 */ struct SkelAnime* skelAnime;
-    /* 0x008 */ f32 unk_08;
+    /* 0x008 */ float unk_08;
 } AnimEntryMoveActor; // size = 0xC
 
 typedef union {
@@ -183,12 +183,12 @@ typedef union {
 } AnimationEntryData; // size = 0x3C
 
 typedef struct {
-    /* 0x00 */ u8 type;
+    /* 0x00 */ uint8_t type;
     /* 0x04 */ AnimationEntryData data;
 } AnimationEntry; // size = 0x40
 
 typedef struct AnimationContext {
-    s16 animationCount;
+    int16_t animationCount;
     AnimationEntry entries[ANIMATION_ENTRY_MAX];
 } AnimationContext; // size = 0xC84
 
@@ -196,30 +196,30 @@ typedef void (*AnimationEntryCallback)(struct PlayState* play, AnimationEntryDat
 
 // fcurve_skelanime structs
 typedef struct {
-    /* 0x0000 */ u16 unk_00; // appears to be flags
-    /* 0x0002 */ s16 unk_02;
-    /* 0x0004 */ s16 unk_04;
-    /* 0x0006 */ s16 unk_06;
-    /* 0x0008 */ f32 unk_08;
+    /* 0x0000 */ uint16_t unk_00; // appears to be flags
+    /* 0x0002 */ int16_t unk_02;
+    /* 0x0004 */ int16_t unk_04;
+    /* 0x0006 */ int16_t unk_06;
+    /* 0x0008 */ float unk_08;
 } TransformData; // size = 0xC
 
 typedef struct {
-    /* 0x0000 */ u8* refIndex;
+    /* 0x0000 */ uint8_t* refIndex;
     /* 0x0004 */ TransformData* transformData;
-    /* 0x0008 */ s16* copyValues;
-    /* 0x000C */ s16 unk_0C;
-    /* 0x000E */ s16 unk_0E;
+    /* 0x0008 */ int16_t* copyValues;
+    /* 0x000C */ int16_t unk_0C;
+    /* 0x000E */ int16_t unk_0E;
 } TransformUpdateIndex; // size = 0x10
 
 typedef struct {
-    /* 0x0000 */ u8 firstChildIdx;
-    /* 0x0001 */ u8 nextLimbIdx;
+    /* 0x0000 */ uint8_t firstChildIdx;
+    /* 0x0001 */ uint8_t nextLimbIdx;
     /* 0x0004 */ Gfx* dList[2];
 } SkelCurveLimb; // size = 0xC
 
 typedef struct {
     /* 0x0000 */ SkelCurveLimb** limbs;
-    /* 0x0004 */ u8 limbCount;
+    /* 0x0004 */ uint8_t limbCount;
 } SkelCurveLimbList; // size = 0x8
 
 typedef struct {
@@ -229,44 +229,44 @@ typedef struct {
 } LimbTransform; // size = 0x12
 
 typedef struct {
-    /* 0x0000 */ u8 limbCount;
+    /* 0x0000 */ uint8_t limbCount;
     /* 0x0004 */ SkelCurveLimb** limbList;
     /* 0x0008 */ TransformUpdateIndex* transUpdIdx;
-    /* 0x000C */ f32 unk_0C; // seems to be unused
-    /* 0x0010 */ f32 animFinalFrame;
-    /* 0x0014 */ f32 animSpeed;
-    /* 0x0018 */ f32 animCurFrame;
+    /* 0x000C */ float unk_0C; // seems to be unused
+    /* 0x0010 */ float animFinalFrame;
+    /* 0x0014 */ float animSpeed;
+    /* 0x0018 */ float animCurFrame;
     /* 0x001C */ LimbTransform* transforms;
 } SkelAnimeCurve; // size = 0x20
 
-typedef s32 (*OverrideCurveLimbDraw)(struct PlayState* play, SkelAnimeCurve* skelCurve, s32 limbIndex, void*);
-typedef void (*PostCurveLimbDraw)(struct PlayState* play, SkelAnimeCurve* skelCurve, s32 limbIndex, void*);
+typedef int32_t (*OverrideCurveLimbDraw)(struct PlayState* play, SkelAnimeCurve* skelCurve, int32_t limbIndex, void*);
+typedef void (*PostCurveLimbDraw)(struct PlayState* play, SkelAnimeCurve* skelCurve, int32_t limbIndex, void*);
 
-typedef s32 (*AnimUpdateFunc)();
+typedef int32_t (*AnimUpdateFunc)();
 
 typedef struct SkelAnime {
-    /* 0x00 */ u8 limbCount; // Number of limbs in the skeleton
-    /* 0x01 */ u8 mode; // See `AnimationMode`
-    /* 0x02 */ u8 dListCount; // Number of display lists in a flexible skeleton
-    /* 0x03 */ s8 taper; // Tapering to use when morphing between animations. Only used by Door_Warp1.
+    /* 0x00 */ uint8_t limbCount; // Number of limbs in the skeleton
+    /* 0x01 */ uint8_t mode; // See `AnimationMode`
+    /* 0x02 */ uint8_t dListCount; // Number of display lists in a flexible skeleton
+    /* 0x03 */ int8_t taper; // Tapering to use when morphing between animations. Only used by Door_Warp1.
     /* 0x04 */ void** skeleton; // An array of pointers to limbs. Can be StandardLimb, LodLimb, or SkinLimb.
     /* 0x08 */ void* animation; // Can be an AnimationHeader or LinkAnimationHeader.
-    /* 0x0C */ f32 startFrame; // In mode ANIMMODE_LOOP_PARTIAL*, start of partial loop.
-    /* 0x10 */ f32 endFrame; // In mode ANIMMODE_ONCE*, Update returns true when curFrame is equal to this. In mode ANIMMODE_LOOP_PARTIAL*, end of partial loop.
-    /* 0x14 */ f32 animLength; // Total number of frames in the current animation.
-    /* 0x18 */ f32 curFrame; // Current frame in the animation
-    /* 0x1C */ f32 playSpeed; // Multiplied by R_UPDATE_RATE / 3 to get the animation's frame rate.
+    /* 0x0C */ float startFrame; // In mode ANIMMODE_LOOP_PARTIAL*, start of partial loop.
+    /* 0x10 */ float endFrame; // In mode ANIMMODE_ONCE*, Update returns true when curFrame is equal to this. In mode ANIMMODE_LOOP_PARTIAL*, end of partial loop.
+    /* 0x14 */ float animLength; // Total number of frames in the current animation.
+    /* 0x18 */ float curFrame; // Current frame in the animation
+    /* 0x1C */ float playSpeed; // Multiplied by R_UPDATE_RATE / 3 to get the animation's frame rate.
     /* 0x20 */ Vec3s* jointTable; // Current translation of model and rotations of all limbs
     /* 0x24 */ Vec3s* morphTable; // Table of values used to morph between animations
-    /* 0x28 */ f32 morphWeight; // Weight of the current animation morph as a fraction in [0,1]
-    /* 0x2C */ f32 morphRate; // Reciprocal of the number of frames in the morph
+    /* 0x28 */ float morphWeight; // Weight of the current animation morph as a fraction in [0,1]
+    /* 0x2C */ float morphRate; // Reciprocal of the number of frames in the morph
     /* 0x30 */ union {
-        s32 (*normal)(struct SkelAnime*); // Can be Loop, Partial loop, Play once, Morph, or Tapered morph
-        s32 (*link)(struct PlayState*, struct SkelAnime*); // Can be Loop, Play once, or Morph
+        int32_t (*normal)(struct SkelAnime*); // Can be Loop, Partial loop, Play once, Morph, or Tapered morph
+        int32_t (*link)(struct PlayState*, struct SkelAnime*); // Can be Loop, Play once, or Morph
     } update;
-    /* 0x34 */ s8 initFlags; // Flags used when initializing Link's skeleton
-    /* 0x35 */ u8 movementFlags; // Flags used for animations that move the actor in worldspace.
-    /* 0x36 */ s16 prevRot; // Previous rotation in worldspace.
+    /* 0x34 */ int8_t initFlags; // Flags used when initializing Link's skeleton
+    /* 0x35 */ uint8_t movementFlags; // Flags used for animations that move the actor in worldspace.
+    /* 0x36 */ int16_t prevRot; // Previous rotation in worldspace.
     /* 0x38 */ Vec3s prevTransl; // Previous modelspace translation.
     /* 0x3E */ Vec3s baseTransl; // Base modelspace translation.
                SkeletonHeader* skeletonHeader;

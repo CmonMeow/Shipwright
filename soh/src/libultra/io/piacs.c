@@ -1,6 +1,6 @@
 #include "global.h"
 
-u32 __osPiAccessQueueEnabled = 0;
+uint32_t __osPiAccessQueueEnabled = 0;
 
 OSMesg piAccessBuf;
 OSMesgQueue __osPiAccessQueue;

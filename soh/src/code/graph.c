@@ -24,7 +24,7 @@ FaultClient sGraphFaultClient;
 CfbInfo sGraphCfbInfos[3];
 FaultClient sGraphUcodeFaultClient;
 
-void Skybox_Setup(PlayState* play, SkyboxContext* skyboxCtx, s16 skyboxId);
+void Skybox_Setup(PlayState* play, SkyboxContext* skyboxCtx, int16_t skyboxId);
 void PadMgr_ThreadEntry(PadMgr* padMgr);
 
 // clang-format off
@@ -115,7 +115,7 @@ void Graph_InitTHGA(GraphicsContext* gfxCtx) {
     gfxCtx->overlayBuffer = pool->overlayBuffer;
     gfxCtx->workBuffer = pool->workBuffer;
 
-    gfxCtx->curFrameBuffer = (u16*)SysCfb_GetFbPtr(gfxCtx->fbIdx % 2);
+    gfxCtx->curFrameBuffer = (uint16_t*)SysCfb_GetFbPtr(gfxCtx->fbIdx % 2);
     gfxCtx->unk_014 = 0;
 }
 
@@ -153,7 +153,7 @@ void Graph_Destroy(GraphicsContext* gfxCtx) {
 
 void Graph_TaskSet00(GraphicsContext* gfxCtx) {
     static Gfx* D_8012D260 = NULL;
-    static s32 sGraphCfbInfoIdx = 0;
+    static int32_t sGraphCfbInfoIdx = 0;
 
     OSTimer timer;
     OSMesg msg;
@@ -171,7 +171,7 @@ void Graph_TaskSet00(GraphicsContext* gfxCtx) {
         osSyncPrintf(VT_FGCOL(RED));
         osSyncPrintf("RCPが帰ってきませんでした。"); // "RCP did not return."
         osSyncPrintf(VT_RST);
-        LogUtils_LogHexDump((void*)&HW_REG(SP_MEM_ADDR_REG, u32), 0x20);
+        LogUtils_LogHexDump((void*)&HW_REG(SP_MEM_ADDR_REG, uint32_t), 0x20);
         LogUtils_LogHexDump((void*)&DPC_START_REG, 0x20);
         LogUtils_LogHexDump(gGfxSPTaskYieldBuffer, sizeof(gGfxSPTaskYieldBuffer));
 
@@ -201,17 +201,17 @@ void Graph_TaskSet00(GraphicsContext* gfxCtx) {
     task->ucode_data = SysUcode_GetUCodeData();
     task->ucode_size = 0x1000;
     task->ucode_data_size = 0x800;
-    task->dram_stack = (u64*)gGfxSPTaskStack;
+    task->dram_stack = (uint64_t*)gGfxSPTaskStack;
     task->dram_stack_size = sizeof(gGfxSPTaskStack);
     task->output_buff = gGfxSPTaskOutputBuffer;
-    task->output_buff_size = (u64*)((u8*)gGfxSPTaskOutputBuffer + sizeof(gGfxSPTaskOutputBuffer));
-    task->data_ptr = (u64*)gfxCtx->workBuffer;
+    task->output_buff_size = (uint64_t*)((uint8_t*)gGfxSPTaskOutputBuffer + sizeof(gGfxSPTaskOutputBuffer));
+    task->data_ptr = (uint64_t*)gfxCtx->workBuffer;
 
     OPEN_DISPS(gfxCtx);
     task->data_size = (uintptr_t)WORK_DISP - (uintptr_t)gfxCtx->workBuffer;
     CLOSE_DISPS(gfxCtx);
 
-    task->yield_data_ptr = (u64*)gGfxSPTaskYieldBuffer;
+    task->yield_data_ptr = (uint64_t*)gGfxSPTaskYieldBuffer;
     task->yield_data_size = sizeof(gGfxSPTaskYieldBuffer);
 
     scTask->next = NULL;
@@ -245,7 +245,7 @@ void Graph_TaskSet00(GraphicsContext* gfxCtx) {
 }
 
 void Graph_Update(GraphicsContext* gfxCtx, GameState* gameState) {
-    u32 problem = { 0 };
+    uint32_t problem = { 0 };
 
     // Skip game frame updates while gfx debugger is active, and execute with the last frame's DL buffer
     if (GfxDebuggerIsDebugging()) {
@@ -306,7 +306,7 @@ void Graph_Update(GraphicsContext* gfxCtx, GameState* gameState) {
         }
 
         if (HREG(81) < 0) {
-            LogUtils_LogHexDump((void*)&HW_REG(SP_MEM_ADDR_REG, u32), 0x20);
+            LogUtils_LogHexDump((void*)&HW_REG(SP_MEM_ADDR_REG, uint32_t), 0x20);
             LogUtils_LogHexDump((void*)&DPC_START_REG, 0x20);
         }
 
@@ -396,7 +396,7 @@ static void RunFrame() {
         runFrameContext.ovl = runFrameContext.nextOvl;
         Overlay_LoadGameState(runFrameContext.ovl);
 
-        u32 size = runFrameContext.ovl->instanceSize;
+        uint32_t size = runFrameContext.ovl->instanceSize;
         osSyncPrintf("クラスサイズ＝%dバイト\n", size); // "Class size = %d bytes"
 
         gGameState = SYSTEM_ARENA_MALLOC_DEBUG(size);
@@ -482,7 +482,7 @@ void* Graph_Alloc2(GraphicsContext* gfxCtx, size_t size) {
     return THGA_AllocEnd(&gfxCtx->polyOpa, ALIGN16(size));
 }
 
-void Graph_OpenDisps(Gfx** dispRefs, GraphicsContext* gfxCtx, const char* file, s32 line) {
+void Graph_OpenDisps(Gfx** dispRefs, GraphicsContext* gfxCtx, const char* file, int32_t line) {
     // SOH [Debugging] Force open/close disp string handling on so that the graphics debugger can leverage it
     if (true || HREG(80) == 7 && HREG(82) != 4) {
         dispRefs[0] = gfxCtx->polyOpa.p;
@@ -495,7 +495,7 @@ void Graph_OpenDisps(Gfx** dispRefs, GraphicsContext* gfxCtx, const char* file, 
     }
 }
 
-void Graph_CloseDisps(Gfx** dispRefs, GraphicsContext* gfxCtx, const char* file, s32 line) {
+void Graph_CloseDisps(Gfx** dispRefs, GraphicsContext* gfxCtx, const char* file, int32_t line) {
     // SOH [Debugging] Force open/close disp string handling on so that the graphics debugger can leverage it
     if (true || HREG(80) == 7 && HREG(82) != 4) {
         if (dispRefs[0] + 1 == gfxCtx->polyOpa.p) {
@@ -531,7 +531,7 @@ void* Graph_DlistAlloc(Gfx** gfx, size_t size) {
 
     size = ((size + 7) & ~7);
 
-    u8* ptr = (u8*)(*gfx + 1);
+    uint8_t* ptr = (uint8_t*)(*gfx + 1);
 
     Gfx* dst = (Gfx*)(ptr + size);
     gSPBranchList(*gfx, dst);

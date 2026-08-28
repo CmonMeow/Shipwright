@@ -1,8 +1,8 @@
 #include <libultraship/libultra.h>
 #include "sintable.c"
 
-s16 sins(u16 x) {
-    s16 value = { 0 };
+int16_t sins(uint16_t x) {
+    int16_t value = { 0 };
 
     x >>= 4;
 

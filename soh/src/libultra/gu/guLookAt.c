@@ -1,21 +1,21 @@
 #include "global.h"
 
-void guLookAtF(f32 mf[4][4], f32 xEye, f32 yEye, f32 zEye, f32 xAt, f32 yAt, f32 zAt, f32 xUp, f32 yUp, f32 zUp) {
+void guLookAtF(float mf[4][4], float xEye, float yEye, float zEye, float xAt, float yAt, float zAt, float xUp, float yUp, float zUp) {
 
     guMtxIdentF(mf);
 
-    f32 xLook = xAt - xEye;
-    f32 yLook = yAt - yEye;
-    f32 zLook = zAt - zEye;
-    f32 length = -1.0 / sqrtf(SQ(xLook) + SQ(yLook) + SQ(zLook));
+    float xLook = xAt - xEye;
+    float yLook = yAt - yEye;
+    float zLook = zAt - zEye;
+    float length = -1.0 / sqrtf(SQ(xLook) + SQ(yLook) + SQ(zLook));
     xLook *= length;
     // xLook = 2.0f;
     yLook *= length;
     zLook *= length;
 
-    f32 xRight = yUp * zLook - zUp * yLook;
-    f32 yRight = zUp * xLook - xUp * zLook;
-    f32 zRight = xUp * yLook - yUp * xLook;
+    float xRight = yUp * zLook - zUp * yLook;
+    float yRight = zUp * xLook - xUp * zLook;
+    float zRight = xUp * yLook - yUp * xLook;
     length = 1.0 / sqrtf(SQ(xRight) + SQ(yRight) + SQ(zRight));
     xRight *= length;
     yRight *= length;
@@ -50,8 +50,8 @@ void guLookAtF(f32 mf[4][4], f32 xEye, f32 yEye, f32 zEye, f32 xAt, f32 yAt, f32
     mf[3][3] = 1;
 }
 
-void guLookAt(Mtx* m, f32 xEye, f32 yEye, f32 zEye, f32 xAt, f32 yAt, f32 zAt, f32 xUp, f32 yUp, f32 zUp) {
-    f32 mf[4][4];
+void guLookAt(Mtx* m, float xEye, float yEye, float zEye, float xAt, float yAt, float zAt, float xUp, float yUp, float zUp) {
+    float mf[4][4];
 
     guLookAtF(mf, xEye, yEye, zEye, xAt, yAt, zAt, xUp, yUp, zUp);
 

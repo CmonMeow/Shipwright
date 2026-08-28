@@ -1,10 +1,10 @@
 #include <libultraship/libultra.h>
 #include "global.h"
 
-s32 __osContRamWrite(OSMesgQueue* mq, s32 channel, u16 address, u8* buffer, s32 force) {
-    s32 ret = 0;
-    s32 i;
-    s32 retry = 2;
+int32_t __osContRamWrite(OSMesgQueue* mq, int32_t channel, uint16_t address, uint8_t* buffer, int32_t force) {
+    int32_t ret = 0;
+    int32_t i;
+    int32_t retry = 2;
 
     if ((force != PFS_FORCE) && (address < PFS_LABEL_AREA) && (address != 0)) {
         return 0;
@@ -13,7 +13,7 @@ s32 __osContRamWrite(OSMesgQueue* mq, s32 channel, u16 address, u8* buffer, s32 
     __osSiGetAccess();
 
     do {
-        u8* ptr = (u8*)(&gPifMempakBuf);
+        uint8_t* ptr = (uint8_t*)(&gPifMempakBuf);
 
         if (__osContLastPoll != CONT_CMD_WRITE_MEMPACK || __osPfsLastChannel != channel) {
             __osContLastPoll = CONT_CMD_WRITE_MEMPACK;
@@ -41,7 +41,7 @@ s32 __osContRamWrite(OSMesgQueue* mq, s32 channel, u16 address, u8* buffer, s32 
         bcopy(buffer, ((__OSContRamHeader*)ptr)->data, BLOCKSIZE);
 
         ret = __osSiRawStartDma(OS_WRITE, &gPifMempakBuf);
-        u8 crc = __osContDataCrc(buffer);
+        uint8_t crc = __osContDataCrc(buffer);
         osRecvMesg(mq, (OSMesg*)NULL, OS_MESG_BLOCK);
 
         ret = __osSiRawStartDma(OS_READ, &gPifMempakBuf);

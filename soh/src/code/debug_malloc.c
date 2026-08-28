@@ -6,7 +6,7 @@
 #define LOG_SEVERITY_ERROR 2
 #define LOG_SEVERITY_VERBOSE 3
 
-s32 gDebugArenaLogSeverity = LOG_SEVERITY_ERROR;
+int32_t gDebugArenaLogSeverity = LOG_SEVERITY_ERROR;
 Arena sDebugArena;
 
 void DebugArena_CheckPointer(void* ptr, size_t size, const char* name, const char* action) {
@@ -30,7 +30,7 @@ void* DebugArena_Malloc(size_t size) {
     return ptr;
 }
 
-void* DebugArena_MallocDebug(size_t size, const char* file, s32 line) {
+void* DebugArena_MallocDebug(size_t size, const char* file, int32_t line) {
     void* ptr = __osMallocDebug(&sDebugArena, size, file, line);
 
     DebugArena_CheckPointer(ptr, size, "debug_malloc_DEBUG", "確保"); // "Secure"
@@ -44,7 +44,7 @@ void* DebugArena_MallocR(size_t size) {
     return ptr;
 }
 
-void* DebugArena_MallocRDebug(size_t size, const char* file, s32 line) {
+void* DebugArena_MallocRDebug(size_t size, const char* file, int32_t line) {
     void* ptr = __osMallocRDebug(&sDebugArena, size, file, line);
 
     DebugArena_CheckPointer(ptr, size, "debug_malloc_r_DEBUG", "確保"); // "Secure"
@@ -57,7 +57,7 @@ void* DebugArena_Realloc(void* ptr, size_t newSize) {
     return ptr;
 }
 
-void* DebugArena_ReallocDebug(void* ptr, size_t newSize, const char* file, s32 line) {
+void* DebugArena_ReallocDebug(void* ptr, size_t newSize, const char* file, int32_t line) {
     ptr = __osReallocDebug(&sDebugArena, ptr, newSize, file, line);
     DebugArena_CheckPointer(ptr, newSize, "debug_realloc_DEBUG", "再確保"); // "Re-securing"
     return ptr;
@@ -67,7 +67,7 @@ void DebugArena_Free(void* ptr) {
     __osFree(&sDebugArena, ptr);
 }
 
-void DebugArena_FreeDebug(void* ptr, const char* file, s32 line) {
+void DebugArena_FreeDebug(void* ptr, const char* file, int32_t line) {
     __osFreeDebug(&sDebugArena, ptr, file, line);
 }
 
@@ -89,7 +89,7 @@ void DebugArena_Display(void) {
     __osDisplayArena(&sDebugArena);
 }
 
-void DebugArena_GetSizes(u32* outMaxFree, u32* outFree, u32* outAlloc) {
+void DebugArena_GetSizes(uint32_t* outMaxFree, uint32_t* outFree, uint32_t* outAlloc) {
     ArenaImpl_GetSizes(&sDebugArena, outMaxFree, outFree, outAlloc);
 }
 
@@ -107,6 +107,6 @@ void DebugArena_Cleanup(void) {
     __osMallocCleanup(&sDebugArena);
 }
 
-u8 DebugArena_IsInitalized(void) {
+uint8_t DebugArena_IsInitalized(void) {
     return __osMallocIsInitialized(&sDebugArena);
 }

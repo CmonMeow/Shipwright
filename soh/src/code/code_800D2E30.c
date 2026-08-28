@@ -2,10 +2,10 @@
 #include <string.h>
 
 void func_800D2E30(UnkRumbleStruct* arg0) {
-    static u8 D_8012DBB0 = 1;
-    s32 i;
-    s32 unk_a3 = { 0 };
-    s32 index = -1;
+    static uint8_t D_8012DBB0 = 1;
+    int32_t i;
+    int32_t unk_a3 = { 0 };
+    int32_t index = -1;
 
     for (i = 0; i < 4; i++) {
         arg0->rumbleEnable[i] = 0;

@@ -12,11 +12,11 @@ extern float OTRGetAspectRatio();
 
 }
 
-constexpr f32 fourByThree = 4.0f / 3.0f;
+constexpr float fourByThree = 4.0f / 3.0f;
 
 // Gets the additional ratio of the screen compared to the original 4:3 ratio, clamping to 1 if smaller
-extern "C" f32 Ship_GetExtendedAspectRatioMultiplier() {
-    f32 currentRatio = OTRGetAspectRatio();
+extern "C" float Ship_GetExtendedAspectRatioMultiplier() {
+    float currentRatio = OTRGetAspectRatio();
     return MAX(currentRatio / fourByThree, 1.0f);
 }
 
@@ -27,7 +27,7 @@ extern "C" bool Ship_IsCStringEmpty(const char* str) {
 // Build vertex coordinates for a quad command
 // In order of top left, top right, bottom left, then bottom right
 // Supports flipping the texture horizontally
-extern "C" void Ship_CreateQuadVertexGroup(Vtx* vtxList, s32 xStart, s32 yStart, s32 width, s32 height, u8 flippedH) {
+extern "C" void Ship_CreateQuadVertexGroup(Vtx* vtxList, int32_t xStart, int32_t yStart, int32_t width, int32_t height, uint8_t flippedH) {
     vtxList[0].v.ob[0] = xStart;
     vtxList[0].v.ob[1] = yStart;
     vtxList[0].v.tc[0] = (flippedH ? width : 0) << 5;

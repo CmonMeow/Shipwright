@@ -1,20 +1,20 @@
 #include "global.h"
 
 OSPifRam __osPifInternalBuff;
-u8 __osContLastPoll;
-u8 __osMaxControllers; // always 4
+uint8_t __osContLastPoll;
+uint8_t __osMaxControllers; // always 4
 
 OSTimer __osEepromTimer;
 OSMesgQueue __osEepromTimerMsgQ;
 OSMesg __osEepromTimerMsg;
 
-u32 gOSContInitialized = 0;
+uint32_t gOSContInitialized = 0;
 
 #define HALF_SECOND OS_USEC_TO_CYCLES(500000)
 
-s32 osContInit(OSMesgQueue* mq, u8* ctlBitfield, OSContStatus* status) {
+int32_t osContInit(OSMesgQueue* mq, uint8_t* ctlBitfield, OSContStatus* status) {
     OSMesg mesg;
-    s32 ret = 0;
+    int32_t ret = 0;
     OSTime currentTime = { 0 };
     OSTimer timer;
     OSMesgQueue timerqueue;
@@ -44,12 +44,12 @@ s32 osContInit(OSMesgQueue* mq, u8* ctlBitfield, OSContStatus* status) {
     return ret;
 }
 
-void __osContGetInitData(u8* ctlBitfield, OSContStatus* status) {
+void __osContGetInitData(uint8_t* ctlBitfield, OSContStatus* status) {
     __OSContRequestHeader req;
-    s32 i;
-    u8 bitfieldTemp = 0;
+    int32_t i;
+    uint8_t bitfieldTemp = 0;
 
-    u8* bufptr = (u8*)(&__osPifInternalBuff);
+    uint8_t* bufptr = (uint8_t*)(&__osPifInternalBuff);
 
     for (i = 0; i < __osMaxControllers; i++, bufptr += sizeof(req), status++) {
         req = *((__OSContRequestHeader*)bufptr);
@@ -64,17 +64,17 @@ void __osContGetInitData(u8* ctlBitfield, OSContStatus* status) {
     *ctlBitfield = bitfieldTemp;
 }
 
-void __osPackRequestData(u8 poll) {
-    u8* bufptr = { 0 };
+void __osPackRequestData(uint8_t poll) {
+    uint8_t* bufptr = { 0 };
     __OSContRequestHeader req;
-    s32 i;
+    int32_t i;
 
     for (i = 0; i < 0xF; i++) {
         __osPifInternalBuff.ram[i] = 0;
     }
     __osPifInternalBuff.status = 1;
 
-    bufptr = (u8*)(&__osPifInternalBuff);
+    bufptr = (uint8_t*)(&__osPifInternalBuff);
 
     req.align = 0xFF;
     req.txsize = 1;
@@ -89,5 +89,5 @@ void __osPackRequestData(u8 poll) {
         *((__OSContRequestHeader*)bufptr) = req;
         bufptr += sizeof(req);
     }
-    *((u8*)bufptr) = 254;
+    *((uint8_t*)bufptr) = 254;
 }

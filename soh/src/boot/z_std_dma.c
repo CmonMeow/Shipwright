@@ -7,13 +7,13 @@ StackEntry sDmaMgrStackInfo;
 OSMesgQueue sDmaMgrMsgQueue;
 OSMesg sDmaMgrMsgs[0x20];
 OSThread sDmaMgrThread;
-u8 sDmaMgrStack[0x500];
+uint8_t sDmaMgrStack[0x500];
 const char* sDmaMgrCurFileName;
-s32 sDmaMgrCurFileLine;
+int32_t sDmaMgrCurFileLine;
 
-u32 D_80009460 = 0;
-u32 gDmaMgrDmaBuffSize = 0x2000;
-u32 sDmaMgrIsRomCompressed = false;
+uint32_t D_80009460 = 0;
+uint32_t gDmaMgrDmaBuffSize = 0x2000;
+uint32_t sDmaMgrIsRomCompressed = false;
 
 // dmadata filenames
 #define DEFINE_DMA_ENTRY(name) #name,
@@ -24,7 +24,7 @@ const char* sDmaMgrFileNames[] = {
 
 #undef DEFINE_DMA_ENTRY
 
-s32 DmaMgr_CompareName(const char* name1, const char* name2) {
+int32_t DmaMgr_CompareName(const char* name1, const char* name2) {
     while (*name1 != 0u) {
         if (*name1 > *name2) {
             return 1;
@@ -45,12 +45,12 @@ s32 DmaMgr_CompareName(const char* name1, const char* name2) {
     return 0;
 }
 
-s32 DmaMgr_DmaRomToRam(uintptr_t rom, uintptr_t ram, size_t size) {
+int32_t DmaMgr_DmaRomToRam(uintptr_t rom, uintptr_t ram, size_t size) {
     OSIoMesg ioMsg;
     OSMesgQueue queue;
     OSMesg msg;
-    s32 ret = { 0 };
-    u32 buffSize = gDmaMgrDmaBuffSize;
+    int32_t ret = { 0 };
+    uint32_t buffSize = gDmaMgrDmaBuffSize;
 
     if (buffSize == 0) {
         buffSize = 0x2000;
@@ -120,8 +120,8 @@ end:
     return ret;
 }
 
-s32 DmaMgr_DmaHandler(OSPiHandle* pihandle, OSIoMesg* mb, s32 direction) {
-    s32 ret = { 0 };
+int32_t DmaMgr_DmaHandler(OSPiHandle* pihandle, OSIoMesg* mb, int32_t direction) {
+    int32_t ret = { 0 };
 
     assert(pihandle == gCartHandle);
     assert(direction == OS_READ);
@@ -229,7 +229,7 @@ void DmaMgr_ProcessMsg(DmaRequest* req) {
     void* ram = req->dramAddr;
     size_t size = req->size;
     uintptr_t romStart;
-    u8 found = false;
+    uint8_t found = false;
     DmaEntry* iter = { 0 };
     const char* filename = { 0 };
 
@@ -327,9 +327,9 @@ void DmaMgr_ThreadEntry(void* arg0) {
     osSyncPrintf("ＤＭＡマネージャスレッド実行終了\n");
 }
 
-s32 DmaMgr_SendRequestImpl(DmaRequest* req, uintptr_t ram, uintptr_t vrom, size_t size, u32 unk, OSMesgQueue* queue,
+int32_t DmaMgr_SendRequestImpl(DmaRequest* req, uintptr_t ram, uintptr_t vrom, size_t size, uint32_t unk, OSMesgQueue* queue,
                            OSMesg msg) {
-    static s32 sDmaMgrQueueFullLogged = 0;
+    static int32_t sDmaMgrQueueFullLogged = 0;
 
     if ((1 && (ram == 0)) || (osMemSize < ram + size + 0x80000000) || (vrom & 1) || (vrom > 0x4000000) || (size == 0) ||
         (size & 1)) {
@@ -359,13 +359,13 @@ s32 DmaMgr_SendRequestImpl(DmaRequest* req, uintptr_t ram, uintptr_t vrom, size_
     return 0;
 }
 
-s32 DmaMgr_SendRequest0(uintptr_t ram, uintptr_t vrom, size_t size) {
+int32_t DmaMgr_SendRequest0(uintptr_t ram, uintptr_t vrom, size_t size) {
     DmaRequest req;
     OSMesgQueue queue;
     OSMesg msg;
 
     osCreateMesgQueue(&queue, &msg, 1);
-    s32 ret = DmaMgr_SendRequestImpl(&req, ram, vrom, size, 0, &queue, OS_MESG_PTR(NULL));
+    int32_t ret = DmaMgr_SendRequestImpl(&req, ram, vrom, size, 0, &queue, OS_MESG_PTR(NULL));
     if (ret == -1) {
         return ret;
     }
@@ -383,7 +383,7 @@ void DmaMgr_Init(void) {
     sDmaMgrIsRomCompressed = false;
     const char** name = sDmaMgrFileNames;
     DmaEntry* iter = gDmaDataTable;
-    s32 idx = 0;
+    int32_t idx = 0;
 
     while (iter->vromEnd != 0) {
         if (iter->romEnd != 0) {
@@ -418,8 +418,8 @@ void DmaMgr_Init(void) {
     osStartThread(&sDmaMgrThread);
 }
 
-s32 DmaMgr_SendRequest2(DmaRequest* req, uintptr_t ram, uintptr_t vrom, size_t size, u32 unk5, OSMesgQueue* queue,
-                        OSMesg msg, const char* file, s32 line) {
+int32_t DmaMgr_SendRequest2(DmaRequest* req, uintptr_t ram, uintptr_t vrom, size_t size, uint32_t unk5, OSMesgQueue* queue,
+                        OSMesg msg, const char* file, int32_t line) {
 #if 0
     req->filename = file;
     req->line = line;
@@ -427,7 +427,7 @@ s32 DmaMgr_SendRequest2(DmaRequest* req, uintptr_t ram, uintptr_t vrom, size_t s
 #endif
 }
 
-s32 DmaMgr_SendRequest1(void* ram0, uintptr_t vrom, size_t size, const char* file, s32 line) {
+int32_t DmaMgr_SendRequest1(void* ram0, uintptr_t vrom, size_t size, const char* file, int32_t line) {
     // printf("DmaMgr_SendRequest1 called...\n");
     return 0;
 
@@ -440,7 +440,7 @@ s32 DmaMgr_SendRequest1(void* ram0, uintptr_t vrom, size_t size, const char* fil
     req.filename = file;
     req.line = line;
     osCreateMesgQueue(&queue, &msg, 1);
-    s32 ret = DmaMgr_SendRequestImpl(&req, ram, vrom, size, 0, &queue, 0);
+    int32_t ret = DmaMgr_SendRequestImpl(&req, ram, vrom, size, 0, &queue, 0);
     if (ret == -1) {
         return ret;
     }

@@ -14,13 +14,13 @@ static const du pilo = { 0x3E6110B4, 0x611A6263 };
 
 static const fu zero = { 0x00000000 };
 
-f32 sinf(f32 x) {
-    f64 dx = { 0 };
-    f64 xSq = { 0 };
-    f64 polyApprox = { 0 };
-    f64 result = { 0 };
-    s32 ix = *(s32*)&x;
-    s32 xpt = (ix >> 22);
+float sinf(float x) {
+    double dx = { 0 };
+    double xSq = { 0 };
+    double polyApprox = { 0 };
+    double result = { 0 };
+    int32_t ix = *(int32_t*)&x;
+    int32_t xpt = (ix >> 22);
 
     xpt &= 0x1FF;
 
@@ -31,15 +31,15 @@ f32 sinf(f32 x) {
             xSq = SQ(dx);
             polyApprox = ((P[4].d * xSq + P[3].d) * xSq + P[2].d) * xSq + P[1].d;
             result = dx + (dx * xSq) * polyApprox;
-            return (f32)result;
+            return (float)result;
         }
         return x;
     }
 
     if (xpt < 0x136) {
         dx = x;
-        f64 dn = dx * rpi.d;
-        s32 n = ROUND(dn);
+        double dn = dx * rpi.d;
+        int32_t n = ROUND(dn);
         dn = n;
 
         dx -= dn * pihi.d;
@@ -50,9 +50,9 @@ f32 sinf(f32 x) {
         result = dx + (dx * xSq) * polyApprox;
 
         if (!(n & 1)) {
-            return (f32)result;
+            return (float)result;
         }
-        return -(f32)result;
+        return -(float)result;
     }
 
     if (x != x) {

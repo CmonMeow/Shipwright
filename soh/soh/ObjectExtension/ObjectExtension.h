@@ -16,7 +16,7 @@
  * An example usage is:
  *
  * struct MyData {
- *     s32 data = -1;
+ *     int32_t data = -1;
  * };
  * static ObjectExtension::Register<MyData> MyDataRegister;
  *

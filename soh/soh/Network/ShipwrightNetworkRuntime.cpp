@@ -2866,9 +2866,7 @@ bool ShipwrightNetworkRuntime::AcceptServerProjectile(int32_t player,
         projectile.velocityX = std::sin(yaw) * horizontal;
         projectile.velocityY = -std::sin(pitch) * arrowSpeedPerSecond;
         projectile.velocityZ = std::cos(yaw) * horizontal;
-        // Match Math_Atan2S(speedXZ, -velocity.y): despite its parameter
-        // names, Math_Atan2S(x, y) computes atan2(y, x). A level native arrow
-        // therefore has a display pitch of zero, not 0x4000.
+        // Match the native arrow display pitch. A level arrow has zero pitch.
         projectile.state.rotationX = static_cast<short>(
             std::atan2(-projectile.velocityY, horizontal) * (32768.0f / 3.14159265358979323846f));
         projectile.state.rotationY = launchYaw;

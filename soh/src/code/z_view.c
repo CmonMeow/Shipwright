@@ -7,11 +7,11 @@
 
 #include "soh/frame_interpolation.h"
 
-vu32 D_8012ABF0 = true;
+volatile uint32_t D_8012ABF0 = true;
 
 void View_ViewportToVp(Vp* dest, Viewport* src) {
-    s32 width = src->rightX - src->leftX;
-    s32 height = src->bottomY - src->topY;
+    int32_t width = src->rightX - src->leftX;
+    int32_t height = src->bottomY - src->topY;
 
     dest->vp.vscale[0] = width * 2;
     dest->vp.vscale[1] = height * 2;
@@ -96,16 +96,16 @@ void func_800AA3F0(View* view, Vec3f* eye, Vec3f* lookAt, Vec3f* up) {
     view->up = *up;
 }
 
-void View_SetScale(View* view, f32 scale) {
+void View_SetScale(View* view, float scale) {
     view->flags |= 4;
     view->scale = scale;
 }
 
-void View_GetScale(View* view, f32* scale) {
+void View_GetScale(View* view, float* scale) {
     *scale = view->scale;
 }
 
-void func_800AA460(View* view, f32 fovy, f32 near, f32 far) {
+void func_800AA460(View* view, float fovy, float near, float far) {
     view->fovy = fovy;
     view->zNear = near;
     // view->zNear = -30;
@@ -113,13 +113,13 @@ void func_800AA460(View* view, f32 fovy, f32 near, f32 far) {
     view->flags |= 4;
 }
 
-void func_800AA48C(View* view, f32* fovy, f32* near, f32* far) {
+void func_800AA48C(View* view, float* fovy, float* near, float* far) {
     *fovy = view->fovy;
     *near = view->zNear;
     *far = view->zFar;
 }
 
-void func_800AA4A8(View* view, f32 fovy, f32 near, f32 far) {
+void func_800AA4A8(View* view, float fovy, float near, float far) {
     view->fovy = fovy;
     view->zNear = near;
     // view->zNear = -30;
@@ -128,7 +128,7 @@ void func_800AA4A8(View* view, f32 fovy, f32 near, f32 far) {
     view->scale = 1.0f;
 }
 
-void func_800AA4E0(View* view, f32* fovy, f32* near, f32* far) {
+void func_800AA4E0(View* view, float* fovy, float* near, float* far) {
     *fovy = view->fovy;
     *near = view->zNear;
     *far = view->zFar;
@@ -144,15 +144,15 @@ void View_GetViewport(View* view, Viewport* viewport) {
 }
 
 void func_800AA550(View* view) {
-    s32 ulx = { 0 };
-    s32 uly = { 0 };
-    s32 lrx = { 0 };
-    s32 lry = { 0 };
+    int32_t ulx = { 0 };
+    int32_t uly = { 0 };
+    int32_t lrx = { 0 };
+    int32_t lry = { 0 };
     GraphicsContext* gfxCtx = view->gfxCtx;
 
-    s32 varY = ShrinkWindow_GetCurrentVal();
+    int32_t varY = ShrinkWindow_GetCurrentVal();
 
-    s32 varX = -1;
+    int32_t varX = -1;
 
     if (varX < 0) {
         varX = 0;
@@ -188,19 +188,19 @@ void func_800AA550(View* view) {
     CLOSE_DISPS(gfxCtx);
 }
 
-void View_SetDistortionOrientation(View* view, f32 rotX, f32 rotY, f32 rotZ) {
+void View_SetDistortionOrientation(View* view, float rotX, float rotY, float rotZ) {
     view->distortionOrientation.x = rotX;
     view->distortionOrientation.y = rotY;
     view->distortionOrientation.z = rotZ;
 }
 
-void View_SetDistortionScale(View* view, f32 scaleX, f32 scaleY, f32 scaleZ) {
+void View_SetDistortionScale(View* view, float scaleX, float scaleY, float scaleZ) {
     view->distortionScale.x = scaleX;
     view->distortionScale.y = scaleY;
     view->distortionScale.z = scaleZ;
 }
 
-s32 View_SetDistortionSpeed(View* view, f32 speed) {
+int32_t View_SetDistortionSpeed(View* view, float speed) {
     view->distortionSpeed = speed;
 }
 
@@ -226,13 +226,13 @@ void View_ClearDistortion(View* view) {
     view->distortionSpeed = 1.0f;
 }
 
-void View_SetDistortion(View* view, Vec3f orientation, Vec3f scale, f32 speed) {
+void View_SetDistortion(View* view, Vec3f orientation, Vec3f scale, float speed) {
     view->distortionOrientation = orientation;
     view->distortionScale = scale;
     view->distortionSpeed = speed;
 }
 
-s32 View_StepDistortion(View* view, Mtx* projectionMtx) {
+int32_t View_StepDistortion(View* view, Mtx* projectionMtx) {
     MtxF projectionMtxF;
 
     if (view->distortionSpeed == 0.0f) {
@@ -271,7 +271,7 @@ s32 View_StepDistortion(View* view, Mtx* projectionMtx) {
     return true;
 }
 
-void func_800AAA50(View* view, s32 arg1) {
+void func_800AAA50(View* view, int32_t arg1) {
     arg1 = (view->flags & arg1) | (arg1 >> 4);
 
     if (arg1 & 8) {
@@ -285,7 +285,7 @@ static float sqr(float a) {
     return a * a;
 }
 
-s32 func_800AAA9C(View* view) {
+int32_t func_800AAA9C(View* view) {
     GraphicsContext* gfxCtx = view->gfxCtx;
 
     OPEN_DISPS(gfxCtx);
@@ -307,9 +307,9 @@ s32 func_800AAA9C(View* view) {
     view->projectionPtr = projection;
     view->projectionFlippedPtr = projectionFlipped;
 
-    s32 width = view->viewport.rightX - view->viewport.leftX;
-    s32 height = view->viewport.bottomY - view->viewport.topY;
-    f32 aspect = (f32)width / (f32)height;
+    int32_t width = view->viewport.rightX - view->viewport.leftX;
+    int32_t height = view->viewport.bottomY - view->viewport.topY;
+    float aspect = (float)width / (float)height;
 
     Mtx* viewing = Graph_Alloc(gfxCtx, sizeof(Mtx));
     LOG_CHECK_NULL_POINTER("viewing", viewing);
@@ -408,7 +408,7 @@ s32 func_800AAA9C(View* view) {
     }
 
     if (QREG(88) & 1) {
-        s32 i;
+        int32_t i;
         MtxF mf;
 
         osSyncPrintf("fovy %f near %f far %f scale %f aspect %f normal %08x\n", view->fovy, view->zNear, view->zFar,
@@ -442,7 +442,7 @@ s32 func_800AAA9C(View* view) {
     old_view = *view;
 
     if (QREG(88) & 2) {
-        s32 i;
+        int32_t i;
         MtxF mf;
 
         Matrix_MtxToMtxF(view->viewingPtr, &mf);
@@ -461,7 +461,7 @@ s32 func_800AAA9C(View* view) {
     return 1;
 }
 
-s32 func_800AB0A8(View* view) {
+int32_t func_800AB0A8(View* view) {
     GraphicsContext* gfxCtx = view->gfxCtx;
 
     OPEN_DISPS(gfxCtx);
@@ -481,8 +481,8 @@ s32 func_800AB0A8(View* view) {
     LOG_CHECK_NULL_POINTER("projection", projection);
     view->projectionPtr = projection;
 
-    guOrtho(projection, -(f32)gScreenWidth * 0.5f, (f32)gScreenWidth * 0.5f, -(f32)gScreenHeight * 0.5f,
-            (f32)gScreenHeight * 0.5f, view->zNear, view->zFar, view->scale);
+    guOrtho(projection, -(float)gScreenWidth * 0.5f, (float)gScreenWidth * 0.5f, -(float)gScreenHeight * 0.5f,
+            (float)gScreenHeight * 0.5f, view->zNear, view->zFar, view->scale);
 
     view->projection = *projection;
 
@@ -494,7 +494,7 @@ s32 func_800AB0A8(View* view) {
     return 1;
 }
 
-s32 func_800AB2C4(View* view) {
+int32_t func_800AB2C4(View* view) {
 
     GraphicsContext* gfxCtx = view->gfxCtx;
 
@@ -517,8 +517,8 @@ s32 func_800AB2C4(View* view) {
     view->projectionPtr = projection;
     view->projectionFlippedPtr = projectionFlipped;
 
-    guOrtho(projection, -(f32)gScreenWidth * 0.5f, (f32)gScreenWidth * 0.5f, -(f32)gScreenHeight * 0.5f,
-            (f32)gScreenHeight * 0.5f, -30, view->zFar, view->scale);
+    guOrtho(projection, -(float)gScreenWidth * 0.5f, (float)gScreenWidth * 0.5f, -(float)gScreenHeight * 0.5f,
+            (float)gScreenHeight * 0.5f, -30, view->zFar, view->scale);
 
     view->projection = *projection;
 
@@ -529,7 +529,7 @@ s32 func_800AB2C4(View* view) {
     return 1;
 }
 
-s32 func_800AB560(View* view) {
+int32_t func_800AB560(View* view) {
     GraphicsContext* gfxCtx = view->gfxCtx;
 
     OPEN_DISPS(gfxCtx);
@@ -548,10 +548,10 @@ s32 func_800AB560(View* view) {
     LOG_CHECK_NULL_POINTER("projection", projection);
     view->projectionPtr = projection;
 
-    s32 width = view->viewport.rightX - view->viewport.leftX;
-    s32 height = view->viewport.bottomY - view->viewport.topY;
+    int32_t width = view->viewport.rightX - view->viewport.leftX;
+    int32_t height = view->viewport.bottomY - view->viewport.topY;
 
-    f32 aspect = (f32)width / (f32)height;
+    float aspect = (float)width / (float)height;
     guPerspective(projection, &view->normal, view->fovy, aspect, view->zNear, view->zFar, view->scale);
 
     view->projection = *projection;
@@ -582,7 +582,7 @@ s32 func_800AB560(View* view) {
     return 1;
 }
 
-s32 func_800AB944(View* view) {
+int32_t func_800AB944(View* view) {
     OPEN_DISPS(view->gfxCtx);
 
     func_800ABE74(view->eye.x, view->eye.y, view->eye.z);
@@ -594,7 +594,7 @@ s32 func_800AB944(View* view) {
     return 1;
 }
 
-s32 func_800AB9EC(View* view, s32 arg1, Gfx** gfxp) {
+int32_t func_800AB9EC(View* view, int32_t arg1, Gfx** gfxp) {
     Mtx* projection = { 0 };
     Gfx* gfx = *gfxp;
     GraphicsContext* gfxCtx = view->gfxCtx;
@@ -619,8 +619,8 @@ s32 func_800AB9EC(View* view, s32 arg1, Gfx** gfxp) {
         LOG_CHECK_NULL_POINTER("projection", projection);
         view->projectionPtr = projection;
 
-        guOrtho(projection, -(f32)gScreenWidth * 0.5f, (f32)gScreenWidth * 0.5f, -(f32)gScreenHeight * 0.5f,
-                (f32)gScreenHeight * 0.5f, view->zNear, view->zFar, view->scale);
+        guOrtho(projection, -(float)gScreenWidth * 0.5f, (float)gScreenWidth * 0.5f, -(float)gScreenHeight * 0.5f,
+                (float)gScreenHeight * 0.5f, view->zNear, view->zFar, view->scale);
 
         view->projection = *projection;
 
@@ -630,10 +630,10 @@ s32 func_800AB9EC(View* view, s32 arg1, Gfx** gfxp) {
         LOG_CHECK_NULL_POINTER("projection", projection);
         view->projectionPtr = projection;
 
-        s32 width = view->viewport.rightX - view->viewport.leftX;
-        s32 height = view->viewport.bottomY - view->viewport.topY;
+        int32_t width = view->viewport.rightX - view->viewport.leftX;
+        int32_t height = view->viewport.bottomY - view->viewport.topY;
 
-        guPerspective(projection, &view->normal, view->fovy, (f32)width / (f32)height, view->zNear, view->zFar,
+        guPerspective(projection, &view->normal, view->fovy, (float)width / (float)height, view->zNear, view->zFar,
                       view->scale);
 
         view->projection = *projection;
@@ -662,15 +662,15 @@ s32 func_800AB9EC(View* view, s32 arg1, Gfx** gfxp) {
     return 1;
 }
 
-s32 func_800ABE74(f32 eyeX, f32 eyeY, f32 eyeZ) {
-    s32 error = 0;
+int32_t func_800ABE74(float eyeX, float eyeY, float eyeZ) {
+    int32_t error = 0;
 
     if (SQ(eyeX) + SQ(eyeY) + SQ(eyeZ) > SQ(32767.0f)) {
         error = 3;
     } else {
-        f32 absEyeX = ABS(eyeX);
-        f32 absEyeY = ABS(eyeY);
-        f32 absEyeZ = ABS(eyeZ);
+        float absEyeX = ABS(eyeX);
+        float absEyeY = ABS(eyeY);
+        float absEyeZ = ABS(eyeZ);
 
         if (((18900.0f < absEyeX) || (18900.0f < absEyeY)) || (18900.0f < absEyeZ)) {
             error = 2;

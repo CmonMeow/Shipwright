@@ -5,7 +5,7 @@
 #define LOG_SEVERITY_ERROR 2
 #define LOG_SEVERITY_VERBOSE 3
 
-s32 gZeldaArenaLogSeverity = LOG_SEVERITY_ERROR;
+int32_t gZeldaArenaLogSeverity = LOG_SEVERITY_ERROR;
 Arena sZeldaArena;
 
 void ZeldaArena_CheckPointer(void* ptr, size_t size, const char* name, const char* action) {
@@ -28,7 +28,7 @@ void* ZeldaArena_Malloc(size_t size) {
     return ptr;
 }
 
-void* ZeldaArena_MallocDebug(size_t size, const char* file, s32 line) {
+void* ZeldaArena_MallocDebug(size_t size, const char* file, int32_t line) {
     void* ptr = __osMallocDebug(&sZeldaArena, size, file, line);
 
     ZeldaArena_CheckPointer(ptr, size, "zelda_malloc_DEBUG", "確保"); // "Secure"
@@ -42,7 +42,7 @@ void* ZeldaArena_MallocR(size_t size) {
     return ptr;
 }
 
-void* ZeldaArena_MallocRDebug(size_t size, const char* file, s32 line) {
+void* ZeldaArena_MallocRDebug(size_t size, const char* file, int32_t line) {
     void* ptr = __osMallocRDebug(&sZeldaArena, size, file, line);
 
     ZeldaArena_CheckPointer(ptr, size, "zelda_malloc_r_DEBUG", "確保"); // "Secure"
@@ -55,7 +55,7 @@ void* ZeldaArena_Realloc(void* ptr, size_t newSize) {
     return ptr;
 }
 
-void* ZeldaArena_ReallocDebug(void* ptr, size_t newSize, const char* file, s32 line) {
+void* ZeldaArena_ReallocDebug(void* ptr, size_t newSize, const char* file, int32_t line) {
     ptr = __osReallocDebug(&sZeldaArena, ptr, newSize, file, line);
     ZeldaArena_CheckPointer(ptr, newSize, "zelda_realloc_DEBUG", "再確保"); // "Re-securing"
     return ptr;
@@ -65,7 +65,7 @@ void ZeldaArena_Free(void* ptr) {
     __osFree(&sZeldaArena, ptr);
 }
 
-void ZeldaArena_FreeDebug(void* ptr, const char* file, s32 line) {
+void ZeldaArena_FreeDebug(void* ptr, const char* file, int32_t line) {
     __osFreeDebug(&sZeldaArena, ptr, file, line);
 }
 
@@ -86,7 +86,7 @@ void ZeldaArena_Display() {
     __osDisplayArena(&sZeldaArena);
 }
 
-void ZeldaArena_GetSizes(u32* outMaxFree, u32* outFree, u32* outAlloc) {
+void ZeldaArena_GetSizes(uint32_t* outMaxFree, uint32_t* outFree, uint32_t* outAlloc) {
     ArenaImpl_GetSizes(&sZeldaArena, outMaxFree, outFree, outAlloc);
 }
 
@@ -104,6 +104,6 @@ void ZeldaArena_Cleanup() {
     __osMallocCleanup(&sZeldaArena);
 }
 
-u8 ZeldaArena_IsInitalized() {
+uint8_t ZeldaArena_IsInitalized() {
     return __osMallocIsInitialized(&sZeldaArena);
 }

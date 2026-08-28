@@ -1,5 +1,5 @@
 #include "global.h"
 
-void __osSpSetStatus(u32 status) {
-    HW_REG(SP_STATUS_REG, u32) = status;
+void __osSpSetStatus(uint32_t status) {
+    HW_REG(SP_STATUS_REG, uint32_t) = status;
 }

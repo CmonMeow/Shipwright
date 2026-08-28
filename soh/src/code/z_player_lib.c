@@ -7,13 +7,13 @@
 #include "objects/object_fish/object_fish.h"
 #include "soh/ResourceManagerHelpers.h"
 
-extern s32 Ship_IsBowAimHeld(void);
+extern int32_t Ship_IsBowAimHeld(void);
 
 #include <stdlib.h>
 
 typedef struct {
-    /* 0x00 */ u8 flag;
-    /* 0x02 */ u16 textId;
+    /* 0x00 */ uint8_t flag;
+    /* 0x02 */ uint16_t textId;
 } TextTriggerEntry; // size = 0x04
 
 typedef struct {
@@ -23,7 +23,7 @@ typedef struct {
 
 FlexSkeletonHeader* gPlayerSkelHeaders = &gLinkAdultSkel;
 
-s16 sBootData[1][17] = {
+int16_t sBootData[1][17] = {
     { 200, 1000, 300, 700, 550, 270, 600, 350, 800, 600, -100, 600, 590, 750, 125, 200, 130 },
 };
 
@@ -36,7 +36,7 @@ TextTriggerEntry sTextTriggers[] = {
 };
 
 // Used to map model groups to model types for [animation, left hand, right hand, sheath, waist]
-u8 gPlayerModelTypes[PLAYER_MODELGROUP_MAX][PLAYER_MODELGROUPENTRY_MAX] = {
+uint8_t gPlayerModelTypes[PLAYER_MODELGROUP_MAX][PLAYER_MODELGROUPENTRY_MAX] = {
     /* PLAYER_MODELGROUP_0 */
     { PLAYER_ANIMTYPE_2, PLAYER_MODELTYPE_LH_OPEN, PLAYER_MODELTYPE_RH_SHIELD, PLAYER_MODELTYPE_SHEATH_16,
       PLAYER_MODELTYPE_WAIST },
@@ -358,8 +358,8 @@ Gfx** sPlayerDListGroups[PLAYER_MODELTYPE_MAX] = {
     sPlayerWaistDLs,                  // PLAYER_MODELTYPE_WAIST
 };
 
-s32 sLeftHandType;
-s32 sRightHandType;
+int32_t sLeftHandType;
+int32_t sRightHandType;
 
 /**
  * Selects adult Link's hand, sheath, and waist models for a synchronized
@@ -367,13 +367,13 @@ s32 sRightHandType;
  * gameplay callback this only selects display lists; it never touches local
  * player state, colliders, held actors, or weapon effects.
  */
-s32 Player_OverrideLimbDrawNetwork(PlayState* play, s32 limbIndex, Gfx** dList, Vec3f* pos, Vec3s* rot,
+int32_t Player_OverrideLimbDrawNetwork(PlayState* play, int32_t limbIndex, Gfx** dList, Vec3f* pos, Vec3s* rot,
                                    void* data) {
     PlayerNetworkDrawData* network = data;
-    u8 modelGroup = network->modelGroup;
-    u8 shield = network->shield;
-    s32 type = { 0 };
-    s32 dListOffset = 0;
+    uint8_t modelGroup = network->modelGroup;
+    uint8_t shield = network->shield;
+    int32_t type = { 0 };
+    int32_t dListOffset = 0;
 
     (void)play;
     (void)pos;
@@ -403,12 +403,12 @@ s32 Player_OverrideLimbDrawNetwork(PlayState* play, s32 limbIndex, Gfx** dList, 
         type = gPlayerModelTypes[modelGroup][PLAYER_MODELGROUPENTRY_RIGHT_HAND];
         sRightHandType = type;
         if (type == PLAYER_MODELTYPE_RH_SHIELD) {
-            dListOffset = shield * (s32)sizeof(uint32_t);
+            dListOffset = shield * (int32_t)sizeof(uint32_t);
         }
     } else if (limbIndex == PLAYER_LIMB_SHEATH) {
         type = gPlayerModelTypes[modelGroup][PLAYER_MODELGROUPENTRY_SHEATH];
         if ((type == PLAYER_MODELTYPE_SHEATH_18) || (type == PLAYER_MODELTYPE_SHEATH_19)) {
-            dListOffset = shield * (s32)sizeof(uint32_t);
+            dListOffset = shield * (int32_t)sizeof(uint32_t);
         }
     } else if (limbIndex == PLAYER_LIMB_WAIST) {
         type = gPlayerModelTypes[modelGroup][PLAYER_MODELGROUPENTRY_WAIST];
@@ -420,14 +420,14 @@ s32 Player_OverrideLimbDrawNetwork(PlayState* play, s32 limbIndex, Gfx** dList, 
     return 0;
 }
 
-void Player_PostLimbDrawNetwork(PlayState* play, s32 limbIndex, Gfx** dList, Vec3s* rot, void* data) {
-    static f32 rodScales[22] = {
+void Player_PostLimbDrawNetwork(PlayState* play, int32_t limbIndex, Gfx** dList, Vec3s* rot, void* data) {
+    static float rodScales[22] = {
         1.0f, 1.0f, 1.0f, 0.9625f, 0.925f, 0.8875f, 0.85f, 0.8125f, 0.775f, 0.73749995f, 0.7f,
         0.6625f, 0.625f, 0.5875f, 0.54999995f, 0.5125f, 0.47499996f, 0.4375f, 0.39999998f,
         0.36249995f, 0.325f, 0.28749996f,
     };
     PlayerNetworkDrawData* network = data;
-    s32 i;
+    int32_t i;
 
     (void)dList;
     (void)rot;
@@ -480,7 +480,7 @@ void Player_PostLimbDrawNetwork(PlayState* play, s32 limbIndex, Gfx** dList, Vec
     Matrix_Translate(0.0f, 0.0f, -1300.0f, MTXMODE_APPLY);
 
     for (i = 0; i < 22; ++i) {
-        static f32 rodBendRatios[22] = {
+        static float rodBendRatios[22] = {
             0.0f,  0.0f,  0.0f,  0.0f,  0.0f,  0.06f,   0.12f,   0.18f,   0.24f,   0.30f,   0.36f,
             0.42f, 0.48f, 0.54f, 0.60f, 0.60f, 0.5142f, 0.4285f, 0.3428f, 0.2571f, 0.1714f, 0.0857f,
         };
@@ -517,7 +517,7 @@ Gfx gCullFrontDList[] = {
 };
 
 Vec3f* D_80160000;
-s32 sDListsLodOffset;
+int32_t sDListsLodOffset;
 Vec3f sGetItemRefPos;
 
 void Player_SetBootData(PlayState* play, Player* this) {
@@ -525,7 +525,7 @@ void Player_SetBootData(PlayState* play, Player* this) {
     REG(27) = 2000;
     REG(48) = 370;
 
-    s16* bootRegs = sBootData[0];
+    int16_t* bootRegs = sBootData[0];
     REG(19) = bootRegs[0];
     REG(30) = bootRegs[1];
     REG(32) = bootRegs[2];
@@ -549,13 +549,13 @@ void Player_SetBootData(PlayState* play, Player* this) {
     }
 }
 
-s32 Player_InBlockingCsMode(PlayState* play, Player* this) {
+int32_t Player_InBlockingCsMode(PlayState* play, Player* this) {
     return (this->stateFlags1 & (PLAYER_STATE1_DEAD | PLAYER_STATE1_IN_CUTSCENE)) || (this->csAction != 0) ||
            (play->transitionTrigger == TRANS_TRIGGER_START) || (this->stateFlags1 & PLAYER_STATE1_LOADING) ||
            (this->stateFlags3 & PLAYER_STATE3_FLYING_WITH_HOOKSHOT);
 }
 
-s32 Player_InCsMode(PlayState* play) {
+int32_t Player_InCsMode(PlayState* play) {
     Player* this = GET_PLAYER(play);
 
     return Player_InBlockingCsMode(play, this) || (this->unk_6AD == 4);
@@ -568,15 +568,15 @@ s32 Player_InCsMode(PlayState* play) {
  * Note that within Player, `Player_UpdateHostileLockOn` exists, which updates the flag and also returns the check.
  * Player can use this function instead if the flag should be checked, but not updated.
  */
-s32 Player_CheckHostileLockOn(Player* this) {
+int32_t Player_CheckHostileLockOn(Player* this) {
     return (this->stateFlags1 & PLAYER_STATE1_HOSTILE_LOCK_ON);
 }
 
-s32 Player_IsChildWithHylianShield(Player* this) {
+int32_t Player_IsChildWithHylianShield(Player* this) {
     return false;
 }
 
-s32 Player_ActionToModelGroup(s32 actionParam) {
+int32_t Player_ActionToModelGroup(int32_t actionParam) {
     switch (actionParam) {
         case PLAYER_IA_SWORD_CS:
             return PLAYER_MODELGROUP_SWORD;
@@ -611,7 +611,7 @@ void Player_SetModelsForHoldingShield(Player* this) {
     }
 }
 
-void Player_SetModels(Player* this, s32 modelGroup) {
+void Player_SetModels(Player* this, int32_t modelGroup) {
     // Left hand
     this->leftHandType = gPlayerModelTypes[modelGroup][PLAYER_MODELGROUPENTRY_LEFT_HAND];
     this->leftHandDLists = &sPlayerDListGroups[this->leftHandType][PLAYER_AGE];
@@ -630,7 +630,7 @@ void Player_SetModels(Player* this, s32 modelGroup) {
     Player_SetModelsForHoldingShield(this);
 }
 
-void Player_SetModelGroup(Player* this, s32 modelGroup) {
+void Player_SetModelGroup(Player* this, int32_t modelGroup) {
     this->modelGroup = modelGroup;
 
     if (modelGroup == PLAYER_MODELGROUP_CHILD_HYLIAN_SHIELD) {
@@ -664,7 +664,7 @@ void Player_SetEquipmentData(PlayState* play, Player* this) {
             gLinkAdultMirrorShieldSwordAndSheathNearDL,
             gLinkAdultMirrorShieldSwordAndSheathFarDL,
         };
-        s32 i;
+        int32_t i;
 
         for (i = 0; i < ARRAY_COUNT(mirrorShieldDLists); i++) {
             ResourceMgr_ReplaceGfxPrimColorByName(mirrorShieldDLists[i], "PurpleMirrorShield", 215, 0, 0, 59, 0,
@@ -678,10 +678,10 @@ void Player_SetEquipmentData(PlayState* play, Player* this) {
         // compatibility, but never retain or equip the removed Goron/Zora
         // items when loading old saves or receiving a legacy reward.
         gSaveContext.inventory.equipment &=
-            (u16)~(OWNED_EQUIP_FLAG(EQUIP_TYPE_TUNIC, EQUIP_INV_TUNIC_GORON) |
+            (uint16_t)~(OWNED_EQUIP_FLAG(EQUIP_TYPE_TUNIC, EQUIP_INV_TUNIC_GORON) |
                    OWNED_EQUIP_FLAG(EQUIP_TYPE_TUNIC, EQUIP_INV_TUNIC_ZORA));
         gSaveContext.inventory.equipment |= OWNED_EQUIP_FLAG(EQUIP_TYPE_TUNIC, EQUIP_INV_TUNIC_KOKIRI);
-        gSaveContext.equips.equipment &= (u16)~(0xF << (EQUIP_TYPE_TUNIC * 4));
+        gSaveContext.equips.equipment &= (uint16_t)~(0xF << (EQUIP_TYPE_TUNIC * 4));
         gSaveContext.equips.equipment |= EQUIP_VALUE_TUNIC_KOKIRI << (EQUIP_TYPE_TUNIC * 4);
 
         this->currentShield = SHIELD_EQUIP_TO_PLAYER(CUR_EQUIP_VALUE(EQUIP_TYPE_SHIELD));
@@ -693,7 +693,7 @@ void Player_SetEquipmentData(PlayState* play, Player* this) {
     }
 }
 
-void Player_UpdateBottleHeld(PlayState* play, Player* this, s32 item, s32 actionParam) {
+void Player_UpdateBottleHeld(PlayState* play, Player* this, int32_t item, int32_t actionParam) {
     Inventory_UpdateBottleItem(play, item, this->heldItemButton);
 
     if (item != ITEM_BOTTLE) {
@@ -755,12 +755,12 @@ void Player_SetAutoLockOnActor(PlayState* play, Actor* actor) {
     Camera_ChangeMode(Play_GetCamera(play, 0), 2);
 }
 
-s32 func_8008EF44(PlayState* play, s32 ammo) {
+int32_t func_8008EF44(PlayState* play, int32_t ammo) {
     play->shootingGalleryStatus = ammo + 1;
     return 1;
 }
 
-s32 Player_IsBurningStickInRange(PlayState* play, Vec3f* pos, f32 xzRange, f32 yRange) {
+int32_t Player_IsBurningStickInRange(PlayState* play, Vec3f* pos, float xzRange, float yRange) {
     Player* this = GET_PLAYER(play);
     Vec3f diff;
 
@@ -772,13 +772,13 @@ s32 Player_IsBurningStickInRange(PlayState* play, Vec3f* pos, f32 xzRange, f32 y
     }
 }
 
-s32 Player_GetStrength(void) {
-    s32 strengthUpgrade = CUR_UPG_VALUE(UPG_STRENGTH);
+int32_t Player_GetStrength(void) {
+    int32_t strengthUpgrade = CUR_UPG_VALUE(UPG_STRENGTH);
 
     return strengthUpgrade;
 }
 
-u8 Player_GetMask(PlayState* play) {
+uint8_t Player_GetMask(PlayState* play) {
     Player* this = GET_PLAYER(play);
 
     return this->currentMask;
@@ -792,23 +792,23 @@ Player* Player_UnsetMask(PlayState* play) {
     return this;
 }
 
-s32 Player_HasMirrorShieldEquipped(PlayState* play) {
+int32_t Player_HasMirrorShieldEquipped(PlayState* play) {
     Player* this = GET_PLAYER(play);
 
     return (this->currentShield == PLAYER_SHIELD_MIRROR);
 }
 
-s32 Player_HasMirrorShieldSetToDraw(PlayState* play) {
+int32_t Player_HasMirrorShieldSetToDraw(PlayState* play) {
     Player* this = GET_PLAYER(play);
 
     return (this->rightHandType == PLAYER_MODELTYPE_RH_SHIELD) && (this->currentShield == PLAYER_SHIELD_MIRROR);
 }
 
-s32 Player_HoldsHookshot(Player* this) {
+int32_t Player_HoldsHookshot(Player* this) {
     return (this->heldItemAction == PLAYER_IA_HOOKSHOT) || (this->heldItemAction == PLAYER_IA_LONGSHOT);
 }
 
-s32 Player_HoldsBow(Player* this) {
+int32_t Player_HoldsBow(Player* this) {
     switch (this->heldItemAction) {
         case PLAYER_IA_BOW:
         case PLAYER_IA_BOW_FIRE:
@@ -820,16 +820,16 @@ s32 Player_HoldsBow(Player* this) {
     }
 }
 
-s32 Player_HoldsSlingshot(Player* this) {
+int32_t Player_HoldsSlingshot(Player* this) {
     return this->heldItemAction == PLAYER_IA_SLINGSHOT;
 }
 
-s32 func_8008F128(Player* this) {
+int32_t func_8008F128(Player* this) {
     return Player_HoldsHookshot(this) && (this->heldActor == NULL);
 }
 
-s32 Player_ActionToMeleeWeapon(s32 actionParam) {
-    s32 sword = actionParam - PLAYER_IA_FISHING_POLE;
+int32_t Player_ActionToMeleeWeapon(int32_t actionParam) {
+    int32_t sword = actionParam - PLAYER_IA_FISHING_POLE;
 
     if ((sword > 0) && (sword < 6)) {
         return sword;
@@ -838,11 +838,11 @@ s32 Player_ActionToMeleeWeapon(s32 actionParam) {
     }
 }
 
-s32 Player_GetMeleeWeaponHeld(Player* this) {
+int32_t Player_GetMeleeWeaponHeld(Player* this) {
     return Player_ActionToMeleeWeapon(this->heldItemAction);
 }
 
-s32 Player_HoldsTwoHandedWeapon(Player* this) {
+int32_t Player_HoldsTwoHandedWeapon(Player* this) {
     if ((this->heldItemAction >= PLAYER_IA_SWORD_BIGGORON) && (this->heldItemAction <= PLAYER_IA_HAMMER)) {
         return 1;
     } else {
@@ -850,12 +850,12 @@ s32 Player_HoldsTwoHandedWeapon(Player* this) {
     }
 }
 
-s32 Player_HoldsBrokenKnife(Player* this) {
+int32_t Player_HoldsBrokenKnife(Player* this) {
     return false;
 }
 
-s32 Player_ActionToBottle(Player* this, s32 actionParam) {
-    s32 bottle = actionParam - PLAYER_IA_BOTTLE;
+int32_t Player_ActionToBottle(Player* this, int32_t actionParam) {
+    int32_t bottle = actionParam - PLAYER_IA_BOTTLE;
 
     if ((bottle >= 0) && (bottle < 13)) {
         return bottle;
@@ -864,12 +864,12 @@ s32 Player_ActionToBottle(Player* this, s32 actionParam) {
     }
 }
 
-s32 Player_GetBottleHeld(Player* this) {
+int32_t Player_GetBottleHeld(Player* this) {
     return Player_ActionToBottle(this, this->heldItemAction);
 }
 
-s32 Player_ActionToExplosive(Player* this, s32 actionParam) {
-    s32 explosive = actionParam - PLAYER_IA_BOMB;
+int32_t Player_ActionToExplosive(Player* this, int32_t actionParam) {
+    int32_t explosive = actionParam - PLAYER_IA_BOMB;
 
     if ((explosive >= 0) && (explosive < 2)) {
         return explosive;
@@ -878,12 +878,12 @@ s32 Player_ActionToExplosive(Player* this, s32 actionParam) {
     }
 }
 
-s32 Player_GetExplosiveHeld(Player* this) {
+int32_t Player_GetExplosiveHeld(Player* this) {
     return Player_ActionToExplosive(this, this->heldItemAction);
 }
 
-s32 func_8008F2BC(Player* this, s32 actionParam) {
-    s32 sword = 0;
+int32_t func_8008F2BC(Player* this, int32_t actionParam) {
+    int32_t sword = 0;
 
     if (actionParam != PLAYER_IA_SWORD_CS) {
         sword = actionParam - PLAYER_IA_SWORD_MASTER;
@@ -898,9 +898,9 @@ return_neg:
     return -1;
 }
 
-s32 Player_GetEnvironmentalHazard(PlayState* play) {
+int32_t Player_GetEnvironmentalHazard(PlayState* play) {
     Player* this = GET_PLAYER(play);
-    s32 envHazard = { 0 };
+    int32_t envHazard = { 0 };
 
     if (play->roomCtx.curRoom.behaviorType2 == ROOM_BEHAVIOR_TYPE2_3) { // Room is hot
         envHazard = PLAYER_ENV_HAZARD_HOTROOM - 1;
@@ -929,7 +929,7 @@ s32 Player_GetEnvironmentalHazard(PlayState* play) {
     return envHazard + 1;
 }
 
-u8 sEyeMouthIndexes[][2] = {
+uint8_t sEyeMouthIndexes[][2] = {
     { 0, 0 }, { 1, 0 }, { 2, 0 }, { 0, 0 }, { 1, 0 }, { 2, 0 }, { 4, 0 }, { 5, 1 },
     { 7, 2 }, { 0, 2 }, { 3, 0 }, { 4, 0 }, { 2, 2 }, { 1, 1 }, { 0, 2 }, { 0, 0 },
 };
@@ -995,11 +995,11 @@ Color_RGB8 sGauntletColors[] = {
     { 96, 6, 2 },
 };
 
-void Player_DrawImpl(PlayState* play, void** skeleton, Vec3s* jointTable, s32 dListCount, s32 lod, s32 tunic, s32 boots,
-                     s32 face, OverrideLimbDrawOpa overrideLimbDraw, PostLimbDrawOpa postLimbDraw, void* data) {
+void Player_DrawImpl(PlayState* play, void** skeleton, Vec3s* jointTable, int32_t dListCount, int32_t lod, int32_t tunic, int32_t boots,
+                     int32_t face, OverrideLimbDrawOpa overrideLimbDraw, PostLimbDrawOpa postLimbDraw, void* data) {
     Color_RGB8* color = { 0 };
-    s32 eyeIndex = (jointTable[22].x & 0xF) - 1;
-    s32 mouthIndex = (jointTable[22].x >> 4) - 1;
+    int32_t eyeIndex = (jointTable[22].x & 0xF) - 1;
+    int32_t mouthIndex = (jointTable[22].x >> 4) - 1;
 
     OPEN_DISPS(play->state.gfxCtx);
 
@@ -1030,9 +1030,9 @@ void Player_DrawImpl(PlayState* play, void** skeleton, Vec3s* jointTable, s32 dL
 
     color = &sTunicColors[PLAYER_TUNIC_KOKIRI];
 
-    
+
         gDPSetEnvColor(POLY_OPA_DISP++, color->r, color->g, color->b, 0);
-    
+
 
     lod = 0;
 
@@ -1044,7 +1044,7 @@ void Player_DrawImpl(PlayState* play, void** skeleton, Vec3s* jointTable, s32 dL
         (overrideLimbDraw != Player_OverrideLimbDrawGameplayCrawling) &&
         (gSaveContext.gameMode != GAMEMODE_END_CREDITS)) {
         {
-            s32 strengthUpgrade = CUR_UPG_VALUE(UPG_STRENGTH);
+            int32_t strengthUpgrade = CUR_UPG_VALUE(UPG_STRENGTH);
 
             if (strengthUpgrade >= 2) { // silver or gold gauntlets
                 gDPPipeSync(POLY_OPA_DISP++);
@@ -1075,26 +1075,26 @@ Vec3f D_80126038[] = {
     { 695.0f, 0.0f, 0.0f },
 };
 
-f32 D_80126050[] = { 1265.0f, 826.0f };
-f32 D_80126058[] = { SQ(13.04f), SQ(6.95f) };
-f32 D_80126060[] = { 10.019104f, -19.925102f };
-f32 D_80126068[] = { 5.0f, 3.0f };
+float D_80126050[] = { 1265.0f, 826.0f };
+float D_80126058[] = { SQ(13.04f), SQ(6.95f) };
+float D_80126060[] = { 10.019104f, -19.925102f };
+float D_80126068[] = { 5.0f, 3.0f };
 
 Vec3f D_80126070 = { 0.0f, -300.0f, 0.0f };
 
-void func_8008F87C(PlayState* play, Player* this, SkelAnime* skelAnime, Vec3f* pos, Vec3s* rot, s32 thighLimbIndex,
-                   s32 shinLimbIndex, s32 footLimbIndex) {
+void func_8008F87C(PlayState* play, Player* this, SkelAnime* skelAnime, Vec3f* pos, Vec3s* rot, int32_t thighLimbIndex,
+                   int32_t shinLimbIndex, int32_t footLimbIndex) {
     Vec3f spA4;
     Vec3f sp98;
     Vec3f footprintPos;
     CollisionPoly* sp88;
-    s32 sp84;
+    int32_t sp84;
 
     if ((this->actor.scale.y >= 0.0f) && !(this->stateFlags1 & PLAYER_STATE1_DEAD)) {
 
-        f32 sp7C = D_80126058[PLAYER_AGE];
-        f32 sp78 = D_80126060[PLAYER_AGE];
-        f32 sp74 = D_80126068[PLAYER_AGE] - this->unk_6C4;
+        float sp7C = D_80126058[PLAYER_AGE];
+        float sp78 = D_80126060[PLAYER_AGE];
+        float sp74 = D_80126068[PLAYER_AGE] - this->unk_6C4;
 
         Matrix_Push();
         Matrix_TranslateRotateZYX(pos, rot);
@@ -1107,47 +1107,47 @@ void func_8008F87C(PlayState* play, Player* this, SkelAnime* skelAnime, Vec3f* p
 
         footprintPos.y += 15.0f;
 
-        f32 sp80 = BgCheck_EntityRaycastFloor4(&play->colCtx, &sp88, &sp84, &this->actor, &footprintPos) + sp74;
+        float sp80 = BgCheck_EntityRaycastFloor4(&play->colCtx, &sp88, &sp84, &this->actor, &footprintPos) + sp74;
 
         if (sp98.y < sp80) {
-            f32 sp70 = sp98.x - spA4.x;
-            f32 sp6C = sp98.y - spA4.y;
-            f32 sp68 = sp98.z - spA4.z;
+            float sp70 = sp98.x - spA4.x;
+            float sp6C = sp98.y - spA4.y;
+            float sp68 = sp98.z - spA4.z;
 
-            f32 sp64 = sqrtf(SQ(sp70) + SQ(sp6C) + SQ(sp68));
-            f32 sp60 = (SQ(sp64) + sp78) / (2.0f * sp64);
+            float sp64 = sqrtf(SQ(sp70) + SQ(sp6C) + SQ(sp68));
+            float sp60 = (SQ(sp64) + sp78) / (2.0f * sp64);
 
-            f32 sp58 = sp7C - SQ(sp60);
+            float sp58 = sp7C - SQ(sp60);
             sp58 = (sp7C < SQ(sp60)) ? 0.0f : sqrtf(sp58);
 
-            f32 sp54 = Math_FAtan2F(sp58, sp60);
+            float sp54 = Math_FAtan2F(sp58, sp60);
 
             sp6C = sp80 - spA4.y;
 
             sp64 = sqrtf(SQ(sp70) + SQ(sp6C) + SQ(sp68));
             sp60 = (SQ(sp64) + sp78) / (2.0f * sp64);
-            f32 sp5C = sp64 - sp60;
+            float sp5C = sp64 - sp60;
 
             sp58 = sp7C - SQ(sp60);
             sp58 = (sp7C < SQ(sp60)) ? 0.0f : sqrtf(sp58);
 
-            f32 sp50 = Math_FAtan2F(sp58, sp60);
+            float sp50 = Math_FAtan2F(sp58, sp60);
 
-            s16 temp1 = (M_PI - (Math_FAtan2F(sp5C, sp58) + ((M_PI / 2) - sp50))) * (0x8000 / M_PI);
+            int16_t temp1 = (M_PI - (Math_FAtan2F(sp5C, sp58) + ((M_PI / 2) - sp50))) * (0x8000 / M_PI);
             temp1 = temp1 - skelAnime->jointTable[shinLimbIndex].z;
 
-            if ((s16)(ABS(skelAnime->jointTable[shinLimbIndex].x) + ABS(skelAnime->jointTable[shinLimbIndex].y)) < 0) {
+            if ((int16_t)(ABS(skelAnime->jointTable[shinLimbIndex].x) + ABS(skelAnime->jointTable[shinLimbIndex].y)) < 0) {
                 temp1 += 0x8000;
             }
 
-            s16 temp2 = (sp50 - sp54) * (0x8000 / M_PI);
+            int16_t temp2 = (sp50 - sp54) * (0x8000 / M_PI);
             rot->z -= temp2;
 
             skelAnime->jointTable[thighLimbIndex].z = skelAnime->jointTable[thighLimbIndex].z - temp2;
             skelAnime->jointTable[shinLimbIndex].z = skelAnime->jointTable[shinLimbIndex].z + temp1;
             skelAnime->jointTable[footLimbIndex].z = skelAnime->jointTable[footLimbIndex].z + temp2 - temp1;
 
-            s32 temp3 = func_80041D4C(&play->colCtx, sp88, sp84);
+            int32_t temp3 = func_80041D4C(&play->colCtx, sp88, sp84);
 
             if ((temp3 >= 2) && (temp3 < 4) && !SurfaceType_IsWallDamage(&play->colCtx, sp88, sp84)) {
                 footprintPos.y = sp80;
@@ -1156,7 +1156,7 @@ void func_8008F87C(PlayState* play, Player* this, SkelAnime* skelAnime, Vec3f* p
     }
 }
 
-s32 Player_OverrideLimbDrawGameplayCommon(PlayState* play, s32 limbIndex, Gfx** dList, Vec3f* pos, Vec3s* rot,
+int32_t Player_OverrideLimbDrawGameplayCommon(PlayState* play, int32_t limbIndex, Gfx** dList, Vec3f* pos, Vec3s* rot,
                                           void* thisx) {
     Player* this = (Player*)thisx;
 
@@ -1215,7 +1215,7 @@ s32 Player_OverrideLimbDrawGameplayCommon(PlayState* play, s32 limbIndex, Gfx** 
     return false;
 }
 
-s32 Player_OverrideLimbDrawGameplayDefault(PlayState* play, s32 limbIndex, Gfx** dList, Vec3f* pos, Vec3s* rot,
+int32_t Player_OverrideLimbDrawGameplayDefault(PlayState* play, int32_t limbIndex, Gfx** dList, Vec3f* pos, Vec3s* rot,
                                            void* thisx) {
     Player* this = (Player*)thisx;
 
@@ -1253,7 +1253,7 @@ s32 Player_OverrideLimbDrawGameplayDefault(PlayState* play, s32 limbIndex, Gfx**
 
             if ((this->sheathType == PLAYER_MODELTYPE_SHEATH_18) || (this->sheathType == PLAYER_MODELTYPE_SHEATH_19)) {
                 dLists += this->currentShield * 4;
-            
+
             } else {
             }
 
@@ -1272,10 +1272,10 @@ s32 Player_OverrideLimbDrawGameplayDefault(PlayState* play, s32 limbIndex, Gfx**
     return false;
 }
 
-s32 Player_OverrideLimbDrawGameplayFirstPerson(PlayState* play, s32 limbIndex, Gfx** dList, Vec3f* pos, Vec3s* rot,
+int32_t Player_OverrideLimbDrawGameplayFirstPerson(PlayState* play, int32_t limbIndex, Gfx** dList, Vec3f* pos, Vec3s* rot,
                                                void* thisx) {
     Player* this = (Player*)thisx;
-    s32 pcBowAim = (this == GET_PLAYER(play)) && Ship_IsBowAimHeld() &&
+    int32_t pcBowAim = (this == GET_PLAYER(play)) && Ship_IsBowAimHeld() &&
                    (this->heldItemAction == PLAYER_IA_BOW);
 
     if (!Player_OverrideLimbDrawGameplayCommon(play, limbIndex, dList, pos, rot, thisx)) {
@@ -1299,7 +1299,7 @@ s32 Player_OverrideLimbDrawGameplayFirstPerson(PlayState* play, s32 limbIndex, G
     return false;
 }
 
-s32 Player_OverrideLimbDrawGameplayCrawling(PlayState* play, s32 limbIndex, Gfx** dList, Vec3f* pos, Vec3s* rot,
+int32_t Player_OverrideLimbDrawGameplayCrawling(PlayState* play, int32_t limbIndex, Gfx** dList, Vec3f* pos, Vec3s* rot,
                                             void* thisx) {
     if (!Player_OverrideLimbDrawGameplayCommon(play, limbIndex, dList, pos, rot, thisx)) {
         *dList = NULL;
@@ -1308,7 +1308,7 @@ s32 Player_OverrideLimbDrawGameplayCrawling(PlayState* play, s32 limbIndex, Gfx*
     return false;
 }
 
-u8 func_80090480(PlayState* play, ColliderQuad* collider, WeaponInfo* weaponInfo, Vec3f* newTip, Vec3f* newBase) {
+uint8_t func_80090480(PlayState* play, ColliderQuad* collider, WeaponInfo* weaponInfo, Vec3f* newTip, Vec3f* newBase) {
     if (weaponInfo->active == 0) {
         if (collider != NULL) {
             Collider_ResetQuadAT(play, &collider->base);
@@ -1337,7 +1337,7 @@ u8 func_80090480(PlayState* play, ColliderQuad* collider, WeaponInfo* weaponInfo
 }
 
 void Player_UpdateShieldCollider(PlayState* play, Player* this, ColliderQuad* collider, Vec3f* quadSrc) {
-    static u8 shieldColTypes[PLAYER_SHIELD_MAX] = {
+    static uint8_t shieldColTypes[PLAYER_SHIELD_MAX] = {
         COLTYPE_METAL,
         COLTYPE_WOOD,
         COLTYPE_METAL,
@@ -1406,15 +1406,15 @@ void func_80090A28(Player* this, Vec3f* vecs) {
     Matrix_MultVec3f(&D_80126098, &vecs[2]);
 }
 
-void Player_DrawHookshotReticle(PlayState* play, Player* this, f32 hookshotRange) {
+void Player_DrawHookshotReticle(PlayState* play, Player* this, float hookshotRange) {
     static Vec3f D_801260C8 = { -500.0f, -100.0f, 0.0f };
     CollisionPoly* colPoly;
-    s32 bgId;
+    int32_t bgId;
     Vec3f hookshotStart;
     Vec3f hookshotEnd;
     Vec3f firstHit;
     Vec3f sp68;
-    f32 sp64;
+    float sp64;
 
     D_801260C8.z = 0.0f;
     Matrix_MultVec3f(&D_801260C8, &hookshotStart);
@@ -1428,16 +1428,16 @@ void Player_DrawHookshotReticle(PlayState* play, Player* this, f32 hookshotRange
 
         SkinMatrix_Vec3fMtxFMultXYZW(&play->viewProjectionMtxF, &firstHit, &sp68, &sp64);
 
-        const f32 sp60 = (sp64 < 200.0f) ? 0.08f : (sp64 / 200.0f) * 0.08f;
+        const float sp60 = (sp64 < 200.0f) ? 0.08f : (sp64 / 200.0f) * 0.08f;
 
         Matrix_Translate(firstHit.x, firstHit.y, firstHit.z, MTXMODE_NEW);
         Matrix_Scale(sp60, sp60, sp60, MTXMODE_APPLY);
 
         gSPMatrix(OVERLAY_DISP++, MATRIX_NEWMTX(play->state.gfxCtx), G_MTX_NOPUSH | G_MTX_LOAD | G_MTX_MODELVIEW);
-        
+
             gSPSegment(OVERLAY_DISP++, 0x06, play->objectCtx.status[this->actor.objBankIndex].segment);
             gSPDisplayList(OVERLAY_DISP++, gLinkAdultHookshotReticleDL);
-        
+
 
         CLOSE_DISPS(play->state.gfxCtx);
     }
@@ -1445,7 +1445,7 @@ void Player_DrawHookshotReticle(PlayState* play, Player* this, f32 hookshotRange
 
 Vec3f D_801260D4 = { 1100.0f, -700.0f, 0.0f };
 
-f32 sMeleeWeaponLengths[] = {
+float sMeleeWeaponLengths[] = {
     0.0f, 4000.0f, 3000.0f, 5500.0f, 0.0f, 2500.0f,
 };
 
@@ -1489,7 +1489,7 @@ Vec3f sLeftRightFootLimbModelFootPos[] = {
     { 200.0f, 200.0f, 0.0f },
 };
 
-void Player_PostLimbDrawGameplay(PlayState* play, s32 limbIndex, Gfx** dList, Vec3s* rot, void* thisx) {
+void Player_PostLimbDrawGameplay(PlayState* play, int32_t limbIndex, Gfx** dList, Vec3s* rot, void* thisx) {
     Player* this = (Player*)thisx;
 
     if (*dList != NULL) {
@@ -1591,7 +1591,7 @@ void Player_PostLimbDrawGameplay(PlayState* play, s32 limbIndex, Gfx** dList, Ve
                 Vec3f sp90;
 
                 Matrix_MultVec3f(&sZeroVec, &sp90);
-                f32 distXYZ = Math_Vec3f_DistXYZ(D_80160000, &sp90);
+                float distXYZ = Math_Vec3f_DistXYZ(D_80160000, &sp90);
 
                 this->unk_858 = distXYZ - 3.0f;
                 if (distXYZ < 3.0f) {
@@ -1678,8 +1678,8 @@ void Player_PostLimbDrawGameplay(PlayState* play, s32 limbIndex, Gfx** dList, Ve
     }
 }
 
-u32 func_80091738(PlayState* play, u8* segment, SkelAnime* skelAnime) {
-    const s16 linkObjectId = OBJECT_LINK_BOY;
+uint32_t func_80091738(PlayState* play, uint8_t* segment, SkelAnime* skelAnime) {
+    const int16_t linkObjectId = OBJECT_LINK_BOY;
 
     size_t size = gObjectTable[OBJECT_GAMEPLAY_KEEP].vromEnd - gObjectTable[OBJECT_GAMEPLAY_KEEP].vromStart;
     void* ptr = segment + 0x3800;
@@ -1700,7 +1700,7 @@ u32 func_80091738(PlayState* play, u8* segment, SkelAnime* skelAnime) {
     return size + 0x8800 + 0x90;
 }
 
-u8 sPauseModelGroupBySword[] = {
+uint8_t sPauseModelGroupBySword[] = {
     PLAYER_MODELGROUP_SWORD_AND_SHIELD, // PLAYER_SWORD_KOKIRI
     PLAYER_MODELGROUP_SWORD_AND_SHIELD, // PLAYER_SWORD_MASTER
     PLAYER_MODELGROUP_BGS,              // PLAYER_SWORD_BIGGORON

@@ -304,9 +304,9 @@ int RunHost() {
         NetworkProjectileStatePacket projectile{};
         while (network.PollProjectileState(projectile)) {
             // Native EnArrow keeps launch aim in world.rot.x, but derives the
-            // rendered model pitch in shape.rot.x. Math_Atan2S(x, y) computes
-            // atan2(y, x), so a level shot must be displayed at zero. The
-            // packet deliberately requests a different yaw; authority must
+            // rendered model pitch in shape.rot.x. A level shot must be
+            // displayed at zero. The packet deliberately requests a
+            // different yaw; authority must
             // keep the accepted Link aim of zero.
             arrowNativeDisplayPitchReceived = arrowNativeDisplayPitchReceived ||
                                               (projectile.playerId > 0 &&

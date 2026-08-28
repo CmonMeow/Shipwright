@@ -25,8 +25,8 @@
 #include "soh/resource/type/scenecommand/SetEchoSettings.h"
 
 extern Ship::IResource* OTRPlay_LoadFile(PlayState* play, const char* fileName);
-extern "C" s32 Object_Spawn(ObjectContext* objectCtx, s16 objectId);
-s32 OTRScene_ExecuteCommands(PlayState* play, SOH::Scene* scene);
+extern "C" int32_t Object_Spawn(ObjectContext* objectCtx, int16_t objectId);
+int32_t OTRScene_ExecuteCommands(PlayState* play, SOH::Scene* scene);
 
 bool Scene_CommandSpawnList(PlayState* play, SOH::ISceneCommand* cmd) {
     // SOH::SetStartPositionList* cmdStartPos = std::static_pointer_cast<SOH::SetStartPositionList>(cmd);
@@ -133,7 +133,7 @@ bool Scene_CommandTimeSettings(PlayState* play, SOH::ISceneCommand* cmd) {
 
     if ((cmdTime->settings.hour != 0xFF) && (cmdTime->settings.minute != 0xFF)) {
         gSaveContext.skyboxTime = gSaveContext.dayTime =
-            ((cmdTime->settings.hour + (cmdTime->settings.minute / 60.0f)) * 60.0f) / ((f32)(24 * 60) / 0x10000);
+            ((cmdTime->settings.hour + (cmdTime->settings.minute / 60.0f)) * 60.0f) / ((float)(24 * 60) / 0x10000);
     }
 
     if (cmdTime->settings.timeIncrement != 0xFF) {
@@ -220,7 +220,7 @@ bool Scene_CommandMiscSettings(PlayState* play, SOH::ISceneCommand* cmd) {
     return false;
 }
 
-s32 OTRScene_ExecuteCommands(PlayState* play, SOH::Scene* scene) {
+int32_t OTRScene_ExecuteCommands(PlayState* play, SOH::Scene* scene) {
     for (const auto& sceneCmd : scene->commands) {
         if (sceneCmd == nullptr) {
             continue;
@@ -279,10 +279,10 @@ s32 OTRScene_ExecuteCommands(PlayState* play, SOH::Scene* scene) {
     return 0;
 }
 
-extern "C" s32 OTRfunc_800973FC(PlayState* play, RoomContext* roomCtx) {
+extern "C" int32_t OTRfunc_800973FC(PlayState* play, RoomContext* roomCtx) {
     if (roomCtx->status == 1) {
         // if (!osRecvMesg(&roomCtx->loadQueue, NULL, OS_MESG_NOBLOCK)) {
-        
+
             roomCtx->status = 0;
             roomCtx->curRoom.segment = roomCtx->unk_34;
             gSegments[3] = VIRTUAL_TO_PHYSICAL(roomCtx->unk_34);
@@ -291,7 +291,7 @@ extern "C" s32 OTRfunc_800973FC(PlayState* play, RoomContext* roomCtx) {
 
             Player_SetBootData(play, GET_PLAYER(play));
             return 1;
-        
+
 
         return 0;
     }
@@ -299,8 +299,8 @@ extern "C" s32 OTRfunc_800973FC(PlayState* play, RoomContext* roomCtx) {
     return 1;
 }
 
-extern "C" s32 OTRfunc_8009728C(PlayState* play, RoomContext* roomCtx, s32 roomNum) {
-    u32 size;
+extern "C" int32_t OTRfunc_8009728C(PlayState* play, RoomContext* roomCtx, int32_t roomNum) {
+    uint32_t size;
 
     if (roomCtx->status == 0) {
         roomCtx->prevRoom = roomCtx->curRoom;

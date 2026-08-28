@@ -3,10 +3,10 @@
 OSPiHandle __DriveRomHandle;
 
 OSPiHandle* osDriveRomInit(void) {
-    register s32 status;
-    register u32 a;
-    register u32 prevInt;
-    static u32 D_8000AC70 = 1;
+    register int32_t status;
+    register uint32_t a;
+    register uint32_t prevInt;
+    static uint32_t D_8000AC70 = 1;
 
     __osPiGetAccess();
 
@@ -22,25 +22,25 @@ OSPiHandle* osDriveRomInit(void) {
     __DriveRomHandle.speed = 0;
     bzero(&__DriveRomHandle.transferInfo, sizeof(__OSTranxInfo));
 
-    while (status = HW_REG(PI_STATUS_REG, u32), status & (PI_STATUS_BUSY | PI_STATUS_IOBUSY)) {
+    while (status = HW_REG(PI_STATUS_REG, uint32_t), status & (PI_STATUS_BUSY | PI_STATUS_IOBUSY)) {
         ;
     }
 
-    HW_REG(PI_BSD_DOM1_LAT_REG, u32) = 0xFF;
-    HW_REG(PI_BSD_DOM1_PGS_REG, u32) = 0;
-    HW_REG(PI_BSD_DOM1_RLS_REG, u32) = 3;
-    HW_REG(PI_BSD_DOM1_PWD_REG, u32) = 0xFF;
+    HW_REG(PI_BSD_DOM1_LAT_REG, uint32_t) = 0xFF;
+    HW_REG(PI_BSD_DOM1_PGS_REG, uint32_t) = 0;
+    HW_REG(PI_BSD_DOM1_RLS_REG, uint32_t) = 3;
+    HW_REG(PI_BSD_DOM1_PWD_REG, uint32_t) = 0xFF;
 
-    a = HW_REG(__DriveRomHandle.baseAddress, u32);
+    a = HW_REG(__DriveRomHandle.baseAddress, uint32_t);
     __DriveRomHandle.latency = a & 0xFF;
     __DriveRomHandle.pulse = (a >> 8) & 0xFF;
     __DriveRomHandle.pageSize = (a >> 0x10) & 0xF;
     __DriveRomHandle.relDuration = (a >> 0x14) & 0xF;
 
-    HW_REG(PI_BSD_DOM1_LAT_REG, u32) = (u8)a;
-    HW_REG(PI_BSD_DOM1_PGS_REG, u32) = __DriveRomHandle.pageSize;
-    HW_REG(PI_BSD_DOM1_RLS_REG, u32) = __DriveRomHandle.relDuration;
-    HW_REG(PI_BSD_DOM1_PWD_REG, u32) = __DriveRomHandle.pulse;
+    HW_REG(PI_BSD_DOM1_LAT_REG, uint32_t) = (uint8_t)a;
+    HW_REG(PI_BSD_DOM1_PGS_REG, uint32_t) = __DriveRomHandle.pageSize;
+    HW_REG(PI_BSD_DOM1_RLS_REG, uint32_t) = __DriveRomHandle.relDuration;
+    HW_REG(PI_BSD_DOM1_PWD_REG, uint32_t) = __DriveRomHandle.pulse;
 
     __osCurrentHandle[__DriveRomHandle.domain]->type = __DriveRomHandle.type;
     __osCurrentHandle[__DriveRomHandle.domain]->latency = __DriveRomHandle.latency;

@@ -5,7 +5,7 @@
 
 #ifndef __cplusplus
 
-#define bool    u32
+#define bool    uint32_t
 #define false   0
 #define true    1
 

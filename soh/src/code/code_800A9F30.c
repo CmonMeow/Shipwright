@@ -2,7 +2,7 @@
 
 UnkRumbleStruct D_80160FD0;
 
-void func_800A9F30(PadMgr* a, s32 b) {
+void func_800A9F30(PadMgr* a, int32_t b) {
     // TODO: Workaround for rumble being too long. Implement os thread functions.
     // Game logic runs at 20hz but input thread runs at 60 hertz, so we call this 3 times
     for (int i = 0; i < 3; i++) {
@@ -11,8 +11,8 @@ void func_800A9F30(PadMgr* a, s32 b) {
     }
 }
 
-void func_800A9F6C(f32 a, u8 b, u8 c, u8 d) {
-    s32 temp1 = { 0 };
+void func_800A9F6C(float a, uint8_t b, uint8_t c, uint8_t d) {
+    int32_t temp1 = { 0 };
 
     if (1000000.0f < a) {
         temp1 = 1000;
@@ -21,7 +21,7 @@ void func_800A9F6C(f32 a, u8 b, u8 c, u8 d) {
     }
 
     if ((temp1 < 1000) && (b != 0) && (d != 0)) {
-        s32 temp2 = b - (temp1 * 255) / 1000;
+        int32_t temp2 = b - (temp1 * 255) / 1000;
         if (temp2 > 0) {
             D_80160FD0.unk_10A = temp2;
             D_80160FD0.unk_10B = c;
@@ -30,9 +30,9 @@ void func_800A9F6C(f32 a, u8 b, u8 c, u8 d) {
     }
 }
 
-void func_800AA000(f32 a, u8 b, u8 c, u8 d) {
-    s32 temp1 = { 0 };
-    s32 i;
+void func_800AA000(float a, uint8_t b, uint8_t c, uint8_t d) {
+    int32_t temp1 = { 0 };
+    int32_t i;
 
     if (1000000.0f < a) {
         temp1 = 1000;
@@ -41,7 +41,7 @@ void func_800AA000(f32 a, u8 b, u8 c, u8 d) {
     }
 
     if (temp1 < 1000 && b != 0 && d != 0) {
-        s32 temp2 = b - (temp1 * 255) / 1000;
+        int32_t temp2 = b - (temp1 * 255) / 1000;
 
         for (i = 0; i < 0x40; i++) {
             if (D_80160FD0.unk_04[i] == 0) {
@@ -74,7 +74,7 @@ void func_800AA0F0(void) {
     func_800D3178(&D_80160FD0);
 }
 
-u32 func_800AA148(void) {
+uint32_t func_800AA148(void) {
     return gPadMgr.pakType[0] == 1;
 }
 
@@ -86,6 +86,6 @@ void Rumble_ClearRequests(void) {
     D_80160FD0.unk_104 = 0;
 }
 
-void func_800AA178(u32 a) {
+void func_800AA178(uint32_t a) {
     D_80160FD0.unk_105 = !!a;
 }

@@ -370,8 +370,8 @@ ResourceFactoryXMLAudioSequenceV0::ReadResource(std::shared_ptr<Ship::File> file
             constexpr float TEMPO_F = TEMPO;
             // Use floats for this first calculation so we can round up
             float delayF = length / (60.0f / (TEMPO_F * 48.0f));
-            // Convert to u16. This way this value is encoded changes depending on the value.
-            // It can be at most 0xFFFF so store it in a u16 for now.
+            // Convert to uint16_t. This way this value is encoded changes depending on the value.
+            // It can be at most 0xFFFF so store it in a uint16_t for now.
             uint16_t delay;
             if (delayF >= 65535.0f) {
                 delay = 0x7FFF;

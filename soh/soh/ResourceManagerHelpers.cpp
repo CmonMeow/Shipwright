@@ -74,11 +74,11 @@ extern "C" uint32_t ResourceMgr_GetGameRegion(int index) {
     }
 }
 
-u32 IsSceneMasterQuest(s16 sceneNum) {
+uint32_t IsSceneMasterQuest(int16_t sceneNum) {
     return false;
 }
 
-extern "C" uint32_t ResourceMgr_IsSceneMasterQuest(s16 sceneNum) {
+extern "C" uint32_t ResourceMgr_IsSceneMasterQuest(int16_t sceneNum) {
     return IsSceneMasterQuest(sceneNum);
 }
 
@@ -407,9 +407,9 @@ extern "C" char* ResourceMgr_LoadArrayByNameAsVec3s(const char* path) {
     Vec3s* data = (Vec3s*)malloc(sizeof(Vec3s) * res->Scalars.size());
 
     for (size_t i = 0; i < res->Scalars.size(); i += 3) {
-        data[(i / 3)].x = res->Scalars[i + 0].s16;
-        data[(i / 3)].y = res->Scalars[i + 1].s16;
-        data[(i / 3)].z = res->Scalars[i + 2].s16;
+        data[(i / 3)].x = res->Scalars[i + 0].signed16;
+        data[(i / 3)].y = res->Scalars[i + 1].signed16;
+        data[(i / 3)].z = res->Scalars[i + 2].signed16;
     }
 
     // res->CachedGameAsset = data;
@@ -507,6 +507,6 @@ extern "C" void ResourceMgr_ClearSkeletons() {
     SOH::SkeletonPatcher::ClearSkeletons();
 }
 
-extern "C" s32* ResourceMgr_LoadCSByName(const char* path) {
-    return (s32*)ResourceMgr_GetResourceDataByNameHandlingMQ(path);
+extern "C" int32_t* ResourceMgr_LoadCSByName(const char* path) {
+    return (int32_t*)ResourceMgr_GetResourceDataByNameHandlingMQ(path);
 }

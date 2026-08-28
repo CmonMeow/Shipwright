@@ -1,9 +1,9 @@
 #include "global.h"
 
-s32 __osSiRawWriteIo(void* devAddr, u32 val) {
+int32_t __osSiRawWriteIo(void* devAddr, uint32_t val) {
     if (__osSiDeviceBusy()) {
         return -1;
     }
-    HW_REG((u32)devAddr, u32) = val;
+    HW_REG((uint32_t)devAddr, uint32_t) = val;
     return 0;
 }

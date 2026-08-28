@@ -5,10 +5,10 @@
 
 OSPifRam osPifBuffers[MAXCONTROLLERS];
 
-s32 __osMotorAccess(OSPfs* pfs, u32 vibrate) {
-    s32 i;
-    s32 ret = { 0 };
-    u8* buf = (u8*)&osPifBuffers[pfs->channel];
+int32_t __osMotorAccess(OSPfs* pfs, uint32_t vibrate) {
+    int32_t i;
+    int32_t ret = { 0 };
+    uint8_t* buf = (uint8_t*)&osPifBuffers[pfs->channel];
 
     if (!(pfs->status & 8)) {
         return 5;
@@ -45,17 +45,17 @@ s32 __osMotorAccess(OSPfs* pfs, u32 vibrate) {
     return ret;
 }
 
-void _MakeMotorData(s32 channel, OSPifRam* buf) {
-    u8* bufptr = (u8*)buf;
+void _MakeMotorData(int32_t channel, OSPifRam* buf) {
+    uint8_t* bufptr = (uint8_t*)buf;
     __OSContRamHeader mempakwr;
-    s32 i;
+    int32_t i;
 
     mempakwr.unk_00 = 0xFF;
     mempakwr.txsize = 0x23;
     mempakwr.rxsize = 1;
     mempakwr.poll = 3; // write mempak
     mempakwr.hi = 0x600 >> 3;
-    mempakwr.lo = (u8)(__osContAddressCrc(0x600) | (0x600 << 5));
+    mempakwr.lo = (uint8_t)(__osContAddressCrc(0x600) | (0x600 << 5));
 
     if (channel != 0) {
         for (i = 0; i < channel; ++i) {
@@ -68,15 +68,15 @@ void _MakeMotorData(s32 channel, OSPifRam* buf) {
     *bufptr = 0xFE;
 }
 
-s32 osMotorInit(OSMesgQueue* ctrlrqueue, OSPfs* pfs, s32 channel) {
-    u8 sp24[BLOCKSIZE];
+int32_t osMotorInit(OSMesgQueue* ctrlrqueue, OSPfs* pfs, int32_t channel) {
+    uint8_t sp24[BLOCKSIZE];
 
     pfs->queue = ctrlrqueue;
     pfs->channel = channel;
     pfs->activebank = 0xFF;
     pfs->status = 0;
 
-    s32 ret = __osPfsSelectBank(pfs, 0xFE);
+    int32_t ret = __osPfsSelectBank(pfs, 0xFE);
     if (ret == 2) {
         ret = __osPfsSelectBank(pfs, MOTOR_ID);
     }

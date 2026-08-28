@@ -2,8 +2,8 @@
 
 // The code in this file is very similar to a spline system used in Super Mario 64 for cutscene camera movement
 
-void func_800BB0A0(f32 u, Vec3f* pos, f32* roll, f32* viewAngle, f32* point0, f32* point1, f32* point2, f32* point3) {
-    f32 coeff[4];
+void func_800BB0A0(float u, Vec3f* pos, float* roll, float* viewAngle, float* point0, float* point1, float* point2, float* point3) {
+    float coeff[4];
 
     u = CLAMP_MAX(u, 1.0f);
 
@@ -19,15 +19,15 @@ void func_800BB0A0(f32 u, Vec3f* pos, f32* roll, f32* viewAngle, f32* point0, f3
     *viewAngle = (coeff[0] * point0[4]) + (coeff[1] * point1[4]) + (coeff[2] * point2[4]) + (coeff[3] * point3[4]);
 }
 
-s32 func_800BB2B4(Vec3f* pos, f32* roll, f32* fov, CutsceneCameraPoint* point, s16* keyFrame, f32* curFrame) {
-    s32 ret = false;
-    f32 pointData[4][5];
-    s32 i;
-    f32 progress = *curFrame;
-    s32 key = *keyFrame;
-    f32 speed1 = 0.0f;
-    f32 speed2 = 0.0f;
-    f32 advance = { 0 };
+int32_t func_800BB2B4(Vec3f* pos, float* roll, float* fov, CutsceneCameraPoint* point, int16_t* keyFrame, float* curFrame) {
+    int32_t ret = false;
+    float pointData[4][5];
+    int32_t i;
+    float progress = *curFrame;
+    int32_t key = *keyFrame;
+    float speed1 = 0.0f;
+    float speed2 = 0.0f;
+    float advance = { 0 };
 
     if (key < 0) {
         progress = 0.0f;

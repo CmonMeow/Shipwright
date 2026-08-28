@@ -1,10 +1,10 @@
 #include "global.h"
 
 OSTime osGetTime(void) {
-    register u32 prevInt = __osDisableInt();
+    register uint32_t prevInt = __osDisableInt();
 
-    u32 count = osGetCount();
-    u32 base = count - __osBaseCounter;
+    uint32_t count = osGetCount();
+    uint32_t base = count - __osBaseCounter;
     OSTime t = __osCurrentTime;
     __osRestoreInt(prevInt);
 

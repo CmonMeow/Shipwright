@@ -1,40 +1,40 @@
 #include "global.h"
 
-s64 __ull_rshift(u64 l, s64 r) {
+int64_t __ull_rshift(uint64_t l, int64_t r) {
     return l >> r;
 }
 
-u64 __ull_rem(u64 l, u64 r) {
+uint64_t __ull_rem(uint64_t l, uint64_t r) {
     return l % r;
 }
 
-u64 __ull_div(u64 l, u64 r) {
+uint64_t __ull_div(uint64_t l, uint64_t r) {
     return l / r;
 }
 
-s64 __ll_lshift(s64 l, s64 r) {
+int64_t __ll_lshift(int64_t l, int64_t r) {
     return l << r;
 }
 
-s64 __ll_rem(s64 l, u64 r) {
+int64_t __ll_rem(int64_t l, uint64_t r) {
     return l % r;
 }
 
-s64 __ll_div(s64 l, s64 r) {
+int64_t __ll_div(int64_t l, int64_t r) {
     return l / r;
 }
 
-s64 __ll_mul(s64 l, s64 r) {
+int64_t __ll_mul(int64_t l, int64_t r) {
     return l * r;
 }
 
-void __ull_divremi(u64* quotient, u64* remainder, u64 dividend, u16 divisor) {
+void __ull_divremi(uint64_t* quotient, uint64_t* remainder, uint64_t dividend, uint16_t divisor) {
     *quotient = dividend / divisor;
     *remainder = dividend % divisor;
 }
 
-s64 __ll_mod(s64 l, s64 r) {
-    s64 remainder = l % r;
+int64_t __ll_mod(int64_t l, int64_t r) {
+    int64_t remainder = l % r;
 
     if (((remainder < 0) && (r > 0)) || ((remainder > 0) && (r < 0))) {
         remainder += r;
@@ -42,6 +42,6 @@ s64 __ll_mod(s64 l, s64 r) {
     return remainder;
 }
 
-s64 __ll_rshift(s64 l, s64 r) {
+int64_t __ll_rshift(int64_t l, int64_t r) {
     return l >> r;
 }
