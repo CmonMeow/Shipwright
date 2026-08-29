@@ -118,7 +118,9 @@ static void Camera_ApplyGameMouseAim(Camera* camera) {
     Camera_BGCheck(camera, &camera->at, &camera->eye);
     camera->eyeNext = camera->eye;
 
-    if ((player != NULL) && !fishing) {
+    if ((player != NULL) && !fishing &&
+        !(player->stateFlags1 & (PLAYER_STATE1_DEAD | PLAYER_STATE1_HANGING_OFF_LEDGE |
+                                 PLAYER_STATE1_CLIMBING_LEDGE))) {
         // Shape yaw controls where Link looks. Movement yaw and world yaw must
         // remain owned by the native movement/hop code so strafing, walking
         // backward, and backflips retain their intended direction.

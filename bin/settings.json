@@ -3,8 +3,14 @@
         "gSettings": {
             "CameraInvertY": 1,
             "CursorVisibility": 1,
-            "InterpolationFPS": 40,
-            "MultiplayerVoicePushToTalk": 1
+            "InterpolationFPS": 240,
+            "MatchRefreshRate": 0,
+            "MultiplayerAction": 0,
+            "MultiplayerAddress": "127.0.0.1",
+            "MultiplayerPort": 777,
+            "MultiplayerStatus": "Offline",
+            "MultiplayerVoicePushToTalk": 1,
+            "VsyncEnabled": 0
         }
     },
     "Window": {
@@ -12,8 +18,8 @@
             "Enabled": false
         },
         "Height": 742,
-        "PositionX": 685,
-        "PositionY": 186,
+        "PositionX": 709,
+        "PositionY": 279,
         "Width": 832
     }
 }

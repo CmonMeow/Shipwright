@@ -895,6 +895,9 @@ void SendLocalPlayerState(PlayState* play) {
     if (gSaveContext.health == 0 && !gNetworkGame.suppressDeathDuringRespawn) {
         packet.stateFlags |= NETWORK_PLAYER_DEAD;
     }
+    if ((player->stateFlags1 & PLAYER_STATE1_SHIELDING) != 0) {
+        packet.stateFlags |= NETWORK_PLAYER_SHIELDING;
+    }
     packet.modelGroup = player->modelGroup;
     // Native fishing drives the pole from heldItemAction while itemAction may
     // temporarily return to the generic action during casting/reeling. Keep

@@ -253,6 +253,39 @@ bool SegmentVerticalCylinderFirstHit(const ServerVec3& start, const ServerVec3& 
     return true;
 }
 
+bool SegmentRaisedShieldFirstHit(const ServerVec3& start, const ServerVec3& end,
+                                 const NetworkPlayerStatePacket& player, float& hitRatio) {
+    if ((player.stateFlags & NETWORK_PLAYER_SHIELDING) == 0 || player.itemAction < 3 || player.itemAction > 5) {
+        return false;
+    }
+
+    const float yaw = player.rotationY * (3.14159265358979323846f / 32768.0f);
+    const ServerVec3 forward{ std::sin(yaw), 0.0f, std::cos(yaw) };
+    const ServerVec3 right{ std::cos(yaw), 0.0f, -std::sin(yaw) };
+    const ServerVec3 center{ player.x + forward.x * 17.0f, player.y + 31.0f,
+                             player.z + forward.z * 17.0f };
+    const ServerVec3 direction = Subtract(end, start);
+    const float denominator = Dot(direction, forward);
+    if (std::fabs(denominator) < 0.00001f) {
+        return false;
+    }
+
+    const float ratio = Dot(Subtract(center, start), forward) / denominator;
+    if (ratio < 0.0f || ratio > 1.0f) {
+        return false;
+    }
+    const ServerVec3 impact{ start.x + direction.x * ratio, start.y + direction.y * ratio,
+                             start.z + direction.z * ratio };
+    const ServerVec3 fromCenter = Subtract(impact, center);
+    // These dimensions follow the transformed Mirror Shield outline rather
+    // than Link's much larger body cylinder.
+    if (std::fabs(Dot(fromCenter, right)) > 18.0f || std::fabs(fromCenter.y) > 24.0f) {
+        return false;
+    }
+    hitRatio = ratio;
+    return true;
+}
+
 bool PointNearDirectedPath(const ServerVec3& origin, const ServerVec3& velocity, const ServerVec3& point,
                            float maximumBehind, float maximumAhead, float radius) {
     const float speedSquared = velocity.x * velocity.x + velocity.y * velocity.y + velocity.z * velocity.z;
@@ -1935,7 +1968,8 @@ bool NetworkRuntime::SanePlayerState(const NetworkPlayerStatePacket& packet) {
            saneFloat(packet.z) && saneFloat(packet.speed) && saneFloat(packet.bowStringScale) &&
            packet.bowStringScale >= 0.0f && packet.bowStringScale <= 1.0f &&
            (packet.stateFlags & ~(NETWORK_PLAYER_VISIBLE | NETWORK_PLAYER_GROUNDED | NETWORK_PLAYER_SWIMMING |
-                                  NETWORK_PLAYER_READY_TO_FIRE | NETWORK_PLAYER_DEAD)) == 0 &&
+                                  NETWORK_PLAYER_READY_TO_FIRE | NETWORK_PLAYER_DEAD |
+                                  NETWORK_PLAYER_SHIELDING)) == 0 &&
            packet.modelGroup < 16 && packet.itemAction < 0x43 && packet.meleeWeaponState >= 0 &&
            packet.meleeWeaponState <= 2 && saneFishing;
 }
@@ -3003,6 +3037,23 @@ void NetworkRuntime::UpdateServerProjectiles() {
                 std::atan2(-projectile.velocityY, horizontalSpeed) *
                 (32768.0f / 3.14159265358979323846f));
 
+            // Scene collision data is stored in signed 16-bit coordinates.
+            // Once a flying arrow leaves that envelope it cannot hit valid
+            // geometry, so retire it instead of simulating and drawing it
+            // forever. This does not expire arrows that have stuck to a wall.
+            if (std::fabs(projectile.state.x) >= 32000.0f ||
+                std::fabs(projectile.state.y) >= 32000.0f ||
+                std::fabs(projectile.state.z) >= 32000.0f) {
+                projectile.state.active = 0;
+                NetworkMessageRaw raw;
+                ++projectile.state.sequence;
+                EncodeAppPacketRaw(raw, projectile.state);
+                Broadcast(NAMTDynamicObjectStateRaw, raw, projectile.state.playerId, kReliable);
+                mProjectileStates.push_back(projectile.state);
+                it = mServerProjectiles.erase(it);
+                continue;
+            }
+
             const float segmentX = projectile.state.x - previousX;
             const float segmentY = projectile.state.y - previousY;
             const float segmentZ = projectile.state.z - previousZ;
@@ -3022,6 +3073,8 @@ void NetworkRuntime::UpdateServerProjectiles() {
 
             int32_t hitPlayerId = -1;
             float playerHitRatio = 2.0f;
+            int32_t shieldPlayerId = -1;
+            float shieldHitRatio = 2.0f;
             for (const auto& [targetId, target] : mAuthoritativePlayerStates) {
                 if (targetId == projectile.state.playerId || target.sceneId != projectile.state.sceneId ||
                     (target.stateFlags & (NETWORK_PLAYER_VISIBLE | NETWORK_PLAYER_DEAD)) != NETWORK_PLAYER_VISIBLE) {
@@ -3041,11 +3094,18 @@ void NetworkRuntime::UpdateServerProjectiles() {
                     playerHitRatio = candidateRatio;
                     hitPlayerId = targetId;
                 }
+                if (SegmentRaisedShieldFirstHit({ previousX, previousY, previousZ },
+                                                { projectile.state.x, projectile.state.y, projectile.state.z },
+                                                target, candidateRatio) &&
+                    candidateRatio < shieldHitRatio) {
+                    shieldHitRatio = candidateRatio;
+                    shieldPlayerId = targetId;
+                }
             }
 
             // Resolve the first contact along the swept arrow path. A player in
             // front of a wall is hit; a wall in front of a player blocks it.
-            if (hitStatic && staticHitRatio <= playerHitRatio) {
+            if (hitStatic && staticHitRatio <= playerHitRatio && staticHitRatio <= shieldHitRatio) {
                 projectile.state.x = staticImpact.x;
                 projectile.state.y = staticImpact.y;
                 projectile.state.z = staticImpact.z;
@@ -3059,6 +3119,19 @@ void NetworkRuntime::UpdateServerProjectiles() {
                 mProjectileStates.push_back(projectile.state);
                 RetainServerStuckArrow(it->first);
                 ++it;
+                continue;
+            }
+            if (shieldPlayerId >= 0 && shieldHitRatio <= playerHitRatio && shieldHitRatio < staticHitRatio) {
+                projectile.state.x = previousX + segmentX * shieldHitRatio;
+                projectile.state.y = previousY + segmentY * shieldHitRatio;
+                projectile.state.z = previousZ + segmentZ * shieldHitRatio;
+                projectile.state.active = 0;
+                NetworkMessageRaw raw;
+                ++projectile.state.sequence;
+                EncodeAppPacketRaw(raw, projectile.state);
+                Broadcast(NAMTDynamicObjectStateRaw, raw, projectile.state.playerId, kReliable);
+                mProjectileStates.push_back(projectile.state);
+                it = mServerProjectiles.erase(it);
                 continue;
             }
             if (hitPlayerId >= 0) {

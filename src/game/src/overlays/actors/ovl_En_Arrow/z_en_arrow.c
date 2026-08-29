@@ -229,6 +229,18 @@ void EnArrow_Fly(EnArrow* this, PlayState* play) {
     Vec3f sp60;
     Vec3f sp54;
 
+    // Collision vertices use signed 16-bit scene coordinates. A missed arrow
+    // that leaves that range can never hit scene geometry again, and keeping
+    // it alive causes invalid-position diagnostics and unbounded remote work.
+    // Stuck arrows remain permanent and are still limited by the 99-arrow
+    // retention ring above.
+    if ((fabsf(this->actor.world.pos.x) >= 32000.0f) ||
+        (fabsf(this->actor.world.pos.y) >= 32000.0f) ||
+        (fabsf(this->actor.world.pos.z) >= 32000.0f)) {
+        Actor_Kill(&this->actor);
+        return;
+    }
+
     if (this->timer > 0) {
         this->timer--;
     }
