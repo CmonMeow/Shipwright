@@ -4369,7 +4369,19 @@ int32_t func_808382DC(Player* this, PlayState* play) {
             func_80837C0C(play, this, knockbackResponse[this->knockbackType - 1], this->knockbackSpeed,
                           this->knockbackYVelocity, this->knockbackRot, 20);
         } else {
-            int32_t sp64 = (this->shieldQuad.base.acFlags & AC_BOUNCED) != 0;
+            int32_t sp64 = (this->shieldCollider.base.acFlags & AC_BOUNCED) != 0;
+            ColliderInfo* shieldHitInfo = NULL;
+
+            if (sp64) {
+                for (int32_t i = 0; i < this->shieldCollider.count; ++i) {
+                    ColliderInfo* elementInfo = &this->shieldCollider.elements[i].info;
+
+                    if ((elementInfo->bumperFlags & BUMP_HIT) && elementInfo->acHitInfo != NULL) {
+                        shieldHitInfo = elementInfo->acHitInfo;
+                        break;
+                    }
+                }
+            }
 
             //! @bug The second set of conditions here seems intended as a way for Link to "block" hits by rolling.
             // However, `Collider.atFlags` is a byte so the flag check at the end is incorrect and cannot work.
@@ -4411,7 +4423,7 @@ int32_t func_808382DC(Player* this, PlayState* play) {
                     }
                 }
 
-                if (sp64 && (this->shieldQuad.info.acHitInfo->toucher.effect == 1)) {
+                if (shieldHitInfo != NULL && shieldHitInfo->toucher.effect == 1) {
                     func_8083819C(this, play);
                 }
 
@@ -9350,24 +9362,86 @@ static ColliderQuadInit D_80854650 = {
     { { { 0.0f, 0.0f, 0.0f }, { 0.0f, 0.0f, 0.0f }, { 0.0f, 0.0f, 0.0f }, { 0.0f, 0.0f, 0.0f } } },
 };
 
-static ColliderQuadInit D_808546A0 = {
+static ColliderTrisElementInit sShieldColliderElementsInit[] = {
+    {
+        {
+            ELEMTYPE_UNK2,
+            { 0x00100000, 0x00, 0x00 },
+            { 0xDFCFFFFF, 0x00, 0x00 },
+            TOUCH_ON | TOUCH_SFX_NORMAL,
+            BUMP_ON,
+            OCELEM_NONE,
+        },
+        { { { 0.0f, 0.0f, 0.0f }, { 0.0f, 0.0f, 0.0f }, { 0.0f, 0.0f, 0.0f } } },
+    },
+    {
+        {
+            ELEMTYPE_UNK2,
+            { 0x00100000, 0x00, 0x00 },
+            { 0xDFCFFFFF, 0x00, 0x00 },
+            TOUCH_ON | TOUCH_SFX_NORMAL,
+            BUMP_ON,
+            OCELEM_NONE,
+        },
+        { { { 0.0f, 0.0f, 0.0f }, { 0.0f, 0.0f, 0.0f }, { 0.0f, 0.0f, 0.0f } } },
+    },
+    {
+        {
+            ELEMTYPE_UNK2,
+            { 0x00100000, 0x00, 0x00 },
+            { 0xDFCFFFFF, 0x00, 0x00 },
+            TOUCH_ON | TOUCH_SFX_NORMAL,
+            BUMP_ON,
+            OCELEM_NONE,
+        },
+        { { { 0.0f, 0.0f, 0.0f }, { 0.0f, 0.0f, 0.0f }, { 0.0f, 0.0f, 0.0f } } },
+    },
+    {
+        {
+            ELEMTYPE_UNK2,
+            { 0x00100000, 0x00, 0x00 },
+            { 0xDFCFFFFF, 0x00, 0x00 },
+            TOUCH_ON | TOUCH_SFX_NORMAL,
+            BUMP_ON,
+            OCELEM_NONE,
+        },
+        { { { 0.0f, 0.0f, 0.0f }, { 0.0f, 0.0f, 0.0f }, { 0.0f, 0.0f, 0.0f } } },
+    },
+    {
+        {
+            ELEMTYPE_UNK2,
+            { 0x00100000, 0x00, 0x00 },
+            { 0xDFCFFFFF, 0x00, 0x00 },
+            TOUCH_ON | TOUCH_SFX_NORMAL,
+            BUMP_ON,
+            OCELEM_NONE,
+        },
+        { { { 0.0f, 0.0f, 0.0f }, { 0.0f, 0.0f, 0.0f }, { 0.0f, 0.0f, 0.0f } } },
+    },
+    {
+        {
+            ELEMTYPE_UNK2,
+            { 0x00100000, 0x00, 0x00 },
+            { 0xDFCFFFFF, 0x00, 0x00 },
+            TOUCH_ON | TOUCH_SFX_NORMAL,
+            BUMP_ON,
+            OCELEM_NONE,
+        },
+        { { { 0.0f, 0.0f, 0.0f }, { 0.0f, 0.0f, 0.0f }, { 0.0f, 0.0f, 0.0f } } },
+    },
+};
+
+static ColliderTrisInit sShieldColliderInit = {
     {
         COLTYPE_METAL,
         AT_ON | AT_TYPE_PLAYER,
         AC_ON | AC_HARD | AC_TYPE_ENEMY,
         OC1_NONE,
         OC2_TYPE_PLAYER,
-        COLSHAPE_QUAD,
+        COLSHAPE_TRIS,
     },
-    {
-        ELEMTYPE_UNK2,
-        { 0x00100000, 0x00, 0x00 },
-        { 0xDFCFFFFF, 0x00, 0x00 },
-        TOUCH_ON | TOUCH_SFX_NORMAL,
-        BUMP_ON,
-        OCELEM_NONE,
-    },
-    { { { 0.0f, 0.0f, 0.0f }, { 0.0f, 0.0f, 0.0f }, { 0.0f, 0.0f, 0.0f }, { 0.0f, 0.0f, 0.0f } } },
+    ARRAY_COUNT(sShieldColliderElementsInit),
+    sShieldColliderElementsInit,
 };
 
 void func_8084663C(Actor* thisx, PlayState* play) {
@@ -9475,8 +9549,8 @@ void Player_InitCommon(Player* this, PlayState* play, FlexSkeletonHeader* skelHe
     Collider_SetQuad(play, &this->meleeWeaponQuads[0], &this->actor, &D_80854650);
     Collider_InitQuad(play, &this->meleeWeaponQuads[1]);
     Collider_SetQuad(play, &this->meleeWeaponQuads[1], &this->actor, &D_80854650);
-    Collider_InitQuad(play, &this->shieldQuad);
-    Collider_SetQuad(play, &this->shieldQuad, &this->actor, &D_808546A0);
+    Collider_InitTris(play, &this->shieldCollider);
+    Collider_SetTrisAlloc(play, &this->shieldCollider, &this->actor, &sShieldColliderInit);
 
 }
 
@@ -10732,8 +10806,8 @@ void Player_UpdateCommon(Player* this, PlayState* play, Input* input) {
     Collider_ResetQuadAT(play, &this->meleeWeaponQuads[0].base);
     Collider_ResetQuadAT(play, &this->meleeWeaponQuads[1].base);
 
-    Collider_ResetQuadAC(play, &this->shieldQuad.base);
-    Collider_ResetQuadAT(play, &this->shieldQuad.base);
+    Collider_ResetTrisAC(play, &this->shieldCollider.base);
+    Collider_ResetTrisAT(play, &this->shieldCollider.base);
 }
 
 static Vec3f D_80854838 = { 0.0f, 0.0f, -30.0f };
@@ -11039,7 +11113,7 @@ void Player_Destroy(Actor* thisx, PlayState* play) {
     Collider_DestroyCylinder(play, &this->cylinder);
     Collider_DestroyQuad(play, &this->meleeWeaponQuads[0]);
     Collider_DestroyQuad(play, &this->meleeWeaponQuads[1]);
-    Collider_DestroyQuad(play, &this->shieldQuad);
+    Collider_FreeTris(play, &this->shieldCollider);
 
     gSaveContext.linkAge = play->linkAgeOnLoad;
 

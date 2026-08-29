@@ -834,7 +834,7 @@ typedef struct Player {
     /* 0x046E */ char unk_46E[0x02A];
     /* 0x0498 */ ColliderCylinder cylinder;
     /* 0x04E4 */ ColliderQuad meleeWeaponQuads[2];
-    /* 0x05E4 */ ColliderQuad shieldQuad;
+    /* 0x05E4 */ ColliderTris shieldCollider;
     /* 0x0664 */ Actor* focusActor; // Actor that Player and the camera are looking at; Used for lock-on, talking, and more
     /* 0x0668 */ char unk_668[0x004];
     /* 0x066C */ int32_t zTargetActiveTimer; // Non-zero values indicate Z-Targeting should update; Values under 5 indicate lock-on is releasing

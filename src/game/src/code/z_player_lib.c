@@ -1336,7 +1336,7 @@ uint8_t func_80090480(PlayState* play, ColliderQuad* collider, WeaponInfo* weapo
     }
 }
 
-void Player_UpdateShieldCollider(PlayState* play, Player* this, ColliderQuad* collider, Vec3f* quadSrc) {
+void Player_UpdateShieldCollider(PlayState* play, Player* this, ColliderTris* collider, Vec3f* shieldSrc) {
     static uint8_t shieldColTypes[PLAYER_SHIELD_MAX] = {
         COLTYPE_METAL,
         COLTYPE_WOOD,
@@ -1345,15 +1345,18 @@ void Player_UpdateShieldCollider(PlayState* play, Player* this, ColliderQuad* co
     };
 
     if (this->stateFlags1 & PLAYER_STATE1_SHIELDING) {
-        Vec3f quadDest[4];
+        Vec3f shieldDest[7];
 
-        this->shieldQuad.base.colType = shieldColTypes[this->currentShield];
+        collider->base.colType = shieldColTypes[this->currentShield];
 
-        Matrix_MultVec3f(&quadSrc[0], &quadDest[0]);
-        Matrix_MultVec3f(&quadSrc[1], &quadDest[1]);
-        Matrix_MultVec3f(&quadSrc[2], &quadDest[2]);
-        Matrix_MultVec3f(&quadSrc[3], &quadDest[3]);
-        Collider_SetQuadVertices(collider, &quadDest[0], &quadDest[1], &quadDest[2], &quadDest[3]);
+        for (int32_t i = 0; i < ARRAY_COUNT(shieldDest); ++i) {
+            Matrix_MultVec3f(&shieldSrc[i], &shieldDest[i]);
+        }
+        for (int32_t i = 0; i < collider->count; ++i) {
+            int32_t nextBoundary = 1 + ((i + 1) % collider->count);
+            Collider_SetTrisVertices(collider, i, &shieldDest[0], &shieldDest[i + 1],
+                                     &shieldDest[nextBoundary]);
+        }
 
         CollisionCheck_SetAC(play, &play->colChkCtx, &collider->base);
         CollisionCheck_SetAT(play, &play->colChkCtx, &collider->base);
@@ -1460,22 +1463,20 @@ BowStringData sBowStringData[] = {
     { gLinkChildSlingshotStringDL, { 606.0f, 236.0f, 0.0f } }, // slingshot
 };
 
-Vec3f sRightHandLimbModelShieldQuadVertices[] = {
-    { -4500.0f, -3000.0f, -600.0f },
-    { 1500.0f, -3000.0f, -600.0f },
-    { -4500.0f, 3000.0f, -600.0f },
-    { 1500.0f, 3000.0f, -600.0f },
+// Exact six-point Mirror Shield silhouette from
+// gLinkAdultRightHandHoldingMirrorShieldNearVtx1, with its recessed center.
+Vec3f sRightHandLimbModelMirrorShieldVertices[] = {
+    { -309.0f, 122.0f, -590.0f }, // center
+    { -2098.0f, 122.0f, -312.0f },
+    { -679.0f, 1375.0f, 66.0f },
+    { 1030.0f, 1122.0f, -37.0f },
+    { 1302.0f, 122.0f, -312.0f },
+    { 1030.0f, -878.0f, -37.0f },
+    { -679.0f, -1131.0f, 66.0f },
 };
 
 Vec3f D_80126184 = { 100.0f, 1500.0f, 0.0f };
 Vec3f D_80126190 = { 100.0f, 1640.0f, 0.0f };
-
-Vec3f sSheathLimbModelShieldQuadVertices[] = {
-    { -3000.0f, -3000.0f, -900.0f },
-    { 3000.0f, -3000.0f, -900.0f },
-    { -3000.0f, 3000.0f, -900.0f },
-    { 3000.0f, 3000.0f, -900.0f },
-};
 
 Vec3f sSheathLimbModelShieldOnBackPos = { 630.0f, 100.0f, -30.0f };
 Vec3s sSheathLimbModelShieldOnBackZyxRot = { 0, 0, 0x7FFF };
@@ -1613,7 +1614,8 @@ void Player_PostLimbDrawGameplay(PlayState* play, int32_t limbIndex, Gfx** dList
             CLOSE_DISPS(play->state.gfxCtx);
         } else if ((this->actor.scale.y >= 0.0f) && (this->rightHandType == PLAYER_MODELTYPE_RH_SHIELD)) {
             Matrix_Get(&this->shieldMf);
-            Player_UpdateShieldCollider(play, this, &this->shieldQuad, sRightHandLimbModelShieldQuadVertices);
+            Player_UpdateShieldCollider(play, this, &this->shieldCollider,
+                                        sRightHandLimbModelMirrorShieldVertices);
         }
 
         if (this->actor.scale.y >= 0.0f) {
@@ -1658,7 +1660,8 @@ void Player_PostLimbDrawGameplay(PlayState* play, int32_t limbIndex, Gfx** dList
             if ((this->rightHandType != PLAYER_MODELTYPE_RH_SHIELD) &&
                 (this->rightHandType != PLAYER_MODELTYPE_RH_FF)) {
                 if (Player_IsChildWithHylianShield(this)) {
-                    Player_UpdateShieldCollider(play, this, &this->shieldQuad, sSheathLimbModelShieldQuadVertices);
+                    Player_UpdateShieldCollider(play, this, &this->shieldCollider,
+                                                sRightHandLimbModelMirrorShieldVertices);
                 }
 
                 Matrix_TranslateRotateZYX(&sSheathLimbModelShieldOnBackPos, &sSheathLimbModelShieldOnBackZyxRot);
