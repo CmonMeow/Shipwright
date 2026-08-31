@@ -64,8 +64,7 @@ typedef struct Fishing {
     float wildMaxX;
     float wildMinZ;
     float wildMaxZ;
-    int32_t networkOwnerPlayerId;
-    uint8_t networkHookAnnounced;
+    uint8_t remotePresentationActive;
 } Fishing;
 
 #define EN_FISH_OWNER 1      // param for owner of pond. default if params<100
@@ -84,21 +83,11 @@ struct VBFishingData {
     float sFishingRecordLength;
 };
 
-int32_t Fishing_GetNetworkVisualState(PlayState* play, uint8_t* castState, Vec3f* rodTipOffset, Vec3f* lureOffset,
-                                   Vec3f* lureDrawOffset, float* rodBendY, float* rodBendX, float* rodTwist,
-                                   float* rodCastX, Vec3f* lureRot, float* lureSpin, float* lureZOffset,
-                                   Vec3f lureHookOffsets[2], Vec3f lureHookRot[2], float* lineScale,
-                                   float* lineGravity, uint8_t* lureType, uint8_t* lineSpooled, uint8_t* lineHooked,
-                                   uint8_t* fishActive, uint8_t* fishIsLoach,
-                                   Vec3f* fishOffset, Vec3s* fishRot, int16_t fishLimbRot[8], float* fishLength,
-                                   int32_t* fishRoomId, int32_t* fishActorParams, int32_t* fishHomeX, int32_t* fishHomeY,
-                                   int32_t* fishHomeZ,
-                                   uint8_t* sinkingLureSegmentIndex, uint8_t* sinkingLureUnderwater);
-int32_t Fishing_EnsureNetworkPopulation(PlayState* play);
-void Fishing_UpdateNetworkLine(PlayState* play, Actor* collisionActor, Vec3f* rodTip, Vec3f* lurePos,
+int32_t Fishing_EnsurePresentedPopulation(PlayState* play);
+void Fishing_UpdatePresentedLine(PlayState* play, Actor* collisionActor, Vec3f* rodTip, Vec3f* lurePos,
                                Vec3f linePos[FISHING_LINE_SEG_COUNT], Vec3f lineRot[FISHING_LINE_SEG_COUNT],
                                Vec3f lineUnk[FISHING_LINE_SEG_COUNT], int16_t lineSpooled, uint8_t lureType, float lineGravity);
-void Fishing_UpdateNetworkSinkingLure(Vec3f* lurePos, Vec3f positions[20], int16_t playerYaw, uint8_t castState,
+void Fishing_UpdatePresentedSinkingLure(Vec3f* lurePos, Vec3f positions[20], int16_t playerYaw, uint8_t castState,
                                       uint8_t underwater);
 
 #endif

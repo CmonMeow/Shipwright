@@ -2,7 +2,6 @@
 
 #include <engine/resource/Resource.h>
 #include <engine/resource/ResourceFactoryBinary.h>
-#include <engine/resource/ResourceFactoryXML.h>
 
 namespace SOH {
 class ResourceFactoryBinarySkeletonLimbV0 final : public Engine::ResourceFactoryBinary {
@@ -11,9 +10,4 @@ class ResourceFactoryBinarySkeletonLimbV0 final : public Engine::ResourceFactory
                                                   std::shared_ptr<Engine::ResourceInitData> initData) override;
 };
 
-class ResourceFactoryXMLSkeletonLimbV0 final : public Engine::ResourceFactoryXML {
-  public:
-    std::shared_ptr<Engine::IResource> ReadResource(std::shared_ptr<Engine::File> file,
-                                                  std::shared_ptr<Engine::ResourceInitData> initData) override;
-};
 } // namespace SOH

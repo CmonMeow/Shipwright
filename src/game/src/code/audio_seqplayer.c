@@ -696,6 +696,11 @@ int32_t AudioSeq_SeqLayerProcessScriptStep4(SequenceLayer* layer, int32_t cmd) {
 
                 if (instrument != NULL) {
                     sound = Audio_InstrumentGetSound(instrument, vel);
+                    if (sound == NULL) {
+                        layer->stopSomething = true;
+                        layer->sound = NULL;
+                        return -1;
+                    }
                     sameSound = (layer->sound == sound);
                     layer->sound = sound;
                     tuning = sound->tuning;
@@ -756,6 +761,11 @@ int32_t AudioSeq_SeqLayerProcessScriptStep4(SequenceLayer* layer, int32_t cmd) {
 
             if (instrument != NULL) {
                 sound = Audio_InstrumentGetSound(instrument, semitone);
+                if (sound == NULL) {
+                    layer->stopSomething = true;
+                    layer->sound = NULL;
+                    return -1;
+                }
                 sameSound = (sound == layer->sound);
                 layer->sound = sound;
                 layer->freqScale = gNoteFrequencies[semitone2] * sound->tuning;
@@ -772,7 +782,7 @@ int32_t AudioSeq_SeqLayerProcessScriptStep4(SequenceLayer* layer, int32_t cmd) {
     layer->delay2 = layer->delay;
     layer->freqScale *= layer->unk_34;
     if (layer->delay == 0) {
-        if (layer->sound != NULL) {
+        if (layer->sound != NULL && layer->sound->sample != NULL && layer->sound->sample->loop != NULL) {
             time = (float)layer->sound->sample->loop->loopEnd;
         } else {
             time = 0.0f;

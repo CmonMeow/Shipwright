@@ -1,6 +1,5 @@
 #include "port/resource/importer/scenecommand/SetRoomListFactory.h"
 #include "port/resource/type/scenecommand/SetRoomList.h"
-#include <tinyxml2.h>
 
 namespace SOH {
 std::shared_ptr<Engine::IResource> SetRoomListFactory::ReadResource(std::shared_ptr<Engine::ResourceInitData> initData,
@@ -28,33 +27,4 @@ std::shared_ptr<Engine::IResource> SetRoomListFactory::ReadResource(std::shared_
     return setRoomList;
 }
 
-std::shared_ptr<Engine::IResource> SetRoomListFactoryXML::ReadResource(std::shared_ptr<Engine::ResourceInitData> initData,
-                                                                     tinyxml2::XMLElement* reader) {
-    auto setRoomList = std::make_shared<SetRoomList>(initData);
-
-    setRoomList->cmdId = SceneCommandID::SetRoomList;
-
-    auto child = reader->FirstChildElement();
-
-    while (child != nullptr) {
-        std::string childName = child->Name();
-        if (childName == "RoomEntry") {
-            RomFile room;
-
-            setRoomList->fileNames.push_back(child->Attribute("Path"));
-
-            room.fileName = (char*)setRoomList->fileNames.back().c_str();
-            room.vromStart = child->IntAttribute("VromStart");
-            room.vromEnd = child->IntAttribute("VromEnd");
-
-            setRoomList->rooms.push_back(room);
-        }
-
-        child = child->NextSiblingElement();
-    }
-
-    setRoomList->numRooms = setRoomList->rooms.size();
-
-    return setRoomList;
-}
 } // namespace SOH

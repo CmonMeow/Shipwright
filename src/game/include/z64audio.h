@@ -59,7 +59,6 @@ typedef enum {
     /* 3 */ CODEC_SMALL_ADPCM,
     /* 4 */ CODEC_REVERB,
     /* 5 */ CODEC_S16,
-    /* 6 */ CODEC_OPUS,
 } SampleCodec;
 
 typedef enum {
@@ -470,8 +469,6 @@ typedef struct {
     /* 0x00F0 */ int16_t dummyResampleState[0x10];
 } NoteSynthesisBuffers; // size = 0x110
 
-struct OggOpusFile;
-
 typedef struct {
     /* 0x00 */ uint8_t restart;
     /* 0x01 */ uint8_t sampleDmaIndex;
@@ -490,7 +487,6 @@ typedef struct {
     /* 0x1A */ uint8_t unk_1A;
     /* 0x1C */ uint16_t unk_1C;
     /* 0x1E */ uint16_t unk_1E;
-    struct OggOpusFile* opusFile; // Only for streamed opus audio
 } NoteSynthesisState; // size = 0x20
 
 typedef struct {

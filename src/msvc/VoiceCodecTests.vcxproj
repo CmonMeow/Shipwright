@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="18.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup><PreferredToolArchitecture>x64</PreferredToolArchitecture></PropertyGroup>
+  <ItemGroup Label="ProjectConfigurations"><ProjectConfiguration Include="Release|x64"><Configuration>Release</Configuration><Platform>x64</Platform></ProjectConfiguration></ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{D52F29DA-7C70-4F7D-9E6B-16F376AD2DD8}</ProjectGuid><Keyword>Win32Proj</Keyword>
+    <WindowsTargetPlatformVersion>10.0.26100.0</WindowsTargetPlatformVersion><Platform>x64</Platform>
+    <ProjectName>VoiceCodecTests</ProjectName><RepoRoot>$(MSBuildThisFileDirectory)..\..\</RepoRoot>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType><CharacterSet>MultiByte</CharacterSet><PlatformToolset>v145</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings"/><ImportGroup Label="PropertySheets"/><PropertyGroup Label="UserMacros"/>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <OutDir>$(RepoRoot)obj\tests\</OutDir><IntDir>$(RepoRoot)obj\msvc\$(ProjectName)\$(Configuration)\</IntDir>
+    <TargetName>VoiceCodecSelfTest</TargetName><LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>$(RepoRoot)src\game\port;$(RepoRoot)src\game\include;$(RepoRoot)src\engine\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalOptions>%(AdditionalOptions) /external:I "$(RepoRoot)third_party/libsodium/include" /external:I "$(RepoRoot)third_party/opus/include" /external:I "$(RepoRoot)third_party/include/opus" /external:I "$(RepoRoot)third_party" /external:I "$(RepoRoot)third_party/include" /utf-8</AdditionalOptions>
+      <ExceptionHandling>Sync</ExceptionHandling><ExternalWarningLevel>TurnOffAllWarnings</ExternalWarningLevel>
+      <LanguageStandard>stdcpp20</LanguageStandard><MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <Optimization>MaxSpeed</Optimization><PrecompiledHeader>NotUsing</PrecompiledHeader><RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <UseStandardPreprocessor>true</UseStandardPreprocessor><WarningLevel>Level4</WarningLevel><TreatWarningAsError>true</TreatWarningAsError>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;_CRT_SECURE_NO_WARNINGS;NOMINMAX;SODIUM_STATIC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>$(RepoRoot)obj\lib\$(Configuration)\network.lib;$(RepoRoot)third_party\opus\lib\x64\Release\opus.lib;winmm.lib;Ws2_32.lib;$(RepoRoot)third_party\lib\Release\zip.lib;advapi32.lib;$(RepoRoot)third_party\lib\Release\bz2.lib;bcrypt.lib;$(RepoRoot)third_party\lib\Release\zs.lib;$(RepoRoot)third_party\libsodium\lib\x64\Release\libsodium.lib;kernel32.lib;user32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <GenerateDebugInformation>false</GenerateDebugInformation><SubSystem>Console</SubSystem>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup><ClCompile Include="$(RepoRoot)src\game\tests\VoiceCodecSelfTest.cpp"/></ItemGroup>
+  <ItemGroup><ProjectReference Include="$(MSBuildThisFileDirectory)Network.vcxproj"><Project>{CC8974D8-759D-3CFA-8CF0-B4F8B3D546CF}</Project></ProjectReference></ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets"/><ImportGroup Label="ExtensionTargets"/>
+</Project>

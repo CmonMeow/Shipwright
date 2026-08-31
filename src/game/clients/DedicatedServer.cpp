@@ -29,20 +29,17 @@ void DrainRelayQueues(SoH::Network::NetworkRuntime& network) {
     while (network.PollChat(chat)) {
         std::printf("%s\n", chat.text.c_str());
     }
-    NetworkPlayerStatePacket player;
-    while (network.PollPlayerState(player)) {
+    Game::Client::RemotePlayerPresentationState lifecycle;
+    while (network.PollPlayerLifecycle(lifecycle)) {
     }
-    NetworkPlayerRemovePacket removal;
-    while (network.PollPlayerRemove(removal)) {
-    }
-    NetworkDynamicObjectStatePacket objectState;
-    while (network.PollDynamicObjectState(objectState)) {
-    }
-    NetworkProjectileStatePacket projectile;
+    Game::Client::RemoteProjectileReplicaState projectile;
     while (network.PollProjectileState(projectile)) {
     }
-    NetworkPlayerRespawnPacket respawn;
+    Game::Simulation::PlayerRespawnEvent respawn;
     while (network.PollPlayerRespawn(respawn)) {
+    }
+    Game::Client::CorpsePresentationState corpse;
+    while (network.PollCorpseState(corpse)) {
     }
     NetworkVoicePacket voice;
     while (network.PollVoice(voice)) {

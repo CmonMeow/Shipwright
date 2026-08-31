@@ -51,8 +51,13 @@ void ResourceManager::Init(const std::vector<std::string>& archivePaths,
     mArchiveManager = std::make_shared<ArchiveManager>();
     GetArchiveManager()->Init(archivePaths, validHashes);
 
-    // Keep one worker free for the main thread and platform callbacks.
-    size_t threadCount = std::max(1, (int32_t)(std::thread::hardware_concurrency() - reservedThreadCount - 1));
+    // Keep one worker free for the main thread and platform callbacks without
+    // allowing unsigned subtraction to wrap on low-core systems.
+    const BS::concurrency_t hardwareThreads = std::thread::hardware_concurrency();
+    const BS::concurrency_t reservedThreads =
+        reservedThreadCount > 0 ? static_cast<BS::concurrency_t>(reservedThreadCount) : 0U;
+    const BS::concurrency_t threadCount =
+        hardwareThreads > reservedThreads + 1U ? hardwareThreads - reservedThreads - 1U : 1U;
     mThreadPool = std::make_shared<BS::thread_pool>(threadCount);
 
     if (!IsLoaded()) {

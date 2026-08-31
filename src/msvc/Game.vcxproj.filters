@@ -13,8 +13,80 @@
     <ClCompile Include="$(RepoRoot)src\game\port\GbiWrap.cpp">
       <Filter>soh</Filter>
     </ClCompile>
-    <ClCompile Include="$(RepoRoot)src\game\port\NetworkGameBridge.cpp">
+    <ClCompile Include="$(RepoRoot)src\game\port\ClientRuntime.cpp">
       <Filter>soh</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\port\Network\NativeClientNetworkSession.cpp">
+      <Filter>soh\Network</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\port\Network\NativeLocalProjectileController.cpp">
+      <Filter>soh\Network</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\port\Network\NativeLocalRespawnController.cpp">
+      <Filter>soh\Network</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\port\Network\NativeCombatPresentationController.cpp">
+      <Filter>soh\Network</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\port\Network\NativeClientInboundReplication.cpp">
+      <Filter>soh\Network</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\port\Network\NativeClientOutboundSubmission.cpp">
+      <Filter>soh\Network</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\port\Network\NativeClientFrameReconciliation.cpp">
+      <Filter>soh\Network</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\port\Network\NativeClientSessionLifecycle.cpp">
+      <Filter>soh\Network</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\port\Network\NativeClientUpdateCoordinator.cpp">
+      <Filter>soh\Network</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\port\Network\NativeMultiplayerInteractionController.cpp">
+      <Filter>soh\Network</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\platform\client\MultiplayerCommandProcessor.cpp">
+      <Filter>soh\Network</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\port\Network\NativeVoiceController.cpp">
+      <Filter>soh\Network</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\port\Network\NativeLocalFishingController.cpp">
+      <Filter>soh\Network</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\port\Gameplay\FishingGameplay.cpp">
+      <Filter>soh\Network</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\port\Gameplay\FishPresentation.cpp">
+      <Filter>soh\Network</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\port\Gameplay\GameplayNotification.cpp">
+      <Filter>soh\Network</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\port\Gameplay\ProjectileGameplay.cpp">
+      <Filter>soh\Network</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\port\Network\NativeLocalPlayerCommandController.cpp">
+      <Filter>soh\Network</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\port\Network\NativeLocalPlayerPresentationController.cpp">
+      <Filter>soh\Network</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\port\Network\NativeRemotePlayerPresentationController.cpp">
+      <Filter>soh\Network</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\port\Network\NativeRemoteFishPresentationController.cpp">
+      <Filter>soh\Network</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\port\Network\NativePlayerNameplatePresenter.cpp">
+      <Filter>soh\Network</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\port\Network\NativeRemoteProjectilePresentationController.cpp">
+      <Filter>soh\Network</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\port\Network\NativeCorpsePresentationController.cpp">
+      <Filter>soh\Network</Filter>
     </ClCompile>
     <ClCompile Include="$(RepoRoot)src\game\port\OTRGlobals.cpp">
       <Filter>soh</Filter>
@@ -27,6 +99,9 @@
     </ClCompile>
     <ClCompile Include="$(RepoRoot)src\game\port\MultiplayerUI.cpp">
       <Filter>soh</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\port\UI\MultiplayerHudRenderer.cpp">
+      <Filter>soh\UI</Filter>
     </ClCompile>
     <ClCompile Include="$(RepoRoot)src\game\port\ResourceManagerHelpers.cpp">
       <Filter>soh</Filter>
@@ -771,8 +846,89 @@
     <ClInclude Include="$(RepoRoot)src\game\port\ItemTableTypes.h">
       <Filter>soh</Filter>
     </ClInclude>
-    <ClInclude Include="$(RepoRoot)src\game\port\NetworkGameBridge.h">
+    <ClInclude Include="$(RepoRoot)src\game\port\ClientRuntime.h">
       <Filter>soh</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\game\port\Network\NativeClientNetworkSession.h">
+      <Filter>soh\Network</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\game\port\Network\NativeLocalProjectileController.h">
+      <Filter>soh\Network</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\game\port\Network\NativeLocalRespawnController.h">
+      <Filter>soh\Network</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\game\port\Network\NativeCombatPresentationController.h">
+      <Filter>soh\Network</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\game\port\Network\NativeClientInboundReplication.h">
+      <Filter>soh\Network</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\game\port\Network\NativeClientOutboundSubmission.h">
+      <Filter>soh\Network</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\game\port\Network\NativeClientFrameReconciliation.h">
+      <Filter>soh\Network</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\game\port\Network\NativeClientSessionLifecycle.h">
+      <Filter>soh\Network</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\game\port\Network\NativeClientUpdateCoordinator.h">
+      <Filter>soh\Network</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\game\port\Network\NativeMultiplayerInteractionController.h">
+      <Filter>soh\Network</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\game\platform\client\MultiplayerCommandProcessor.h">
+      <Filter>soh\Network</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\game\platform\client\ClientFrameClock.h">
+      <Filter>soh\Network</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\game\platform\client\MultiplayerInteractionPort.h">
+      <Filter>soh\Network</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\game\port\Network\NativeVoiceController.h">
+      <Filter>soh\Network</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\game\port\UI\MultiplayerHudRenderer.h">
+      <Filter>soh\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\game\port\Network\NativeLocalFishingController.h">
+      <Filter>soh\Network</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\game\port\Gameplay\FishingGameplay.h">
+      <Filter>soh\Network</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\game\port\Gameplay\FishPresentation.h">
+      <Filter>soh\Network</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\game\port\Gameplay\GameplayNotification.h">
+      <Filter>soh\Network</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\game\port\Gameplay\ProjectileGameplay.h">
+      <Filter>soh\Network</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\game\port\Network\NativeLocalPlayerCommandController.h">
+      <Filter>soh\Network</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\game\port\Network\NativeLocalPlayerPresentationController.h">
+      <Filter>soh\Network</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\game\port\Network\NativeRemotePlayerPresentationController.h">
+      <Filter>soh\Network</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\game\port\Network\NativeRemoteFishPresentationController.h">
+      <Filter>soh\Network</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\game\port\Network\NativePlayerNameplatePresenter.h">
+      <Filter>soh\Network</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\game\port\Network\NativeRemoteProjectilePresentationController.h">
+      <Filter>soh\Network</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\game\port\Network\NativeCorpsePresentationController.h">
+      <Filter>soh\Network</Filter>
     </ClInclude>
     <ClInclude Include="$(RepoRoot)src\game\port\OTRAudio.h">
       <Filter>soh</Filter>
@@ -981,28 +1137,7 @@
     <ClInclude Include="$(RepoRoot)src\game\port\util.h">
       <Filter>soh</Filter>
     </ClInclude>
-    <ClInclude Include="$(RepoRoot)src\game\src\overlays\actors\ovl_Bg_Heavy_Block\z_bg_heavy_block.h">
-      <Filter>src\overlays\actors</Filter>
-    </ClInclude>
-    <ClInclude Include="$(RepoRoot)src\game\src\overlays\actors\ovl_Door_Shutter\z_door_shutter.h">
-      <Filter>src\overlays\actors</Filter>
-    </ClInclude>
-    <ClInclude Include="$(RepoRoot)src\game\src\overlays\actors\ovl_Elf_Msg\z_elf_msg.h">
-      <Filter>src\overlays\actors</Filter>
-    </ClInclude>
     <ClInclude Include="$(RepoRoot)src\game\src\overlays\actors\ovl_En_Arrow\z_en_arrow.h">
-      <Filter>src\overlays\actors</Filter>
-    </ClInclude>
-    <ClInclude Include="$(RepoRoot)src\game\src\overlays\actors\ovl_En_Boom\z_en_boom.h">
-      <Filter>src\overlays\actors</Filter>
-    </ClInclude>
-    <ClInclude Include="$(RepoRoot)src\game\src\overlays\actors\ovl_En_Box\z_en_box.h">
-      <Filter>src\overlays\actors</Filter>
-    </ClInclude>
-    <ClInclude Include="$(RepoRoot)src\game\src\overlays\actors\ovl_En_Door\z_en_door.h">
-      <Filter>src\overlays\actors</Filter>
-    </ClInclude>
-    <ClInclude Include="$(RepoRoot)src\game\src\overlays\actors\ovl_En_Elf\z_en_elf.h">
       <Filter>src\overlays\actors</Filter>
     </ClInclude>
     <ClInclude Include="$(RepoRoot)src\game\src\overlays\actors\ovl_En_Fish\z_en_fish.h">
@@ -1064,6 +1199,12 @@
     </Filter>
     <Filter Include="soh\ObjectExtension">
       <UniqueIdentifier>{E455F3AF-956A-34B0-81D1-60E2B0847306}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="soh\Network">
+      <UniqueIdentifier>{D2B474AD-737D-4735-B648-E9EE8555CB61}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="soh\UI">
+      <UniqueIdentifier>{517C4F3C-A74B-4E3E-95EF-B6A43B31F301}</UniqueIdentifier>
     </Filter>
     <Filter Include="soh\resource">
       <UniqueIdentifier>{E1425858-E72B-38B0-96FD-1E3B69A7A1E1}</UniqueIdentifier>

@@ -1,6 +1,5 @@
 #include "port/resource/importer/scenecommand/SetStartPositionListFactory.h"
 #include "port/resource/type/scenecommand/SetStartPositionList.h"
-#include <tinyxml2.h>
 
 namespace SOH {
 std::shared_ptr<Engine::IResource>
@@ -32,35 +31,4 @@ SetStartPositionListFactory::ReadResource(std::shared_ptr<Engine::ResourceInitDa
     return setStartPositionList;
 }
 
-std::shared_ptr<Engine::IResource>
-SetStartPositionListFactoryXML::ReadResource(std::shared_ptr<Engine::ResourceInitData> initData,
-                                             tinyxml2::XMLElement* reader) {
-    auto setStartPositionList = std::make_shared<SetStartPositionList>(initData);
-
-    setStartPositionList->cmdId = SceneCommandID::SetStartPositionList;
-
-    auto child = reader->FirstChildElement();
-
-    while (child != nullptr) {
-        std::string childName = child->Name();
-        if (childName == "StartPositionEntry") {
-            ActorEntry entry;
-            entry.id = child->IntAttribute("Id");
-            entry.pos.x = child->IntAttribute("PosX");
-            entry.pos.y = child->IntAttribute("PosY");
-            entry.pos.z = child->IntAttribute("PosZ");
-            entry.rot.x = child->IntAttribute("RotX");
-            entry.rot.y = child->IntAttribute("RotY");
-            entry.rot.z = child->IntAttribute("RotZ");
-            entry.params = child->IntAttribute("Params");
-            setStartPositionList->startPositions.push_back(entry);
-        }
-
-        child = child->NextSiblingElement();
-    }
-
-    setStartPositionList->numStartPositions = setStartPositionList->startPositions.size();
-
-    return setStartPositionList;
-}
 } // namespace SOH

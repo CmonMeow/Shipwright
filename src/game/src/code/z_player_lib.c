@@ -1,4 +1,5 @@
 #include "global.h"
+#include "engine/input/PCInput.h"
 #include "objects/gameplay_keep/gameplay_keep.h"
 #include "objects/gameplay_field_keep/gameplay_field_keep.h"
 #include "objects/object_link_boy/object_link_boy.h"
@@ -6,8 +7,7 @@
 #include "objects/object_triforce_spot/object_triforce_spot.h"
 #include "objects/object_fish/object_fish.h"
 #include "port/ResourceManagerHelpers.h"
-
-extern int32_t PCInput_IsBowAimHeld(void);
+#include "port/Enhancements/debugger/colViewer.h"
 
 #include <stdlib.h>
 
@@ -58,7 +58,7 @@ uint8_t gPlayerModelTypes[PLAYER_MODELGROUP_MAX][PLAYER_MODELGROUPENTRY_MAX] = {
     /* PLAYER_MODELGROUP_BOW_SLINGSHOT */
     { PLAYER_ANIMTYPE_4, PLAYER_MODELTYPE_LH_CLOSED, PLAYER_MODELTYPE_RH_BOW_SLINGSHOT, PLAYER_MODELTYPE_SHEATH_18,
       PLAYER_MODELTYPE_WAIST },
-    /* PLAYER_MODELGROUP_EXPLOSIVES */
+    /* PLAYER_MODELGROUP_REMOVED_7 */
     { PLAYER_ANIMTYPE_5, PLAYER_MODELTYPE_LH_OPEN, PLAYER_MODELTYPE_RH_OPEN, PLAYER_MODELTYPE_SHEATH_18,
       PLAYER_MODELTYPE_WAIST },
     /* PLAYER_MODELGROUP_BOOMERANG */
@@ -367,24 +367,24 @@ int32_t sRightHandType;
  * gameplay callback this only selects display lists; it never touches local
  * player state, colliders, held actors, or weapon effects.
  */
-int32_t Player_OverrideLimbDrawNetwork(PlayState* play, int32_t limbIndex, Gfx** dList, Vec3f* pos, Vec3s* rot,
-                                   void* data) {
-    PlayerNetworkDrawData* network = data;
-    uint8_t modelGroup = network->modelGroup;
-    uint8_t shield = network->shield;
+int32_t Player_OverrideLimbDrawPresentation(PlayState* play, int32_t limbIndex, Gfx** dList, Vec3f* pos, Vec3s* rot,
+                                            void* data) {
+    PlayerPresentationDrawData* presentation = data;
+    uint8_t modelGroup = presentation->modelGroup;
+    uint8_t shield = presentation->shield;
     int32_t type = { 0 };
     int32_t dListOffset = 0;
 
     (void)play;
     (void)pos;
     if (limbIndex == PLAYER_LIMB_HEAD) {
-        rot->x += network->headLimbRot.z;
-        rot->y -= network->headLimbRot.y;
-        rot->z += network->headLimbRot.x;
+        rot->x += presentation->headLimbRot.z;
+        rot->y -= presentation->headLimbRot.y;
+        rot->z += presentation->headLimbRot.x;
     } else if (limbIndex == PLAYER_LIMB_UPPER) {
-        Matrix_RotateY(network->upperLimbRot.y * (M_PI / 0x8000), MTXMODE_APPLY);
-        Matrix_RotateX(network->upperLimbRot.x * (M_PI / 0x8000), MTXMODE_APPLY);
-        Matrix_RotateZ(network->upperLimbRot.z * (M_PI / 0x8000), MTXMODE_APPLY);
+        Matrix_RotateY(presentation->upperLimbRot.y * (M_PI / 0x8000), MTXMODE_APPLY);
+        Matrix_RotateX(presentation->upperLimbRot.x * (M_PI / 0x8000), MTXMODE_APPLY);
+        Matrix_RotateZ(presentation->upperLimbRot.z * (M_PI / 0x8000), MTXMODE_APPLY);
     }
 
     if (modelGroup >= PLAYER_MODELGROUP_MAX) {
@@ -420,20 +420,25 @@ int32_t Player_OverrideLimbDrawNetwork(PlayState* play, int32_t limbIndex, Gfx**
     return 0;
 }
 
-void Player_PostLimbDrawNetwork(PlayState* play, int32_t limbIndex, Gfx** dList, Vec3s* rot, void* data) {
+void Player_PostLimbDrawPresentation(PlayState* play, int32_t limbIndex, Gfx** dList, Vec3s* rot, void* data) {
+    static Vec3f zero = { 0.0f, 0.0f, 0.0f };
     static float rodScales[22] = {
         1.0f, 1.0f, 1.0f, 0.9625f, 0.925f, 0.8875f, 0.85f, 0.8125f, 0.775f, 0.73749995f, 0.7f,
         0.6625f, 0.625f, 0.5875f, 0.54999995f, 0.5125f, 0.47499996f, 0.4375f, 0.39999998f,
         0.36249995f, 0.325f, 0.28749996f,
     };
-    PlayerNetworkDrawData* network = data;
+    PlayerPresentationDrawData* presentation = data;
     int32_t i;
+
+    if ((limbIndex > PLAYER_LIMB_NONE) && (limbIndex < PLAYER_LIMB_MAX)) {
+        Matrix_MultVec3f(&zero, &presentation->limbOrigins[limbIndex]);
+    }
 
     (void)dList;
     (void)rot;
-    if ((limbIndex == PLAYER_LIMB_L_HAND) && network->bowReady &&
-        (network->itemAction >= PLAYER_IA_BOW) && (network->itemAction <= PLAYER_IA_BOW_0E)) {
-        SkelAnime* arrowSkelAnime = network->bowArrowSkelAnime;
+    if ((limbIndex == PLAYER_LIMB_L_HAND) && presentation->bowReady &&
+        (presentation->itemAction >= PLAYER_IA_BOW) && (presentation->itemAction <= PLAYER_IA_BOW_0E)) {
+        SkelAnime* arrowSkelAnime = presentation->bowArrowSkelAnime;
 
         if (arrowSkelAnime == NULL) {
             return;
@@ -454,7 +459,7 @@ void Player_PostLimbDrawNetwork(PlayState* play, int32_t limbIndex, Gfx** dList,
         OPEN_DISPS(play->state.gfxCtx);
         Matrix_Push();
         Matrix_Translate(0.0f, -360.4f, 0.0f, MTXMODE_APPLY);
-        Matrix_Scale(1.0f, network->bowStringScale, 1.0f, MTXMODE_APPLY);
+        Matrix_Scale(1.0f, presentation->bowStringScale, 1.0f, MTXMODE_APPLY);
         gSPMatrix(POLY_XLU_DISP++, MATRIX_NEWMTX(play->state.gfxCtx),
                   G_MTX_NOPUSH | G_MTX_LOAD | G_MTX_MODELVIEW);
         gSPDisplayList(POLY_XLU_DISP++, gLinkAdultBowStringDL);
@@ -462,7 +467,7 @@ void Player_PostLimbDrawNetwork(PlayState* play, int32_t limbIndex, Gfx** dList,
         CLOSE_DISPS(play->state.gfxCtx);
     }
     // Fishing_DrawRod starts from Player.mf_9E0, captured from the left hand.
-    if (limbIndex != PLAYER_LIMB_L_HAND || network->itemAction != PLAYER_IA_FISHING_POLE) {
+    if (limbIndex != PLAYER_LIMB_L_HAND || presentation->itemAction != PLAYER_IA_FISHING_POLE) {
         return;
     }
 
@@ -472,10 +477,10 @@ void Player_PostLimbDrawNetwork(PlayState* play, int32_t limbIndex, Gfx** dList,
     gDPSetPrimColor(POLY_OPA_DISP++, 0, 0, 255, 155, 0, 255);
 
     Matrix_Translate(0.0f, 400.0f, 0.0f, MTXMODE_APPLY);
-    Matrix_RotateY((network->fishingState == 5 ? 0.56f : 0.41f) * M_PI, MTXMODE_APPLY);
+    Matrix_RotateY((presentation->fishingState == 5 ? 0.56f : 0.41f) * M_PI, MTXMODE_APPLY);
     Matrix_RotateX(-M_PI / 5.0000003f, MTXMODE_APPLY);
-    Matrix_RotateZ((network->fishingRodTwist * 0.5f) + (3.0f * M_PI / 20.0f), MTXMODE_APPLY);
-    Matrix_RotateX((network->fishingRodCastX + 20.0f) * 0.01f * M_PI, MTXMODE_APPLY);
+    Matrix_RotateZ((presentation->fishingRodTwist * 0.5f) + (3.0f * M_PI / 20.0f), MTXMODE_APPLY);
+    Matrix_RotateX((presentation->fishingRodCastX + 20.0f) * 0.01f * M_PI, MTXMODE_APPLY);
     Matrix_Scale(0.70000005f, 0.70000005f, 0.70000005f, MTXMODE_APPLY);
     Matrix_Translate(0.0f, 0.0f, -1300.0f, MTXMODE_APPLY);
 
@@ -484,8 +489,8 @@ void Player_PostLimbDrawNetwork(PlayState* play, int32_t limbIndex, Gfx** dList,
             0.0f,  0.0f,  0.0f,  0.0f,  0.0f,  0.06f,   0.12f,   0.18f,   0.24f,   0.30f,   0.36f,
             0.42f, 0.48f, 0.54f, 0.60f, 0.60f, 0.5142f, 0.4285f, 0.3428f, 0.2571f, 0.1714f, 0.0857f,
         };
-        Matrix_RotateY(rodBendRatios[i] * network->fishingRodBendY * 0.5f, MTXMODE_APPLY);
-        Matrix_RotateX(rodBendRatios[i] * network->fishingRodBendX * 0.5f, MTXMODE_APPLY);
+        Matrix_RotateY(rodBendRatios[i] * presentation->fishingRodBendY * 0.5f, MTXMODE_APPLY);
+        Matrix_RotateX(rodBendRatios[i] * presentation->fishingRodBendX * 0.5f, MTXMODE_APPLY);
         Matrix_Push();
         Matrix_Scale(rodScales[i], rodScales[i], 0.52f, MTXMODE_APPLY);
         gSPMatrix(POLY_OPA_DISP++, MATRIX_NEWMTX(play->state.gfxCtx), G_MTX_NOPUSH | G_MTX_LOAD | G_MTX_MODELVIEW);
@@ -866,20 +871,6 @@ int32_t Player_ActionToBottle(Player* this, int32_t actionParam) {
 
 int32_t Player_GetBottleHeld(Player* this) {
     return Player_ActionToBottle(this, this->heldItemAction);
-}
-
-int32_t Player_ActionToExplosive(Player* this, int32_t actionParam) {
-    int32_t explosive = actionParam - PLAYER_IA_BOMB;
-
-    if ((explosive >= 0) && (explosive < 2)) {
-        return explosive;
-    } else {
-        return -1;
-    }
-}
-
-int32_t Player_GetExplosiveHeld(Player* this) {
-    return Player_ActionToExplosive(this, this->heldItemAction);
 }
 
 int32_t func_8008F2BC(Player* this, int32_t actionParam) {
@@ -1489,6 +1480,13 @@ Vec3f sLeftRightFootLimbModelFootPos[] = {
 void Player_PostLimbDrawGameplay(PlayState* play, int32_t limbIndex, Gfx** dList, Vec3s* rot, void* thisx) {
     Player* this = (Player*)thisx;
 
+    if ((limbIndex > PLAYER_LIMB_NONE) && (limbIndex < PLAYER_LIMB_MAX)) {
+        Vec3f limbOrigin;
+        Matrix_MultVec3f(&sZeroVec, &limbOrigin);
+        RecordLocalRenderedPlayerCollisionLimb(
+            limbIndex, limbOrigin.x, limbOrigin.y, limbOrigin.z);
+    }
+
     if (*dList != NULL) {
         Matrix_MultVec3f(&sZeroVec, D_80160000);
     }
@@ -1554,16 +1552,8 @@ void Player_PostLimbDrawGameplay(PlayState* play, int32_t limbIndex, Gfx** dList
                     Matrix_MtxFToYXZRotS(&sp14C, &hookedActor->world.rot, 0);
                     hookedActor->shape.rot = hookedActor->world.rot;
                 } else if (this->stateFlags1 & PLAYER_STATE1_CARRYING_ACTOR) {
-                    Vec3s spB8;
-
-                    Matrix_Get(&sp14C);
-                    Matrix_MtxFToYXZRotS(&sp14C, &spB8, 0);
-
-                    if (hookedActor->flags & ACTOR_FLAG_CARRY_X_ROT_INFLUENCE) {
-                        hookedActor->world.rot.x = hookedActor->shape.rot.x = spB8.x - this->unk_3BC.x;
-                    } else {
-                        hookedActor->world.rot.y = hookedActor->shape.rot.y = this->actor.shape.rot.y + this->unk_3BC.y;
-                    }
+                    hookedActor->world.rot.y = hookedActor->shape.rot.y =
+                        this->actor.shape.rot.y + this->unk_3BC.y;
                 }
             } else {
                 Matrix_Get(&this->mf_9E0);

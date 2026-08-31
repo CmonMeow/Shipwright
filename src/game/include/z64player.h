@@ -118,8 +118,8 @@ typedef enum PlayerItemAction {
     /* 0x0F */ PLAYER_IA_SLINGSHOT,
     /* 0x10 */ PLAYER_IA_HOOKSHOT,
     /* 0x11 */ PLAYER_IA_LONGSHOT,
-    /* 0x12 */ PLAYER_IA_BOMB,
-    /* 0x13 */ PLAYER_IA_BOMBCHU,
+    /* 0x12 */ PLAYER_IA_REMOVED_12,
+    /* 0x13 */ PLAYER_IA_REMOVED_13,
     /* 0x14 */ PLAYER_IA_BOOMERANG,
     /* 0x15 */ PLAYER_IA_UNUSED_15,
     /* 0x16 */ PLAYER_IA_UNUSED_16,
@@ -266,7 +266,7 @@ typedef enum PlayerModelGroup {
     /* 0x04 */ PLAYER_MODELGROUP_4, // unused, same as PLAYER_MODELGROUP_DEFAULT
     /* 0x05 */ PLAYER_MODELGROUP_BGS, // biggoron sword
     /* 0x06 */ PLAYER_MODELGROUP_BOW_SLINGSHOT, // bow/slingshot
-    /* 0x07 */ PLAYER_MODELGROUP_EXPLOSIVES, // bombs, bombchus, same as PLAYER_MODELGROUP_DEFAULT
+    /* 0x07 */ PLAYER_MODELGROUP_REMOVED_7,
     /* 0x08 */ PLAYER_MODELGROUP_BOOMERANG,
     /* 0x09 */ PLAYER_MODELGROUP_HOOKSHOT,
     /* 0x0A */ PLAYER_MODELGROUP_10, // stick/fishing pole (which are drawn separately)
@@ -742,7 +742,7 @@ typedef void (*PlayerActionFunc)(struct Player*, struct PlayState*);
 typedef int32_t (*UpperActionFunc)(struct Player*, struct PlayState*);
 typedef void (*AfterPutAwayFunc)(struct PlayState*, struct Player*);
 
-typedef struct PlayerNetworkDrawData {
+typedef struct PlayerPresentationDrawData {
     uint8_t modelGroup;
     uint8_t shield;
     uint8_t itemAction;
@@ -757,7 +757,8 @@ typedef struct PlayerNetworkDrawData {
     float fishingRodCastX;
     float bowStringScale;
     void* bowArrowSkelAnime;
-} PlayerNetworkDrawData;
+    Vec3f limbOrigins[PLAYER_LIMB_MAX];
+} PlayerPresentationDrawData;
 
 #define UNK6AE_ROT_FOCUS_X (1 << 0)
 #define UNK6AE_ROT_FOCUS_Y (1 << 1)
@@ -768,6 +769,12 @@ typedef struct PlayerNetworkDrawData {
 #define UNK6AE_ROT_UPPER_X (1 << 6)
 #define UNK6AE_ROT_UPPER_Y (1 << 7)
 #define UNK6AE_ROT_UPPER_Z (1 << 8)
+
+typedef enum PlayerPrimaryActionPresentation {
+    PLAYER_PRIMARY_PRESENTATION_UNAVAILABLE = -1,
+    PLAYER_PRIMARY_PRESENTATION_IDLE = 0,
+    PLAYER_PRIMARY_PRESENTATION_ACTIVE = 1,
+} PlayerPrimaryActionPresentation;
 
 typedef struct Player {
     /* 0x0000 */ Actor actor;
@@ -957,6 +964,13 @@ typedef struct Player {
     // Upstream TODO: Rename these to be more obviously SoH specific
     /*        */ PendingFlag pendingFlag;
     /*        */ GetItemEntry getItemEntry;
+    // PC presentation projection written after client prediction advances.
+    // These fields never grant gameplay authority to the native actor.
+    /*        */ int8_t primaryActionPresentation;
+    /*        */ float primaryActionProgress;
+    // True only while an authoritative retained corpse owns this exact local
+    // player incarnation's body presentation.
+    /*        */ uint8_t authoritativeBodyHidden;
     // #endregion
 } Player;
 

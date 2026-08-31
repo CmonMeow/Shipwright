@@ -37,14 +37,14 @@
     
     
     <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(RepoRoot)obj\lib\$(Configuration)\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(RepoRoot)obj\$(ProjectName)\$(Configuration)\</IntDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(RepoRoot)obj\msvc\$(ProjectName)\$(Configuration)\</IntDir>
     <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">network</TargetName>
     <TargetExt Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.lib</TargetExt>
   </PropertyGroup>
   
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>$(RepoRoot)src\game\port;$(RepoRoot)src\game\include;$(RepoRoot)src\game\..\engine\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(RepoRoot)src\game;$(RepoRoot)src\game\port;$(RepoRoot)src\game\include;$(RepoRoot)src\game\..\engine\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalOptions>%(AdditionalOptions) /external:I "$(RepoRoot)third_party/libsodium/include" /external:I "$(RepoRoot)third_party/opus/include" /external:I "$(RepoRoot)third_party" /external:I "$(RepoRoot)third_party/include" /utf-8</AdditionalOptions>
       <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
@@ -84,7 +84,128 @@
     </Midl>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="$(RepoRoot)src\game\platform\client\CorpsePresentationRegistry.cpp" />
+    <ClCompile Include="$(RepoRoot)src\game\platform\client\ClientWorldState.cpp" />
+    <ClCompile Include="$(RepoRoot)src\game\platform\client\ClientGameplaySession.cpp" />
+    <ClCompile Include="$(RepoRoot)src\game\platform\client\ClientSessionGenerationTracker.cpp" />
+    <ClCompile Include="$(RepoRoot)src\game\platform\simulation\CorpseSimulation.cpp" />
+    <ClCompile Include="$(RepoRoot)src\game\platform\simulation\ClientPrediction.cpp" />
+    <ClCompile Include="$(RepoRoot)src\game\platform\client\LocalFishIntentStream.cpp" />
+    <ClCompile Include="$(RepoRoot)src\game\platform\client\LocalFishingUpdateStream.cpp" />
+    <ClCompile Include="$(RepoRoot)src\game\platform\client\LocalStructureActionStream.cpp" />
+    <ClCompile Include="$(RepoRoot)src\game\platform\client\LocalVoiceFrameStream.cpp" />
+    <ClCompile Include="$(RepoRoot)src\game\platform\client\LocalPlayerVitals.cpp" />
+    <ClCompile Include="$(RepoRoot)src\game\platform\client\LocalProjectileIntentStream.cpp" />
+    <ClCompile Include="$(RepoRoot)src\game\platform\client\LocalSceneAdmission.cpp" />
+    <ClCompile Include="$(RepoRoot)src\game\platform\client\RemoteFishingPresentationInterpolation.cpp" />
+    <ClCompile Include="$(RepoRoot)src\game\platform\client\RemoteFishingEntityState.cpp" />
+    <ClCompile Include="$(RepoRoot)src\game\platform\client\RemotePlayerInterpolation.cpp" />
+    <ClCompile Include="$(RepoRoot)src\game\platform\client\RemotePlayerReplicaStore.cpp" />
+    <ClCompile Include="$(RepoRoot)src\game\platform\client\RemotePlayerPresentationRegistry.cpp" />
+    <ClCompile Include="$(RepoRoot)src\game\platform\client\RemoteProjectilePresentationRegistry.cpp" />
+    <ClCompile Include="$(RepoRoot)src\game\platform\client\RemoteProjectileReplicaStore.cpp" />
+    <ClCompile Include="$(RepoRoot)src\game\platform\client\RemoteProjectileInterpolation.cpp" />
+    <ClCompile Include="$(RepoRoot)src\game\platform\simulation\FishingSimulation.cpp" />
+    <ClCompile Include="$(RepoRoot)src\game\platform\simulation\FishCatalog.cpp" />
+    <ClCompile Include="$(RepoRoot)src\game\platform\simulation\SpatialGridIndex.cpp" />
+      <ClCompile Include="$(RepoRoot)src\game\platform\replication\PlayerReplicationSystem.cpp" />
+      <ClCompile Include="$(RepoRoot)src\game\platform\replication\CombatReplicationSystem.cpp" />
+      <ClCompile Include="$(RepoRoot)src\game\platform\replication\EntityLifetimeRegistry.cpp" />
+      <ClCompile Include="$(RepoRoot)src\game\platform\replication\FishingPresentationRelay.cpp" />
+      <ClCompile Include="$(RepoRoot)src\game\platform\replication\FishingPresentationAuthority.cpp" />
+      <ClCompile Include="$(RepoRoot)src\game\platform\replication\ProjectileLifetimeRegistry.cpp" />
+      <ClCompile Include="$(RepoRoot)src\game\platform\replication\OwnedEntityReplicationSystem.cpp" />
+      <ClCompile Include="$(RepoRoot)src\game\platform\replication\ReplicationBudgetSystem.cpp" />
+      <ClCompile Include="$(RepoRoot)src\game\platform\replication\ReplicationQueueSystem.cpp" />
+      <ClCompile Include="$(RepoRoot)src\game\platform\replication\ReplicationCadence.cpp" />
+      <ClCompile Include="$(RepoRoot)src\game\platform\replication\ServerReplicationCoordinator.cpp" />
+      <ClCompile Include="$(RepoRoot)src\game\platform\replication\SpatialEntityReplicationSystem.cpp" />
+    <ClCompile Include="$(RepoRoot)src\game\platform\simulation\ObjectiveSimulation.cpp" />
+    <ClCompile Include="$(RepoRoot)src\game\platform\simulation\PlayerSimulation.cpp" />
+    <ClCompile Include="$(RepoRoot)src\game\platform\simulation\PlayerLoadoutPolicy.cpp" />
+    <ClCompile Include="$(RepoRoot)src\game\platform\simulation\ProjectileSimulation.cpp" />
+    <ClCompile Include="$(RepoRoot)src\game\platform\simulation\SceneTransitionAuthority.cpp" />
+    <ClCompile Include="$(RepoRoot)src\game\platform\simulation\ServerGameplayIngress.cpp" />
+    <ClCompile Include="$(RepoRoot)src\game\platform\simulation\ServerWorld.cpp" />
+    <ClCompile Include="$(RepoRoot)src\game\platform\simulation\ServerIntentAdmission.cpp" />
+    <ClCompile Include="$(RepoRoot)src\game\platform\simulation\StrategicWorldTopology.cpp" />
+    <ClCompile Include="$(RepoRoot)src\game\platform\simulation\StructureSimulation.cpp" />
+    <ClCompile Include="$(RepoRoot)src\game\platform\simulation\StructureActionAuthority.cpp" />
+    <ClInclude Include="$(RepoRoot)src\game\platform\simulation\EntityId.h" />
+    <ClInclude Include="$(RepoRoot)src\game\platform\client\CorpsePresentationRegistry.h" />
+    <ClInclude Include="$(RepoRoot)src\game\platform\client\ClientWorldState.h" />
+    <ClInclude Include="$(RepoRoot)src\game\platform\client\ClientGameplaySession.h" />
+    <ClInclude Include="$(RepoRoot)src\game\platform\client\ClientSessionGenerationTracker.h" />
+    <ClInclude Include="$(RepoRoot)src\game\platform\client\PresentationFrameBudget.h" />
+    <ClInclude Include="$(RepoRoot)src\game\platform\simulation\CorpseSimulation.h" />
+    <ClInclude Include="$(RepoRoot)src\game\platform\simulation\CombatGeometry.h" />
+    <ClInclude Include="$(RepoRoot)src\game\platform\simulation\FishingSimulation.h" />
+    <ClInclude Include="$(RepoRoot)src\game\platform\replication\FishingPresentationState.h" />
+    <ClInclude Include="$(RepoRoot)src\game\platform\simulation\ClientPrediction.h" />
+    <ClInclude Include="$(RepoRoot)src\game\platform\client\LocalFishIntentStream.h" />
+    <ClInclude Include="$(RepoRoot)src\game\platform\client\LocalFishingUpdateStream.h" />
+    <ClInclude Include="$(RepoRoot)src\game\platform\client\LocalStructureActionStream.h" />
+    <ClInclude Include="$(RepoRoot)src\game\platform\SequenceNumber.h" />
+    <ClInclude Include="$(RepoRoot)src\game\platform\client\LocalVoiceFrameStream.h" />
+    <ClInclude Include="$(RepoRoot)src\game\platform\client\LocalPlayerVitals.h" />
+    <ClInclude Include="$(RepoRoot)src\game\platform\client\LocalProjectileIntentStream.h" />
+    <ClInclude Include="$(RepoRoot)src\game\platform\client\NativePresentationBindingRegistry.h" />
+    <ClInclude Include="$(RepoRoot)src\game\platform\client\LocalSceneAdmission.h" />
+    <ClInclude Include="$(RepoRoot)src\game\platform\client\RemoteFishingPresentationInterpolation.h" />
+    <ClInclude Include="$(RepoRoot)src\game\platform\client\RemoteFishingEntityState.h" />
+    <ClInclude Include="$(RepoRoot)src\game\platform\client\RemotePlayerInterpolation.h" />
+    <ClInclude Include="$(RepoRoot)src\game\platform\client\RemotePlayerReplicaStore.h" />
+    <ClInclude Include="$(RepoRoot)src\game\platform\client\RemotePlayerPresentationRegistry.h" />
+    <ClInclude Include="$(RepoRoot)src\game\platform\client\RemoteProjectilePresentationRegistry.h" />
+    <ClInclude Include="$(RepoRoot)src\game\platform\client\RemoteProjectileReplicaStore.h" />
+    <ClInclude Include="$(RepoRoot)src\game\platform\client\RemoteProjectileInterpolation.h" />
+    <ClInclude Include="$(RepoRoot)src\game\platform\simulation\SpatialGridIndex.h" />
+      <ClInclude Include="$(RepoRoot)src\game\platform\replication\ObserverVisibilityIndex.h" />
+      <ClInclude Include="$(RepoRoot)src\game\platform\replication\PlayerReplicationSystem.h" />
+      <ClInclude Include="$(RepoRoot)src\game\platform\replication\CombatReplicationSystem.h" />
+      <ClInclude Include="$(RepoRoot)src\game\platform\replication\EntityLifetimeRegistry.h" />
+      <ClInclude Include="$(RepoRoot)src\game\platform\replication\FishingPresentationRelay.h" />
+      <ClInclude Include="$(RepoRoot)src\game\platform\replication\FishingPresentationAuthority.h" />
+      <ClInclude Include="$(RepoRoot)src\game\platform\replication\InterestRelevance.h" />
+      <ClInclude Include="$(RepoRoot)src\game\platform\replication\ProjectileLifetimeRegistry.h" />
+      <ClInclude Include="$(RepoRoot)src\game\platform\replication\OwnedEntityReplicationSystem.h" />
+      <ClInclude Include="$(RepoRoot)src\game\platform\replication\ReplicationBudgetSystem.h" />
+      <ClInclude Include="$(RepoRoot)src\game\platform\replication\ReplicationQueueSystem.h" />
+      <ClInclude Include="$(RepoRoot)src\game\platform\replication\ReplicationCadence.h" />
+      <ClInclude Include="$(RepoRoot)src\game\platform\replication\ServerReplicationCoordinator.h" />
+      <ClInclude Include="$(RepoRoot)src\game\platform\replication\SpatialEntityReplicationSystem.h" />
+    <ClInclude Include="$(RepoRoot)src\game\platform\simulation\ObjectiveSimulation.h" />
+    <ClInclude Include="$(RepoRoot)src\game\platform\simulation\PlayerSimulation.h" />
+    <ClInclude Include="$(RepoRoot)src\game\platform\simulation\AuthoritativePlayerPose.h" />
+    <ClInclude Include="$(RepoRoot)src\game\platform\simulation\AuthoritativeMeleeWeapon.h" />
+    <ClInclude Include="$(RepoRoot)src\game\platform\simulation\EntityRegistry.h" />
+    <ClInclude Include="$(RepoRoot)src\game\platform\simulation\ProjectileSimulation.h" />
+    <ClInclude Include="$(RepoRoot)src\game\platform\simulation\SceneTransitionAuthority.h" />
+    <ClInclude Include="$(RepoRoot)src\game\platform\simulation\ServerGameplayIngress.h" />
+    <ClInclude Include="$(RepoRoot)src\game\platform\simulation\ServerWorld.h" />
+    <ClInclude Include="$(RepoRoot)src\game\platform\simulation\ServerIntentAdmission.h" />
+    <ClInclude Include="$(RepoRoot)src\game\platform\simulation\StrategicWorldTopology.h" />
+    <ClInclude Include="$(RepoRoot)src\game\platform\simulation\StructureSimulation.h" />
+    <ClInclude Include="$(RepoRoot)src\game\platform\simulation\StructureActionAuthority.h" />
     <ClCompile Include="$(RepoRoot)src\game\port\Network\Network\netapi.cpp" />
+    <ClCompile Include="$(RepoRoot)src\game\port\Network\CombatNetworkAdapter.cpp" />
+    <ClInclude Include="$(RepoRoot)src\game\port\Network\CombatNetworkAdapter.h" />
+    <ClCompile Include="$(RepoRoot)src\game\port\Network\CorpseNetworkAdapter.cpp" />
+    <ClInclude Include="$(RepoRoot)src\game\port\Network\CorpseNetworkAdapter.h" />
+    <ClCompile Include="$(RepoRoot)src\game\port\Network\FishingNetworkAdapter.cpp" />
+    <ClInclude Include="$(RepoRoot)src\game\port\Network\FishingNetworkAdapter.h" />
+    <ClCompile Include="$(RepoRoot)src\game\port\Network\LocalNetworkIdentity.cpp" />
+    <ClInclude Include="$(RepoRoot)src\game\port\Network\LocalNetworkIdentity.h" />
+    <ClCompile Include="$(RepoRoot)src\game\port\Network\SceneNetworkAdapter.cpp" />
+    <ClInclude Include="$(RepoRoot)src\game\port\Network\SceneNetworkAdapter.h" />
+    <ClCompile Include="$(RepoRoot)src\game\port\Network\PlayerLifecycleNetworkAdapter.cpp" />
+    <ClInclude Include="$(RepoRoot)src\game\port\Network\PlayerLifecycleNetworkAdapter.h" />
+    <ClCompile Include="$(RepoRoot)src\game\port\Network\PlayerSimulationNetworkAdapter.cpp" />
+    <ClInclude Include="$(RepoRoot)src\game\port\Network\PlayerSimulationNetworkAdapter.h" />
+    <ClCompile Include="$(RepoRoot)src\game\port\Network\ProjectileNetworkAdapter.cpp" />
+    <ClInclude Include="$(RepoRoot)src\game\port\Network\ProjectileNetworkAdapter.h" />
+    <ClCompile Include="$(RepoRoot)src\game\port\Network\WorldPvpNetworkAdapter.cpp" />
+    <ClInclude Include="$(RepoRoot)src\game\port\Network\WorldPvpNetworkAdapter.h" />
     <ClInclude Include="$(RepoRoot)src\game\port\Network\Network\netapi.hpp" />
     <ClCompile Include="$(RepoRoot)src\game\port\Network\Network\netchannel.cpp" />
     <ClInclude Include="$(RepoRoot)src\game\port\Network\Network\netchannel.hpp" />
@@ -95,10 +216,73 @@
     <ClCompile Include="$(RepoRoot)src\game\port\Network\Network\netpeer.cpp" />
     <ClInclude Include="$(RepoRoot)src\game\port\Network\Network\netpeer.hpp" />
     <ClInclude Include="$(RepoRoot)src\game\port\Network\NetworkProtocol.h" />
-    <ClCompile Include="$(RepoRoot)src\game\port\Network\ReliableUdpService.cpp" />
-    <ClInclude Include="$(RepoRoot)src\game\port\Network\ReliableUdpService.h" />
+    <ClInclude Include="$(RepoRoot)src\game\port\Network\NetworkVersion.h" />
+    <ClCompile Include="$(RepoRoot)src\game\port\Network\NetworkConnectionTransport.cpp" />
+    <ClInclude Include="$(RepoRoot)src\game\port\Network\NetworkConnectionTransport.h" />
+    <ClCompile Include="$(RepoRoot)src\game\port\Network\NetworkProtocolIngress.cpp" />
+    <ClInclude Include="$(RepoRoot)src\game\port\Network\NetworkProtocolIngress.h" />
+    <ClCompile Include="$(RepoRoot)src\game\port\Network\NetworkSessionLifecycleService.cpp" />
+    <ClInclude Include="$(RepoRoot)src\game\port\Network\NetworkSessionLifecycleService.h" />
     <ClCompile Include="$(RepoRoot)src\game\port\Network\ServerCollisionWorld.cpp" />
     <ClInclude Include="$(RepoRoot)src\game\port\Network\ServerCollisionWorld.h" />
+    <ClCompile Include="$(RepoRoot)src\game\port\Network\ServerWorldBootstrap.cpp" />
+    <ClInclude Include="$(RepoRoot)src\game\port\Network\ServerWorldBootstrap.h" />
+    <ClCompile Include="$(RepoRoot)src\game\port\Network\ServerSessionManager.cpp" />
+    <ClCompile Include="$(RepoRoot)src\game\port\Network\ClientReplicationInbox.cpp" />
+    <ClCompile Include="$(RepoRoot)src\game\port\Network\ClientSessionIngress.cpp" />
+    <ClCompile Include="$(RepoRoot)src\game\port\Network\ClientProtocolEndpoint.cpp" />
+    <ClCompile Include="$(RepoRoot)src\game\port\Network\LocalGameplayCommandService.cpp" />
+    <ClCompile Include="$(RepoRoot)src\game\port\Network\LocalClientAdmissionService.cpp" />
+    <ClCompile Include="$(RepoRoot)src\game\port\Network\LocalTextCommunicationService.cpp" />
+    <ClCompile Include="$(RepoRoot)src\game\port\Network\LocalVoiceSubmissionService.cpp" />
+    <ClCompile Include="$(RepoRoot)src\game\port\Network\ClientCombatPresentationPolicy.cpp" />
+    <ClCompile Include="$(RepoRoot)src\game\port\Network\ClientPlayerActionPresentationPolicy.cpp" />
+    <ClCompile Include="$(RepoRoot)src\game\port\Network\ClientProjectilePresentationPolicy.cpp" />
+    <ClCompile Include="$(RepoRoot)src\game\platform\client\LocalPlayerCommandStream.cpp" />
+    <ClCompile Include="$(RepoRoot)src\game\port\Network\CommunicationInbox.cpp" />
+    <ClCompile Include="$(RepoRoot)src\game\port\Network\ModerationRegistry.cpp" />
+    <ClCompile Include="$(RepoRoot)src\game\port\Network\ServerAdministrationService.cpp" />
+    <ClCompile Include="$(RepoRoot)src\game\port\Network\ServerCommunicationService.cpp" />
+    <ClCompile Include="$(RepoRoot)src\game\port\Network\ServerReplicationInterestPublisher.cpp" />
+    <ClCompile Include="$(RepoRoot)src\game\port\Network\ServerReplicationEventPublisher.cpp" />
+    <ClCompile Include="$(RepoRoot)src\game\port\Network\ServerGameplayCommandService.cpp" />
+    <ClCompile Include="$(RepoRoot)src\game\port\Network\ServerGameplayPacketIngress.cpp" />
+    <ClCompile Include="$(RepoRoot)src\game\port\Network\ServerProtocolEndpoint.cpp" />
+    <ClCompile Include="$(RepoRoot)src\game\port\Network\ServerPlayerSessionService.cpp" />
+    <ClCompile Include="$(RepoRoot)src\game\port\Network\SecureTransportChannel.cpp" />
+    <ClCompile Include="$(RepoRoot)src\game\platform\server\ServerAuthorityScheduler.cpp" />
+    <ClCompile Include="$(RepoRoot)src\game\platform\server\ServerWorldManagement.cpp" />
+    <ClCompile Include="$(RepoRoot)src\game\port\Network\PrivateChatService.cpp" />
+    <ClCompile Include="$(RepoRoot)src\game\port\Network\ServerCommandParser.cpp" />
+    <ClCompile Include="$(RepoRoot)src\game\port\Network\ProtocolDispatcher.cpp" />
+    <ClInclude Include="$(RepoRoot)src\game\port\Network\ServerSessionManager.h" />
+    <ClInclude Include="$(RepoRoot)src\game\port\Network\ClientReplicationInbox.h" />
+    <ClInclude Include="$(RepoRoot)src\game\port\Network\ClientSessionIngress.h" />
+    <ClInclude Include="$(RepoRoot)src\game\port\Network\ClientProtocolEndpoint.h" />
+    <ClInclude Include="$(RepoRoot)src\game\port\Network\LocalGameplayCommandService.h" />
+    <ClInclude Include="$(RepoRoot)src\game\port\Network\LocalClientAdmissionService.h" />
+    <ClInclude Include="$(RepoRoot)src\game\port\Network\LocalTextCommunicationService.h" />
+    <ClInclude Include="$(RepoRoot)src\game\port\Network\LocalVoiceSubmissionService.h" />
+    <ClInclude Include="$(RepoRoot)src\game\port\Network\ClientCombatPresentationPolicy.h" />
+    <ClInclude Include="$(RepoRoot)src\game\port\Network\ClientPlayerActionPresentationPolicy.h" />
+    <ClInclude Include="$(RepoRoot)src\game\port\Network\ClientProjectilePresentationPolicy.h" />
+    <ClInclude Include="$(RepoRoot)src\game\platform\client\LocalPlayerCommandStream.h" />
+    <ClInclude Include="$(RepoRoot)src\game\port\Network\CommunicationInbox.h" />
+    <ClInclude Include="$(RepoRoot)src\game\port\Network\ModerationRegistry.h" />
+    <ClInclude Include="$(RepoRoot)src\game\port\Network\ServerAdministrationService.h" />
+    <ClInclude Include="$(RepoRoot)src\game\port\Network\ServerCommunicationService.h" />
+    <ClInclude Include="$(RepoRoot)src\game\port\Network\ServerReplicationInterestPublisher.h" />
+    <ClInclude Include="$(RepoRoot)src\game\port\Network\ServerReplicationEventPublisher.h" />
+    <ClInclude Include="$(RepoRoot)src\game\port\Network\ServerGameplayCommandService.h" />
+    <ClInclude Include="$(RepoRoot)src\game\port\Network\ServerGameplayPacketIngress.h" />
+    <ClInclude Include="$(RepoRoot)src\game\port\Network\ServerProtocolEndpoint.h" />
+    <ClInclude Include="$(RepoRoot)src\game\port\Network\ServerPlayerSessionService.h" />
+    <ClInclude Include="$(RepoRoot)src\game\port\Network\SecureTransportChannel.h" />
+    <ClInclude Include="$(RepoRoot)src\game\platform\server\ServerAuthorityScheduler.h" />
+    <ClInclude Include="$(RepoRoot)src\game\platform\server\ServerWorldManagement.h" />
+    <ClInclude Include="$(RepoRoot)src\game\port\Network\PrivateChatService.h" />
+    <ClInclude Include="$(RepoRoot)src\game\port\Network\ServerCommandParser.h" />
+    <ClInclude Include="$(RepoRoot)src\game\port\Network\ProtocolDispatcher.h" />
     <ClCompile Include="$(RepoRoot)src\game\port\Network\NetworkRuntime.cpp" />
     <ClInclude Include="$(RepoRoot)src\game\port\Network\NetworkRuntime.h" />
     <ClInclude Include="$(RepoRoot)src\game\port\Network\VoiceChat.h" />

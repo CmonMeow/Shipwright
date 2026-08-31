@@ -5,8 +5,11 @@
 #include <algorithm>
 #include <filesystem>
 #include <fstream>
+#include <unordered_map>
 #include <vector>
 #include <chrono>
+#include <cstdlib>
+#include <cstdint>
 
 #include "ResourceManagerHelpers.h"
 #include <fast/Fast3dWindow.h>
@@ -27,7 +30,6 @@
 #include "macros.h"
 #include <engine/window/FileDropMgr.h>
 #include <engine/input/Win32Input.h>
-#include <engine/utils/StringHelper.h>
 #include "util.h"
 
 #include <fast/interpreter.h>
@@ -41,7 +43,9 @@
 
 #include <functions.h>
 #include "ActorDB.h"
-#include "NetworkGameBridge.h"
+#include "ClientRuntime.h"
+#include "Network/NetworkVersion.h"
+#include "platform/client/PresentationFrameBudget.h"
 #include <runtime/runtime.h>
 #include <fast/resource/ResourceType.h>
 
@@ -102,7 +106,8 @@ std::string gameArchivePath = "";
 static bool gameArchiveVersionMatch = false;
 
 OTRGlobals::OTRGlobals() {
-    context = Engine::Context::CreateUninitializedInstance("Ocarina of Time", appShortName, "settings.json");
+    const std::string windowTitle = "v" + std::to_string(APP_PROTOCOL_VERSION);
+    context = Engine::Context::CreateUninitializedInstance(windowTitle, appShortName, "settings.json");
 
     gameArchivePath = Engine::Context::LocateFileAcrossAppDirs("oot.o2r", appShortName);
     OTRVersion gameArchiveVersion = DetectOTRVersion("oot.o2r");
@@ -174,13 +179,9 @@ void OTRGlobals::Initialize() {
                                     "Texture", static_cast<uint32_t>(Fast::ResourceType::Texture), 1);
     loader->RegisterResourceFactory(std::make_shared<Fast::ResourceFactoryBinaryVertexV0>(), RESOURCE_FORMAT_BINARY,
                                     "Vertex", static_cast<uint32_t>(Fast::ResourceType::Vertex), 0);
-    loader->RegisterResourceFactory(std::make_shared<Fast::ResourceFactoryXMLVertexV0>(), RESOURCE_FORMAT_XML, "Vertex",
-                                    static_cast<uint32_t>(Fast::ResourceType::Vertex), 0);
     loader->RegisterResourceFactory(std::make_shared<Fast::ResourceFactoryBinaryDisplayListV0>(),
                                     RESOURCE_FORMAT_BINARY, "DisplayList",
                                     static_cast<uint32_t>(Fast::ResourceType::DisplayList), 0);
-    loader->RegisterResourceFactory(std::make_shared<Fast::ResourceFactoryXMLDisplayListV0>(), RESOURCE_FORMAT_XML,
-                                    "DisplayList", static_cast<uint32_t>(Fast::ResourceType::DisplayList), 0);
     loader->RegisterResourceFactory(std::make_shared<Fast::ResourceFactoryBinaryMatrixV0>(), RESOURCE_FORMAT_BINARY,
                                     "Matrix", static_cast<uint32_t>(Fast::ResourceType::Matrix), 0);
     loader->RegisterResourceFactory(std::make_shared<Engine::ResourceFactoryBinaryBlobV0>(), RESOURCE_FORMAT_BINARY,
@@ -195,42 +196,24 @@ void OTRGlobals::Initialize() {
     loader->RegisterResourceFactory(std::make_shared<SOH::ResourceFactoryBinarySceneV0>(), RESOURCE_FORMAT_BINARY,
                                     "Room", static_cast<uint32_t>(SOH::ResourceType::SOH_Room),
                                     0); // Is room scene? maybe?
-    loader->RegisterResourceFactory(std::make_shared<SOH::ResourceFactoryXMLSceneV0>(), RESOURCE_FORMAT_XML, "Room",
-                                    static_cast<uint32_t>(SOH::ResourceType::SOH_Room), 0); // Is room scene? maybe?
     loader->RegisterResourceFactory(std::make_shared<SOH::ResourceFactoryBinaryCollisionHeaderV0>(),
                                     RESOURCE_FORMAT_BINARY, "CollisionHeader",
                                     static_cast<uint32_t>(SOH::ResourceType::SOH_CollisionHeader), 0);
-    loader->RegisterResourceFactory(std::make_shared<SOH::ResourceFactoryXMLCollisionHeaderV0>(), RESOURCE_FORMAT_XML,
-                                    "CollisionHeader", static_cast<uint32_t>(SOH::ResourceType::SOH_CollisionHeader),
-                                    0);
     loader->RegisterResourceFactory(std::make_shared<SOH::ResourceFactoryBinarySkeletonV0>(), RESOURCE_FORMAT_BINARY,
-                                    "Skeleton", static_cast<uint32_t>(SOH::ResourceType::SOH_Skeleton), 0);
-    loader->RegisterResourceFactory(std::make_shared<SOH::ResourceFactoryXMLSkeletonV0>(), RESOURCE_FORMAT_XML,
                                     "Skeleton", static_cast<uint32_t>(SOH::ResourceType::SOH_Skeleton), 0);
     loader->RegisterResourceFactory(std::make_shared<SOH::ResourceFactoryBinarySkeletonLimbV0>(),
                                     RESOURCE_FORMAT_BINARY, "SkeletonLimb",
                                     static_cast<uint32_t>(SOH::ResourceType::SOH_SkeletonLimb), 0);
-    loader->RegisterResourceFactory(std::make_shared<SOH::ResourceFactoryXMLSkeletonLimbV0>(), RESOURCE_FORMAT_XML,
-                                    "SkeletonLimb", static_cast<uint32_t>(SOH::ResourceType::SOH_SkeletonLimb), 0);
     loader->RegisterResourceFactory(std::make_shared<SOH::ResourceFactoryBinaryTextV0>(), RESOURCE_FORMAT_BINARY,
                                     "Text", static_cast<uint32_t>(SOH::ResourceType::SOH_Text), 0);
-    loader->RegisterResourceFactory(std::make_shared<SOH::ResourceFactoryXMLTextV0>(), RESOURCE_FORMAT_XML, "Text",
-                                    static_cast<uint32_t>(SOH::ResourceType::SOH_Text), 0);
     loader->RegisterResourceFactory(std::make_shared<SOH::ResourceFactoryBinaryAudioSampleV2>(), RESOURCE_FORMAT_BINARY,
                                     "AudioSample", static_cast<uint32_t>(SOH::ResourceType::SOH_AudioSample), 2);
-
-    loader->RegisterResourceFactory(std::make_shared<SOH::ResourceFactoryXMLAudioSampleV0>(), RESOURCE_FORMAT_XML,
-                                    "Sample", static_cast<uint32_t>(SOH::ResourceType::SOH_AudioSample), 0);
     loader->RegisterResourceFactory(std::make_shared<SOH::ResourceFactoryBinaryAudioSoundFontV2>(),
                                     RESOURCE_FORMAT_BINARY, "AudioSoundFont",
                                     static_cast<uint32_t>(SOH::ResourceType::SOH_AudioSoundFont), 2);
-    loader->RegisterResourceFactory(std::make_shared<SOH::ResourceFactoryXMLSoundFontV0>(), RESOURCE_FORMAT_XML,
-                                    "SoundFont", static_cast<uint32_t>(SOH::ResourceType::SOH_AudioSoundFont), 0);
     loader->RegisterResourceFactory(std::make_shared<SOH::ResourceFactoryBinaryAudioSequenceV2>(),
                                     RESOURCE_FORMAT_BINARY, "AudioSequence",
                                     static_cast<uint32_t>(SOH::ResourceType::SOH_AudioSequence), 2);
-    loader->RegisterResourceFactory(std::make_shared<SOH::ResourceFactoryXMLAudioSequenceV0>(), RESOURCE_FORMAT_XML,
-                                    "Sequence", static_cast<uint32_t>(SOH::ResourceType::SOH_AudioSequence), 0);
     auto versions = context->GetResourceManager()->GetArchiveManager()->GetGameVersions();
 
     for (uint32_t version : versions) {
@@ -274,8 +257,6 @@ extern "C" void AudioMgr_CreateNextAudioBuffer(int16_t* samples, uint32_t num_sa
 extern "C" void AudioPlayer_Play(const uint8_t* buf, uint32_t len);
 extern "C" int AudioPlayer_Buffered(void);
 extern "C" int AudioPlayer_GetDesiredBuffered(void);
-std::unordered_map<std::string, ExtensionEntry> ExtensionCache;
-
 void OTRAudio_Thread() {
     while (audio.running) {
         {
@@ -318,9 +299,6 @@ void OTRAudio_Thread() {
 
 // C->C++ Bridge
 extern "C" void OTRAudio_Init() {
-    // Precache all our samples, sequences, etc...
-    ResourceMgr_LoadDirectory("audio");
-
     if (!audio.running) {
         audio.running = true;
         audio.thread = std::thread(OTRAudio_Thread);
@@ -356,19 +334,6 @@ extern "C" void OTRAudio_Exit() {
     free(gAudioContext.seqLoadStatus);
     free(gAudioContext.fontLoadStatus);
 #endif
-}
-
-extern "C" void OTRExtScanner() {
-    auto lst = *Engine::Context::GetInstance()->GetResourceManager()->GetArchiveManager()->ListFiles().get();
-
-    for (auto& rPath : lst) {
-        std::vector<std::string> raw = StringHelper::Split(rPath, ".");
-        std::string ext = raw[raw.size() - 1];
-        std::string nPath = rPath.substr(0, rPath.size() - (ext.size() + 1));
-        replace(nPath.begin(), nPath.end(), '\\', '/');
-
-        ExtensionCache[nPath] = { rPath, ext };
-    }
 }
 
 // Read the port version from an OTR file
@@ -427,16 +392,17 @@ extern "C" void InitOTR(int argc, char* argv[]) {
     InitColViewer();
     ActorDB::Instance = new ActorDB();
     OTRAudio_Init();
-    OTRExtScanner();
-    ActorDB::AddBuiltInCustomActors();
-    NetworkGame_Initialize(argc, argv);
+    ClientRuntime_RegisterActors();
+    ClientRuntime_Initialize(argc, argv);
     Engine::Context::GetInstance()->GetFileDropMgr()->RegisterDropHandler(SoH_HandleConfigDrop);
 
-    srand(time(NULL));
+    const uint64_t seedTime = static_cast<uint64_t>(
+        std::chrono::system_clock::now().time_since_epoch().count());
+    std::srand(static_cast<unsigned int>(seedTime ^ (seedTime >> 32)));
 }
 
 extern "C" void DeinitOTR() {
-    NetworkGame_Shutdown();
+    ClientRuntime_Shutdown();
     OTRAudio_Exit();
 
     sohFast3dWindow = nullptr;
@@ -485,7 +451,7 @@ extern "C" uint64_t GetUnixTimestamp() {
 extern "C" void Graph_StartFrame() {
     // Transport must continue through title/file-select screens, scene loads,
     // and gameplay pauses. PlayState-specific synchronization runs later.
-    NetworkGame_UpdateTransport();
+    ClientRuntime_UpdateTransport();
 #ifdef _WIN32
     if (Engine::GetWin32Input().ConsumePress(VK_F1)) {
         ToggleColViewer();
@@ -493,7 +459,8 @@ extern "C" void Graph_StartFrame() {
 #endif
 }
 
-void RunCommands(Gfx* Commands, const std::vector<std::unordered_map<Mtx*, MtxF>>& mtx_replacements) {
+void RunCommands(Gfx* Commands, const std::vector<std::unordered_map<Mtx*, MtxF>>& mtx_replacements,
+                 int presentationFps, int simulationFps) {
     auto wnd = std::dynamic_pointer_cast<Fast::Fast3dWindow>(OTRGlobals::Instance->context->GetWindow());
 
     if (wnd == nullptr) {
@@ -506,9 +473,35 @@ void RunCommands(Gfx* Commands, const std::vector<std::unordered_map<Mtx*, MtxF>
     auto intp = wnd->GetInterpreterWeak().lock().get();
     intp->mInterpolationIndex = 0;
 
-    for (const auto& m : mtx_replacements) {
+    // Native gameplay advances at a fixed rate. Interpolated presents are only
+    // visual samples between two gameplay states and must never postpone the
+    // next simulation tick. If this machine cannot draw every requested sample
+    // inside one simulation interval, discard intermediate samples and always
+    // present the newest native state.
+    using Clock = std::chrono::steady_clock;
+    static Game::Client::PresentationFrameBudget frameBudget;
+    frameBudget.BeginBatch(presentationFps, simulationFps);
+    const auto batchStart = Clock::now();
+
+    for (size_t index = 0; index < mtx_replacements.size(); ++index) {
+        const bool newestNativeState = index + 1 == mtx_replacements.size();
+        if (!newestNativeState) {
+            const double elapsedSeconds =
+                std::chrono::duration<double>(Clock::now() - batchStart).count();
+            if (!frameBudget.CanPresentIntermediate(elapsedSeconds)) {
+                continue;
+            }
+        }
+
+        const auto presentStart = Clock::now();
+        const auto& m = mtx_replacements[index];
+        intp->mInterpolationIndex = static_cast<int>(index);
         wnd->DrawAndRunGraphicsCommands(Commands, m);
-        intp->mInterpolationIndex++;
+        const double presentSeconds =
+            std::chrono::duration<double>(Clock::now() - presentStart).count();
+        // React quickly when rendering becomes expensive, then recover
+        // gradually so a transient fast frame cannot cause another stall.
+        frameBudget.ObservePresent(presentSeconds);
     }
 }
 
@@ -561,7 +554,7 @@ extern "C" void Graph_ProcessGfxCommands(Gfx* commands) {
         mtx_replacements.emplace_back();
     }
 
-    RunCommands(commands, mtx_replacements);
+    RunCommands(commands, mtx_replacements, fps, original_fps);
 
     last_fps = fps;
     last_update_rate = R_UPDATE_RATE;
@@ -596,64 +589,6 @@ extern "C" uint16_t OTRGetPixelDepth(float x, float y) {
     }
 
     return wnd->GetPixelDepth(x, y);
-}
-
-std::map<std::string, SoundFontSample*> cachedCustomSFs;
-
-extern "C" SoundFontSample* ReadCustomSample(const char*) {
-    return nullptr;
-    /*
-    if (!ExtensionCache.contains(path))
-        return nullptr;
-
-    ExtensionEntry entry = ExtensionCache[path];
-
-    auto sampleRaw = Engine::Context::GetInstance()->GetResourceManager()->LoadFile(entry.path);
-    uint32_t* strem = (uint32_t*)sampleRaw->Buffer.get();
-    uint8_t* strem2 = (uint8_t*)strem;
-
-    SoundFontSample* sampleC = new SoundFontSample;
-
-    if (entry.ext == "wav") {
-        drwav_uint32 channels;
-        drwav_uint32 sampleRate;
-        drwav_uint64 totalPcm;
-        drmp3_int16* pcmData =
-            drwav_open_memory_and_read_pcm_frames_s16(strem2, sampleRaw->BufferSize, &channels, &sampleRate, &totalPcm,
-    NULL); sampleC->size = totalPcm; sampleC->sampleAddr = (uint8_t*)pcmData; sampleC->codec = CODEC_S16;
-
-        sampleC->loop = new AdpcmLoop;
-        sampleC->loop->start = 0;
-        sampleC->loop->end = sampleC->size - 1;
-        sampleC->loop->count = 0;
-        sampleC->sampleRateMagicValue = 'RIFF';
-        sampleC->sampleRate = sampleRate;
-
-        cachedCustomSFs[path] = sampleC;
-        return sampleC;
-    } else if (entry.ext == "mp3") {
-        drmp3_config mp3Info;
-        drmp3_uint64 totalPcm;
-        drmp3_int16* pcmData =
-            drmp3_open_memory_and_read_pcm_frames_s16(strem2, sampleRaw->BufferSize, &mp3Info, &totalPcm, NULL);
-
-        sampleC->size = totalPcm * mp3Info.channels * sizeof(short);
-        sampleC->sampleAddr = (uint8_t*)pcmData;
-        sampleC->codec = CODEC_S16;
-
-        sampleC->loop = new AdpcmLoop;
-        sampleC->loop->start = 0;
-        sampleC->loop->end = sampleC->size;
-        sampleC->loop->count = 0;
-        sampleC->sampleRateMagicValue = 'RIFF';
-        sampleC->sampleRate = mp3Info.sampleRate;
-
-        cachedCustomSFs[path] = sampleC;
-        return sampleC;
-    }
-
-    return nullptr;
-    */
 }
 
 extern "C" uint32_t OTRGetCurrentWidth() {
@@ -834,5 +769,9 @@ extern "C" uint32_t Interpolation_GetFPS() {
 
 // Number of interpolated frames
 extern "C" uint32_t Interpolation_GetFrameCount() {
-    return ceil((float)Interpolation_GetFPS() / 20.0f);
+    const uint32_t framesPerSecond = Interpolation_GetFPS();
+    const uint32_t simulationFramesPerSecond =
+        R_UPDATE_RATE > 0 ? 60U / static_cast<uint32_t>(R_UPDATE_RATE) : 20U;
+    return Game::Client::PresentationFrameBudget::FrameCount(
+        framesPerSecond, simulationFramesPerSecond);
 }

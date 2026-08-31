@@ -184,6 +184,11 @@ public:
 		{
 			hdr->crc = 0;
 			hdr->crc = crc32(0, (const unsigned char*)hdr, hdr->length);
+			if (ShouldDropNetworkTestDatagram((hdr->flags & MSG_VIM_FLAG) != 0))
+			{
+				Critical_Section.unlock();
+				return nsOutputSent;
+			}
 
 			char retryCounter = 12;
 		retry:
@@ -212,8 +217,9 @@ public:
 
 	virtual void sendRaw(const sockaddr_in& ia, const void* data, __int32 size, __int32 sizeEncrypted)
 	{
-		Critical_Section.lock(); 
-		sendto(sock, reinterpret_cast<const char*>(data), size, 0, reinterpret_cast<const sockaddr*>(&ia), sizeof(ia));
+		Critical_Section.lock();
+		if (!ShouldDropNetworkTestDatagram(false))
+			sendto(sock, reinterpret_cast<const char*>(data), size, 0, reinterpret_cast<const sockaddr*>(&ia), sizeof(ia));
 		Critical_Section.unlock();
 	}
 

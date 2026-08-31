@@ -82,13 +82,19 @@ int32_t gAudioContextInitalized = false;
 
 char** sequenceMap;
 size_t sequenceMapSize;
-// A map of authentic sequence IDs to their cache policies, for use with sequence swapping.
-uint8_t seqCachePolicyMap[MAX_AUTHENTIC_SEQID];
 size_t fontMapSize;
 char** fontMap;
 
 uintptr_t fontStart;
 uint32_t fontOffsets[8192];
+
+static bool AudioLoad_HasSequence(int32_t seqId) {
+    return seqId >= 0 && (size_t)seqId < sequenceMapSize && sequenceMap != NULL && sequenceMap[seqId] != NULL;
+}
+
+static bool AudioLoad_HasFont(uint32_t fontId) {
+    return fontId < fontMapSize && fontMap != NULL && fontMap[fontId] != NULL;
+}
 
 void AudioLoad_DecreaseSampleDmaTtls(void) {
     uint32_t i;
@@ -486,13 +492,16 @@ uint8_t* AudioLoad_GetFontsForSequence(int32_t seqId, uint32_t* outNumFonts) {
         return NULL;
     }
 
-    if (seqId > sequenceMapSize || !sequenceMap[seqId]) {
+    if (!AudioLoad_HasSequence(seqId)) {
         return NULL;
     }
     SequenceData sDat = ResourceMgr_LoadSeqByName(sequenceMap[seqId]);
 
-    if (sDat.numFonts == 0)
+    if (sDat.numFonts == 0) {
         return NULL;
+    }
+
+    *outNumFonts = sDat.numFonts;
 
     return sDat.fonts;
 }
@@ -564,6 +573,10 @@ int32_t AudioLoad_SyncInitSeqPlayerInternal(int32_t playerIdx, int32_t seqId, in
     SequencePlayer* seqPlayer = &gAudioContext.seqPlayers[playerIdx];
     uint8_t* seqData = { 0 };
 
+    if (!AudioLoad_HasSequence(seqId)) {
+        return 0;
+    }
+
     AudioSeq_SequencePlayerDisable(seqPlayer);
 
     int32_t fontId = 0xFF;
@@ -603,12 +616,15 @@ int32_t AudioLoad_SyncInitSeqPlayerInternal(int32_t playerIdx, int32_t seqId, in
     }
 
     AudioSeq_SkipForwardSequence(seqPlayer);
-    //! @bug missing return (but the return value is not used so it's not UB)
-
+    return 1;
 }
 
 uint8_t* AudioLoad_SyncLoadSeq(int32_t seqId) {
     int32_t didAllocate;
+
+    if (!AudioLoad_HasSequence(seqId)) {
+        return NULL;
+    }
 
     if (gAudioContext.seqLoadStatus[AudioLoad_GetRealTableIndex(SEQUENCE_TABLE, seqId)] == 1) {
         return NULL;
@@ -656,7 +672,13 @@ SoundFontData* AudioLoad_SyncLoadFont(uint32_t fontId) {
     int32_t sampleBankId2 = { 0 };
     int32_t didAllocate;
     RelocInfo relocInfo;
-    int32_t realFontId = AudioLoad_GetRealTableIndex(FONT_TABLE, fontId);
+    int32_t realFontId;
+
+    if (!AudioLoad_HasFont(fontId)) {
+        return NULL;
+    }
+
+    realFontId = AudioLoad_GetRealTableIndex(FONT_TABLE, fontId);
 
     if (gAudioContext.fontLoadStatus[realFontId] == 1) {
         return NULL;
@@ -700,7 +722,14 @@ uintptr_t AudioLoad_SyncLoad(uint32_t tableType, uint32_t id, int32_t* didAlloca
     uintptr_t romAddr = { 0 };
     int32_t cachePolicy = { 0 };
 
-    uint32_t realId = AudioLoad_GetRealTableIndex(tableType, id);
+    uint32_t realId;
+
+    if ((tableType == SEQUENCE_TABLE && !AudioLoad_HasSequence((int32_t)id)) ||
+        (tableType == FONT_TABLE && !AudioLoad_HasFont(id))) {
+        return 0;
+    }
+
+    realId = AudioLoad_GetRealTableIndex(tableType, id);
     uintptr_t ret = AudioLoad_SearchCaches(tableType, realId);
     if (ret != NULL) {
         *didAllocate = false;
@@ -1173,12 +1202,6 @@ void AudioLoad_InitSwapFont(void) {
 
 #undef BASE_ROM_OFFSET
 
-int strcmp_sort(const void* str1, const void* str2) {
-    char* const* pp1 = str1;
-    char* const* pp2 = str2;
-    return strcmp(*pp1, *pp2);
-}
-
 void AudioLoad_Init(void* heap, size_t heapSize) {
     int32_t numFonts;
     void* addr;
@@ -1269,112 +1292,22 @@ void AudioLoad_Init(void* heap, size_t heapSize) {
     // AudioLoad_InitTable(gAudioContext.soundFontTable, SEGMENT_ROM_START(Audiobank), 0);
     // AudioLoad_InitTable(gAudioContext.sampleBankTable, SEGMENT_ROM_START(Audiotable), 0);
 
-    // #region 2S2H [Port] Audio in the archive and custom sequences
-    // Only load the original sequences right now because custom songs may require data from sound fonts and samples
-    int seqListSize = 0;
-    int customSeqListSize = 0;
-    char** seqList = ResourceMgr_ListFiles("audio/sequences*", &seqListSize);
-    char** customSeqList = ResourceMgr_ListFiles("custom/music/*", &customSeqListSize);
-    sequenceMapSize = (size_t)(seqListSize + customSeqListSize);
-    sequenceMap = malloc((sequenceMapSize + 0xF) * sizeof(char*));
-
+    // The test client uses the original sound-effect sequence and its two indexed
+    // sound-effect fonts. Music and custom audio discovery were removed with the
+    // menu, cutscene, and multi-scene game modes.
+    sequenceMapSize = 1;
+    sequenceMap = calloc(sequenceMapSize, sizeof(char*));
+    sequenceMap[0] = strdup("audio/sequences/000_Sound_Effects");
     gAudioContext.seqLoadStatus = malloc(sequenceMapSize);
     memset(gAudioContext.seqLoadStatus, 5, sequenceMapSize);
-    for (size_t i = 0; i < seqListSize; i++) {
-        SequenceData sDat = ResourceMgr_LoadSeqByName(seqList[i]);
-        sequenceMap[sDat.seqNumber] = strdup(seqList[i]);
-        seqCachePolicyMap[sDat.seqNumber] = sDat.cachePolicy;
-    }
 
-    for (int i = 0; i < seqListSize; i++) {
-        free(seqList[i]);
-    }
-    free(seqList);
+    fontMapSize = 2;
+    fontMap = calloc(fontMapSize, sizeof(char*));
+    fontMap[0] = strdup("audio/fonts/00_Sound_Effects_1");
+    fontMap[1] = strdup("audio/fonts/01_Sound_Effects_2");
+    gAudioContext.fontLoadStatus = calloc(fontMapSize, sizeof(uint8_t));
+    numFonts = (int32_t)fontMapSize;
 
-    // 2S2H [Streamed Audio] We need to load the custom songs after the fonts because streamed songs will use a hash to
-    // find its soundfont
-    int fntListSize = 0;
-    int customFntListSize = 0;
-    char** fntList = ResourceMgr_ListFiles("audio/fonts*", &fntListSize);
-    char** customFntList = ResourceMgr_ListFiles("custom/fonts/*", &customFntListSize);
-
-    gAudioContext.fontLoadStatus = calloc(customFntListSize + fntListSize, sizeof(uint8_t));
-    fontMap = calloc(customFntListSize + fntListSize, sizeof(char*));
-    fontMapSize = customFntListSize + fntListSize;
-    for (int i = 0; i < fntListSize; i++) {
-        SoundFont* sf = ResourceMgr_LoadAudioSoundFontByName(fntList[i]);
-        fontMap[sf->fntIndex] = strdup(fntList[i]);
-    }
-
-    for (int i = 0; i < fntListSize; i++) {
-        free(fntList[i]);
-    }
-    free(fntList);
-
-    int customFontStart = fntListSize;
-    for (int i = customFontStart; i < customFntListSize + fntListSize; i++) {
-        SoundFont* sf = ResourceMgr_LoadAudioSoundFontByName(customFntList[i - customFontStart]);
-        sf->fntIndex = i;
-        fontMap[i] = strdup(customFntList[i - customFontStart]);
-    }
-    for (int i = 0; i < customFntListSize; i++) {
-        free(customFntList[i]);
-    }
-    free(customFntList);
-
-    // 2S2H Port I think we need to take use seqListSize because entry 0x7A is missing.
-    int startingSeqNum = seqListSize; // MAX_AUTHENTIC_SEQID; // 109 is the highest vanilla sequence
-    qsort(customSeqList, customSeqListSize, sizeof(char*), strcmp_sort);
-
-    int seqNum = startingSeqNum;
-
-    for (size_t i = startingSeqNum; i < startingSeqNum + customSeqListSize; i++) {
-        int j = i - startingSeqNum;
-        SequenceData* sDat = ResourceMgr_LoadSeqPtrByName(customSeqList[j]);
-
-        if (sDat->numFonts == -1) {
-            uint64_t crc;
-
-            memcpy(&crc, sDat->fonts, sizeof(uint64_t));
-            const char* res = ResourceGetNameByCrc(crc);
-            if (res == NULL) {
-                // Passing a null buffer and length of 0 to snprintf will return the required numbers of characters the
-                // buffer needs to be.
-                int len =
-                    snprintf(NULL, 0, "Could not find sound font for sequence %s. It will not be in the audio editor.",
-                             customSeqList[j]);
-                char* error = malloc(len + 1);
-                snprintf(error, len, "Could not find sound font for sequence %s. It will not be in the audio editor.",
-                         customSeqList[j]);
-                Error("%s", error);
-                Messagebox_ShowErrorBox("Invalid Sequence", error);
-                free(error);
-                continue;
-            }
-            SoundFont* sf = ResourceMgr_LoadAudioSoundFontByName(res);
-            memset(&sDat->fonts[0], 0, sizeof(sDat->fonts));
-            sDat->fonts[0] = sf->fntIndex;
-            sDat->numFonts = 1;
-        }
-
-        while (seqNum < sequenceMapSize && sequenceMap[seqNum] != NULL) {
-            seqNum++;
-        }
-
-        sDat->seqNumber = seqNum;
-        printf("%d\n", seqNum);
-        sequenceMap[sDat->seqNumber] = strdup(customSeqList[j]);
-        seqNum++;
-    }
-
-    for (int i = 0; i < customSeqListSize; i++) {
-        free(customSeqList[i]);
-    }
-    free(customSeqList);
-
-    numFonts = fntListSize;
-
-    // #end region
     gAudioContext.soundFonts = AudioHeap_Alloc(&gAudioContext.audioInitPool, numFonts * sizeof(SoundFont));
 
     if (addr = AudioHeap_Alloc(&gAudioContext.audioInitPool, D_8014A6C4.permanentPoolSize), addr == NULL) {
@@ -1546,6 +1479,10 @@ int32_t AudioLoad_SlowLoadSeq(int32_t seqId, uint8_t* ramAddr, int8_t* isDone) {
     size_t size = { 0 };
 
     seqId = AudioLoad_GetRealTableIndex(SEQUENCE_TABLE, seqId);
+    if (!AudioLoad_HasSequence(seqId)) {
+        *isDone = 0;
+        return -1;
+    }
     AudioTable* seqTable = AudioLoad_GetLoadTable(SEQUENCE_TABLE);
     AudioSlowLoad* slowLoad = &gAudioContext.slowLoads[gAudioContext.slowLoadPos];
     if (slowLoad->status == LOAD_STATUS_DONE) {
@@ -1973,180 +1910,6 @@ int32_t AudioLoad_GetSamplesForFont(int32_t fontId, SoundFontSample** sampleSet)
 
     // Should really also process sfx, but this method is never called, so whatever.
     return numSamples;
-}
-
-void AudioLoad_AddUsedSample(SoundFontSound* sound) {
-    SoundFontSample* sample = sound->sample;
-
-    if (sample != NULL) {
-        if ((sample->size != 0) && (sample->unk_bit26) && (sample->medium != MEDIUM_RAM)) {
-            gAudioContext.usedSamples[gAudioContext.numUsedSamples++] = sample;
-        }
-    }
-}
-
-void AudioLoad_PreloadSamplesForFont(int32_t fontId, int32_t async, RelocInfo* relocInfo) {
-    int32_t numDrums = { 0 };
-    int32_t numInstruments = { 0 };
-    int32_t numSfx = { 0 };
-    SoundFontSound* sound;
-    AudioPreloadReq* preload = { 0 };
-    uint8_t* addr = NULL;
-    size_t size = { 0 };
-    int32_t i;
-    SoundFontSample* sample = { 0 };
-
-    int32_t preloadInProgress = false;
-    if (gAudioContext.preloadSampleStackTop != 0) {
-        preloadInProgress = true;
-    }
-
-    gAudioContext.numUsedSamples = 0;
-
-    SoundFont* sf = ResourceMgr_LoadAudioSoundFontByName(fontMap[fontId]);
-
-    numDrums = sf->numDrums;
-    numInstruments = sf->numInstruments;
-    numSfx = sf->numSfx;
-
-    for (i = 0; i < numInstruments; i++) {
-        Instrument* instrument = Audio_GetInstrumentInner(fontId, i);
-        if (instrument != NULL) {
-            if (instrument->normalRangeLo != 0) {
-                AudioLoad_AddUsedSample(&instrument->lowNotesSound);
-            }
-            if (instrument->normalRangeHi != 0x7F) {
-                AudioLoad_AddUsedSample(&instrument->highNotesSound);
-            }
-            AudioLoad_AddUsedSample(&instrument->normalNotesSound);
-        }
-    }
-
-    for (i = 0; i < numDrums; i++) {
-        Drum* drum = Audio_GetDrum(fontId, i);
-        if (drum != NULL) {
-            AudioLoad_AddUsedSample(&drum->sound);
-        }
-    }
-
-    for (i = 0; i < numSfx; i++) {
-        sound = Audio_GetSfx(fontId, i);
-        if (sound != NULL) {
-            AudioLoad_AddUsedSample(sound);
-        }
-    }
-
-    if (gAudioContext.numUsedSamples == 0) {
-        return;
-    }
-
-    size = 0;
-    for (i = 0; i < gAudioContext.numUsedSamples; i++) {
-        size += ALIGN16(gAudioContext.usedSamples[i]->size);
-    }
-    if (size) {}
-
-    for (i = 0; i < gAudioContext.numUsedSamples; i++) {
-        if (gAudioContext.preloadSampleStackTop == 120) {
-            break;
-        }
-
-        sample = gAudioContext.usedSamples[i];
-        if (sample->medium == MEDIUM_RAM) {
-            continue;
-        }
-
-        switch (async) {
-            case false:
-                if (sample->medium == relocInfo->medium1) {
-                    addr = AudioHeap_AllocSampleCache(sample->size, relocInfo->sampleBankId1, sample->sampleAddr,
-                                                      sample->medium, CACHE_PERSISTENT);
-                } else if (sample->medium == relocInfo->medium2) {
-                    addr = AudioHeap_AllocSampleCache(sample->size, relocInfo->sampleBankId2, sample->sampleAddr,
-                                                      sample->medium, CACHE_PERSISTENT);
-                }
-                break;
-
-            case true:
-                if (sample->medium == relocInfo->medium1) {
-                    addr = AudioHeap_AllocSampleCache(sample->size, relocInfo->sampleBankId1, sample->sampleAddr,
-                                                      sample->medium, CACHE_TEMPORARY);
-                } else if (sample->medium == relocInfo->medium2) {
-                    addr = AudioHeap_AllocSampleCache(sample->size, relocInfo->sampleBankId2, sample->sampleAddr,
-                                                      sample->medium, CACHE_TEMPORARY);
-                }
-                break;
-        }
-        if (addr == NULL) {
-            continue;
-        }
-
-        switch (async) {
-            case false:
-                if (sample->medium == MEDIUM_UNK) {
-                    AudioLoad_SyncDmaUnkMedium(sample->sampleAddr, addr, sample->size,
-                                               gAudioContext.sampleBankTable->unkMediumParam);
-                    sample->sampleAddr = addr;
-                    sample->medium = MEDIUM_RAM;
-                } else {
-                    AudioLoad_SyncDma(sample->sampleAddr, addr, sample->size, sample->medium);
-                    sample->sampleAddr = addr;
-                    sample->medium = MEDIUM_RAM;
-                }
-                break;
-
-            case true:
-                preload = &gAudioContext.preloadSampleStack[gAudioContext.preloadSampleStackTop];
-                preload->sample = sample;
-                preload->ramAddr = addr;
-                preload->encodedInfo = (gAudioContext.preloadSampleStackTop << 24) | 0xFFFFFF;
-                preload->isFree = false;
-                preload->endAndMediumKey = sample->sampleAddr + sample->size + sample->medium;
-                gAudioContext.preloadSampleStackTop++;
-                break;
-        }
-    }
-    gAudioContext.numUsedSamples = 0;
-
-    if (gAudioContext.preloadSampleStackTop != 0 && !preloadInProgress) {
-        AudioPreloadReq* topPreload = &gAudioContext.preloadSampleStack[gAudioContext.preloadSampleStackTop - 1];
-        sample = topPreload->sample;
-        int32_t nChunks = (sample->size >> 12) + 1;
-        AudioLoad_StartAsyncLoad(sample->sampleAddr, topPreload->ramAddr, sample->size, sample->medium, nChunks,
-                                 &gAudioContext.preloadSampleQueue, topPreload->encodedInfo);
-    }
-}
-
-void AudioLoad_LoadPermanentSamples(void) {
-    int32_t i;
-
-    AudioTable* sampleBankTable = AudioLoad_GetLoadTable(SAMPLE_TABLE);
-    for (i = 0; i < gAudioContext.permanentPool.count; i++) {
-        RelocInfo relocInfo;
-
-        if (gAudioContext.permanentCache[i].tableType == FONT_TABLE) {
-            uint32_t fontId = AudioLoad_GetRealTableIndex(FONT_TABLE, gAudioContext.permanentCache[i].id);
-            // fontId = gAudioContext.permanentCache[i].id;
-
-            SoundFont* sf = ResourceMgr_LoadAudioSoundFontByName(fontMap[fontId]);
-            relocInfo.sampleBankId1 = sf->sampleBankId1;
-            relocInfo.sampleBankId2 = sf->sampleBankId2;
-
-            /*
-            if (relocInfo.sampleBankId1 != 0xFF) {
-                relocInfo.sampleBankId1 = AudioLoad_GetRealTableIndex(SAMPLE_TABLE, relocInfo.sampleBankId1);
-                relocInfo.medium1 = sampleBankTable->entries[relocInfo.sampleBankId1].medium;
-            }
-
-            if (relocInfo.sampleBankId2 != 0xFF) {
-                relocInfo.sampleBankId2 = AudioLoad_GetRealTableIndex(SAMPLE_TABLE, relocInfo.sampleBankId2);
-                relocInfo.medium2 = sampleBankTable->entries[relocInfo.sampleBankId2].medium;
-            }
-            */
-
-            AudioLoad_PreloadSamplesForFont(fontId, false, &relocInfo);
-        }
-    }
 }
 
 void AudioLoad_Unused3(void) {

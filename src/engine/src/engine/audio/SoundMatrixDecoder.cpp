@@ -220,7 +220,7 @@ int16_t SoundMatrixDecoder::Saturate(float value) {
     return static_cast<int16_t>(value);
 }
 
-std::tuple<const uint8_t*, int> SoundMatrixDecoder::Process(const uint8_t* buf, size_t len) {
+std::tuple<const uint8_t*, size_t> SoundMatrixDecoder::Process(const uint8_t* buf, size_t len) {
     const int16_t* stereoInput = reinterpret_cast<const int16_t*>(buf);
     int samplePairs = len / (2 * sizeof(int16_t));
 

@@ -8,6 +8,7 @@
 #include <cmath>
 #include <cstring>
 #include <limits>
+#include <numeric>
 #include <string>
 
 namespace SoH::Network {
@@ -17,11 +18,11 @@ constexpr size_t kOtrHeaderSize = 64;
 constexpr uint32_t kCollisionResourceType = 0x4F434F4C; // OCOL
 constexpr uint16_t kVertexIndexMask = 0x1FFF;
 constexpr uint16_t kIgnoreProjectiles = 4u << 13;
-constexpr int32_t kNormalWildFishParams = 400;
-constexpr int32_t kLoachWildFishParams = 401;
 constexpr int32_t kNormalWildFishPerWaterBox = 12;
 constexpr int32_t kWildLoachesPerWaterBox = 4;
 constexpr int32_t kZorasDomainScene = 0x58;
+constexpr float kSpatialCellSize = 256.0f;
+constexpr int64_t kMaximumCellsPerTriangleOrQuery = 4096;
 
 #define DEFINE_SCENE(sceneName, ...) #sceneName,
 constexpr const char* kSceneNames[] = {
@@ -194,7 +195,7 @@ void AddWildFish(std::vector<ServerWildFishSpawn>& fish, const TriangleContainer
                           static_cast<uint32_t>(fishIndex + 1) * 0x165667B1U ^
                           (isLoach ? 0xC2B2AE35U : 0x27D4EB2FU);
     ServerWildFishSpawn spawn{};
-    spawn.actorParams = isLoach ? kLoachWildFishParams : kNormalWildFishParams;
+    spawn.sceneId = sceneId;
     spawn.spawnY = static_cast<float>(ySurfaceRaw) - (isLoach ? 45.0f : 25.0f);
     bool foundSpawn = false;
     for (uint32_t attempt = 0; attempt < 32; ++attempt) {
@@ -234,6 +235,7 @@ bool ServerCollisionWorld::LoadDefaultArchive() {
     const std::filesystem::path candidates[] = {
         executableDirectory / "oot.o2r",
         currentDirectory / "oot.o2r",
+        currentDirectory / "bin" / "oot.o2r",
         currentDirectory / "x64" / "Release" / "oot.o2r",
     };
     for (const auto& candidate : candidates) {
@@ -420,6 +422,7 @@ bool ServerCollisionWorld::LoadArchive(const std::filesystem::path& archivePath)
             mTriangleCount -= existingScene->second.size();
         }
         mScenes[sceneId] = std::move(triangles);
+        mSpatialIndices[sceneId] = BuildSpatialIndex(mScenes[sceneId]);
     }
     for (const auto& sceneEntry : scenes) {
         const int32_t sceneId = sceneEntry.first;
@@ -437,15 +440,110 @@ bool ServerCollisionWorld::LoadArchive(const std::filesystem::path& archivePath)
     return true;
 }
 
-bool ServerCollisionWorld::SegmentCast(int32_t sceneId, const ServerCollisionPoint& start,
-                                       const ServerCollisionPoint& end, ServerCollisionPoint& impact) const {
-    const auto scene = mScenes.find(sceneId);
-    if (scene == mScenes.end()) {
-        return false;
+int32_t ServerCollisionWorld::SpatialCoordinate(float value) {
+    return static_cast<int32_t>(std::floor(value / kSpatialCellSize));
+}
+
+ServerCollisionWorld::SpatialIndex ServerCollisionWorld::BuildSpatialIndex(
+    const std::vector<Triangle>& triangles) {
+    SpatialIndex index;
+    for (size_t triangleIndex = 0; triangleIndex < triangles.size(); ++triangleIndex) {
+        const Triangle& triangle = triangles[triangleIndex];
+        const uint32_t storedTriangleIndex = static_cast<uint32_t>(triangleIndex);
+        float minX = triangle.vertices[0].x;
+        float minY = triangle.vertices[0].y;
+        float minZ = triangle.vertices[0].z;
+        float maxX = minX;
+        float maxY = minY;
+        float maxZ = minZ;
+        for (size_t vertex = 1; vertex < 3; ++vertex) {
+            minX = std::min(minX, triangle.vertices[vertex].x);
+            minY = std::min(minY, triangle.vertices[vertex].y);
+            minZ = std::min(minZ, triangle.vertices[vertex].z);
+            maxX = std::max(maxX, triangle.vertices[vertex].x);
+            maxY = std::max(maxY, triangle.vertices[vertex].y);
+            maxZ = std::max(maxZ, triangle.vertices[vertex].z);
+        }
+        const int32_t minCellX = SpatialCoordinate(minX);
+        const int32_t minCellY = SpatialCoordinate(minY);
+        const int32_t minCellZ = SpatialCoordinate(minZ);
+        const int32_t maxCellX = SpatialCoordinate(maxX);
+        const int32_t maxCellY = SpatialCoordinate(maxY);
+        const int32_t maxCellZ = SpatialCoordinate(maxZ);
+        const int64_t cellCountX = static_cast<int64_t>(maxCellX) - minCellX + 1;
+        const int64_t cellCountY = static_cast<int64_t>(maxCellY) - minCellY + 1;
+        const int64_t cellCountZ = static_cast<int64_t>(maxCellZ) - minCellZ + 1;
+        if (cellCountX <= 0 || cellCountY <= 0 || cellCountZ <= 0 ||
+            cellCountX * cellCountY > kMaximumCellsPerTriangleOrQuery ||
+            cellCountX * cellCountY * cellCountZ > kMaximumCellsPerTriangleOrQuery) {
+            index.unindexedTriangles.push_back(storedTriangleIndex);
+            continue;
+        }
+        for (int32_t cellX = minCellX; cellX <= maxCellX; ++cellX) {
+            for (int32_t cellY = minCellY; cellY <= maxCellY; ++cellY) {
+                for (int32_t cellZ = minCellZ; cellZ <= maxCellZ; ++cellZ) {
+                    index.cells[{ cellX, cellY, cellZ }].push_back(storedTriangleIndex);
+                }
+            }
+        }
     }
+    return index;
+}
+
+std::vector<uint32_t> ServerCollisionWorld::SegmentCandidates(
+    int32_t sceneId, const ServerCollisionPoint& start,
+    const ServerCollisionPoint& end) const {
+    const auto scene = mScenes.find(sceneId);
+    if (scene == mScenes.end()) return {};
+    const auto spatial = mSpatialIndices.find(sceneId);
+    if (spatial == mSpatialIndices.end()) {
+        std::vector<uint32_t> all(scene->second.size());
+        std::iota(all.begin(), all.end(), 0);
+        return all;
+    }
+
+    const int32_t minCellX = SpatialCoordinate(std::min(start.x, end.x));
+    const int32_t minCellY = SpatialCoordinate(std::min(start.y, end.y));
+    const int32_t minCellZ = SpatialCoordinate(std::min(start.z, end.z));
+    const int32_t maxCellX = SpatialCoordinate(std::max(start.x, end.x));
+    const int32_t maxCellY = SpatialCoordinate(std::max(start.y, end.y));
+    const int32_t maxCellZ = SpatialCoordinate(std::max(start.z, end.z));
+    const int64_t cellCountX = static_cast<int64_t>(maxCellX) - minCellX + 1;
+    const int64_t cellCountY = static_cast<int64_t>(maxCellY) - minCellY + 1;
+    const int64_t cellCountZ = static_cast<int64_t>(maxCellZ) - minCellZ + 1;
+    if (cellCountX <= 0 || cellCountY <= 0 || cellCountZ <= 0 ||
+        cellCountX * cellCountY > kMaximumCellsPerTriangleOrQuery ||
+        cellCountX * cellCountY * cellCountZ > kMaximumCellsPerTriangleOrQuery) {
+        std::vector<uint32_t> all(scene->second.size());
+        std::iota(all.begin(), all.end(), 0);
+        return all;
+    }
+
+    std::vector<uint32_t> candidates = spatial->second.unindexedTriangles;
+    for (int32_t cellX = minCellX; cellX <= maxCellX; ++cellX) {
+        for (int32_t cellY = minCellY; cellY <= maxCellY; ++cellY) {
+            for (int32_t cellZ = minCellZ; cellZ <= maxCellZ; ++cellZ) {
+                const auto cell = spatial->second.cells.find({ cellX, cellY, cellZ });
+                if (cell != spatial->second.cells.end()) {
+                    candidates.insert(candidates.end(), cell->second.begin(), cell->second.end());
+                }
+            }
+        }
+    }
+    std::sort(candidates.begin(), candidates.end());
+    candidates.erase(std::unique(candidates.begin(), candidates.end()), candidates.end());
+    return candidates;
+}
+
+bool ServerCollisionWorld::SegmentCastTriangles(
+    const std::vector<Triangle>& triangles, const std::vector<uint32_t>& candidates,
+    const ServerCollisionPoint& start, const ServerCollisionPoint& end,
+    ServerCollisionPoint& impact) {
     float closestRatio = std::numeric_limits<float>::infinity();
     ServerCollisionPoint closest{};
-    for (const Triangle& triangle : scene->second) {
+    for (const uint32_t triangleIndex : candidates) {
+        if (triangleIndex >= triangles.size()) continue;
+        const Triangle& triangle = triangles[triangleIndex];
         const float distanceA = triangle.normal.x * start.x + triangle.normal.y * start.y +
                                 triangle.normal.z * start.z + triangle.originDistance;
         const float distanceB = triangle.normal.x * end.x + triangle.normal.y * end.y +
@@ -456,23 +554,63 @@ bool ServerCollisionWorld::SegmentCast(int32_t sceneId, const ServerCollisionPoi
             continue;
         }
         const float ratio = distanceA / delta;
-        if (ratio < 0.0f || ratio > 1.0f || ratio >= closestRatio) {
-            continue;
-        }
+        if (ratio < 0.0f || ratio > 1.0f || ratio >= closestRatio) continue;
         const ServerCollisionPoint point{ start.x + (end.x - start.x) * ratio,
                                           start.y + (end.y - start.y) * ratio,
                                           start.z + (end.z - start.z) * ratio };
-        if (!PointInsideTriangle(point, triangle.vertices[0], triangle.vertices[1], triangle.vertices[2])) {
-            continue;
-        }
+        if (!PointInsideTriangle(point, triangle.vertices[0], triangle.vertices[1],
+                                 triangle.vertices[2])) continue;
         closestRatio = ratio;
         closest = point;
     }
-    if (!std::isfinite(closestRatio)) {
-        return false;
-    }
+    if (!std::isfinite(closestRatio)) return false;
     impact = closest;
     return true;
+}
+
+bool ServerCollisionWorld::SegmentCastBruteForce(
+    int32_t sceneId, const ServerCollisionPoint& start,
+    const ServerCollisionPoint& end, ServerCollisionPoint& impact) const {
+    const auto scene = mScenes.find(sceneId);
+    if (scene == mScenes.end()) return false;
+    std::vector<uint32_t> all(scene->second.size());
+    std::iota(all.begin(), all.end(), 0);
+    return SegmentCastTriangles(scene->second, all, start, end, impact);
+}
+
+bool ServerCollisionWorld::SegmentCast(int32_t sceneId, const ServerCollisionPoint& start,
+                                       const ServerCollisionPoint& end, ServerCollisionPoint& impact) const {
+    const auto scene = mScenes.find(sceneId);
+    if (scene == mScenes.end()) return false;
+    return SegmentCastTriangles(scene->second, SegmentCandidates(sceneId, start, end),
+                                start, end, impact);
+}
+
+bool ServerCollisionWorld::FindWaterSurface(int32_t sceneId, const ServerCollisionPoint& position,
+                                            float& surfaceY) const {
+    const auto scene = mWildFish.find(sceneId);
+    if (scene == mWildFish.end()) return false;
+    const ServerWildFishSpawn* closest = nullptr;
+    float closestDistance = std::numeric_limits<float>::infinity();
+    for (const ServerWildFishSpawn& water : scene->second) {
+        if (position.x < water.minX || position.x > water.maxX ||
+            position.z < water.minZ || position.z > water.maxZ) {
+            continue;
+        }
+        const float distance = std::fabs(position.y - water.waterSurfaceY);
+        if (distance < closestDistance) {
+            closest = &water;
+            closestDistance = distance;
+        }
+    }
+    if (closest == nullptr) return false;
+    surfaceY = closest->waterSurfaceY;
+    return true;
+}
+
+bool ServerCollisionWorld::HasScene(int32_t sceneId) const {
+    const auto scene = mScenes.find(sceneId);
+    return scene != mScenes.end() && !scene->second.empty();
 }
 
 bool ServerCollisionWorld::ValidateLoadedGeometry() const {
@@ -510,19 +648,50 @@ bool ServerCollisionWorld::ValidateSceneGeometry(int32_t sceneId) const {
     return false;
 }
 
-const ServerWildFishSpawn* ServerCollisionWorld::FindWildFish(int32_t sceneId, int32_t actorParams,
-                                                               int32_t homeX, int32_t homeY,
-                                                               int32_t homeZ) const {
-    const auto scene = mWildFish.find(sceneId);
-    if (scene == mWildFish.end()) {
-        return nullptr;
-    }
-    for (const ServerWildFishSpawn& fish : scene->second) {
-        if (fish.actorParams == actorParams && fish.homeX == homeX && fish.homeY == homeY && fish.homeZ == homeZ) {
-            return &fish;
+bool ServerCollisionWorld::ValidateSpatialIndex(int32_t sceneId) const {
+    const auto scene = mScenes.find(sceneId);
+    const auto spatial = mSpatialIndices.find(sceneId);
+    if (scene == mScenes.end() || spatial == mSpatialIndices.end() ||
+        spatial->second.cells.empty()) return false;
+    bool reducedAtLeastOneQuery = false;
+    for (const Triangle& triangle : scene->second) {
+        const ServerCollisionPoint center{
+            (triangle.vertices[0].x + triangle.vertices[1].x + triangle.vertices[2].x) / 3.0f,
+            (triangle.vertices[0].y + triangle.vertices[1].y + triangle.vertices[2].y) / 3.0f,
+            (triangle.vertices[0].z + triangle.vertices[1].z + triangle.vertices[2].z) / 3.0f,
+        };
+        const ServerCollisionPoint start{ center.x + triangle.normal.x * 20.0f,
+                                          center.y + triangle.normal.y * 20.0f,
+                                          center.z + triangle.normal.z * 20.0f };
+        const ServerCollisionPoint end{ center.x - triangle.normal.x * 20.0f,
+                                        center.y - triangle.normal.y * 20.0f,
+                                        center.z - triangle.normal.z * 20.0f };
+        ServerCollisionPoint indexedImpact{};
+        ServerCollisionPoint bruteImpact{};
+        const std::vector<uint32_t> candidates = SegmentCandidates(sceneId, start, end);
+        reducedAtLeastOneQuery = reducedAtLeastOneQuery ||
+                                 candidates.size() < scene->second.size();
+        const bool indexedHit = SegmentCastTriangles(scene->second, candidates, start, end,
+                                                     indexedImpact);
+        const bool bruteHit = SegmentCastBruteForce(sceneId, start, end, bruteImpact);
+        if (indexedHit != bruteHit) return false;
+        if (indexedHit &&
+            (std::fabs(indexedImpact.x - bruteImpact.x) > 0.01f ||
+             std::fabs(indexedImpact.y - bruteImpact.y) > 0.01f ||
+             std::fabs(indexedImpact.z - bruteImpact.z) > 0.01f)) {
+            return false;
         }
     }
-    return nullptr;
+    return reducedAtLeastOneQuery;
+}
+
+std::vector<ServerWildFishSpawn> ServerCollisionWorld::WildFishSpawns() const {
+    std::vector<ServerWildFishSpawn> result;
+    result.reserve(mWildFishCount);
+    for (const auto& sceneFish : mWildFish) {
+        result.insert(result.end(), sceneFish.second.begin(), sceneFish.second.end());
+    }
+    return result;
 }
 
 size_t ServerCollisionWorld::SceneCount() const {
@@ -531,6 +700,22 @@ size_t ServerCollisionWorld::SceneCount() const {
 
 size_t ServerCollisionWorld::TriangleCount() const {
     return mTriangleCount;
+}
+
+size_t ServerCollisionWorld::SpatialCellCount() const {
+    size_t count = 0;
+    for (const auto& entry : mSpatialIndices) {
+        count += entry.second.cells.size();
+    }
+    return count;
+}
+
+size_t ServerCollisionWorld::UnindexedTriangleCount() const {
+    size_t count = 0;
+    for (const auto& entry : mSpatialIndices) {
+        count += entry.second.unindexedTriangles.size();
+    }
+    return count;
 }
 
 size_t ServerCollisionWorld::WildFishCount() const {

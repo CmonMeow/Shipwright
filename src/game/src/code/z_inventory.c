@@ -20,7 +20,7 @@ uint8_t gUpgradeShifts[] = { 0, 3, 6, 9, 12, 14, 17, 20 };
 
 uint16_t gUpgradeCapacities[][4] = {
     { 0, 30, 40, 50 },     // Quivers
-    { 0, 20, 30, 40 },     // Bomb Bags
+    { 0, 0, 0, 0 },        // Unused
     { 0, 0, 0, 0 },        // Unused (Scale)
     { 0, 0, 0, 0 },        // Unused (Strength)
     { 99, 200, 500, 500 }, // Wallets (fourth value is a defensive fallback)
@@ -34,8 +34,8 @@ uint32_t gGsFlagsShifts[] = { 0, 8, 16, 24 };
 
 // Used to map item IDs to inventory slots
 uint8_t gItemSlots[] = {
-    SLOT_STICK,       SLOT_NUT,          SLOT_BOMB,        SLOT_BOW,         SLOT_ARROW_FIRE,  SLOT_NONE,
-    SLOT_SLINGSHOT,   SLOT_OCARINA,      SLOT_OCARINA,     SLOT_BOMBCHU,     SLOT_HOOKSHOT,    SLOT_HOOKSHOT,
+    SLOT_STICK,       SLOT_NUT,          SLOT_NONE,        SLOT_BOW,         SLOT_ARROW_FIRE,  SLOT_NONE,
+    SLOT_SLINGSHOT,   SLOT_OCARINA,      SLOT_OCARINA,     SLOT_NONE,        SLOT_HOOKSHOT,    SLOT_HOOKSHOT,
     SLOT_ARROW_ICE,   SLOT_NONE,         SLOT_BOOMERANG,   SLOT_LENS,        SLOT_BEAN,        SLOT_HAMMER,
     SLOT_ARROW_LIGHT, SLOT_NONE,         SLOT_BOTTLE_1,    SLOT_BOTTLE_1,    SLOT_BOTTLE_1,    SLOT_BOTTLE_1,
     SLOT_BOTTLE_1,    SLOT_BOTTLE_1,     SLOT_BOTTLE_1,    SLOT_BOTTLE_1,    SLOT_BOTTLE_1,    SLOT_BOTTLE_1,

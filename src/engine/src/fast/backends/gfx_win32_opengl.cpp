@@ -61,7 +61,7 @@ static LRESULT CALLBACK Win32SettingsWindowProc(HWND hwnd, UINT message, WPARAM 
                            : DefWindowProcA(hwnd, message, wParam, lParam);
 }
 
-void GfxWindowBackendWin32OpenGL::Init(const char* gameName, const char* apiName, bool startFullScreen,
+void GfxWindowBackendWin32OpenGL::Init(const char* gameName, const char*, bool startFullScreen,
                                        uint32_t width, uint32_t height, int32_t posX, int32_t posY) {
     mWidth = width;
     mHeight = height;
@@ -88,12 +88,10 @@ void GfxWindowBackendWin32OpenGL::Init(const char* gameName, const char* apiName
         return;
     }
 
-    char title[512];
-    std::snprintf(title, sizeof(title), "%s (%s)", gameName, apiName);
-    mBaseTitle = title;
+    mBaseTitle = gameName;
     RECT windowRect{ 0, 0, static_cast<LONG>(width), static_cast<LONG>(height) };
     AdjustWindowRect(&windowRect, WS_OVERLAPPEDWINDOW, FALSE);
-    mWindow = CreateWindowExA(0, WindowClassName, title, WS_OVERLAPPEDWINDOW, posX, posY,
+    mWindow = CreateWindowExA(0, WindowClassName, mBaseTitle.c_str(), WS_OVERLAPPEDWINDOW, posX, posY,
                               windowRect.right - windowRect.left, windowRect.bottom - windowRect.top, nullptr, nullptr,
                               mInstance, this);
     if (mWindow == nullptr) {

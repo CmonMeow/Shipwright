@@ -10,14 +10,25 @@
 #include "resource/type/Array.h"
 #include "resource/type/Skeleton.h"
 #include "resource/type/PlayerAnimation.h"
+#include "resource/type/AudioSoundFont.h"
 #include <fast/Fast3dWindow.h>
 #include <fast/resource/ResourceType.h>
 #include <fast/resource/type/DisplayList.h>
+#include <limits>
 
 extern "C" PlayState* gPlayState;
 
 extern "C" uint32_t ResourceMgr_GetNumGameVersions() {
-    return Engine::Context::GetInstance()->GetResourceManager()->GetArchiveManager()->GetGameVersions().size();
+    const size_t versionCount = Engine::Context::GetInstance()
+                                    ->GetResourceManager()
+                                    ->GetArchiveManager()
+                                    ->GetGameVersions()
+                                    .size();
+    if (versionCount > std::numeric_limits<uint32_t>::max()) {
+        Error("Game-version count exceeds the public 32-bit resource API");
+        return std::numeric_limits<uint32_t>::max();
+    }
+    return static_cast<uint32_t>(versionCount);
 }
 
 extern "C" uint32_t ResourceMgr_GetGameVersion(int index) {
@@ -86,10 +97,6 @@ extern "C" uint32_t ResourceMgr_IsGameMasterQuest() {
     return gPlayState != NULL ? IsSceneMasterQuest() : 0;
 }
 
-extern "C" void ResourceMgr_LoadDirectory(const char* resName) {
-    Engine::Context::GetInstance()->GetResourceManager()->LoadResources(resName);
-}
-
 extern "C" void ResourceMgr_DirtyDirectory(const char* resName) {
     Engine::Context::GetInstance()->GetResourceManager()->DirtyResources(resName);
 }
@@ -102,30 +109,13 @@ extern "C" void ResourceMgr_UnloadResource(const char* resName) {
     auto res = Engine::Context::GetInstance()->GetResourceManager()->UnloadResource(path);
 }
 
-// OTRTODO: There is probably a more elegant way to go about this...
-// Caller must free each string and the array itself when done.
-extern "C" char** ResourceMgr_ListFiles(const char* searchMask, int* resultSize) {
-    auto lst = Engine::Context::GetInstance()->GetResourceManager()->GetArchiveManager()->ListFiles(searchMask);
-    char** result = (char**)malloc(lst->size() * sizeof(char*));
-
-    for (size_t i = 0; i < lst->size(); i++) {
-        char* str = (char*)malloc(lst.get()[0][i].size() + 1);
-        memcpy(str, lst.get()[0][i].data(), lst.get()[0][i].size());
-        str[lst.get()[0][i].size()] = '\0';
-        result[i] = str;
-    }
-    *resultSize = lst->size();
-
-    return result;
-}
-
 extern "C" uint8_t ResourceMgr_FileExists(const char* filePath) {
     std::string path = filePath;
     if (path.substr(0, 7) == "__OTR__") {
         path = path.substr(7);
     }
 
-    return ExtensionCache.contains(path);
+    return Engine::Context::GetInstance()->GetResourceManager()->GetArchiveManager()->HasFile(path);
 }
 
 extern "C" uint8_t ResourceMgr_FileAltExists(const char* filePath) {
@@ -138,7 +128,7 @@ extern "C" uint8_t ResourceMgr_FileAltExists(const char* filePath) {
         path = "alt/" + path;
     }
 
-    return ExtensionCache.contains(path);
+    return Engine::Context::GetInstance()->GetResourceManager()->GetArchiveManager()->HasFile(path);
 }
 
 extern "C" bool ResourceMgr_IsAltAssetsEnabled() {
@@ -442,6 +432,38 @@ extern "C" SoundFontSample* ResourceMgr_LoadAudioSample(const char* path) {
 
 extern "C" SoundFont* ResourceMgr_LoadAudioSoundFontByName(const char* path) {
     return (SoundFont*)ResourceGetDataByName(path);
+}
+
+extern "C" Drum* ResourceMgr_LoadAudioDrumSampleByName(const char* path, int32_t drumIndex) {
+    if (path == nullptr || drumIndex < 0) {
+        return nullptr;
+    }
+
+    auto resource = std::dynamic_pointer_cast<SOH::AudioSoundFont>(
+        Engine::Context::GetInstance()->GetResourceManager()->LoadResource(path));
+    return resource ? reinterpret_cast<Drum*>(resource->ResolveDrumSample((size_t)drumIndex)) : nullptr;
+}
+
+extern "C" Instrument* ResourceMgr_LoadAudioInstrumentSamplesByName(const char* path, int32_t instrumentIndex) {
+    if (path == nullptr || instrumentIndex < 0) {
+        return nullptr;
+    }
+
+    auto resource = std::dynamic_pointer_cast<SOH::AudioSoundFont>(
+        Engine::Context::GetInstance()->GetResourceManager()->LoadResource(path));
+    return resource ? reinterpret_cast<Instrument*>(resource->ResolveInstrumentSamples((size_t)instrumentIndex))
+                    : nullptr;
+}
+
+extern "C" SoundFontSound* ResourceMgr_LoadAudioSoundEffectSampleByName(const char* path, int32_t soundEffectIndex) {
+    if (path == nullptr || soundEffectIndex < 0) {
+        return nullptr;
+    }
+
+    auto resource = std::dynamic_pointer_cast<SOH::AudioSoundFont>(
+        Engine::Context::GetInstance()->GetResourceManager()->LoadResource(path));
+    return resource ? reinterpret_cast<SoundFontSound*>(resource->ResolveSoundEffectSample((size_t)soundEffectIndex))
+                    : nullptr;
 }
 
 extern "C" int ResourceMgr_OTRSigCheck(char* imgData) {

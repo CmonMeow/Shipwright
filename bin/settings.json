@@ -8,7 +8,7 @@
             "MultiplayerAction": 0,
             "MultiplayerAddress": "127.0.0.1",
             "MultiplayerPort": 777,
-            "MultiplayerStatus": "Offline",
+            "MultiplayerStatus": "Hosting (secure) - 1 player(s)",
             "MultiplayerVoicePushToTalk": 1,
             "VsyncEnabled": 0
         }
@@ -17,9 +17,9 @@
         "Fullscreen": {
             "Enabled": false
         },
-        "Height": 742,
-        "PositionX": 709,
-        "PositionY": 279,
-        "Width": 832
+        "Height": 897,
+        "PositionX": 24,
+        "PositionY": 116,
+        "Width": 1536
     }
 }

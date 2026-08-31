@@ -13,7 +13,13 @@
     <ClCompile Include="$(RepoRoot)src\game\port\Network\Network\netpeer.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="$(RepoRoot)src\game\port\Network\ReliableUdpService.cpp">
+    <ClCompile Include="$(RepoRoot)src\game\port\Network\NetworkConnectionTransport.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\port\Network\NetworkProtocolIngress.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\port\Network\NetworkSessionLifecycleService.cpp">
       <Filter>src</Filter>
     </ClCompile>
     <ClCompile Include="$(RepoRoot)src\game\port\Network\ServerCollisionWorld.cpp">
@@ -22,10 +28,37 @@
     <ClCompile Include="$(RepoRoot)src\game\port\Network\NetworkRuntime.cpp">
       <Filter>src</Filter>
     </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\port\Network\ClientProtocolEndpoint.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\port\Network\LocalVoiceSubmissionService.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\port\Network\LocalClientAdmissionService.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\port\Network\LocalTextCommunicationService.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\port\Network\ServerProtocolEndpoint.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
     <ClCompile Include="$(RepoRoot)src\game\port\Network\bitmask.cpp">
       <Filter>src</Filter>
     </ClCompile>
     <ClCompile Include="$(RepoRoot)src\game\port\Network\netTransportNet.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\platform\client\LocalStructureActionStream.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\platform\client\ClientSessionGenerationTracker.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\platform\client\LocalVoiceFrameStream.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\platform\simulation\ServerGameplayIngress.cpp">
       <Filter>src</Filter>
     </ClCompile>
   </ItemGroup>
@@ -51,7 +84,13 @@
     <ClInclude Include="$(RepoRoot)src\game\port\Network\NetworkProtocol.h">
       <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="$(RepoRoot)src\game\port\Network\ReliableUdpService.h">
+    <ClInclude Include="$(RepoRoot)src\game\port\Network\NetworkConnectionTransport.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\game\port\Network\NetworkProtocolIngress.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\game\port\Network\NetworkSessionLifecycleService.h">
       <Filter>src</Filter>
     </ClInclude>
     <ClInclude Include="$(RepoRoot)src\game\port\Network\ServerCollisionWorld.h">
@@ -60,7 +99,25 @@
     <ClInclude Include="$(RepoRoot)src\game\port\Network\NetworkRuntime.h">
       <Filter>src</Filter>
     </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\game\port\Network\ClientProtocolEndpoint.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\game\port\Network\LocalVoiceSubmissionService.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\game\port\Network\LocalClientAdmissionService.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\game\port\Network\LocalTextCommunicationService.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\game\port\Network\ServerProtocolEndpoint.h">
+      <Filter>src</Filter>
+    </ClInclude>
     <ClInclude Include="$(RepoRoot)src\game\port\Network\VoiceChat.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\game\platform\client\ClientSessionGenerationTracker.h">
       <Filter>src</Filter>
     </ClInclude>
     <ClInclude Include="$(RepoRoot)src\game\port\Network\bitmask.hpp">
@@ -73,6 +130,18 @@
       <Filter>src</Filter>
     </ClInclude>
     <ClInclude Include="$(RepoRoot)src\game\port\Network\pointers.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\game\platform\client\LocalStructureActionStream.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\game\platform\SequenceNumber.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\game\platform\client\LocalVoiceFrameStream.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\game\platform\simulation\ServerGameplayIngress.h">
       <Filter>src</Filter>
     </ClInclude>
   </ItemGroup>

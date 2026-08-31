@@ -225,10 +225,6 @@ void EffectSsKiraKira_SpawnDispersed(PlayState* play, Vec3f* pos, Vec3f* velocit
                                      Color_RGBA8* primColor, Color_RGBA8* envColor, int16_t scale, int32_t life);
 void EffectSsKiraKira_SpawnFocused(PlayState* play, Vec3f* pos, Vec3f* velocity, Vec3f* accel,
                                    Color_RGBA8* primColor, Color_RGBA8* envColor, int16_t scale, int32_t life);
-void EffectSsBomb_Spawn(PlayState* play, Vec3f* pos, Vec3f* velocity, Vec3f* accel);
-void EffectSsBomb2_SpawnFade(PlayState* play, Vec3f* pos, Vec3f* velocity, Vec3f* accel);
-void EffectSsBomb2_SpawnLayered(PlayState* play, Vec3f* pos, Vec3f* velocity, Vec3f* accel, int16_t scale,
-                                int16_t scaleStep);
 void EffectSsBlast_Spawn(PlayState* play, Vec3f* pos, Vec3f* velocity, Vec3f* accel, Color_RGBA8* primColor,
                          Color_RGBA8* envColor, int16_t scale, int16_t scaleStep, int16_t sclaeStepDecay, int16_t life);
 void EffectSsBlast_SpawnWhiteCustomScale(PlayState* play, Vec3f* pos, Vec3f* velocity, Vec3f* accel, int16_t scale,
@@ -986,8 +982,6 @@ int32_t Player_HoldsTwoHandedWeapon(Player* player);
 int32_t Player_HoldsBrokenKnife(Player* player);
 int32_t Player_ActionToBottle(Player* player, int32_t actionParam);
 int32_t Player_GetBottleHeld(Player* player);
-int32_t Player_ActionToExplosive(Player* player, int32_t actionParam);
-int32_t Player_GetExplosiveHeld(Player* player);
 int32_t func_8008F2BC(Player* player, int32_t actionParam);
 int32_t Player_GetEnvironmentalHazard(PlayState* play);
 void Player_DrawImpl(PlayState* play, void** skeleton, Vec3s* jointTable, int32_t dListCount, int32_t lod, int32_t tunic,
@@ -996,8 +990,9 @@ int32_t Player_OverrideLimbDrawGameplayCommon(PlayState* play, int32_t limbIndex
 int32_t Player_OverrideLimbDrawGameplayDefault(PlayState* play, int32_t limbIndex, Gfx** dList, Vec3f* pos, Vec3s* rot, void* data);
 int32_t Player_OverrideLimbDrawGameplayFirstPerson(PlayState* play, int32_t limbIndex, Gfx** dList, Vec3f* pos, Vec3s* rot, void* data);
 int32_t Player_OverrideLimbDrawGameplayCrawling(PlayState* play, int32_t limbIndex, Gfx** dList, Vec3f* pos, Vec3s* rot, void* data);
-int32_t Player_OverrideLimbDrawNetwork(PlayState* play, int32_t limbIndex, Gfx** dList, Vec3f* pos, Vec3s* rot, void* data);
-void Player_PostLimbDrawNetwork(PlayState* play, int32_t limbIndex, Gfx** dList, Vec3s* rot, void* data);
+int32_t Player_OverrideLimbDrawPresentation(PlayState* play, int32_t limbIndex, Gfx** dList, Vec3f* pos, Vec3s* rot,
+                                            void* data);
+void Player_PostLimbDrawPresentation(PlayState* play, int32_t limbIndex, Gfx** dList, Vec3s* rot, void* data);
 uint8_t func_80090480(PlayState* play, ColliderQuad* collider, WeaponInfo* weaponDim, Vec3f* newTip,
                  Vec3f* newBase);
 void Player_PostLimbDrawGameplay(PlayState* play, int32_t limbIndex, Gfx** dList, Vec3s* rot, void* data);
@@ -1677,7 +1672,6 @@ void AudioLoad_InitSlowLoads(void);
 int32_t AudioLoad_SlowLoadSample(int32_t arg0, int32_t arg1, int8_t* arg2);
 int32_t AudioLoad_SlowLoadSeq(int32_t playerIdx, uint8_t* ramAddr, int8_t* arg2);
 void AudioLoad_InitAsyncLoads(void);
-void AudioLoad_LoadPermanentSamples(void);
 void AudioLoad_ScriptLoad(int32_t tableType, int32_t arg1, int8_t* arg2);
 void AudioLoad_ProcessScriptLoads(void);
 void AudioLoad_InitScriptLoads(void);

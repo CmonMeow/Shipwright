@@ -1,7 +1,13 @@
 #include <runtime/log/Log.hpp>
 #include "colViewer.h"
+#include "frame_interpolation.h"
+#include "platform/simulation/AuthoritativePlayerHitRig.h"
 
+#include <algorithm>
+#include <array>
+#include <chrono>
 #include <vector>
+#include <map>
 #include <cmath>
 #include <runtime/runtime.h>
 
@@ -19,6 +25,76 @@ static std::vector<Gfx> opaDl;
 static std::vector<Gfx> xluDl;
 static std::vector<Vtx> vtxDl;
 static std::vector<Mtx> mtxDl;
+struct PlayerCollisionRecord {
+    Game::Simulation::PlayerSnapshot snapshot{};
+    std::chrono::steady_clock::time_point receivedAt{};
+    std::array<Vec3f, PLAYER_LIMB_MAX> renderedLimbOrigins{};
+    std::array<bool, PLAYER_LIMB_MAX> renderedLimbs{};
+    Game::Simulation::ArticulatedPlayerHitRig renderedRig{};
+    std::chrono::steady_clock::time_point renderedAt{};
+    bool hasRenderedRig = false;
+};
+static std::map<int32_t, PlayerCollisionRecord> playerHitRigs;
+static int32_t localCollisionPlayerId = -1;
+
+Game::Simulation::Vec3 ToSimulationVector(const Vec3f& value) {
+    return { value.x, value.y, value.z };
+}
+
+bool BuildRenderedPlayerHitRig(PlayerCollisionRecord& record) {
+    using namespace Game::Simulation;
+    constexpr std::array<int32_t, 14> requiredLimbs = {
+        PLAYER_LIMB_WAIST,       PLAYER_LIMB_R_THIGH,
+        PLAYER_LIMB_R_SHIN,      PLAYER_LIMB_R_FOOT,
+        PLAYER_LIMB_L_THIGH,     PLAYER_LIMB_L_SHIN,
+        PLAYER_LIMB_L_FOOT,      PLAYER_LIMB_UPPER,
+        PLAYER_LIMB_HEAD,        PLAYER_LIMB_COLLAR,
+        PLAYER_LIMB_L_SHOULDER,  PLAYER_LIMB_L_FOREARM,
+        PLAYER_LIMB_R_SHOULDER,  PLAYER_LIMB_R_FOREARM,
+    };
+    for (const int32_t limb : requiredLimbs) {
+        if (!record.renderedLimbs[limb]) return false;
+    }
+    if (!record.renderedLimbs[PLAYER_LIMB_L_HAND] ||
+        !record.renderedLimbs[PLAYER_LIMB_R_HAND]) {
+        return false;
+    }
+
+    AuthoritativePlayerSkeletonPose pose{};
+    const auto origin = [&](int32_t limb) {
+        return ToSimulationVector(record.renderedLimbOrigins[limb]);
+    };
+    pose[PlayerHitJoint::HeadBase] = origin(PLAYER_LIMB_HEAD);
+    const Vec3 collar = origin(PLAYER_LIMB_COLLAR);
+    Vec3 headDirection = HitRigDetail::Subtract(
+        pose[PlayerHitJoint::HeadBase], collar);
+    const float headLengthSquared = HitRigDetail::Dot(headDirection, headDirection);
+    if (headLengthSquared <= 0.000001f) return false;
+    headDirection = HitRigDetail::Scale(
+        headDirection, 13.0f / std::sqrt(headLengthSquared));
+    pose[PlayerHitJoint::HeadTop] = HitRigDetail::Add(
+        pose[PlayerHitJoint::HeadBase], headDirection);
+    pose[PlayerHitJoint::TorsoTop] = collar;
+    pose[PlayerHitJoint::TorsoBottom] = origin(PLAYER_LIMB_UPPER);
+    pose[PlayerHitJoint::WaistBottom] = origin(PLAYER_LIMB_WAIST);
+    pose[PlayerHitJoint::LeftShoulder] = origin(PLAYER_LIMB_L_SHOULDER);
+    pose[PlayerHitJoint::LeftElbow] = origin(PLAYER_LIMB_L_FOREARM);
+    pose[PlayerHitJoint::LeftWrist] = origin(PLAYER_LIMB_L_HAND);
+    pose[PlayerHitJoint::RightShoulder] = origin(PLAYER_LIMB_R_SHOULDER);
+    pose[PlayerHitJoint::RightElbow] = origin(PLAYER_LIMB_R_FOREARM);
+    pose[PlayerHitJoint::RightWrist] = origin(PLAYER_LIMB_R_HAND);
+    pose[PlayerHitJoint::LeftHip] = origin(PLAYER_LIMB_L_THIGH);
+    pose[PlayerHitJoint::LeftKnee] = origin(PLAYER_LIMB_L_SHIN);
+    pose[PlayerHitJoint::LeftAnkle] = origin(PLAYER_LIMB_L_FOOT);
+    pose[PlayerHitJoint::RightHip] = origin(PLAYER_LIMB_R_THIGH);
+    pose[PlayerHitJoint::RightKnee] = origin(PLAYER_LIMB_R_SHIN);
+    pose[PlayerHitJoint::RightAnkle] = origin(PLAYER_LIMB_R_FOOT);
+    record.renderedRig = BuildArticulatedPlayerHitRig(
+        pose, kAdultLinkHitRigDimensions);
+    record.renderedAt = std::chrono::steady_clock::now();
+    record.hasRenderedRig = true;
+    return true;
+}
 
 // These DLs contain a cylinder/sphere model scaled to 128x (to have less error)
 // The idea is to push a model view matrix, then draw the DL, to draw the shape somewhere with a certain size
@@ -26,6 +102,8 @@ static std::vector<Gfx> cylinderGfx;
 static std::vector<Vtx> cylinderVtx;
 static std::vector<Gfx> sphereGfx;
 static std::vector<Vtx> sphereVtx;
+static std::vector<Gfx> hitPrismGfx;
+static std::vector<Vtx> hitPrismVtx;
 
 // Calculates the normal for a triangle at the 3 specified points
 void CalcTriNorm(const Vec3f& v1, const Vec3f& v2, const Vec3f& v3, Vec3f& norm) {
@@ -95,6 +173,53 @@ void CreateCylinderData() {
 
     cylinderGfx.push_back(gsSPClearGeometryMode(G_CULL_BACK));
     cylinderGfx.push_back(gsSPEndDisplayList());
+}
+
+// The articulated player rig changes every animation frame. Keep its geometry
+// immutable and move each prism with a model matrix, just like the existing
+// collider cylinders. Baking world-space endpoints into a reused Vtx buffer
+// lets the PC renderer retain the first uploaded geometry by address.
+void CreateHitPrismData() {
+    constexpr int32_t kSides = 6;
+    hitPrismGfx.reserve(5 + kSides * 2);
+    hitPrismVtx.reserve(2 + kSides * 2);
+
+    hitPrismVtx.push_back(gdSPDefVtxN(0, 0, 0, 0, 0, 0, -127, 0, 0xFF));
+    hitPrismVtx.push_back(gdSPDefVtxN(0, 128, 0, 0, 0, 0, 127, 0, 0xFF));
+    for (int32_t side = 0; side < kSides; ++side) {
+        const float angle = 2.0f * M_PI * side / kSides;
+        const int16_t x = (int16_t)floorf(0.5f + cosf(angle) * 128.0f);
+        const int16_t z = (int16_t)floorf(0.5f - sinf(angle) * 128.0f);
+        const int8_t nx = (int8_t)(cosf(angle) * 127.0f);
+        const int8_t nz = (int8_t)(-sinf(angle) * 127.0f);
+        hitPrismVtx.push_back(gdSPDefVtxN(x, 0, z, 0, 0, nx, 0, nz, 0xFF));
+        hitPrismVtx.push_back(gdSPDefVtxN(x, 128, z, 0, 0, nx, 0, nz, 0xFF));
+    }
+
+    hitPrismGfx.push_back(gsSPSetGeometryMode(G_CULL_BACK | G_SHADING_SMOOTH));
+    hitPrismGfx.push_back(gsSPVertex((uintptr_t)hitPrismVtx.data(),
+                                     2 + kSides * 2, 0));
+    for (int32_t side = 0; side < kSides; ++side) {
+        const int32_t previous = (side + kSides - 1) % kSides;
+        const int32_t bottomPrevious = 2 + previous * 2;
+        const int32_t bottom = 2 + side * 2;
+        const int32_t top = bottom + 1;
+        const int32_t topPrevious = bottomPrevious + 1;
+        hitPrismGfx.push_back(gsSP2Triangles(bottomPrevious, bottom, top, 0,
+                                             bottomPrevious, top, topPrevious, 0));
+    }
+    hitPrismGfx.push_back(gsSPClearGeometryMode(G_SHADING_SMOOTH));
+    for (int32_t side = 0; side < kSides; ++side) {
+        const int32_t previous = (side + kSides - 1) % kSides;
+        const int32_t bottomPrevious = 2 + previous * 2;
+        const int32_t bottom = 2 + side * 2;
+        const int32_t top = bottom + 1;
+        const int32_t topPrevious = bottomPrevious + 1;
+        hitPrismGfx.push_back(gsSP2Triangles(0, bottom, bottomPrevious, 0,
+                                             1, topPrevious, top, 0));
+    }
+    hitPrismGfx.push_back(gsSPClearGeometryMode(G_CULL_BACK));
+    hitPrismGfx.push_back(gsSPEndDisplayList());
 }
 
 // This subdivides a face into four tris by placing new verticies at the midpoints of the sides (Like a triforce!), then
@@ -356,6 +481,102 @@ void DrawQuad(std::vector<Gfx>& dl, Vec3f& v0, Vec3f& v1, Vec3f& v2, Vec3f& v3) 
     dl.push_back(gsSP2Triangles(0, 1, 2, 0, 0, 2, 3, 0));
 }
 
+void DrawHitPrism(std::vector<Gfx>& dl,
+                  const Game::Simulation::PlayerHitPrism& prism,
+                  const void* rigIdentity, int32_t prismIndex) {
+    using namespace Game::Simulation;
+    const Vec3 axisVector = HitRigDetail::Subtract(prism.end, prism.start);
+    const float lengthSquared = HitRigDetail::Dot(axisVector, axisVector);
+    if (lengthSquared <= 0.000001f || prism.outerRadius <= 0.0f) return;
+    const float length = std::sqrt(lengthSquared);
+    const Vec3 axis = HitRigDetail::Scale(axisVector, 1.0f / length);
+    const Vec3 reference = std::abs(axis.y) < 0.9f ? Vec3{ 0.0f, 1.0f, 0.0f }
+                                                   : Vec3{ 1.0f, 0.0f, 0.0f };
+    const Vec3 cross = HitRigDetail::Cross(axis, reference);
+    const Vec3 radialX = HitRigDetail::Scale(
+        cross, 1.0f / std::sqrt(HitRigDetail::Dot(cross, cross)));
+    const Vec3 radialZ = HitRigDetail::Cross(axis, radialX);
+    const float radialScale = prism.outerRadius / 128.0f;
+    const float axisScale = length / 128.0f;
+
+    MtxF transform{};
+    // Columns map the fixed mesh's local X/Y/Z axes into world space.
+    transform.xx = radialX.x * radialScale;
+    transform.yx = radialX.y * radialScale;
+    transform.zx = radialX.z * radialScale;
+    transform.xy = axis.x * axisScale;
+    transform.yy = axis.y * axisScale;
+    transform.zy = axis.z * axisScale;
+    transform.xz = radialZ.x * radialScale;
+    transform.yz = radialZ.y * radialScale;
+    transform.zz = radialZ.z * radialScale;
+    transform.xw = prism.start.x;
+    transform.yw = prism.start.y;
+    transform.zw = prism.start.z;
+    transform.ww = 1.0f;
+
+    mtxDl.emplace_back();
+    // Keep each articulated limb on a stable interpolation path. Link's mesh
+    // matrices are interpolated between the 20 Hz game updates; converting
+    // these transforms directly with guMtxF2L bypassed that system and left
+    // the F1 rig frozen on the last simulation pose during interpolated
+    // frames. The normal matrix conversion records both poses and replaces
+    // this destination matrix with the current interpolated transform.
+    FrameInterpolation_RecordOpenChild(rigIdentity, prismIndex);
+    Matrix_MtxFToMtx(&transform, &mtxDl.back());
+    dl.push_back(gsSPMatrix(&mtxDl.back(),
+                            G_MTX_MODELVIEW | G_MTX_LOAD | G_MTX_PUSH));
+    dl.push_back(gsSPDisplayList(hitPrismGfx.data()));
+    dl.push_back(gsSPPopMatrix(G_MTX_MODELVIEW));
+    FrameInterpolation_RecordCloseChild();
+}
+
+void DrawAuthoritativePlayerCollision() {
+    using namespace Game::Simulation;
+    std::vector<Gfx>& dl = xluDl;
+    InitGfx(dl);
+    // The articulated prisms deliberately fit inside the visible Link mesh.
+    // Draw this one added F1 layer without depth rejection so the real combat
+    // surfaces can be inspected; all existing collision-viewer layers retain
+    // their original depth-tested material.
+    dl.push_back(gsSPClearGeometryMode(G_ZBUFFER));
+    dl.push_back(gsDPSetRenderMode(G_RM_XLU_SURF, G_RM_XLU_SURF2));
+    dl.push_back(gsDPSetEnvColor(255, 255, 255, 208));
+    dl.push_back(gsSPMatrix(&gMtxClear,
+                            G_MTX_MODELVIEW | G_MTX_LOAD | G_MTX_NOPUSH));
+    dl.push_back(gsDPSetPrimColor(0, 0, 255, 96, 0, 255));
+
+    for (const auto& [playerId, record] : playerHitRigs) {
+        (void)playerId;
+        if (record.snapshot.sceneId != gPlayState->sceneNum) continue;
+        // Combat remains fixed-tick and server authoritative. The diagnostic
+        // advances that same semantic pose only across the short interval
+        // since its newest snapshot, matching the continuously sampled Link
+        // animation instead of displaying a frozen snapshot mesh.
+        constexpr float kMaximumPoseAdvanceSeconds = 0.1f;
+        const float elapsedSeconds = std::clamp(
+            std::chrono::duration<float>(std::chrono::steady_clock::now() -
+                                         record.receivedAt).count(),
+            0.0f, kMaximumPoseAdvanceSeconds);
+        // When this player was rendered in the current frame, inspect the
+        // exact limb pivots used by Link's skeleton. The deterministic
+        // authoritative pose remains the fallback for culled/offscreen
+        // players and remains the server's combat representation.
+        constexpr float kRenderedPoseLifetimeSeconds = 0.25f;
+        const bool renderedPoseCurrent = record.hasRenderedRig &&
+            std::chrono::duration<float>(std::chrono::steady_clock::now() -
+                                         record.renderedAt).count() <=
+                kRenderedPoseLifetimeSeconds;
+        const ArticulatedPlayerHitRig rig = renderedPoseCurrent
+            ? record.renderedRig
+            : BuildAuthoritativePlayerHitRig(record.snapshot, elapsedSeconds);
+        for (std::size_t index = 0; index < rig.prisms.size(); ++index) {
+            DrawHitPrism(dl, rig.prisms[index], &record,
+                         static_cast<int32_t>(index));
+        }
+    }
+}
+
 // Draws a list of Col Check objects
 void DrawColCheckList(std::vector<Gfx>& dl, Collider** objects, int32_t count) {
     for (int32_t colIndex = 0; colIndex < count; colIndex++) {
@@ -524,6 +745,7 @@ extern "C" void DrawColViewer() {
     DrawSceneCollision();
     DrawBgActorCollision();
     DrawColCheckCollision();
+    DrawAuthoritativePlayerCollision();
     DrawWaterboxList();
 
     // Check if we used up more space than we reserved. If so, redo the drawing with our new sizes.
@@ -538,6 +760,7 @@ extern "C" void DrawColViewer() {
         DrawSceneCollision();
         DrawBgActorCollision();
         DrawColCheckCollision();
+        DrawAuthoritativePlayerCollision();
         DrawWaterboxList();
     }
 
@@ -558,6 +781,70 @@ extern "C" void DrawColViewer() {
     CLOSE_DISPS(gPlayState->state.gfxCtx);
 }
 
+void RecordAuthoritativePlayerCollision(
+    int32_t playerId, const Game::Simulation::PlayerSnapshot& snapshot) {
+    if (playerId >= 0 && snapshot.sceneId >= 0) {
+        // Network snapshots can arrive more often than the native skeleton is
+        // evaluated. Updating the whole record here used to erase the limb
+        // origins captured by Player_PostLimbDraw on every packet, so F1 kept
+        // falling back to the semantic server pose instead of following the
+        // character's current animation. Only authoritative state is replaced;
+        // the most recent rendered rig remains valid until the next draw
+        // refreshes it or its short lifetime expires.
+        PlayerCollisionRecord& record = playerHitRigs[playerId];
+        record.snapshot = snapshot;
+        record.receivedAt = std::chrono::steady_clock::now();
+    }
+}
+
+extern "C" void SetLocalCollisionPlayerId(int32_t playerId) {
+    localCollisionPlayerId = playerId;
+}
+
+extern "C" void BeginRenderedPlayerCollision(int32_t playerId) {
+    const auto found = playerHitRigs.find(playerId);
+    if (found == playerHitRigs.end()) return;
+    found->second.renderedLimbs.fill(false);
+}
+
+extern "C" void RecordRenderedPlayerCollisionLimb(
+    int32_t playerId, int32_t limbIndex, float x, float y, float z) {
+    const auto found = playerHitRigs.find(playerId);
+    if (found == playerHitRigs.end() || limbIndex <= PLAYER_LIMB_NONE ||
+        limbIndex >= PLAYER_LIMB_MAX) {
+        return;
+    }
+    found->second.renderedLimbOrigins[limbIndex] = { x, y, z };
+    found->second.renderedLimbs[limbIndex] = true;
+}
+
+extern "C" void EndRenderedPlayerCollision(int32_t playerId) {
+    const auto found = playerHitRigs.find(playerId);
+    if (found != playerHitRigs.end()) BuildRenderedPlayerHitRig(found->second);
+}
+
+extern "C" void BeginLocalRenderedPlayerCollision(void) {
+    BeginRenderedPlayerCollision(localCollisionPlayerId);
+}
+
+extern "C" void RecordLocalRenderedPlayerCollisionLimb(
+    int32_t limbIndex, float x, float y, float z) {
+    RecordRenderedPlayerCollisionLimb(localCollisionPlayerId, limbIndex, x, y,
+                                      z);
+}
+
+extern "C" void EndLocalRenderedPlayerCollision(void) {
+    EndRenderedPlayerCollision(localCollisionPlayerId);
+}
+
+void ClearAuthoritativePlayerCollision(void) {
+    playerHitRigs.clear();
+}
+
+void RemoveAuthoritativePlayerCollision(int32_t playerId) {
+    playerHitRigs.erase(playerId);
+}
+
 extern "C" void ToggleColViewer() {
     sColViewerEnabled = !sColViewerEnabled;
 }
@@ -565,4 +852,5 @@ extern "C" void ToggleColViewer() {
 extern "C" void InitColViewer() {
     CreateCylinderData();
     CreateSphereData();
+    CreateHitPrismData();
 }

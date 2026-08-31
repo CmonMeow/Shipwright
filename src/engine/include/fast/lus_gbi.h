@@ -130,7 +130,6 @@ constexpr int8_t RDP_G_SETTARGETINTERPINDEX = OPCODE(0x45);
 
 /* macros for command parsing: */
 #define GDMACMD(x) (x)
-#define GIMMCMD(x) = OPCODE(G_IMMFIRST - (x))
 #define GRDPCMD(x) (0xff - (x))
 
 #define G_DMACMDSIZ 128

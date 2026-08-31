@@ -1,5 +1,7 @@
 #include "runtime/runtime.h"
 #include "engine/input/Win32Input.h"
+#include "engine/input/ActionIntentFrame.h"
+#include "engine/input/PCInput.h"
 
 #include <cstring>
 #include <ratio>
@@ -20,9 +22,16 @@ uint64_t __osCurrentTime = 0;
 
 static uint16_t sSelectedWeaponButton = BTN_CLEFT;
 static int32_t sWeaponSelectionRequested = 0;
-static bool sToggleWeaponRequested = false;
-static bool sEvadeRequested = false;
-static bool sBowUseBuffered = false;
+
+enum PcActionIntent : size_t {
+    PC_ACTION_WEAPON_SELECTION,
+    PC_ACTION_TOGGLE_WEAPON,
+    PC_ACTION_EVADE,
+    PC_ACTION_BOW_USE,
+    PC_ACTION_COUNT,
+};
+
+static Engine::ActionIntentFrame<PC_ACTION_COUNT> sActionIntents;
 
 int32_t osContInit(OSMesgQueue* mq, uint8_t* controllerBits, OSContStatus* status) {
     std::memset(status, 0, sizeof(OSContStatus) * __osMaxControllers);
@@ -60,28 +69,37 @@ int32_t PCInput_ConsumeMouseAimDelta(int32_t* deltaX, int32_t* deltaY) {
 }
 
 int32_t PCInput_ConsumeToggleWeapon(void) {
-    const bool requested = sToggleWeaponRequested;
-    sToggleWeaponRequested = false;
-    return requested;
+    return sActionIntents.Consume(PC_ACTION_TOGGLE_WEAPON);
 }
 
 int32_t PCInput_ConsumeEvade(void) {
-    const bool requested = sEvadeRequested;
-    sEvadeRequested = false;
-    return requested;
+    return sActionIntents.Consume(PC_ACTION_EVADE);
 }
 
-void PCInput_ClearBufferedActions(void) {
+int32_t PCInput_EvadeRequestedThisSample(void) {
+    return sActionIntents.Requested(PC_ACTION_EVADE);
+}
+
+void PCInput_DiscardActionIntents(void) {
     sWeaponSelectionRequested = 0;
-    sEvadeRequested = false;
-    sToggleWeaponRequested = false;
-    sBowUseBuffered = false;
+    sActionIntents.Clear();
 }
 
 int32_t PCInput_IsFishingReelHeld(void) {
 #ifdef _WIN32
     Engine::Win32Input& input = Engine::GetWin32Input();
     return input.Pressed(VK_RBUTTON) && !input.IsGameInputBlocked() && !input.IsTextInputCaptured();
+#else
+    return false;
+#endif
+}
+
+int32_t PCInput_IsShieldHeld(void) {
+#ifdef _WIN32
+    Engine::Win32Input& input = Engine::GetWin32Input();
+    const bool swordSelected = sSelectedWeaponButton == BTN_CLEFT || sSelectedWeaponButton == BTN_CDOWN;
+    return swordSelected && input.Pressed(VK_RBUTTON) && !input.IsGameInputBlocked() &&
+           !input.IsTextInputCaptured();
 #else
     return false;
 #endif
@@ -101,6 +119,10 @@ int32_t PCInput_GetSelectedWeaponSlot(void) {
 }
 
 int32_t PCInput_ConsumeWeaponSelection(void) {
+    if (!sActionIntents.Consume(PC_ACTION_WEAPON_SELECTION)) {
+        sWeaponSelectionRequested = 0;
+        return 0;
+    }
     const int32_t requested = sWeaponSelectionRequested;
     sWeaponSelectionRequested = 0;
     return requested;
@@ -116,21 +138,23 @@ int32_t PCInput_IsBowAimHeld(void) {
 #endif
 }
 
-void PCInput_AcknowledgeBowUse(void) {
-    sBowUseBuffered = false;
+void PCInput_ConsumeBowUseIntent(void) {
+    sActionIntents.Cancel(PC_ACTION_BOW_USE);
 }
 
-int32_t PCInput_IsBowUseBuffered(void) {
-    return sBowUseBuffered;
+int32_t PCInput_HasBowUseIntent(void) {
+    return sActionIntents.Pending(PC_ACTION_BOW_USE);
 }
 
 void osContGetReadData(OSContPad* pad) {
     memset(pad, 0, sizeof(OSContPad) * __osMaxControllers);
+    sActionIntents.BeginSample();
 
 #ifdef _WIN32
     Engine::Win32Input& input = Engine::GetWin32Input();
 
     if (input.IsGameInputBlocked() || input.IsTextInputCaptured()) {
+        PCInput_DiscardActionIntents();
         return;
     }
 
@@ -139,33 +163,44 @@ void osContGetReadData(OSContPad* pad) {
     if (input.ConsumePress('1')) {
         sSelectedWeaponButton = BTN_CLEFT;
         sWeaponSelectionRequested = 1;
-        sBowUseBuffered = false;
+        sActionIntents.Request(PC_ACTION_WEAPON_SELECTION);
+        sActionIntents.Cancel(PC_ACTION_BOW_USE);
     }
     if (input.ConsumePress('2')) {
         sSelectedWeaponButton = BTN_CDOWN;
         sWeaponSelectionRequested = 2;
-        sBowUseBuffered = false;
+        sActionIntents.Request(PC_ACTION_WEAPON_SELECTION);
+        sActionIntents.Cancel(PC_ACTION_BOW_USE);
     }
     if (input.ConsumePress('3')) {
         sSelectedWeaponButton = BTN_CRIGHT;
         sWeaponSelectionRequested = 3;
+        sActionIntents.Request(PC_ACTION_WEAPON_SELECTION);
     }
     if (input.ConsumePress('4')) {
         sSelectedWeaponButton = BTN_CUP;
         sWeaponSelectionRequested = 4;
-        sBowUseBuffered = false;
+        sActionIntents.Request(PC_ACTION_WEAPON_SELECTION);
+        sActionIntents.Cancel(PC_ACTION_BOW_USE);
     }
-    if (input.ConsumePress('X')) sToggleWeaponRequested = true;
-    if (input.ConsumePress(VK_SPACE)) sEvadeRequested = true;
+    if (input.ConsumePress('X')) {
+        sActionIntents.Request(PC_ACTION_TOGGLE_WEAPON);
+    }
+    if (input.ConsumePress(VK_SPACE)) {
+        // Evade is an edge for this simulation opportunity only. If the
+        // current native action cannot accept it, the next controller sample
+        // expires it instead of producing a delayed backflip.
+        sActionIntents.Request(PC_ACTION_EVADE);
+    }
 
     const bool swordSelected = sSelectedWeaponButton == BTN_CLEFT || sSelectedWeaponButton == BTN_CDOWN;
     const bool bowSelected = sSelectedWeaponButton == BTN_CRIGHT;
     const bool fishingSelected = sSelectedWeaponButton == BTN_CUP;
 
-    // Preserve a click made during the bow's post-shot recovery. The native
-    // player code acknowledges it once it can actually begin the next draw.
+    // A click is valid for this controller sample only. If bow recovery still
+    // owns the action state, the click is rejected instead of replayed later.
     if (bowSelected && input.ConsumePress(VK_LBUTTON)) {
-        sBowUseBuffered = true;
+        sActionIntents.Request(PC_ACTION_BOW_USE);
     }
 
     if (fishingSelected && input.Pressed(VK_LBUTTON)) {

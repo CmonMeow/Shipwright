@@ -1,17 +1,41 @@
 #pragma once
 
 #include "NetworkProtocol.h"
-#include "ServerCollisionWorld.h"
+#include "NetworkConnectionTransport.h"
+#include "NetworkProtocolIngress.h"
+#include "NetworkSessionLifecycleService.h"
+#include "ClientReplicationInbox.h"
+#include "ClientSessionIngress.h"
+#include "ClientProtocolEndpoint.h"
+#include "CommunicationInbox.h"
+#include "PrivateChatService.h"
+#include "LocalClientAdmissionService.h"
+#include "LocalGameplayCommandService.h"
+#include "LocalTextCommunicationService.h"
+#include "LocalVoiceSubmissionService.h"
+#include "ServerAdministrationService.h"
+#include "ServerCommunicationService.h"
+#include "ServerReplicationInterestPublisher.h"
+#include "ServerReplicationEventPublisher.h"
+#include "ServerGameplayCommandService.h"
+#include "ServerGameplayPacketIngress.h"
+#include "ServerPlayerSessionService.h"
+#include "SecureTransportChannel.h"
+#include "ServerWorldBootstrap.h"
+#include "ServerSessionManager.h"
+#include "ServerProtocolEndpoint.h"
+#include "../../platform/client/LocalPlayerCommandStream.h"
+#include "../../platform/client/LocalFishIntentStream.h"
+#include "../../platform/client/LocalFishingUpdateStream.h"
+#include "../../platform/client/LocalStructureActionStream.h"
+#include "../../platform/replication/ServerReplicationCoordinator.h"
+#include "../../platform/server/ServerAuthorityScheduler.h"
+#include "../../platform/server/ServerWorldManagement.h"
+#include "../../platform/simulation/ServerGameplayIngress.h"
+#include "../../platform/simulation/ServerWorld.h"
 
 #include <cstdint>
-#include <chrono>
-#include <deque>
-#include <future>
-#include <map>
-#include <memory>
-#include <set>
 #include <string>
-#include <tuple>
 #include <vector>
 
 namespace SoH::Network {
@@ -40,6 +64,7 @@ class NetworkRuntime final {
     bool IsClient() const;
     bool IsActive() const;
     bool IsSecure() const;
+    uint64_t SessionGeneration() const;
     int32_t LocalPlayerId() const;
     int32_t LatencyMilliseconds() const;
     int32_t ThroughputBytesPerSecond() const;
@@ -49,185 +74,87 @@ class NetworkRuntime final {
     std::vector<NetworkPlayerInfo> Players() const;
     bool SendChat(const std::string& message);
     bool SendPrivateChat(int32_t targetPlayer, const std::string& message);
-    bool SendPlayerState(NetworkPlayerStatePacket packet);
-    bool SendActorEvent(NetworkActorEventPacket packet);
-    bool SendProjectileState(NetworkProjectileStatePacket packet, bool reliableTransition = false);
-    bool SendProjectileImpact(NetworkProjectileImpactPacket packet);
-    bool SendVoice(NetworkVoicePacket packet);
-
+    bool SendPlayerCommand(Game::Simulation::PlayerCommand command,
+                           uint32_t expectedLifeEpoch = 0);
+    bool SendWeaponSelection(const Game::Client::LocalWeaponSelectionRequest& request);
+    bool SendSceneEntryIntent(const Game::Client::LocalSceneEntryRequest& request);
+    bool ConfigureSceneSpawn(const Game::Simulation::PlayerSpawn& spawn);
+    bool AuthorizeSceneTransition(int32_t playerId, int32_t destinationSceneId);
+    bool SendFishingPresentation(
+        const Game::Replication::FishingPresentationState& presentation);
+    bool SendFishIntent(const Game::Client::LocalFishIntent& intent);
+    bool SendLureControlIntent(const Game::Client::LocalLureControlIntent& intent);
+    bool SendArrowFireIntent(const Game::Client::LocalProjectileIntent& intent);
+    bool SendVoiceFrame(std::vector<uint8_t> opusData);
+    bool SendStructureAction(const Game::Client::LocalStructureAction& action);
+    Game::Simulation::EntityId EnsureObjective(const Game::Simulation::ObjectiveDefinition& definition);
+    Game::Simulation::EntityId EnsureStrategicSite(
+        const Game::Simulation::ObjectiveDefinition& objective,
+        Game::Simulation::StrategicSiteKind kind, int32_t influenceRegionKey);
+    bool EnsureSupplyRoute(const Game::Simulation::SupplyRouteDefinition& definition);
+    bool RemoveSupplyRoute(int32_t routeKey);
+    bool EnsureInfluenceAdjacency(
+        const Game::Simulation::InfluenceRegionAdjacencyDefinition& definition);
+    bool RemoveInfluenceAdjacency(int32_t adjacencyKey);
+    bool RemoveObjective(int32_t objectiveKey);
+    Game::Simulation::EntityId EnsureStructure(const Game::Simulation::StructureDefinition& definition);
+    bool RemoveStructure(int32_t structureKey);
     bool PollChat(NetworkChatLine& line);
-    bool PollPlayerState(NetworkPlayerStatePacket& packet);
-    bool PollFishingState(NetworkPlayerStatePacket& packet);
-    bool PollPlayerRemove(NetworkPlayerRemovePacket& packet);
-    bool PollDynamicObjectState(NetworkDynamicObjectStatePacket& packet);
-    bool PollActorEvent(NetworkActorEventPacket& packet);
-    bool PollProjectileState(NetworkProjectileStatePacket& packet);
-    bool PollPlayerDamage(NetworkPlayerDamagePacket& packet);
-    bool PollPlayerRespawn(NetworkPlayerRespawnPacket& packet);
+    bool PollPlayerSnapshot(Game::Simulation::PlayerSnapshot& snapshot);
+    bool PollSceneEntryState(Game::Client::LocalSceneAuthority& authority);
+    bool PollFishingPresentation(
+        Game::Replication::FishingPresentationState& state);
+    bool PollPlayerLifecycle(Game::Client::RemotePlayerPresentationState& state);
+    bool PollFishState(Game::Client::RemoteFishEntity& state);
+    bool PollLureState(Game::Client::RemoteLureEntity& state);
+    bool PollProjectileState(Game::Client::RemoteProjectileReplicaState& state);
+    bool PollProjectileIntentResult(
+        Game::Client::LocalProjectileIntentDecision& decision);
+    bool PollCombatResult(Game::Simulation::CombatResultEvent& event);
+    bool PollPlayerRespawn(Game::Simulation::PlayerRespawnEvent& event);
     bool PollVoice(NetworkVoicePacket& packet);
+    bool PollObjectiveState(Game::Client::ReplicatedObjectiveState& state);
+    bool PollStrategicTopology(
+        Game::Client::ReplicatedStrategicTopologyState& state);
+    bool PollStructureState(Game::Client::ReplicatedStructureState& state);
+    bool PollCorpseState(Game::Client::CorpsePresentationState& state);
 
   private:
-    struct ConnectAttempt {
-        std::unique_ptr<NetTranspClient> client;
-        ConnectResult result = CRError;
-    };
-
-    static void OnClientMessage(char* buffer, __int32 size, void* context);
-    static void OnServerMessage(__int32 sender, char* buffer, __int32 size, void* context);
-    static void OnPeerCreated(__int32 peer, bool botClient, const char* name, unsigned long address, void* context);
-    static void OnPeerDeleted(__int32 peer, void* context);
-
-    void HandleClientMessage(char* buffer, __int32 size);
-    void HandleServerMessage(int32_t sender, char* buffer, __int32 size);
     void HandlePeerCreated(int32_t peer);
     void HandlePeerDeleted(int32_t peer);
 
-    bool PrepareClientMessage(char* buffer, __int32 size, std::string& decrypted, const char*& message,
-                              __int32& messageSize);
-    bool PrepareServerMessage(int32_t sender, char* buffer, __int32 size, std::string& decrypted,
-                              const char*& message, __int32& messageSize);
-
-    bool SendPlainToClient(NetAppMessageType type, const NetworkMessageRaw& raw);
-    bool SendPlainToPeer(int32_t peer, NetAppMessageType type, const NetworkMessageRaw& raw);
-    bool SendToServer(NetAppMessageType type, const NetworkMessageRaw& raw, NetMsgFlags flags);
-    bool SendToPeer(int32_t peer, NetAppMessageType type, const NetworkMessageRaw& raw, NetMsgFlags flags);
-    bool SendEncryptedPayloadToServer(const std::string& payload, NetMsgFlags flags);
-    bool SendEncryptedPayloadToPeer(int32_t peer, const std::string& payload, NetMsgFlags flags);
-    bool SendPayloadToServer(const std::string& payload, NetMsgFlags flags);
-    bool SendPayloadToPeer(int32_t peer, const std::string& payload, NetMsgFlags flags);
     void Broadcast(NetAppMessageType type, const NetworkMessageRaw& raw, int32_t exceptPlayer = -1,
-                   NetMsgFlags flags = static_cast<NetMsgFlags>(NMFGuaranteed | NMFHighPriority));
+                   NetMsgFlags flags = static_cast<NetMsgFlags>(NMFGuaranteed | NMFHighPriority),
+                   Game::Replication::ReplicationStreamKey streamKey = {});
 
-    void BeginClientCryptoHandshake();
-    void SendClientIdentity();
-    void SendPrivateChatKeyFromClient();
-    void SendChatKeyTo(int32_t peer, int32_t owner, const std::string& name, const std::string& publicKey);
-    void SendKnownChatKeysTo(int32_t peer);
-    void BroadcastChatKey(int32_t owner, const std::string& name, const std::string& publicKey);
-    bool EnsurePrivateChatKey();
-    std::string PrivateChatPublicKey() const;
-    bool EncryptPrivateText(int32_t target, const std::string& message, std::string& cipher) const;
-    bool DecryptPrivateText(const std::string& cipher, std::string& message) const;
-    std::string PlayerName(int32_t player) const;
-    void QueueChat(const std::string& text, ChatLineKind kind = CLKNormal);
-    bool IsGameMaster(int32_t player) const;
-    bool ResolvePlayerReference(const std::string& reference, int32_t& player) const;
-    void SendCommandResult(int32_t player, const std::string& message);
-    void BroadcastSystem(const std::string& message);
-    bool KickPlayer(const std::string& reference, bool ban, std::string& result);
-    bool GrantGameMaster(const std::string& reference, std::string& result);
-    bool RevokeGameMaster(const std::string& reference, std::string& result);
-    bool UnbanIdentity(const std::string& identity, std::string& result);
-    void SendUsersList(int32_t player);
-    void SendIdentityList(int32_t player, const char* label, const std::vector<std::string>& identities);
-    void RunServerCommand(int32_t player, const std::string& command);
-    bool AcceptServerProjectile(int32_t player, const NetworkProjectileStatePacket& request);
-    bool AcceptServerProjectileImpact(int32_t witness, const NetworkProjectileImpactPacket& impact);
-    void RetainServerStuckArrow(const std::pair<int32_t, int32_t>& currentKey);
-    void SanitizeServerFishingState(int32_t player, NetworkPlayerStatePacket& state,
-                                    const NetworkPlayerStatePacket* previous, float elapsedSeconds);
-    bool AcceptServerActorEvent(int32_t player, NetworkActorEventPacket packet);
-    void ProcessPendingActorEvents();
-    void UpdateServerDynamicObjects();
-    void ReleaseFishOwnedBy(int32_t player);
-    void UpdateServerProjectiles();
-    void UpdateServerRespawns();
-    void ProcessServerDeathTransition(int32_t player, const NetworkPlayerStatePacket& state);
-    void CreateServerCorpse(const NetworkPlayerStatePacket& finalPose);
-    void EvaluateMeleeAttack(int32_t player, const NetworkPlayerStatePacket& state);
-    bool PlayerIsNearObject(int32_t player, const NetworkDynamicObjectStatePacket& objectState) const;
-
-    static bool DecodeChatKey(const char* message, __int32 size, int32_t& player, std::string& name,
-                              std::string& publicKey);
-    static bool DecodePrivateForServer(const char* message, __int32 size, int32_t& target, std::string& cipher);
-    static bool DecodePrivateForClient(const char* message, __int32 size, int32_t& sender, std::string& name,
-                                       std::string& cipher);
-    static bool SanePlayerState(const NetworkPlayerStatePacket& packet);
-    static bool SaneDynamicObjectState(const NetworkDynamicObjectStatePacket& packet);
-    static bool SaneActorEvent(const NetworkActorEventPacket& packet);
-    static bool SaneProjectileState(const NetworkProjectileStatePacket& packet);
-    static bool SaneProjectileImpact(const NetworkProjectileImpactPacket& packet);
-    static bool SaneVoice(const NetworkVoicePacket& packet);
-
-    std::unique_ptr<NetTranspServer> mServer;
-    std::unique_ptr<NetTranspClient> mClient;
-    std::future<ConnectAttempt> mConnectFuture;
-    std::vector<int32_t> mPeers;
-    std::map<int32_t, NetworkIdentity> mIdentities;
-    std::vector<std::string> mBannedIdentities;
-    std::vector<std::string> mGameMasterIdentities;
-    std::map<int32_t, std::string> mPendingLeaveMessages;
-    std::map<int32_t, cCryptoSession> mServerCrypto;
-    std::map<int32_t, std::string> mPrivateChatKeys;
-    std::map<int32_t, std::string> mPrivateChatNames;
+    NetworkConnectionTransport mConnection;
+    ServerSessionManager mServerSessions;
+    ServerAdministrationService mAdministration;
+    PrivateChatService mPrivateChat;
+    CommunicationInbox mCommunication;
     cCryptoSession mClientCrypto;
-    unsigned char mPrivateChatPublicKey[crypto_box_PUBLICKEYBYTES];
-    unsigned char mPrivateChatSecretKey[crypto_box_SECRETKEYBYTES];
-    bool mPrivateChatKeyReady = false;
-    bool mClientIdentitySent = false;
-    int32_t mLocalPlayerId = -1;
-    int32_t mLatencyMilliseconds = 0;
-    int32_t mThroughputBytesPerSecond = 0;
-    int32_t mInboundBytesPerSecond = 0;
-    int32_t mOutboundBytesPerSecond = 0;
-    uint64_t mInboundBytesSinceSample = 0;
-    uint64_t mOutboundBytesSinceSample = 0;
-    std::chrono::steady_clock::time_point mRateSampleTime = std::chrono::steady_clock::now();
-    std::deque<NetworkChatLine> mChat;
-    std::deque<NetworkPlayerStatePacket> mPlayerStates;
-    std::deque<NetworkPlayerStatePacket> mFishingStates;
-    std::deque<NetworkPlayerRemovePacket> mPlayerRemovals;
-    std::deque<NetworkDynamicObjectStatePacket> mDynamicObjectStates;
-    std::deque<NetworkActorEventPacket> mActorEvents;
-    std::deque<NetworkProjectileStatePacket> mProjectileStates;
-    std::map<std::pair<int32_t, int32_t>, unsigned __int32> mLatestProjectileSequences;
-    std::deque<NetworkPlayerDamagePacket> mPlayerDamage;
-    std::deque<NetworkPlayerRespawnPacket> mPlayerRespawns;
-    struct ServerProjectile {
-        NetworkProjectileStatePacket state{};
-        float velocityX = 0.0f;
-        float velocityY = 0.0f;
-        float velocityZ = 0.0f;
-        float heldOffsetX = 0.0f;
-        float heldOffsetY = 0.0f;
-        float heldOffsetZ = 0.0f;
-        float groundY = 0.0f;
-        std::chrono::steady_clock::time_point spawned = std::chrono::steady_clock::now();
-        std::chrono::steady_clock::time_point explodingSince = std::chrono::steady_clock::now();
-        std::chrono::steady_clock::time_point impactedSince = std::chrono::steady_clock::now();
-        std::chrono::steady_clock::time_point lastUpdate = std::chrono::steady_clock::now();
-        std::chrono::steady_clock::time_point lastBroadcast = std::chrono::steady_clock::now();
-    };
-    std::map<int32_t, NetworkPlayerStatePacket> mAuthoritativePlayerStates;
-    std::map<int32_t, bool> mPlayerWasDead;
-    std::map<int32_t, NetworkPlayerStatePacket> mLastDeadPlayerStates;
-    std::map<int32_t, std::chrono::steady_clock::time_point> mRespawnDeadlines;
-    std::map<int32_t, NetworkPlayerStatePacket> mServerCorpses;
-    std::map<int32_t, std::deque<int32_t>> mSceneCorpses;
-    std::map<int32_t, std::chrono::steady_clock::time_point> mLastPlayerStateUpdate;
-    std::map<std::pair<int32_t, int32_t>, ServerProjectile> mServerProjectiles;
-    ServerCollisionWorld mCollisionWorld;
-    std::map<int32_t, std::chrono::steady_clock::time_point> mLastProjectileFire;
-    std::map<int32_t, bool> mMeleeWasActive;
-    std::map<int32_t, std::chrono::steady_clock::time_point> mLastMeleeAttack;
-    std::set<std::pair<int32_t, int32_t>> mMeleeHits;
-    std::set<std::pair<int32_t, int32_t>> mSeenActorEvents;
-    struct PendingActorEvent {
-        int32_t player = -1;
-        NetworkActorEventPacket packet{};
-        std::chrono::steady_clock::time_point received = std::chrono::steady_clock::now();
-    };
-    std::deque<PendingActorEvent> mPendingActorEvents;
-    int32_t mNextServerProjectileId = 1;
-    int32_t mNextServerCorpseId = -1000;
-    int32_t mNextServerActorEventId = 1;
-    std::map<std::tuple<int32_t, int32_t, int32_t, int32_t, int32_t, int32_t, int32_t>,
-             NetworkDynamicObjectStatePacket> mPersistentDynamicObjectStates;
-    std::map<std::tuple<int32_t, int32_t, int32_t, int32_t, int32_t, int32_t, int32_t>,
-             std::chrono::steady_clock::time_point> mGrassRestoreDeadlines;
-    std::map<std::tuple<int32_t, int32_t, int32_t, int32_t, int32_t, int32_t, int32_t>, int32_t> mFishOwners;
-    std::deque<NetworkVoicePacket> mVoice;
-    bool mLastLocalPlayerDead = false;
+    ClientReplicationInbox mClientInbox;
+    ClientSessionIngress mClientIngress;
+    Game::Simulation::ServerWorld mServerWorld;
+    Game::Replication::ServerReplicationCoordinator mReplication;
+    SecureTransportChannel mSecureTransport;
+    LocalClientAdmissionService mClientAdmission;
+    LocalVoiceSubmissionService mLocalVoiceSubmission;
+    ServerReplicationInterestPublisher mInterestPublisher;
+    Game::Server::ServerWorldManagement mWorldManagement;
+    ServerReplicationEventPublisher mEventPublisher;
+    ServerGameplayCommandService mGameplayCommands;
+    ServerGameplayPacketIngress mServerGameplayIngress;
+    LocalGameplayCommandService mLocalGameplayCommands;
+    ServerCommunicationService mServerCommunication;
+    LocalTextCommunicationService mLocalTextCommunication;
+    ServerPlayerSessionService mPlayerSessions;
+    Game::Server::ServerAuthorityScheduler mAuthorityScheduler;
+    NetworkSessionLifecycleService mSessionLifecycle;
+    ServerWorldBootstrap mWorldBootstrap;
+    ClientProtocolEndpoint mClientProtocol;
+    ServerProtocolEndpoint mServerProtocol;
+    NetworkProtocolIngress mProtocolIngress;
 };
 
 } // namespace SoH::Network

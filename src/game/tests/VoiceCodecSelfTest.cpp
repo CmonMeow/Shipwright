@@ -17,26 +17,22 @@ int main() {
         return 1;
     }
 
-    NetworkVoicePacket opusPacket;
-    if (!opus.encode(input.data(), opusPacket) || opusPacket.codec != VOICE_CODEC_OPUS || opusPacket.data.empty()) {
+    std::vector<unsigned char> encoded;
+    if (!opus.encode(input.data(), encoded) || encoded.empty()) {
         Error("Voice codec self-test: Opus encode failed");
         return 2;
     }
+    NetworkVoicePacket opusPacket{};
+    opusPacket.codec = VOICE_CODEC_OPUS;
+    opusPacket.sampleRate = VOICE_SAMPLE_RATE;
+    opusPacket.frameSamples = VOICE_SAMPLES_PER_PACKET;
+    opusPacket.data = std::move(encoded);
     std::vector<__int16> opusOutput;
     if (!opus.decode(opusPacket, opusOutput) || opusOutput.size() != VOICE_SAMPLES_PER_PACKET) {
         Error("Voice codec self-test: Opus decode failed");
         return 3;
     }
 
-    NetworkVoicePacket adpcmPacket;
-    EncodeAdpcmVoicePacket(input.data(), adpcmPacket);
-    std::vector<__int16> adpcmOutput;
-    DecodeAdpcmVoicePacket(adpcmPacket, adpcmOutput);
-    if (adpcmPacket.codec != VOICE_CODEC_ADPCM || adpcmOutput.size() != VOICE_SAMPLES_PER_PACKET) {
-        Error("Voice codec self-test: ADPCM fallback failed");
-        return 4;
-    }
-
-    Error("Voice codec self-test passed: Opus codec and ADPCM fallback");
+    Error("Voice codec self-test passed: Opus encode/decode");
     return 0;
 }

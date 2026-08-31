@@ -566,10 +566,6 @@ void func_8002C7BC(TargetContext* targetCtx, Player* player, Actor* actorArg, Pl
             func_8002BE98(targetCtx, actorArg->category, play);
             targetCtx->targetedActor = actorArg;
 
-            if (actorArg->id == ACTOR_EN_BOOM) {
-                targetCtx->unk_48 = 0;
-            }
-
             lockOnSfxId = CHECK_FLAG_ALL(actorArg->flags, ACTOR_FLAG_ATTENTION_ENABLED | ACTOR_FLAG_HOSTILE)
                               ? NA_SE_SY_LOCK_ON
                               : NA_SE_SY_LOCK_ON_HUMAN;
@@ -1850,7 +1846,7 @@ void Actor_OfferCarry(Actor* actor, PlayState* play) {
            PLAYER_STATE1_CLIMBING_LEDGE | PLAYER_STATE1_JUMPING | PLAYER_STATE1_FREEFALL |
            PLAYER_STATE1_FIRST_PERSON | PLAYER_STATE1_CLIMBING_LADDER | PLAYER_STATE1_CARRYING_ACTOR |
            PLAYER_STATE1_IN_CUTSCENE)) &&
-        (Player_GetExplosiveHeld(player) < 0) && (actor->xzDistToPlayer < 50.0f) &&
+        (actor->xzDistToPlayer < 50.0f) &&
         (fabsf(actor->yDistToPlayer) < 10.0f)) {
         player->interactRangeActor = actor;
         player->getItemDirection = ABS(actor->yawTowardsPlayer - player->actor.shape.rot.y);
@@ -2045,13 +2041,6 @@ void Actor_UpdateAll(PlayState* play, ActorContext* actorCtx) {
 
     if (actorCtx->unk_02 != 0) {
         actorCtx->unk_02--;
-    }
-
-    if (KREG(0) == -100) {
-        Actor* refActor = &GET_PLAYER(play)->actor;
-        KREG(0) = 0;
-        Actor_Spawn(&play->actorCtx, play, ACTOR_EN_CLEAR_TAG, refActor->world.pos.x, refActor->world.pos.y + 100.0f,
-                    refActor->world.pos.z, 0, 0, 0, 1);
     }
 
     sp80 = &D_80116068[0];
@@ -2403,11 +2392,6 @@ int32_t Actor_CalcShouldDrawAndUpdate(PlayState* play, Actor* actor, Vec3f* proj
         *shouldUpdate = true;
         *shouldDraw = true;
         return true;
-    }
-
-    // Skip cutscene actors that depend on culling to hide from camera pans.
-    if (actor->id == ACTOR_EN_VIEWER) {
-        return false;
     }
 
     int32_t multiplier = 5;

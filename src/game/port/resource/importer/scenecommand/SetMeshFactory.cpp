@@ -3,7 +3,6 @@
 #include "port/resource/importer/scenecommand/SetMeshFactory.h"
 #include "port/resource/type/scenecommand/SetMesh.h"
 
-#include <tinyxml2.h>
 
 namespace SOH {
 namespace {
@@ -59,35 +58,6 @@ std::shared_ptr<Engine::IResource> SetMeshFactory::ReadResource(std::shared_ptr<
     for (int32_t i = 0; i < count; i++) {
         reader->ReadInt8(); // Exported polygon type; unused by a type-0 mesh.
         AddDisplayList(*setMesh, reader->ReadString(), reader->ReadString());
-    }
-
-    FinishTest01Mesh(*setMesh);
-    return setMesh;
-}
-
-std::shared_ptr<Engine::IResource> SetMeshFactoryXML::ReadResource(std::shared_ptr<Engine::ResourceInitData> initData,
-                                                                 tinyxml2::XMLElement* reader) {
-    auto setMesh = std::make_shared<SetMesh>(initData);
-    setMesh->cmdId = SceneCommandID::SetMesh;
-    setMesh->data = static_cast<uint8_t>(reader->IntAttribute("Data"));
-
-    const int32_t type = reader->IntAttribute("MeshHeaderType", -1);
-    const int32_t count = reader->IntAttribute("PolyNum", -1);
-    if (!InitializeTest01Mesh(*setMesh, type, count)) {
-        return nullptr;
-    }
-
-    for (tinyxml2::XMLElement* child = reader->FirstChildElement("Polygon"); child != nullptr;
-         child = child->NextSiblingElement("Polygon")) {
-        const char* opaquePath = child->Attribute("MeshOpa");
-        const char* translucentPath = child->Attribute("MeshXlu");
-        AddDisplayList(*setMesh, opaquePath != nullptr ? opaquePath : "",
-                       translucentPath != nullptr ? translucentPath : "");
-    }
-
-    if (setMesh->dlists.size() != static_cast<size_t>(count)) {
-        WriteLog("Rejected test01 room mesh with {} polygons but {} entries", count, setMesh->dlists.size());
-        return nullptr;
     }
 
     FinishTest01Mesh(*setMesh);

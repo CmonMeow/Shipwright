@@ -40,7 +40,7 @@ class SoundMatrixDecoder {
      * @param samplePairs Number of stereo sample pairs to process
      * @return Pointer to internal buffer with interleaved 5.1 samples [FL, FR, C, LFE, SL, SR, ...]
      */
-    std::tuple<const uint8_t*, int> Process(const uint8_t* buf, size_t len);
+    std::tuple<const uint8_t*, size_t> Process(const uint8_t* buf, size_t len);
 
   private:
     // 4th-order IIR filter (Linkwitz-Riley) for 24dB/octave slopes

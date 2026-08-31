@@ -2,7 +2,6 @@
 
 #include <engine/resource/Resource.h>
 #include <engine/resource/ResourceFactoryBinary.h>
-#include <engine/resource/ResourceFactoryXML.h>
 
 namespace SOH {
 class ResourceFactoryBinaryTextV0 final : public Engine::ResourceFactoryBinary {
@@ -11,9 +10,4 @@ class ResourceFactoryBinaryTextV0 final : public Engine::ResourceFactoryBinary {
                                                   std::shared_ptr<Engine::ResourceInitData> initData) override;
 };
 
-class ResourceFactoryXMLTextV0 final : public Engine::ResourceFactoryXML {
-  public:
-    std::shared_ptr<Engine::IResource> ReadResource(std::shared_ptr<Engine::File> file,
-                                                  std::shared_ptr<Engine::ResourceInitData> initData) override;
-};
 } // namespace SOH

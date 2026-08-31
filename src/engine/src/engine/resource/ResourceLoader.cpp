@@ -9,7 +9,6 @@
 #include "engine/utils/binarytools/BinaryReader.h"
 #include "engine/resource/factory/JsonFactory.h"
 #include "engine/resource/factory/ShaderFactory.h"
-#include <tinyxml2.h>
 #include "nlohmann/json.hpp"
 
 namespace Engine {
@@ -84,21 +83,11 @@ std::shared_ptr<ResourceFactory> ResourceLoader::GetFactory(uint32_t format, std
 
 std::shared_ptr<ResourceInitData> ResourceLoader::ReadResourceInitDataLegacy(const std::string& filePath,
                                                                              std::shared_ptr<File> fileToLoad) {
-    // Determine if file is binary or XML...
+    // Runtime resources are binary O2R entries. XML import was an exporter-era
+    // compatibility path and is intentionally unsupported.
     if (fileToLoad->Buffer->at(0) == '<') {
-        // File is XML
-        // Read the xml document
-        auto stream = std::make_shared<MemoryStream>(fileToLoad->Buffer);
-        auto binaryReader = std::make_shared<BinaryReader>(stream);
-
-        auto xmlReader = std::make_shared<tinyxml2::XMLDocument>();
-
-        xmlReader->Parse(binaryReader->ReadCString().data());
-        if (xmlReader->Error()) {
-            WriteLog("Failed to parse XML file {}. Error: {}", filePath, xmlReader->ErrorStr());
-            return nullptr;
-        }
-        return ReadResourceInitDataXml(filePath, xmlReader);
+        WriteLog("XML resources are unsupported: {}", filePath);
+        return nullptr;
     } else {
         auto headerBuffer = std::make_shared<std::vector<char>>(fileToLoad->Buffer->begin(),
                                                                 fileToLoad->Buffer->begin() + OTR_HEADER_SIZE);
@@ -130,22 +119,6 @@ std::shared_ptr<BinaryReader> ResourceLoader::CreateBinaryReader(std::shared_ptr
     return reader;
 }
 
-std::shared_ptr<tinyxml2::XMLDocument> ResourceLoader::CreateXMLReader(std::shared_ptr<File> fileToLoad,
-                                                                       std::shared_ptr<ResourceInitData> initData) {
-    auto stream = std::make_shared<MemoryStream>(fileToLoad->Buffer);
-    auto binaryReader = std::make_shared<BinaryReader>(stream);
-
-    auto xmlReader = std::make_shared<tinyxml2::XMLDocument>();
-
-    xmlReader->Parse(binaryReader->ReadCString().data());
-    if (xmlReader->Error()) {
-        WriteLog("Failed to parse XML file {}. Error: {}", initData->Path, xmlReader->ErrorStr());
-        return nullptr;
-    }
-
-    return xmlReader;
-}
-
 std::shared_ptr<ResourceInitData> ResourceLoader::CreateDefaultResourceInitData() {
     auto resourceInitData = std::make_shared<ResourceInitData>();
     resourceInitData->Id = 0xDEADBEEFDEADBEEF;
@@ -172,11 +145,6 @@ std::shared_ptr<ResourceInitData> ResourceLoader::ReadResourceInitData(const std
         initData->Path = parsed["path"];
     } else {
         initData->Path = filePath;
-    }
-
-    auto formatString = parsed["format"];
-    if (formatString == "XML") {
-        initData->Format = RESOURCE_FORMAT_XML;
     }
 
     initData->Type = Context::GetInstance()->GetResourceManager()->GetResourceLoader()->GetResourceType(parsed["type"]);
@@ -210,14 +178,11 @@ std::shared_ptr<IResource> ResourceLoader::LoadResource(std::string filePath, st
         return nullptr;
     }
 
-    switch (initData->Format) {
-        case RESOURCE_FORMAT_BINARY:
-            fileToLoad->Reader = CreateBinaryReader(fileToLoad, initData);
-            break;
-        case RESOURCE_FORMAT_XML:
-            fileToLoad->Reader = CreateXMLReader(fileToLoad, initData);
-            break;
+    if (initData->Format != RESOURCE_FORMAT_BINARY) {
+        WriteLog("Unsupported resource format {} at path {}", initData->Format, initData->Path);
+        return nullptr;
     }
+    fileToLoad->Reader = CreateBinaryReader(fileToLoad, initData);
 
     // initData->Parent = shared_from_this();
 
@@ -274,25 +239,4 @@ ResourceLoader::ReadResourceInitDataBinary(const std::string& filePath, std::sha
     return resourceInitData;
 }
 
-std::shared_ptr<ResourceInitData>
-ResourceLoader::ReadResourceInitDataXml(const std::string& filePath, std::shared_ptr<tinyxml2::XMLDocument> document) {
-    auto resourceInitData = CreateDefaultResourceInitData();
-    resourceInitData->Path = filePath;
-
-    if (document == nullptr) {
-        WriteLog("Error reading OTR header from XML: No XML document for file {}", filePath);
-        return resourceInitData;
-    }
-
-    // XML
-    resourceInitData->IsCustom = true;
-    resourceInitData->Format = RESOURCE_FORMAT_XML;
-
-    auto root = document->FirstChildElement();
-    resourceInitData->Type =
-        Context::GetInstance()->GetResourceManager()->GetResourceLoader()->GetResourceType(root->Name());
-    resourceInitData->ResourceVersion = root->IntAttribute("Version");
-
-    return resourceInitData;
-}
 } // namespace Engine

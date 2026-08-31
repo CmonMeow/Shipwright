@@ -140,14 +140,14 @@ public:
 		if (length)
 			memcpy(data + sizeof(MsgHeader), _data, length);
 		msgLen = length + sizeof(MsgHeader);
-		header->length = (msgLen > USHRT_MAX) ? USHRT_MAX : msgLen;
+		header->length = static_cast<unsigned short>((msgLen > USHRT_MAX) ? USHRT_MAX : msgLen);
 	}
 	virtual void setLength(unsigned length)
 	{
 		if (length + sizeof(MsgHeader) > totalLen)
 			length = totalLen - sizeof(MsgHeader);
 		msgLen = length + sizeof(MsgHeader);
-		header->length = (msgLen > USHRT_MAX) ? USHRT_MAX : msgLen;
+		header->length = static_cast<unsigned short>((msgLen > USHRT_MAX) ? USHRT_MAX : msgLen);
 	}
 	virtual void setFlags(unsigned short andMask, unsigned short orMask)
 	{
@@ -241,7 +241,7 @@ public:
 	bool WasReceived() const { return status == nsOutputAck; }
 
 	static void* operator new(size_t size) { return malloc(size); }
-	static void* operator new(size_t size, const char* file, __int32 line) { return malloc(size); }
+	static void* operator new(size_t size, const char*, __int32) { return malloc(size); }
 	static void operator delete(void* mem) { free(mem); }
 };
 
@@ -276,4 +276,3 @@ public:
 };
 
 #endif
-

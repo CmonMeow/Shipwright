@@ -1,23 +1,22 @@
 #pragma once
 
+#include "NetworkVersion.h"
+
 #include "Network/netTransport.hpp"
 #include "sodium.h"
 #include <algorithm>
 #include <cstddef>
-#include <fstream>
-#include <sstream>
+#include <cctype>
+#include <cstring>
 #include <string>
+#include <utility>
 #include <vector>
-#include <windows.h>
 
 using std::string;
 using std::vector;
 
 inline constexpr const char* DEFAULT_NETWORK_ADDRESS = "127.0.0.1";
 inline constexpr unsigned short DEFAULT_NETWORK_PORT = 777;
-inline constexpr __int32 APP_PROTOCOL_VERSION = 41;
-inline constexpr const char* BAN_LIST_FILENAME = "banlist.txt";
-inline constexpr const char* GM_LIST_FILENAME = "gmlist.txt";
 inline constexpr size_t CHAT_MAX_MESSAGE_CHARS = 140;
 inline constexpr size_t CHAT_MAX_LINE_CHARS = 192;
 inline constexpr size_t CHAT_WRAP_CHARS = 54;
@@ -29,16 +28,26 @@ inline constexpr size_t NET_MAX_PLAYER_BATCH_OBJECTS = 16;
 inline constexpr size_t NET_MAX_WORLD_BYTES = 16 * 1024 * 1024;
 inline constexpr size_t NET_WORLD_CHUNK_BYTES = 1024;
 inline constexpr size_t NET_MAX_WORLD_LEVELS = 256;
+inline constexpr size_t NET_MAX_STRATEGIC_SITES = 4096;
+inline constexpr size_t NET_MAX_SUPPLY_ROUTES = 8192;
+inline constexpr size_t NET_MAX_INFLUENCE_ADJACENCIES = 8192;
 inline constexpr unsigned __int64 NET_CLIENT_INTENT_MS = 16;
 inline constexpr unsigned __int64 NET_PLAYER_SYNC_MS = 50;
-inline constexpr unsigned __int64 NET_RESPAWN_MS = 5000;
+inline constexpr unsigned char NETWORK_TEAM_NEUTRAL = 0;
+inline constexpr unsigned char NETWORK_TEAM_RED = 1;
+inline constexpr unsigned char NETWORK_TEAM_BLUE = 2;
+inline constexpr unsigned char NETWORK_STRUCTURE_ACTION_BUILD = 1;
+inline constexpr unsigned char NETWORK_STRUCTURE_ACTION_REPAIR = 2;
 
 struct NetworkIdentity
 {
-    __int32 protocolVersion;
-    bool voiceClient;
+    __int32 protocolVersion = 0;
+    bool voiceClient = false;
+    bool authenticated = false;
     string id;
     string name;
+    string publicKey;
+    string signature;
 };
 
 enum ChatLineKind
@@ -115,91 +124,6 @@ inline string SanitiseIdentityText(const string& text, size_t maxChars)
         }
     }
     return TrimWhitespace(result);
-}
-
-inline string LocalIdentityId()
-{
-    DWORD serial = 0;
-    GetVolumeInformationA("C:\\", NULL, 0, &serial, NULL, NULL, NULL, 0);
-    std::ostringstream value;
-    value << serial;
-    return value.str();
-}
-
-inline string LocalUserName()
-{
-    char buf[256];
-    DWORD bufSize = sizeof(buf);
-    if (GetUserNameA(buf, &bufSize) && bufSize > 1)
-    {
-        return SanitiseIdentityText(buf, 48);
-    }
-    return "Anon";
-}
-
-inline void LoadIdentityList(const char* filename, vector<string>& list)
-{
-    list.clear();
-    std::ifstream f(filename);
-    if (!f.good())
-    {
-        return;
-    }
-
-    string token;
-    char c;
-    while (f.get(c))
-    {
-        if (isspace((unsigned char)c) || c == ',' || c == ';')
-        {
-            AddUniqueString(list, SanitiseIdentityText(token, 64));
-            token.clear();
-        }
-        else if (token.size() < 255)
-        {
-            token.push_back(c);
-        }
-    }
-
-    AddUniqueString(list, SanitiseIdentityText(token, 64));
-}
-
-inline void SaveIdentityList(const char* filename, const vector<string>& list)
-{
-    CreateDirectoryA("resource", NULL);
-    std::ofstream f(filename, std::ios::out | std::ios::trunc);
-    if (!f.good())
-    {
-        return;
-    }
-
-    for (size_t i = 0; i < list.size(); ++i)
-    {
-        if (!list[i].empty())
-        {
-            f << list[i] << "\r\n";
-        }
-    }
-}
-
-inline void LoadBanList(vector<string>& list)
-{
-    LoadIdentityList(BAN_LIST_FILENAME, list);
-}
-
-inline void SaveBanList(const vector<string>& list)
-{
-    SaveIdentityList(BAN_LIST_FILENAME, list);
-}
-
-inline void LoadGameMasterList(vector<string>& list)
-{
-    LoadIdentityList(GM_LIST_FILENAME, list);
-}
-
-inline void SaveGameMasterList(const vector<string>& list)
-{
-    SaveIdentityList(GM_LIST_FILENAME, list);
 }
 
 class NetworkMessageRaw
@@ -361,30 +285,6 @@ public:
     }
 };
 
-inline string LocalExecutableName()
-{
-    char path[MAX_PATH];
-    if (!GetModuleFileNameA(NULL, path, sizeof(path)))
-    {
-        return "GameClient.exe";
-    }
-    const char* slash = strrchr(path, '\\');
-    const char* slash2 = strrchr(path, '/');
-    if (slash2 && (!slash || slash2 > slash))
-    {
-        slash = slash2;
-    }
-    return slash ? string(slash + 1) : string(path);
-}
-
-inline void EncodeLocalIdentityRaw(NetworkMessageRaw& raw)
-{
-    raw.putInt32(APP_PROTOCOL_VERSION);
-    raw.putString(LocalIdentityId(), 64);
-    raw.putString(LocalUserName(), 48);
-    raw.putUInt8(_stricmp(LocalExecutableName().c_str(), "VoiceClient.exe") == 0 ? 1 : 0);
-}
-
 inline string BuildAppRawMessage(NetAppMessageType type, const NetworkMessageRaw& raw)
 {
     string payload;
@@ -401,7 +301,43 @@ inline string BuildAppRawMessage(NetAppMessageType type, const NetworkMessageRaw
 
 inline bool ValidAppMessageType(NetAppMessageType type)
 {
-    return type >= NAMTConnect && type <= NAMTEncrypted;
+    switch (type)
+    {
+    case NAMTConnect:
+    case NAMTChat:
+    case NAMTPlayerAssign:
+    case NAMTPlayerSnapshot:
+    case NAMTPlayerLifecycle:
+    case NAMTVoice:
+    case NAMTKeyHello:
+    case NAMTKeyAccept:
+    case NAMTProjectileState:
+    case NAMTPlayerIntent:
+    case NAMTChatKey:
+    case NAMTPrivateChat:
+    case NAMTCombatResult:
+    case NAMTPlayerRespawn:
+    case NAMTFishingState:
+    case NAMTObjectiveState:
+    case NAMTStructureState:
+    case NAMTStructureAction:
+    case NAMTCorpseState:
+    case NAMTArrowFireIntent:
+    case NAMTSceneEntryIntent:
+    case NAMTSceneEntryState:
+    case NAMTFishIntent:
+    case NAMTFishState:
+    case NAMTLureControlIntent:
+    case NAMTLureState:
+    case NAMTProjectileLifecycle:
+    case NAMTWeaponSelectionIntent:
+    case NAMTProjectileIntentResult:
+    case NAMTStrategicTopology:
+    case NAMTEncrypted:
+        return true;
+    default:
+        return false;
+    }
 }
 
 inline const char* ConnectResultName(ConnectResult result)
@@ -467,17 +403,6 @@ inline bool ParseAppRawBytes(const char* buffer, __int32 bufferSize, NetAppMessa
     return true;
 }
 
-inline bool ParseAppRawControl(const char* buffer, __int32 bufferSize, NetAppMessageType expectedType)
-{
-    if (!buffer || bufferSize != (__int32)sizeof(NetAppMessageHeader))
-    {
-        return false;
-    }
-
-    const NetAppMessageHeader* header = reinterpret_cast<const NetAppMessageHeader*>(buffer);
-    return header->type == expectedType && ValidAppMessageType(header->type);
-}
-
 inline bool ParseIdentityRaw(const char* buffer, __int32 bufferSize, NetworkIdentity& identity)
 {
     identity = NetworkIdentity();
@@ -500,16 +425,15 @@ inline bool ParseIdentityRaw(const char* buffer, __int32 bufferSize, NetworkIden
 
     NetworkMessageRaw raw(buffer + sizeof(NetAppMessageHeader), payloadSize);
     __int32 version = 0;
-    string id;
+    string publicKey;
     string name;
+    string signature;
     unsigned char voiceClient = 0;
     if (!raw.getInt32(version) ||
-        !raw.getString(id, 64) ||
-        !raw.getString(name, 48))
-    {
-        return false;
-    }
-    if (raw.remaining() > 0 && !raw.getUInt8(voiceClient))
+        !raw.getString(publicKey, crypto_sign_PUBLICKEYBYTES) ||
+        !raw.getString(name, 48) ||
+        !raw.getUInt8(voiceClient) ||
+        !raw.getString(signature, crypto_sign_BYTES))
     {
         return false;
     }
@@ -524,13 +448,15 @@ inline bool ParseIdentityRaw(const char* buffer, __int32 bufferSize, NetworkIden
 
     identity.protocolVersion = version;
     identity.voiceClient = voiceClient != 0;
-    identity.id = SanitiseIdentityText(id, 64);
     identity.name = SanitiseIdentityText(name, 48);
+    identity.publicKey = std::move(publicKey);
+    identity.signature = std::move(signature);
     if (identity.name.empty())
     {
         identity.name = "Anon";
     }
-    return !identity.id.empty();
+    return identity.publicKey.size() == crypto_sign_PUBLICKEYBYTES &&
+           identity.signature.size() == crypto_sign_BYTES;
 }
 
 inline bool ParseIdentityRawAnyVersion(const char* buffer, __int32 bufferSize, NetworkIdentity& identity)
@@ -554,16 +480,15 @@ inline bool ParseIdentityRawAnyVersion(const char* buffer, __int32 bufferSize, N
     }
 
     NetworkMessageRaw raw(buffer + sizeof(NetAppMessageHeader), payloadSize);
-    string id;
+    string publicKey;
     string name;
+    string signature;
     unsigned char voiceClient = 0;
     if (!raw.getInt32(identity.protocolVersion) ||
-        !raw.getString(id, 64) ||
-        !raw.getString(name, 48))
-    {
-        return false;
-    }
-    if (raw.remaining() > 0 && !raw.getUInt8(voiceClient))
+        !raw.getString(publicKey, crypto_sign_PUBLICKEYBYTES) ||
+        !raw.getString(name, 48) ||
+        !raw.getUInt8(voiceClient) ||
+        !raw.getString(signature, crypto_sign_BYTES))
     {
         return false;
     }
@@ -573,27 +498,21 @@ inline bool ParseIdentityRawAnyVersion(const char* buffer, __int32 bufferSize, N
     }
 
     identity.voiceClient = voiceClient != 0;
-    identity.id = SanitiseIdentityText(id, 64);
     identity.name = SanitiseIdentityText(name, 48);
+    identity.publicKey = std::move(publicKey);
+    identity.signature = std::move(signature);
     if (identity.name.empty())
     {
         identity.name = "Anon";
     }
-    return !identity.id.empty();
+    return identity.publicKey.size() == crypto_sign_PUBLICKEYBYTES &&
+           identity.signature.size() == crypto_sign_BYTES;
 }
 
 #pragma pack(push, networkPlayerPackets, 1)
 enum
 {
-    NETWORK_PLAYER_LIMB_COUNT = 22,
-    NETWORK_FISHING_LINE_POINT_COUNT = 200,
-    NETWORK_PLAYER_ITEM_FISHING_POLE = 2,
-    NETWORK_PLAYER_VISIBLE = 1,
-    NETWORK_PLAYER_GROUNDED = 2,
-    NETWORK_PLAYER_SWIMMING = 4,
-    NETWORK_PLAYER_READY_TO_FIRE = 8,
-    NETWORK_PLAYER_DEAD = 16,
-    NETWORK_PLAYER_SHIELDING = 32
+    NETWORK_FISHING_LINE_POINT_COUNT = 200
 };
 
 struct NetworkPlayerAssignPacket
@@ -601,33 +520,15 @@ struct NetworkPlayerAssignPacket
     __int32 playerId;
 };
 
-struct NetworkPlayerStatePacket
+struct NetworkFishingPresentationPacket
 {
     __int32 playerId;
+    unsigned __int32 entityIndex;
+    unsigned __int32 entityGeneration;
     __int32 sceneId;
-    __int32 roomId;
     __int32 sequence;
-    float x;
-    float y;
-    float z;
-    short rotationX;
-    short rotationY;
-    short rotationZ;
-    short aimPitch;
-    short aimYaw;
-    float speed;
-    unsigned __int32 stateFlags;
-    unsigned char modelGroup;
-    unsigned char itemAction;
     unsigned char fishingState;
-    signed char meleeWeaponState;
-    short upperLimbRot[3];
-    short headLimbRot[3];
-    float meleeBase[3];
-    float meleeTip[3];
-    float bowStringScale;
     float fishingRodTipOffset[3];
-    float fishingLureOffset[3];
     float fishingLureDrawOffset[3];
     float fishingRodBendY;
     float fishingRodBendX;
@@ -640,68 +541,108 @@ struct NetworkPlayerStatePacket
     float fishingLureHookRot[2][2];
     float fishingLineScale;
     float fishingLineGravity;
-    unsigned char fishingLureType;
     unsigned char fishingLineSpooled;
-    unsigned char fishingLineHooked;
     unsigned char fishingSinkingLureSegmentIndex;
     unsigned char fishingSinkingLureUnderwater;
-    unsigned char fishingFishActive;
-    unsigned char fishingFishIsLoach;
-    float fishingFishOffset[3];
     short fishingFishRot[3];
     short fishingFishLimbRot[8];
-    float fishingFishLength;
-    __int32 fishingFishRoomId;
-    __int32 fishingFishActorParams;
-    __int32 fishingFishHomeX;
-    __int32 fishingFishHomeY;
-    __int32 fishingFishHomeZ;
-    short jointTable[22][3];
 };
 
-struct NetworkDynamicObjectStatePacket
+// Client-to-server cosmetic telemetry. Ownership and player entity identity
+// are intentionally absent; the authenticated server session supplies them.
+struct NetworkFishingPresentationIntentPacket
 {
-    __int32 sceneId;
-    __int32 roomId;
-    __int32 actorId;
-    __int32 actorParams;
-    __int32 homeX;
-    __int32 homeY;
-    __int32 homeZ;
-    unsigned char destroyed;
-};
-
-struct NetworkActorEventPacket
-{
-    __int32 sourcePlayerId;
-    __int32 eventId;
-    __int32 sceneId;
-    __int32 roomId;
-    __int32 actorId;
-    __int32 actorParams;
-    __int32 homeX;
-    __int32 homeY;
-    __int32 homeZ;
-    float x;
-    float y;
-    float z;
-    unsigned char eventType;
+    __int32 sequence;
+    unsigned __int32 lifeEpoch;
+    unsigned char fishingState;
+    float fishingRodTipOffset[3];
+    float fishingLureDrawOffset[3];
+    float fishingRodBendY;
+    float fishingRodBendX;
+    float fishingRodTwist;
+    float fishingRodCastX;
+    float fishingLureRot[3];
+    float fishingLureSpin;
+    float fishingLureZOffset;
+    float fishingLureHookOffsets[2][3];
+    float fishingLureHookRot[2][2];
+    float fishingLineScale;
+    float fishingLineGravity;
+    unsigned char fishingLineSpooled;
+    unsigned char fishingSinkingLureSegmentIndex;
+    unsigned char fishingSinkingLureUnderwater;
+    short fishingFishRot[3];
+    short fishingFishLimbRot[8];
 };
 
 enum
 {
-    NETWORK_ACTOR_EVENT_GRASS_CUT = 1,
-    NETWORK_ACTOR_EVENT_BOULDER_BREAK = 2,
-    NETWORK_ACTOR_EVENT_OWL_DEPART = 3,
-    NETWORK_ACTOR_EVENT_FISH_HOOK = 4,
-    NETWORK_ACTOR_EVENT_FISH_RELEASE = 5,
-    NETWORK_ACTOR_EVENT_GRASS_THROWN_BREAK = 6
+    NETWORK_FISH_INTENT_HOOK = 1,
+    NETWORK_FISH_INTENT_RELEASE = 2
+};
+
+enum
+{
+    NETWORK_LURE_DEPLOYED = 1 << 0,
+    NETWORK_LURE_REEL_HELD = 1 << 1,
+    NETWORK_LURE_CONTROL_MASK = NETWORK_LURE_DEPLOYED | NETWORK_LURE_REEL_HELD
+};
+
+struct NetworkFishIntentPacket
+{
+    unsigned __int32 sequence;
+    unsigned __int32 lifeEpoch;
+    unsigned char action;
+};
+
+static_assert(sizeof(NetworkFishIntentPacket) == 9);
+
+struct NetworkFishStatePacket
+{
+    __int32 ownerPlayerId;
+    unsigned __int32 entityIndex;
+    unsigned __int32 entityGeneration;
+    unsigned __int32 sequence;
+    __int32 sceneId;
+    unsigned __int32 spawnKey;
+    float x;
+    float y;
+    float z;
+    unsigned char species;
+    float length;
+    unsigned char active;
+};
+
+struct NetworkLureControlIntentPacket
+{
+    unsigned __int32 sequence;
+    unsigned __int32 lifeEpoch;
+    unsigned char controlFlags;
+};
+
+static_assert(sizeof(NetworkLureControlIntentPacket) == 9);
+
+struct NetworkLureStatePacket
+{
+    __int32 ownerPlayerId;
+    unsigned __int32 entityIndex;
+    unsigned __int32 entityGeneration;
+    unsigned __int32 sequence;
+    __int32 sceneId;
+    float x;
+    float y;
+    float z;
+    unsigned char phase;
+    unsigned char lureType;
+    unsigned char active;
 };
 
 struct NetworkProjectileStatePacket
 {
     __int32 playerId;
     __int32 projectileId;
+    unsigned __int32 entityIndex;
+    unsigned __int32 entityGeneration;
     __int32 sceneId;
     unsigned __int32 sequence;
     unsigned char active;
@@ -719,70 +660,262 @@ struct NetworkProjectileStatePacket
     float velocityZ;
 };
 
-struct NetworkProjectileImpactPacket
+struct NetworkProjectileLifecyclePacket
 {
-    __int32 ownerPlayerId;
+    __int32 playerId;
     __int32 projectileId;
+    unsigned __int32 entityIndex;
+    unsigned __int32 entityGeneration;
     __int32 sceneId;
-    float x;
-    float y;
-    float z;
+    unsigned char projectileKind;
+    unsigned char active;
 };
+
+struct NetworkArrowFireIntentPacket
+{
+    unsigned __int32 sequence;
+    unsigned __int32 lifeEpoch;
+};
+
+static_assert(sizeof(NetworkArrowFireIntentPacket) == 8);
+
+enum
+{
+    NETWORK_PROJECTILE_INTENT_ARROW_FIRE = 1
+};
+
+struct NetworkProjectileIntentResultPacket
+{
+    unsigned __int32 sequence;
+    unsigned __int32 lifeEpoch;
+    __int32 projectileId;
+    unsigned char intentKind;
+    unsigned char accepted;
+};
+
+static_assert(sizeof(NetworkProjectileIntentResultPacket) == 14);
 
 enum
 {
     NETWORK_PROJECTILE_ARROW = 0,
-    NETWORK_PROJECTILE_BOMB = 1,
     NETWORK_ARROW_FLYING = 0,
     NETWORK_ARROW_STUCK = 1,
-    NETWORK_BOMB_HELD = 0,
-    NETWORK_BOMB_RELEASED = 1,
-    NETWORK_BOMB_EXPLODING = 2
+    NETWORK_ARROW_BLOCKED = 2
 };
 
-struct NetworkPlayerIntentPacket
+struct NetworkPlayerCommandPacket
+{
+    unsigned __int32 sequence;
+    unsigned __int32 actionSequence;
+    unsigned __int32 lifeEpoch;
+    signed char moveX;
+    signed char moveY;
+    short heading;
+    short aimPitch;
+    unsigned short heldActions;
+    unsigned short pressedActions;
+};
+
+static_assert(sizeof(NetworkPlayerCommandPacket) == 22);
+
+struct NetworkWeaponSelectionIntentPacket
+{
+    unsigned __int32 sequence;
+    unsigned __int32 lifeEpoch;
+    unsigned char selectedWeapon;
+};
+
+static_assert(sizeof(NetworkWeaponSelectionIntentPacket) == 9);
+
+struct NetworkSceneEntryIntentPacket
+{
+    unsigned __int32 sequence;
+    unsigned __int32 lifeEpoch;
+};
+
+static_assert(sizeof(NetworkSceneEntryIntentPacket) == 8);
+
+struct NetworkSceneEntryStatePacket
 {
     __int32 playerId;
-    __int32 levelIndex;
-    unsigned char flags;
-    float localX;
-    float localY;
-    float heading;
-    float deltaTime;
-    __int32 targetX;
-    __int32 targetY;
-    __int32 targetCell;
+    unsigned __int32 entityIndex;
+    unsigned __int32 entityGeneration;
+    unsigned __int32 requestSequence;
+    unsigned __int32 lifeEpoch;
+    __int32 sceneId;
+    float x;
+    float y;
+    float z;
+    short heading;
+    unsigned char accepted;
+};
+
+struct NetworkPlayerSnapshotPacket
+{
+    __int32 playerId;
+    unsigned __int32 entityIndex;
+    unsigned __int32 entityGeneration;
+    __int32 sceneId;
+    unsigned __int32 serverTick;
+    unsigned __int32 lastProcessedCommand;
+    unsigned __int32 lifeEpoch;
+    float x;
+    float y;
+    float z;
+    float velocityX;
+    float velocityY;
+    float velocityZ;
+    short heading;
+    short aimPitch;
+    unsigned short heldActions;
+    unsigned char selectedWeapon;
+    unsigned char actionState;
+    unsigned __int32 actionStartTick;
+    unsigned char health;
+    unsigned char team;
+    unsigned char locomotionMode;
+    float locomotionPhaseRadians;
+};
+
+struct NetworkObjectiveStatePacket
+{
+    unsigned __int32 entityIndex;
+    unsigned __int32 entityGeneration;
+    unsigned __int32 sequence;
+    __int32 objectiveKey;
+    __int32 sceneId;
+    float x;
+    float y;
+    float z;
+    float captureRadius;
+    float captureProgress;
+    unsigned char active;
+    unsigned char ownerTeam;
+    unsigned char capturingTeam;
+    unsigned char contested;
+};
+
+struct NetworkStructureStatePacket
+{
+    unsigned __int32 entityIndex;
+    unsigned __int32 entityGeneration;
+    unsigned __int32 sequence;
+    __int32 structureKey;
+    __int32 objectiveKey;
+    __int32 sceneId;
+    float x;
+    float y;
+    float z;
+    unsigned __int32 health;
+    unsigned __int32 maximumHealth;
+    unsigned __int32 buildProgress;
+    unsigned __int32 requiredBuild;
+    unsigned char active;
+    unsigned char team;
+    unsigned char phase;
+};
+
+struct NetworkStructureActionPacket
+{
+    unsigned __int32 sequence;
+    unsigned __int32 lifeEpoch;
+    __int32 structureKey;
+    unsigned char action;
+};
+
+static_assert(sizeof(NetworkStructureActionPacket) == 13);
+
+struct NetworkCorpseStatePacket
+{
+    unsigned __int32 entityIndex;
+    unsigned __int32 entityGeneration;
+    unsigned __int32 sequence;
+    __int32 sourcePlayerId;
+    unsigned __int32 sourcePlayerEntityIndex;
+    unsigned __int32 sourcePlayerEntityGeneration;
+    unsigned __int32 sourceLifeEpoch;
+    __int32 sceneId;
+    __int32 roomId;
+    float x;
+    float y;
+    float z;
+    short rotation[3];
+    unsigned char selectedWeapon;
+    unsigned char active;
 };
 
 enum
 {
-    NPIFDirect = 1,
-    NPIFPathTarget = 2
+    NETWORK_ACTION_PRIMARY = 1 << 0,
+    NETWORK_ACTION_BLOCK = 1 << 1,
+    NETWORK_ACTION_AIM = 1 << 2,
+    NETWORK_ACTION_EVADE = 1 << 3
 };
 
-struct NetworkLevelAdvancePacket
+enum
 {
-    __int32 levelIndex;
-    __int32 result;
+    NETWORK_PLAYER_ACTION_IDLE = 0,
+    NETWORK_PLAYER_ACTION_PRIMARY_WINDUP = 1,
+    NETWORK_PLAYER_ACTION_PRIMARY_ACTIVE = 2,
+    NETWORK_PLAYER_ACTION_PRIMARY_RECOVERY = 3,
+    NETWORK_PLAYER_ACTION_BLOCKING = 4,
+    NETWORK_PLAYER_ACTION_AIMING = 5,
+    NETWORK_PLAYER_ACTION_EVADING = 6,
+    NETWORK_PLAYER_ACTION_JUMP_SLASHING = 7
 };
 
-struct NetworkPlayerRemovePacket
+struct NetworkPlayerLifecyclePacket
 {
     __int32 playerId;
-    __int32 levelIndex;
+    unsigned __int32 entityIndex;
+    unsigned __int32 entityGeneration;
+    __int32 sceneId;
+    unsigned char active;
 };
 
-struct NetworkPlayerDamagePacket
+enum
 {
+    NETWORK_COMBAT_MELEE = 0,
+    NETWORK_COMBAT_ARROW = 1,
+    NETWORK_COMBAT_EXPLOSION = 2,
+    NETWORK_COMBAT_ENVIRONMENT = 3,
+    NETWORK_COMBAT_DAMAGED = 0,
+    NETWORK_COMBAT_BLOCKED = 1
+};
+
+struct NetworkCombatResultPacket
+{
+    unsigned __int32 eventId;
     __int32 sourcePlayerId;
     __int32 targetPlayerId;
-    short damage;
+    unsigned __int32 sourceEntityIndex;
+    unsigned __int32 sourceEntityGeneration;
+    unsigned __int32 targetEntityIndex;
+    unsigned __int32 targetEntityGeneration;
+    __int32 sceneId;
+    unsigned char attackKind;
+    unsigned char result;
+    unsigned char damage;
+    unsigned char hitRegion;
     short impactYaw;
+    float impactX;
+    float impactY;
+    float impactZ;
 };
 
 struct NetworkPlayerRespawnPacket
 {
     __int32 playerId;
+    unsigned __int32 entityIndex;
+    unsigned __int32 entityGeneration;
+    unsigned __int32 lifeEpoch;
+    __int32 sceneId;
+    unsigned __int32 serverTick;
+    float x;
+    float y;
+    float z;
+    short heading;
+    unsigned char selectedWeapon;
 };
 
 enum
@@ -790,15 +923,52 @@ enum
     VOICE_SAMPLE_RATE = 16000,
     VOICE_SAMPLES_PER_PACKET = 320,
     VOICE_MAX_OPUS_BYTES = 1275,
-    VOICE_CODEC_OPUS = 1,
-    VOICE_CODEC_ADPCM = 2
+    VOICE_CODEC_OPUS = 1
 };
 
 #pragma pack(pop, networkPlayerPackets)
 
+struct NetworkStrategicSiteRecord
+{
+    __int32 objectiveKey;
+    __int32 influenceRegionKey;
+    unsigned char kind;
+};
+
+struct NetworkSupplyRouteRecord
+{
+    __int32 routeKey;
+    __int32 sourceObjectiveKey;
+    __int32 destinationObjectiveKey;
+};
+
+struct NetworkInfluenceAdjacencyRecord
+{
+    __int32 adjacencyKey;
+    __int32 lowerRegionKey;
+    __int32 upperRegionKey;
+};
+
+struct NetworkStrategicTopologyPacket
+{
+    unsigned __int32 revision;
+    vector<NetworkStrategicSiteRecord> sites;
+    vector<NetworkSupplyRouteRecord> supplyRoutes;
+    vector<NetworkInfluenceAdjacencyRecord> influenceAdjacencies;
+};
+
 struct NetworkVoicePacket
 {
     __int32 playerId;
+    unsigned __int32 sequence;
+    unsigned char codec;
+    unsigned short sampleRate;
+    unsigned short frameSamples;
+    vector<unsigned char> data;
+};
+
+struct NetworkVoiceIntentPacket
+{
     unsigned __int32 sequence;
     unsigned char codec;
     unsigned short sampleRate;
@@ -816,136 +986,13 @@ inline bool DecodeAppPacketRaw(NetworkMessageRaw& raw, NetworkPlayerAssignPacket
     return raw.getInt32(packet.playerId) && raw.fullyRead();
 }
 
-inline void EncodeAppPacketRaw(NetworkMessageRaw& raw, const NetworkPlayerStatePacket& packet)
+template <typename Packet>
+inline void EncodeFishingPresentationBody(NetworkMessageRaw& raw, const Packet& packet)
 {
-    raw.putInt32(packet.playerId);
-    raw.putInt32(packet.sceneId);
-    raw.putInt32(packet.roomId);
-    raw.putInt32(packet.sequence);
-    raw.putFloat(packet.x);
-    raw.putFloat(packet.y);
-    raw.putFloat(packet.z);
-    raw.putUInt16(static_cast<unsigned short>(packet.rotationX));
-    raw.putUInt16(static_cast<unsigned short>(packet.rotationY));
-    raw.putUInt16(static_cast<unsigned short>(packet.rotationZ));
-    raw.putUInt16(static_cast<unsigned short>(packet.aimPitch));
-    raw.putUInt16(static_cast<unsigned short>(packet.aimYaw));
-    raw.putFloat(packet.speed);
-    raw.putUInt32(packet.stateFlags);
-    raw.putUInt8(packet.modelGroup);
-    raw.putUInt8(packet.itemAction);
-    // Fishing telemetry has its own packet. Keeping the pose fixed-size means
-    // equipping the pole can never push movement above the transport's compact
-    // high-rate message budget.
-    raw.putUInt8(0);
-    raw.putUInt8(static_cast<unsigned char>(packet.meleeWeaponState));
-    for (unsigned char axis = 0; axis < 3; ++axis)
-    {
-        raw.putUInt16(static_cast<unsigned short>(packet.upperLimbRot[axis]));
-        raw.putUInt16(static_cast<unsigned short>(packet.headLimbRot[axis]));
-    }
-    for (unsigned char axis = 0; axis < 3; ++axis)
-    {
-        raw.putFloat(packet.meleeBase[axis]);
-        raw.putFloat(packet.meleeTip[axis]);
-    }
-    raw.putFloat(packet.bowStringScale);
-    for (unsigned char limb = 0; limb < NETWORK_PLAYER_LIMB_COUNT; ++limb)
-    {
-        raw.putUInt16(static_cast<unsigned short>(packet.jointTable[limb][0]));
-        raw.putUInt16(static_cast<unsigned short>(packet.jointTable[limb][1]));
-        raw.putUInt16(static_cast<unsigned short>(packet.jointTable[limb][2]));
-    }
-}
-
-inline bool DecodeAppPacketRaw(NetworkMessageRaw& raw, NetworkPlayerStatePacket& packet)
-{
-    memset(&packet, 0, sizeof(packet));
-    unsigned short rotationX = 0;
-    unsigned short rotationY = 0;
-    unsigned short rotationZ = 0;
-    unsigned short aimPitch = 0;
-    unsigned short aimYaw = 0;
-    if (!raw.getInt32(packet.playerId) ||
-        !raw.getInt32(packet.sceneId) ||
-        !raw.getInt32(packet.roomId) ||
-        !raw.getInt32(packet.sequence) ||
-        !raw.getFloat(packet.x) ||
-        !raw.getFloat(packet.y) ||
-        !raw.getFloat(packet.z) ||
-        !raw.getUInt16(rotationX) ||
-        !raw.getUInt16(rotationY) ||
-        !raw.getUInt16(rotationZ) ||
-        !raw.getUInt16(aimPitch) ||
-        !raw.getUInt16(aimYaw) ||
-        !raw.getFloat(packet.speed) ||
-        !raw.getUInt32(packet.stateFlags) ||
-        !raw.getUInt8(packet.modelGroup) ||
-        !raw.getUInt8(packet.itemAction) ||
-        !raw.getUInt8(packet.fishingState))
-    {
-        return false;
-    }
-    unsigned char meleeWeaponState = 0;
-    if (!raw.getUInt8(meleeWeaponState))
-        return false;
-    packet.meleeWeaponState = static_cast<signed char>(meleeWeaponState);
-    packet.rotationX = static_cast<short>(rotationX);
-    packet.rotationY = static_cast<short>(rotationY);
-    packet.rotationZ = static_cast<short>(rotationZ);
-    packet.aimPitch = static_cast<short>(aimPitch);
-    packet.aimYaw = static_cast<short>(aimYaw);
-    for (unsigned char axis = 0; axis < 3; ++axis)
-    {
-        unsigned short upper = 0;
-        unsigned short head = 0;
-        if (!raw.getUInt16(upper) || !raw.getUInt16(head))
-            return false;
-        packet.upperLimbRot[axis] = static_cast<short>(upper);
-        packet.headLimbRot[axis] = static_cast<short>(head);
-    }
-    for (unsigned char axis = 0; axis < 3; ++axis)
-    {
-        if (!raw.getFloat(packet.meleeBase[axis]) || !raw.getFloat(packet.meleeTip[axis]))
-            return false;
-    }
-    if (!raw.getFloat(packet.bowStringScale))
-        return false;
-    for (unsigned char limb = 0; limb < NETWORK_PLAYER_LIMB_COUNT; ++limb)
-    {
-        unsigned short x = 0;
-        unsigned short y = 0;
-        unsigned short z = 0;
-        if (!raw.getUInt16(x) || !raw.getUInt16(y) || !raw.getUInt16(z))
-        {
-            return false;
-        }
-        packet.jointTable[limb][0] = static_cast<short>(x);
-        packet.jointTable[limb][1] = static_cast<short>(y);
-        packet.jointTable[limb][2] = static_cast<short>(z);
-    }
-    return raw.fullyRead();
-}
-
-inline void CopyNetworkFishingState(NetworkPlayerStatePacket& destination,
-                                    const NetworkPlayerStatePacket& source)
-{
-    destination.fishingState = source.fishingState;
-    memcpy(destination.fishingRodTipOffset, source.fishingRodTipOffset,
-           offsetof(NetworkPlayerStatePacket, jointTable) -
-               offsetof(NetworkPlayerStatePacket, fishingRodTipOffset));
-}
-
-inline void EncodeFishingStateRaw(NetworkMessageRaw& raw, const NetworkPlayerStatePacket& packet)
-{
-    raw.putInt32(packet.playerId);
-    raw.putInt32(packet.sceneId);
-    raw.putInt32(packet.sequence);
     raw.putUInt8(packet.fishingState);
     for (unsigned char axis = 0; axis < 3; ++axis)
     {
         raw.putFloat(packet.fishingRodTipOffset[axis]);
-        raw.putFloat(packet.fishingLureOffset[axis]);
         raw.putFloat(packet.fishingLureDrawOffset[axis]);
     }
     raw.putFloat(packet.fishingRodBendY);
@@ -965,35 +1012,41 @@ inline void EncodeFishingStateRaw(NetworkMessageRaw& raw, const NetworkPlayerSta
     }
     raw.putFloat(packet.fishingLineScale);
     raw.putFloat(packet.fishingLineGravity);
-    raw.putUInt8(packet.fishingLureType);
     raw.putUInt8(packet.fishingLineSpooled);
-    raw.putUInt8(packet.fishingLineHooked);
     raw.putUInt8(packet.fishingSinkingLureSegmentIndex);
     raw.putUInt8(packet.fishingSinkingLureUnderwater);
-    raw.putUInt8(packet.fishingFishActive);
-    raw.putUInt8(packet.fishingFishIsLoach);
-    for (unsigned char axis = 0; axis < 3; ++axis)
-        raw.putFloat(packet.fishingFishOffset[axis]);
     for (unsigned char axis = 0; axis < 3; ++axis)
         raw.putUInt16(static_cast<unsigned short>(packet.fishingFishRot[axis]));
     for (unsigned char limb = 0; limb < 8; ++limb)
         raw.putUInt16(static_cast<unsigned short>(packet.fishingFishLimbRot[limb]));
-    raw.putFloat(packet.fishingFishLength);
-    raw.putInt32(packet.fishingFishRoomId);
-    raw.putInt32(packet.fishingFishActorParams);
-    raw.putInt32(packet.fishingFishHomeX);
-    raw.putInt32(packet.fishingFishHomeY);
-    raw.putInt32(packet.fishingFishHomeZ);
 }
 
-inline bool DecodeFishingStateRaw(NetworkMessageRaw& raw, NetworkPlayerStatePacket& packet)
+inline void EncodeFishingStateRaw(NetworkMessageRaw& raw,
+                                  const NetworkFishingPresentationPacket& packet)
 {
-    memset(&packet, 0, sizeof(packet));
-    if (!raw.getInt32(packet.playerId) || !raw.getInt32(packet.sceneId) || !raw.getInt32(packet.sequence) ||
-        !raw.getUInt8(packet.fishingState))
+    raw.putInt32(packet.playerId);
+    raw.putUInt32(packet.entityIndex);
+    raw.putUInt32(packet.entityGeneration);
+    raw.putInt32(packet.sceneId);
+    raw.putInt32(packet.sequence);
+    EncodeFishingPresentationBody(raw, packet);
+}
+
+inline void EncodeFishingIntentRaw(NetworkMessageRaw& raw,
+                                   const NetworkFishingPresentationIntentPacket& packet)
+{
+    raw.putInt32(packet.sequence);
+    raw.putUInt32(packet.lifeEpoch);
+    EncodeFishingPresentationBody(raw, packet);
+}
+
+template <typename Packet>
+inline bool DecodeFishingPresentationBody(NetworkMessageRaw& raw, Packet& packet)
+{
+    if (!raw.getUInt8(packet.fishingState))
         return false;
     for (unsigned char axis = 0; axis < 3; ++axis)
-        if (!raw.getFloat(packet.fishingRodTipOffset[axis]) || !raw.getFloat(packet.fishingLureOffset[axis]) ||
+        if (!raw.getFloat(packet.fishingRodTipOffset[axis]) ||
             !raw.getFloat(packet.fishingLureDrawOffset[axis]))
             return false;
     if (!raw.getFloat(packet.fishingRodBendY) || !raw.getFloat(packet.fishingRodBendX) ||
@@ -1014,14 +1067,10 @@ inline bool DecodeFishingStateRaw(NetworkMessageRaw& raw, NetworkPlayerStatePack
                 return false;
     }
     if (!raw.getFloat(packet.fishingLineScale) || !raw.getFloat(packet.fishingLineGravity) ||
-        !raw.getUInt8(packet.fishingLureType) || !raw.getUInt8(packet.fishingLineSpooled) ||
-        !raw.getUInt8(packet.fishingLineHooked) || !raw.getUInt8(packet.fishingSinkingLureSegmentIndex) ||
-        !raw.getUInt8(packet.fishingSinkingLureUnderwater) || !raw.getUInt8(packet.fishingFishActive) ||
-        !raw.getUInt8(packet.fishingFishIsLoach))
+        !raw.getUInt8(packet.fishingLineSpooled) ||
+        !raw.getUInt8(packet.fishingSinkingLureSegmentIndex) ||
+        !raw.getUInt8(packet.fishingSinkingLureUnderwater))
         return false;
-    for (unsigned char axis = 0; axis < 3; ++axis)
-        if (!raw.getFloat(packet.fishingFishOffset[axis]))
-            return false;
     for (unsigned char axis = 0; axis < 3; ++axis)
     {
         unsigned short value = 0;
@@ -1036,60 +1085,108 @@ inline bool DecodeFishingStateRaw(NetworkMessageRaw& raw, NetworkPlayerStatePack
             return false;
         packet.fishingFishLimbRot[limb] = static_cast<short>(value);
     }
-    return raw.getFloat(packet.fishingFishLength) && raw.getInt32(packet.fishingFishRoomId) &&
-           raw.getInt32(packet.fishingFishActorParams) && raw.getInt32(packet.fishingFishHomeX) &&
-           raw.getInt32(packet.fishingFishHomeY) && raw.getInt32(packet.fishingFishHomeZ) && raw.fullyRead();
+    return raw.fullyRead();
 }
 
-inline void EncodeAppPacketRaw(NetworkMessageRaw& raw, const NetworkDynamicObjectStatePacket& packet)
+inline bool DecodeFishingStateRaw(NetworkMessageRaw& raw,
+                                  NetworkFishingPresentationPacket& packet)
 {
+    memset(&packet, 0, sizeof(packet));
+    return raw.getInt32(packet.playerId) && raw.getUInt32(packet.entityIndex) &&
+           raw.getUInt32(packet.entityGeneration) && raw.getInt32(packet.sceneId) &&
+           raw.getInt32(packet.sequence) && DecodeFishingPresentationBody(raw, packet);
+}
+
+inline bool DecodeFishingIntentRaw(NetworkMessageRaw& raw,
+                                   NetworkFishingPresentationIntentPacket& packet)
+{
+    memset(&packet, 0, sizeof(packet));
+    return raw.getInt32(packet.sequence) && raw.getUInt32(packet.lifeEpoch) &&
+           DecodeFishingPresentationBody(raw, packet);
+}
+
+inline void EncodeAppPacketRaw(NetworkMessageRaw& raw, const NetworkFishIntentPacket& packet)
+{
+    raw.putUInt32(packet.sequence);
+    raw.putUInt32(packet.lifeEpoch);
+    raw.putUInt8(packet.action);
+}
+
+inline bool DecodeAppPacketRaw(NetworkMessageRaw& raw, NetworkFishIntentPacket& packet)
+{
+    return raw.getUInt32(packet.sequence) && raw.getUInt32(packet.lifeEpoch) &&
+           raw.getUInt8(packet.action) && raw.fullyRead();
+}
+
+inline void EncodeAppPacketRaw(NetworkMessageRaw& raw, const NetworkFishStatePacket& packet)
+{
+    raw.putInt32(packet.ownerPlayerId);
+    raw.putUInt32(packet.entityIndex);
+    raw.putUInt32(packet.entityGeneration);
+    raw.putUInt32(packet.sequence);
     raw.putInt32(packet.sceneId);
-    raw.putInt32(packet.roomId);
-    raw.putInt32(packet.actorId);
-    raw.putInt32(packet.actorParams);
-    raw.putInt32(packet.homeX);
-    raw.putInt32(packet.homeY);
-    raw.putInt32(packet.homeZ);
-    raw.putUInt8(packet.destroyed);
-}
-
-inline bool DecodeAppPacketRaw(NetworkMessageRaw& raw, NetworkDynamicObjectStatePacket& packet)
-{
-    return raw.getInt32(packet.sceneId) && raw.getInt32(packet.roomId) && raw.getInt32(packet.actorId) &&
-           raw.getInt32(packet.actorParams) && raw.getInt32(packet.homeX) && raw.getInt32(packet.homeY) &&
-           raw.getInt32(packet.homeZ) && raw.getUInt8(packet.destroyed) && raw.fullyRead();
-}
-
-inline void EncodeAppPacketRaw(NetworkMessageRaw& raw, const NetworkActorEventPacket& packet)
-{
-    raw.putInt32(packet.sourcePlayerId);
-    raw.putInt32(packet.eventId);
-    raw.putInt32(packet.sceneId);
-    raw.putInt32(packet.roomId);
-    raw.putInt32(packet.actorId);
-    raw.putInt32(packet.actorParams);
-    raw.putInt32(packet.homeX);
-    raw.putInt32(packet.homeY);
-    raw.putInt32(packet.homeZ);
+    raw.putUInt32(packet.spawnKey);
     raw.putFloat(packet.x);
     raw.putFloat(packet.y);
     raw.putFloat(packet.z);
-    raw.putUInt8(packet.eventType);
+    raw.putUInt8(packet.species);
+    raw.putFloat(packet.length);
+    raw.putUInt8(packet.active);
 }
 
-inline bool DecodeAppPacketRaw(NetworkMessageRaw& raw, NetworkActorEventPacket& packet)
+inline bool DecodeAppPacketRaw(NetworkMessageRaw& raw, NetworkFishStatePacket& packet)
 {
-    return raw.getInt32(packet.sourcePlayerId) && raw.getInt32(packet.eventId) && raw.getInt32(packet.sceneId) &&
-           raw.getInt32(packet.roomId) && raw.getInt32(packet.actorId) && raw.getInt32(packet.actorParams) &&
-           raw.getInt32(packet.homeX) && raw.getInt32(packet.homeY) && raw.getInt32(packet.homeZ) &&
-           raw.getFloat(packet.x) && raw.getFloat(packet.y) && raw.getFloat(packet.z) &&
-           raw.getUInt8(packet.eventType) && raw.fullyRead();
+    return raw.getInt32(packet.ownerPlayerId) && raw.getUInt32(packet.entityIndex) &&
+           raw.getUInt32(packet.entityGeneration) && raw.getUInt32(packet.sequence) &&
+           raw.getInt32(packet.sceneId) && raw.getUInt32(packet.spawnKey) &&
+           raw.getFloat(packet.x) && raw.getFloat(packet.y) &&
+           raw.getFloat(packet.z) && raw.getUInt8(packet.species) && raw.getFloat(packet.length) &&
+           raw.getUInt8(packet.active) && raw.fullyRead();
+}
+
+inline void EncodeAppPacketRaw(NetworkMessageRaw& raw, const NetworkLureControlIntentPacket& packet)
+{
+    raw.putUInt32(packet.sequence);
+    raw.putUInt32(packet.lifeEpoch);
+    raw.putUInt8(packet.controlFlags);
+}
+
+inline bool DecodeAppPacketRaw(NetworkMessageRaw& raw, NetworkLureControlIntentPacket& packet)
+{
+    return raw.getUInt32(packet.sequence) && raw.getUInt32(packet.lifeEpoch) &&
+           raw.getUInt8(packet.controlFlags) && raw.fullyRead();
+}
+
+inline void EncodeAppPacketRaw(NetworkMessageRaw& raw, const NetworkLureStatePacket& packet)
+{
+    raw.putInt32(packet.ownerPlayerId);
+    raw.putUInt32(packet.entityIndex);
+    raw.putUInt32(packet.entityGeneration);
+    raw.putUInt32(packet.sequence);
+    raw.putInt32(packet.sceneId);
+    raw.putFloat(packet.x);
+    raw.putFloat(packet.y);
+    raw.putFloat(packet.z);
+    raw.putUInt8(packet.phase);
+    raw.putUInt8(packet.lureType);
+    raw.putUInt8(packet.active);
+}
+
+inline bool DecodeAppPacketRaw(NetworkMessageRaw& raw, NetworkLureStatePacket& packet)
+{
+    return raw.getInt32(packet.ownerPlayerId) && raw.getUInt32(packet.entityIndex) &&
+           raw.getUInt32(packet.entityGeneration) && raw.getUInt32(packet.sequence) &&
+           raw.getInt32(packet.sceneId) && raw.getFloat(packet.x) && raw.getFloat(packet.y) &&
+           raw.getFloat(packet.z) && raw.getUInt8(packet.phase) && raw.getUInt8(packet.lureType) &&
+           raw.getUInt8(packet.active) && raw.fullyRead();
 }
 
 inline void EncodeAppPacketRaw(NetworkMessageRaw& raw, const NetworkProjectileStatePacket& packet)
 {
     raw.putInt32(packet.playerId);
     raw.putInt32(packet.projectileId);
+    raw.putUInt32(packet.entityIndex);
+    raw.putUInt32(packet.entityGeneration);
     raw.putInt32(packet.sceneId);
     raw.putUInt32(packet.sequence);
     raw.putUInt8(packet.active);
@@ -1112,8 +1209,9 @@ inline bool DecodeAppPacketRaw(NetworkMessageRaw& raw, NetworkProjectileStatePac
     unsigned short rotationX = 0;
     unsigned short rotationY = 0;
     unsigned short rotationZ = 0;
-    if (!raw.getInt32(packet.playerId) || !raw.getInt32(packet.projectileId) || !raw.getInt32(packet.sceneId) ||
-        !raw.getUInt32(packet.sequence) ||
+    if (!raw.getInt32(packet.playerId) || !raw.getInt32(packet.projectileId) ||
+        !raw.getUInt32(packet.entityIndex) || !raw.getUInt32(packet.entityGeneration) ||
+        !raw.getInt32(packet.sceneId) || !raw.getUInt32(packet.sequence) ||
         !raw.getUInt8(packet.active) || !raw.getUInt8(packet.projectileKind) || !raw.getUInt8(packet.phase) ||
         !raw.getUInt8(packet.projectileType) || !raw.getFloat(packet.x) ||
         !raw.getFloat(packet.y) || !raw.getFloat(packet.z) || !raw.getUInt16(rotationX) ||
@@ -1128,40 +1226,91 @@ inline bool DecodeAppPacketRaw(NetworkMessageRaw& raw, NetworkProjectileStatePac
     return true;
 }
 
-inline void EncodeAppPacketRaw(NetworkMessageRaw& raw, const NetworkProjectileImpactPacket& packet)
+inline void EncodeAppPacketRaw(NetworkMessageRaw& raw, const NetworkProjectileLifecyclePacket& packet)
 {
-    raw.putInt32(packet.ownerPlayerId);
+    raw.putInt32(packet.playerId);
     raw.putInt32(packet.projectileId);
+    raw.putUInt32(packet.entityIndex);
+    raw.putUInt32(packet.entityGeneration);
     raw.putInt32(packet.sceneId);
-    raw.putFloat(packet.x);
-    raw.putFloat(packet.y);
-    raw.putFloat(packet.z);
+    raw.putUInt8(packet.projectileKind);
+    raw.putUInt8(packet.active);
 }
 
-inline bool DecodeAppPacketRaw(NetworkMessageRaw& raw, NetworkProjectileImpactPacket& packet)
+inline bool DecodeAppPacketRaw(NetworkMessageRaw& raw, NetworkProjectileLifecyclePacket& packet)
 {
-    return raw.getInt32(packet.ownerPlayerId) && raw.getInt32(packet.projectileId) &&
-           raw.getInt32(packet.sceneId) && raw.getFloat(packet.x) && raw.getFloat(packet.y) &&
-           raw.getFloat(packet.z) && raw.fullyRead();
+    return raw.getInt32(packet.playerId) && raw.getInt32(packet.projectileId) &&
+           raw.getUInt32(packet.entityIndex) && raw.getUInt32(packet.entityGeneration) &&
+           raw.getInt32(packet.sceneId) && raw.getUInt8(packet.projectileKind) &&
+           raw.getUInt8(packet.active) && raw.fullyRead();
 }
 
-inline void EncodeAppPacketRaw(NetworkMessageRaw& raw, const NetworkPlayerDamagePacket& packet)
+inline void EncodeAppPacketRaw(NetworkMessageRaw& raw, const NetworkArrowFireIntentPacket& packet)
 {
+    raw.putUInt32(packet.sequence);
+    raw.putUInt32(packet.lifeEpoch);
+}
+
+inline bool DecodeAppPacketRaw(NetworkMessageRaw& raw, NetworkArrowFireIntentPacket& packet)
+{
+    memset(&packet, 0, sizeof(packet));
+    return raw.getUInt32(packet.sequence) && raw.getUInt32(packet.lifeEpoch) &&
+           raw.fullyRead();
+}
+
+inline void EncodeAppPacketRaw(NetworkMessageRaw& raw,
+                               const NetworkProjectileIntentResultPacket& packet)
+{
+    raw.putUInt32(packet.sequence);
+    raw.putUInt32(packet.lifeEpoch);
+    raw.putInt32(packet.projectileId);
+    raw.putUInt8(packet.intentKind);
+    raw.putUInt8(packet.accepted);
+}
+
+inline bool DecodeAppPacketRaw(NetworkMessageRaw& raw,
+                               NetworkProjectileIntentResultPacket& packet)
+{
+    memset(&packet, 0, sizeof(packet));
+    return raw.getUInt32(packet.sequence) && raw.getUInt32(packet.lifeEpoch) &&
+           raw.getInt32(packet.projectileId) && raw.getUInt8(packet.intentKind) &&
+           raw.getUInt8(packet.accepted) && raw.fullyRead();
+}
+
+inline void EncodeAppPacketRaw(NetworkMessageRaw& raw, const NetworkCombatResultPacket& packet)
+{
+    raw.putUInt32(packet.eventId);
     raw.putInt32(packet.sourcePlayerId);
     raw.putInt32(packet.targetPlayerId);
-    raw.putUInt16(static_cast<unsigned short>(packet.damage));
+    raw.putUInt32(packet.sourceEntityIndex);
+    raw.putUInt32(packet.sourceEntityGeneration);
+    raw.putUInt32(packet.targetEntityIndex);
+    raw.putUInt32(packet.targetEntityGeneration);
+    raw.putInt32(packet.sceneId);
+    raw.putUInt8(packet.attackKind);
+    raw.putUInt8(packet.result);
+    raw.putUInt8(packet.damage);
+    raw.putUInt8(packet.hitRegion);
     raw.putUInt16(static_cast<unsigned short>(packet.impactYaw));
+    raw.putFloat(packet.impactX);
+    raw.putFloat(packet.impactY);
+    raw.putFloat(packet.impactZ);
 }
 
-inline bool DecodeAppPacketRaw(NetworkMessageRaw& raw, NetworkPlayerDamagePacket& packet)
+inline bool DecodeAppPacketRaw(NetworkMessageRaw& raw, NetworkCombatResultPacket& packet)
 {
-    unsigned short damage = 0;
     unsigned short impactYaw = 0;
-    if (!raw.getInt32(packet.sourcePlayerId) || !raw.getInt32(packet.targetPlayerId) || !raw.getUInt16(damage) ||
-        !raw.getUInt16(impactYaw) ||
+    if (!raw.getUInt32(packet.eventId) || !raw.getInt32(packet.sourcePlayerId) ||
+        !raw.getInt32(packet.targetPlayerId) ||
+        !raw.getUInt32(packet.sourceEntityIndex) || !raw.getUInt32(packet.sourceEntityGeneration) ||
+        !raw.getUInt32(packet.targetEntityIndex) || !raw.getUInt32(packet.targetEntityGeneration) ||
+        !raw.getInt32(packet.sceneId) || !raw.getUInt8(packet.attackKind) ||
+        !raw.getUInt8(packet.result) || !raw.getUInt8(packet.damage) ||
+        !raw.getUInt8(packet.hitRegion) ||
+        !raw.getUInt16(impactYaw) || !raw.getFloat(packet.impactX) ||
+        !raw.getFloat(packet.impactY) || !raw.getFloat(packet.impactZ) ||
         !raw.fullyRead())
         return false;
-    packet.damage = static_cast<short>(damage);
     packet.impactYaw = static_cast<short>(impactYaw);
     return true;
 }
@@ -1169,56 +1318,303 @@ inline bool DecodeAppPacketRaw(NetworkMessageRaw& raw, NetworkPlayerDamagePacket
 inline void EncodeAppPacketRaw(NetworkMessageRaw& raw, const NetworkPlayerRespawnPacket& packet)
 {
     raw.putInt32(packet.playerId);
+    raw.putUInt32(packet.entityIndex);
+    raw.putUInt32(packet.entityGeneration);
+    raw.putUInt32(packet.lifeEpoch);
+    raw.putInt32(packet.sceneId);
+    raw.putUInt32(packet.serverTick);
+    raw.putFloat(packet.x);
+    raw.putFloat(packet.y);
+    raw.putFloat(packet.z);
+    raw.putUInt16(static_cast<unsigned short>(packet.heading));
+    raw.putUInt8(packet.selectedWeapon);
 }
 
 inline bool DecodeAppPacketRaw(NetworkMessageRaw& raw, NetworkPlayerRespawnPacket& packet)
 {
-    return raw.getInt32(packet.playerId) && raw.fullyRead();
+    memset(&packet, 0, sizeof(packet));
+    unsigned short heading = 0;
+    if (!raw.getInt32(packet.playerId) || !raw.getUInt32(packet.entityIndex) ||
+        !raw.getUInt32(packet.entityGeneration) || !raw.getUInt32(packet.lifeEpoch) ||
+        !raw.getInt32(packet.sceneId) || !raw.getUInt32(packet.serverTick) ||
+        !raw.getFloat(packet.x) || !raw.getFloat(packet.y) ||
+        !raw.getFloat(packet.z) || !raw.getUInt16(heading) ||
+        !raw.getUInt8(packet.selectedWeapon) || !raw.fullyRead()) {
+        return false;
+    }
+    packet.heading = static_cast<short>(heading);
+    return true;
 }
 
-inline void EncodeAppPacketRaw(NetworkMessageRaw& raw, const NetworkPlayerIntentPacket& packet)
+inline void EncodeAppPacketRaw(NetworkMessageRaw& raw, const NetworkPlayerCommandPacket& packet)
 {
-    raw.putInt32(packet.playerId);
-    raw.putInt32(packet.levelIndex);
-    raw.putUInt8(packet.flags);
-    raw.putFloat(packet.heading);
-    raw.putFloat(packet.deltaTime);
-    if ((packet.flags & NPIFDirect) != 0)
-    {
-        raw.putFloat(packet.localX);
-        raw.putFloat(packet.localY);
-    }
-    if ((packet.flags & NPIFPathTarget) != 0)
-    {
-        raw.putInt32(packet.targetX);
-        raw.putInt32(packet.targetY);
-        raw.putInt32(packet.targetCell);
-    }
+    raw.putUInt32(packet.sequence);
+    raw.putUInt32(packet.actionSequence);
+    raw.putUInt32(packet.lifeEpoch);
+    raw.putUInt8(static_cast<unsigned char>(packet.moveX));
+    raw.putUInt8(static_cast<unsigned char>(packet.moveY));
+    raw.putUInt16(static_cast<unsigned short>(packet.heading));
+    raw.putUInt16(static_cast<unsigned short>(packet.aimPitch));
+    raw.putUInt16(packet.heldActions);
+    raw.putUInt16(packet.pressedActions);
 }
 
-inline bool DecodeAppPacketRaw(NetworkMessageRaw& raw, NetworkPlayerIntentPacket& packet)
+inline bool DecodeAppPacketRaw(NetworkMessageRaw& raw, NetworkPlayerCommandPacket& packet)
 {
     memset(&packet, 0, sizeof(packet));
-    if (!raw.getInt32(packet.playerId) ||
-        !raw.getInt32(packet.levelIndex) ||
-        !raw.getUInt8(packet.flags) ||
-        !raw.getFloat(packet.heading) ||
-        !raw.getFloat(packet.deltaTime))
+    unsigned char moveX = 0;
+    unsigned char moveY = 0;
+    unsigned short heading = 0;
+    unsigned short aimPitch = 0;
+    if (!raw.getUInt32(packet.sequence) ||
+        !raw.getUInt32(packet.actionSequence) ||
+        !raw.getUInt32(packet.lifeEpoch) ||
+        !raw.getUInt8(moveX) ||
+        !raw.getUInt8(moveY) ||
+        !raw.getUInt16(heading) ||
+        !raw.getUInt16(aimPitch) ||
+        !raw.getUInt16(packet.heldActions) ||
+        !raw.getUInt16(packet.pressedActions) ||
+        !raw.fullyRead())
     {
         return false;
     }
-    if ((packet.flags & NPIFDirect) != 0)
+    packet.moveX = static_cast<signed char>(moveX);
+    packet.moveY = static_cast<signed char>(moveY);
+    packet.heading = static_cast<short>(heading);
+    packet.aimPitch = static_cast<short>(aimPitch);
+    return true;
+}
+
+inline void EncodeAppPacketRaw(NetworkMessageRaw& raw,
+                               const NetworkWeaponSelectionIntentPacket& packet)
+{
+    raw.putUInt32(packet.sequence);
+    raw.putUInt32(packet.lifeEpoch);
+    raw.putUInt8(packet.selectedWeapon);
+}
+
+inline bool DecodeAppPacketRaw(NetworkMessageRaw& raw,
+                               NetworkWeaponSelectionIntentPacket& packet)
+{
+    memset(&packet, 0, sizeof(packet));
+    return raw.getUInt32(packet.sequence) &&
+           raw.getUInt32(packet.lifeEpoch) && raw.getUInt8(packet.selectedWeapon) &&
+           raw.fullyRead();
+}
+
+inline void EncodeAppPacketRaw(NetworkMessageRaw& raw, const NetworkSceneEntryIntentPacket& packet)
+{
+    raw.putUInt32(packet.sequence);
+    raw.putUInt32(packet.lifeEpoch);
+}
+
+inline bool DecodeAppPacketRaw(NetworkMessageRaw& raw, NetworkSceneEntryIntentPacket& packet)
+{
+    memset(&packet, 0, sizeof(packet));
+    return raw.getUInt32(packet.sequence) &&
+           raw.getUInt32(packet.lifeEpoch) &&
+           raw.fullyRead();
+}
+
+inline void EncodeAppPacketRaw(NetworkMessageRaw& raw, const NetworkSceneEntryStatePacket& packet)
+{
+    raw.putInt32(packet.playerId);
+    raw.putUInt32(packet.entityIndex);
+    raw.putUInt32(packet.entityGeneration);
+    raw.putUInt32(packet.requestSequence);
+    raw.putUInt32(packet.lifeEpoch);
+    raw.putInt32(packet.sceneId);
+    raw.putFloat(packet.x);
+    raw.putFloat(packet.y);
+    raw.putFloat(packet.z);
+    raw.putUInt16(static_cast<unsigned short>(packet.heading));
+    raw.putUInt8(packet.accepted);
+}
+
+inline bool DecodeAppPacketRaw(NetworkMessageRaw& raw, NetworkSceneEntryStatePacket& packet)
+{
+    memset(&packet, 0, sizeof(packet));
+    unsigned short heading = 0;
+    if (!raw.getInt32(packet.playerId) || !raw.getUInt32(packet.entityIndex) ||
+        !raw.getUInt32(packet.entityGeneration) || !raw.getUInt32(packet.requestSequence) ||
+        !raw.getUInt32(packet.lifeEpoch) ||
+        !raw.getInt32(packet.sceneId) || !raw.getFloat(packet.x) || !raw.getFloat(packet.y) ||
+        !raw.getFloat(packet.z) || !raw.getUInt16(heading) || !raw.getUInt8(packet.accepted) ||
+        !raw.fullyRead()) return false;
+    packet.heading = static_cast<short>(heading);
+    return true;
+}
+
+inline void EncodeAppPacketRaw(NetworkMessageRaw& raw, const NetworkPlayerSnapshotPacket& packet)
+{
+    raw.putInt32(packet.playerId);
+    raw.putUInt32(packet.entityIndex);
+    raw.putUInt32(packet.entityGeneration);
+    raw.putInt32(packet.sceneId);
+    raw.putUInt32(packet.serverTick);
+    raw.putUInt32(packet.lastProcessedCommand);
+    raw.putUInt32(packet.lifeEpoch);
+    raw.putFloat(packet.x);
+    raw.putFloat(packet.y);
+    raw.putFloat(packet.z);
+    raw.putFloat(packet.velocityX);
+    raw.putFloat(packet.velocityY);
+    raw.putFloat(packet.velocityZ);
+    raw.putUInt16(static_cast<unsigned short>(packet.heading));
+    raw.putUInt16(static_cast<unsigned short>(packet.aimPitch));
+    raw.putUInt16(packet.heldActions);
+    raw.putUInt8(packet.selectedWeapon);
+    raw.putUInt8(packet.actionState);
+    raw.putUInt32(packet.actionStartTick);
+    raw.putUInt8(packet.health);
+    raw.putUInt8(packet.team);
+    raw.putUInt8(packet.locomotionMode);
+    raw.putFloat(packet.locomotionPhaseRadians);
+}
+
+inline bool DecodeAppPacketRaw(NetworkMessageRaw& raw, NetworkPlayerSnapshotPacket& packet)
+{
+    memset(&packet, 0, sizeof(packet));
+    unsigned short heading = 0;
+    unsigned short aimPitch = 0;
+    if (!raw.getInt32(packet.playerId) ||
+        !raw.getUInt32(packet.entityIndex) ||
+        !raw.getUInt32(packet.entityGeneration) ||
+        !raw.getInt32(packet.sceneId) ||
+        !raw.getUInt32(packet.serverTick) ||
+        !raw.getUInt32(packet.lastProcessedCommand) ||
+        !raw.getUInt32(packet.lifeEpoch) ||
+        !raw.getFloat(packet.x) ||
+        !raw.getFloat(packet.y) ||
+        !raw.getFloat(packet.z) ||
+        !raw.getFloat(packet.velocityX) ||
+        !raw.getFloat(packet.velocityY) ||
+        !raw.getFloat(packet.velocityZ) ||
+        !raw.getUInt16(heading) ||
+        !raw.getUInt16(aimPitch) ||
+        !raw.getUInt16(packet.heldActions) ||
+        !raw.getUInt8(packet.selectedWeapon) ||
+        !raw.getUInt8(packet.actionState) ||
+        !raw.getUInt32(packet.actionStartTick) ||
+        !raw.getUInt8(packet.health) ||
+        !raw.getUInt8(packet.team) ||
+        !raw.getUInt8(packet.locomotionMode) ||
+        !raw.getFloat(packet.locomotionPhaseRadians) ||
+        !raw.fullyRead())
     {
-        if (!raw.getFloat(packet.localX) || !raw.getFloat(packet.localY))
+        return false;
+    }
+    packet.heading = static_cast<short>(heading);
+    packet.aimPitch = static_cast<short>(aimPitch);
+    return true;
+}
+
+inline void EncodeAppPacketRaw(NetworkMessageRaw& raw, const NetworkObjectiveStatePacket& packet)
+{
+    raw.putUInt32(packet.entityIndex);
+    raw.putUInt32(packet.entityGeneration);
+    raw.putUInt32(packet.sequence);
+    raw.putInt32(packet.objectiveKey);
+    raw.putInt32(packet.sceneId);
+    raw.putFloat(packet.x);
+    raw.putFloat(packet.y);
+    raw.putFloat(packet.z);
+    raw.putFloat(packet.captureRadius);
+    raw.putFloat(packet.captureProgress);
+    raw.putUInt8(packet.active);
+    raw.putUInt8(packet.ownerTeam);
+    raw.putUInt8(packet.capturingTeam);
+    raw.putUInt8(packet.contested);
+}
+
+inline bool DecodeAppPacketRaw(NetworkMessageRaw& raw, NetworkObjectiveStatePacket& packet)
+{
+    memset(&packet, 0, sizeof(packet));
+    return raw.getUInt32(packet.entityIndex) &&
+           raw.getUInt32(packet.entityGeneration) &&
+           raw.getUInt32(packet.sequence) &&
+           raw.getInt32(packet.objectiveKey) &&
+           raw.getInt32(packet.sceneId) &&
+           raw.getFloat(packet.x) &&
+           raw.getFloat(packet.y) &&
+           raw.getFloat(packet.z) &&
+           raw.getFloat(packet.captureRadius) &&
+           raw.getFloat(packet.captureProgress) &&
+           raw.getUInt8(packet.active) &&
+           raw.getUInt8(packet.ownerTeam) &&
+           raw.getUInt8(packet.capturingTeam) &&
+           raw.getUInt8(packet.contested) &&
+           raw.fullyRead();
+}
+
+inline void EncodeAppPacketRaw(NetworkMessageRaw& raw,
+                               const NetworkStrategicTopologyPacket& packet)
+{
+    raw.putUInt32(packet.revision);
+    raw.putUInt32(static_cast<unsigned __int32>(packet.sites.size()));
+    raw.putUInt32(static_cast<unsigned __int32>(packet.supplyRoutes.size()));
+    raw.putUInt32(static_cast<unsigned __int32>(packet.influenceAdjacencies.size()));
+    for (const auto& site : packet.sites)
+    {
+        raw.putInt32(site.objectiveKey);
+        raw.putInt32(site.influenceRegionKey);
+        raw.putUInt8(site.kind);
+    }
+    for (const auto& route : packet.supplyRoutes)
+    {
+        raw.putInt32(route.routeKey);
+        raw.putInt32(route.sourceObjectiveKey);
+        raw.putInt32(route.destinationObjectiveKey);
+    }
+    for (const auto& adjacency : packet.influenceAdjacencies)
+    {
+        raw.putInt32(adjacency.adjacencyKey);
+        raw.putInt32(adjacency.lowerRegionKey);
+        raw.putInt32(adjacency.upperRegionKey);
+    }
+}
+
+inline bool DecodeAppPacketRaw(NetworkMessageRaw& raw,
+                               NetworkStrategicTopologyPacket& packet)
+{
+    packet = {};
+    unsigned __int32 siteCount = 0;
+    unsigned __int32 routeCount = 0;
+    unsigned __int32 adjacencyCount = 0;
+    if (!raw.getUInt32(packet.revision) || !raw.getUInt32(siteCount) ||
+        !raw.getUInt32(routeCount) || !raw.getUInt32(adjacencyCount) ||
+        siteCount > NET_MAX_STRATEGIC_SITES ||
+        routeCount > NET_MAX_SUPPLY_ROUTES ||
+        adjacencyCount > NET_MAX_INFLUENCE_ADJACENCIES)
+    {
+        return false;
+    }
+    packet.sites.resize(siteCount);
+    for (auto& site : packet.sites)
+    {
+        if (!raw.getInt32(site.objectiveKey) ||
+            !raw.getInt32(site.influenceRegionKey) || !raw.getUInt8(site.kind))
         {
             return false;
         }
     }
-    if ((packet.flags & NPIFPathTarget) != 0)
+    packet.supplyRoutes.resize(routeCount);
+    for (auto& route : packet.supplyRoutes)
     {
-        if (!raw.getInt32(packet.targetX) ||
-            !raw.getInt32(packet.targetY) ||
-            !raw.getInt32(packet.targetCell))
+        if (!raw.getInt32(route.routeKey) ||
+            !raw.getInt32(route.sourceObjectiveKey) ||
+            !raw.getInt32(route.destinationObjectiveKey))
+        {
+            return false;
+        }
+    }
+    packet.influenceAdjacencies.resize(adjacencyCount);
+    for (auto& adjacency : packet.influenceAdjacencies)
+    {
+        if (!raw.getInt32(adjacency.adjacencyKey) ||
+            !raw.getInt32(adjacency.lowerRegionKey) ||
+            !raw.getInt32(adjacency.upperRegionKey))
         {
             return false;
         }
@@ -1226,29 +1622,123 @@ inline bool DecodeAppPacketRaw(NetworkMessageRaw& raw, NetworkPlayerIntentPacket
     return raw.fullyRead();
 }
 
-inline void EncodeAppPacketRaw(NetworkMessageRaw& raw, const NetworkLevelAdvancePacket& packet)
+inline void EncodeAppPacketRaw(NetworkMessageRaw& raw, const NetworkStructureStatePacket& packet)
 {
-    raw.putInt32(packet.levelIndex);
-    raw.putInt32(packet.result);
+    raw.putUInt32(packet.entityIndex);
+    raw.putUInt32(packet.entityGeneration);
+    raw.putUInt32(packet.sequence);
+    raw.putInt32(packet.structureKey);
+    raw.putInt32(packet.objectiveKey);
+    raw.putInt32(packet.sceneId);
+    raw.putFloat(packet.x);
+    raw.putFloat(packet.y);
+    raw.putFloat(packet.z);
+    raw.putUInt32(packet.health);
+    raw.putUInt32(packet.maximumHealth);
+    raw.putUInt32(packet.buildProgress);
+    raw.putUInt32(packet.requiredBuild);
+    raw.putUInt8(packet.active);
+    raw.putUInt8(packet.team);
+    raw.putUInt8(packet.phase);
 }
 
-inline bool DecodeAppPacketRaw(NetworkMessageRaw& raw, NetworkLevelAdvancePacket& packet)
+inline bool DecodeAppPacketRaw(NetworkMessageRaw& raw, NetworkStructureStatePacket& packet)
 {
-    return raw.getInt32(packet.levelIndex) &&
-           raw.getInt32(packet.result) &&
+    memset(&packet, 0, sizeof(packet));
+    return raw.getUInt32(packet.entityIndex) &&
+           raw.getUInt32(packet.entityGeneration) &&
+           raw.getUInt32(packet.sequence) &&
+           raw.getInt32(packet.structureKey) &&
+           raw.getInt32(packet.objectiveKey) &&
+           raw.getInt32(packet.sceneId) &&
+           raw.getFloat(packet.x) &&
+           raw.getFloat(packet.y) &&
+           raw.getFloat(packet.z) &&
+           raw.getUInt32(packet.health) &&
+           raw.getUInt32(packet.maximumHealth) &&
+           raw.getUInt32(packet.buildProgress) &&
+           raw.getUInt32(packet.requiredBuild) &&
+           raw.getUInt8(packet.active) &&
+           raw.getUInt8(packet.team) &&
+           raw.getUInt8(packet.phase) &&
            raw.fullyRead();
 }
 
-inline void EncodeAppPacketRaw(NetworkMessageRaw& raw, const NetworkPlayerRemovePacket& packet)
+inline void EncodeAppPacketRaw(NetworkMessageRaw& raw, const NetworkStructureActionPacket& packet)
 {
-    raw.putInt32(packet.playerId);
-    raw.putInt32(packet.levelIndex);
+    raw.putUInt32(packet.sequence);
+    raw.putUInt32(packet.lifeEpoch);
+    raw.putInt32(packet.structureKey);
+    raw.putUInt8(packet.action);
 }
 
-inline bool DecodeAppPacketRaw(NetworkMessageRaw& raw, NetworkPlayerRemovePacket& packet)
+inline bool DecodeAppPacketRaw(NetworkMessageRaw& raw, NetworkStructureActionPacket& packet)
+{
+    memset(&packet, 0, sizeof(packet));
+    return raw.getUInt32(packet.sequence) && raw.getUInt32(packet.lifeEpoch) &&
+           raw.getInt32(packet.structureKey) &&
+           raw.getUInt8(packet.action) &&
+           raw.fullyRead();
+}
+
+inline void EncodeAppPacketRaw(NetworkMessageRaw& raw, const NetworkCorpseStatePacket& packet)
+{
+    raw.putUInt32(packet.entityIndex);
+    raw.putUInt32(packet.entityGeneration);
+    raw.putUInt32(packet.sequence);
+    raw.putInt32(packet.sourcePlayerId);
+    raw.putUInt32(packet.sourcePlayerEntityIndex);
+    raw.putUInt32(packet.sourcePlayerEntityGeneration);
+    raw.putUInt32(packet.sourceLifeEpoch);
+    raw.putInt32(packet.sceneId);
+    raw.putInt32(packet.roomId);
+    raw.putFloat(packet.x);
+    raw.putFloat(packet.y);
+    raw.putFloat(packet.z);
+    for (size_t axis = 0; axis < 3; ++axis) raw.putUInt16(static_cast<unsigned short>(packet.rotation[axis]));
+    raw.putUInt8(packet.selectedWeapon);
+    raw.putUInt8(packet.active);
+}
+
+inline bool DecodeAppPacketRaw(NetworkMessageRaw& raw, NetworkCorpseStatePacket& packet)
+{
+    memset(&packet, 0, sizeof(packet));
+    const auto readShort = [&raw](short& destination) {
+        unsigned short value = 0;
+        if (!raw.getUInt16(value)) return false;
+        destination = static_cast<short>(value);
+        return true;
+    };
+    if (!raw.getUInt32(packet.entityIndex) || !raw.getUInt32(packet.entityGeneration) ||
+        !raw.getUInt32(packet.sequence) ||
+        !raw.getInt32(packet.sourcePlayerId) ||
+        !raw.getUInt32(packet.sourcePlayerEntityIndex) ||
+        !raw.getUInt32(packet.sourcePlayerEntityGeneration) ||
+        !raw.getUInt32(packet.sourceLifeEpoch) ||
+        !raw.getInt32(packet.sceneId) ||
+        !raw.getInt32(packet.roomId) || !raw.getFloat(packet.x) || !raw.getFloat(packet.y) ||
+        !raw.getFloat(packet.z)) return false;
+    for (size_t axis = 0; axis < 3; ++axis) if (!readShort(packet.rotation[axis])) return false;
+    if (!raw.getUInt8(packet.selectedWeapon)) return false;
+    return raw.getUInt8(packet.active) && raw.fullyRead();
+}
+
+inline void EncodeAppPacketRaw(NetworkMessageRaw& raw, const NetworkPlayerLifecyclePacket& packet)
+{
+    raw.putInt32(packet.playerId);
+    raw.putUInt32(packet.entityIndex);
+    raw.putUInt32(packet.entityGeneration);
+    raw.putInt32(packet.sceneId);
+    raw.putUInt8(packet.active);
+}
+
+inline bool DecodeAppPacketRaw(NetworkMessageRaw& raw, NetworkPlayerLifecyclePacket& packet)
 {
     return raw.getInt32(packet.playerId) &&
-           raw.getInt32(packet.levelIndex) &&
+           raw.getUInt32(packet.entityIndex) &&
+           raw.getUInt32(packet.entityGeneration) &&
+           raw.getInt32(packet.sceneId) &&
+           raw.getUInt8(packet.active) &&
            raw.fullyRead();
 }
 
@@ -1285,7 +1775,9 @@ class cCryptoSession
 {
     bool _hasKeypair;
     bool _ready;
+    bool _serverRole;
     unsigned char _publicKey[crypto_kx_PUBLICKEYBYTES];
+    unsigned char _peerPublicKey[crypto_kx_PUBLICKEYBYTES];
     unsigned char _secretKey[crypto_kx_SECRETKEYBYTES];
     unsigned char _rx[crypto_kx_SESSIONKEYBYTES];
     unsigned char _tx[crypto_kx_SESSIONKEYBYTES];
@@ -1293,9 +1785,11 @@ class cCryptoSession
 public:
     cCryptoSession()
         : _hasKeypair(false),
-          _ready(false)
+          _ready(false),
+          _serverRole(false)
     {
         memset(_publicKey, 0, sizeof(_publicKey));
+        memset(_peerPublicKey, 0, sizeof(_peerPublicKey));
         memset(_secretKey, 0, sizeof(_secretKey));
         memset(_rx, 0, sizeof(_rx));
         memset(_tx, 0, sizeof(_tx));
@@ -1307,7 +1801,9 @@ public:
     {
         _hasKeypair = false;
         _ready = false;
+        _serverRole = false;
         sodium_memzero(_publicKey, sizeof(_publicKey));
+        sodium_memzero(_peerPublicKey, sizeof(_peerPublicKey));
         sodium_memzero(_secretKey, sizeof(_secretKey));
         sodium_memzero(_rx, sizeof(_rx));
         sodium_memzero(_tx, sizeof(_tx));
@@ -1321,6 +1817,8 @@ public:
         }
         _hasKeypair = true;
         _ready = false;
+        _serverRole = false;
+        sodium_memzero(_peerPublicKey, sizeof(_peerPublicKey));
         payload.assign(reinterpret_cast<const char*>(_publicKey), sizeof(_publicKey));
         return true;
     }
@@ -1337,6 +1835,7 @@ public:
             clear();
             return false;
         }
+        memcpy(_peerPublicKey, serverPublic, sizeof(_peerPublicKey));
         _ready = true;
         return true;
     }
@@ -1352,15 +1851,32 @@ public:
             return false;
         }
         _hasKeypair = true;
+        _serverRole = true;
         const unsigned char* clientPublic = reinterpret_cast<const unsigned char*>(payload.data());
         if (crypto_kx_server_session_keys(_rx, _tx, _publicKey, _secretKey, clientPublic) != 0)
         {
             clear();
             return false;
         }
+        memcpy(_peerPublicKey, clientPublic, sizeof(_peerPublicKey));
         _ready = true;
         response.assign(reinterpret_cast<const char*>(_publicKey), sizeof(_publicKey));
         return true;
+    }
+
+    string identityBinding() const
+    {
+        if (!_ready)
+        {
+            return {};
+        }
+        static constexpr char domain[] = "GamePlatform identity proof v1";
+        string binding(domain, sizeof(domain) - 1);
+        const unsigned char* clientPublic = _serverRole ? _peerPublicKey : _publicKey;
+        const unsigned char* serverPublic = _serverRole ? _publicKey : _peerPublicKey;
+        binding.append(reinterpret_cast<const char*>(clientPublic), crypto_kx_PUBLICKEYBYTES);
+        binding.append(reinterpret_cast<const char*>(serverPublic), crypto_kx_PUBLICKEYBYTES);
+        return binding;
     }
 
     bool encrypt(const string& plain, string& payload)
@@ -1434,6 +1950,17 @@ inline string BuildVoicePayload(const NetworkVoicePacket& packet)
     return BuildAppRawMessage(NAMTVoice, raw);
 }
 
+inline string BuildVoiceIntentPayload(const NetworkVoiceIntentPacket& packet)
+{
+    NetworkMessageRaw raw;
+    raw.putUInt32(packet.sequence);
+    raw.putUInt8(packet.codec);
+    raw.putUInt16(packet.sampleRate);
+    raw.putUInt16(packet.frameSamples);
+    raw.putBytes(packet.data, VOICE_MAX_OPUS_BYTES);
+    return BuildAppRawMessage(NAMTVoice, raw);
+}
+
 inline bool ParseVoicePacket(const char* buffer, __int32 bufferSize, NetworkVoicePacket& packet)
 {
     packet = NetworkVoicePacket();
@@ -1461,4 +1988,28 @@ inline bool ParseVoicePacket(const char* buffer, __int32 bufferSize, NetworkVoic
            raw.getUInt16(packet.frameSamples) &&
            raw.getBytes(packet.data, VOICE_MAX_OPUS_BYTES) &&
            raw.fullyRead();
+}
+
+inline bool ParseVoiceIntentPacket(const char* buffer, __int32 bufferSize,
+                                   NetworkVoiceIntentPacket& packet)
+{
+    packet = NetworkVoiceIntentPacket();
+    if (!buffer || bufferSize < (__int32)sizeof(NetAppMessageHeader))
+    {
+        return false;
+    }
+    const NetAppMessageHeader* header = reinterpret_cast<const NetAppMessageHeader*>(buffer);
+    if (header->type != NAMTVoice)
+    {
+        return false;
+    }
+    const __int32 payloadSize = bufferSize - (__int32)sizeof(NetAppMessageHeader);
+    if (payloadSize < 0 || (size_t)payloadSize > NET_MAX_ENCRYPTED_BYTES)
+    {
+        return false;
+    }
+    NetworkMessageRaw raw(buffer + sizeof(NetAppMessageHeader), payloadSize);
+    return raw.getUInt32(packet.sequence) && raw.getUInt8(packet.codec) &&
+           raw.getUInt16(packet.sampleRate) && raw.getUInt16(packet.frameSamples) &&
+           raw.getBytes(packet.data, VOICE_MAX_OPUS_BYTES) && raw.fullyRead();
 }

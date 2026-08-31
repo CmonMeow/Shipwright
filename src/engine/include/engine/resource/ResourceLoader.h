@@ -50,14 +50,10 @@ class ResourceLoader {
                                                                  std::shared_ptr<File> fileToLoad);
     static std::shared_ptr<ResourceInitData> ReadResourceInitDataBinary(const std::string& filePath,
                                                                         std::shared_ptr<BinaryReader> headerReader);
-    static std::shared_ptr<ResourceInitData> ReadResourceInitDataXml(const std::string& filePath,
-                                                                     std::shared_ptr<tinyxml2::XMLDocument> document);
     static std::shared_ptr<ResourceInitData> ReadResourceInitDataPng(const std::string& filePath,
                                                                      std::shared_ptr<BinaryReader> headerReader);
     std::shared_ptr<BinaryReader> CreateBinaryReader(std::shared_ptr<File> fileToLoad,
                                                      std::shared_ptr<ResourceInitData> initData);
-    std::shared_ptr<tinyxml2::XMLDocument> CreateXMLReader(std::shared_ptr<File> fileToLoad,
-                                                           std::shared_ptr<ResourceInitData> initData);
 
   private:
     std::string DecodeASCII(uint32_t value);

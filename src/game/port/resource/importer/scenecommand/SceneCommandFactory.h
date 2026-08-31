@@ -16,12 +16,4 @@ class SceneCommandFactoryBinaryV0 {
     void ReadCommandId(std::shared_ptr<ISceneCommand> command, std::shared_ptr<Engine::BinaryReader> reader);
 };
 
-class SceneCommandFactoryXMLV0 {
-  public:
-    virtual std::shared_ptr<Engine::IResource> ReadResource(std::shared_ptr<Engine::ResourceInitData> initData,
-                                                          tinyxml2::XMLElement* reader) = 0;
-
-  protected:
-    void ReadCommandId(std::shared_ptr<ISceneCommand> command, tinyxml2::XMLElement* reader);
-};
 } // namespace SOH

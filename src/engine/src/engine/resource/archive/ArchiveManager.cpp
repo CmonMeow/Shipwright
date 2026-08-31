@@ -3,11 +3,7 @@
 
 #include <filesystem>
 #include "engine/resource/archive/Archive.h"
-#ifdef INCLUDE_MPQ_SUPPORT
-#include "engine/resource/archive/OtrArchive.h"
-#endif
 #include "engine/resource/archive/O2rArchive.h"
-#include "engine/resource/archive/FolderArchive.h"
 #include "engine/utils/StringHelper.h"
 #include "engine/utils/glob.h"
 #include "engine/utils/StrHash64.h"
@@ -149,22 +145,6 @@ void ArchiveManager::ResetVirtualFileSystem() {
     }
 }
 
-bool ArchiveManager::WriteFile(std::shared_ptr<Archive> archive, const std::string& filePath,
-                               const std::vector<uint8_t>& data) {
-    if (archive) {
-        if (archive->WriteFile(filePath, data)) {
-            auto hash = CRC64(filePath.c_str());
-            archive->Unload();
-            archive->Load();
-            AddArchive(archive);
-            mHashes[hash] = filePath;
-            mFileToArchive[hash] = archive;
-            return true; // Successfully wrote file
-        }
-    }
-    return false; // Failed to write file
-}
-
 size_t ArchiveManager::RemoveArchive(const std::string& path) {
     for (size_t i = 0; i < mArchives.size(); i++) {
         if (path == mArchives[i]->GetPath()) {
@@ -212,17 +192,14 @@ std::vector<std::string> ArchiveManager::GetArchiveListInPaths(const std::vector
             if (std::filesystem::is_directory(archivePath)) {
                 bool hasAssetFiles = false;
                 for (const auto& p : std::filesystem::directory_iterator(archivePath)) {
-                    if (StringHelper::IEquals(p.path().extension().string(), ".otr") ||
-                        StringHelper::IEquals(p.path().extension().string(), ".zip") ||
-                        StringHelper::IEquals(p.path().extension().string(), ".mpq") ||
-                        StringHelper::IEquals(p.path().extension().string(), ".o2r")) {
+                    if (StringHelper::IEquals(p.path().extension().string(), ".o2r")) {
                         fileList.push_back(std::filesystem::absolute(p).string());
                         hasAssetFiles = true;
                     }
                 }
 
                 if (!hasAssetFiles) {
-                    fileList.push_back(std::filesystem::absolute(archivePath).string());
+                    WriteLog("No .o2r archive found in {}", std::filesystem::absolute(archivePath).string());
                 }
             } else if (std::filesystem::is_regular_file(archivePath)) {
                 fileList.push_back(std::filesystem::absolute(archivePath).string());
@@ -244,18 +221,11 @@ std::shared_ptr<Archive> ArchiveManager::AddArchive(const std::string& archivePa
 
     WriteLog("Reading archive: {}", path.string());
 
-    if (StringHelper::IEquals(extension, ".o2r") || StringHelper::IEquals(extension, ".zip")) {
+    if (StringHelper::IEquals(extension, ".o2r")) {
         archive = dynamic_pointer_cast<Archive>(std::make_shared<O2rArchive>(archivePath));
-#ifdef INCLUDE_MPQ_SUPPORT
-    } else if (StringHelper::IEquals(extension, ".otr") || StringHelper::IEquals(extension, ".mpq")) {
-        archive = dynamic_pointer_cast<Archive>(std::make_shared<OtrArchive>(archivePath));
-#endif
-    } else if (StringHelper::IEquals(extension, "")) {
-        archive = dynamic_pointer_cast<Archive>(std::make_shared<FolderArchive>(archivePath));
     } else {
-        // Not recognized file extension, trying with o2r
-        WriteLog("File extension \"{}\" not recognized, trying to create an o2r archive.", extension);
-        archive = std::make_shared<O2rArchive>(archivePath);
+        WriteLog("Unsupported archive extension \"{}\" for {}", extension, path.string());
+        return nullptr;
     }
 
     archive->Load();

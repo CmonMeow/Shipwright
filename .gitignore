@@ -1,0 +1,5 @@
+/obj/
+/Log
+*.db
+*.vsidx
+*.ipch

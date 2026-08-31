@@ -977,7 +977,6 @@ void AudioHeap_Init(void) {
     AudioLoad_InitScriptLoads();
     AudioLoad_InitAsyncLoads();
     gAudioContext.unk_4 = 0x1000;
-    AudioLoad_LoadPermanentSamples();
     intMask = osSetIntMask(1);
     osWritebackDCacheAll();
     osSetIntMask(intMask);

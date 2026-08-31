@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cstdint>
+#include <string>
 #include <vector>
 #include <engine/resource/Resource.h>
 #include "port/resource/type/AudioSample.h"
@@ -54,6 +55,12 @@ typedef struct {
 
 class AudioSoundFont : public Engine::Resource<SoundFont> {
   public:
+    struct InstrumentSamplePaths {
+        std::string low;
+        std::string normal;
+        std::string high;
+    };
+
     using Resource::Resource;
 
     AudioSoundFont() : Resource(std::shared_ptr<Engine::ResourceInitData>()) {
@@ -62,6 +69,9 @@ class AudioSoundFont : public Engine::Resource<SoundFont> {
 
     SoundFont* GetPointer();
     size_t GetPointerSize();
+    Drum* ResolveDrumSample(size_t index);
+    Instrument* ResolveInstrumentSamples(size_t index);
+    SoundFontSound* ResolveSoundEffectSample(size_t index);
 
     int8_t medium;
     int8_t cachePolicy;
@@ -71,10 +81,13 @@ class AudioSoundFont : public Engine::Resource<SoundFont> {
 
     std::vector<Drum*> drumAddresses;
     std::vector<std::vector<AdsrEnvelope>> drumEnvelopeArrays;
+    std::vector<std::string> drumSamplePaths;
 
     std::vector<Instrument*> instrumentAddresses;
+    std::vector<InstrumentSamplePaths> instrumentSamplePaths;
 
     std::vector<SoundFontSound> soundEffects;
+    std::vector<std::string> soundEffectSamplePaths;
 
     SoundFont soundFont;
 };

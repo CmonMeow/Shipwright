@@ -7,7 +7,7 @@
 #include "port/frame_interpolation.h"
 #include "port/OTRGlobals.h"
 #include "port/ResourceManagerHelpers.h"
-#include "port/NetworkGameBridge.h"
+#include "port/ClientRuntime.h"
 
 #include <runtime/runtime.h>
 
@@ -433,7 +433,7 @@ void Play_Update(PlayState* play) {
                         Actor_UpdateAll(play, &play->actorCtx);
                     }
 
-                    NetworkGame_Update(play);
+                    ClientRuntime_UpdateGameplay(play);
 
                     PLAY_LOG(3643);
                     PlayerAction_Reset(play);
@@ -753,11 +753,10 @@ time_t Play_GetRealTime() {
 void Play_Main(GameState* thisx) {
     PlayState* play = (PlayState*)thisx;
 
-    // Run gameplay at an experimental 30 Hz cadence (R_UPDATE_RATE 2), with
-    // two interpolated presents on a 60 Hz display. Title, opening and
-    // map-select states still own their native 60 Hz rate. Preserve the one
-    // map-select states still own their native 60 Hz rate.
-    R_UPDATE_RATE = 2;
+    // Preserve Ocarina's native 20 Hz gameplay cadence. Rendering may present
+    // interpolated frames at the display rate, but it must not change the
+    // simulation and animation clock.
+    R_UPDATE_RATE = 3;
 
     D_8012D1F8 = &play->state.input[0];
 

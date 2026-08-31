@@ -1,6 +1,5 @@
 #include "port/resource/importer/TextFactory.h"
 #include "port/resource/type/Text.h"
-#include <tinyxml2.h>
 
 namespace SOH {
 std::shared_ptr<Engine::IResource>
@@ -29,35 +28,4 @@ ResourceFactoryBinaryTextV0::ReadResource(std::shared_ptr<Engine::File> file,
     return text;
 }
 
-std::shared_ptr<Engine::IResource>
-ResourceFactoryXMLTextV0::ReadResource(std::shared_ptr<Engine::File> file,
-                                       std::shared_ptr<Engine::ResourceInitData> initData) {
-    if (!FileHasValidFormatAndReader(file, initData)) {
-        return nullptr;
-    }
-
-    auto txt = std::make_shared<Text>(initData);
-    auto child =
-        std::get<std::shared_ptr<tinyxml2::XMLDocument>>(file->Reader)->FirstChildElement()->FirstChildElement();
-
-    while (child != nullptr) {
-        std::string childName = child->Name();
-
-        if (childName == "TextEntry") {
-            MessageEntry entry;
-            entry.id = child->IntAttribute("ID");
-            entry.textboxType = child->IntAttribute("TextboxType");
-            entry.textboxYPos = child->IntAttribute("TextboxYPos");
-            entry.msg = child->Attribute("Message");
-            entry.msg += "\x2";
-
-            txt->messages.push_back(entry);
-            int bp = 0;
-        }
-
-        child = child->NextSiblingElement();
-    }
-
-    return txt;
-}
 } // namespace SOH

@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="18.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup><PreferredToolArchitecture>x64</PreferredToolArchitecture></PropertyGroup>
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Release|x64"><Configuration>Release</Configuration><Platform>x64</Platform></ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{7109A7ED-829B-45B4-986B-55D6F44194F8}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword><WindowsTargetPlatformVersion>10.0.26100.0</WindowsTargetPlatformVersion>
+    <Platform>x64</Platform><ProjectName>SimulationLoadTests</ProjectName>
+    <RepoRoot>$(MSBuildThisFileDirectory)..\..\</RepoRoot>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType><CharacterSet>MultiByte</CharacterSet><PlatformToolset>v145</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings" /><ImportGroup Label="PropertySheets" />
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <OutDir>$(RepoRoot)obj\tests\</OutDir><IntDir>$(RepoRoot)obj\msvc\$(ProjectName)\$(Configuration)\</IntDir>
+    <TargetName>SimulationLoadSelfTest</TargetName><LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>$(RepoRoot)src\game\platform\simulation;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <ExceptionHandling>Sync</ExceptionHandling><LanguageStandard>stdcpp20</LanguageStandard>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation><Optimization>MaxSpeed</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader><RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <UseStandardPreprocessor>true</UseStandardPreprocessor><WarningLevel>Level4</WarningLevel>
+      <TreatWarningAsError>true</TreatWarningAsError><ObjectFileName>$(IntDir)</ObjectFileName>
+    </ClCompile>
+    <Link><GenerateDebugInformation>false</GenerateDebugInformation><SubSystem>Console</SubSystem></Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="$(RepoRoot)src\game\platform\simulation\CorpseSimulation.cpp" />
+    <ClCompile Include="$(RepoRoot)src\game\platform\simulation\FishingSimulation.cpp" />
+    <ClCompile Include="$(RepoRoot)src\game\platform\simulation\SpatialGridIndex.cpp" />
+    <ClCompile Include="$(RepoRoot)src\game\platform\replication\PlayerReplicationSystem.cpp" />
+    <ClCompile Include="$(RepoRoot)src\game\platform\replication\OwnedEntityReplicationSystem.cpp" />
+    <ClCompile Include="$(RepoRoot)src\game\platform\replication\ReplicationBudgetSystem.cpp" />
+    <ClCompile Include="$(RepoRoot)src\game\platform\replication\SpatialEntityReplicationSystem.cpp" />
+    <ClCompile Include="$(RepoRoot)src\game\platform\simulation\ObjectiveSimulation.cpp" />
+    <ClCompile Include="$(RepoRoot)src\game\platform\simulation\PlayerSimulation.cpp" />
+    <ClCompile Include="$(RepoRoot)src\game\platform\simulation\PlayerLoadoutPolicy.cpp" />
+    <ClCompile Include="$(RepoRoot)src\game\platform\simulation\ProjectileSimulation.cpp" />
+    <ClCompile Include="$(RepoRoot)src\game\platform\simulation\SceneTransitionAuthority.cpp" />
+    <ClCompile Include="$(RepoRoot)src\game\platform\simulation\ServerWorld.cpp" />
+    <ClCompile Include="$(RepoRoot)src\game\platform\simulation\ServerIntentAdmission.cpp" />
+    <ClCompile Include="$(RepoRoot)src\game\platform\simulation\StrategicWorldTopology.cpp" />
+    <ClCompile Include="$(RepoRoot)src\game\platform\simulation\StructureSimulation.cpp" />
+    <ClCompile Include="$(RepoRoot)src\game\platform\simulation\StructureActionAuthority.cpp" />
+    <ClCompile Include="$(RepoRoot)src\game\tests\SimulationLoadSelfTest.cpp" />
+    <ClInclude Include="$(RepoRoot)src\game\tests\ServerWorldTestAccess.h" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets" />
+</Project>

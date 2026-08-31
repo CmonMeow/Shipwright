@@ -84,35 +84,36 @@ enum NetMsgFlags {
 
 enum NetAppMessageType : unsigned char {
 	NAMTConnect = 1,
-	NAMTDisconnect,
-	NAMTChat,
-	NAMTHeartbeat,
-	NAMTPlayerAssign,
-	NAMTPlayerState,
-	NAMTPlayerStateRaw,
-	NAMTDynamicObjectState,
-	NAMTLevelAdvance,
-	NAMTPlayerRemove,
-	NAMTStateRequest,
-	NAMTVoice,
-	NAMTKeyHello,
-	NAMTKeyAccept,
-	NAMTDynamicObjectStateRaw,
-	NAMTPlayerIntent,
-	NAMTChatKey,
-	NAMTPrivateChat,
-	NAMTUpdateInfo,
-	NAMTUpdateChunk,
-	NAMTUpdateComplete,
-	NAMTWorldBegin,
-	NAMTWorldChunk,
-	NAMTWorldComplete,
-	NAMTPlayerDamage,
-	NAMTActorEvent,
-	NAMTProjectileImpact,
-	NAMTPlayerRespawn,
-	NAMTFishingState,
-	NAMTEncrypted
+	NAMTChat = 3,
+	NAMTPlayerAssign = 5,
+	NAMTPlayerSnapshot = 6,
+	NAMTPlayerLifecycle = 8,
+	NAMTVoice = 10,
+	NAMTKeyHello = 11,
+	NAMTKeyAccept = 12,
+	NAMTProjectileState = 13,
+	NAMTPlayerIntent = 14,
+	NAMTChatKey = 15,
+	NAMTPrivateChat = 16,
+	NAMTCombatResult = 23,
+	NAMTPlayerRespawn = 24,
+	NAMTFishingState = 25,
+	NAMTObjectiveState = 26,
+	NAMTStructureState = 27,
+	NAMTStructureAction = 28,
+	NAMTCorpseState = 29,
+	NAMTArrowFireIntent = 30,
+	NAMTSceneEntryIntent = 31,
+	NAMTSceneEntryState = 32,
+	NAMTFishIntent = 33,
+	NAMTFishState = 34,
+	NAMTLureControlIntent = 35,
+	NAMTLureState = 36,
+	NAMTProjectileLifecycle = 37,
+	NAMTWeaponSelectionIntent = 38,
+	NAMTProjectileIntentResult = 39,
+	NAMTEncrypted = 40,
+	NAMTStrategicTopology = 41
 };
 
 #pragma pack(push, netAppMessage, 1)
@@ -213,11 +214,11 @@ public:
 		return GetConnectionInfo(latencyMS, throughputBPS);
 	}
 
-	virtual bool GetLocalAddress(in_addr& addr) const { return false; }
-	virtual bool GetLocalAddress(in_addr& addr, __int32& port) const { return false; }
-	virtual bool GetDistantAddress(in_addr& addr, __int32& port) const { return false; }
+	virtual bool GetLocalAddress(in_addr&) const { return false; }
+	virtual bool GetLocalAddress(in_addr&, __int32&) const { return false; }
+	virtual bool GetDistantAddress(in_addr&, __int32&) const { return false; }
 
-	virtual bool GetServerAddress(sockaddr_in& addr) const { return false; }
+	virtual bool GetServerAddress(sockaddr_in&) const { return false; }
 
 	virtual bool IsSessionTerminated() = 0;
 	virtual NetTerminationReason GetWhySessionTerminated() = 0;
@@ -292,6 +293,20 @@ NetTranspServer* CreateNetServer();
 
 void SetNetworkPort(unsigned short port);
 unsigned short GetNetworkPort();
+
+struct NetworkTestFaultStats {
+	unsigned __int64 considered;
+	unsigned __int64 dropped;
+	unsigned __int64 reliableConsidered;
+	unsigned __int64 reliableDropped;
+};
+
+// Deterministic transport loss for integration tests. Disposable datagrams can
+// be dropped continuously while one reliable datagram is forced through the
+// normal retry path. A zero interval and false flag restore production behavior.
+void ConfigureNetworkTestPacketLoss(unsigned dropEveryNthDisposableDatagram,
+	                                bool dropNextReliableDatagram = false);
+NetworkTestFaultStats GetNetworkTestFaultStats();
 void sendDisconnectMessages();
 void stopUdpListenSend();
 void destroyPool();

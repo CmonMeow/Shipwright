@@ -11,16 +11,8 @@
 #ifdef __cplusplus
 #include <engine/Context.h>
 #include <memory>
-#include <unordered_map>
 #include <vector>
 #include <string>
-
-struct ExtensionEntry {
-    std::string path;
-    std::string ext;
-};
-
-extern std::unordered_map<std::string, ExtensionEntry> ExtensionCache;
 
 const std::string appShortName = "oot";
 

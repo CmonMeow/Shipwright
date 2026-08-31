@@ -1,16 +1,14 @@
 #include "MultiplayerUI.h"
 
-#include "Network/NetworkRuntime.h"
-#include "Network/VoiceChat.h"
+#include "../platform/client/MultiplayerCommandProcessor.h"
+#include "../platform/client/MultiplayerInteractionPort.h"
+#include "UI/MultiplayerHudRenderer.h"
 #include "global.h"
 
-#include <runtime/log/Log.h>
-#include <runtime/bridge/windowbridge.h>
 #include <engine/Context.h>
 #include <engine/config/ConsoleVariable.h>
 #include <engine/input/Win32Input.h>
 #include <engine/window/Overlay.h>
-#include <engine/window/Window.h>
 
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
@@ -18,8 +16,6 @@
 #include <algorithm>
 #include <cctype>
 #include <cstdio>
-#include <cstdlib>
-#include <deque>
 #include <memory>
 #include <string>
 #include <vector>
@@ -31,8 +27,15 @@ constexpr const char* kNetworkAddress = "gSettings.MultiplayerAddress";
 constexpr const char* kNetworkPort = "gSettings.MultiplayerPort";
 constexpr const char* kNetworkStatus = "gSettings.MultiplayerStatus";
 constexpr const char* kChatEnabled = "gSettings.MultiplayerChatEnabled";
-constexpr const char* kVoiceEnabled = "gSettings.MultiplayerVoiceEnabled";
-constexpr const char* kVoicePushToTalk = "gSettings.MultiplayerVoicePushToTalk";
+
+constexpr size_t kVisibleChatRows =
+    Game::Client::kMultiplayerChatVisibleRows;
+constexpr size_t kChatHistoryLines =
+    Game::Client::kMultiplayerChatHistoryLines;
+constexpr size_t kChatMessageCharacters =
+    Game::Client::kMultiplayerChatMessageCharacters;
+constexpr size_t kChatLineCharacters =
+    Game::Client::kMultiplayerChatLineCharacters;
 
 std::string Trim(const std::string& text) {
     size_t first = 0;
@@ -60,20 +63,26 @@ std::string ClipboardText() {
         }
     }
     CloseClipboard();
-    return SanitiseChatText(result);
+    return Game::Client::SanitiseMultiplayerText(
+        result, kChatMessageCharacters);
 }
 
 } // namespace
 
 struct MultiplayerUI::Impl {
-    std::unique_ptr<cVoiceChat> voice;
-    std::deque<NetworkChatLine> history;
+    explicit Impl(Game::Client::MultiplayerInteractionPort& interactionPort)
+        : interaction(interactionPort), commands(interactionPort) {
+    }
+
+    Game::Client::MultiplayerInteractionPort& interaction;
+    Game::Client::MultiplayerCommandProcessor commands;
+    Game::UI::MultiplayerHudRenderer renderer;
+    std::vector<Game::UI::MultiplayerHudLine> history;
     std::string draft;
     std::string notice;
     std::string gameplayNotice;
     std::string lastStatus;
     size_t cursor = 0;
-    size_t viewStart = 0;
     size_t scrollOffset = 0;
     bool active = false;
     bool suppressOpeningSlash = false;
@@ -82,95 +91,49 @@ struct MultiplayerUI::Impl {
         return *Engine::Context::GetInstance()->GetConsoleVariables();
     }
 
-    void AddLine(std::string text, ChatLineKind kind = CLKSystem) {
-        text = SanitiseChatLine(text);
+    void AddLine(
+        std::string text,
+        Game::Client::MultiplayerChatKind kind =
+            Game::Client::MultiplayerChatKind::System) {
+        text = Game::Client::SanitiseMultiplayerText(
+            text, kChatLineCharacters);
         if (text.empty()) {
             return;
         }
-        history.push_back({ std::move(text), kind });
-        while (history.size() > CHAT_MAX_HISTORY_LINES) {
-            history.pop_front();
+        Game::UI::MultiplayerHudLineKind hudKind =
+            Game::UI::MultiplayerHudLineKind::Player;
+        if (kind == Game::Client::MultiplayerChatKind::System) {
+            hudKind = Game::UI::MultiplayerHudLineKind::System;
+        } else if (kind == Game::Client::MultiplayerChatKind::Private) {
+            hudKind = Game::UI::MultiplayerHudLineKind::Private;
+        }
+        history.push_back({ std::move(text), hudKind });
+        while (history.size() > kChatHistoryLines) {
+            history.erase(history.begin());
         }
         scrollOffset = 0;
     }
 
-    void DrainNetworkChat(SoH::Network::NetworkRuntime& runtime) {
-        NetworkChatLine line;
-        while (runtime.PollChat(line)) {
+    void DrainNetworkChat() {
+        Game::Client::MultiplayerChatMessage line;
+        while (interaction.PollChat(line)) {
             AddLine(std::move(line.text), line.kind);
         }
     }
 
-    int32_t FindPlayer(const SoH::Network::NetworkRuntime& runtime, const std::string& reference) const {
-        char* end = nullptr;
-        const long numeric = std::strtol(reference.c_str(), &end, 10);
-        if (end != reference.c_str() && *end == '\0') {
-            return static_cast<int32_t>(numeric);
-        }
-        for (const auto& player : runtime.Players()) {
-            if (_stricmp(player.name.c_str(), reference.c_str()) == 0 ||
-                _stricmp(player.identity.c_str(), reference.c_str()) == 0) {
-                return player.playerId;
-            }
-        }
-        return -1;
-    }
-
-    void RunCommand(const std::string& command, SoH::Network::NetworkRuntime& runtime) {
-        const size_t split = command.find(' ');
-        const std::string name = command.substr(0, split);
-        const std::string argument = split == std::string::npos ? std::string() : Trim(command.substr(split + 1));
-
-        if (_stricmp(name.c_str(), "/help") == 0) {
-            notice = "/host /connect /disconnect /pm /users /kick /ban /unban /admin /unadmin /admins /bans /clear";
-        } else if (_stricmp(name.c_str(), "/host") == 0) {
-            uint16_t port = DEFAULT_NETWORK_PORT;
-            if (!argument.empty()) {
-                const long parsed = std::strtol(argument.c_str(), nullptr, 10);
-                if (parsed > 0 && parsed <= 49151) {
-                    port = static_cast<uint16_t>(parsed);
-                }
-            }
-            runtime.Disconnect();
-            notice = runtime.Host(port) ? "hosting secure session" : "unable to host session";
-        } else if (_stricmp(name.c_str(), "/connect") == 0) {
-            const std::string address = argument.empty() ? DEFAULT_NETWORK_ADDRESS : argument;
-            runtime.Disconnect();
-            notice = runtime.Connect(address) ? "connecting securely to " + address : "connection failed";
-        } else if (_stricmp(name.c_str(), "/disconnect") == 0) {
-            runtime.Disconnect();
-            notice = "disconnected";
-        } else if (_stricmp(name.c_str(), "/clear") == 0) {
+    void RunCommand(const std::string& command) {
+        const Game::Client::MultiplayerCommandResult result =
+            commands.Execute(command);
+        if (result.clearHistory) {
             history.clear();
-            notice.clear();
-        } else if (_stricmp(name.c_str(), "/users") == 0 || _stricmp(name.c_str(), "/kick") == 0 ||
-                   _stricmp(name.c_str(), "/ban") == 0 || _stricmp(name.c_str(), "/unban") == 0 ||
-                   _stricmp(name.c_str(), "/gm") == 0 || _stricmp(name.c_str(), "/admin") == 0 ||
-                   _stricmp(name.c_str(), "/ungm") == 0 || _stricmp(name.c_str(), "/unadmin") == 0 ||
-                   _stricmp(name.c_str(), "/admins") == 0 || _stricmp(name.c_str(), "/gms") == 0 ||
-                   _stricmp(name.c_str(), "/bans") == 0) {
-            notice = runtime.SendChat(command) ? "command sent" : "not connected";
-        } else if (_stricmp(name.c_str(), "/pm") == 0 || _stricmp(name.c_str(), "/w") == 0 ||
-                   _stricmp(name.c_str(), "/tell") == 0) {
-            const size_t messageSplit = argument.find(' ');
-            if (messageSplit == std::string::npos) {
-                notice = "usage: /pm name|id message";
-                return;
-            }
-            const int32_t target = FindPlayer(runtime, argument.substr(0, messageSplit));
-            const std::string message = Trim(argument.substr(messageSplit + 1));
-            notice = target >= 0 && runtime.SendPrivateChat(target, message) ? "private message sent"
-                                                                             : "private message failed";
-        } else {
-            notice = "unknown command: " + name;
         }
+        notice = result.notice;
     }
 
-    void Submit(SoH::Network::NetworkRuntime& runtime) {
+    void Submit() {
         const std::string text = Trim(draft);
         draft.clear();
         cursor = 0;
-        viewStart = 0;
         active = false;
         suppressOpeningSlash = false;
         Engine::GetWin32Input().SetTextInputCaptured(false);
@@ -178,15 +141,15 @@ struct MultiplayerUI::Impl {
             return;
         }
         if (text[0] == '/') {
-            RunCommand(text, runtime);
-        } else if (runtime.SendChat(text)) {
+            RunCommand(text);
+        } else if (interaction.SendChat(text)) {
             notice = "message sent";
         } else {
             notice = "not connected";
         }
     }
 
-    void ProcessConnectionAction(SoH::Network::NetworkRuntime& runtime) {
+    void ProcessConnectionAction() {
         auto& variables = Variables();
         const int32_t action = variables.GetInteger(kNetworkAction, 0);
         if (action == 0) {
@@ -194,28 +157,36 @@ struct MultiplayerUI::Impl {
         }
         variables.SetInteger(kNetworkAction, 0);
         const uint16_t port = static_cast<uint16_t>(
-            std::clamp(variables.GetInteger(kNetworkPort, DEFAULT_NETWORK_PORT), 1, 49151));
-        const std::string address = variables.GetString(kNetworkAddress, DEFAULT_NETWORK_ADDRESS);
-        runtime.Disconnect();
+            std::clamp(variables.GetInteger(
+                           kNetworkPort,
+                           Game::Client::kDefaultMultiplayerPort),
+                       1, 49151));
+        const std::string address = variables.GetString(
+            kNetworkAddress, Game::Client::kDefaultMultiplayerAddress);
         if (action == 1) {
-            notice = runtime.Host(port) ? "hosting secure session" : "unable to host session";
+            notice = interaction.Host(port) ? "hosting secure session" : "unable to host session";
         } else if (action == 2) {
-            notice = runtime.Connect(address) ? "connecting securely to " + address : "connection failed";
+            notice = interaction.Connect(address) ? "connecting securely to " + address : "connection failed";
         } else {
+            interaction.Disconnect();
             notice = "disconnected";
         }
         variables.Save();
     }
 
-    void UpdateStatus(const SoH::Network::NetworkRuntime& runtime) {
+    void UpdateStatus(const Game::Client::MultiplayerConnectionStatus& connection) {
         std::string status = "Offline";
-        if (runtime.IsHost()) {
-            status = "Hosting (secure) - " + std::to_string(runtime.Players().size()) + " player(s)";
-        } else if (runtime.IsClient()) {
-            status = runtime.IsSecure() ? "Connected (secure)" : "Connecting...";
-            if (runtime.IsSecure()) {
-                status += " - " + std::to_string(runtime.LatencyMilliseconds()) + " ms";
-            }
+        if (connection.phase ==
+            Game::Client::MultiplayerConnectionPhase::Hosting) {
+            status = "Hosting (secure) - " +
+                     std::to_string(connection.playerCount) + " player(s)";
+        } else if (connection.phase ==
+                   Game::Client::MultiplayerConnectionPhase::Connected) {
+            status = "Connected (secure) - " +
+                     std::to_string(connection.latencyMilliseconds) + " ms";
+        } else if (connection.phase ==
+                   Game::Client::MultiplayerConnectionPhase::Connecting) {
+            status = "Connecting...";
         }
         if (status != lastStatus) {
             lastStatus = status;
@@ -231,20 +202,19 @@ struct MultiplayerUI::Impl {
         draft = std::move(initial);
         suppressOpeningSlash = draft == "/";
         cursor = draft.size();
-        viewStart = 0;
         uint8_t ignored = 0;
         while (Engine::GetWin32Input().PopTextInput(ignored)) {
         }
         Engine::GetWin32Input().SetTextInputCaptured(true);
     }
 
-    void UpdateInput(SoH::Network::NetworkRuntime& runtime) {
+    void UpdateInput() {
         auto& input = Engine::GetWin32Input();
         if (input.IsGameInputBlocked()) {
             return;
         }
         if (!active) {
-            if (runtime.IsActive() && input.ConsumePress(VK_RETURN)) {
+            if (input.ConsumePress(VK_RETURN)) {
                 Open();
             } else if (input.ConsumePress(VK_OEM_2)) {
                 Open("/");
@@ -254,7 +224,9 @@ struct MultiplayerUI::Impl {
 
         if ((GetAsyncKeyState(VK_CONTROL) & 0x8000) != 0 && input.ConsumePress('V')) {
             std::string text = ClipboardText();
-            const size_t available = CHAT_MAX_MESSAGE_CHARS - std::min(draft.size(), CHAT_MAX_MESSAGE_CHARS);
+            const size_t available =
+                kChatMessageCharacters -
+                std::min(draft.size(), kChatMessageCharacters);
             if (text.size() > available) {
                 text.resize(available);
             }
@@ -273,7 +245,8 @@ struct MultiplayerUI::Impl {
                     continue;
                 }
             }
-            if (character >= 32 && character != 127 && draft.size() < CHAT_MAX_MESSAGE_CHARS) {
+            if (character >= 32 && character != 127 &&
+                draft.size() < kChatMessageCharacters) {
                 draft.insert(cursor, 1, static_cast<char>(character));
                 ++cursor;
             }
@@ -304,12 +277,14 @@ struct MultiplayerUI::Impl {
             suppressOpeningSlash = false;
             input.SetTextInputCaptured(false);
         } else if (input.ConsumePress(VK_RETURN)) {
-            Submit(runtime);
+            Submit();
         }
 
         const int32_t wheel = input.ConsumeMouseWheel();
         if (wheel != 0) {
-            const size_t maxOffset = history.size() > CHAT_VISIBLE_ROWS ? history.size() - CHAT_VISIBLE_ROWS : 0;
+            const size_t maxOffset = history.size() > kVisibleChatRows
+                                         ? history.size() - kVisibleChatRows
+                                         : 0;
             if (wheel > 0) {
                 scrollOffset = std::min(maxOffset, scrollOffset + 3);
             } else {
@@ -318,153 +293,57 @@ struct MultiplayerUI::Impl {
         }
     }
 
-    void Draw() {
-        auto& variables = Variables();
-        // A disabled passive overlay must never hide the command line while
-        // the user is actively typing into it.
-        if (!active && !variables.GetInteger(kChatEnabled, 1) && gameplayNotice.empty()) {
-            return;
-        }
-        const float windowWidth = static_cast<float>(WindowGetWidth());
-        const float width = std::max(120.0f, std::min(680.0f, windowWidth - 24.0f));
-        constexpr float x = 12.0f;
-        constexpr float y = 14.0f;
-        constexpr float lineHeight = 18.0f;
-        constexpr float inputHeight = 24.0f;
-        const float height = CHAT_VISIBLE_ROWS * lineHeight + inputHeight + 18.0f;
-
-        Engine::Overlay::QueueRect(x, y, x + width, y + height, 0.02f, 0.025f, 0.025f, 0.70f);
-        Engine::Overlay::QueueRect(x, y, x + width, y + height, 0.32f, 0.38f, 0.36f, 0.95f, true);
-
-        const size_t newest = history.size() > scrollOffset ? history.size() - scrollOffset : 0;
-        const size_t first = newest > CHAT_VISIBLE_ROWS ? newest - CHAT_VISIBLE_ROWS : 0;
-        const size_t visibleCharacters = width > 24.0f ? static_cast<size_t>((width - 20.0f) / 12.0f) : 1;
-        const float textTop = y + height - 22.0f;
-        for (size_t index = first; index < newest; ++index) {
-            float red = 0.96f;
-            float green = 0.96f;
-            float blue = 0.96f;
-            if (history[index].kind == CLKSystem) {
-                red = 0.58f;
-                green = 0.78f;
-                blue = 0.84f;
-            } else if (history[index].kind == CLKPrivate) {
-                red = 0.82f;
-                green = 0.70f;
-                blue = 1.0f;
-            }
-            const std::string line = history[index].text.substr(0, visibleCharacters);
-            Engine::Overlay::QueueText(line.c_str(), x + 8.0f,
-                                               textTop - static_cast<float>(index - first) * lineHeight, red, green,
-                                               blue);
-        }
-
-        if (cursor < viewStart) {
-            viewStart = cursor;
-        }
-        const size_t inputCharacters = visibleCharacters > 3 ? visibleCharacters - 3 : visibleCharacters;
-        if (cursor > viewStart + inputCharacters) {
-            viewStart = cursor - inputCharacters;
-        }
-        std::string visibleDraft = draft.substr(viewStart, inputCharacters);
-        const size_t localCursor = std::min(cursor - viewStart, visibleDraft.size());
-        const std::string inputLine = active ? "> " + visibleDraft.substr(0, localCursor) + "|" +
-                                                   visibleDraft.substr(localCursor)
-                                             : "> Enter: chat   /: command";
-        Engine::Overlay::QueueRect(x + 6.0f, y + 6.0f, x + width - 6.0f, y + inputHeight + 4.0f,
-                                           0.07f, 0.085f, 0.08f, 0.92f);
-        Engine::Overlay::QueueText(inputLine.c_str(), x + 10.0f, y + 12.0f, active ? 0.95f : 0.60f,
-                                           active ? 0.96f : 0.68f, active ? 0.92f : 0.66f);
-        if (!notice.empty()) {
-            Engine::Overlay::QueueText(notice.c_str(), x + 8.0f, y + height + 4.0f, 0.95f, 0.82f, 0.48f);
-        }
-        if (!gameplayNotice.empty()) {
-            const float notificationX = std::max(12.0f, (windowWidth - 420.0f) * 0.5f);
-            Engine::Overlay::QueueRect(notificationX, 42.0f, notificationX + 420.0f, 78.0f,
-                                               0.02f, 0.025f, 0.025f, 0.82f);
-            Engine::Overlay::QueueText(gameplayNotice.c_str(), notificationX + 12.0f, 53.0f,
-                                               0.95f, 0.90f, 0.72f);
-        }
-    }
-
-    void DrawLife() {
-        if (gPlayState == nullptr || gSaveContext.healthCapacity <= 0) {
-            return;
-        }
-
-        const float windowHeight = static_cast<float>(WindowGetHeight());
-        constexpr float labelX = 18.0f;
-        constexpr float barX = 72.0f;
-        constexpr float barWidth = 192.0f;
-        constexpr float barHeight = 18.0f;
-        const float barY = std::max(12.0f, windowHeight - 38.0f);
-        const int32_t capacity = gSaveContext.healthCapacity;
-        const int32_t health = std::clamp<int32_t>(gSaveContext.health, 0, capacity);
-        const float healthFraction = static_cast<float>(health) / static_cast<float>(capacity);
-
-        Engine::Overlay::QueueText("LIFE", labelX, barY + 1.0f, 0.96f, 0.96f, 0.92f);
-        Engine::Overlay::QueueRect(barX, barY, barX + barWidth, barY + barHeight,
-                                           0.035f, 0.025f, 0.025f, 0.88f);
-        if (health > 0) {
-            Engine::Overlay::QueueRect(barX + 2.0f, barY + 2.0f,
-                                               barX + 2.0f + (barWidth - 4.0f) * healthFraction,
-                                               barY + barHeight - 2.0f, 0.78f, 0.06f, 0.10f, 0.96f);
-        }
-
-        const int32_t heartCount = std::max<int32_t>(1, capacity / FULL_HEART_HEALTH);
-        for (int32_t heart = 1; heart < heartCount; ++heart) {
-            const float dividerX = barX + barWidth * static_cast<float>(heart) / static_cast<float>(heartCount);
-            Engine::Overlay::QueueRect(dividerX - 0.5f, barY + 1.0f, dividerX + 0.5f,
-                                               barY + barHeight - 1.0f, 0.18f, 0.04f, 0.05f, 0.92f);
-        }
-        Engine::Overlay::QueueRect(barX, barY, barX + barWidth, barY + barHeight,
-                                           0.88f, 0.88f, 0.82f, 0.96f, true);
-    }
-
-    void UpdateVoice(SoH::Network::NetworkRuntime& runtime) {
-        const bool enabled = Variables().GetInteger(kVoiceEnabled, 1) != 0;
-        if (enabled && !voice) {
-            voice = std::make_unique<cVoiceChat>();
-            Error("Voice chat initialized");
-        }
-        if (!voice) {
-            return;
-        }
-        const bool pushToTalk = Variables().GetInteger(kVoicePushToTalk, 0) != 0;
-        const bool talkDown = Engine::GetWin32Input().Pressed(VK_SHIFT) && !active &&
-                              !Engine::GetWin32Input().IsGameInputBlocked();
-        voice->update(runtime, talkDown, enabled, pushToTalk);
-    }
-
-    void Update(SoH::Network::NetworkRuntime& runtime) {
+    void Update() {
         Engine::Overlay::BeginFrame();
-        ProcessConnectionAction(runtime);
-        DrainNetworkChat(runtime);
-        UpdateStatus(runtime);
-        UpdateInput(runtime);
-        UpdateVoice(runtime);
-        Draw();
-        DrawLife();
+        ProcessConnectionAction();
+        const Game::Client::MultiplayerConnectionStatus connection =
+            interaction.Status();
+        Engine::Overlay::SetNetworkTelemetry(
+            connection.Active(), connection.latencyMilliseconds,
+            connection.inboundBytesPerSecond,
+            connection.outboundBytesPerSecond);
+        DrainNetworkChat();
+        UpdateStatus(connection);
+        UpdateInput();
+        interaction.UpdateVoice(active);
+        Game::UI::MultiplayerHudView view{};
+        view.history = history;
+        view.historyScrollOffset = scrollOffset;
+        view.visibleHistoryRows = kVisibleChatRows;
+        view.draft = draft;
+        view.cursor = cursor;
+        view.inputActive = active;
+        view.passiveChatEnabled = Variables().GetInteger(kChatEnabled, 1) != 0;
+        view.statusNotice = notice;
+        view.gameplayNotice = gameplayNotice;
+        view.lifeVisible = gPlayState != nullptr;
+        view.health = gSaveContext.health;
+        view.healthCapacity = gSaveContext.healthCapacity;
+        view.healthPerSegment = FULL_HEART_HEALTH;
+        renderer.Draw(view);
     }
 
     void Shutdown() {
         Engine::GetWin32Input().SetTextInputCaptured(false);
+        Engine::Overlay::SetNetworkTelemetry(false, 0, 0, 0);
         Engine::Overlay::Clear();
-        voice.reset();
+        renderer.Reset();
         history.clear();
         gameplayNotice.clear();
     }
 };
 
-MultiplayerUI::MultiplayerUI() : mImpl(std::make_unique<Impl>()) {
+MultiplayerUI::MultiplayerUI(
+    Game::Client::MultiplayerInteractionPort& interaction)
+    : mImpl(std::make_unique<Impl>(interaction)) {
 }
 
 MultiplayerUI::~MultiplayerUI() {
     Shutdown();
 }
 
-void MultiplayerUI::Update(SoH::Network::NetworkRuntime& runtime) {
-    mImpl->Update(runtime);
+void MultiplayerUI::Update() {
+    mImpl->Update();
 }
 
 void MultiplayerUI::ShowNotification(const char* text) {

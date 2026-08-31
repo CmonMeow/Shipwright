@@ -104,33 +104,6 @@ void aLoadBufferImpl(const void* source_addr, uint16_t dest_addr, uint16_t nbyte
 #endif
 }
 
-#include <opus/opus.h>
-#include <opusfile.h>
-
-void aOPUSdecImpl(void* source_addr, uint16_t dest_addr, uint16_t nbytes, struct OggOpusFile** decState, int32_t pos,
-                  uint32_t size) {
-    int readSamples = 0;
-    if (*decState == NULL) {
-        *decState = op_open_memory(source_addr, size, NULL);
-    }
-    op_pcm_seek(*decState, pos);
-    int ret = op_read(*decState, BUF_S16(dest_addr), nbytes / 2, NULL);
-    if (ret < 0) {
-        return;
-    }
-    readSamples += ret;
-    while (readSamples < nbytes / 2) {
-        ret = op_read(*decState, BUF_S16(dest_addr + readSamples * 2), (nbytes - readSamples * 2) / 2, NULL);
-        if (ret == 0)
-            break;
-        readSamples += ret;
-    }
-}
-
-void aOPUSFree(struct OggOpusFile* opusFile) {
-    op_free(opusFile);
-}
-
 void aSaveBufferImpl(uint16_t source_addr, int16_t* dest_addr, uint16_t nbytes) {
     memcpy(dest_addr, BUF_S16(source_addr), ROUND_DOWN_16(nbytes));
 }

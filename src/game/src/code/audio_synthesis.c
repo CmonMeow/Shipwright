@@ -804,7 +804,6 @@ Acmd* AudioSynth_ProcessNote(int32_t noteIndex, NoteSubEu* noteSubEu, NoteSynthe
                         s5 = samplesLenAdjusted;
                         goto skip;
                     case CODEC_S16:
-                    case CODEC_OPUS:
                         AudioSynth_ClearBuffer(cmd++, DMEM_UNCOMPRESSED_NOTE, (samplesLenAdjusted + 16) * 2);
                         flags = A_CONTINUE;
                         skipBytes = 0;
@@ -816,14 +815,8 @@ Acmd* AudioSynth_ProcessNote(int32_t noteIndex, NoteSubEu* noteSubEu, NoteSynthe
                         } else {
                             bytesToRead = audioFontSample->size - (synthState->samplePosInt * 2);
                         }
-                        // 2S2H [Port] [Custom audio] Handle decoding OPUS data
-                        if (audioFontSample->codec == CODEC_OPUS) {
-                            aOPUSdecImpl(sampleAddr, DMEM_UNCOMPRESSED_NOTE, bytesToRead, &synthState->opusFile,
-                                         synthState->samplePosInt, audioFontSample->fileSize);
-                        } else {
-                            aLoadBuffer(cmd++, sampleAddr + (synthState->samplePosInt * 2), DMEM_UNCOMPRESSED_NOTE,
-                                        bytesToRead);
-                        }
+                        aLoadBuffer(cmd++, sampleAddr + (synthState->samplePosInt * 2), DMEM_UNCOMPRESSED_NOTE,
+                                    bytesToRead);
 
                         goto skip;
                     case CODEC_REVERB:

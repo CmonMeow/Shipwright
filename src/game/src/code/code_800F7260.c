@@ -123,8 +123,78 @@ void Audio_ClearBGMMute(uint8_t channelIdx) {
     }
 }
 
+static bool Audio_IsRetainedSfx(uint16_t sfxId) {
+    const uint8_t bank = SFX_BANK(sfxId);
+    const uint16_t index = SFX_INDEX(sfxId);
+
+    // This client only retains Adult Link and the four equipped item paths.
+    if (bank == BANK_PLAYER) {
+        return true;
+    }
+
+    if (bank == BANK_VOICE) {
+        // Adult Link occupies the first 32 voice slots. Child Link and all NPC voices follow it.
+        return index < 0x20;
+    }
+
+    if (bank == BANK_ITEM) {
+        switch (index) {
+            case SFX_INDEX(NA_SE_IT_SWORD_IMPACT):
+            case SFX_INDEX(NA_SE_IT_SWORD_SWING):
+            case SFX_INDEX(NA_SE_IT_SWORD_PUTAWAY):
+            case SFX_INDEX(NA_SE_IT_SWORD_PICKOUT):
+            case SFX_INDEX(NA_SE_IT_ARROW_SHOT):
+            case SFX_INDEX(NA_SE_IT_SHIELD_BOUND):
+            case SFX_INDEX(NA_SE_IT_BOW_DRAW):
+            case SFX_INDEX(NA_SE_IT_SHIELD_REFLECT_SW):
+            case SFX_INDEX(NA_SE_IT_ARROW_STICK_HRAD):
+            case SFX_INDEX(NA_SE_IT_SHIELD_REFLECT_MG):
+            case SFX_INDEX(NA_SE_IT_SWORD_STRIKE):
+            case SFX_INDEX(NA_SE_IT_ARROW_STICK_CRE):
+            case SFX_INDEX(NA_SE_IT_ARROW_STICK_OBJ):
+            case SFX_INDEX(NA_SE_IT_SWORD_SWING_HARD):
+            case SFX_INDEX(NA_SE_IT_WALL_HIT_HARD):
+            case SFX_INDEX(NA_SE_IT_WALL_HIT_SOFT):
+            case SFX_INDEX(NA_SE_IT_SHIELD_POSTURE):
+            case SFX_INDEX(NA_SE_IT_SWORD_STRIKE_HARD):
+            case SFX_INDEX(NA_SE_IT_SHIELD_REMOVE):
+            case SFX_INDEX(NA_SE_IT_SWORD_PUTAWAY_STN):
+            case SFX_INDEX(NA_SE_IT_BOW_FLICK):
+            case SFX_INDEX(NA_SE_IT_SWORD_STICK_STN):
+            case SFX_INDEX(NA_SE_IT_REFLECTION_WOOD):
+            case SFX_INDEX(NA_SE_IT_FISHING_REEL_SLOW):
+            case SFX_INDEX(NA_SE_IT_FISHING_REEL_HIGH):
+            case SFX_INDEX(NA_SE_IT_FISHING_HIT):
+            case SFX_INDEX(NA_SE_IT_MASTER_SWORD_SWING):
+                return true;
+            default:
+                return false;
+        }
+    }
+
+    if (bank == BANK_ENV) {
+        switch (index) {
+            case SFX_INDEX(NA_SE_EV_DIVE_INTO_WATER):
+            case SFX_INDEX(NA_SE_EV_JUMP_OUT_WATER):
+            case SFX_INDEX(NA_SE_EV_BOMB_DROP_WATER):
+            case SFX_INDEX(NA_SE_EV_OUT_OF_WATER):
+            case SFX_INDEX(NA_SE_EV_LURE_MOVE_W):
+            case SFX_INDEX(NA_SE_EV_FISH_LEAP):
+                return true;
+            default:
+                return false;
+        }
+    }
+
+    return false;
+}
+
 void Audio_PlaySoundGeneral(uint16_t sfxId, Vec3f* pos, uint8_t token, float* freqScale, float* vol, int8_t* reverbAdd) {
     size_t i;
+
+    if (!Audio_IsRetainedSfx(sfxId)) {
+        return;
+    }
 
     if (!gSoundBankMuted[SFX_BANK_SHIFT(sfxId)]) {
         SoundRequest* req = &sSoundRequests[sSoundRequestWriteIndex];

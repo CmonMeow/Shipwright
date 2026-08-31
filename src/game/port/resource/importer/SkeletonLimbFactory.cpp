@@ -1,6 +1,5 @@
 #include "port/resource/importer/SkeletonLimbFactory.h"
 #include "port/resource/type/SkeletonLimb.h"
-#include <tinyxml2.h>
 #include "runtime/runtime.h"
 
 namespace SOH {
@@ -190,67 +189,4 @@ ResourceFactoryBinarySkeletonLimbV0::ReadResource(std::shared_ptr<Engine::File> 
     return skeletonLimb;
 }
 
-std::shared_ptr<Engine::IResource>
-ResourceFactoryXMLSkeletonLimbV0::ReadResource(std::shared_ptr<Engine::File> file,
-                                               std::shared_ptr<Engine::ResourceInitData> initData) {
-    if (!FileHasValidFormatAndReader(file, initData)) {
-        return nullptr;
-    }
-
-    auto skelLimb = std::make_shared<SkeletonLimb>(initData);
-    auto reader = std::get<std::shared_ptr<tinyxml2::XMLDocument>>(file->Reader)->FirstChildElement();
-
-    std::string limbType = reader->Attribute("Type");
-
-    // OTRTODO
-    skelLimb->limbType = LimbType::LOD;
-
-    // skelLimb->legTransX = reader->FloatAttribute("LegTransX");
-    // skelLimb->legTransY = reader->FloatAttribute("LegTransY");
-    // skelLimb->legTransZ = reader->FloatAttribute("LegTransZ");
-    skelLimb->rotX = reader->IntAttribute("RotX");
-    skelLimb->rotY = reader->IntAttribute("RotY");
-    skelLimb->rotZ = reader->IntAttribute("RotZ");
-
-    // skelLimb->transX = reader->IntAttribute("TransX");
-    // skelLimb->transY = reader->IntAttribute("TransY");
-    // skelLimb->transZ = reader->IntAttribute("TransZ");
-
-    skelLimb->transX = (int)reader->FloatAttribute("LegTransX");
-    skelLimb->transY = (int)reader->FloatAttribute("LegTransY");
-    skelLimb->transZ = (int)reader->FloatAttribute("LegTransZ");
-
-    skelLimb->childIndex = reader->IntAttribute("ChildIndex");
-    skelLimb->siblingIndex = reader->IntAttribute("SiblingIndex");
-
-    // skelLimb->childPtr = reader->Attribute("ChildLimb");
-    // skelLimb->siblingPtr = reader->Attribute("SiblingLimb");
-    skelLimb->dListPtr = reader->Attribute("DisplayList1");
-
-    if (std::string(reader->Attribute("DisplayList1")) == "gEmptyDL") {
-        skelLimb->dListPtr = "";
-    }
-
-    auto& limbData = skelLimb->limbData;
-
-    limbData.lodLimb.jointPos.x = skelLimb->transX;
-    limbData.lodLimb.jointPos.y = skelLimb->transY;
-    limbData.lodLimb.jointPos.z = skelLimb->transZ;
-
-    if (skelLimb->dListPtr != "") {
-        skelLimb->dListPtr = "__OTR__" + skelLimb->dListPtr;
-        limbData.lodLimb.dLists[0] = (Gfx*)skelLimb->dListPtr.c_str();
-    } else {
-        limbData.lodLimb.dLists[0] = nullptr;
-    }
-
-    limbData.lodLimb.dLists[1] = nullptr;
-
-    limbData.lodLimb.child = skelLimb->childIndex;
-    limbData.lodLimb.sibling = skelLimb->siblingIndex;
-
-    // skelLimb->dList2Ptr = reader->Attribute("DisplayList2");
-
-    return skelLimb;
-}
 } // namespace SOH

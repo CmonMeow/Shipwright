@@ -30,6 +30,11 @@ struct NetworkParams {
 };
 extern NetworkParams networkParams;
 
+// Disabled unless an integration test explicitly configures it. Returning true
+// makes the UDP peer behave as though the OS accepted a datagram which was then
+// lost on the network, allowing the normal reliable-channel retry path to run.
+bool ShouldDropNetworkTestDatagram(bool reliable);
+
 struct RoutingItem {
 
 	
@@ -95,7 +100,7 @@ public:
 		data = _data;
 	}
 
-	virtual void dataSentAck(size_t size) {}
+	virtual void dataSentAck(size_t) {}
 
 	virtual void setSubsetRoutine(const RoutingItem& item)
 	{
@@ -193,9 +198,9 @@ public:
 
 	virtual void stopThreads() {}
 
-	virtual void suspendSocket(bool susp = true) {}
+	virtual void suspendSocket(bool = true) {}
 
-	virtual void replaceSocket(SOCKET _sock) {}
+	virtual void replaceSocket(SOCKET) {}
 
 	virtual void processData(MsgHeader* hdr, const struct sockaddr_in& distant) = 0;
 

@@ -3,6 +3,7 @@
 #undef _DLL
 
 #include <string>
+#include <mutex>
 #include <stdint.h>
 #include <string>
 
@@ -22,12 +23,12 @@ class O2rArchive final : virtual public Archive {
 
     bool Open();
     bool Close();
-    bool WriteFile(const std::string& filename, const std::vector<uint8_t>& data);
 
     std::shared_ptr<File> LoadFile(const std::string& filePath);
     std::shared_ptr<File> LoadFile(uint64_t hash);
 
   private:
-    zip_t* mZipArchive;
+    zip_t* mZipArchive = nullptr;
+    std::mutex mZipMutex;
 };
 } // namespace Engine

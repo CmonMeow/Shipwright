@@ -10,15 +10,36 @@
     <BuildDependency Project="msvc/LibGfxd.vcxproj"/>
     <BuildDependency Project="msvc/Stb.vcxproj"/>
     <BuildDependency Project="msvc/Prism.vcxproj"/>
-    <BuildDependency Project="msvc/StormLib.vcxproj"/>
   </Project>
   <Project Path="msvc/Engine.vcxproj" Type="8bc9ceb8-8b4a-11d0-8d11-00a0c91bc942" Id="06cc8d88-1a4d-3e2c-94f1-180fc8b912db">
     <BuildDependency Project="msvc/LibGfxd.vcxproj"/>
     <BuildDependency Project="msvc/Stb.vcxproj"/>
     <BuildDependency Project="msvc/Prism.vcxproj"/>
-    <BuildDependency Project="msvc/StormLib.vcxproj"/>
   </Project>
   <Project Path="msvc/Network.vcxproj" Type="8bc9ceb8-8b4a-11d0-8d11-00a0c91bc942" Id="cc8974d8-759d-3cfa-8cf0-b4f8b3d546cf"/>
+  <Folder Name="/tests/">
+    <Project Path="msvc/InputActionTests.vcxproj" Type="8bc9ceb8-8b4a-11d0-8d11-00a0c91bc942" Id="c418922d-bb5c-46fc-8918-d2868d92e272"/>
+    <Project Path="msvc/MultiplayerInteractionTests.vcxproj" Type="8bc9ceb8-8b4a-11d0-8d11-00a0c91bc942" Id="ead6a92c-40a7-4f09-bd07-35b94c3b77a2"/>
+    <Project Path="msvc/SimulationTests.vcxproj" Type="8bc9ceb8-8b4a-11d0-8d11-00a0c91bc942" Id="5fcff460-66d9-4424-ae1f-964dc33d330d"/>
+    <Project Path="msvc/NetworkRuntimeTests.vcxproj" Type="8bc9ceb8-8b4a-11d0-8d11-00a0c91bc942" Id="407fef62-ec00-4492-b660-3d3351e2914e">
+      <BuildDependency Project="msvc/Network.vcxproj"/>
+    </Project>
+    <Project Path="msvc/SimulationLoadTests.vcxproj" Type="8bc9ceb8-8b4a-11d0-8d11-00a0c91bc942" Id="7109a7ed-829b-45b4-986b-55d6f44194f8"/>
+    <Project Path="msvc/NetworkFaultInjectionTests.vcxproj" Type="8bc9ceb8-8b4a-11d0-8d11-00a0c91bc942" Id="d62d5901-575c-40cf-81e7-0c0474395b72"/>
+    <Project Path="msvc/NetworkTransportSoakTests.vcxproj" Type="8bc9ceb8-8b4a-11d0-8d11-00a0c91bc942" Id="3a3628e5-4c2c-42a6-a456-240d530d3929">
+      <BuildDependency Project="msvc/Network.vcxproj"/>
+    </Project>
+    <Project Path="msvc/WorldPvpScenarioTests.vcxproj" Type="8bc9ceb8-8b4a-11d0-8d11-00a0c91bc942" Id="9861b036-5541-43af-a39a-76ee664f3f36"/>
+    <Project Path="msvc/NetworkProtocolTests.vcxproj" Type="8bc9ceb8-8b4a-11d0-8d11-00a0c91bc942" Id="f410d40e-b6ee-4e04-a133-e963d1b6e58b">
+      <BuildDependency Project="msvc/Network.vcxproj"/>
+    </Project>
+    <Project Path="msvc/ServerCollisionTests.vcxproj" Type="8bc9ceb8-8b4a-11d0-8d11-00a0c91bc942" Id="6d4ae25d-554e-42c8-b86c-7f188b710c53">
+      <BuildDependency Project="msvc/Network.vcxproj"/>
+    </Project>
+    <Project Path="msvc/VoiceCodecTests.vcxproj" Type="8bc9ceb8-8b4a-11d0-8d11-00a0c91bc942" Id="d52f29da-7c70-4f7d-9e6b-16f376ad2dd8">
+      <BuildDependency Project="msvc/Network.vcxproj"/>
+    </Project>
+  </Folder>
   <Folder Name="/clients/">
     <Project Path="msvc/DedicatedServer.vcxproj" Type="8bc9ceb8-8b4a-11d0-8d11-00a0c91bc942" Id="a07671b0-9f2a-3f57-9e52-62c2e5652f3c">
       <BuildDependency Project="msvc/Network.vcxproj"/>
@@ -31,6 +52,5 @@
     <Project Path="msvc/LibGfxd.vcxproj" Type="8bc9ceb8-8b4a-11d0-8d11-00a0c91bc942" Id="e336f0a6-2313-316a-a6db-31a934f64874"/>
     <Project Path="msvc/Stb.vcxproj" Type="8bc9ceb8-8b4a-11d0-8d11-00a0c91bc942" Id="4bb74363-7dde-3032-8f43-878476b15a43"/>
     <Project Path="msvc/Prism.vcxproj" Type="8bc9ceb8-8b4a-11d0-8d11-00a0c91bc942" Id="48948160-6bfa-30fb-9401-08b164880f69"/>
-    <Project Path="msvc/StormLib.vcxproj" Type="8bc9ceb8-8b4a-11d0-8d11-00a0c91bc942" Id="74dbbcdd-1d2e-3c44-a3b9-1e3a05c2efd9"/>
   </Folder>
 </Solution>

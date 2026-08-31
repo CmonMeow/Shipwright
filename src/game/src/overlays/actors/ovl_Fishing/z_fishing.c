@@ -5,7 +5,10 @@
  */
 
 #include "z_fishing.h"
-#include "port/NetworkGameBridge.h"
+#include "engine/input/PCInput.h"
+#include "port/Gameplay/FishingGameplay.h"
+#include "port/Gameplay/FishPresentation.h"
+#include "port/Gameplay/GameplayNotification.h"
 
 #include "objects/object_fish/object_fish.h"
 #include "message_data_fmt.h"
@@ -381,8 +384,6 @@ static float sPortableWaterSurfaceY;
 static void* sPreviousSpecialEffects;
 
 static void Fishing_StopCinematic(PlayState* play);
-extern void PCInput_ClearBufferedActions(void);
-extern int32_t PCInput_IsFishingReelHeld(void);
 
 static int32_t Fishing_IsReelHeld(Input* input) {
     return CHECK_BTN_ALL(input->cur.button, BTN_A) || PCInput_IsFishingReelHeld();
@@ -394,7 +395,7 @@ static void Fishing_StartCatchNotification(PlayState* play) {
 
     snprintf(notification, sizeof(notification), "Caught a %s: %d lb  -  Left click to release", fishName,
              gSaveContext.minigameScore);
-    NetworkGame_ShowNotification(notification);
+    GameplayNotification_Show(notification);
 }
 static int16_t sLureTimer; // AND'd for various effects/checks
 static int16_t D_80B7E0B0;
@@ -432,109 +433,72 @@ static Vec3f sReelLinePos[LINE_SEG_COUNT];
 static Vec3f sSinkingLurePos[SINKING_LURE_SEG_COUNT];
 static int16_t sSinkingLureSegmentIndex;
 static Vec3f sSinkingLureBasePos;
-static Vec3f sNetworkLureHookPos[2];
-static Vec3f sNetworkLureHookRot[2];
+static Vec3f sPresentedLureHookPos[2];
+static Vec3f sPresentedLureHookRot[2];
 
-int32_t Fishing_GetNetworkVisualState(PlayState* play, uint8_t* castState, Vec3f* rodTipOffset, Vec3f* lureOffset,
-                                  Vec3f* lureDrawOffset, float* rodBendY,
-                                  float* rodBendX, float* rodTwist,
-                                  float* rodCastX, Vec3f* lureRot, float* lureSpin, float* lureZOffset,
-                                  Vec3f lureHookOffsets[2],
-                                  Vec3f lureHookRot[2], float* lineScale, float* lineGravity, uint8_t* lureType, uint8_t* lineSpooled,
-                                  uint8_t* lineHooked, uint8_t* fishActive, uint8_t* fishIsLoach,
-                                  Vec3f* fishOffset, Vec3s* fishRot, int16_t fishLimbRot[8], float* fishLength,
-                                  int32_t* fishRoomId, int32_t* fishActorParams, int32_t* fishHomeX, int32_t* fishHomeY,
-                                  int32_t* fishHomeZ,
-                                  uint8_t* sinkingLureSegmentIndex, uint8_t* sinkingLureUnderwater) {
-    Player* player = { 0 };
+int32_t FishingGameplay_ReadLocalVisual(PlayState* play, FishingLocalVisual* visual) {
+    Player* player;
     int32_t i;
-    int32_t firstLinePoint = { 0 };
+    int32_t firstLinePoint;
 
-    if (play == NULL || castState == NULL || rodTipOffset == NULL || lureOffset == NULL || lureDrawOffset == NULL ||
-        rodBendY == NULL || rodBendX == NULL || rodTwist == NULL || rodCastX == NULL || lureRot == NULL ||
-        lureSpin == NULL || lureZOffset == NULL ||
-        lureHookOffsets == NULL || lureHookRot == NULL || lineScale == NULL || lineGravity == NULL || lureType == NULL ||
-        lineSpooled == NULL || lineHooked == NULL || fishActive == NULL ||
-        fishIsLoach == NULL || fishOffset == NULL || fishRot == NULL || fishLimbRot == NULL || fishLength == NULL ||
-        fishRoomId == NULL || fishActorParams == NULL || fishHomeX == NULL || fishHomeY == NULL || fishHomeZ == NULL ||
-        sinkingLureSegmentIndex == NULL || sinkingLureUnderwater == NULL) {
+    if (play == NULL || visual == NULL) {
         return false;
     }
     player = GET_PLAYER(play);
     if (player == NULL || player->heldItemAction != PLAYER_IA_FISHING_POLE || sFishingMain == NULL) {
         return false;
     }
-    *castState = (uint8_t)sRodCastState;
-    rodTipOffset->x = sRodTipPos.x - player->actor.world.pos.x;
-    rodTipOffset->y = sRodTipPos.y - player->actor.world.pos.y;
-    rodTipOffset->z = sRodTipPos.z - player->actor.world.pos.z;
-    lureOffset->x = sLurePos.x - player->actor.world.pos.x;
-    lureOffset->y = sLurePos.y - player->actor.world.pos.y;
-    lureOffset->z = sLurePos.z - player->actor.world.pos.z;
-    lureDrawOffset->x = sLureDrawPos.x - player->actor.world.pos.x;
-    lureDrawOffset->y = sLureDrawPos.y - player->actor.world.pos.y;
-    lureDrawOffset->z = sLureDrawPos.z - player->actor.world.pos.z;
+    visual->state = (uint8_t)sRodCastState;
+    visual->rodTipOffset[0] = sRodTipPos.x - player->actor.world.pos.x;
+    visual->rodTipOffset[1] = sRodTipPos.y - player->actor.world.pos.y;
+    visual->rodTipOffset[2] = sRodTipPos.z - player->actor.world.pos.z;
+    visual->lureDrawOffset[0] = sLureDrawPos.x - player->actor.world.pos.x;
+    visual->lureDrawOffset[1] = sLureDrawPos.y - player->actor.world.pos.y;
+    visual->lureDrawOffset[2] = sLureDrawPos.z - player->actor.world.pos.z;
     firstLinePoint = CLAMP((int32_t)sRodLineSpooled, 0, LINE_SEG_COUNT - 1);
-    *rodBendY = sRodBendRotY;
-    *rodBendX = (D_80B7A6BC * (((player->unk_85C - 1.0f) * -0.25f) + 0.5f)) + (D_80B7A6AC + D_80B7A6B8);
-    *rodTwist = player->unk_858;
-    *rodCastX = D_80B7A6C0;
-    *lureRot = sLureRot;
-    *lureSpin = sLure1Rotate;
-    *lureZOffset = sLurePosZOffset;
+    visual->rodBendY = sRodBendRotY;
+    visual->rodBendX =
+        (D_80B7A6BC * (((player->unk_85C - 1.0f) * -0.25f) + 0.5f)) + (D_80B7A6AC + D_80B7A6B8);
+    visual->rodTwist = player->unk_858;
+    visual->rodCastX = D_80B7A6C0;
+    visual->lureRotation[0] = sLureRot.x;
+    visual->lureRotation[1] = sLureRot.y;
+    visual->lureRotation[2] = sLureRot.z;
+    visual->lureSpin = sLure1Rotate;
+    visual->lureZOffset = sLurePosZOffset;
     for (i = 0; i < 2; i++) {
-        lureHookOffsets[i].x = sNetworkLureHookPos[i].x - player->actor.world.pos.x;
-        lureHookOffsets[i].y = sNetworkLureHookPos[i].y - player->actor.world.pos.y;
-        lureHookOffsets[i].z = sNetworkLureHookPos[i].z - player->actor.world.pos.z;
-        lureHookRot[i] = sNetworkLureHookRot[i];
+        visual->lureHookOffsets[i][0] = sPresentedLureHookPos[i].x - player->actor.world.pos.x;
+        visual->lureHookOffsets[i][1] = sPresentedLureHookPos[i].y - player->actor.world.pos.y;
+        visual->lureHookOffsets[i][2] = sPresentedLureHookPos[i].z - player->actor.world.pos.z;
+        visual->lureHookRotations[i][0] = sPresentedLureHookRot[i].x;
+        visual->lureHookRotations[i][1] = sPresentedLureHookRot[i].y;
     }
-    *lineScale = sFishingLineScale;
-    *lineGravity = D_80B7E148;
-    *lureType = sLureEquipped;
-    *lineSpooled = (uint8_t)firstLinePoint;
-    *lineHooked = sLineHooked;
-    *sinkingLureSegmentIndex = sSinkingLureSegmentIndex;
+    visual->lineScale = sFishingLineScale;
+    visual->lineGravity = D_80B7E148;
+    visual->lineSpooled = (uint8_t)firstLinePoint;
+    visual->sinkingLureSegmentIndex = (uint8_t)sSinkingLureSegmentIndex;
     // Fishing_DrawSinkingLure and Fishing_UpdateSinkingLure both classify the
     // active lure from sLurePos. The discovery/base position may be elsewhere
     // in the scene and must not control a remote player's lure material or
     // segment spacing.
-    *sinkingLureUnderwater = sLurePos.y < WATER_SURFACE_Y(play);
-    *fishActive = sFishingHookedFish != NULL && (sRodCastState == 4 || sRodCastState == 5);
-    if (*fishActive) {
-        *fishIsLoach = sFishingHookedFish->isLoach;
-        fishOffset->x = sFishingHookedFish->actor.world.pos.x - player->actor.world.pos.x;
-        fishOffset->y = sFishingHookedFish->actor.world.pos.y - player->actor.world.pos.y;
-        fishOffset->z = sFishingHookedFish->actor.world.pos.z - player->actor.world.pos.z;
-        fishRot->x = sFishingHookedFish->actor.shape.rot.x + sFishingHookedFish->unk_160;
-        fishRot->y = sFishingHookedFish->actor.shape.rot.y + sFishingHookedFish->unk_162;
-        fishRot->z = sFishingHookedFish->actor.shape.rot.z + sFishingHookedFish->unk_164;
-        fishLimbRot[0] = sFishingHookedFish->fishLimbDRotZDelta;
-        fishLimbRot[1] = sFishingHookedFish->fishLimbEFRotYDelta;
-        fishLimbRot[2] = sFishingHookedFish->fishLimb23RotYDelta;
-        fishLimbRot[3] = sFishingHookedFish->fishLimb89RotYDelta;
-        fishLimbRot[4] = sFishingHookedFish->fishLimb4RotYDelta;
-        fishLimbRot[5] = sFishingHookedFish->loachRotYDelta[0];
-        fishLimbRot[6] = sFishingHookedFish->loachRotYDelta[1];
-        fishLimbRot[7] = sFishingHookedFish->loachRotYDelta[2];
-        *fishLength = sFishingHookedFish->fishLength;
-        *fishRoomId = sFishingHookedFish->actor.room;
-        *fishActorParams = sFishingHookedFish->actor.params;
-        *fishHomeX = (int32_t)lroundf(sFishingHookedFish->actor.home.pos.x);
-        *fishHomeY = (int32_t)lroundf(sFishingHookedFish->actor.home.pos.y);
-        *fishHomeZ = (int32_t)lroundf(sFishingHookedFish->actor.home.pos.z);
+    visual->sinkingLureUnderwater = sLurePos.y < WATER_SURFACE_Y(play);
+    if (sFishingHookedFish != NULL && (sRodCastState == 4 || sRodCastState == 5)) {
+        visual->fishRotation[0] = sFishingHookedFish->actor.shape.rot.x + sFishingHookedFish->unk_160;
+        visual->fishRotation[1] = sFishingHookedFish->actor.shape.rot.y + sFishingHookedFish->unk_162;
+        visual->fishRotation[2] = sFishingHookedFish->actor.shape.rot.z + sFishingHookedFish->unk_164;
+        visual->fishLimbRotation[0] = sFishingHookedFish->fishLimbDRotZDelta;
+        visual->fishLimbRotation[1] = sFishingHookedFish->fishLimbEFRotYDelta;
+        visual->fishLimbRotation[2] = sFishingHookedFish->fishLimb23RotYDelta;
+        visual->fishLimbRotation[3] = sFishingHookedFish->fishLimb89RotYDelta;
+        visual->fishLimbRotation[4] = sFishingHookedFish->fishLimb4RotYDelta;
+        visual->fishLimbRotation[5] = sFishingHookedFish->loachRotYDelta[0];
+        visual->fishLimbRotation[6] = sFishingHookedFish->loachRotYDelta[1];
+        visual->fishLimbRotation[7] = sFishingHookedFish->loachRotYDelta[2];
     } else {
-        *fishIsLoach = 0;
-        *fishOffset = (Vec3f){ 0.0f, 0.0f, 0.0f };
-        *fishRot = (Vec3s){ 0, 0, 0 };
+        visual->fishRotation[0] = visual->fishRotation[1] = visual->fishRotation[2] = 0;
         for (i = 0; i < 8; i++) {
-            fishLimbRot[i] = 0;
+            visual->fishLimbRotation[i] = 0;
         }
-        *fishLength = 0.0f;
-        *fishRoomId = 0;
-        *fishActorParams = 0;
-        *fishHomeX = 0;
-        *fishHomeY = 0;
-        *fishHomeZ = 0;
     }
     return true;
 }
@@ -1112,7 +1076,7 @@ static InitChainEntry sInitChain[] = {
     ICHAIN_F32(targetArrowOffset, 0, ICHAIN_STOP),
 };
 
-int32_t Fishing_EnsureNetworkPopulation(PlayState* play) {
+int32_t Fishing_EnsurePresentedPopulation(PlayState* play) {
     Actor* actor = { 0 };
     Player* player = { 0 };
 
@@ -1146,8 +1110,7 @@ void Fishing_Init(Actor* thisx, PlayState* play2) {
     Actor_ProcessInitChain(thisx, sInitChain);
     ActorShape_Init(&thisx->shape, 0.0f, NULL, 0.0f);
     this->isWild = false;
-    this->networkOwnerPlayerId = -1;
-    this->networkHookAnnounced = false;
+    this->remotePresentationActive = false;
 
     // The pond uses its adult rules even though the surrounding world is
     // intentionally loaded with child-age scene variants.
@@ -1380,6 +1343,11 @@ void Fishing_Init(Actor* thisx, PlayState* play2) {
 void Fishing_Destroy(Actor* thisx, PlayState* play2) {
     PlayState* play = play2;
     Fishing* this = (Fishing*)thisx;
+
+    if (sFishingHookedFish == this) {
+        FishingGameplay_SubmitAction(FISHING_GAMEPLAY_ACTION_RELEASE);
+        sFishingHookedFish = NULL;
+    }
 
     if (thisx->params == EN_FISH_PORTABLE) {
         if (play->specialEffects == sFishingEffects) {
@@ -1970,7 +1938,7 @@ void Fishing_UpdateLinePos(Vec3f* pos) {
     Fishing_UpdateLinePosInternal(pos, sRodLineSpooled);
 }
 
-void Fishing_UpdateNetworkLine(PlayState* play, Actor* collisionActor, Vec3f* rodTip, Vec3f* lurePos,
+void Fishing_UpdatePresentedLine(PlayState* play, Actor* collisionActor, Vec3f* rodTip, Vec3f* lurePos,
                                Vec3f linePos[LINE_SEG_COUNT], Vec3f lineRot[LINE_SEG_COUNT],
                                Vec3f lineUnk[LINE_SEG_COUNT], int16_t lineSpooled, uint8_t lureType, float lineGravity) {
     float remoteLineSpooled = { 0 };
@@ -2045,8 +2013,8 @@ void Fishing_DrawLureHook(PlayState* play, Vec3f* pos, Vec3f* refPos, uint8_t ho
         sLureHookRotY[hookIndex] = ry;
     }
 
-    sNetworkLureHookPos[hookIndex] = *pos;
-    sNetworkLureHookRot[hookIndex] = (Vec3f){ rx, sLureHookRotY[hookIndex], 0.0f };
+    sPresentedLureHookPos[hookIndex] = *pos;
+    sPresentedLureHookRot[hookIndex] = (Vec3f){ rx, sLureHookRotY[hookIndex], 0.0f };
 
     Matrix_RotateY(sLureHookRotY[hookIndex], MTXMODE_APPLY);
     Matrix_RotateX(rx, MTXMODE_APPLY);
@@ -2163,7 +2131,7 @@ void Fishing_UpdateSinkingLure(PlayState* play) {
                                       sSinkingLureFound, sLurePos.y < WATER_SURFACE_Y(play));
 }
 
-void Fishing_UpdateNetworkSinkingLure(Vec3f* lurePos, Vec3f positions[SINKING_LURE_SEG_COUNT], int16_t playerYaw,
+void Fishing_UpdatePresentedSinkingLure(Vec3f* lurePos, Vec3f positions[SINKING_LURE_SEG_COUNT], int16_t playerYaw,
                                       uint8_t castState, uint8_t underwater) {
     if (lurePos == NULL || positions == NULL) {
         return;
@@ -2722,7 +2690,6 @@ void Fishing_UpdateLure(Fishing* this, PlayState* play) {
                     sReelLinePosStep = 0.0;
                 } else {
                     Math_ApproachF(&D_80B7E148, 0.0f, 1.0f, 0.05f);
-                    Sfx_PlaySfxAtPos(&sSoundPos, NA_SE_EN_FANTOM_FLOAT - SFX_FLAG);
                 }
             } else {
                 spE4 = WATER_SURFACE_Y(play);
@@ -2766,7 +2733,6 @@ void Fishing_UpdateLure(Fishing* this, PlayState* play) {
                     }
                 } else {
                     Math_ApproachZeroF(&D_80B7E148, 1.0f, 0.05f);
-                    Sfx_PlaySfxAtPos(&sSoundPos, NA_SE_EN_FANTOM_FLOAT - SFX_FLAG);
                 }
             }
 
@@ -3307,8 +3273,8 @@ void Fishing_UpdateFish(Actor* thisx, PlayState* play2) {
     uint8_t rumbleStrength8 = { 0 };
     float savedPortableWaterSurfaceY = sPortableWaterSurfaceY;
     bool savedPortableWaterFound = sPortableWaterFound;
-    int32_t remoteHookOwner = -1;
-    int32_t releasedOwner = -1;
+    FishPresentationIdentity presentedIdentity;
+    FishPresentationState presentedState;
 
     if (this->isWild) {
         if (this->wildWaterBox != NULL) {
@@ -3318,95 +3284,57 @@ void Fishing_UpdateFish(Actor* thisx, PlayState* play2) {
         sPortableWaterFound = true;
     }
 
-    if (NetworkGame_ConsumeActorEventSource(play, &this->actor, NETWORK_GAME_ACTOR_EVENT_FISH_HOOK,
-                                            &remoteHookOwner)) {
-        this->networkOwnerPlayerId = remoteHookOwner;
-        this->fishState = this->fishStateNext = 5;
-        // A hooked fish can be moved from its original water box to a remote
-        // player's hands in a single update. Keep it drawable while remotely
-        // owned instead of testing the stale water-position culling volume.
-        this->actor.flags |= ACTOR_FLAG_DRAW_CULLING_DISABLED;
-    }
-    if (this->networkOwnerPlayerId < 0) {
-        remoteHookOwner = NetworkGame_FindRemoteFishingFishOwner(play, &this->actor);
-        if (remoteHookOwner >= 0) {
-            this->networkOwnerPlayerId = remoteHookOwner;
+    presentedIdentity.sceneId = play->sceneNum;
+    presentedIdentity.spawnKey = FishPresentation_MakeSpawnKey(
+        play->sceneNum, this->actor.room,
+        (int32_t)lroundf(this->actor.home.pos.x),
+        (int32_t)lroundf(this->actor.home.pos.y),
+        (int32_t)lroundf(this->actor.home.pos.z));
+    if (FishPresentation_Read(&presentedIdentity, &presentedState)) {
+        if (!this->remotePresentationActive) {
+            this->remotePresentationActive = true;
             this->fishState = this->fishStateNext = 5;
+            // A hooked fish can be moved from its original water box to a
+            // remote player's hands in a single update. Keep it drawable while
+            // externally presented instead of testing its stale water volume.
             this->actor.flags |= ACTOR_FLAG_DRAW_CULLING_DISABLED;
         }
+        this->actor.prevPos = this->actor.world.pos;
+        this->actor.world.pos =
+            (Vec3f){ presentedState.position[0], presentedState.position[1], presentedState.position[2] };
+        this->actor.world.rot = this->actor.shape.rot =
+            (Vec3s){ presentedState.rotation[0], presentedState.rotation[1], presentedState.rotation[2] };
+        this->actor.speedXZ = 0.0f;
+        this->actor.velocity = (Vec3f){ 0.0f, 0.0f, 0.0f };
+        this->fishLength = presentedState.length;
+        if (presentedState.isLoach == 0) {
+            Actor_SetScale(&this->actor, this->fishLength * 15.0f * 0.00001f);
+        } else {
+            Actor_SetScale(&this->actor, this->fishLength * 65.0f * 0.000001f);
+            this->actor.scale.x = this->actor.scale.z * 1.1f;
+            this->actor.scale.y = this->actor.scale.z * 1.1f;
+        }
+        this->unk_160 = this->unk_162 = this->unk_164 = 0;
+        this->stateAndTimer++;
+        this->fishLimbDRotZDelta = presentedState.limbRotation[0];
+        this->fishLimbEFRotYDelta = presentedState.limbRotation[1];
+        this->fishLimb23RotYDelta = presentedState.limbRotation[2];
+        this->fishLimb89RotYDelta = presentedState.limbRotation[3];
+        this->fishLimb4RotYDelta = presentedState.limbRotation[4];
+        this->loachRotYDelta[0] = presentedState.limbRotation[5];
+        this->loachRotYDelta[1] = presentedState.limbRotation[6];
+        this->loachRotYDelta[2] = presentedState.limbRotation[7];
+        if (this->isWild) {
+            sPortableWaterSurfaceY = savedPortableWaterSurfaceY;
+            sPortableWaterFound = savedPortableWaterFound;
+        }
+        return;
     }
-    if (NetworkGame_ConsumeActorEventSource(play, &this->actor, NETWORK_GAME_ACTOR_EVENT_FISH_RELEASE,
-                                            &releasedOwner) &&
-        this->networkOwnerPlayerId == releasedOwner) {
-        this->networkOwnerPlayerId = -1;
+    if (this->remotePresentationActive) {
+        this->remotePresentationActive = false;
         this->fishState = this->fishStateNext = 10;
         this->fishTargetPos = this->actor.home.pos;
         this->actor.flags &= ~ACTOR_FLAG_DRAW_CULLING_DISABLED;
-    }
-
-    if (this->networkOwnerPlayerId >= 0) {
-        float networkX;
-        float networkY;
-        float networkZ;
-        float networkLength;
-        int16_t networkRotX;
-        int16_t networkRotY;
-        int16_t networkRotZ;
-        int16_t networkLimbRot[8];
-        uint8_t networkIsLoach;
-        if (NetworkGame_GetRemoteFishingFishState(this->networkOwnerPlayerId, &networkX, &networkY, &networkZ,
-                                                   &networkRotX, &networkRotY, &networkRotZ, networkLimbRot,
-                                                   &networkLength,
-                                                   &networkIsLoach)) {
-            this->actor.prevPos = this->actor.world.pos;
-            this->actor.world.pos = (Vec3f){ networkX, networkY, networkZ };
-            this->actor.world.rot = this->actor.shape.rot = (Vec3s){ networkRotX, networkRotY, networkRotZ };
-            this->actor.speedXZ = 0.0f;
-            this->actor.velocity = (Vec3f){ 0.0f, 0.0f, 0.0f };
-            this->fishLength = networkLength;
-            if (networkIsLoach == 0) {
-                Actor_SetScale(&this->actor, this->fishLength * 15.0f * 0.00001f);
-            } else {
-                Actor_SetScale(&this->actor, this->fishLength * 65.0f * 0.000001f);
-                this->actor.scale.x = this->actor.scale.z * 1.1f;
-                this->actor.scale.y = this->actor.scale.z * 1.1f;
-            }
-            this->unk_160 = this->unk_162 = this->unk_164 = 0;
-            this->stateAndTimer++;
-            this->fishLimbDRotZDelta = networkLimbRot[0];
-            this->fishLimbEFRotYDelta = networkLimbRot[1];
-            this->fishLimb23RotYDelta = networkLimbRot[2];
-            this->fishLimb89RotYDelta = networkLimbRot[3];
-            this->fishLimb4RotYDelta = networkLimbRot[4];
-            this->loachRotYDelta[0] = networkLimbRot[5];
-            this->loachRotYDelta[1] = networkLimbRot[6];
-            this->loachRotYDelta[2] = networkLimbRot[7];
-            if (this->isWild) {
-                sPortableWaterSurfaceY = savedPortableWaterSurfaceY;
-                sPortableWaterFound = savedPortableWaterFound;
-            }
-            return;
-        }
-        // The continuous authoritative state also ends ownership. This keeps
-        // a lost release event from leaving the fish frozen indefinitely.
-        this->networkOwnerPlayerId = -1;
-        this->fishState = this->fishStateNext = 10;
-        this->fishTargetPos = this->actor.home.pos;
-        this->actor.flags &= ~ACTOR_FLAG_DRAW_CULLING_DISABLED;
-    }
-
-    {
-        int32_t localHookActive = (sFishingHookedFish == this) && (sRodCastState == 4 || sRodCastState == 5) &&
-                              (this->fishState == 5 || this->fishState == 6);
-        if (localHookActive) {
-            if (!this->networkHookAnnounced) {
-                NetworkGame_NotifyActorEvent(play, &this->actor, NETWORK_GAME_ACTOR_EVENT_FISH_HOOK);
-                this->networkHookAnnounced = true;
-            }
-        } else if (this->networkHookAnnounced) {
-            NetworkGame_NotifyActorEvent(play, &this->actor, NETWORK_GAME_ACTOR_EVENT_FISH_RELEASE);
-            this->networkHookAnnounced = false;
-        }
     }
 
     this->actor.uncullZoneForward = 700.0f;
@@ -3987,6 +3915,7 @@ void Fishing_UpdateFish(Actor* thisx, PlayState* play2) {
 
                 sRodCastState = 4;
                 sFishingHookedFish = this;
+                FishingGameplay_SubmitAction(FISHING_GAMEPLAY_ACTION_HOOK);
                 sFishMouthOffset.y = 500.0f - Rand_ZeroFloat(400.0f);
 
                 // get rumble time based on size and lure used.
@@ -4053,6 +3982,7 @@ void Fishing_UpdateFish(Actor* thisx, PlayState* play2) {
 
                 sRodCastState = 4;
                 sFishingHookedFish = this;
+                FishingGameplay_SubmitAction(FISHING_GAMEPLAY_ACTION_HOOK);
 
                 if (sLureEquipped == FS_LURE_SINKING) {
                     sLureBitTimer = 30;
@@ -4300,6 +4230,7 @@ void Fishing_UpdateFish(Actor* thisx, PlayState* play2) {
                 // Losing a hooked fish should immediately return control; the
                 // pond-owner failure textbox is unnecessary in portable play.
                 sFishingCaughtTextDelay = 0;
+                FishingGameplay_SubmitAction(FISHING_GAMEPLAY_ACTION_RELEASE);
 
                 if (!((sLureBitTimer == 0) && (sLineHooked == 0))) {
                     func_800A9F6C(0.0f, 1, 3, 1);
@@ -4415,10 +4346,11 @@ void Fishing_UpdateFish(Actor* thisx, PlayState* play2) {
                     (CHECK_BTN_ALL(input->press.button, BTN_CUP) || Message_ShouldAdvance(play))) {
                     Message_CloseTextbox(play);
                     input->press.button = 0;
-                    PCInput_ClearBufferedActions();
+                    PCInput_DiscardActionIntents();
                     sRodCastState = 0;
                     sRodCastTimer = 0;
                     sLineHooked = false;
+                    FishingGameplay_SubmitAction(FISHING_GAMEPLAY_ACTION_RELEASE);
                     sFishingHookedFish = NULL;
                     sLureBitTimer = 0;
                     sFishFightTime = 0;
@@ -5635,6 +5567,7 @@ void Fishing_UpdateOwner(Actor* thisx, PlayState* play2) {
         sRodCastState = 0;
         sRodCastTimer = 0;
         sLineHooked = false;
+        FishingGameplay_SubmitAction(FISHING_GAMEPLAY_ACTION_RELEASE);
         sFishingHookedFish = NULL;
         Fishing_StopCinematic(play);
     }
@@ -6211,6 +6144,7 @@ void Fishing_UpdatePortable(Actor* thisx, PlayState* play) {
         sRodCastState = 0;
         sRodCastTimer = 0;
         sLineHooked = false;
+        FishingGameplay_SubmitAction(FISHING_GAMEPLAY_ACTION_RELEASE);
         sFishingHookedFish = NULL;
         sPortableLineInitialized = false;
         Fishing_StopCinematic(play);
@@ -6365,4 +6299,6 @@ void Fishing_Reset(void) {
     // or re-entering the scene while the fishing rod was cast
     sSubCamId = 0;
     sFishingPlayerCinematicState = 0;
+    FishingGameplay_SubmitAction(FISHING_GAMEPLAY_ACTION_RELEASE);
+    sFishingHookedFish = NULL;
 }

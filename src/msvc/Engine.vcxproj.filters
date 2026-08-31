@@ -202,13 +202,7 @@
     <ClCompile Include="$(RepoRoot)src\engine\src\engine\resource\archive\ArchiveManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(RepoRoot)src\engine\src\engine\resource\archive\FolderArchive.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="$(RepoRoot)src\engine\src\engine\resource\archive\O2rArchive.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="$(RepoRoot)src\engine\src\engine\resource\archive\OtrArchive.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

@@ -10,7 +10,6 @@
 #include "engine/utils/StrHash64.h"
 #include "engine/window/Window.h"
 #include <nlohmann/json.hpp>
-#include <tinyxml2.h>
 
 namespace Engine {
 Archive::Archive(const std::string& path)

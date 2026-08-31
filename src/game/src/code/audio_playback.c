@@ -140,7 +140,6 @@ void Audio_NoteInit(Note* note) {
     note->noteSubEu = gDefaultNoteSub;
 }
 
-extern void aOPUSFree(struct OggOpusFile* opusFile);
 void Audio_NoteDisable(Note* note) {
     if (note->noteSubEu.bitField0.needsInit == true) {
         note->noteSubEu.bitField0.needsInit = false;
@@ -153,10 +152,6 @@ void Audio_NoteDisable(Note* note) {
     note->playbackState.prevParentLayer = NO_LAYER;
     note->playbackState.adsr.action.s.state = ADSR_STATE_DISABLED;
     note->playbackState.adsr.current = 0;
-    if (note->synthesisState.opusFile != NULL) {
-        aOPUSFree(note->synthesisState.opusFile);
-        note->synthesisState.opusFile = NULL;
-    }
 }
 
 void Audio_ProcessNotes(void) {
@@ -296,6 +291,9 @@ void Audio_ProcessNotes(void) {
 
 SoundFontSound* Audio_InstrumentGetSound(Instrument* instrument, int32_t semitone) {
     SoundFontSound* sound = { 0 };
+    if (instrument == NULL) {
+        return NULL;
+    }
     if (semitone < instrument->normalRangeLo) {
         sound = &instrument->lowNotesSound;
     } else if (semitone <= instrument->normalRangeHi) {
@@ -303,7 +301,7 @@ SoundFontSound* Audio_InstrumentGetSound(Instrument* instrument, int32_t semiton
     } else {
         sound = &instrument->highNotesSound;
     }
-    return sound;
+    return sound->sample != NULL ? sound : NULL;
 }
 
 Instrument* Audio_GetInstrumentInner(int32_t fontId, int32_t instId) {
@@ -331,6 +329,8 @@ Instrument* Audio_GetInstrumentInner(int32_t fontId, int32_t instId) {
         return inst;
     }
 
+    inst = ResourceMgr_LoadAudioInstrumentSamplesByName(fontMap[fontId], instId);
+
     return inst;
 }
 
@@ -353,6 +353,8 @@ Drum* Audio_GetDrum(int32_t fontId, int32_t drumId) {
 
     if (drum == NULL) {
         gAudioContext.audioErrorFlags = ((fontId << 8) + drumId) + 0x5000000;
+    } else {
+        drum = ResourceMgr_LoadAudioDrumSampleByName(fontMap[fontId], drumId);
     }
 
     return drum;
@@ -373,6 +375,9 @@ SoundFontSound* Audio_GetSfx(int32_t fontId, int32_t sfxId) {
     SoundFont* sf = ResourceMgr_LoadAudioSoundFontByName(fontMap[fontId]);
     if (sfxId < sf->numSfx) {
         sfx = &sf->soundEffects[sfxId];
+        if (sfx->sample == NULL) {
+            sfx = ResourceMgr_LoadAudioSoundEffectSampleByName(fontMap[fontId], sfxId);
+        }
     }
 
     if (sfx == NULL) {

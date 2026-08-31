@@ -40,7 +40,7 @@
     
     
     <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(RepoRoot)bin\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(RepoRoot)obj\$(ProjectName)\$(Configuration)\</IntDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(RepoRoot)obj\msvc\$(ProjectName)\$(Configuration)\</IntDir>
     <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">GameClient</TargetName>
     <TargetExt Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.exe</TargetExt>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|x64'"></LinkIncremental>
@@ -49,7 +49,7 @@
   
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>$(RepoRoot)src\game\assets;$(RepoRoot)src\game\include;$(RepoRoot)src\game\src;$(RepoRoot)src\game\port;$(RepoRoot)src\game\..\engine\include;$(RepoRoot)third_party\dr_libs;$(RepoRoot)src\game\.;$(RepoRoot)src\engine\src;$(RepoRoot)src\engine\src\..\include;$(RepoRoot)third_party\stormlib\src;$(RepoRoot)third_party\stb;$(RepoRoot)third_party\threadpool\include;$(RepoRoot)third_party\prism;$(RepoRoot)third_party\prism\lib;$(RepoRoot)third_party\prism\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(RepoRoot)src\game\assets;$(RepoRoot)src\game\include;$(RepoRoot)src\game\src;$(RepoRoot)src\game\port;$(RepoRoot)src\game\..\engine\include;$(RepoRoot)src\game\.;$(RepoRoot)src\engine\src;$(RepoRoot)src\engine\src\..\include;$(RepoRoot)third_party\stb;$(RepoRoot)third_party\threadpool\include;$(RepoRoot)third_party\prism;$(RepoRoot)third_party\prism\lib;$(RepoRoot)third_party\prism\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalOptions>%(AdditionalOptions) /external:I "$(RepoRoot)third_party/libsodium/include" /external:I "$(RepoRoot)third_party/opus/include" /external:I "$(RepoRoot)third_party" /external:I "$(RepoRoot)third_party/include" /external:I "$(RepoRoot)third_party/include/opus" /utf-8 /bigobj /FS</AdditionalOptions>
       <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
@@ -77,16 +77,16 @@
       <UseFullPaths>false</UseFullPaths>
       <UseStandardPreprocessor>true</UseStandardPreprocessor>
       <WarningLevel>Level3</WarningLevel>
-      <PreprocessorDefinitions>%(PreprocessorDefinitions);NDEBUG;INCLUDE_GAME_PRINTF;F3DEX_GBI_2;UNICODE;_UNICODE;STORMLIB_NO_AUTO_LINK;_CRT_SECURE_NO_WARNINGS;NOMINMAX;CVAR_PREFIX_SETTING="gSettings";CVAR_PREFIX_WINDOW="gOpenWindows";CVAR_PREFIX_GENERAL="gGeneral";CVAR_VSYNC_ENABLED="gSettings.VsyncEnabled";CVAR_Z_FIGHTING_MODE="gSettings.ZFightingMode";CVAR_INTERNAL_RESOLUTION="gSettings.InternalResolution";CVAR_MSAA_VALUE="gSettings.MSAAValue";CVAR_TEXTURE_FILTER="gSettings.TextureFilter";CVAR_AUDIO_CHANNELS_SETTING="gAudioChannelsSetting";CONTROLLERBUTTONS_T=uint32_t;INCLUDE_MPQ_SUPPORT;_FILE_OFFSET_BITS=64;SPDLOG_COMPILED_LIB;SPDLOG_FMT_EXTERNAL</PreprocessorDefinitions>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);NDEBUG;INCLUDE_GAME_PRINTF;F3DEX_GBI_2;UNICODE;_UNICODE;_CRT_SECURE_NO_WARNINGS;NOMINMAX;CVAR_PREFIX_SETTING="gSettings";CVAR_PREFIX_WINDOW="gOpenWindows";CVAR_PREFIX_GENERAL="gGeneral";CVAR_VSYNC_ENABLED="gSettings.VsyncEnabled";CVAR_Z_FIGHTING_MODE="gSettings.ZFightingMode";CVAR_INTERNAL_RESOLUTION="gSettings.InternalResolution";CVAR_MSAA_VALUE="gSettings.MSAAValue";CVAR_TEXTURE_FILTER="gSettings.TextureFilter";CVAR_AUDIO_CHANNELS_SETTING="gAudioChannelsSetting";CONTROLLERBUTTONS_T=uint32_t;_FILE_OFFSET_BITS=64;SPDLOG_COMPILED_LIB;SPDLOG_FMT_EXTERNAL</PreprocessorDefinitions>
       <ObjectFileName>$(IntDir)</ObjectFileName>
       <ScanSourceForModuleDependencies>false</ScanSourceForModuleDependencies>
     </ClCompile>
     <ResourceCompile>
-      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;NDEBUG;INCLUDE_GAME_PRINTF;F3DEX_GBI_2;UNICODE;_UNICODE;STORMLIB_NO_AUTO_LINK;_CRT_SECURE_NO_WARNINGS;NOMINMAX;CVAR_PREFIX_SETTING=\"gSettings\";CVAR_PREFIX_WINDOW=\"gOpenWindows\";CVAR_PREFIX_GENERAL=\"gGeneral\";CVAR_VSYNC_ENABLED=\"gSettings.VsyncEnabled\";CVAR_Z_FIGHTING_MODE=\"gSettings.ZFightingMode\";CVAR_INTERNAL_RESOLUTION=\"gSettings.InternalResolution\";CVAR_MSAA_VALUE=\"gSettings.MSAAValue\";CVAR_TEXTURE_FILTER=\"gSettings.TextureFilter\";CVAR_AUDIO_CHANNELS_SETTING=\"gAudioChannelsSetting\";CONTROLLERBUTTONS_T=uint32_t;INCLUDE_MPQ_SUPPORT;_FILE_OFFSET_BITS=64;SPDLOG_COMPILED_LIB;SPDLOG_FMT_EXTERNAL</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(RepoRoot)src\game\assets;$(RepoRoot)src\game\include;$(RepoRoot)src\game\src;$(RepoRoot)src\game\port;$(RepoRoot)src\game\..\engine\include;$(RepoRoot)third_party\dr_libs;$(RepoRoot)src\game\.;$(RepoRoot)src\engine\src;$(RepoRoot)src\engine\src\..\include;$(RepoRoot)third_party\stormlib\src;$(RepoRoot)third_party\stb;$(RepoRoot)third_party\threadpool\include;$(RepoRoot)third_party\prism;$(RepoRoot)third_party\prism\lib;$(RepoRoot)third_party\prism\src;$(RepoRoot)third_party\include;$(RepoRoot)third_party\include\opus;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;NDEBUG;INCLUDE_GAME_PRINTF;F3DEX_GBI_2;UNICODE;_UNICODE;_CRT_SECURE_NO_WARNINGS;NOMINMAX;CVAR_PREFIX_SETTING=\"gSettings\";CVAR_PREFIX_WINDOW=\"gOpenWindows\";CVAR_PREFIX_GENERAL=\"gGeneral\";CVAR_VSYNC_ENABLED=\"gSettings.VsyncEnabled\";CVAR_Z_FIGHTING_MODE=\"gSettings.ZFightingMode\";CVAR_INTERNAL_RESOLUTION=\"gSettings.InternalResolution\";CVAR_MSAA_VALUE=\"gSettings.MSAAValue\";CVAR_TEXTURE_FILTER=\"gSettings.TextureFilter\";CVAR_AUDIO_CHANNELS_SETTING=\"gAudioChannelsSetting\";CONTROLLERBUTTONS_T=uint32_t;_FILE_OFFSET_BITS=64;SPDLOG_COMPILED_LIB;SPDLOG_FMT_EXTERNAL</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(RepoRoot)src\game\assets;$(RepoRoot)src\game\include;$(RepoRoot)src\game\src;$(RepoRoot)src\game\port;$(RepoRoot)src\game\..\engine\include;$(RepoRoot)src\game\.;$(RepoRoot)src\engine\src;$(RepoRoot)src\engine\src\..\include;$(RepoRoot)third_party\stb;$(RepoRoot)third_party\threadpool\include;$(RepoRoot)third_party\prism;$(RepoRoot)third_party\prism\lib;$(RepoRoot)third_party\prism\src;$(RepoRoot)third_party\include;$(RepoRoot)third_party\include\opus;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
     <Midl>
-      <AdditionalIncludeDirectories>$(RepoRoot)src\game\assets;$(RepoRoot)src\game\include;$(RepoRoot)src\game\src;$(RepoRoot)src\game\port;$(RepoRoot)src\game\..\engine\include;$(RepoRoot)third_party\dr_libs;$(RepoRoot)src\game\.;$(RepoRoot)src\engine\src;$(RepoRoot)src\engine\src\..\include;$(RepoRoot)third_party\stormlib\src;$(RepoRoot)third_party\stb;$(RepoRoot)third_party\threadpool\include;$(RepoRoot)third_party\prism;$(RepoRoot)third_party\prism\lib;$(RepoRoot)third_party\prism\src;$(RepoRoot)third_party\include;$(RepoRoot)third_party\include\opus;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(RepoRoot)src\game\assets;$(RepoRoot)src\game\include;$(RepoRoot)src\game\src;$(RepoRoot)src\game\port;$(RepoRoot)src\game\..\engine\include;$(RepoRoot)src\game\.;$(RepoRoot)src\engine\src;$(RepoRoot)src\engine\src\..\include;$(RepoRoot)third_party\stb;$(RepoRoot)third_party\threadpool\include;$(RepoRoot)third_party\prism;$(RepoRoot)third_party\prism\lib;$(RepoRoot)third_party\prism\src;$(RepoRoot)third_party\include;$(RepoRoot)third_party\include\opus;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
       <HeaderFileName>%(Filename).h</HeaderFileName>
       <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
@@ -94,7 +94,7 @@
       <ProxyFileName>%(Filename)_p.c</ProxyFileName>
     </Midl>
     <Link>
-      <AdditionalDependencies>$(RepoRoot)obj\lib\$(Configuration)\network.lib;$(RepoRoot)obj\lib\$(Configuration)\runtime.lib;glu32.lib;winmm.lib;imm32.lib;version.lib;setupapi.lib;$(RepoRoot)third_party\lib\Release\ogg.lib;$(RepoRoot)third_party\opus\lib\x64\Release\opus.lib;$(RepoRoot)third_party\lib\Release\vorbis.lib;$(RepoRoot)third_party\lib\Release\vorbisenc.lib;$(RepoRoot)third_party\lib\Release\vorbisfile.lib;$(RepoRoot)third_party\lib\Release\opusfile.lib;Ws2_32.lib;$(RepoRoot)third_party\libsodium\lib\x64\Release\libsodium.lib;$(RepoRoot)third_party\lib\Release\zip.lib;$(RepoRoot)third_party\lib\Release\bz2.lib;$(RepoRoot)third_party\lib\Release\zs.lib;$(RepoRoot)obj\lib\$(Configuration)\StormLib.lib;$(RepoRoot)third_party\lib\Release\zs.lib;$(RepoRoot)third_party\lib\Release\bz2.lib;wininet.lib;$(RepoRoot)obj\lib\$(Configuration)\stb.lib;opengl32.lib;$(RepoRoot)obj\lib\$(Configuration)\libgfxd.lib;$(RepoRoot)third_party\lib\Release\zip.lib;advapi32.lib;bcrypt.lib;$(RepoRoot)third_party\lib\Release\bz2.lib;$(RepoRoot)third_party\lib\Release\zs.lib;$(RepoRoot)third_party\lib\Release\tinyxml2.lib;$(RepoRoot)third_party\lib\Release\fmt.lib;$(RepoRoot)obj\lib\$(Configuration)\prism.lib;$(RepoRoot)third_party\lib\Release\spdlog.lib;$(RepoRoot)third_party\lib\Release\fmt.lib;$(RepoRoot)third_party\lib\Release\vorbis.lib;$(RepoRoot)third_party\lib\Release\ogg.lib;$(RepoRoot)third_party\opus\lib\x64\Release\opus.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib</AdditionalDependencies>
+      <AdditionalDependencies>$(RepoRoot)obj\lib\$(Configuration)\network.lib;$(RepoRoot)obj\lib\$(Configuration)\runtime.lib;glu32.lib;winmm.lib;imm32.lib;version.lib;setupapi.lib;$(RepoRoot)third_party\opus\lib\x64\Release\opus.lib;Ws2_32.lib;$(RepoRoot)third_party\libsodium\lib\x64\Release\libsodium.lib;$(RepoRoot)third_party\lib\Release\zip.lib;$(RepoRoot)third_party\lib\Release\bz2.lib;$(RepoRoot)third_party\lib\Release\zs.lib;$(RepoRoot)third_party\lib\Release\zs.lib;$(RepoRoot)third_party\lib\Release\bz2.lib;wininet.lib;$(RepoRoot)obj\lib\$(Configuration)\stb.lib;opengl32.lib;$(RepoRoot)obj\lib\$(Configuration)\libgfxd.lib;$(RepoRoot)third_party\lib\Release\zip.lib;advapi32.lib;bcrypt.lib;$(RepoRoot)third_party\lib\Release\bz2.lib;$(RepoRoot)third_party\lib\Release\zs.lib;$(RepoRoot)third_party\lib\Release\fmt.lib;$(RepoRoot)obj\lib\$(Configuration)\prism.lib;$(RepoRoot)third_party\lib\Release\spdlog.lib;$(RepoRoot)third_party\lib\Release\fmt.lib;$(RepoRoot)third_party\opus\lib\x64\Release\opus.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib</AdditionalDependencies>
       <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <DataExecutionPrevention></DataExecutionPrevention>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -157,6 +157,8 @@
     <ClInclude Include="$(RepoRoot)src\game\include\z64transition.h" />
     <ClCompile Include="$(RepoRoot)src\game\port\ActorDB.cpp" />
     <ClInclude Include="$(RepoRoot)src\game\port\ActorDB.h" />
+    <ClCompile Include="$(RepoRoot)src\game\port\ClientRuntime.cpp" />
+    <ClInclude Include="$(RepoRoot)src\game\port\ClientRuntime.h" />
     <ClCompile Include="$(RepoRoot)src\game\port\CrashHandlerExt.cpp" />
     <ClInclude Include="$(RepoRoot)src\game\port\CrashHandlerExt.h" />
     <ClCompile Include="$(RepoRoot)src\game\port\Enhancements\debugger\colViewer.cpp" />
@@ -164,8 +166,62 @@
     <ClInclude Include="$(RepoRoot)src\game\port\GameVersions.h" />
     <ClCompile Include="$(RepoRoot)src\game\port\GbiWrap.cpp" />
     <ClInclude Include="$(RepoRoot)src\game\port\ItemTableTypes.h" />
-    <ClCompile Include="$(RepoRoot)src\game\port\NetworkGameBridge.cpp" />
-    <ClInclude Include="$(RepoRoot)src\game\port\NetworkGameBridge.h" />
+    <ClCompile Include="$(RepoRoot)src\game\port\Network\NativeClientNetworkSession.cpp" />
+    <ClInclude Include="$(RepoRoot)src\game\port\Network\NativeClientNetworkSession.h" />
+    <ClCompile Include="$(RepoRoot)src\game\port\Network\NativeLocalProjectileController.cpp" />
+    <ClInclude Include="$(RepoRoot)src\game\port\Network\NativeLocalProjectileController.h" />
+    <ClCompile Include="$(RepoRoot)src\game\port\Network\NativeLocalRespawnController.cpp" />
+    <ClInclude Include="$(RepoRoot)src\game\port\Network\NativeLocalRespawnController.h" />
+    <ClCompile Include="$(RepoRoot)src\game\port\Network\NativeCombatPresentationController.cpp" />
+    <ClInclude Include="$(RepoRoot)src\game\port\Network\NativeCombatPresentationController.h" />
+    <ClCompile Include="$(RepoRoot)src\game\port\Network\NativeClientInboundReplication.cpp" />
+    <ClInclude Include="$(RepoRoot)src\game\port\Network\NativeClientInboundReplication.h" />
+    <ClCompile Include="$(RepoRoot)src\game\port\Network\NativeClientOutboundSubmission.cpp" />
+    <ClInclude Include="$(RepoRoot)src\game\port\Network\NativeClientOutboundSubmission.h" />
+    <ClCompile Include="$(RepoRoot)src\game\port\Network\NativeClientFrameReconciliation.cpp" />
+    <ClInclude Include="$(RepoRoot)src\game\port\Network\NativeClientFrameReconciliation.h" />
+    <ClCompile Include="$(RepoRoot)src\game\port\Network\NativeClientSessionLifecycle.cpp" />
+    <ClInclude Include="$(RepoRoot)src\game\port\Network\NativeClientSessionLifecycle.h" />
+    <ClCompile Include="$(RepoRoot)src\game\port\Network\NativeClientUpdateCoordinator.cpp" />
+    <ClInclude Include="$(RepoRoot)src\game\port\Network\NativeClientUpdateCoordinator.h" />
+    <ClCompile Include="$(RepoRoot)src\game\port\Network\NativeMultiplayerInteractionController.cpp" />
+    <ClInclude Include="$(RepoRoot)src\game\port\Network\NativeMultiplayerInteractionController.h" />
+    <ClCompile Include="$(RepoRoot)src\game\platform\client\MultiplayerCommandProcessor.cpp" />
+    <ClInclude Include="$(RepoRoot)src\game\platform\client\ClientFrameClock.h" />
+    <ClInclude Include="$(RepoRoot)src\game\platform\client\MultiplayerCommandProcessor.h" />
+    <ClInclude Include="$(RepoRoot)src\game\platform\client\MultiplayerInteractionPort.h" />
+    <ClCompile Include="$(RepoRoot)src\game\port\Network\NativeVoiceController.cpp" />
+    <ClInclude Include="$(RepoRoot)src\game\port\Network\NativeVoiceController.h" />
+    <ClCompile Include="$(RepoRoot)src\game\port\Network\NativeLocalFishingController.cpp" />
+    <ClInclude Include="$(RepoRoot)src\game\port\Network\NativeLocalFishingController.h" />
+    <ClCompile Include="$(RepoRoot)src\game\port\Gameplay\FishingGameplay.cpp" />
+    <ClInclude Include="$(RepoRoot)src\game\port\Gameplay\FishingGameplay.h" />
+    <ClCompile Include="$(RepoRoot)src\game\port\Gameplay\FishPresentation.cpp" />
+    <ClInclude Include="$(RepoRoot)src\game\port\Gameplay\FishPresentation.h" />
+    <ClCompile Include="$(RepoRoot)src\game\port\Gameplay\GameplayNotification.cpp" />
+    <ClInclude Include="$(RepoRoot)src\game\port\Gameplay\GameplayNotification.h" />
+    <ClCompile Include="$(RepoRoot)src\game\port\Gameplay\ProjectileGameplay.cpp" />
+    <ClInclude Include="$(RepoRoot)src\game\port\Gameplay\ProjectileGameplay.h" />
+    <ClCompile Include="$(RepoRoot)src\game\port\Network\NativeLocalPlayerCommandController.cpp" />
+    <ClInclude Include="$(RepoRoot)src\game\port\Network\NativeLocalPlayerCommandController.h" />
+    <ClCompile Include="$(RepoRoot)src\game\port\Network\NativeLocalPlayerPresentationController.cpp" />
+    <ClInclude Include="$(RepoRoot)src\game\port\Network\NativeLocalPlayerPresentationController.h" />
+    <ClCompile Include="$(RepoRoot)src\game\port\Network\NativeRemotePlayerPresentationController.cpp" />
+    <ClInclude Include="$(RepoRoot)src\game\port\Network\NativeRemotePlayerPresentationController.h" />
+    <ClCompile Include="$(RepoRoot)src\game\port\Network\NativeRemoteFishPresentationController.cpp" />
+    <ClInclude Include="$(RepoRoot)src\game\port\Network\NativeRemoteFishPresentationController.h" />
+    <ClCompile Include="$(RepoRoot)src\game\port\Network\NativePlayerNameplatePresenter.cpp" />
+    <ClInclude Include="$(RepoRoot)src\game\port\Network\NativePlayerNameplatePresenter.h" />
+    <ClCompile Include="$(RepoRoot)src\game\port\Network\NativeRemoteProjectilePresentationController.cpp" />
+    <ClInclude Include="$(RepoRoot)src\game\port\Network\NativeRemoteProjectilePresentationController.h" />
+    <ClCompile Include="$(RepoRoot)src\game\port\Network\NativeCorpsePresentationController.cpp" />
+    <ClInclude Include="$(RepoRoot)src\game\port\Network\NativeCorpsePresentationController.h" />
+    <ClCompile Include="$(RepoRoot)src\game\port\Network\NativeProjectileRenderer.cpp" />
+    <ClInclude Include="$(RepoRoot)src\game\port\Network\NativeProjectileRenderer.h" />
+    <ClCompile Include="$(RepoRoot)src\game\port\Network\NativePlayerPresentationState.cpp" />
+    <ClInclude Include="$(RepoRoot)src\game\port\Network\NativePlayerPresentationState.h" />
+    <ClCompile Include="$(RepoRoot)src\game\port\Network\NativeRemotePlayerRenderer.cpp" />
+    <ClInclude Include="$(RepoRoot)src\game\port\Network\NativeRemotePlayerRenderer.h" />
     <ClInclude Include="$(RepoRoot)src\game\port\OTRAudio.h" />
     <ClCompile Include="$(RepoRoot)src\game\port\OTRGlobals.cpp">
       
@@ -177,6 +233,8 @@
     <ClCompile Include="$(RepoRoot)src\game\port\ObjectExtension\ObjectExtension.cpp" />
     <ClInclude Include="$(RepoRoot)src\game\port\ObjectExtension\ObjectExtension.h" />
     <ClCompile Include="$(RepoRoot)src\game\port\MultiplayerUI.cpp" />
+    <ClCompile Include="$(RepoRoot)src\game\port\UI\MultiplayerHudRenderer.cpp" />
+    <ClInclude Include="$(RepoRoot)src\game\port\UI\MultiplayerHudRenderer.h" />
     <ClInclude Include="$(RepoRoot)src\game\port\MultiplayerUI.h" />
     <ClCompile Include="$(RepoRoot)src\game\port\ResourceManagerHelpers.cpp" />
     <ClInclude Include="$(RepoRoot)src\game\port\ResourceManagerHelpers.h" />
@@ -801,18 +859,11 @@
       
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
     </ClCompile>
-    <ClInclude Include="$(RepoRoot)src\game\src\overlays\actors\ovl_Bg_Heavy_Block\z_bg_heavy_block.h" />
-    <ClInclude Include="$(RepoRoot)src\game\src\overlays\actors\ovl_Door_Shutter\z_door_shutter.h" />
-    <ClInclude Include="$(RepoRoot)src\game\src\overlays\actors\ovl_Elf_Msg\z_elf_msg.h" />
     <ClCompile Include="$(RepoRoot)src\game\src\overlays\actors\ovl_En_Arrow\z_en_arrow.c">
       
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
     </ClCompile>
     <ClInclude Include="$(RepoRoot)src\game\src\overlays\actors\ovl_En_Arrow\z_en_arrow.h" />
-    <ClInclude Include="$(RepoRoot)src\game\src\overlays\actors\ovl_En_Boom\z_en_boom.h" />
-    <ClInclude Include="$(RepoRoot)src\game\src\overlays\actors\ovl_En_Box\z_en_box.h" />
-    <ClInclude Include="$(RepoRoot)src\game\src\overlays\actors\ovl_En_Door\z_en_door.h" />
-    <ClInclude Include="$(RepoRoot)src\game\src\overlays\actors\ovl_En_Elf\z_en_elf.h" />
     <ClCompile Include="$(RepoRoot)src\game\src\overlays\actors\ovl_En_Fish\z_en_fish.c">
       
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
@@ -888,10 +939,6 @@
     </ProjectReference>
     <ProjectReference Include="$(MSBuildThisFileDirectory)Prism.vcxproj">
       <Project>{48948160-6BFA-30FB-9401-08B164880F69}</Project>
-      <LinkLibraryDependencies>true</LinkLibraryDependencies>
-    </ProjectReference>
-    <ProjectReference Include="$(MSBuildThisFileDirectory)StormLib.vcxproj">
-      <Project>{74DBBCDD-1D2E-3C44-A3B9-1E3A05C2EFD9}</Project>
       <LinkLibraryDependencies>true</LinkLibraryDependencies>
     </ProjectReference>
   </ItemGroup>

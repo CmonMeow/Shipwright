@@ -8,16 +8,10 @@
 #include "engine/resource/ResourceType.h"
 #include "engine/utils/binarytools/BinaryReader.h"
 
-namespace tinyxml2 {
-class XMLDocument;
-class XMLElement;
-} // namespace tinyxml2
-
 namespace Engine {
 class Archive;
 
 #define RESOURCE_FORMAT_BINARY 0
-#define RESOURCE_FORMAT_XML 1
 
 struct ResourceInitData {
     std::shared_ptr<Archive> Parent;
@@ -32,7 +26,7 @@ struct ResourceInitData {
 
 struct File {
     std::shared_ptr<std::vector<char>> Buffer;
-    std::variant<std::shared_ptr<tinyxml2::XMLDocument>, std::shared_ptr<BinaryReader>> Reader;
+    std::variant<std::shared_ptr<BinaryReader>> Reader;
     bool IsLoaded = false;
 };
 } // namespace Engine

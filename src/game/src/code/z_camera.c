@@ -1,4 +1,5 @@
 #include <runtime/libultra.h>
+#include "engine/input/PCInput.h"
 #include "global.h"
 #include "vt.h"
 
@@ -11,9 +12,6 @@ int32_t Camera_ChangeModeFlags(Camera* camera, int16_t mode, uint8_t flags);
 int32_t Camera_QRegInit(void);
 int32_t Camera_UpdateWater(Camera* camera);
 Vec3f* Camera_Vec3fVecSphGeoAdd(Vec3f* dest, Vec3f* a, VecSph* b);
-extern int32_t PCInput_ConsumeMouseAimDelta(int32_t* deltaX, int32_t* deltaY);
-extern int32_t PCInput_IsBowAimHeld(void);
-
 static int16_t sGameBowAimYaw;
 static int16_t sGameBowAimPitch;
 static int32_t sGameBowAimActive = false;
@@ -7236,7 +7234,7 @@ int32_t Camera_ChangeModeFlags(Camera* camera, int16_t mode, uint8_t flags) {
                 modeChangeFlags = 4;
                 break;
             case CAM_MODE_FOLLOWTARGET:
-                if (camera->target != NULL && camera->target->id != ACTOR_EN_BOOM) {
+                if (camera->target != NULL) {
                     modeChangeFlags = 8;
                 }
                 break;

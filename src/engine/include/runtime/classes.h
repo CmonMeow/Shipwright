@@ -3,7 +3,6 @@
 
 #include "engine/resource/archive/ArchiveManager.h"
 #include "engine/resource/archive/Archive.h"
-#include "engine/resource/archive/OtrArchive.h"
 #include "engine/resource/archive/O2rArchive.h"
 #include "engine/resource/ResourceManager.h"
 #include "engine/Context.h"

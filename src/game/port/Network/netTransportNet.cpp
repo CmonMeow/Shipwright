@@ -3,6 +3,7 @@
 #include "netTransport.hpp"
 #include <time.h>
 #include <algorithm>
+#include <atomic>
 #include <iterator>
 #include <unordered_map>
 #include <vector>
@@ -15,6 +16,13 @@ class NetClient;
 class NetServer;
 
 static unsigned short gNetworkPort = 777;
+static std::atomic<unsigned> gNetworkTestDropEvery{ 0 };
+static std::atomic<unsigned __int64> gNetworkTestDatagrams{ 0 };
+static std::atomic<unsigned __int64> gNetworkTestDropped{ 0 };
+static std::atomic<unsigned __int64> gNetworkTestDisposableDatagrams{ 0 };
+static std::atomic<unsigned __int64> gNetworkTestReliableDatagrams{ 0 };
+static std::atomic<unsigned __int64> gNetworkTestReliableDropped{ 0 };
+static std::atomic_bool gNetworkTestDropNextReliable{ false };
 
 void SetNetworkPort(unsigned short port) {
 	if (port != 0) {
@@ -24,6 +32,49 @@ void SetNetworkPort(unsigned short port) {
 
 unsigned short GetNetworkPort() {
 	return gNetworkPort;
+}
+
+void ConfigureNetworkTestPacketLoss(unsigned dropEveryNthDisposableDatagram,
+	                                bool dropNextReliableDatagram) {
+	gNetworkTestDatagrams.store(0, std::memory_order_relaxed);
+	gNetworkTestDropped.store(0, std::memory_order_relaxed);
+	gNetworkTestDisposableDatagrams.store(0, std::memory_order_relaxed);
+	gNetworkTestReliableDatagrams.store(0, std::memory_order_relaxed);
+	gNetworkTestReliableDropped.store(0, std::memory_order_relaxed);
+	gNetworkTestDropNextReliable.store(dropNextReliableDatagram, std::memory_order_relaxed);
+	gNetworkTestDropEvery.store(dropEveryNthDisposableDatagram, std::memory_order_release);
+}
+
+NetworkTestFaultStats GetNetworkTestFaultStats() {
+	return { gNetworkTestDatagrams.load(std::memory_order_relaxed),
+		     gNetworkTestDropped.load(std::memory_order_relaxed),
+		     gNetworkTestReliableDatagrams.load(std::memory_order_relaxed),
+		     gNetworkTestReliableDropped.load(std::memory_order_relaxed) };
+}
+
+bool ShouldDropNetworkTestDatagram(bool reliable) {
+	const unsigned dropEvery = gNetworkTestDropEvery.load(std::memory_order_acquire);
+	if (dropEvery == 0 && !gNetworkTestDropNextReliable.load(std::memory_order_acquire)) {
+		return false;
+	}
+	gNetworkTestDatagrams.fetch_add(1, std::memory_order_relaxed);
+	if (reliable) {
+		gNetworkTestReliableDatagrams.fetch_add(1, std::memory_order_relaxed);
+		if (!gNetworkTestDropNextReliable.exchange(false, std::memory_order_acq_rel)) {
+			return false;
+		}
+		gNetworkTestDropped.fetch_add(1, std::memory_order_relaxed);
+		gNetworkTestReliableDropped.fetch_add(1, std::memory_order_relaxed);
+		return true;
+	}
+	if (dropEvery == 0) {
+		return false;
+	}
+	const unsigned __int64 ordinal =
+		gNetworkTestDisposableDatagrams.fetch_add(1, std::memory_order_relaxed) + 1;
+	if ((ordinal % dropEvery) != 0) return false;
+	gNetworkTestDropped.fetch_add(1, std::memory_order_relaxed);
+	return true;
 }
 void decodeURLAddress(std::string address, std::string& ip, unsigned short& port);
 Ref<NetMessage> mergeMessageList(NetMessage* msg);

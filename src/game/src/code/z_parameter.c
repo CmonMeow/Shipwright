@@ -840,12 +840,6 @@ void Inventory_ChangeAmmo(int16_t item, int16_t ammoChange) {
         } else if (AMMO(ITEM_NUT) < 0) {
             AMMO(ITEM_NUT) = 0;
         }
-    } else if (item == ITEM_BOMBCHU) {
-        AMMO(ITEM_BOMBCHU) += ammoChange;
-
-        if (AMMO(ITEM_BOMBCHU) > 50) {
-            AMMO(ITEM_BOMBCHU) = 50;
-        }
     } else if (item == ITEM_BOW) {
         AMMO(ITEM_BOW) += ammoChange;
 
@@ -861,14 +855,6 @@ void Inventory_ChangeAmmo(int16_t item, int16_t ammoChange) {
             AMMO(ITEM_SLINGSHOT) = CUR_CAPACITY(UPG_BULLET_BAG);
         } else if (AMMO(ITEM_SLINGSHOT) < 0) {
             AMMO(ITEM_SLINGSHOT) = 0;
-        }
-    } else if (item == ITEM_BOMB) {
-        AMMO(ITEM_BOMB) += ammoChange;
-
-        if (AMMO(ITEM_BOMB) >= CUR_CAPACITY(UPG_BOMB_BAG)) {
-            AMMO(ITEM_BOMB) = CUR_CAPACITY(UPG_BOMB_BAG);
-        } else if (AMMO(ITEM_BOMB) < 0) {
-            AMMO(ITEM_BOMB) = 0;
         }
     } else if (item == ITEM_BEAN) {
         AMMO(ITEM_BEAN) += ammoChange;

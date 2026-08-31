@@ -141,9 +141,7 @@ typedef struct {
 // When the hookshot attaches to this actor, Player will be pulled by the hookshot and fly to the actor.
 #define ACTOR_FLAG_HOOKSHOT_PULLS_PLAYER (1 << 10)
 
-// A clump of grass (EN_KUSA) has been destroyed.
-// This flag is used to communicate with the spawner actor (OBJ_MURE).
-#define ACTOR_FLAG_GRASS_DESTROYED (1 << 11)
+#define ACTOR_FLAG_UNUSED_11 (1 << 11)
 
 // Actor will not shake when a quake occurs
 #define ACTOR_FLAG_IGNORE_QUAKE (1 << 12)
@@ -165,11 +163,6 @@ typedef struct {
 // Player automatically accepts a Talk Offer without needing to press the A button.
 // Player still has to meet all conditions to be able to receive a talk offer (for example, being in range).
 #define ACTOR_FLAG_TALK_OFFER_AUTO_ACCEPTED (1 << 16)
-
-// Actor will be influenced by the pitch (x rot) of Player's left hand when being carried,
-// instead of Player's yaw which is the default actor carry behavior.
-// This flag is helpful for something like the `BG_HEAVY_BLOCK` actor which Player carries underhanded.
-#define ACTOR_FLAG_CARRY_X_ROT_INFLUENCE (1 << 17)
 
 // When locked onto an actor with this flag set, the C-Up button can be used to talk to this actor.
 // A C-Up button labeled "Navi" will appear on the HUD when locked on which indicates the actor can be checked with Navi.
@@ -320,14 +313,14 @@ typedef enum {
     /* 0x01 */ ITEM00_RUPEE_BLUE,
     /* 0x02 */ ITEM00_RUPEE_RED,
     /* 0x03 */ ITEM00_HEART,
-    /* 0x04 */ ITEM00_BOMBS_A,
+    /* 0x04 */ ITEM00_UNUSED_04,
     /* 0x05 */ ITEM00_ARROWS_SINGLE,
     /* 0x06 */ ITEM00_HEART_PIECE,
     /* 0x07 */ ITEM00_HEART_CONTAINER,
     /* 0x08 */ ITEM00_ARROWS_SMALL,
     /* 0x09 */ ITEM00_ARROWS_MEDIUM,
     /* 0x0A */ ITEM00_ARROWS_LARGE,
-    /* 0x0B */ ITEM00_BOMBS_B,
+    /* 0x0B */ ITEM00_UNUSED_0B,
     /* 0x0C */ ITEM00_NUTS,
     /* 0x0D */ ITEM00_STICK,
     /* 0x0E */ ITEM00_UNUSED_0E,
@@ -341,8 +334,8 @@ typedef enum {
     /* 0x16 */ ITEM00_SHIELD_HYLIAN,
     /* 0x17 */ ITEM00_TUNIC_ZORA,
     /* 0x18 */ ITEM00_TUNIC_GORON,
-    /* 0x19 */ ITEM00_BOMBS_SPECIAL,
-    /* 0x1A */ ITEM00_BOMBCHU,
+    /* 0x19 */ ITEM00_UNUSED_19,
+    /* 0x1A */ ITEM00_UNUSED_1A,
     /* 0x1B */ ITEM00_SOH_DUMMY,
     /* 0x1C */ ITEM00_SOH_GIVE_ITEM_ENTRY,
     /* 0x1D */ ITEM00_SOH_GIVE_ITEM_ENTRY_GI,
@@ -378,7 +371,7 @@ typedef enum {
     /* 0x04 */ A_OBJ_BLOCK_LARGE_ROT,
     /* 0x05 */ A_OBJ_CUBE_SMALL,
     /* 0x06 */ A_OBJ_UNKNOWN_6,
-    /* 0x07 */ A_OBJ_GRASS_CLUMP,
+    /* 0x07 */ A_OBJ_UNUSED_7,
     /* 0x08 */ A_OBJ_TREE_STUMP,
     /* 0x09 */ A_OBJ_SIGNPOST_OBLONG,
     /* 0x0A */ A_OBJ_SIGNPOST_ARROW,

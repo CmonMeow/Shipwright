@@ -1,6 +1,5 @@
 #include "port/resource/importer/scenecommand/SetRoomBehaviorFactory.h"
 #include "port/resource/type/scenecommand/SetRoomBehavior.h"
-#include <tinyxml2.h>
 
 namespace SOH {
 std::shared_ptr<Engine::IResource> SetRoomBehaviorFactory::ReadResource(std::shared_ptr<Engine::ResourceInitData> initData,
@@ -17,16 +16,4 @@ std::shared_ptr<Engine::IResource> SetRoomBehaviorFactory::ReadResource(std::sha
     return setRoomBehavior;
 }
 
-std::shared_ptr<Engine::IResource>
-SetRoomBehaviorFactoryXML::ReadResource(std::shared_ptr<Engine::ResourceInitData> initData,
-                                        tinyxml2::XMLElement* reader) {
-    auto setRoomBehavior = std::make_shared<SetRoomBehavior>(initData);
-
-    setRoomBehavior->cmdId = SceneCommandID::SetRoomBehavior;
-
-    setRoomBehavior->roomBehavior.gameplayFlags = reader->IntAttribute("GameplayFlags1");
-    setRoomBehavior->roomBehavior.gameplayFlags2 = reader->IntAttribute("GameplayFlags2");
-
-    return setRoomBehavior;
-}
 } // namespace SOH

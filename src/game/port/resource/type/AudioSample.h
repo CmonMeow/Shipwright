@@ -51,9 +51,9 @@ class AudioSample : public Engine::Resource<Sample> {
     Sample* GetPointer();
     size_t GetPointerSize();
 
-    Sample sample;
-    AdpcmLoop loop;
-    AdpcmBook book;
+    Sample sample{};
+    AdpcmLoop loop{};
+    AdpcmBook book{};
     // Only applies to streamed audio
     float tuning = -1.0f;
 };

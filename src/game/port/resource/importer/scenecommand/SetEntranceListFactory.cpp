@@ -1,6 +1,5 @@
 #include "port/resource/importer/scenecommand/SetEntranceListFactory.h"
 #include "port/resource/type/scenecommand/SetEntranceList.h"
-#include <tinyxml2.h>
 
 namespace SOH {
 std::shared_ptr<Engine::IResource> SetEntranceListFactory::ReadResource(std::shared_ptr<Engine::ResourceInitData> initData,
@@ -25,29 +24,4 @@ std::shared_ptr<Engine::IResource> SetEntranceListFactory::ReadResource(std::sha
     return setEntranceList;
 }
 
-std::shared_ptr<Engine::IResource>
-SetEntranceListFactoryXML::ReadResource(std::shared_ptr<Engine::ResourceInitData> initData,
-                                        tinyxml2::XMLElement* reader) {
-    auto setEntranceList = std::make_shared<SetEntranceList>(initData);
-
-    setEntranceList->cmdId = SceneCommandID::SetEntranceList;
-
-    auto child = reader->FirstChildElement();
-
-    while (child != nullptr) {
-        std::string childName = child->Name();
-        if (childName == "EntranceEntry") {
-            EntranceEntry entry;
-            entry.spawn = child->IntAttribute("Spawn");
-            entry.room = child->IntAttribute("Room");
-            setEntranceList->entrances.push_back(entry);
-        }
-
-        child = child->NextSiblingElement();
-    }
-
-    setEntranceList->numEntrances = setEntranceList->entrances.size();
-
-    return setEntranceList;
-}
 } // namespace SOH

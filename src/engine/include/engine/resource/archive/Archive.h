@@ -6,11 +6,6 @@
 #include <mutex>
 #include "engine/utils/binarytools/BinaryReader.h"
 
-namespace tinyxml2 {
-class XMLDocument;
-class XMLElement;
-} // namespace tinyxml2
-
 namespace Engine {
 #define OTR_HEADER_SIZE ((size_t)64)
 
@@ -42,7 +37,6 @@ class Archive : public std::enable_shared_from_this<Archive> {
 
     virtual bool Open() = 0;
     virtual bool Close() = 0;
-    virtual bool WriteFile(const std::string& filename, const std::vector<uint8_t>& data) = 0;
 
   protected:
     void SetLoaded(bool isLoaded);
