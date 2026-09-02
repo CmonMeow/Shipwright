@@ -120,7 +120,6 @@ void osViFade(uint8_t, uint16_t);
 void osViRepeatLine(uint8_t);
 void osViSetXScale(float);
 void osViSetYScale(float);
-void osViSetSpecialFeatures(uint32_t);
 void osViSetMode(OSViMode*);
 void osViSetEvent(OSMesgQueue*, OSMesg, uint32_t);
 void osCreateViManager(OSPri);

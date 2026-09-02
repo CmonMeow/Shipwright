@@ -70,7 +70,7 @@ int32_t DmaMgr_DmaRomToRam(uintptr_t rom, uintptr_t ram, size_t size) {
 
         if (D_80009460 == 10) {
             osSyncPrintf("%10lld ノーマルＤＭＡ %08x %08x %08x (%d)\n", OS_CYCLES_TO_USEC(osGetTime()), ioMsg.dramAddr,
-                         ioMsg.devAddr, ioMsg.size, gPiMgrCmdQ.validCount);
+                         ioMsg.devAddr, ioMsg.size, NULL);
         }
 
         ret = osEPiStartDma(gCartHandle, &ioMsg, OS_READ);
@@ -79,12 +79,12 @@ int32_t DmaMgr_DmaRomToRam(uintptr_t rom, uintptr_t ram, size_t size) {
         }
 
         if (D_80009460 == 10) {
-            osSyncPrintf("%10lld ノーマルＤＭＡ START (%d)\n", OS_CYCLES_TO_USEC(osGetTime()), gPiMgrCmdQ.validCount);
+            osSyncPrintf("%10lld ノーマルＤＭＡ START (%d)\n", OS_CYCLES_TO_USEC(osGetTime()), NULL);
         }
 
         osRecvMesg(&queue, NULL, OS_MESG_BLOCK);
         if (D_80009460 == 10) {
-            osSyncPrintf("%10lld ノーマルＤＭＡ END (%d)\n", OS_CYCLES_TO_USEC(osGetTime()), gPiMgrCmdQ.validCount);
+            osSyncPrintf("%10lld ノーマルＤＭＡ END (%d)\n", OS_CYCLES_TO_USEC(osGetTime()), NULL);
         }
 
         size -= buffSize;
@@ -100,7 +100,7 @@ int32_t DmaMgr_DmaRomToRam(uintptr_t rom, uintptr_t ram, size_t size) {
 
     if (D_80009460 == 10) {
         osSyncPrintf("%10lld ノーマルＤＭＡ %08x %08x %08x (%d)\n", OS_CYCLES_TO_USEC(osGetTime()), ioMsg.dramAddr,
-                     ioMsg.devAddr, ioMsg.size, gPiMgrCmdQ.validCount);
+                     ioMsg.devAddr, ioMsg.size, NULL);
     }
 
     ret = osEPiStartDma(gCartHandle, &ioMsg, OS_READ);
@@ -110,7 +110,7 @@ int32_t DmaMgr_DmaRomToRam(uintptr_t rom, uintptr_t ram, size_t size) {
 
     osRecvMesg(&queue, NULL, OS_MESG_BLOCK);
     if (D_80009460 == 10) {
-        osSyncPrintf("%10lld ノーマルＤＭＡ END (%d)\n", OS_CYCLES_TO_USEC(osGetTime()), gPiMgrCmdQ.validCount);
+        osSyncPrintf("%10lld ノーマルＤＭＡ END (%d)\n", OS_CYCLES_TO_USEC(osGetTime()), NULL);
     }
 
 end:
@@ -129,7 +129,7 @@ int32_t DmaMgr_DmaHandler(OSPiHandle* pihandle, OSIoMesg* mb, int32_t direction)
 
     if (D_80009460 == 10) {
         osSyncPrintf("%10lld サウンドＤＭＡ %08x %08x %08x (%d)\n", OS_CYCLES_TO_USEC(osGetTime()), mb->dramAddr,
-                     mb->devAddr, mb->size, gPiMgrCmdQ.validCount);
+                     mb->devAddr, mb->size, NULL);
     }
 
     ret = osEPiStartDma(pihandle, mb, direction);

@@ -36,9 +36,6 @@ void osViSetEvent(OSMesgQueue* queue, OSMesg mesg, uint32_t c) {
 void osViSwapBuffer(void* a) {
 }
 
-void osViSetSpecialFeatures(uint32_t a) {
-}
-
 void osViSetMode(OSViMode* a) {
 }
 

@@ -3,16 +3,14 @@ destruct archive: ./oot.o2r
 Reading archive: C:\Users\CmonMeow\Desktop\Shipwright\bin\oot.o2r
 Adding Archive C:\Users\CmonMeow\Desktop\Shipwright\bin\oot.o2r to Archive Manager
 Starting Ocarina of Time version Ackbar Delta (9.2.3) (Branch: main | Commit: 4bacd79)
-mainproc 実行開始
-
 システムが使用する最終アドレスは 00000000 です
 
-システムヒープ初期化 9f5cd050-88087db0 00400000
+システムヒープ初期化 fdee9050-e6969340 00400000
 
 debug_InitArena(00000000, 00010000)
 
 [32m
-システムヒープサイズ 00400000(4096KB) 開始アドレス 9f5cd050
+システムヒープサイズ 00400000(4096KB) 開始アドレス fdee9050
 
 [m
 タスクスケジューラの初期化
@@ -29,15 +27,15 @@ game コンストラクタ開始
 
 game_set_next_game_null 処理時間 0 us
 
-gamealloc_init 処理時間 58 us
+gamealloc_init 処理時間 61 us
 
 ハイラル確保 サイズ＝1048576 バイト
 
 ハイラル確保成功
 
-init 処理時間 375 us
+init 処理時間 195 us
 
-その他初期化 処理時間 55 us
+その他初期化 処理時間 64 us
 
 game コンストラクタ終了
 
@@ -45,14 +43,14 @@ game デストラクタ開始
 
 システムヒープ表示
 
-アリーナの内容 (0x3bcc1360)
+アリーナの内容 (0xa9e60040)
 
 メモリブロック範囲 status サイズ  [時刻  s ms us ns: TID:src:行]
 
-9f5cd050-9f5cd230  確保 000001c0
+fdee9050-fdee9230  確保 000001c0
 
 
-9f5cd230-9f9cd050$ 空き 003ffe00
+fdee9230-fe2e9050$ 空き 003ffe00
 
 
 確保ブロックサイズの合計 0x000001c0 バイト
@@ -69,7 +67,7 @@ game コンストラクタ開始
 
 game_set_next_game_null 処理時間 0 us
 
-gamealloc_init 処理時間 53 us
+gamealloc_init 処理時間 48 us
 
 ハイラル確保 サイズ＝1048576 バイト
 
@@ -77,17 +75,17 @@ gamealloc_init 処理時間 53 us
 
 システムヒープ表示
 
-アリーナの内容 (0x3bcc1360)
+アリーナの内容 (0xa9e60040)
 
 メモリブロック範囲 status サイズ  [時刻  s ms us ns: TID:src:行]
 
-9f5cd050-9f5d5f30  確保 00008ec0
+fdee9050-fdef1f30  確保 00008ec0
 
 
-9f5d5f30-9f6d5f70  確保 00100020
+fdef1f30-fdff1f70  確保 00100020
 
 
-9f6d5f70-9f9cd050$ 空き 002f70c0
+fdff1f70-fe2e9050$ 空き 002f70c0
 
 
 確保ブロックサイズの合計 0x00108ee0 バイト
@@ -114,10 +112,10 @@ view: initialize ---
 [34mcamera: initialize --- [m UID 3
 
 [32m
-game_alloc(00002200) 9f97cc90-9f97ee90 [C:\Users\CmonMeow\Desktop\Shipwright\src\msvc\..\..\src\game\src\code\z_construct.c:137]
+game_alloc(00002200) fe298c90-fe29ae90 [C:\Users\CmonMeow\Desktop\Shipwright\src\msvc\..\..\src\game\src\code\z_construct.c:137]
 
 [m
-message->fukidashiSegment=9f97cc90
+message->fukidashiSegment=fe298c90
 
 吹き出しgame_alloc=2200
 
@@ -196,7 +194,7 @@ effect index  35:size=     0byte romsize=     0byte
 effect index  36:size=     0byte romsize=     0byte
 
 [32m
-game_alloc(00002a80) 9f97a210-9f97cc90 [C:\Users\CmonMeow\Desktop\Shipwright\src\msvc\..\..\src\game\src\code\z_effect_soft_sprite.c:21]
+game_alloc(00002a80) fe296210-fe298c90 [C:\Users\CmonMeow\Desktop\Shipwright\src\msvc\..\..\src\game\src\code\z_effect_soft_sprite.c:21]
 
 [m
 Loaded File scenes/shared/test01_scene/test01_scene on ResourceManager
@@ -210,32 +208,32 @@ Loaded Resource scenes/shared/test01_scene/test01_scene on ResourceManager
 
 [m
 [32m
-game_alloc(000fa000) 9f880210-9f97a210 [C:\Users\CmonMeow\Desktop\Shipwright\src\msvc\..\..\src\game\src\code\z_scene.c:52]
+game_alloc(000fa000) fe19c210-fe296210 [C:\Users\CmonMeow\Desktop\Shipwright\src\msvc\..\..\src\game\src\code\z_scene.c:52]
 
 [m
-OBJECT[1] SIZE 0.000000K SEG=9f880210
+OBJECT[1] SIZE 0.000000K SEG=fe19c210
 
-num=0 adrs=9f880210 end=9f97a210
+num=0 adrs=fe19c210 end=fe296210
 
 /*---------------- BGCheck バッファーメモリサイズ -------------*/
 
 /* BGCheck ノーマルサイズ 117760byte  */
 
 [32m
-game_alloc(0000030d) 9f84e8a0-9f84ebad [C:\Users\CmonMeow\Desktop\Shipwright\src\msvc\..\..\src\game\src\code\z_bgcheck.c:2386]
+game_alloc(0000030d) fe16a8a0-fe16abad [C:\Users\CmonMeow\Desktop\Shipwright\src\msvc\..\..\src\game\src\code\z_bgcheck.c:2386]
 
 [m
 [32m
 /*---結局 BG使用サイズ 49465byte---*/
 
 [m
-OBJECT[2] SIZE 0.000000K SEG=9f880210
+OBJECT[2] SIZE 0.000000K SEG=fe19c210
 
-num=1 adrs=9f880210 end=9f97a210
+num=1 adrs=fe19c210 end=fe296210
 
-OBJECT[20] SIZE 0.000000K SEG=9f880210
+OBJECT[20] SIZE 0.000000K SEG=fe19c210
 
-num=2 adrs=9f880210 end=9f97a210
+num=2 adrs=fe19c210 end=fe296210
 
 
 
@@ -252,16 +250,16 @@ num=2 adrs=9f880210 end=9f97a210
 
 [32m
 [32m
-game_alloc(00007080) 9f841080-9f848100 [C:\Users\CmonMeow\Desktop\Shipwright\src\msvc\..\..\src\game\src\code\z_vr_box.c:907]
+game_alloc(00007080) fe15d080-fe164100 [C:\Users\CmonMeow\Desktop\Shipwright\src\msvc\..\..\src\game\src\code\z_vr_box.c:907]
 
 [m
 [32m
-game_alloc(00000c00) 9f840480-9f841080 [C:\Users\CmonMeow\Desktop\Shipwright\src\msvc\..\..\src\game\src\code\z_vr_box.c:911]
+game_alloc(00000c00) fe15c480-fe15d080 [C:\Users\CmonMeow\Desktop\Shipwright\src\msvc\..\..\src\game\src\code\z_vr_box.c:911]
 
 [m
 [m
 [32m
-game_alloc(000098f0) 9f836b90-9f840480 [C:\Users\CmonMeow\Desktop\Shipwright\src\msvc\..\..\src\game\src\code\z_room.c:60]
+game_alloc(000098f0) fe152b90-fe15c480 [C:\Users\CmonMeow\Desktop\Shipwright\src\msvc\..\..\src\game\src\code\z_room.c:60]
 
 [m
 Loaded File scenes/shared/test01_scene/test01_room_0 on ResourceManager
@@ -275,16 +273,16 @@ Scene Init - sceneNum: 0x65, entranceIndex: 0x94
 SCENE_NO=148 COUNTER=2
 
 [32m
-game_alloc(00000500) 9f836690-9f836b90 [C:\Users\CmonMeow\Desktop\Shipwright\src\msvc\..\..\src\game\src\code\sys_matrix.c:26]
+game_alloc(00000500) fe152690-fe152b90 [C:\Users\CmonMeow\Desktop\Shipwright\src\msvc\..\..\src\game\src\code\sys_matrix.c:26]
 
 [m
 ZELDA ALLOC SIZE=260720
 
 [32m
-game_alloc(00260720) 9f5d5f70-9f836690 [C:\Users\CmonMeow\Desktop\Shipwright\src\msvc\..\..\src\game\src\code\z_play.c:244]
+game_alloc(00260720) fdef1f70-fe152690 [C:\Users\CmonMeow\Desktop\Shipwright\src\msvc\..\..\src\game\src\code\z_play.c:242]
 
 [m
-ゼルダヒープ 9f5d5f70-9f836690
+ゼルダヒープ fdef1f70-fe152690
 
 Loaded File objects/object_link_boy/gLinkAdultRightHandHoldingMirrorShieldNearDL on ResourceManager
 Could not load File objects/object_link_boy/gLinkAdultRightHandHoldingMirrorShieldNearDL.meta in ResourceManager
@@ -391,9 +389,9 @@ camera: room type: default set field
      エンブ=[0]
 
      status=[1]
-init 処理時間 17868 us
+init 処理時間 22630 us
 
-その他初期化 処理時間 78 us
+その他初期化 処理時間 60 us
 
 game コンストラクタ終了
 
@@ -497,12 +495,12 @@ Loaded File audio/sequences/000_Sound_Effects on ResourceManager
 Could not load File audio/sequences/000_Sound_Effects.meta in ResourceManager
 Loaded Resource audio/sequences/000_Sound_Effects on ResourceManager
 Loaded File audio/fonts/01_Sound_Effects_2 on ResourceManager
-Loaded File shaders/opengl/default.shader.vs on ResourceManager
 Could not load File audio/fonts/01_Sound_Effects_2.meta in ResourceManager
-Loaded Resource shaders/opengl/default.shader.vs on ResourceManager
+Loaded File shaders/opengl/default.shader.vs on ResourceManager
 Loaded Resource audio/fonts/01_Sound_Effects_2 on ResourceManager
 Loaded File audio/fonts/00_Sound_Effects_1 on ResourceManager
-Could not load File audio/fonts/00_Sound_Effects_1.meta in ResourceManager
+Loaded Resource shaders/opengl/default.shader.vs on ResourceManager
+nager
 Loaded Resource audio/fonts/00_Sound_Effects_1 on ResourceManager
 Loaded File textures/vr_holy0_pal_static/gHoly0SkyboxTLUT on ResourceManager
 Could not load File textures/vr_holy0_pal_static/gHoly0SkyboxTLUT.meta in ResourceManager
@@ -865,331 +863,12 @@ case 50 : alpha=31  alpha1=224
 
 case 50 : alpha=0  alpha1=255
 
-Loaded File objects/gameplay_keep/gPlayerAnim_link_fighter_backturn_jump on ResourceManager
-Could not load File objects/gameplay_keep/gPlayerAnim_link_fighter_backturn_jump.meta in ResourceManager
-Loaded File misc/link_animetion/gPlayerAnimData_0F8900 on ResourceManager
-Could not load File misc/link_animetion/gPlayerAnimData_0F8900.meta in ResourceManager
-Loaded Resource misc/link_animetion/gPlayerAnimData_0F8900 on ResourceManager
-Loaded Resource objects/gameplay_keep/gPlayerAnim_link_fighter_backturn_jump on ResourceManager
-Loaded File audio/samples/Whish_META on ResourceManager
-Could not load File audio/samples/Whish_META.meta in ResourceManager
-Loaded Resource audio/samples/Whish_META on ResourceManager
-Used audio sample: audio/samples/Whish_META
-Loaded File audio/samples/Adult Link - Attack 1_META on ResourceManager
-Could not load File audio/samples/Adult Link - Attack 1_META.meta in ResourceManager
-Loaded Resource audio/samples/Adult Link - Attack 1_META on ResourceManager
-Used audio sample: audio/samples/Adult Link - Attack 1_META
-Loaded File objects/object_link_boy/gLinkAdultLeftHandClosedNearDL on ResourceManager
-Could not load File objects/object_link_boy/gLinkAdultLeftHandClosedNearDL.meta in ResourceManager
-Loaded Resource objects/object_link_boy/gLinkAdultLeftHandClosedNearDL on ResourceManager
-Loaded File objects/object_link_boy/gLinkAdultRightHandClosedNearDL on ResourceManager
-Could not load File objects/object_link_boy/gLinkAdultRightHandClosedNearDL.meta in ResourceManager
-Loaded Resource objects/object_link_boy/gLinkAdultRightHandClosedNearDL on ResourceManager
-Loaded File audio/samples/Sheathe Sword_META on ResourceManager
-Could not load File audio/samples/Sheathe Sword_META.meta in ResourceManager
-Loaded Resource audio/samples/Sheathe Sword_META on ResourceManager
-Used audio sample: audio/samples/Sheathe Sword_META
-Loaded File objects/object_link_boy/object_link_boyVtx_010BC8 on ResourceManager
-Could not load File objects/object_link_boy/object_link_boyVtx_010BC8.meta in ResourceManager
-Loaded Resource objects/object_link_boy/object_link_boyVtx_010BC8 on ResourceManager
-Loaded File objects/object_link_boy/gLinkAdultClosedHandThumbTex on ResourceManager
-Could not load File objects/object_link_boy/gLinkAdultClosedHandThumbTex.meta in ResourceManager
-Loaded Resource objects/object_link_boy/gLinkAdultClosedHandThumbTex on ResourceManager
-Loaded File objects/object_link_boy/gLinkAdultClosedHandSideTex on ResourceManager
-Could not load File objects/object_link_boy/gLinkAdultClosedHandSideTex.meta in ResourceManager
-Loaded Resource objects/object_link_boy/gLinkAdultClosedHandSideTex on ResourceManager
-Loaded File objects/object_link_boy/object_link_boyVtx_011EB8 on ResourceManager
-Could not load File objects/object_link_boy/object_link_boyVtx_011EB8.meta in ResourceManager
-Loaded Resource objects/object_link_boy/object_link_boyVtx_011EB8 on ResourceManager
-Loaded File audio/samples/Metal Clink_META on ResourceManager
-Could not load File audio/samples/Metal Clink_META.meta in ResourceManager
-Loaded Resource audio/samples/Metal Clink_META on ResourceManager
-Used audio sample: audio/samples/Metal Clink_META
-Loaded File audio/samples/Sword Strike_META on ResourceManager
-Could not load File audio/samples/Sword Strike_META.meta in ResourceManager
-Loaded Resource audio/samples/Sword Strike_META on ResourceManager
-Used audio sample: audio/samples/Sword Strike_META
 Loaded File objects/object_link_boy/gLinkAdultEyesHalfTex on ResourceManager
 Could not load File objects/object_link_boy/gLinkAdultEyesHalfTex.meta in ResourceManager
 Loaded Resource objects/object_link_boy/gLinkAdultEyesHalfTex on ResourceManager
-Loaded File objects/gameplay_keep/gCircleShadowDL on ResourceManager
-Could not load File objects/gameplay_keep/gCircleShadowDL.meta in ResourceManager
-Loaded Resource objects/gameplay_keep/gCircleShadowDL on ResourceManager
-Loaded File objects/gameplay_keep/gCircleShadowTex on ResourceManager
-Could not load File objects/gameplay_keep/gCircleShadowTex.meta in ResourceManager
-Loaded Resource objects/gameplay_keep/gCircleShadowTex on ResourceManager
-Loaded File objects/gameplay_keep/gameplay_keepVtx_04E790 on ResourceManager
-Could not load File objects/gameplay_keep/gameplay_keepVtx_04E790.meta in ResourceManager
-Loaded Resource objects/gameplay_keep/gameplay_keepVtx_04E790 on ResourceManager
 Loaded File objects/object_link_boy/gLinkAdultEyesClosedfTex on ResourceManager
 Could not load File objects/object_link_boy/gLinkAdultEyesClosedfTex.meta in ResourceManager
 Loaded Resource objects/object_link_boy/gLinkAdultEyesClosedfTex on ResourceManager
-Loaded File objects/gameplay_keep/gPlayerAnim_link_fighter_backturn_jump_end on ResourceManager
-Could not load File objects/gameplay_keep/gPlayerAnim_link_fighter_backturn_jump_end.meta in ResourceManager
-Loaded File misc/link_animetion/gPlayerAnimData_0F90E0 on ResourceManager
-Could not load File misc/link_animetion/gPlayerAnimData_0F90E0.meta in ResourceManager
-Loaded Resource misc/link_animetion/gPlayerAnimData_0F90E0 on ResourceManager
-Loaded Resource objects/gameplay_keep/gPlayerAnim_link_fighter_backturn_jump_end on ResourceManager
-Loaded File objects/gameplay_keep/gPlayerAnim_link_normal_free2free on ResourceManager
-Could not load File objects/gameplay_keep/gPlayerAnim_link_normal_free2free.meta in ResourceManager
-Loaded File misc/link_animetion/gPlayerAnimData_17F650 on ResourceManager
-Could not load File misc/link_animetion/gPlayerAnimData_17F650.meta in ResourceManager
-Loaded Resource misc/link_animetion/gPlayerAnimData_17F650 on ResourceManager
-Loaded Resource objects/gameplay_keep/gPlayerAnim_link_normal_free2free on ResourceManager
-Loaded File objects/object_link_boy/gLinkAdultRightHandHoldingBowNearDL on ResourceManager
-Could not load File objects/object_link_boy/gLinkAdultRightHandHoldingBowNearDL.meta in ResourceManager
-Loaded Resource objects/object_link_boy/gLinkAdultRightHandHoldingBowNearDL on ResourceManager
-Loaded File objects/object_link_boy/gLinkAdultBowStringDL on ResourceManager
-Could not load File objects/object_link_boy/gLinkAdultBowStringDL.meta in ResourceManager
-Loaded Resource objects/object_link_boy/gLinkAdultBowStringDL on ResourceManager
-Loaded File audio/samples/Small Splash_META on ResourceManager
-Could not load File audio/samples/Small Splash_META.meta in ResourceManager
-Loaded Resource audio/samples/Small Splash_META on ResourceManager
-Used audio sample: audio/samples/Small Splash_META
-Loaded File objects/object_link_boy/gLinkAdultBowBodyTex on ResourceManager
-Could not load File objects/object_link_boy/gLinkAdultBowBodyTex.meta in ResourceManager
-Loaded Resource objects/object_link_boy/gLinkAdultBowBodyTex on ResourceManager
-Loaded File objects/object_link_boy/object_link_boyVtx_0126B8 on ResourceManager
-Could not load File objects/object_link_boy/object_link_boyVtx_0126B8.meta in ResourceManager
-Loaded Resource objects/object_link_boy/object_link_boyVtx_0126B8 on ResourceManager
-Loaded File objects/object_link_boy/object_link_boyVtx_02B0A8 on ResourceManager
-Could not load File objects/object_link_boy/object_link_boyVtx_02B0A8.meta in ResourceManager
-Loaded Resource objects/object_link_boy/object_link_boyVtx_02B0A8 on ResourceManager
-Loaded File objects/gameplay_keep/gPlayerAnim_link_bow_bow_ready on ResourceManager
-Could not load File objects/gameplay_keep/gPlayerAnim_link_bow_bow_ready.meta in ResourceManager
-Loaded File misc/link_animetion/gPlayerAnimData_092DF0 on ResourceManager
-Could not load File misc/link_animetion/gPlayerAnimData_092DF0.meta in ResourceManager
-Loaded Resource misc/link_animetion/gPlayerAnimData_092DF0 on ResourceManager
-Loaded Resource objects/gameplay_keep/gPlayerAnim_link_bow_bow_ready on ResourceManager
-Loaded File objects/gameplay_keep/gPlayerAnim_link_bow_bow_wait on ResourceManager
-Could not load File objects/gameplay_keep/gPlayerAnim_link_bow_bow_wait.meta in ResourceManager
-Loaded File misc/link_animetion/gPlayerAnimData_0940E0 on ResourceManager
-Could not load File misc/link_animetion/gPlayerAnimData_0940E0.meta in ResourceManager
-Loaded Resource misc/link_animetion/gPlayerAnimData_0940E0 on ResourceManager
-Loaded Resource objects/gameplay_keep/gPlayerAnim_link_bow_bow_wait on ResourceManager
-Loaded File objects/gameplay_keep/gPlayerAnim_link_bow_bow_shoot_end on ResourceManager
-Could not load File objects/gameplay_keep/gPlayerAnim_link_bow_bow_shoot_end.meta in ResourceManager
-Loaded File misc/link_animetion/gPlayerAnimData_093450 on ResourceManager
-Could not load File misc/link_animetion/gPlayerAnimData_093450.meta in ResourceManager
-Loaded Resource misc/link_animetion/gPlayerAnimData_093450 on ResourceManager
-Loaded Resource objects/gameplay_keep/gPlayerAnim_link_bow_bow_shoot_end on ResourceManager
-Loaded File objects/gameplay_keep/gPlayerAnim_link_hammer_long2free on ResourceManager
-Could not load File objects/gameplay_keep/gPlayerAnim_link_hammer_long2free.meta in ResourceManager
-Loaded File misc/link_animetion/gPlayerAnimData_126F60 on ResourceManager
-Could not load File misc/link_animetion/gPlayerAnimData_126F60.meta in ResourceManager
-Loaded Resource misc/link_animetion/gPlayerAnimData_126F60 on ResourceManager
-Loaded Resource objects/gameplay_keep/gPlayerAnim_link_hammer_long2free on ResourceManager
-Loaded File objects/gameplay_keep/gPlayerAnim_link_fighter_wait_long on ResourceManager
-Could not load File objects/gameplay_keep/gPlayerAnim_link_fighter_wait_long.meta in ResourceManager
-Loaded File misc/link_animetion/gPlayerAnimData_11AB90 on ResourceManager
-Could not load File misc/link_animetion/gPlayerAnimData_11AB90.meta in ResourceManager
-Loaded Resource misc/link_animetion/gPlayerAnimData_11AB90 on ResourceManager
-Loaded Resource objects/gameplay_keep/gPlayerAnim_link_fighter_wait_long on ResourceManager
-Loaded File objects/object_link_boy/gLinkAdultLeftHandHoldingBgsNearDL on ResourceManager
-Could not load File objects/object_link_boy/gLinkAdultLeftHandHoldingBgsNearDL.meta in ResourceManager
-Loaded Resource objects/object_link_boy/gLinkAdultLeftHandHoldingBgsNearDL on ResourceManager
-Loaded File audio/samples/Draw Sword_META on ResourceManager
-Could not load File audio/samples/Draw Sword_META.meta in ResourceManager
-Loaded Resource audio/samples/Draw Sword_META on ResourceManager
-Used audio sample: audio/samples/Draw Sword_META
-Loaded File objects/object_link_boy/object_link_boyVtx_014448 on ResourceManager
-Could not load File objects/object_link_boy/object_link_boyVtx_014448.meta in ResourceManager
-Loaded Resource objects/object_link_boy/object_link_boyVtx_014448 on ResourceManager
-Loaded File objects/object_link_boy/gLinkAdultSwordEmblemTex on ResourceManager
-Could not load File objects/object_link_boy/gLinkAdultSwordEmblemTex.meta in ResourceManager
-Loaded Resource objects/object_link_boy/gLinkAdultSwordEmblemTex on ResourceManager
-Loaded File objects/object_link_boy/object_link_boyVtx_010398 on ResourceManager
-Could not load File objects/object_link_boy/object_link_boyVtx_010398.meta in ResourceManager
-Loaded Resource objects/object_link_boy/object_link_boyVtx_010398 on ResourceManager
-Loaded File objects/object_link_boy/object_link_boyVtx_020598 on ResourceManager
-Could not load File objects/object_link_boy/object_link_boyVtx_020598.meta in ResourceManager
-Loaded Resource objects/object_link_boy/object_link_boyVtx_020598 on ResourceManager
-Loaded File objects/gameplay_keep/gPlayerAnim_link_fighter_LLside_kiru on ResourceManager
-Could not load File objects/gameplay_keep/gPlayerAnim_link_fighter_LLside_kiru.meta in ResourceManager
-Loaded File misc/link_animetion/gPlayerAnimData_0E8C30 on ResourceManager
-Could not load File misc/link_animetion/gPlayerAnimData_0E8C30.meta in ResourceManager
-Loaded Resource misc/link_animetion/gPlayerAnimData_0E8C30 on ResourceManager
-Loaded Resource objects/gameplay_keep/gPlayerAnim_link_fighter_LLside_kiru on ResourceManager
-Loaded File objects/object_link_boy/gLinkAdultMouth2Tex on ResourceManager
-Could not load File objects/object_link_boy/gLinkAdultMouth2Tex.meta in ResourceManager
-Loaded Resource objects/object_link_boy/gLinkAdultMouth2Tex on ResourceManager
-Loaded File audio/samples/Adult Link - Attack 2_META on ResourceManager
-Could not load File audio/samples/Adult Link - Attack 2_META.meta in ResourceManager
-Loaded Resource audio/samples/Adult Link - Attack 2_META on ResourceManager
-Used audio sample: audio/samples/Adult Link - Attack 2_META
-Loaded File objects/object_link_boy/gLinkAdultMouth3Tex on ResourceManager
-Could not load File objects/object_link_boy/gLinkAdultMouth3Tex.meta in ResourceManager
-Loaded Resource objects/object_link_boy/gLinkAdultMouth3Tex on ResourceManager
-Loaded File objects/gameplay_keep/gPlayerAnim_link_fighter_LLside_kiru_end on ResourceManager
-Could not load File objects/gameplay_keep/gPlayerAnim_link_fighter_LLside_kiru_end.meta in ResourceManager
-Loaded File misc/link_animetion/gPlayerAnimData_0E8F60 on ResourceManager
-Could not load File misc/link_animetion/gPlayerAnimData_0E8F60.meta in ResourceManager
-Loaded Resource misc/link_animetion/gPlayerAnimData_0E8F60 on ResourceManager
-Loaded Resource objects/gameplay_keep/gPlayerAnim_link_fighter_LLside_kiru_end on ResourceManager
-Loaded File objects/gameplay_keep/gPlayerAnim_link_anchor_waitR2defense_long on ResourceManager
-Could not load File objects/gameplay_keep/gPlayerAnim_link_anchor_waitR2defense_long.meta in ResourceManager
-Loaded File misc/link_animetion/gPlayerAnimData_073540 on ResourceManager
-Could not load File misc/link_animetion/gPlayerAnimData_073540.meta in ResourceManager
-Loaded Resource misc/link_animetion/gPlayerAnimData_073540 on ResourceManager
-Loaded Resource objects/gameplay_keep/gPlayerAnim_link_anchor_waitR2defense_long on ResourceManager
-Loaded File objects/gameplay_keep/gPlayerAnim_link_normal_defense_free on ResourceManager
-Could not load File objects/gameplay_keep/gPlayerAnim_link_normal_defense_free.meta in ResourceManager
-Loaded File misc/link_animetion/gPlayerAnimData_16CB70 on ResourceManager
-Could not load File misc/link_animetion/gPlayerAnimData_16CB70.meta in ResourceManager
-Loaded Resource misc/link_animetion/gPlayerAnimData_16CB70 on ResourceManager
-Loaded Resource objects/gameplay_keep/gPlayerAnim_link_normal_defense_free on ResourceManager
-Loaded File objects/gameplay_keep/gPlayerAnim_link_normal_defense_wait_free on ResourceManager
-Could not load File objects/gameplay_keep/gPlayerAnim_link_normal_defense_wait_free.meta in ResourceManager
-Loaded File misc/link_animetion/gPlayerAnimData_16DFF0 on ResourceManager
-Could not load File misc/link_animetion/gPlayerAnimData_16DFF0.meta in ResourceManager
-Loaded Resource misc/link_animetion/gPlayerAnimData_16DFF0 on ResourceManager
-Loaded Resource objects/gameplay_keep/gPlayerAnim_link_normal_defense_wait_free on ResourceManager
-Loaded File objects/gameplay_keep/gPlayerAnim_link_normal_defense_kiru on ResourceManager
-Could not load File objects/gameplay_keep/gPlayerAnim_link_normal_defense_kiru.meta in ResourceManager
-Loaded File misc/link_animetion/gPlayerAnimData_16D2D0 on ResourceManager
-Could not load File misc/link_animetion/gPlayerAnimData_16D2D0.meta in ResourceManager
-Loaded Resource misc/link_animetion/gPlayerAnimData_16D2D0 on ResourceManager
-Loaded Resource objects/gameplay_keep/gPlayerAnim_link_normal_defense_kiru on ResourceManager
-Loaded File audio/samples/Adult Link - Attack 3_META on ResourceManager
-Could not load File audio/samples/Adult Link - Attack 3_META.meta in ResourceManager
-Loaded Resource audio/samples/Adult Link - Attack 3_META on ResourceManager
-Used audio sample: audio/samples/Adult Link - Attack 3_META
-Loaded File objects/gameplay_keep/gPlayerAnim_link_normal_defense_end_free on ResourceManager
-Could not load File objects/gameplay_keep/gPlayerAnim_link_normal_defense_end_free.meta in ResourceManager
-Loaded File misc/link_animetion/gPlayerAnimData_16C8D0 on ResourceManager
-Could not load File misc/link_animetion/gPlayerAnimData_16C8D0.meta in ResourceManager
-Loaded Resource misc/link_animetion/gPlayerAnimData_16C8D0 on ResourceManager
-Loaded Resource objects/gameplay_keep/gPlayerAnim_link_normal_defense_end_free on ResourceManager
-Loaded File objects/gameplay_keep/gPlayerAnim_link_fighter_run_long on ResourceManager
-Could not load File objects/gameplay_keep/gPlayerAnim_link_fighter_run_long.meta in ResourceManager
-Loaded File misc/link_animetion/gPlayerAnimData_110210 on ResourceManager
-Could not load File misc/link_animetion/gPlayerAnimData_110210.meta in ResourceManager
-Loaded Resource misc/link_animetion/gPlayerAnimData_110210 on ResourceManager
-Loaded Resource objects/gameplay_keep/gPlayerAnim_link_fighter_run_long on ResourceManager
-Loaded File objects/gameplay_keep/gPlayerAnim_link_fighter_walk_long on ResourceManager
-Could not load File objects/gameplay_keep/gPlayerAnim_link_fighter_walk_long.meta in ResourceManager
-Loaded File misc/link_animetion/gPlayerAnimData_11E5D0 on ResourceManager
-Could not load File misc/link_animetion/gPlayerAnimData_11E5D0.meta in ResourceManager
-Loaded Resource misc/link_animetion/gPlayerAnimData_11E5D0 on ResourceManager
-Loaded Resource objects/gameplay_keep/gPlayerAnim_link_fighter_walk_long on ResourceManager
-Loaded File objects/gameplay_keep/gPlayerAnim_link_fighter_side_walkR_long on ResourceManager
-Could not load File objects/gameplay_keep/gPlayerAnim_link_fighter_side_walkR_long.meta in ResourceManager
-Loaded File misc/link_animetion/gPlayerAnimData_1129F0 on ResourceManager
-Could not load File misc/link_animetion/gPlayerAnimData_1129F0.meta in ResourceManager
-Loaded Resource misc/link_animetion/gPlayerAnimData_1129F0 on ResourceManager
-Loaded Resource objects/gameplay_keep/gPlayerAnim_link_fighter_side_walkR_long on ResourceManager
-Loaded File objects/gameplay_keep/gPlayerAnim_link_fighter_side_walkL_long on ResourceManager
-Could not load File objects/gameplay_keep/gPlayerAnim_link_fighter_side_walkL_long.meta in ResourceManager
-Loaded File misc/link_animetion/gPlayerAnimData_112190 on ResourceManager
-Could not load File misc/link_animetion/gPlayerAnimData_112190.meta in ResourceManager
-Loaded Resource misc/link_animetion/gPlayerAnimData_112190 on ResourceManager
-Loaded Resource objects/gameplay_keep/gPlayerAnim_link_fighter_side_walkL_long on ResourceManager
-Loaded File objects/gameplay_keep/gPlayerAnim_link_fighter_Lside_jump on ResourceManager
-Could not load File objects/gameplay_keep/gPlayerAnim_link_fighter_Lside_jump.meta in ResourceManager
-Loaded File misc/link_animetion/gPlayerAnimData_0F3790 on ResourceManager
-Could not load File misc/link_animetion/gPlayerAnimData_0F3790.meta in ResourceManager
-Loaded Resource misc/link_animetion/gPlayerAnimData_0F3790 on ResourceManager
-Loaded Resource objects/gameplay_keep/gPlayerAnim_link_fighter_Lside_jump on ResourceManager
-Loaded File objects/gameplay_keep/gPlayerAnim_link_fighter_Lside_jump_end on ResourceManager
-Could not load File objects/gameplay_keep/gPlayerAnim_link_fighter_Lside_jump_end.meta in ResourceManager
-Loaded File misc/link_animetion/gPlayerAnimData_0F3B40 on ResourceManager
-Could not load File misc/link_animetion/gPlayerAnimData_0F3B40.meta in ResourceManager
-Loaded Resource misc/link_animetion/gPlayerAnimData_0F3B40 on ResourceManager
-Loaded Resource objects/gameplay_keep/gPlayerAnim_link_fighter_Lside_jump_end on ResourceManager
-Loaded File objects/gameplay_keep/gPlayerAnim_link_fighter_side_walk_long on ResourceManager
-Could not load File objects/gameplay_keep/gPlayerAnim_link_fighter_side_walk_long.meta in ResourceManager
-Loaded File misc/link_animetion/gPlayerAnimData_113250 on ResourceManager
-Could not load File misc/link_animetion/gPlayerAnimData_113250.meta in ResourceManager
-Loaded Resource misc/link_animetion/gPlayerAnimData_113250 on ResourceManager
-Loaded Resource objects/gameplay_keep/gPlayerAnim_link_fighter_side_walk_long on ResourceManager
-Loaded File objects/gameplay_keep/gPlayerAnim_link_normal_back_walk on ResourceManager
-Could not load File objects/gameplay_keep/gPlayerAnim_link_normal_back_walk.meta in ResourceManager
-Loaded File misc/link_animetion/gPlayerAnimData_1540C0 on ResourceManager
-Could not load File misc/link_animetion/gPlayerAnimData_1540C0.meta in ResourceManager
-Loaded Resource misc/link_animetion/gPlayerAnimData_1540C0 on ResourceManager
-Loaded Resource objects/gameplay_keep/gPlayerAnim_link_normal_back_walk on ResourceManager
-Loaded File audio/samples/Adult Link - Attack 4_META on ResourceManager
-Could not load File audio/samples/Adult Link - Attack 4_META.meta in ResourceManager
-Loaded Resource audio/samples/Adult Link - Attack 4_META on ResourceManager
-Used audio sample: audio/samples/Adult Link - Attack 4_META
-Loaded File objects/gameplay_keep/gPlayerAnim_link_fighter_Rside_jump on ResourceManager
-Could not load File objects/gameplay_keep/gPlayerAnim_link_fighter_Rside_jump.meta in ResourceManager
-Loaded File misc/link_animetion/gPlayerAnimData_0F57A0 on ResourceManager
-Could not load File misc/link_animetion/gPlayerAnimData_0F57A0.meta in ResourceManager
-Loaded Resource misc/link_animetion/gPlayerAnimData_0F57A0 on ResourceManager
-Loaded Resource objects/gameplay_keep/gPlayerAnim_link_fighter_Rside_jump on ResourceManager
-Loaded File objects/gameplay_keep/gPlayerAnim_link_normal_landing on ResourceManager
-Could not load File objects/gameplay_keep/gPlayerAnim_link_normal_landing.meta in ResourceManager
-Loaded File misc/link_animetion/gPlayerAnimData_19D3E0 on ResourceManager
-Could not load File misc/link_animetion/gPlayerAnimData_19D3E0.meta in ResourceManager
-Loaded Resource misc/link_animetion/gPlayerAnimData_19D3E0 on ResourceManager
-Loaded Resource objects/gameplay_keep/gPlayerAnim_link_normal_landing on ResourceManager
-Loaded File objects/gameplay_keep/gPlayerAnim_link_fighter_Rside_jump_end on ResourceManager
-Could not load File objects/gameplay_keep/gPlayerAnim_link_fighter_Rside_jump_end.meta in ResourceManager
-Loaded File misc/link_animetion/gPlayerAnimData_0F5B50 on ResourceManager
-Could not load File misc/link_animetion/gPlayerAnimData_0F5B50.meta in ResourceManager
-Loaded Resource misc/link_animetion/gPlayerAnimData_0F5B50 on ResourceManager
-Loaded Resource objects/gameplay_keep/gPlayerAnim_link_fighter_Rside_jump_end on ResourceManager
-Loaded File objects/gameplay_keep/gPlayerAnim_link_normal_250jump_start on ResourceManager
-Could not load File objects/gameplay_keep/gPlayerAnim_link_normal_250jump_start.meta in ResourceManager
-Loaded File misc/link_animetion/gPlayerAnimData_148040 on ResourceManager
-Could not load File misc/link_animetion/gPlayerAnimData_148040.meta in ResourceManager
-Loaded Resource misc/link_animetion/gPlayerAnimData_148040 on ResourceManager
-Loaded Resource objects/gameplay_keep/gPlayerAnim_link_normal_250jump_start on ResourceManager
-Loaded File audio/samples/Adult Link - Hup_META on ResourceManager
-Could not load File audio/samples/Adult Link - Hup_META.meta in ResourceManager
-Loaded Resource audio/samples/Adult Link - Hup_META on ResourceManager
-Used audio sample: audio/samples/Adult Link - Hup_META
-Loaded File objects/gameplay_keep/gPlayerAnim_link_normal_short_landing_free on ResourceManager
-Could not load File objects/gameplay_keep/gPlayerAnim_link_normal_short_landing_free.meta in ResourceManager
-Loaded File misc/link_animetion/gPlayerAnimData_1B7B40 on ResourceManager
-Could not load File misc/link_animetion/gPlayerAnimData_1B7B40.meta in ResourceManager
-Loaded Resource misc/link_animetion/gPlayerAnimData_1B7B40 on ResourceManager
-Loaded Resource objects/gameplay_keep/gPlayerAnim_link_normal_short_landing_free on ResourceManager
-Loaded File audio/samples/Adult Link - Gasp 1_META on ResourceManager
-Could not load File audio/samples/Adult Link - Gasp 1_META.meta in ResourceManager
-Loaded Resource audio/samples/Adult Link - Gasp 1_META on ResourceManager
-Used audio sample: audio/samples/Adult Link - Gasp 1_META
-Loaded File objects/gameplay_keep/gPlayerAnim_link_normal_jump_climb_hold_free on ResourceManager
-Could not load File objects/gameplay_keep/gPlayerAnim_link_normal_jump_climb_hold_free.meta in ResourceManager
-Loaded File misc/link_animetion/gPlayerAnimData_1943C0 on ResourceManager
-Could not load File misc/link_animetion/gPlayerAnimData_1943C0.meta in ResourceManager
-Loaded Resource misc/link_animetion/gPlayerAnimData_1943C0 on ResourceManager
-Loaded Resource objects/gameplay_keep/gPlayerAnim_link_normal_jump_climb_hold_free on ResourceManager
-Loaded File objects/gameplay_keep/gPlayerAnim_link_normal_jump_climb_up_free on ResourceManager
-Could not load File objects/gameplay_keep/gPlayerAnim_link_normal_jump_climb_up_free.meta in ResourceManager
-Loaded File misc/link_animetion/gPlayerAnimData_196120 on ResourceManager
-Could not load File misc/link_animetion/gPlayerAnimData_196120.meta in ResourceManager
-Loaded Resource misc/link_animetion/gPlayerAnimData_196120 on ResourceManager
-Loaded Resource objects/gameplay_keep/gPlayerAnim_link_normal_jump_climb_up_free on ResourceManager
-Loaded File audio/samples/Adult Link - Climb Edge_META on ResourceManager
-Could not load File audio/samples/Adult Link - Climb Edge_META.meta in ResourceManager
-Loaded Resource audio/samples/Adult Link - Climb Edge_META on ResourceManager
-Used audio sample: audio/samples/Adult Link - Climb Edge_META
-Loaded File objects/gameplay_keep/gPlayerAnim_link_normal_jump on ResourceManager
-Could not load File objects/gameplay_keep/gPlayerAnim_link_normal_jump.meta in ResourceManager
-Loaded File misc/link_animetion/gPlayerAnimData_192F40 on ResourceManager
-Could not load File misc/link_animetion/gPlayerAnimData_192F40.meta in ResourceManager
-Loaded Resource misc/link_animetion/gPlayerAnimData_192F40 on ResourceManager
-Loaded Resource objects/gameplay_keep/gPlayerAnim_link_normal_jump on ResourceManager
-Loaded File objects/gameplay_keep/gPlayerAnim_link_normal_run_jump on ResourceManager
-Could not load File objects/gameplay_keep/gPlayerAnim_link_normal_run_jump.meta in ResourceManager
-Loaded File misc/link_animetion/gPlayerAnimData_1B4B00 on ResourceManager
-Could not load File misc/link_animetion/gPlayerAnimData_1B4B00.meta in ResourceManager
-Loaded Resource misc/link_animetion/gPlayerAnimData_1B4B00 on ResourceManager
-Loaded Resource objects/gameplay_keep/gPlayerAnim_link_normal_run_jump on ResourceManager
-Loaded File objects/gameplay_keep/gPlayerAnim_link_normal_landing_free on ResourceManager
-Could not load File objects/gameplay_keep/gPlayerAnim_link_normal_landing_free.meta in ResourceManager
-Loaded File misc/link_animetion/gPlayerAnimData_19DEE0 on ResourceManager
-Could not load File misc/link_animetion/gPlayerAnimData_19DEE0.meta in ResourceManager
-Loaded Resource misc/link_animetion/gPlayerAnimData_19DEE0 on ResourceManager
-Loaded Resource objects/gameplay_keep/gPlayerAnim_link_normal_landing_free on ResourceManager
-Loaded File objects/gameplay_keep/gPlayerAnim_link_fighter_walk_endL_long on ResourceManager
-Could not load File objects/gameplay_keep/gPlayerAnim_link_fighter_walk_endL_long.meta in ResourceManager
-Loaded File misc/link_animetion/gPlayerAnimData_11DA30 on ResourceManager
-Could not load File misc/link_animetion/gPlayerAnimData_11DA30.meta in ResourceManager
-Loaded Resource misc/link_animetion/gPlayerAnimData_11DA30 on ResourceManager
-Loaded Resource objects/gameplay_keep/gPlayerAnim_link_fighter_walk_endL_long on ResourceManager
 mainproc 後始末
 
 osSpGetStatus=00000000: 
@@ -1218,8 +897,6 @@ destruct archive manager
 destruct o2rarchive: C:\Users\CmonMeow\Desktop\Shipwright\bin\oot.o2r
 destruct archive: C:\Users\CmonMeow\Desktop\Shipwright\bin\oot.o2r
 destruct resource loader
-Resource Unloaded: objects/object_link_boy/object_link_boyVtx_011EB8
-
 Resource Unloaded: objects/gameplay_keep/gPlayerAnim_link_normal_run_free
 
 Resource Unloaded: objects/object_link_boy/gLinkAdultRightFootNearDL
@@ -1272,13 +949,9 @@ Resource Unloaded: objects/gameplay_keep/gSun1Tex
 
 Resource Unloaded: objects/object_link_boy/gLinkAdultRightHandHoldingMirrorShieldNearDL
 
-Resource Unloaded: objects/gameplay_keep/gPlayerAnim_link_normal_free2free
-
 Resource Unloaded: objects/object_link_boy/gLinkAdultRightHandHoldingMirrorShieldFarDL
 
 Resource Unloaded: objects/object_link_boy/gLinkAdultMirrorShieldAndSheathNearDL
-
-Resource Unloaded: misc/link_animetion/gPlayerAnimData_11E5D0
 
 Resource Unloaded: objects/object_link_boy/gLinkAdultMouth1Tex
 
@@ -1293,8 +966,6 @@ Resource Unloaded: objects/object_link_boy/gLinkAdultMirrorShieldSwordAndSheathF
 Resource Unloaded: objects/object_link_boy/gLinkAdultRootLimb
 
 Resource Unloaded: objects/object_link_boy/gLinkAdultCollarLimb
-
-Resource Unloaded: objects/object_link_boy/gLinkAdultSwordEmblemTex
 
 Resource Unloaded: objects/object_link_boy/gLinkAdultWaistLimb
 
@@ -1322,8 +993,6 @@ Resource Unloaded: objects/object_link_boy/gLinkAdultLeftThighNearDL
 
 Resource Unloaded: objects/object_link_boy/gLinkAdultLeftFootLimb
 
-Resource Unloaded: objects/object_link_boy/gLinkAdultMouth3Tex
-
 Resource Unloaded: objects/object_link_boy/gLinkAdultUpperControlLimb
 
 Resource Unloaded: objects/object_link_boy/gLinkAdultShieldHandleTex
@@ -1340,8 +1009,6 @@ Resource Unloaded: objects/object_link_boy/gLinkAdultLeftShoulderLimb
 
 Resource Unloaded: objects/object_link_boy/gLinkAdultWaistNearDL
 
-Resource Unloaded: objects/object_link_boy/gLinkAdultBowBodyTex
-
 Resource Unloaded: scenes/shared/test01_scene/test01_room_0DL_006338
 
 Resource Unloaded: objects/object_link_boy/gLinkAdultLeftHandLimb
@@ -1355,8 +1022,6 @@ Resource Unloaded: objects/object_link_boy/gLinkAdultRightArmLimb
 Resource Unloaded: objects/object_link_boy/gLinkAdultRightHandLimb
 
 Resource Unloaded: scenes/shared/test01_scene/test01_room_0DL_006438
-
-Resource Unloaded: objects/gameplay_keep/gPlayerAnim_link_normal_jump_climb_hold_free
 
 Resource Unloaded: objects/object_link_boy/gLinkAdultSwordAndSheathLimb
 
@@ -1382,8 +1047,6 @@ Resource Unloaded: objects/object_link_boy/object_link_boyVtx_031C10
 
 Resource Unloaded: misc/link_animetion/gPlayerAnimData_1F76C0
 
-Resource Unloaded: objects/gameplay_keep/gPlayerAnim_link_fighter_backturn_jump_end
-
 Resource Unloaded: scenes/shared/test01_scene/test01_room_0DL_0090D8
 
 Resource Unloaded: textures/vr_holy0_static/gHoly0Skybox5Tex
@@ -1394,17 +1057,11 @@ Resource Unloaded: objects/object_link_boy/gLinkAdultEyesOpenTex
 
 Resource Unloaded: objects/gameplay_keep/gGlowCircleTextureLoadDL
 
-Resource Unloaded: objects/gameplay_keep/gPlayerAnim_link_normal_short_landing_free
-
-Resource Unloaded: objects/gameplay_keep/gPlayerAnim_link_fighter_side_walkL_long
-
 Resource Unloaded: objects/object_link_boy/gLinkAdultLeftFootNearDL
 
 Resource Unloaded: objects/object_link_boy/gLinkAdultLeftShoulderNearDL
 
 Resource Unloaded: objects/object_link_boy/gLinkAdultHeadNearDL
-
-Resource Unloaded: objects/gameplay_keep/gPlayerAnim_link_normal_defense_free
 
 Resource Unloaded: objects/object_link_boy/gLinkAdultCollarNearDL
 
@@ -1412,19 +1069,11 @@ Resource Unloaded: objects/object_link_boy/gLinkAdultLeftArmNearDL
 
 Resource Unloaded: objects/object_link_boy/gLinkAdultLeftHandNearDL
 
-Resource Unloaded: objects/object_link_boy/object_link_boyVtx_014448
-
 Resource Unloaded: objects/object_link_boy/gLinkAdultRightArmNearDL
 
 Resource Unloaded: objects/object_link_boy/gLinkAdultRightHandNearDL
 
-Resource Unloaded: objects/gameplay_keep/gPlayerAnim_link_fighter_Lside_jump_end
-
 Resource Unloaded: audio/fonts/00_Sound_Effects_1
-
-Resource Unloaded: objects/gameplay_keep/gPlayerAnim_link_fighter_LLside_kiru
-
-Resource Unloaded: objects/gameplay_keep/gameplay_keepVtx_04E790
 
 Resource Unloaded: textures/vr_holy0_pal_static/gHoly0SkyboxTLUT
 
@@ -1435,10 +1084,6 @@ Resource Unloaded: scenes/shared/test01_scene/test01_room_0DL_003198
 Resource Unloaded: objects/object_link_boy/object_link_boyTLUT_00CB40
 
 Resource Unloaded: textures/vr_holy0_static/gHoly0Skybox1Tex
-
-Resource Unloaded: objects/gameplay_keep/gPlayerAnim_link_fighter_run_long
-
-Resource Unloaded: objects/object_link_boy/gLinkAdultClosedHandThumbTex
 
 Resource Unloaded: objects/object_link_boy/gLinkAdultSwordPommelTex
 
@@ -1465,8 +1110,6 @@ Resource Unloaded: textures/vr_holy0_static/gHoly0Skybox6Tex
 Resource Unloaded: textures/vr_holy1_static/gHoly1Skybox6Tex
 
 Resource Unloaded: objects/gameplay_keep/gSunEvening1Tex
-
-Resource Unloaded: misc/link_animetion/gPlayerAnimData_1B4B00
 
 Resource Unloaded: scenes/shared/test01_scene/test01_room_0DL_008F90
 
@@ -1504,8 +1147,6 @@ Resource Unloaded: objects/object_link_boy/gLinkAdultBootTex
 
 Resource Unloaded: objects/object_link_boy/object_link_boyVtx_032230
 
-Resource Unloaded: objects/gameplay_keep/gPlayerAnim_link_fighter_Rside_jump_end
-
 Resource Unloaded: objects/object_link_boy/object_link_boyVtx_031EA0
 
 Resource Unloaded: objects/object_link_boy/object_link_boyVtx_032A20
@@ -1530,15 +1171,11 @@ Resource Unloaded: objects/object_link_boy/object_link_boyVtx_0327F0
 
 Resource Unloaded: objects/object_link_boy/gLinkAdultCollarTex
 
-Resource Unloaded: misc/link_animetion/gPlayerAnimData_0F90E0
-
 Resource Unloaded: objects/object_link_boy/object_link_boyVtx_035250
 
 Resource Unloaded: objects/object_link_boy/object_link_boyVtx_033DB0
 
 Resource Unloaded: objects/gameplay_keep/gLinkTunic1Tex
-
-Resource Unloaded: audio/samples/Sword Strike_META
 
 Resource Unloaded: objects/object_link_boy/object_link_boyVtx_033AC0
 
@@ -1546,13 +1183,9 @@ Resource Unloaded: objects/object_link_boy/gLinkAdultDefaultGauntlet1Tex
 
 Resource Unloaded: objects/object_link_boy/object_link_boyTLUT_00CD48
 
-Resource Unloaded: audio/samples/Adult Link - Attack 4_META
-
 Resource Unloaded: objects/object_link_boy/object_link_boyVtx_0107D8
 
 Resource Unloaded: objects/object_link_boy/gLinkAdultDefaultGauntlet2Tex
-
-Resource Unloaded: misc/link_animetion/gPlayerAnimData_093450
 
 Resource Unloaded: objects/object_link_boy/gLinkAdultHandTex
 
@@ -1570,17 +1203,9 @@ Resource Unloaded: objects/gameplay_keep/gHilite1Tex
 
 Resource Unloaded: objects/object_link_boy/object_link_boyVtx_00FAE8
 
-Resource Unloaded: objects/object_link_boy/gLinkAdultRightHandClosedNearDL
-
 Resource Unloaded: objects/object_link_boy/gLinkAdultSheathTex
 
-Resource Unloaded: misc/link_animetion/gPlayerAnimData_0E8F60
-
-Resource Unloaded: audio/samples/Small Splash_META
-
 Resource Unloaded: objects/object_link_boy/gLinkAdultSheathBandTex
-
-Resource Unloaded: misc/link_animetion/gPlayerAnimData_092DF0
 
 Resource Unloaded: objects/object_link_boy/gLinkAdultSwordGuardTex
 
@@ -1606,13 +1231,9 @@ Resource Unloaded: scenes/shared/test01_scene/test01_room_0DL_005FB0
 
 Resource Unloaded: scenes/shared/test01_scene/test01_room_0Tex_008490
 
-Resource Unloaded: misc/link_animetion/gPlayerAnimData_1B7B40
-
 Resource Unloaded: scenes/shared/test01_scene/test01_room_0Vtx_0028C8
 
 Resource Unloaded: scenes/shared/test01_scene/test01_room_0DL_003628
-
-Resource Unloaded: objects/gameplay_keep/gPlayerAnim_link_fighter_LLside_kiru_end
 
 Resource Unloaded: scenes/shared/test01_scene/test01_room_0Vtx_003438
 
@@ -1642,159 +1263,13 @@ Resource Unloaded: objects/gameplay_keep/gCircleGlowLTex
 
 Resource Unloaded: audio/samples/Step - Ground_META
 
-Resource Unloaded: objects/gameplay_keep/gPlayerAnim_link_fighter_side_walk_long
-
 Resource Unloaded: misc/link_animetion/gPlayerAnimData_1B4080
 
 Resource Unloaded: misc/link_animetion/gPlayerAnimData_1F70F0
 
-Resource Unloaded: misc/link_animetion/gPlayerAnimData_0F8900
-
-Resource Unloaded: objects/gameplay_keep/gPlayerAnim_link_normal_250jump_start
-
-Resource Unloaded: objects/gameplay_keep/gPlayerAnim_link_fighter_backturn_jump
-
-Resource Unloaded: audio/samples/Whish_META
-
-Resource Unloaded: audio/samples/Adult Link - Attack 1_META
-
-Resource Unloaded: objects/object_link_boy/gLinkAdultLeftHandClosedNearDL
-
-Resource Unloaded: audio/samples/Sheathe Sword_META
-
-Resource Unloaded: objects/object_link_boy/object_link_boyVtx_010BC8
-
-Resource Unloaded: objects/object_link_boy/gLinkAdultClosedHandSideTex
-
-Resource Unloaded: audio/samples/Metal Clink_META
-
 Resource Unloaded: objects/object_link_boy/gLinkAdultEyesHalfTex
 
-Resource Unloaded: misc/link_animetion/gPlayerAnimData_16DFF0
-
-Resource Unloaded: objects/gameplay_keep/gCircleShadowDL
-
-Resource Unloaded: misc/link_animetion/gPlayerAnimData_1129F0
-
-Resource Unloaded: objects/gameplay_keep/gCircleShadowTex
-
 Resource Unloaded: objects/object_link_boy/gLinkAdultEyesClosedfTex
-
-Resource Unloaded: misc/link_animetion/gPlayerAnimData_0940E0
-
-Resource Unloaded: misc/link_animetion/gPlayerAnimData_17F650
-
-Resource Unloaded: objects/object_link_boy/gLinkAdultRightHandHoldingBowNearDL
-
-Resource Unloaded: objects/object_link_boy/gLinkAdultBowStringDL
-
-Resource Unloaded: objects/object_link_boy/object_link_boyVtx_0126B8
-
-Resource Unloaded: objects/object_link_boy/object_link_boyVtx_02B0A8
-
-Resource Unloaded: objects/gameplay_keep/gPlayerAnim_link_normal_run_jump
-
-Resource Unloaded: objects/gameplay_keep/gPlayerAnim_link_bow_bow_ready
-
-Resource Unloaded: objects/gameplay_keep/gPlayerAnim_link_bow_bow_wait
-
-Resource Unloaded: objects/gameplay_keep/gPlayerAnim_link_fighter_walk_long
-
-Resource Unloaded: objects/gameplay_keep/gPlayerAnim_link_bow_bow_shoot_end
-
-Resource Unloaded: misc/link_animetion/gPlayerAnimData_126F60
-
-Resource Unloaded: objects/gameplay_keep/gPlayerAnim_link_hammer_long2free
-
-Resource Unloaded: misc/link_animetion/gPlayerAnimData_11AB90
-
-Resource Unloaded: objects/gameplay_keep/gPlayerAnim_link_fighter_wait_long
-
-Resource Unloaded: objects/object_link_boy/gLinkAdultLeftHandHoldingBgsNearDL
-
-Resource Unloaded: audio/samples/Draw Sword_META
-
-Resource Unloaded: objects/object_link_boy/object_link_boyVtx_010398
-
-Resource Unloaded: objects/object_link_boy/object_link_boyVtx_020598
-
-Resource Unloaded: misc/link_animetion/gPlayerAnimData_0E8C30
-
-Resource Unloaded: objects/object_link_boy/gLinkAdultMouth2Tex
-
-Resource Unloaded: audio/samples/Adult Link - Attack 2_META
-
-Resource Unloaded: misc/link_animetion/gPlayerAnimData_073540
-
-Resource Unloaded: objects/gameplay_keep/gPlayerAnim_link_anchor_waitR2defense_long
-
-Resource Unloaded: misc/link_animetion/gPlayerAnimData_16CB70
-
-Resource Unloaded: objects/gameplay_keep/gPlayerAnim_link_normal_defense_wait_free
-
-Resource Unloaded: misc/link_animetion/gPlayerAnimData_16D2D0
-
-Resource Unloaded: objects/gameplay_keep/gPlayerAnim_link_normal_defense_kiru
-
-Resource Unloaded: audio/samples/Adult Link - Attack 3_META
-
-Resource Unloaded: misc/link_animetion/gPlayerAnimData_16C8D0
-
-Resource Unloaded: objects/gameplay_keep/gPlayerAnim_link_normal_defense_end_free
-
-Resource Unloaded: misc/link_animetion/gPlayerAnimData_110210
-
-Resource Unloaded: objects/gameplay_keep/gPlayerAnim_link_fighter_side_walkR_long
-
-Resource Unloaded: misc/link_animetion/gPlayerAnimData_112190
-
-Resource Unloaded: misc/link_animetion/gPlayerAnimData_0F3790
-
-Resource Unloaded: objects/gameplay_keep/gPlayerAnim_link_fighter_Lside_jump
-
-Resource Unloaded: misc/link_animetion/gPlayerAnimData_0F3B40
-
-Resource Unloaded: misc/link_animetion/gPlayerAnimData_113250
-
-Resource Unloaded: misc/link_animetion/gPlayerAnimData_1540C0
-
-Resource Unloaded: objects/gameplay_keep/gPlayerAnim_link_normal_back_walk
-
-Resource Unloaded: misc/link_animetion/gPlayerAnimData_0F57A0
-
-Resource Unloaded: objects/gameplay_keep/gPlayerAnim_link_fighter_Rside_jump
-
-Resource Unloaded: misc/link_animetion/gPlayerAnimData_19D3E0
-
-Resource Unloaded: objects/gameplay_keep/gPlayerAnim_link_normal_landing
-
-Resource Unloaded: misc/link_animetion/gPlayerAnimData_0F5B50
-
-Resource Unloaded: objects/gameplay_keep/gPlayerAnim_link_normal_landing_free
-
-Resource Unloaded: misc/link_animetion/gPlayerAnimData_148040
-
-Resource Unloaded: audio/samples/Adult Link - Hup_META
-
-Resource Unloaded: audio/samples/Adult Link - Gasp 1_META
-
-Resource Unloaded: misc/link_animetion/gPlayerAnimData_1943C0
-
-Resource Unloaded: misc/link_animetion/gPlayerAnimData_196120
-
-Resource Unloaded: objects/gameplay_keep/gPlayerAnim_link_normal_jump_climb_up_free
-
-Resource Unloaded: audio/samples/Adult Link - Climb Edge_META
-
-Resource Unloaded: misc/link_animetion/gPlayerAnimData_192F40
-
-Resource Unloaded: objects/gameplay_keep/gPlayerAnim_link_normal_jump
-
-Resource Unloaded: misc/link_animetion/gPlayerAnimData_19DEE0
-
-Resource Unloaded: misc/link_animetion/gPlayerAnimData_11DA30
-
-Resource Unloaded: objects/gameplay_keep/gPlayerAnim_link_fighter_walk_endL_long
 
 destruct console variables
 destruct config

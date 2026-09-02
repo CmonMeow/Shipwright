@@ -126,8 +126,6 @@ void Play_Destroy(GameState* thisx) {
     func_80110990(play);
     ZeldaArena_Cleanup();
 
-    Fault_RemoveClient(&D_801614B8);
-
     gPlayState = NULL;
 }
 
@@ -247,8 +245,6 @@ void Play_Init(GameState* thisx) {
     // "Zelda Heap"
     osSyncPrintf("ゼルダヒープ %08x-%08x\n", zAllocAligned,
                  (uint8_t*)zAllocAligned + zAllocSize - (int32_t)(zAllocAligned - zAlloc));
-
-    Fault_AddClient(&D_801614B8, ZeldaArena_Display, NULL, NULL);
 
     func_800304DC(play, &play->actorCtx, play->linkActorEntry);
 

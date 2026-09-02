@@ -4,7 +4,6 @@
     <PreferredToolArchitecture>x64</PreferredToolArchitecture>
   </PropertyGroup>
   <ItemGroup Label="ProjectConfigurations">
-    
     <ProjectConfiguration Include="Release|x64">
       <Configuration>Release</Configuration>
       <Platform>x64</Platform>
@@ -20,7 +19,6 @@
     <RepoRoot>$(MSBuildThisFileDirectory)..\..\</RepoRoot>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
-  
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <CharacterSet>Unicode</CharacterSet>
@@ -28,52 +26,57 @@
     <WholeProgramOptimization>true</WholeProgramOptimization>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
-  <ImportGroup Label="ExtensionSettings"></ImportGroup>
-  <ImportGroup Label="PropertySheets"></ImportGroup>
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets">
+  </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup>
     <_ProjectFileVersion>10.0.20506.1</_ProjectFileVersion>
-    
-    
-    
-    
-    
-    
     <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(RepoRoot)bin\</OutDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(RepoRoot)obj\msvc\$(ProjectName)\$(Configuration)\</IntDir>
     <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">GameClient</TargetName>
     <TargetExt Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.exe</TargetExt>
-    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|x64'"></LinkIncremental>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    </LinkIncremental>
     <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</GenerateManifest>
   </PropertyGroup>
-  
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
       <AdditionalIncludeDirectories>$(RepoRoot)src\game\assets;$(RepoRoot)src\game\include;$(RepoRoot)src\game\src;$(RepoRoot)src\game\port;$(RepoRoot)src\game\..\engine\include;$(RepoRoot)src\game\.;$(RepoRoot)src\engine\src;$(RepoRoot)src\engine\src\..\include;$(RepoRoot)third_party\stb;$(RepoRoot)third_party\threadpool\include;$(RepoRoot)third_party\prism;$(RepoRoot)third_party\prism\lib;$(RepoRoot)third_party\prism\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalOptions>%(AdditionalOptions) /external:I "$(RepoRoot)third_party/libsodium/include" /external:I "$(RepoRoot)third_party/opus/include" /external:I "$(RepoRoot)third_party" /external:I "$(RepoRoot)third_party/include" /external:I "$(RepoRoot)third_party/include/opus" /utf-8 /bigobj /FS</AdditionalOptions>
       <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
-      <BufferSecurityCheck></BufferSecurityCheck>
-      <CallingConvention></CallingConvention>
+      <BufferSecurityCheck>
+      </BufferSecurityCheck>
+      <CallingConvention>
+      </CallingConvention>
       <ConformanceMode>true</ConformanceMode>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <ExceptionHandling>Sync</ExceptionHandling>
       <ExternalWarningLevel>TurnOffAllWarnings</ExternalWarningLevel>
-      <FloatingPointModel></FloatingPointModel>
-      <ForceConformanceInForLoopScope></ForceConformanceInForLoopScope>
+      <FloatingPointModel>
+      </FloatingPointModel>
+      <ForceConformanceInForLoopScope>
+      </ForceConformanceInForLoopScope>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <LanguageStandard_C>stdclatest</LanguageStandard_C>
-      <MinimalRebuild></MinimalRebuild>
+      <MinimalRebuild>
+      </MinimalRebuild>
       <MultiProcessorCompilation>false</MultiProcessorCompilation>
-      <Optimization></Optimization>
+      <Optimization>
+      </Optimization>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
-      <RemoveUnreferencedCodeData></RemoveUnreferencedCodeData>
+      <RemoveUnreferencedCodeData>
+      </RemoveUnreferencedCodeData>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <SDLCheck>false</SDLCheck>
-      <SupportJustMyCode></SupportJustMyCode>
-      <TreatWChar_tAsBuiltInType></TreatWChar_tAsBuiltInType>
+      <SupportJustMyCode>
+      </SupportJustMyCode>
+      <TreatWChar_tAsBuiltInType>
+      </TreatWChar_tAsBuiltInType>
       <UseFullPaths>false</UseFullPaths>
       <UseStandardPreprocessor>true</UseStandardPreprocessor>
       <WarningLevel>Level3</WarningLevel>
@@ -96,17 +99,21 @@
     <Link>
       <AdditionalDependencies>$(RepoRoot)obj\lib\$(Configuration)\network.lib;$(RepoRoot)obj\lib\$(Configuration)\runtime.lib;glu32.lib;winmm.lib;imm32.lib;version.lib;setupapi.lib;$(RepoRoot)third_party\opus\lib\x64\Release\opus.lib;Ws2_32.lib;$(RepoRoot)third_party\libsodium\lib\x64\Release\libsodium.lib;$(RepoRoot)third_party\lib\Release\zip.lib;$(RepoRoot)third_party\lib\Release\bz2.lib;$(RepoRoot)third_party\lib\Release\zs.lib;$(RepoRoot)third_party\lib\Release\zs.lib;$(RepoRoot)third_party\lib\Release\bz2.lib;wininet.lib;$(RepoRoot)obj\lib\$(Configuration)\stb.lib;opengl32.lib;$(RepoRoot)obj\lib\$(Configuration)\libgfxd.lib;$(RepoRoot)third_party\lib\Release\zip.lib;advapi32.lib;bcrypt.lib;$(RepoRoot)third_party\lib\Release\bz2.lib;$(RepoRoot)third_party\lib\Release\zs.lib;$(RepoRoot)third_party\lib\Release\fmt.lib;$(RepoRoot)obj\lib\$(Configuration)\prism.lib;$(RepoRoot)third_party\lib\Release\spdlog.lib;$(RepoRoot)third_party\lib\Release\fmt.lib;$(RepoRoot)third_party\opus\lib\x64\Release\opus.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib</AdditionalDependencies>
       <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <DataExecutionPrevention></DataExecutionPrevention>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <ForceFileOutput>MultiplyDefinedSymbolOnly</ForceFileOutput>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
-      <ImageHasSafeExceptionHandlers></ImageHasSafeExceptionHandlers>
+      <ImageHasSafeExceptionHandlers>
+      </ImageHasSafeExceptionHandlers>
       <ImportLibrary>$(RepoRoot)obj\lib\$(Configuration)\$(TargetName).lib</ImportLibrary>
-      <LinkErrorReporting></LinkErrorReporting>
+      <LinkErrorReporting>
+      </LinkErrorReporting>
       <OptimizeReferences>true</OptimizeReferences>
       <ProgramDataBaseFile>$(RepoRoot)bin/GameClient.pdb</ProgramDataBaseFile>
-      <RandomizedBaseAddress></RandomizedBaseAddress>
+      <RandomizedBaseAddress>
+      </RandomizedBaseAddress>
       <SubSystem>Windows</SubSystem>
     </Link>
   </ItemDefinitionGroup>
@@ -121,7 +128,8 @@
     <ClInclude Include="$(RepoRoot)src\game\include\gfx.h" />
     <ClInclude Include="$(RepoRoot)src\game\include\global.h" />
     <ClInclude Include="$(RepoRoot)src\game\include\ichain.h" />
-    <None Include="$(RepoRoot)src\game\include\macro.inc"></None>
+    <None Include="$(RepoRoot)src\game\include\macro.inc">
+    </None>
     <ClInclude Include="$(RepoRoot)src\game\include\macros.h" />
     <ClInclude Include="$(RepoRoot)src\game\include\message_data_fmt.h" />
     <ClInclude Include="$(RepoRoot)src\game\include\message_data_textbox_types.h" />
@@ -224,7 +232,6 @@
     <ClInclude Include="$(RepoRoot)src\game\port\Network\NativeRemotePlayerRenderer.h" />
     <ClInclude Include="$(RepoRoot)src\game\port\OTRAudio.h" />
     <ClCompile Include="$(RepoRoot)src\game\port\OTRGlobals.cpp">
-      
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /utf-8</AdditionalOptions>
     </ClCompile>
     <ClInclude Include="$(RepoRoot)src\game\port\OTRGlobals.h" />
@@ -363,559 +370,417 @@
     <ClInclude Include="$(RepoRoot)src\game\port\util.h" />
     <ClCompile Include="$(RepoRoot)src\game\port\z_play_otr.cpp" />
     <ClCompile Include="$(RepoRoot)src\game\port\z_scene_otr.cpp" />
-    <ClCompile Include="$(RepoRoot)src\game\src\boot\boot_main.c">
-      
-      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
-    </ClCompile>
     <ClCompile Include="$(RepoRoot)src\game\src\boot\build.c">
-      
-      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
-    </ClCompile>
-    <ClCompile Include="$(RepoRoot)src\game\src\boot\idle.c">
-      
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
     </ClCompile>
     <ClCompile Include="$(RepoRoot)src\game\src\boot\logutils.c">
-      
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
     </ClCompile>
     <ClCompile Include="$(RepoRoot)src\game\src\boot\stackcheck.c">
-      
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
     </ClCompile>
     <ClCompile Include="$(RepoRoot)src\game\src\boot\viconfig.c">
-      
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
     </ClCompile>
     <ClCompile Include="$(RepoRoot)src\game\src\boot\yaz0.c">
-      
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
     </ClCompile>
     <ClCompile Include="$(RepoRoot)src\game\src\boot\z_locale.c">
-      
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
     </ClCompile>
     <ClCompile Include="$(RepoRoot)src\game\src\boot\z_std_dma.c">
-      
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
     </ClCompile>
     <ClCompile Include="$(RepoRoot)src\game\src\buffers\gfxbuffers.c">
-      
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
     </ClCompile>
     <ClCompile Include="$(RepoRoot)src\game\src\buffers\heaps.c">
-      
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
     </ClCompile>
     <ClCompile Include="$(RepoRoot)src\game\src\buffers\zbuffer.c">
-      
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
     </ClCompile>
     <ClCompile Include="$(RepoRoot)src\game\src\code\TwoHeadArena.c">
-      
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
     </ClCompile>
     <ClCompile Include="$(RepoRoot)src\game\src\code\__osMalloc.c">
-      
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
     </ClCompile>
     <ClCompile Include="$(RepoRoot)src\game\src\code\audioMgr.c">
-      
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
     </ClCompile>
     <ClCompile Include="$(RepoRoot)src\game\src\code\audio_data.c">
-      
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
     </ClCompile>
     <ClCompile Include="$(RepoRoot)src\game\src\code\audio_effects.c">
-      
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
     </ClCompile>
     <ClCompile Include="$(RepoRoot)src\game\src\code\audio_heap.c">
-      
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
     </ClCompile>
     <ClCompile Include="$(RepoRoot)src\game\src\code\audio_init_params.c">
-      
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
     </ClCompile>
     <ClCompile Include="$(RepoRoot)src\game\src\code\audio_load.c">
-      
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
     </ClCompile>
     <ClCompile Include="$(RepoRoot)src\game\src\code\audio_playback.c">
-      
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
     </ClCompile>
     <ClCompile Include="$(RepoRoot)src\game\src\code\audio_seqplayer.c">
-      
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
     </ClCompile>
     <ClCompile Include="$(RepoRoot)src\game\src\code\audio_sound_params.c">
-      
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
     </ClCompile>
     <ClCompile Include="$(RepoRoot)src\game\src\code\audio_synthesis.c">
-      
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
     </ClCompile>
     <ClCompile Include="$(RepoRoot)src\game\src\code\code_800430A0.c">
-      
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
     </ClCompile>
     <ClCompile Include="$(RepoRoot)src\game\src\code\code_8006C3A0.c">
-      
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
     </ClCompile>
     <ClCompile Include="$(RepoRoot)src\game\src\code\code_8006C510.c">
-      
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
     </ClCompile>
     <ClCompile Include="$(RepoRoot)src\game\src\code\code_800A9F30.c">
-      
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
     </ClCompile>
     <ClCompile Include="$(RepoRoot)src\game\src\code\code_800BB0A0.c">
-      
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
     </ClCompile>
     <ClCompile Include="$(RepoRoot)src\game\src\code\code_800C3C20.c">
-      
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
     </ClCompile>
     <ClCompile Include="$(RepoRoot)src\game\src\code\code_800D2E30.c">
-      
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
     </ClCompile>
     <ClCompile Include="$(RepoRoot)src\game\src\code\code_800D31A0.c">
-      
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
     </ClCompile>
     <ClCompile Include="$(RepoRoot)src\game\src\code\code_800E4FE0.c">
-      
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
     </ClCompile>
     <ClCompile Include="$(RepoRoot)src\game\src\code\code_800E6840.c">
-      
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
     </ClCompile>
     <ClCompile Include="$(RepoRoot)src\game\src\code\code_800EC960.c">
-      
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
     </ClCompile>
     <ClCompile Include="$(RepoRoot)src\game\src\code\code_800F7260.c">
-      
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
     </ClCompile>
     <ClCompile Include="$(RepoRoot)src\game\src\code\code_800F9280.c">
-      
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
     </ClCompile>
     <ClCompile Include="$(RepoRoot)src\game\src\code\code_800FBCE0.c">
-      
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
     </ClCompile>
     <ClCompile Include="$(RepoRoot)src\game\src\code\code_800FC620.c">
-      
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
     </ClCompile>
     <ClCompile Include="$(RepoRoot)src\game\src\code\code_800FD970.c">
-      
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
     </ClCompile>
     <ClCompile Include="$(RepoRoot)src\game\src\code\code_801067F0.c">
-      
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
     </ClCompile>
     <ClCompile Include="$(RepoRoot)src\game\src\code\code_801068B0.c">
-      
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
     </ClCompile>
     <ClCompile Include="$(RepoRoot)src\game\src\code\debug_malloc.c">
-      
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
     </ClCompile>
     <ClCompile Include="$(RepoRoot)src\game\src\code\fault.c">
-      
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
     </ClCompile>
     <ClCompile Include="$(RepoRoot)src\game\src\code\fault_drawer.c">
-      
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
     </ClCompile>
     <ClCompile Include="$(RepoRoot)src\game\src\code\game.c">
-      
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
     </ClCompile>
     <ClCompile Include="$(RepoRoot)src\game\src\code\gamealloc.c">
-      
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
     </ClCompile>
     <ClCompile Include="$(RepoRoot)src\game\src\code\gfxprint.c">
-      
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
     </ClCompile>
     <ClCompile Include="$(RepoRoot)src\game\src\code\graph.c">
-      
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
     </ClCompile>
     <ClCompile Include="$(RepoRoot)src\game\src\code\irqmgr.c">
-      
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
     </ClCompile>
     <ClCompile Include="$(RepoRoot)src\game\src\code\listalloc.c">
-      
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
     </ClCompile>
     <ClCompile Include="$(RepoRoot)src\game\src\code\loadfragment2.c">
-      
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
     </ClCompile>
     <ClCompile Include="$(RepoRoot)src\game\src\code\logseverity.c">
-      
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
     </ClCompile>
     <ClCompile Include="$(RepoRoot)src\game\src\code\main.c">
-      
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
     </ClCompile>
     <ClCompile Include="$(RepoRoot)src\game\src\code\mtxuty-cvt.c">
-      
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
     </ClCompile>
     <ClCompile Include="$(RepoRoot)src\game\src\code\padmgr.c">
-      
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
     </ClCompile>
     <ClCompile Include="$(RepoRoot)src\game\src\code\padsetup.c">
-      
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
     </ClCompile>
     <ClCompile Include="$(RepoRoot)src\game\src\code\padutils.c">
-      
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
     </ClCompile>
     <ClCompile Include="$(RepoRoot)src\game\src\code\printutils.c">
-      
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
     </ClCompile>
     <ClCompile Include="$(RepoRoot)src\game\src\code\relocation.c">
-      
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
     </ClCompile>
     <ClCompile Include="$(RepoRoot)src\game\src\code\sched.c">
-      
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
     </ClCompile>
     <ClCompile Include="$(RepoRoot)src\game\src\code\shrink_window.c">
-      
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
     </ClCompile>
     <ClCompile Include="$(RepoRoot)src\game\src\code\sleep.c">
-      
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
     </ClCompile>
     <ClCompile Include="$(RepoRoot)src\game\src\code\sys_cfb.c">
-      
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
     </ClCompile>
     <ClCompile Include="$(RepoRoot)src\game\src\code\sys_math3d.c">
-      
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
     </ClCompile>
     <ClCompile Include="$(RepoRoot)src\game\src\code\sys_matrix.c">
-      
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
     </ClCompile>
     <ClCompile Include="$(RepoRoot)src\game\src\code\sys_ucode.c">
-      
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
     </ClCompile>
     <ClCompile Include="$(RepoRoot)src\game\src\code\system_malloc.c">
-      
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
     </ClCompile>
     <ClCompile Include="$(RepoRoot)src\game\src\code\title_setup.c">
-      
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
     </ClCompile>
     <ClCompile Include="$(RepoRoot)src\game\src\code\ucode_disas.c">
-      
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
     </ClCompile>
     <ClCompile Include="$(RepoRoot)src\game\src\code\z_DLF.c">
-      
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
     </ClCompile>
     <ClCompile Include="$(RepoRoot)src\game\src\code\z_actor.c">
-      
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
     </ClCompile>
     <ClCompile Include="$(RepoRoot)src\game\src\code\z_bg_item.c">
-      
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
     </ClCompile>
     <ClCompile Include="$(RepoRoot)src\game\src\code\z_bgcheck.c">
-      
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
     </ClCompile>
     <ClCompile Include="$(RepoRoot)src\game\src\code\z_camera.c">
-      
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
     </ClCompile>
     <ClCompile Include="$(RepoRoot)src\game\src\code\z_cheap_proc.c">
-      
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
     </ClCompile>
     <ClCompile Include="$(RepoRoot)src\game\src\code\z_collision_btltbls.c">
-      
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
     </ClCompile>
     <ClCompile Include="$(RepoRoot)src\game\src\code\z_collision_check.c">
-      
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
     </ClCompile>
     <ClCompile Include="$(RepoRoot)src\game\src\code\z_common_data.c">
-      
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
     </ClCompile>
     <ClCompile Include="$(RepoRoot)src\game\src\code\z_construct.c">
-      
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
     </ClCompile>
     <ClCompile Include="$(RepoRoot)src\game\src\code\z_eff_ss_dead.c">
-      
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
     </ClCompile>
     <ClCompile Include="$(RepoRoot)src\game\src\code\z_effect_soft_sprite.c">
-      
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
     </ClCompile>
     <ClCompile Include="$(RepoRoot)src\game\src\code\z_effect_soft_sprite_dlftbls.c">
-      
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
     </ClCompile>
     <ClCompile Include="$(RepoRoot)src\game\src\code\z_effect_soft_sprite_old_init.c">
-      
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
     </ClCompile>
     <ClCompile Include="$(RepoRoot)src\game\src\code\z_fbdemo_fade.c">
-      
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
     </ClCompile>
     <ClCompile Include="$(RepoRoot)src\game\src\code\z_fcurve_data_skelanime.c">
-      
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
     </ClCompile>
     <ClCompile Include="$(RepoRoot)src\game\src\code\z_frame_advance.c">
-      
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
     </ClCompile>
     <ClCompile Include="$(RepoRoot)src\game\src\code\z_game_dlftbls.c">
-      
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
     </ClCompile>
     <ClCompile Include="$(RepoRoot)src\game\src\code\z_game_over.c">
-      
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
     </ClCompile>
     <ClCompile Include="$(RepoRoot)src\game\src\code\z_inventory.c">
-      
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
     </ClCompile>
     <ClCompile Include="$(RepoRoot)src\game\src\code\z_kankyo.c">
-      
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
     </ClCompile>
     <ClCompile Include="$(RepoRoot)src\game\src\code\z_lib.c">
-      
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
     </ClCompile>
     <ClCompile Include="$(RepoRoot)src\game\src\code\z_lifemeter.c">
-      
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
     </ClCompile>
     <ClCompile Include="$(RepoRoot)src\game\src\code\z_lights.c">
-      
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
     </ClCompile>
     <ClCompile Include="$(RepoRoot)src\game\src\code\z_malloc.c">
-      
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
     </ClCompile>
     <ClCompile Include="$(RepoRoot)src\game\src\code\z_message_stub.c">
-      
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
     </ClCompile>
     <ClCompile Include="$(RepoRoot)src\game\src\code\z_olib.c">
-      
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
     </ClCompile>
     <ClCompile Include="$(RepoRoot)src\game\src\code\z_parameter.c">
-      
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
     </ClCompile>
     <ClCompile Include="$(RepoRoot)src\game\src\code\z_play.c">
-      
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
     </ClCompile>
     <ClCompile Include="$(RepoRoot)src\game\src\code\z_player_action.c">
-      
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
     </ClCompile>
     <ClCompile Include="$(RepoRoot)src\game\src\code\z_player_call.c">
-      
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
     </ClCompile>
     <ClCompile Include="$(RepoRoot)src\game\src\code\z_player_lib.c">
-      
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
     </ClCompile>
     <ClCompile Include="$(RepoRoot)src\game\src\code\z_prenmi.c">
-      
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
     </ClCompile>
     <ClCompile Include="$(RepoRoot)src\game\src\code\z_prenmi_buff.c">
-      
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
     </ClCompile>
     <ClCompile Include="$(RepoRoot)src\game\src\code\z_quake.c">
-      
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
     </ClCompile>
     <ClCompile Include="$(RepoRoot)src\game\src\code\z_rcp.c">
-      
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
     </ClCompile>
     <ClCompile Include="$(RepoRoot)src\game\src\code\z_room.c">
-      
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
     </ClCompile>
     <ClCompile Include="$(RepoRoot)src\game\src\code\z_scene.c">
-      
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
     </ClCompile>
     <ClCompile Include="$(RepoRoot)src\game\src\code\z_scene_table.c">
-      
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
     </ClCompile>
     <ClCompile Include="$(RepoRoot)src\game\src\code\z_skelanime.c">
-      
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
     </ClCompile>
     <ClCompile Include="$(RepoRoot)src\game\src\code\z_skin.c">
-      
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
     </ClCompile>
     <ClCompile Include="$(RepoRoot)src\game\src\code\z_skin_awb.c">
-      
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
     </ClCompile>
     <ClCompile Include="$(RepoRoot)src\game\src\code\z_skin_matrix.c">
-      
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
     </ClCompile>
     <ClCompile Include="$(RepoRoot)src\game\src\code\z_sound_source.c">
-      
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
     </ClCompile>
     <ClCompile Include="$(RepoRoot)src\game\src\code\z_view.c">
-      
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
     </ClCompile>
     <ClCompile Include="$(RepoRoot)src\game\src\code\z_vr_box.c">
-      
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
     </ClCompile>
     <ClCompile Include="$(RepoRoot)src\game\src\code\z_vr_box_draw.c">
-      
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
     </ClCompile>
     <ClCompile Include="$(RepoRoot)src\game\src\libultra\gu\guLookAt.c">
-      
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
     </ClCompile>
     <ClCompile Include="$(RepoRoot)src\game\src\libultra\gu\guLookAtHilite.c">
-      
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
     </ClCompile>
     <ClCompile Include="$(RepoRoot)src\game\src\libultra\gu\guPerspectiveF.c">
-      
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
     </ClCompile>
     <ClCompile Include="$(RepoRoot)src\game\src\libultra\gu\guPosition.c">
-      
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
     </ClCompile>
     <ClCompile Include="$(RepoRoot)src\game\src\libultra\gu\guS2DInitBg.c">
-      
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
     </ClCompile>
     <ClCompile Include="$(RepoRoot)src\game\src\libultra\gu\ortho.c">
-      
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
     </ClCompile>
     <ClCompile Include="$(RepoRoot)src\game\src\libultra\gu\rotate.c">
-      
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
     </ClCompile>
     <ClCompile Include="$(RepoRoot)src\game\src\overlays\actors\ovl_En_Arrow\z_en_arrow.c">
-      
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
     </ClCompile>
     <ClInclude Include="$(RepoRoot)src\game\src\overlays\actors\ovl_En_Arrow\z_en_arrow.h" />
     <ClCompile Include="$(RepoRoot)src\game\src\overlays\actors\ovl_En_Fish\z_en_fish.c">
-      
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
     </ClCompile>
     <ClInclude Include="$(RepoRoot)src\game\src\overlays\actors\ovl_En_Fish\z_en_fish.h" />
     <ClCompile Include="$(RepoRoot)src\game\src\overlays\actors\ovl_Fishing\z_fishing.c">
-      
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
     </ClCompile>
     <ClInclude Include="$(RepoRoot)src\game\src\overlays\actors\ovl_Fishing\z_fishing.h" />
     <ClCompile Include="$(RepoRoot)src\game\src\overlays\actors\ovl_player_actor\z_player.c">
-      
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
     </ClCompile>
     <ClCompile Include="$(RepoRoot)src\game\src\overlays\effects\ovl_Effect_Ss_Bubble\z_eff_ss_bubble.c">
-      
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
     </ClCompile>
     <ClInclude Include="$(RepoRoot)src\game\src\overlays\effects\ovl_Effect_Ss_Bubble\z_eff_ss_bubble.h" />
     <ClCompile Include="$(RepoRoot)src\game\src\overlays\effects\ovl_Effect_Ss_Dust\z_eff_ss_dust.c">
-      
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
     </ClCompile>
     <ClInclude Include="$(RepoRoot)src\game\src\overlays\effects\ovl_Effect_Ss_Dust\z_eff_ss_dust.h" />
     <ClCompile Include="$(RepoRoot)src\game\src\overlays\effects\ovl_Effect_Ss_G_Ripple\z_eff_ss_g_ripple.c">
-      
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
     </ClCompile>
     <ClInclude Include="$(RepoRoot)src\game\src\overlays\effects\ovl_Effect_Ss_G_Ripple\z_eff_ss_g_ripple.h" />
     <ClCompile Include="$(RepoRoot)src\game\src\overlays\effects\ovl_Effect_Ss_G_Splash\z_eff_ss_g_splash.c">
-      
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
     </ClCompile>
     <ClInclude Include="$(RepoRoot)src\game\src\overlays\effects\ovl_Effect_Ss_G_Splash\z_eff_ss_g_splash.h" />
     <ClCompile Include="$(RepoRoot)src\game\src\overlays\effects\ovl_Effect_Ss_HitMark\z_eff_ss_hitmark.c">
-      
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
     </ClCompile>
     <ClInclude Include="$(RepoRoot)src\game\src\overlays\effects\ovl_Effect_Ss_HitMark\z_eff_ss_hitmark.h" />
     <ClCompile Include="$(RepoRoot)src\game\src\overlays\effects\ovl_Effect_Ss_Sibuki\z_eff_ss_sibuki.c">
-      
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
     </ClCompile>
     <ClInclude Include="$(RepoRoot)src\game\src\overlays\effects\ovl_Effect_Ss_Sibuki\z_eff_ss_sibuki.h" />
     <ClCompile Include="$(RepoRoot)src\game\src\overlays\effects\ovl_Effect_Ss_Sibuki2\z_eff_ss_sibuki2.c">
-      
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
     </ClCompile>
     <ClInclude Include="$(RepoRoot)src\game\src\overlays\effects\ovl_Effect_Ss_Sibuki2\z_eff_ss_sibuki2.h" />
     <ResourceCompile Include="$(RepoRoot)src\game\Resource.rc" />
     <ClCompile Include="$(RepoRoot)src\game\src\libultra\libc\sprintf.c">
-      
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
     </ClCompile>
   </ItemGroup>
@@ -942,7 +807,8 @@
       <LinkLibraryDependencies>true</LinkLibraryDependencies>
     </ProjectReference>
   </ItemGroup>
-  <ImportGroup Label="ExtensionTargets"></ImportGroup>
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
   <Target Name="CopyGameArchive" AfterTargets="Build">
     <Copy SourceFiles="$(RepoRoot)oot.o2r" DestinationFolder="$(RepoRoot)bin" SkipUnchangedFiles="true" />
   </Target>

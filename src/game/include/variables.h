@@ -17,14 +17,8 @@ extern "C"
 
 	extern uint8_t D_80009320[];
 	extern uint8_t D_800093F0[];
-	extern int8_t D_80009430;
 	extern uint32_t D_80009460;
 	extern uint32_t gDmaMgrDmaBuffSize;
-	extern volatile uint8_t gViConfigUseDefault;
-	extern uint8_t gViConfigAdditionalScanLines;
-	extern uint32_t gViConfigFeatures;
-	extern float gViConfigXScale;
-	extern float gViConfigYScale;
 	extern OSPiHandle* gCartHandle;
 	extern uint32_t __osPiAccessQueueEnabled;
 	extern OSViMode osViModePalLan1;
@@ -55,9 +49,6 @@ extern "C"
 	extern uint8_t gBuildTeam[];
 	extern uint8_t gBuildDate[];
 	extern uint8_t gBuildMakeOption[];
-	extern OSMesgQueue gPiMgrCmdQ;
-	extern OSViMode gViConfigMode;
-	extern uint8_t D_80013960;
 	extern OSMesgQueue __osPiAccessQueue;
 	extern OSPiHandle __Dom1SpeedParam;
 	extern OSPiHandle __Dom2SpeedParam;
@@ -182,7 +173,6 @@ extern "C"
 	extern SchedContext gSchedContext;
 	extern PadMgr gPadMgr;
 	extern uintptr_t gSegments[NUM_SEGMENTS];
-	extern FaultThreadStruct gFaultStruct;
 
 	extern ActiveSound gActiveSounds[7][MAX_CHANNELS_PER_BANK]; // total size = 0xA8
 	extern uint8_t gSoundBankMuted[];

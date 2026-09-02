@@ -292,13 +292,7 @@
     <ClCompile Include="$(RepoRoot)src\game\port\z_scene_otr.cpp">
       <Filter>soh</Filter>
     </ClCompile>
-    <ClCompile Include="$(RepoRoot)src\game\src\boot\boot_main.c">
-      <Filter>src\boot</Filter>
-    </ClCompile>
     <ClCompile Include="$(RepoRoot)src\game\src\boot\build.c">
-      <Filter>src\boot</Filter>
-    </ClCompile>
-    <ClCompile Include="$(RepoRoot)src\game\src\boot\idle.c">
       <Filter>src\boot</Filter>
     </ClCompile>
     <ClCompile Include="$(RepoRoot)src\game\src\boot\logutils.c">
@@ -700,6 +694,9 @@
     <ClCompile Include="$(RepoRoot)src\game\src\libultra\libc\sprintf.c">
       <Filter>src\libultra</Filter>
     </ClCompile>
+    <ClCompile Include="$(RepoRoot)src\game\port\Network\NativeProjectileRenderer.cpp" />
+    <ClCompile Include="$(RepoRoot)src\game\port\Network\NativePlayerPresentationState.cpp" />
+    <ClCompile Include="$(RepoRoot)src\game\port\Network\NativeRemotePlayerRenderer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="$(RepoRoot)src\game\resource.h">
@@ -1167,8 +1164,12 @@
     <ClInclude Include="$(RepoRoot)src\game\src\overlays\effects\ovl_Effect_Ss_Sibuki2\z_eff_ss_sibuki2.h">
       <Filter>src\overlays\effects</Filter>
     </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\game\port\Network\NativeProjectileRenderer.h" />
+    <ClInclude Include="$(RepoRoot)src\game\port\Network\NativePlayerPresentationState.h" />
+    <ClInclude Include="$(RepoRoot)src\game\port\Network\NativeRemotePlayerRenderer.h" />
   </ItemGroup>
-  <ItemGroup></ItemGroup>
+  <ItemGroup>
+  </ItemGroup>
   <ItemGroup>
   </ItemGroup>
   <ItemGroup>

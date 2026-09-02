@@ -2169,10 +2169,7 @@ void Actor_FaultPrint(Actor* actor, char* command) {
 }
 
 void Actor_Draw(PlayState* play, Actor* actor) {
-    FaultClient faultClient;
-
-    Fault_AddClient(&faultClient, Actor_FaultPrint, actor, "Actor_draw");
-
+    
     FrameInterpolation_RecordOpenChild(actor, 0);
     OPEN_DISPS(play->state.gfxCtx);
 
@@ -2233,8 +2230,6 @@ void Actor_Draw(PlayState* play, Actor* actor) {
 
     CLOSE_DISPS(play->state.gfxCtx);
     FrameInterpolation_RecordCloseChild();
-
-    Fault_RemoveClient(&faultClient);
 }
 
 void func_80030ED8(Actor* actor) {

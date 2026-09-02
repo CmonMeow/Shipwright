@@ -28,8 +28,7 @@ void Sched_SwapFrameBuffer(CfbInfo* cfbInfo) {
                          (cfbInfo != NULL ? cfbInfo->swapBuffer : NULL));
         }
         uint16_t width = cfbInfo->viMode != NULL ? cfbInfo->viMode->comRegs.width : (uint32_t)gScreenWidth;
-        Fault_SetFB(cfbInfo->swapBuffer, width, 0x10);
-
+        
         if (HREG(80) == 0xD && HREG(95) != 0xD) {
             HREG(81) = 0;
             HREG(82) = 0;
@@ -46,12 +45,6 @@ void Sched_SwapFrameBuffer(CfbInfo* cfbInfo) {
             HREG(93) = 0;
             HREG(94) = 0;
             HREG(95) = 0xD;
-        }
-        if (HREG(80) == 0xD && HREG(81) == 2) {
-            osViSetSpecialFeatures(HREG(82) != 0 ? OS_VI_GAMMA_ON : OS_VI_GAMMA_OFF);
-            osViSetSpecialFeatures(HREG(83) != 0 ? OS_VI_DITHER_FILTER_ON : OS_VI_DITHER_FILTER_OFF);
-            osViSetSpecialFeatures(HREG(84) != 0 ? OS_VI_GAMMA_DITHER_ON : OS_VI_GAMMA_DITHER_OFF);
-            osViSetSpecialFeatures(HREG(85) != 0 ? OS_VI_DIVOT_ON : OS_VI_DIVOT_OFF);
         }
     }
     cfbInfo->unk_10 = 0;
