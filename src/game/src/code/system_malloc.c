@@ -95,11 +95,6 @@ void SystemArena_Check(void) {
     __osCheckArena(&gSystemArena);
 }
 
-void SystemArena_Init(void* start, size_t size) {
-    gSystemArenaLogSeverity = LOG_SEVERITY_NOLOG;
-    __osMallocInit(&gSystemArena, start, size);
-}
-
 void SystemArena_Cleanup(void) {
     gSystemArenaLogSeverity = LOG_SEVERITY_NOLOG;
     __osMallocCleanup(&gSystemArena);

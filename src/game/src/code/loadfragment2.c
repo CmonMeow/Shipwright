@@ -9,9 +9,5 @@ void* Overlay_AllocateAndLoad(uintptr_t vRomStart, uintptr_t vRomEnd, void* vRam
                      (uintptr_t)vRamStart - (uintptr_t)allocatedVRamAddr);
     }
 
-    if (allocatedVRamAddr != NULL) {
-        Overlay_Load(vRomStart, vRomEnd, vRamStart, vRamEnd, allocatedVRamAddr);
-    }
-
     return allocatedVRamAddr;
 }

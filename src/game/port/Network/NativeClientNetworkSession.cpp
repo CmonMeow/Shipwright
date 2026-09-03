@@ -187,7 +187,7 @@ void RegisterActors() {
     gNetworkGame.projectileRenderer.RegisterActorType();
 }
 
-void Initialize(int argc, char* argv[]) {
+void Initialize() {
     if (gNetworkGame.runtime) {
         return;
     }
@@ -243,33 +243,7 @@ void Initialize(int argc, char* argv[]) {
         ReadNativeFishPresentation, &gNetworkGame.remoteFish
     };
     FishPresentation_SetSink(&fishPresentationSink);
-    for (int i = 1; i < argc; ++i) {
-        const std::string argument = argv[i] ? argv[i] : "";
-        if (argument == "--host") {
-            uint16_t port = DEFAULT_NETWORK_PORT;
-            if (i + 1 < argc && argv[i + 1] && argv[i + 1][0] != '-') {
-                const long parsed = std::strtol(argv[++i], nullptr, 10);
-                if (parsed > 0 && parsed <= 49151) {
-                    port = static_cast<uint16_t>(parsed);
-                }
-            }
-            if (!gNetworkGame.runtime->Host(port)) {
-                Error("Game network: failed to host on port %u", static_cast<unsigned>(port));
-            } else {
-                Error("Game network: hosting secure session on port %u", static_cast<unsigned>(port));
-            }
-            break;
-        }
-        if ((argument == "--join" || argument == "--connect") && i + 1 < argc && argv[i + 1]) {
-            const std::string address = argv[++i];
-            if (!gNetworkGame.runtime->Connect(address)) {
-                Error("Game network: failed to connect to %s", address.c_str());
-            } else {
-                Error("Game network: connecting securely to %s", address.c_str());
-            }
-            break;
-        }
-    }
+    
     Engine::Overlay::SetMoveLoopCallback(PumpMoveLoop);
 }
 

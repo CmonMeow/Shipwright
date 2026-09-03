@@ -4,9 +4,6 @@
     <ClCompile Include="$(RepoRoot)src\game\port\ActorDB.cpp">
       <Filter>soh</Filter>
     </ClCompile>
-    <ClCompile Include="$(RepoRoot)src\game\port\CrashHandlerExt.cpp">
-      <Filter>soh</Filter>
-    </ClCompile>
     <ClCompile Include="$(RepoRoot)src\game\port\Enhancements\debugger\colViewer.cpp">
       <Filter>soh\Enhancements\debugger</Filter>
     </ClCompile>
@@ -292,9 +289,6 @@
     <ClCompile Include="$(RepoRoot)src\game\port\z_scene_otr.cpp">
       <Filter>soh</Filter>
     </ClCompile>
-    <ClCompile Include="$(RepoRoot)src\game\src\boot\build.c">
-      <Filter>src\boot</Filter>
-    </ClCompile>
     <ClCompile Include="$(RepoRoot)src\game\src\boot\logutils.c">
       <Filter>src\boot</Filter>
     </ClCompile>
@@ -395,12 +389,6 @@
       <Filter>src\code</Filter>
     </ClCompile>
     <ClCompile Include="$(RepoRoot)src\game\src\code\code_800F9280.c">
-      <Filter>src\code</Filter>
-    </ClCompile>
-    <ClCompile Include="$(RepoRoot)src\game\src\code\code_800FBCE0.c">
-      <Filter>src\code</Filter>
-    </ClCompile>
-    <ClCompile Include="$(RepoRoot)src\game\src\code\code_800FC620.c">
       <Filter>src\code</Filter>
     </ClCompile>
     <ClCompile Include="$(RepoRoot)src\game\src\code\code_800FD970.c">
@@ -829,9 +817,6 @@
       <Filter>include</Filter>
     </ClInclude>
     <ClInclude Include="$(RepoRoot)src\game\port\ActorDB.h">
-      <Filter>soh</Filter>
-    </ClInclude>
-    <ClInclude Include="$(RepoRoot)src\game\port\CrashHandlerExt.h">
       <Filter>soh</Filter>
     </ClInclude>
     <ClInclude Include="$(RepoRoot)src\game\port\Enhancements\debugger\colViewer.h">

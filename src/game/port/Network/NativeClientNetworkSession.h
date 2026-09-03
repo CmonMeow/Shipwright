@@ -5,7 +5,7 @@ struct PlayState;
 namespace SoH::Network::NativeClientNetworkSession {
 
 void RegisterActors();
-void Initialize(int argc, char* argv[]);
+void Initialize();
 void Shutdown();
 void UpdateTransport();
 void UpdateGameplay(PlayState* play);

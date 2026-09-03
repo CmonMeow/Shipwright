@@ -34,7 +34,7 @@ class OTRGlobals {
 #endif
 
 #ifndef __cplusplus
-void InitOTR(int argc, char* argv[]);
+void InitOTR();
 void DeinitOTR(void);
 void OTRAudio_Init();
 void InitAudio();

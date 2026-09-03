@@ -90,15 +90,7 @@ int main(int argc, char** argv) {
     SetConsoleCtrlHandler(ConsoleHandler, TRUE);
 
     uint16_t port = DEFAULT_NETWORK_PORT;
-    for (int index = 1; index < argc; ++index) {
-        const std::string argument = argv[index] ? argv[index] : "";
-        if ((argument == "--port" || argument == "-p") && index + 1 < argc) {
-            const long parsed = std::strtol(argv[++index], nullptr, 10);
-            if (parsed > 0 && parsed <= 49151) {
-                port = static_cast<uint16_t>(parsed);
-            }
-        }
-    }
+    
 
     SoH::Network::NetworkRuntime network;
     if (!network.Host(port, "Game Dedicated Server")) {

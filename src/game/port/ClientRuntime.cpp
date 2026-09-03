@@ -6,8 +6,8 @@ extern "C" void ClientRuntime_RegisterActors(void) {
     SoH::Network::NativeClientNetworkSession::RegisterActors();
 }
 
-extern "C" void ClientRuntime_Initialize(int argc, char* argv[]) {
-    SoH::Network::NativeClientNetworkSession::Initialize(argc, argv);
+extern "C" void ClientRuntime_Initialize() {
+    SoH::Network::NativeClientNetworkSession::Initialize();
 }
 
 extern "C" void ClientRuntime_Shutdown(void) {

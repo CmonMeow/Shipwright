@@ -72,7 +72,10 @@ void Sched_HandleReset(SchedContext* sc) {
                      OS_CYCLES_TO_USEC(now - sRSPAudioStartTime));
         } else if (OS_CYCLES_TO_USEC(now - sRSPGFXStartTime) > 1000000 ||
                    OS_CYCLES_TO_USEC(now - sRDPStartTime) > 1000000) {
-            func_800FBFD8();
+            
+            osDpSetStatus(DPC_SET_FREEZE | DPC_SET_FLUSH);
+            __osSpSetStatus(SP_SET_HALT | SP_SET_SIG2 | SP_CLR_INTR_BREAK);
+
             if (sc->curRSPTask != NULL) {
                 LOG_TIME("(((uint64_t)(now - graph_rsp_start_time)*(1000000LL/15625LL))/((62500000LL*3/4)/15625LL))",
                          OS_CYCLES_TO_USEC(now - sRSPGFXStartTime));

@@ -55,9 +55,6 @@
     <ClCompile Include="$(RepoRoot)src\engine\src\runtime\bridge\consolevariablebridge.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(RepoRoot)src\engine\src\runtime\bridge\crashhandlerbridge.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="$(RepoRoot)src\engine\src\runtime\bridge\gfxbridge.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -167,9 +164,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="$(RepoRoot)src\engine\src\engine\resource\ResourceFactoryBinary.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="$(RepoRoot)src\engine\src\engine\resource\ResourceFactoryXML.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="$(RepoRoot)src\engine\src\engine\resource\ResourceLoader.cpp">

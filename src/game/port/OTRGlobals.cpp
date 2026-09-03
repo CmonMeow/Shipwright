@@ -100,8 +100,6 @@ typedef struct {
 } OTRVersion;
 
 std::shared_ptr<Fast::Fast3dWindow> sohFast3dWindow;
-static OTRVersion DetectOTRVersion(std::string path);
-static bool VerifyArchiveVersion(OTRVersion version);
 std::string gameArchivePath = "";
 static bool gameArchiveVersionMatch = false;
 
@@ -110,10 +108,6 @@ OTRGlobals::OTRGlobals() {
     context = Engine::Context::CreateUninitializedInstance(windowTitle, appShortName, "settings.json");
 
     gameArchivePath = Engine::Context::LocateFileAcrossAppDirs("oot.o2r", appShortName);
-    OTRVersion gameArchiveVersion = DetectOTRVersion("oot.o2r");
-    gameArchiveVersionMatch = gameArchiveVersion.major == gBuildVersionMajor &&
-                              gameArchiveVersion.minor == gBuildVersionMinor &&
-                              gameArchiveVersion.patch == gBuildVersionPatch;
 
     context->InitConfiguration();
     context->InitConsoleVariables();
@@ -126,7 +120,7 @@ OTRGlobals::OTRGlobals() {
 }
 
 void OTRGlobals::RunExtract() {
-    if (gameArchiveVersionMatch && std::filesystem::exists(gameArchivePath)) {
+    if (std::filesystem::exists(gameArchivePath)) {
         return;
     }
 
@@ -168,9 +162,6 @@ void OTRGlobals::Initialize() {
     context->GetWindow()->SetForceCursorVisibility(CVarGetInteger(CVAR_SETTING("CursorVisibility"), 0));
 
     context->InitAudio({ .SampleRate = 32000, .SampleLength = 1024, .DesiredBuffered = 1680 });
-
-    WriteLog("Starting Ocarina of Time version {} (Branch: {} | Commit: {})", (char*)gBuildVersion,
-                (char*)gGitBranch, (char*)gGitCommitHash);
 
     auto loader = context->GetResourceManager()->GetResourceLoader();
     loader->RegisterResourceFactory(std::make_shared<Fast::ResourceFactoryBinaryTextureV0>(), RESOURCE_FORMAT_BINARY,
@@ -321,55 +312,6 @@ extern "C" void OTRAudio_Exit() {
 
     // Wait until the audio thread quit
     audio.thread.join();
-#if 0
-    for (size_t i = 0; i < sequenceMapSize; i++) {
-        free(sequenceMap[i]);
-    }
-    free(sequenceMap);
-
-    for (size_t i = 0; i < fontMapSize; i++) {
-        free(fontMap[i]);
-    }
-    free(fontMap);
-    free(gAudioContext.seqLoadStatus);
-    free(gAudioContext.fontLoadStatus);
-#endif
-}
-
-// Read the port version from an OTR file
-OTRVersion ReadPortVersionFromOTR(std::string otrPath) {
-    OTRVersion version = {};
-
-    // Use a temporary archive instance to load the otr and read the version file
-    auto archive = std::make_shared<Engine::O2rArchive>(otrPath);
-    if (archive->Open()) {
-        auto t = archive->LoadFile("portVersion");
-        if (t != nullptr && t->IsLoaded) {
-            auto stream = std::make_shared<Engine::MemoryStream>(t->Buffer->data(), t->Buffer->size());
-            auto reader = std::make_shared<Engine::BinaryReader>(stream);
-            Engine::Endianness endianness = (Engine::Endianness)reader->ReadUByte();
-            reader->SetEndianness(endianness);
-            version.major = reader->ReadUInt16();
-            version.minor = reader->ReadUInt16();
-            version.patch = reader->ReadUInt16();
-        }
-    }
-
-    return version;
-}
-
-// Checks the program version stored in the otr and compares the major value to soh
-// For Windows/Mac/Linux if the version doesn't match, offer to
-OTRVersion DetectOTRVersion(std::string fileName) {
-    bool isOtrOld = false;
-    std::string otrPath = Engine::Context::LocateFileAcrossAppDirs(fileName, appShortName);
-
-    // Doesn't exist so nothing to do here
-    if (!std::filesystem::exists(otrPath)) {
-        return { INT16_MAX, INT16_MAX, INT16_MAX };
-    }
-
-    return ReadPortVersionFromOTR(otrPath);
 }
 
 extern "C" void Messagebox_ShowErrorBox(char* title, char* body) {
@@ -380,11 +322,7 @@ extern "C" void Messagebox_ShowErrorBox(char* title, char* body) {
 #endif
 }
 
-bool VerifyArchiveVersion(OTRVersion version) {
-    return version.major != INT16_MAX && version.major != gBuildVersionMajor;
-}
-
-extern "C" void InitOTR(int argc, char* argv[]) {
+extern "C" void InitOTR() {
     OTRGlobals::Instance = new OTRGlobals();
     OTRGlobals::Instance->RunExtract();
 
@@ -393,7 +331,7 @@ extern "C" void InitOTR(int argc, char* argv[]) {
     ActorDB::Instance = new ActorDB();
     OTRAudio_Init();
     ClientRuntime_RegisterActors();
-    ClientRuntime_Initialize(argc, argv);
+    ClientRuntime_Initialize();
     Engine::Context::GetInstance()->GetFileDropMgr()->RegisterDropHandler(SoH_HandleConfigDrop);
 
     const uint64_t seedTime = static_cast<uint64_t>(

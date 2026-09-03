@@ -1376,7 +1376,6 @@ ListAlloc* ListAlloc_Init(ListAlloc* this);
 void* ListAlloc_Alloc(ListAlloc* this, size_t size);
 void ListAlloc_Free(ListAlloc* this, void* data);
 void ListAlloc_FreeAll(ListAlloc* this);
-void Main_LogSystemHeap(void);
 OSMesgQueue* PadMgr_LockSerialMesgQueue(PadMgr* padmgr);
 void PadMgr_UnlockSerialMesgQueue(PadMgr* padmgr, OSMesgQueue* ctrlrqueue);
 void PadMgr_LockPadData(PadMgr* padmgr);
@@ -1822,17 +1821,10 @@ void GfxPrint_Destroy(GfxPrint* this);
 void GfxPrint_Open(GfxPrint* this, Gfx* dList);
 Gfx* GfxPrint_Close(GfxPrint* this);
 int32_t GfxPrint_Printf(GfxPrint* this, const char* fmt, ...);
-void func_800FBCE0();
-void func_800FBFD8(void);
 void* Overlay_AllocateAndLoad(uintptr_t vRomStart, uintptr_t vRomEnd, void* vRamStart, void* vRamEnd);
 void MtxConv_F2L(Mtx* m1, MtxF* m2);
 void MtxConv_L2F(MtxF* m1, Mtx* m2);
 void Overlay_Relocate(void* allocatedVRamAddress, OverlayRelocationSection* overlayInfo, void* vRamAddress);
-int32_t Overlay_Load(uintptr_t vRomStart, uintptr_t vRomEnd, void* vRamStart, void* vRamEnd, void* allocatedVRamAddress);
-// ? func_800FC800(?);
-// ? func_800FC83C(?);
-// ? func_800FCAB4(?);
-void SystemHeap_Init(void* start, size_t size);
 void PadUtils_Init(Input* input);
 void func_800FCB70(void);
 void PadUtils_ResetPressRel(Input* input);
@@ -1872,7 +1864,6 @@ void* SystemArena_Calloc(size_t num, size_t size);
 void SystemArena_Display(void);
 void SystemArena_GetSizes(uint32_t* outMaxFree, uint32_t* outFree, uint32_t* outAlloc);
 void SystemArena_Check(void);
-void SystemArena_Init(void* start, size_t size);
 void SystemArena_Cleanup(void);
 uint8_t SystemArena_IsInitalized(void);
 uint32_t Rand_Next(void);
@@ -2043,10 +2034,6 @@ void func_80110990(PlayState* play);
 void func_801109B0(PlayState* play);
 void Message_Init(PlayState* play);
 void Regs_InitData(PlayState* play);
-
-
-void Heaps_Alloc(void);
-void Heaps_Free(void);
 
 CollisionHeader* BgCheck_GetCollisionHeader(CollisionContext* colCtx, int32_t bgId);
 

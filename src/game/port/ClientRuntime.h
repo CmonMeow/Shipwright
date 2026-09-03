@@ -10,7 +10,7 @@ extern "C" {
 // code schedules the client runtime without knowing about transports, packets,
 // replicas, or the concrete multiplayer session composition.
 void ClientRuntime_RegisterActors(void);
-void ClientRuntime_Initialize(int argc, char* argv[]);
+void ClientRuntime_Initialize();
 void ClientRuntime_Shutdown(void);
 void ClientRuntime_UpdateTransport(void);
 void ClientRuntime_UpdateGameplay(struct PlayState* play);

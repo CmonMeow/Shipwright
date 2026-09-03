@@ -204,9 +204,6 @@ void EffectSs_Spawn(PlayState* play, int32_t type, int32_t priority, void* initP
                 return;
             }
 
-            Overlay_Load(overlayEntry->vromStart, overlayEntry->vromEnd, overlayEntry->vramStart, overlayEntry->vramEnd,
-                         overlayEntry->loadedRamAddr);
-
             osSyncPrintf(VT_FGCOL(GREEN));
             osSyncPrintf("EFFECT SS OVL:SegRom %08x %08x, Seg %08x %08x, RamStart %08x, type: %d\n",
                          overlayEntry->vromStart, overlayEntry->vromEnd, overlayEntry->vramStart, overlayEntry->vramEnd,

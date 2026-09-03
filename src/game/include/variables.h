@@ -39,16 +39,6 @@ extern "C"
 	extern OSViContext* __osViNext;
 	extern OSViMode osViModeFpalLan1;
 	extern uint32_t __additional_scanline;
-	extern const char gBuildVersion[];
-	extern uint16_t gBuildVersionMajor;
-	extern uint16_t gBuildVersionMinor;
-	extern uint16_t gBuildVersionPatch;
-	extern const char gGitBranch[];
-	extern const char gGitCommitHash[];
-	extern uint8_t gGitCommitTag[];
-	extern uint8_t gBuildTeam[];
-	extern uint8_t gBuildDate[];
-	extern uint8_t gBuildMakeOption[];
 	extern OSMesgQueue __osPiAccessQueue;
 	extern OSPiHandle __Dom1SpeedParam;
 	extern OSPiHandle __Dom2SpeedParam;
@@ -197,8 +187,7 @@ extern "C"
 	extern uint8_t gGfxSPTaskYieldBuffer[OS_YIELD_DATA_SIZE]; // 0xC00 bytes
 	extern uint8_t gGfxSPTaskStack[0x400]; // 0x400 bytes
 	extern GfxPool gGfxPools[2]; // 0x24820 bytes
-	extern uint8_t* gAudioHeap;
-	extern uint8_t* gSystemHeap;
+    extern void* gAudioHeap;
 	extern GameState* gGameState;
 
 #ifdef __cplusplus

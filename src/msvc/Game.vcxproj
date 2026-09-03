@@ -167,8 +167,6 @@
     <ClInclude Include="$(RepoRoot)src\game\port\ActorDB.h" />
     <ClCompile Include="$(RepoRoot)src\game\port\ClientRuntime.cpp" />
     <ClInclude Include="$(RepoRoot)src\game\port\ClientRuntime.h" />
-    <ClCompile Include="$(RepoRoot)src\game\port\CrashHandlerExt.cpp" />
-    <ClInclude Include="$(RepoRoot)src\game\port\CrashHandlerExt.h" />
     <ClCompile Include="$(RepoRoot)src\game\port\Enhancements\debugger\colViewer.cpp" />
     <ClInclude Include="$(RepoRoot)src\game\port\Enhancements\debugger\colViewer.h" />
     <ClInclude Include="$(RepoRoot)src\game\port\GameVersions.h" />
@@ -370,9 +368,6 @@
     <ClInclude Include="$(RepoRoot)src\game\port\util.h" />
     <ClCompile Include="$(RepoRoot)src\game\port\z_play_otr.cpp" />
     <ClCompile Include="$(RepoRoot)src\game\port\z_scene_otr.cpp" />
-    <ClCompile Include="$(RepoRoot)src\game\src\boot\build.c">
-      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
-    </ClCompile>
     <ClCompile Include="$(RepoRoot)src\game\src\boot\logutils.c">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
     </ClCompile>
@@ -473,12 +468,6 @@
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
     </ClCompile>
     <ClCompile Include="$(RepoRoot)src\game\src\code\code_800F9280.c">
-      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
-    </ClCompile>
-    <ClCompile Include="$(RepoRoot)src\game\src\code\code_800FBCE0.c">
-      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
-    </ClCompile>
-    <ClCompile Include="$(RepoRoot)src\game\src\code\code_800FC620.c">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
     </ClCompile>
     <ClCompile Include="$(RepoRoot)src\game\src\code\code_800FD970.c">
