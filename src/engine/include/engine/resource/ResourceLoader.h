@@ -8,6 +8,7 @@
 
 namespace Engine {
 struct File;
+class ResourceManager;
 
 struct ResourceFactoryKey {
     uint32_t resourceFormat;
@@ -29,7 +30,7 @@ struct ResourceFactoryKeyHash {
 
 class ResourceLoader {
   public:
-    ResourceLoader();
+    explicit ResourceLoader(ResourceManager& resources);
     virtual ~ResourceLoader();
 
     std::shared_ptr<IResource> LoadResource(std::string filePath, std::shared_ptr<File> fileToLoad,
@@ -59,5 +60,6 @@ class ResourceLoader {
     std::string DecodeASCII(uint32_t value);
     std::unordered_map<std::string, uint32_t> mResourceTypes;
     std::unordered_map<ResourceFactoryKey, std::shared_ptr<ResourceFactory>, ResourceFactoryKeyHash> mFactories;
+    ResourceManager& mResources;
 };
 } // namespace Engine

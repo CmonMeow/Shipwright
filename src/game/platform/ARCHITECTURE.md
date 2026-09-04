@@ -5,22 +5,140 @@ mechanics. It is not the authority for multiplayer game state. New gameplay code
 
 ## Win32 application lifetime
 
-`WinMain` owns process startup and supplies its real application instance and
-Windows show state to the engine. `platform/win32/Win32OpenGLWindow` is the one
-native window owner: it registers the class, creates and shows the game window,
-acquires its device context, selects the pixel format, creates and activates the
-WGL context, processes messages and raw input, and destroys those resources in
-reverse order. It must not recover an ignored application instance later with
-`GetModuleHandle` or create a hidden console.
+`src/game/platform/win32/WinMain.cpp` visibly owns the complete native lifetime.
+It registers the class, creates the bordered `WS_OVERLAPPEDWINDOW`, acquires its
+device context, selects the pixel format, creates and activates the WGL context,
+shows the window, runs `PeekMessage`/`DispatchMessage`, and destroys those resources
+in reverse order. `WndProc` is in that same file and translates Win32 keyboard,
+mouse, raw-input, focus, close, and move-loop messages directly. Native creation,
+the window procedure, and the message loop must not be hidden behind an engine
+factory or recovered later with `GetModuleHandle`.
+The process exposes the same small `Global App` state used by the Path Engine:
+current client size, quit/camera/mouse flags, mouse-button state, and the
+active settings and client references. A separate global `Input input` owns the
+single Win32 keyboard, mouse, and text state without a nullable binding pointer. `WndProc` updates `App.size` on
+`WM_SIZE` and sets `App.quit` directly. There is no HWND user-data wrapper or set
+of unrelated process globals obscuring those values.
 
-Fast3D remains the N64 display-list interpreter and OpenGL renderer; it does not
-own the process entry point. The generic window interface remains temporarily
-as the narrow adapter used by the interpreter, but alternative SDL, DirectX,
-and non-Windows window factories have been removed. Further pruning should
-collapse that adapter without moving native window ownership back into game or
-network code.
+Fast3D remains the N64 display-list protocol interpreted by the explicit
+`src/engine/rendering` subsystem in the `Engine::Rendering` namespace; it does not
+own the process entry point. The obsolete generic backend interface and the SDL,
+DirectX, and non-Windows window factories have been removed. The remaining
+`Engine::Rendering::GameRenderer` receives the already-created HWND and device
+context. `OpenGLPresentation` is a non-owning swap, frame-pacing,
+telemetry-title, and client-dimension adapter; it does not create, process messages
+for, close, or destroy a native window.
+
+`WinMain` owns a separate `SettingsWindow` beside the rest of the
+client composition code. The settings window owns native controls and translates
+them into configuration requests; it does not belong to the generic engine and
+does not own the OpenGL context, presentation, input polling, or main-window
+lifetime. Fullscreen state and borderless-window code are absent; dimensions and
+outer-window coordinates are saved from the actual bordered HWND at shutdown.
+Multiplayer buttons call the application-owned `MultiplayerInteractionPort`
+directly, including the selected address and port, and format status from that same
+interface. Configuration persists values only; it is not an action/status mailbox
+between the Win32 window and the network frame loop.
+
+`WinMain` also constructs and owns `OpenGLPresentation` while its HWND, HDC, and WGL
+context are alive. `GameRenderer` borrows that explicit presentation object and owns
+only its display-list interpreter and OpenGL rendering API. The application-provided
+resource manager, console variables, and graphics debugger flow through
+`GameRenderer` into the interpreter and OpenGL backend as non-owning references.
+The presentation borrows `App.size` directly, so `WM_SIZE` is the only client-dimension
+writer and rendering does not query or cache a second HWND size. Rendering code does not discover these services through the global engine context;
+retained C display-list handlers delegate through the active interpreter pointer
+required by that ABI. Native window placement is read and persisted directly by
+`WinMain`; neither renderer component owns window configuration.
+Shutdown stops network and audio, releases interpreter-held graphics resources,
+and shuts down renderer resources while WinMain's WGL context is still current;
+WinMain then destroys the WGL context and native window. The Fast3D interpreter borrows those services and cannot destroy them;
+renderer bridges receive only a non-owning interpreter pointer and cannot extend
+its lifetime through copied shared ownership.
+The former engine `Context` has been deleted. `Application` directly owns
+configuration, CVars, resources, crash handling, console, audio, debugger, renderer,
+actor database, multiplayer session, audio worker, and frame presenter in explicit
+destruction order.
+Native audio scheduling is owned by `NativeAudioWorker`, not by global state in the
+application bridge. It owns and joins its thread, synchronizes each submitted audio
+frame, and cannot outlive the application runtime or audio backend it consumes.
+The engine audio owner constructs WASAPI directly. Apple/CoreAudio and runtime
+backend-selection code are absent; `NullAudioPlayer` exists only as a session-local
+fallback when the Windows device cannot initialize.
+`NativeFramePresenter` owns interpolation timing and the presentation budget. It
+brackets each graphics batch with that audio worker, borrows the window-owned
+interpreter while presenting, discards only optional intermediate samples when rendering falls
+behind, and always presents the newest native state. The C graphics bridge delegates
+to this application-owned presenter instead of retaining scheduler state globally.
+Both requested FPS and interpolated-frame count come from that same owner, so native
+update-rate validation cannot diverge between rendering and display-list generation.
+The retained C renderer reaches render dimensions, aspect correction, depth
+queries, graphics debugging, and presentation timing through
+the single null-safe `RetainedGameBridge` adapter. That adapter delegates every request
+to the application-owned renderer, interpreter, debugger, or frame presenter.
+Obsolete performance-counter wrappers and their commented profiling path are gone;
+`RetainedGameBridge` exposes only the retained C entries that cross into gameplay scheduling,
+audio configuration, resources, and presentation; it no longer creates, owns, shuts
+down, or determines the lifetime of the application.
+`Application` is the client composition owner. It uniquely owns the
+engine services, actor database, multiplayer session, audio worker, and frame
+presenter; installs and clears the retained C application binding as part
+of its own start/shutdown interval; starts and stops those systems in deterministic order; and owns per-frame
+transport dispatch. Win32 resolves the executable directory before constructing
+the application and translates the F1 key edge into the semantic collision-viewer
+toggle; the application no longer discovers process paths or polls virtual keys.
+The global `Input input` instance is the sole PC input state. Settings, chat, and voice receive
+that input state by reference through their construction path; the old process-wide
+input singleton is gone. Retained libultra controller entry points borrow the same
+instance through the explicit `Application` lifetime binding. `WinMain` does not know about
+or duplicate retained-engine adapter cleanup in its native failure paths.
+During modal Win32 move/size loops, `WinMain` calls that application owner directly
+to keep transport alive; rendering no longer stores a network callback.
+`RetainedGameBridge.cpp` is only the null-safe C ABI adapter used
+by retained C code; its name makes that constrained purpose explicit.
+`Application::RunFrame` advances exactly one retained graph frame. The graph
+runner's former hidden `while` loop and fake libultra graph thread entry are gone,
+leaving WinMain's visible loop as the only application loop. The required packaged archive
+is located and checked before resource-manager construction.
+Console variables retain an explicit reference to their owning `Config`, console
+commands receive the executing `Console`, and the process crash callback reaches only
+the currently registered `CrashHandler` trampoline. None of these services performs
+application-context lookup. The obsolete `cvars.cfg` migration parser is removed; the
+single supported settings source is `settings.json`.
+The packaged-resource factory catalog and supported archive-version policy live in
+`GameResourceRegistry`; application startup invokes that policy but no longer embeds
+every resource implementation header or registration record.
+Packaged game resource types and binary importers live under `src/game/resources`
+in the `Game::Resources` namespace. Their four-byte `ResourceType` values are explicit
+because they are persisted archive identifiers; source-facing type names no longer
+carry the former project brand, and no duplicate legacy resource tree remains under
+`port`.
+The obsolete drag-and-drop CVar importer has been removed completely. The native
+window no longer registers for shell file drops, and the single-use callback manager
+for that removed configuration path is gone.
 
 ## Runtime boundaries
+
+Multiplayer transport, protocol, client replication, server admission, moderation,
+voice, and authoritative network adapters live under `src/game/multiplayer` and use
+the `Game::Multiplayer` namespace. They are no longer hidden under the legacy port
+folder or branded with the former Ship of Harkinian namespace. Native retained-game
+adapters may depend on this boundary, but new platform code must not add another
+compatibility namespace or duplicate network tree. Process-facing C APIs live
+beside `Application` under `src/game/platform/client`, not in the retained port
+directory.
+Shared fishing/projectile presentation helpers live in `src/game/gameplay`; the
+multiplayer HUD lives in `src/game/multiplayer/ui`; F1 collision visualization lives
+in `src/game/debug/collision`; and metadata attached to retained C actors lives in
+`src/game/runtime/actors`. These are physical source boundaries as well as Visual
+Studio filters—the old `port/Gameplay`, `port/UI`, `port/Enhancements`, and
+`port/ObjectExtension` trees do not remain as forwarding locations.
+Frame interpolation, framebuffer effects, and graphics-command wrappers live in
+`src/game/rendering`; the retained audio-command mixer lives in `src/game/audio`;
+scene loading and archive-version policy live in `src/game/resources`; and retained
+libultra PC implementations live beside the corresponding libultra sources. The
+legacy `src/game/port` directory has been eliminated rather than retained as an
+include root or forwarding layer.
 
 1. **Input** samples raw keys and mouse state once, producing numbered player commands. A movement command contains
    held controls, edge-triggered actions, view direction, and the client simulation tick. Equipment selection is a
@@ -342,8 +460,8 @@ replay floors, fallback admission, scene mutation, and dependent-entity cleanup 
 The public client-submission boundary accepts only semantic scene, weapon, player, projectile, fishing-presentation,
 lure-control, fish-action, and structure-action values. The local command service stamps the current life epoch,
 maps semantic enums and booleans, validates the resulting packet, and chooses reliable or disposable transport.
-`ClientRuntime` contains no packet structs or wire constants; native Ocarina code observes input and render state
-without depending on protocol layout.
+`RetainedGameBridge` is the retained C lifecycle boundary; native Ocarina code observes input and render state without
+depending on protocol layout or the concrete multiplayer session.
 `NativeLocalProjectileController` is the sole pointer-bearing boundary for locally presented arrows. It correlates
 native actors with semantic presentation IDs, consumes accepted/rejected authority results, and retires the native
 actor when the authoritative projectile ends. Transport orchestration never stores or resolves an `Actor*`.
@@ -371,6 +489,13 @@ interpret scene, movement, loadout, structure, fishing, or projectile packets.
 The client mounts immutable `.o2r` archives through the read-only `O2rArchive` implementation. Runtime archive
 creation and mutation are not supported. MPQ/StormLib, legacy `.otr`/ZIP mod archives, loose-folder archives, ROM
 extraction manifests, and exporter helpers have been removed; they must not be reintroduced as compatibility paths.
+`ResourceManager` constructs its `ResourceLoader` with an explicit non-owning reference back to the manager, so metadata
+resolution never depends on an application-global owner. Each archive resolves numeric hashes from its own
+immutable index; `ArchiveManager` alone applies the configured game-version policy and unloads rejected archives.
+Nested binary resources carry that same manager as non-owning load metadata, including scene commands, skeleton limbs,
+linked animations, and lazily resolved audio samples. The retained C resource API obtains the manager from the sole
+`RetainedGameBridge` application binding. Alternate-asset fallback, its `loadExact` mode, texture-path normalization, and the
+unused skeleton hot-swap registry are deleted; the loader has one deterministic packaged-resource path.
 
 Client structure interaction is protocol-independent before transport. `LocalStructureActionStream` owns its reliable
 one-shot sequence, validates the semantic build/repair request, and restarts only at a new player life. Runtime stamps
@@ -728,11 +853,11 @@ encryption, with runtime session names only as a fallback. `NetworkRuntime` now 
 it does not encode chat packets or duplicate host/client policy. This is an ownership change only and preserves the
 existing wire layouts.
 
-Local input separates continuously sampled controls from one-shot action intent. Movement, aim, guard, reel, and held
-weapon use are rebuilt from current Win32 key state every controller sample. Weapon selection, sheathe, evade, and bow
-presses use `ActionIntentFrame`, which is cleared at the start of the next controller sample. Native states that cannot
-accept an action in its originating sample therefore discard it, so a click made while climbing, releasing a fish,
-typing chat, or transitioning actions cannot execute later. Once transmitted, action edges retain their independent
+Local input separates continuously sampled controls from one-frame action edges. Movement, aim, guard, reel, and held
+weapon use read the current Win32 key table. Weapon selection, sheathe, evade, and bow presses use the same input
+frame's `keyPress` and `framePress` tables, which `EndFrame` clears. Native states that cannot accept an action in its
+originating frame therefore discard it, so a click made while climbing, releasing a fish, typing chat, or transitioning
+actions cannot execute later. Once transmitted, action edges retain their independent
 reliable sequence through movement loss/reordering and are consumed by exactly the next authoritative simulation tick;
 the server never waits for a later animation state to accept them.
 
@@ -1205,10 +1330,21 @@ Protocol v88 binds a reliable respawn to the exact authoritative player entity g
 the local epoch, or invoke native respawn. Accepted wire packets become semantic `PlayerRespawnEvent` values at that
 boundary; the public runtime polling API and gameplay bridge no longer expose `NetworkPlayerRespawnPacket`.
 
-Local one-shot controls are sample-local action edges. `ActionIntentFrame` is reset at every controller sample, so a
-weapon selection, sheath toggle, evade, or bow click rejected by the current native action state cannot execute after
-climbing, recovery, damage, or another busy state ends. Reliable network action edges remain independently sequenced
-and are consumed by exactly one authoritative fixed tick; stale command windows and busy-state presses are discarded.
+The PC client has one global `Input input` source. Held keys and mouse buttons are read directly through
+`input.key[...]`; one-frame actions use `input.framePress[...]`. The game-side `Controls` snapshot derives its
+`move` vector and selected `weapon` from that source once per application frame. Modern multiplayer command construction does not
+reverse-map either form from the retained N64 pad sample. The game-side `controls.weapon` stores the weapon selected by
+keys 1-4; it is not window/application state. Ocarina's former generic `Input` structure is named `ControllerInput` so
+the remaining animation compatibility boundary is explicit and can be deleted as native actions migrate.
+
+Mouse weapon actions no longer pass through synthetic N64 buttons. LMB supplies primary held/pressed state directly;
+RMB supplies shield held/pressed or fishing reel held/pressed according to `controls.weapon`. The retained controller
+reader now produces only the temporary WASD-derived analog stick needed by Ocarina's locomotion implementation.
+
+Local one-shot controls are frame-local edges in `input`. A weapon selection, sheath toggle, evade, or bow click
+rejected by the current native action state is cleared by `input.EndFrame`, so it cannot execute after climbing,
+recovery, damage, or another busy state ends. Reliable network action edges remain independently sequenced and are
+consumed by exactly one authoritative fixed tick; stale command windows and busy-state presses are discarded.
 
 Protocol v89 removes the unused client render tick from player commands and their wire packet. Local input still uses
 the gameplay-frame counter to avoid sampling one native frame twice, but only generation-bound movement/action
@@ -1429,7 +1565,9 @@ reconciliation precedes command submission; and local presentation is projected
 only after prediction has consumed the current command. Reconnect observation
 resets a pure `ClientFrameClock`, which supplies a deterministic first-frame
 default, rejects negative elapsed time, and clamps stalls to 250 milliseconds.
-`NativeClientNetworkSession` constructs this dependency graph, installs native
-provider callbacks, and owns process startup/shutdown. The transport-neutral
-`ClientRuntime` lifecycle ABI is the only surface retained C code calls; its
-implementation forwards directly to that session without owning gameplay state.
+The `NativeClientNetworkSession` instance constructs and owns this dependency
+graph and installs native provider callbacks. `Application` owns that
+session and therefore controls its startup/shutdown lifetime. The
+transport-neutral `RetainedGameBridge` ABI is the only lifecycle surface retained C
+code calls; it forwards through the owned application without introducing a
+second runtime object or hidden gameplay owner.

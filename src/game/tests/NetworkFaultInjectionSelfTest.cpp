@@ -1,7 +1,7 @@
-#include "Network/FishingNetworkAdapter.h"
-#include "Network/PlayerLifecycleNetworkAdapter.h"
-#include "Network/PlayerSimulationNetworkAdapter.h"
-#include "Network/ProjectileNetworkAdapter.h"
+#include "multiplayer/FishingNetworkAdapter.h"
+#include "multiplayer/PlayerLifecycleNetworkAdapter.h"
+#include "multiplayer/PlayerSimulationNetworkAdapter.h"
+#include "multiplayer/ProjectileNetworkAdapter.h"
 #include "../platform/simulation/StructureActionAuthority.h"
 #include "../platform/simulation/ServerIntentAdmission.h"
 
@@ -38,7 +38,7 @@ NetworkPlayerCommandPacket MovementPacket(uint32_t sequence) {
 } // namespace
 
 int main() {
-    namespace Adapter = SoH::Network::PlayerSimulationNetworkAdapter;
+    namespace Adapter = Game::Multiplayer::PlayerSimulationNetworkAdapter;
     using Game::Simulation::PlayerActionState;
 
     const auto bindTestCommand = [](const NetworkPlayerCommandPacket& packet) {
@@ -198,15 +198,15 @@ int main() {
     const Game::Replication::ReplicatedPlayer replacementLifetime{
         42, { 10, 2 }, 118, {}
     };
-    const auto establish = SoH::Network::PlayerLifecycleNetworkAdapter::ToPacket(
+    const auto establish = Game::Multiplayer::PlayerLifecycleNetworkAdapter::ToPacket(
         firstLifetime, true);
-    const auto replace = SoH::Network::PlayerLifecycleNetworkAdapter::ToPacket(
+    const auto replace = Game::Multiplayer::PlayerLifecycleNetworkAdapter::ToPacket(
         replacementLifetime, true);
-    const auto staleRetire = SoH::Network::PlayerLifecycleNetworkAdapter::ToPacket(
+    const auto staleRetire = Game::Multiplayer::PlayerLifecycleNetworkAdapter::ToPacket(
         firstLifetime, false);
-    if (!SoH::Network::PlayerLifecycleNetworkAdapter::Apply(establish, lifetimes) ||
-        !SoH::Network::PlayerLifecycleNetworkAdapter::Apply(replace, lifetimes) ||
-        SoH::Network::PlayerLifecycleNetworkAdapter::Apply(staleRetire, lifetimes) ||
+    if (!Game::Multiplayer::PlayerLifecycleNetworkAdapter::Apply(establish, lifetimes) ||
+        !Game::Multiplayer::PlayerLifecycleNetworkAdapter::Apply(replace, lifetimes) ||
+        Game::Multiplayer::PlayerLifecycleNetworkAdapter::Apply(staleRetire, lifetimes) ||
         !lifetimes.Matches(42, replacementLifetime.entity)) {
         return 9;
     }
@@ -219,18 +219,18 @@ int main() {
     const Game::Replication::ReplicatedOwnedEntity replacementArrow{
         firstArrow.key, { 20, 2 }, 118, {}, false
     };
-    auto arrowCreate = SoH::Network::ProjectileNetworkAdapter::ToLifecyclePacket(
+    auto arrowCreate = Game::Multiplayer::ProjectileNetworkAdapter::ToLifecyclePacket(
         firstArrow, true);
-    auto arrowReplace = SoH::Network::ProjectileNetworkAdapter::ToLifecyclePacket(
+    auto arrowReplace = Game::Multiplayer::ProjectileNetworkAdapter::ToLifecyclePacket(
         replacementArrow, true);
-    auto arrowStaleRetire = SoH::Network::ProjectileNetworkAdapter::ToLifecyclePacket(
+    auto arrowStaleRetire = Game::Multiplayer::ProjectileNetworkAdapter::ToLifecyclePacket(
         firstArrow, false);
-    if (!SoH::Network::ProjectileNetworkAdapter::ApplyLifecycle(
+    if (!Game::Multiplayer::ProjectileNetworkAdapter::ApplyLifecycle(
             arrowCreate, projectileLifetimes).Accepted() ||
-        SoH::Network::ProjectileNetworkAdapter::ApplyLifecycle(
+        Game::Multiplayer::ProjectileNetworkAdapter::ApplyLifecycle(
             arrowReplace, projectileLifetimes).kind !=
-            SoH::Network::ProjectileNetworkAdapter::LifecycleApplyKind::Replaced ||
-        SoH::Network::ProjectileNetworkAdapter::ApplyLifecycle(
+            Game::Multiplayer::ProjectileNetworkAdapter::LifecycleApplyKind::Replaced ||
+        Game::Multiplayer::ProjectileNetworkAdapter::ApplyLifecycle(
             arrowStaleRetire, projectileLifetimes).Accepted()) {
         return 10;
     }
@@ -243,11 +243,11 @@ int main() {
     oldArrowState.active = true;
     Game::Simulation::ArrowSnapshot newArrowState = oldArrowState;
     newArrowState.entity = replacementArrow.entity;
-    if (SoH::Network::ProjectileNetworkAdapter::MatchesActiveLifetime(
-            SoH::Network::ProjectileNetworkAdapter::ToPacket(oldArrowState),
+    if (Game::Multiplayer::ProjectileNetworkAdapter::MatchesActiveLifetime(
+            Game::Multiplayer::ProjectileNetworkAdapter::ToPacket(oldArrowState),
             projectileLifetimes) ||
-        !SoH::Network::ProjectileNetworkAdapter::MatchesActiveLifetime(
-            SoH::Network::ProjectileNetworkAdapter::ToPacket(newArrowState),
+        !Game::Multiplayer::ProjectileNetworkAdapter::MatchesActiveLifetime(
+            Game::Multiplayer::ProjectileNetworkAdapter::ToPacket(newArrowState),
             projectileLifetimes)) {
         return 11;
     }
@@ -261,18 +261,18 @@ int main() {
     firstFish.ownerPlayerId = 42;
     Game::Simulation::FishSnapshot replacementFish = firstFish;
     replacementFish.entity = { 30, 2 };
-    const auto firstFishState = SoH::Network::FishingNetworkAdapter::ToPacket(
+    const auto firstFishState = Game::Multiplayer::FishingNetworkAdapter::ToPacket(
         firstFish, 40, true);
-    const auto replacementFishState = SoH::Network::FishingNetworkAdapter::ToPacket(
+    const auto replacementFishState = Game::Multiplayer::FishingNetworkAdapter::ToPacket(
         replacementFish, 41, true);
-    const auto staleFishRetire = SoH::Network::FishingNetworkAdapter::ToPacket(
+    const auto staleFishRetire = Game::Multiplayer::FishingNetworkAdapter::ToPacket(
         firstFish, 42, false);
-    if (!SoH::Network::FishingNetworkAdapter::ApplyLifetime(
+    if (!Game::Multiplayer::FishingNetworkAdapter::ApplyLifetime(
             firstFishState, fishLifetimes).Accepted() ||
-        SoH::Network::FishingNetworkAdapter::ApplyLifetime(
+        Game::Multiplayer::FishingNetworkAdapter::ApplyLifetime(
             replacementFishState, fishLifetimes).kind !=
-            SoH::Network::FishingNetworkAdapter::LifetimeApplyKind::Replaced ||
-        SoH::Network::FishingNetworkAdapter::ApplyLifetime(
+            Game::Multiplayer::FishingNetworkAdapter::LifetimeApplyKind::Replaced ||
+        Game::Multiplayer::FishingNetworkAdapter::ApplyLifetime(
             staleFishRetire, fishLifetimes).Accepted() ||
         !fishLifetimes.Matches(42, replacementFish.entity)) {
         return 12;

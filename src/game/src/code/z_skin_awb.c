@@ -1,6 +1,6 @@
 #include "global.h"
 #include <assert.h>
-#include "port/ResourceManagerHelpers.h"
+#include "resources/ResourceManagerHelpers.h"
 
 /**
  * Initialises the Vtx buffers used for limb at index `limbIndex`
@@ -38,8 +38,8 @@ void Skin_InitAnimatedLimb(PlayState* play, Skin* skin, int32_t limbIndex) {
  * and dynamically allocating and initializing the Vtx and SkinLimbVtx buffers for its animated limbs
  */
 void Skin_Init(PlayState* play, Skin* skin, SkeletonHeader* skeletonHeader, AnimationHeader* animationHeader) {
-    if (ResourceMgr_OTRSigCheck(skeletonHeader))
-        skeletonHeader = ResourceMgr_LoadSkeletonByName(skeletonHeader, NULL);
+    if (ResourceMgr_HasResourceSignature(skeletonHeader))
+        skeletonHeader = ResourceMgr_LoadSkeletonByName(skeletonHeader);
 
     int32_t limbCount;
     int32_t i;

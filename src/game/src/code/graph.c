@@ -6,8 +6,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "port/OTRGlobals.h"
-#include "runtime/bridge.h"
+#include "platform/client/RetainedGameBridge.h"
 
 #define GFXPOOL_HEAD_MAGIC 0x1234
 #define GFXPOOL_TAIL_MAGIC 0x5678
@@ -203,8 +202,8 @@ void Graph_Update(GraphicsContext* gfxCtx, GameState* gameState) {
     uint32_t problem = { 0 };
 
     // Skip game frame updates while gfx debugger is active, and execute with the last frame's DL buffer
-    if (GfxDebuggerIsDebugging()) {
-        Graph_ProcessGfxCommands(runFrameContext.gfxCtx.workBuffer);
+    if (RetainedGame_IsGraphicsDebugging()) {
+        RetainedGame_PresentGraphics(runFrameContext.gfxCtx.workBuffer);
         return;
     }
 
@@ -319,9 +318,6 @@ void Graph_Update(GraphicsContext* gfxCtx, GameState* gameState) {
     }
 }
 
-uint64_t GetFrequency();
-uint64_t GetPerfCounter();
-
 extern AudioMgr gAudioMgr;
 
 static void RunFrame() {
@@ -365,27 +361,18 @@ static void RunFrame() {
             hasSetupSkybox = true;
         }
 
-        uint64_t freq = GetFrequency();
-
         while (GameState_IsRunning(gGameState)) {
-            // uint64_t ticksA, ticksB;
-            // ticksA = GetPerfCounter();
-
-            Graph_StartFrame();
+            RetainedGame_BeginFrame();
 
             PadMgr_ThreadEntry(&gPadMgr);
 
             Graph_Update(&runFrameContext.gfxCtx, gGameState);
-            // ticksB = GetPerfCounter();
-
-            if (GfxDebuggerIsDebuggingRequested()) {
-                GfxDebuggerDebugDisplayList(runFrameContext.gfxCtx.workBuffer);
+            if (RetainedGame_IsGraphicsDebuggingRequested()) {
+                RetainedGame_DebugDisplayList(runFrameContext.gfxCtx.workBuffer);
             }
 
-            Graph_ProcessGfxCommands(runFrameContext.gfxCtx.workBuffer);
+            RetainedGame_PresentGraphics(runFrameContext.gfxCtx.workBuffer);
 
-            // uint64_t diff = (ticksB - ticksA) / (freq / 1000);
-            // printf("Frame simulated in %ims\n", diff);
             runFrameContext.state = 1;
             return;
         nextFrame:;
@@ -403,11 +390,8 @@ static void RunFrame() {
     exit(0);
 }
 
-void Graph_ThreadEntry(void* arg0) {
-    while (WindowIsRunning()) {
-        RunFrame();
-    }
-
+void Graph_RunFrame(void) {
+    RunFrame();
 }
 
 void* Graph_Alloc(GraphicsContext* gfxCtx, size_t size) {

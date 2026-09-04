@@ -3,17 +3,10 @@
 #include "stddef.h"
 #include <string>
 #include <memory>
-#include "engine/audio/AudioChannelsSetting.h"
+#include "engine/audio/AudioSettings.h"
 #include "engine/audio/SoundMatrixDecoder.h"
 
 namespace Engine {
-
-struct AudioSettings {
-    int32_t SampleRate = 44100;
-    int32_t SampleLength = 1024;
-    int32_t DesiredBuffered = 2480;
-    AudioChannelsSetting ChannelSetting = AudioChannelsSetting::audioStereo;
-};
 
 class AudioPlayer {
 
@@ -72,12 +65,6 @@ class AudioPlayer {
 };
 } // namespace Engine
 
-#ifdef _WIN32
 #include "WasapiAudioPlayer.h"
-#endif
-
-#ifdef __APPLE__
-#include "CoreAudioAudioPlayer.h"
-#endif
 
 #include "NullAudioPlayer.h"

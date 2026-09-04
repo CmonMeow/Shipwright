@@ -1,7 +1,8 @@
 #include <runtime/log/Log.hpp>
 #include "engine/utils/StringHelper.h"
 #include "engine/debug/CrashHandler.h"
-#include "engine/Context.h"
+
+#include <utility>
 
 #ifdef _WIN32
 #include <windows.h>
@@ -14,6 +15,8 @@
 #endif
 
 namespace Engine {
+
+CrashHandler* CrashHandler::mActive = nullptr;
 
 #define WRITE_VAR_LINE(handler, varName, varValue) \
     handler->AppendStr(varName);                   \
@@ -65,10 +68,6 @@ void CrashHandler::AppendLine(const char* str) {
  * @param buffer
  */
 void CrashHandler::PrintCommon() {
-    if (mCallback != nullptr) {
-        mCallback(mOutBuffer, &mOutBuffersize);
-    }
-
     WriteLog(mOutBuffer);
 }
 
@@ -138,7 +137,7 @@ void CrashHandler::PrintRegisters(ucontext_t* ctx) {
 }
 
 static void ErrorHandler(int sig, siginfo_t* sigInfo, void* data) {
-    std::shared_ptr<CrashHandler> crashHandler = Context::GetInstance()->GetCrashHandler();
+    CrashHandler* crashHandler = CrashHandler::GetActive();
     char intToCharBuffer[16];
 
     std::array<void*, 4096> arr;
@@ -189,7 +188,7 @@ static void ErrorHandler(int sig, siginfo_t* sigInfo, void* data) {
         snprintf(intToCharBuffer, sizeof(intToCharBuffer), "%i ", (int)i);
         WRITE_VAR_LINE(crashHandler, intToCharBuffer, functionName.c_str());
     }
-    fprintf(stderr, "%s has crashed. See the log for details.\n", Context::GetInstance()->GetName().c_str());
+    fprintf(stderr, "%s has crashed. See the log for details.\n", crashHandler->GetApplicationName().c_str());
     free(symbols);
     crashHandler->PrintCommon();
 
@@ -389,7 +388,7 @@ void CrashHandler::PrintStack(CONTEXT* ctx) {
 
 extern "C" LONG WINAPI seh_filter(PEXCEPTION_POINTERS ex) {
     char exceptionString[20];
-    std::shared_ptr<CrashHandler> crashHandler = Context::GetInstance()->GetCrashHandler();
+    CrashHandler* crashHandler = CrashHandler::GetActive();
 
     snprintf(exceptionString, std::size(exceptionString), "0x%x", ex->ExceptionRecord->ExceptionCode);
 
@@ -397,7 +396,7 @@ extern "C" LONG WINAPI seh_filter(PEXCEPTION_POINTERS ex) {
     crashHandler->PrintStack(ex->ContextRecord);
     MessageBoxA(
         nullptr,
-        (Context::GetInstance()->GetName() + " has crashed. Please upload the logs to the support channel in discord.")
+        (crashHandler->GetApplicationName() + " has crashed. Please upload the logs to the support channel in discord.")
             .c_str(),
         "Crash", MB_OK | MB_ICONERROR);
 
@@ -406,8 +405,10 @@ extern "C" LONG WINAPI seh_filter(PEXCEPTION_POINTERS ex) {
 
 #endif
 
-CrashHandler::CrashHandler() {
+CrashHandler::CrashHandler(std::string applicationName) : mApplicationName(std::move(applicationName)) {
+    mActive = this;
     mOutBuffer = new char[gMaxBufferSize];
+    mOutBuffer[0] = '\0';
 #if defined(__linux__) && !defined(__ANDROID__)
     struct sigaction action = { 0 };
     struct sigaction shutdownAction = { 0 };
@@ -431,17 +432,22 @@ CrashHandler::CrashHandler() {
 #endif
 }
 
-CrashHandler::CrashHandler(CrashHandlerCallback callback) {
-    mCallback = callback;
-    CrashHandler();
-}
-
 CrashHandler::~CrashHandler() {
     WriteLog("destruct crash handler");
+#ifdef _WIN32
+    SetUnhandledExceptionFilter(nullptr);
+#endif
+    if (mActive == this) {
+        mActive = nullptr;
+    }
     delete[] mOutBuffer;
 }
 
-void CrashHandler::RegisterCallback(CrashHandlerCallback callback) {
-    mCallback = callback;
+CrashHandler* CrashHandler::GetActive() {
+    return mActive;
+}
+
+const std::string& CrashHandler::GetApplicationName() const {
+    return mApplicationName;
 }
 } // namespace Engine

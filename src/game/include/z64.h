@@ -32,23 +32,13 @@
 #include "regs.h"
 #include "gfx.h"
 
-#if defined(__LP64__)
-#define _SOH64
-#endif
-
 #define AUDIO_HEAP_SIZE  0x380000
 #define SYSTEM_HEAP_SIZE (1024 * 1024 * 4)
 
 #ifdef __cplusplus
-namespace LUS
-{
-    class IResource;
-    class Scene;
-};
-namespace Fast {
+namespace Engine::Rendering {
     class DisplayList;
 };
-#include <memory>
 #endif
 
 #define SCREEN_WIDTH  320
@@ -176,7 +166,7 @@ typedef struct {
     /* 0x06 */ OSContPad prev;
     /* 0x0C */ OSContPad press; // X/Y store delta from last frame
     /* 0x12 */ OSContPad rel; // X/Y store adjusted
-} Input; // size = 0x18
+} ControllerInput; // size = 0x18
 
 typedef struct {
    /* 0x0000 */ int32_t topY;    // uly (upper left y)
@@ -972,7 +962,7 @@ typedef struct GameState {
     /* 0x08 */ GameStateFunc destroy; // "cleanup"
     /* 0x0C */ GameStateFunc init;
     /* 0x10 */ size_t size;
-    /* 0x14 */ Input input[4];
+    /* 0x14 */ ControllerInput input[4];
     /* 0x74 */ TwoHeadArena tha;
     /* 0x84 */ GameAlloc alloc;
     /* 0x98 */ uint32_t running;
@@ -1010,7 +1000,7 @@ typedef struct PlayState {
     /* 0x117A4 */ ObjectContext objectCtx;
     /* 0x11CBC */ RoomContext roomCtx;
     /* 0x11D3C */ void (*playerInit)(Player* player, struct PlayState* play, FlexSkeletonHeader* skelHeader);
-    /* 0x11D40 */ void (*playerUpdate)(Player* player, struct PlayState* play, Input* input);
+    /* 0x11D40 */ void (*playerUpdate)(Player* player, struct PlayState* play, ControllerInput* input);
     /* 0x11D48 */ int32_t (*startPlayerFishing)(struct PlayState* play);
     /* 0x11D4C */ int32_t (*grabPlayer)(struct PlayState* play, Player* player);
     /* 0x11D50 */ int32_t (*startPlayerCutscene)(struct PlayState* play, Actor* actor, int32_t mode);
@@ -1171,11 +1161,11 @@ typedef struct FaultThreadStruct {
     /* 0x7CE */ uint8_t faultHandlerEnabled;
     /* 0x7CF */ uint8_t faultActive;
     /* 0x7D0 */ OSThread* faultedThread;
-    /* 0x7D4 */ void(*padCallback)(Input*);
+    /* 0x7D4 */ void(*padCallback)(ControllerInput*);
     /* 0x7D8 */ FaultClient* clients;
     /* 0x7DC */ FaultAddrConvClient* addrConvClients;
     /* 0x7E0 */ uint8_t unk_7E0[4];
-    /* 0x7E4 */ Input padInput;
+    /* 0x7E4 */ ControllerInput padInput;
     /* 0x7FC */ uint16_t colors[36];
     /* 0x844 */ void* fb;
     /* 0x848 */ uint32_t currClientThreadSp;
@@ -1302,7 +1292,7 @@ typedef struct PadMgr {
     /* 0x0070 */ IrqMgrClient irqClient;
     /* 0x0078 */ IrqMgr* irqMgr;
     /* 0x0080 */ OSThread thread;
-    /* 0x0230 */ Input inputs[4];
+    /* 0x0230 */ ControllerInput inputs[4];
     /* 0x0290 */ OSContPad pads[4];
     /* 0x02A8 */ volatile uint8_t validCtrlrsMask;
     /* 0x02A9 */ uint8_t nControllers;

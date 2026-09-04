@@ -1,15 +1,13 @@
 #include <string.h>
 #include "global.h"
 #include "vt.h"
-#include "runtime/bridge.h"
-#include "port/ResourceManagerHelpers.h"
+#include "resources/ResourceManagerHelpers.h"
 
 // #region SOH [General] Making gGameState available
 GameState* gGameState;
 // #endregion
 
 // Forward declared, because this in a C++ header.
-void gfx_texture_cache_clear();
 
 void GameState_Draw(GameState* gameState, GraphicsContext* gfxCtx) {
     Gfx* polyOpaP;
@@ -57,7 +55,7 @@ void func_800C49F4(GraphicsContext* gfxCtx) {
     CLOSE_DISPS(gfxCtx);
 }
 
-void PadMgr_RequestPadData(PadMgr*, Input*, int32_t);
+void PadMgr_RequestPadData(PadMgr*, ControllerInput*, int32_t);
 
 void GameState_ReqPadData(GameState* gameState) {
     PadMgr_RequestPadData(&gPadMgr, &gameState->input[0], 1);
@@ -184,14 +182,6 @@ void GameState_Destroy(GameState* gameState) {
     SystemArena_Display();
     osSyncPrintf("game デストラクタ終了\n"); // "game destructor end"
 
-    // Performing clear skeletons before unload resources fixes an actor heap corruption crash due to the skeleton
-    // patching system.
-    ResourceMgr_ClearSkeletons();
-
-    if (ResourceMgr_IsAltAssetsEnabled()) {
-        ResourceUnloadDirectory("alt/*");
-        gfx_texture_cache_clear();
-    }
 }
 
 GameStateFunc GameState_GetInit(GameState* gameState) {

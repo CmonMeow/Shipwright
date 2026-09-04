@@ -3,10 +3,9 @@
 
 #include <assert.h>
 
-static Vec3f sRoomOrigin = { 0.0f, 0.0f, 0.0f };
+#include "resources/SceneLoader.h"
 
-int32_t OTRfunc_8009728C(PlayState* play, RoomContext* roomCtx, int32_t roomNum);
-int32_t OTRfunc_800973FC(PlayState* play, RoomContext* roomCtx);
+static Vec3f sRoomOrigin = { 0.0f, 0.0f, 0.0f };
 
 static void Room_DrawTest01Mesh(PlayState* play, Room* room, uint32_t flags) {
     PolygonType0* mesh = &room->meshHeader->polygon0;
@@ -62,16 +61,16 @@ uint32_t func_80096FE8(PlayState* play, RoomContext* roomCtx) {
     roomCtx->unk_30 = 0;
     roomCtx->status = 0;
 
-    OTRfunc_8009728C(play, roomCtx, play->setupEntranceList[play->curSpawn].room);
+    SceneLoader_RequestRoom(play, roomCtx, play->setupEntranceList[play->curSpawn].room);
     return maxRoomSize;
 }
 
 int32_t func_8009728C(PlayState* play, RoomContext* roomCtx, int32_t roomNum) {
-    return OTRfunc_8009728C(play, roomCtx, roomNum);
+    return SceneLoader_RequestRoom(play, roomCtx, roomNum);
 }
 
 int32_t func_800973FC(PlayState* play, RoomContext* roomCtx) {
-    return OTRfunc_800973FC(play, roomCtx);
+    return SceneLoader_FinalizeRoom(play, roomCtx);
 }
 
 void Room_Draw(PlayState* play, Room* room, uint32_t flags) {

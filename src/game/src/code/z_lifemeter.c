@@ -1,7 +1,7 @@
 #include "global.h"
 #include "textures/parameter_static/parameter_static.h"
-#include "port/frame_interpolation.h"
-#include "port/OTRGlobals.h"
+#include "rendering/FrameInterpolation.h"
+#include "platform/client/RetainedGameBridge.h"
 int16_t Top_LM_Margin = 0;
 int16_t Left_LM_Margin = 0;
 int16_t Right_LM_Margin = 0;
@@ -322,7 +322,7 @@ int16_t getHealthMeterXOffset() {
     int16_t X_Margins = 0;
 
 
-        return OTRGetDimensionFromLeftEdge(0.0f) + X_Margins;
+        return RetainedGame_GetDimensionFromLeftEdge(0.0f) + X_Margins;
 
 }
 
@@ -369,7 +369,7 @@ void HealthMeter_Draw(PlayState* play) {
             int16_t X_Margins = 0;
             int16_t Y_Margins = 0;
 
-        int16_t PosX_original = OTRGetDimensionFromLeftEdge(0.0f)+X_Margins;
+        int16_t PosX_original = RetainedGame_GetDimensionFromLeftEdge(0.0f) + X_Margins;
         int16_t PosY_original = 0.0f+Y_Margins;
 
             offsetY = PosY_original;

@@ -1,6 +1,6 @@
 #include "global.h"
 
-#include "port/frame_interpolation.h"
+#include "rendering/FrameInterpolation.h"
 
 Mtx* sSkyboxDrawMatrix;
 

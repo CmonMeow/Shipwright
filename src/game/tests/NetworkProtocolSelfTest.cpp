@@ -1,39 +1,39 @@
-#include <sysdef.h>
+#include "multiplayer/Win32NetworkPlatform.h"
 
-#include "Network/NetworkProtocol.h"
-#include "Network/NetworkProtocolIngress.h"
-#include "Network/CombatNetworkAdapter.h"
-#include "Network/ClientCombatPresentationPolicy.h"
-#include "Network/ClientPlayerActionPresentationPolicy.h"
-#include "Network/ClientProjectilePresentationPolicy.h"
-#include "Network/ClientReplicationInbox.h"
-#include "Network/ClientSessionIngress.h"
-#include "Network/ClientProtocolEndpoint.h"
-#include "Network/CommunicationInbox.h"
-#include "Network/CorpseNetworkAdapter.h"
-#include "Network/FishingNetworkAdapter.h"
-#include "Network/LocalNetworkIdentity.h"
-#include "Network/LocalClientAdmissionService.h"
-#include "Network/LocalTextCommunicationService.h"
-#include "Network/LocalVoiceSubmissionService.h"
-#include "Network/PlayerSimulationNetworkAdapter.h"
-#include "Network/ProjectileNetworkAdapter.h"
-#include "Network/ProtocolDispatcher.h"
-#include "Network/PrivateChatService.h"
-#include "Network/ModerationRegistry.h"
-#include "Network/SceneNetworkAdapter.h"
-#include "Network/ServerSessionManager.h"
-#include "Network/ServerAdministrationService.h"
-#include "Network/ServerCommunicationService.h"
-#include "Network/ServerCommandParser.h"
-#include "Network/ServerReplicationInterestPublisher.h"
-#include "Network/ServerReplicationEventPublisher.h"
-#include "Network/ServerGameplayCommandService.h"
-#include "Network/ServerGameplayPacketIngress.h"
-#include "Network/ServerPlayerSessionService.h"
-#include "Network/SecureTransportChannel.h"
-#include "Network/PlayerLifecycleNetworkAdapter.h"
-#include "Network/WorldPvpNetworkAdapter.h"
+#include "multiplayer/NetworkProtocol.h"
+#include "multiplayer/NetworkProtocolIngress.h"
+#include "multiplayer/CombatNetworkAdapter.h"
+#include "multiplayer/ClientCombatPresentationPolicy.h"
+#include "multiplayer/ClientPlayerActionPresentationPolicy.h"
+#include "multiplayer/ClientProjectilePresentationPolicy.h"
+#include "multiplayer/ClientReplicationInbox.h"
+#include "multiplayer/ClientSessionIngress.h"
+#include "multiplayer/ClientProtocolEndpoint.h"
+#include "multiplayer/CommunicationInbox.h"
+#include "multiplayer/CorpseNetworkAdapter.h"
+#include "multiplayer/FishingNetworkAdapter.h"
+#include "multiplayer/LocalNetworkIdentity.h"
+#include "multiplayer/LocalClientAdmissionService.h"
+#include "multiplayer/LocalTextCommunicationService.h"
+#include "multiplayer/LocalVoiceSubmissionService.h"
+#include "multiplayer/PlayerSimulationNetworkAdapter.h"
+#include "multiplayer/ProjectileNetworkAdapter.h"
+#include "multiplayer/ProtocolDispatcher.h"
+#include "multiplayer/PrivateChatService.h"
+#include "multiplayer/ModerationRegistry.h"
+#include "multiplayer/SceneNetworkAdapter.h"
+#include "multiplayer/ServerSessionManager.h"
+#include "multiplayer/ServerAdministrationService.h"
+#include "multiplayer/ServerCommunicationService.h"
+#include "multiplayer/ServerCommandParser.h"
+#include "multiplayer/ServerReplicationInterestPublisher.h"
+#include "multiplayer/ServerReplicationEventPublisher.h"
+#include "multiplayer/ServerGameplayCommandService.h"
+#include "multiplayer/ServerGameplayPacketIngress.h"
+#include "multiplayer/ServerPlayerSessionService.h"
+#include "multiplayer/SecureTransportChannel.h"
+#include "multiplayer/PlayerLifecycleNetworkAdapter.h"
+#include "multiplayer/WorldPvpNetworkAdapter.h"
 #include "../platform/client/LocalPlayerCommandStream.h"
 #include "../platform/client/LocalStructureActionStream.h"
 #include "../platform/client/LocalVoiceFrameStream.h"
@@ -80,15 +80,15 @@ bool TestSessionEncryption() {
     std::string signature;
     if (clientBinding.empty() || clientBinding != serverBinding ||
         crypto_sign_keypair(signingPublic, signingSecret) != 0 ||
-        !SoH::Network::SignIdentityBinding(
+        !Game::Multiplayer::SignIdentityBinding(
             std::string(reinterpret_cast<char*>(signingSecret),
                         sizeof(signingSecret)),
             clientBinding, signature) ||
-        !SoH::Network::VerifyIdentityBinding(
+        !Game::Multiplayer::VerifyIdentityBinding(
             std::string(reinterpret_cast<char*>(signingPublic),
                         sizeof(signingPublic)),
             serverBinding, signature) ||
-        SoH::Network::VerifyIdentityBinding(
+        Game::Multiplayer::VerifyIdentityBinding(
             std::string(reinterpret_cast<char*>(signingPublic),
                         sizeof(signingPublic)),
             serverBinding + "tampered", signature)) {
@@ -122,7 +122,7 @@ bool TestSessionEncryption() {
 }
 
 bool TestServerSessionManager() {
-    SoH::Network::ServerSessionManager sessions;
+    Game::Multiplayer::ServerSessionManager sessions;
     if (sessions.ConnectPeer(0) || !sessions.ConnectPeer(7) || sessions.ConnectPeer(7) ||
         !sessions.ConnectPeer(9) || sessions.PeerCount() != 2 ||
         sessions.Peers() != std::vector<int32_t>({ 7, 9 }) || sessions.AllPeersSecure()) {
@@ -272,7 +272,7 @@ bool TestPacketSerialization() {
         decodedFishingIntent.sequence != fishingIntent.sequence ||
         decodedFishingIntent.fishingLureDrawOffset[2] !=
             fishingIntent.fishingLureDrawOffset[2] ||
-        !SoH::Network::FishingNetworkAdapter::IsSane(decodedFishingIntent)) {
+        !Game::Multiplayer::FishingNetworkAdapter::IsSane(decodedFishingIntent)) {
         return false;
     }
 
@@ -310,25 +310,25 @@ bool TestPacketSerialization() {
     }
     Game::Replication::EntityLifetimeRegistry activeCombatPlayers;
     const NetworkPlayerLifecyclePacket targetLifecycle{ 8, 18, 24, 42, 1 };
-    if (!SoH::Network::PlayerLifecycleNetworkAdapter::Apply(
+    if (!Game::Multiplayer::PlayerLifecycleNetworkAdapter::Apply(
             lifecycleSource, activeCombatPlayers) ||
-        !SoH::Network::PlayerLifecycleNetworkAdapter::Apply(
+        !Game::Multiplayer::PlayerLifecycleNetworkAdapter::Apply(
             targetLifecycle, activeCombatPlayers)) {
         return false;
     }
-    if (!SoH::Network::CombatNetworkAdapter::IsSane(combatDecoded) ||
-        !SoH::Network::CombatNetworkAdapter::MatchesActiveLifetimes(
+    if (!Game::Multiplayer::CombatNetworkAdapter::IsSane(combatDecoded) ||
+        !Game::Multiplayer::CombatNetworkAdapter::MatchesActiveLifetimes(
             combatDecoded, activeCombatPlayers)) {
         return false;
     }
     combatDecoded.targetEntityGeneration = 25;
-    if (SoH::Network::CombatNetworkAdapter::MatchesActiveLifetimes(
+    if (Game::Multiplayer::CombatNetworkAdapter::MatchesActiveLifetimes(
             combatDecoded, activeCombatPlayers)) {
         return false;
     }
     combatDecoded.targetEntityGeneration = 24;
     combatDecoded.damage = 1;
-    if (SoH::Network::CombatNetworkAdapter::IsSane(combatDecoded)) return false;
+    if (Game::Multiplayer::CombatNetworkAdapter::IsSane(combatDecoded)) return false;
 
     const NetworkSceneEntryIntentPacket sceneIntentSource{ 101, 1 };
     const std::string sceneIntentEncoded = BuildAppPacket(NAMTSceneEntryIntent, sceneIntentSource);
@@ -358,14 +358,14 @@ bool TestPacketSerialization() {
     sceneSnapshot.sceneId = 73;
     sceneSnapshot.position = { 666.0f, -87.0f, 354.0f };
     sceneSnapshot.headingRadians = -1234.0f * (3.14159265358979323846f / 32768.0f);
-    const auto mappedSceneState = SoH::Network::SceneNetworkAdapter::ToPacket(
+    const auto mappedSceneState = Game::Multiplayer::SceneNetworkAdapter::ToPacket(
         sceneSnapshot, 101, true);
     const auto mappedSceneAuthority =
-        SoH::Network::SceneNetworkAdapter::ToAuthority(sceneStateSource);
+        Game::Multiplayer::SceneNetworkAdapter::ToAuthority(sceneStateSource);
     const auto mappedSceneCommand =
-        SoH::Network::SceneNetworkAdapter::ToCommand(sceneIntentSource);
-    if (!SoH::Network::SceneNetworkAdapter::IsSane(sceneIntentSource) ||
-        !SoH::Network::SceneNetworkAdapter::IsSane(mappedSceneState) ||
+        Game::Multiplayer::SceneNetworkAdapter::ToCommand(sceneIntentSource);
+    if (!Game::Multiplayer::SceneNetworkAdapter::IsSane(sceneIntentSource) ||
+        !Game::Multiplayer::SceneNetworkAdapter::IsSane(mappedSceneState) ||
         std::memcmp(&sceneStateSource, &mappedSceneState, sizeof(sceneStateSource)) != 0 ||
         mappedSceneAuthority.playerId != sceneStateSource.playerId ||
         mappedSceneAuthority.entity != Game::Simulation::EntityId{ 19, 3 } ||
@@ -419,7 +419,7 @@ bool TestPacketSerialization() {
 
     const NetworkArrowFireIntentPacket arrowIntentSource{ 77, 3 };
     const auto mappedArrowCommand =
-        SoH::Network::ProjectileNetworkAdapter::ToCommand(arrowIntentSource);
+        Game::Multiplayer::ProjectileNetworkAdapter::ToCommand(arrowIntentSource);
     const std::string arrowIntentEncoded = BuildAppPacket(NAMTArrowFireIntent, arrowIntentSource);
     NetworkArrowFireIntentPacket arrowIntentDecoded{};
     if (arrowIntentEncoded.size() >= 32 ||
@@ -455,7 +455,7 @@ bool TestPacketSerialization() {
         124, 3, NETWORK_FISH_INTENT_HOOK
     };
     const auto mappedFishCommand =
-        SoH::Network::FishingNetworkAdapter::ToCommand(fishIntentSource);
+        Game::Multiplayer::FishingNetworkAdapter::ToCommand(fishIntentSource);
     const std::string fishIntentEncoded = BuildAppPacket(NAMTFishIntent, fishIntentSource);
     NetworkFishIntentPacket fishIntentDecoded{};
     if (!ParseAppPacket(fishIntentEncoded.data(), static_cast<__int32>(fishIntentEncoded.size()),
@@ -486,7 +486,7 @@ bool TestPacketSerialization() {
         125, 3, NETWORK_LURE_DEPLOYED | NETWORK_LURE_REEL_HELD
     };
     const auto mappedLureCommand =
-        SoH::Network::FishingNetworkAdapter::ToCommand(lureIntentSource);
+        Game::Multiplayer::FishingNetworkAdapter::ToCommand(lureIntentSource);
     const std::string lureIntentEncoded = BuildAppPacket(NAMTLureControlIntent, lureIntentSource);
     NetworkLureControlIntentPacket lureIntentDecoded{};
     if (!ParseAppPacket(lureIntentEncoded.data(), static_cast<__int32>(lureIntentEncoded.size()),
@@ -555,7 +555,7 @@ bool TestPacketSerialization() {
 }
 
 bool TestProjectileNetworkAdapter() {
-    namespace Adapter = SoH::Network::ProjectileNetworkAdapter;
+    namespace Adapter = Game::Multiplayer::ProjectileNetworkAdapter;
 
     Game::Simulation::ArrowSnapshot arrow{};
     arrow.entity = { 31, 4 };
@@ -652,8 +652,8 @@ bool TestProjectileNetworkAdapter() {
 }
 
 bool TestClientProjectilePresentationPolicy() {
-    using Action = SoH::Network::ClientProjectilePresentationAction;
-    using Policy = SoH::Network::ClientProjectilePresentationPolicy;
+    using Action = Game::Multiplayer::ClientProjectilePresentationAction;
+    using Policy = Game::Multiplayer::ClientProjectilePresentationPolicy;
 
     constexpr int32_t localPlayerId = 7;
     Game::Client::RemoteProjectileReplicaState packet{};
@@ -723,8 +723,8 @@ bool TestClientProjectilePresentationPolicy() {
 }
 
 bool TestClientCombatPresentationPolicy() {
-    using Action = SoH::Network::ClientCombatPresentationAction;
-    using Policy = SoH::Network::ClientCombatPresentationPolicy;
+    using Action = Game::Multiplayer::ClientCombatPresentationAction;
+    using Policy = Game::Multiplayer::ClientCombatPresentationPolicy;
 
     constexpr int32_t localPlayerId = 7;
     constexpr int32_t currentSceneId = 118;
@@ -754,10 +754,10 @@ bool TestClientCombatPresentationPolicy() {
 }
 
 bool TestClientPlayerActionPresentationPolicy() {
-    using Base = SoH::Network::ClientPlayerBaseAnimation;
-    using Equipment = SoH::Network::ClientEquipmentPresentation;
-    using Policy = SoH::Network::ClientPlayerActionPresentationPolicy;
-    using Upper = SoH::Network::ClientPlayerUpperAnimation;
+    using Base = Game::Multiplayer::ClientPlayerBaseAnimation;
+    using Equipment = Game::Multiplayer::ClientEquipmentPresentation;
+    using Policy = Game::Multiplayer::ClientPlayerActionPresentationPolicy;
+    using Upper = Game::Multiplayer::ClientPlayerUpperAnimation;
 
     Game::Simulation::PlayerSnapshot snapshot{};
     snapshot.health = 48;
@@ -816,7 +816,7 @@ bool TestClientPlayerActionPresentationPolicy() {
 }
 
 bool TestFishingNetworkAdapter() {
-    namespace Adapter = SoH::Network::FishingNetworkAdapter;
+    namespace Adapter = Game::Multiplayer::FishingNetworkAdapter;
 
     Game::Simulation::FishSnapshot fish{};
     fish.entity = { 41, 7 };
@@ -958,7 +958,7 @@ bool TestFishingNetworkAdapter() {
 }
 
 bool TestWorldPvpNetworkAdapter() {
-    namespace Adapter = SoH::Network::WorldPvpNetworkAdapter;
+    namespace Adapter = Game::Multiplayer::WorldPvpNetworkAdapter;
 
     Game::Simulation::ObjectiveSnapshot objective{};
     objective.entity = { 61, 3 };
@@ -1123,14 +1123,14 @@ bool TestLocalVoiceFrameStream() {
 }
 
 bool TestLocalVoiceSubmissionService() {
-    using SoH::Network::LocalVoiceSubmissionRole;
+    using Game::Multiplayer::LocalVoiceSubmissionRole;
     std::vector<NetworkVoiceIntentPacket> clientPackets;
     std::vector<int32_t> hostRecipients;
     std::vector<NetworkVoicePacket> hostPackets;
     LocalVoiceSubmissionRole role = LocalVoiceSubmissionRole::Inactive;
     bool failPeerFour = false;
 
-    SoH::Network::LocalVoiceSubmissionService service({
+    Game::Multiplayer::LocalVoiceSubmissionService service({
         [&]() { return role; },
         [&](const NetworkVoiceIntentPacket& packet) {
             clientPackets.push_back(packet);
@@ -1196,7 +1196,7 @@ bool TestLocalVoiceSubmissionService() {
 bool TestLocalClientAdmissionService() {
     cCryptoSession clientCrypto;
     cCryptoSession serverCrypto;
-    SoH::Network::PrivateChatService privateChat;
+    Game::Multiplayer::PrivateChatService privateChat;
     if (!privateChat.Initialize()) return false;
 
     bool active = false;
@@ -1210,7 +1210,7 @@ bool TestLocalClientAdmissionService() {
     std::string chatPublicKey;
     NetMsgFlags secureFlags = NMFNone;
 
-    SoH::Network::LocalClientAdmissionService service(
+    Game::Multiplayer::LocalClientAdmissionService service(
         clientCrypto, privateChat,
         {
             [&]() { return active; },
@@ -1263,8 +1263,8 @@ bool TestLocalClientAdmissionService() {
         !service.SubmitIdentity() || !service.IdentitySent() ||
         secureCount != 1 || submittedIdentity.protocolVersion != APP_PROTOCOL_VERSION ||
         submittedIdentity.publicKey.size() != crypto_sign_PUBLICKEYBYTES ||
-        submittedIdentity.name != SoH::Network::LocalUserName() ||
-        !SoH::Network::VerifyIdentityBinding(
+        submittedIdentity.name != Game::Multiplayer::LocalUserName() ||
+        !Game::Multiplayer::VerifyIdentityBinding(
             submittedIdentity.publicKey, clientCrypto.identityBinding(),
             submittedIdentity.signature) ||
         (secureFlags & NMFGuaranteed) == 0 ||
@@ -1272,7 +1272,7 @@ bool TestLocalClientAdmissionService() {
         return false;
     }
     if (!service.SubmitPrivateChatKey() || secureCount != 2 ||
-        chatKeyPlayer != 0 || chatKeyName != SoH::Network::LocalUserName() ||
+        chatKeyPlayer != 0 || chatKeyName != Game::Multiplayer::LocalUserName() ||
         chatPublicKey != privateChat.PublicKey()) {
         return false;
     }
@@ -1288,7 +1288,7 @@ bool TestLocalClientAdmissionService() {
 }
 
 bool TestLifecycleAndCorpseAdapters() {
-    namespace Corpse = SoH::Network::CorpseNetworkAdapter;
+    namespace Corpse = Game::Multiplayer::CorpseNetworkAdapter;
 
     Game::Simulation::PlayerSnapshot player{};
     player.entity = { 80, 12 };
@@ -1301,10 +1301,10 @@ bool TestLifecycleAndCorpseAdapters() {
         9, player.entity, player.sceneId, player.position
     };
     const NetworkPlayerLifecyclePacket lifecycle =
-        SoH::Network::PlayerLifecycleNetworkAdapter::ToPacket(replicatedPlayer, true);
+        Game::Multiplayer::PlayerLifecycleNetworkAdapter::ToPacket(replicatedPlayer, true);
     const Game::Client::RemotePlayerPresentationState lifecycleState =
-        SoH::Network::PlayerLifecycleNetworkAdapter::ToPresentationState(lifecycle);
-    if (!SoH::Network::PlayerLifecycleNetworkAdapter::IsSane(lifecycle) ||
+        Game::Multiplayer::PlayerLifecycleNetworkAdapter::ToPresentationState(lifecycle);
+    if (!Game::Multiplayer::PlayerLifecycleNetworkAdapter::IsSane(lifecycle) ||
         lifecycle.playerId != 9 || lifecycle.entityGeneration != 12 || lifecycle.active != 1 ||
         lifecycleState.entity != player.entity || lifecycleState.playerId != player.ownerPlayerId ||
         lifecycleState.sceneId != player.sceneId || !lifecycleState.active) {
@@ -1340,7 +1340,7 @@ bool TestLifecycleAndCorpseAdapters() {
 }
 
 bool TestPlayerSimulationNetworkAdapter() {
-    namespace Adapter = SoH::Network::PlayerSimulationNetworkAdapter;
+    namespace Adapter = Game::Multiplayer::PlayerSimulationNetworkAdapter;
 
     NetworkPlayerCommandPacket command{};
     command.sequence = 600;
@@ -1423,30 +1423,30 @@ bool TestPlayerSimulationNetworkAdapter() {
     Game::Simulation::PlayerSnapshot idleSwimmer = snapshot;
     idleSwimmer.velocity = {};
     const auto idleSwimPresentation =
-        SoH::Network::ClientPlayerActionPresentationPolicy::Evaluate(idleSwimmer);
+        Game::Multiplayer::ClientPlayerActionPresentationPolicy::Evaluate(idleSwimmer);
     idleSwimmer.velocity.z = 20.0f;
     idleSwimmer.headingRadians = 0.0f;
     const auto forwardSwimPresentation =
-        SoH::Network::ClientPlayerActionPresentationPolicy::Evaluate(idleSwimmer);
+        Game::Multiplayer::ClientPlayerActionPresentationPolicy::Evaluate(idleSwimmer);
     if (idleSwimPresentation.baseAnimation !=
-            SoH::Network::ClientPlayerBaseAnimation::SwimIdle ||
+            Game::Multiplayer::ClientPlayerBaseAnimation::SwimIdle ||
         forwardSwimPresentation.baseAnimation !=
-            SoH::Network::ClientPlayerBaseAnimation::SwimForward) {
+            Game::Multiplayer::ClientPlayerBaseAnimation::SwimForward) {
         return false;
     }
     Game::Simulation::PlayerSnapshot airborne = snapshot;
     airborne.locomotionMode =
         Game::Simulation::PlayerLocomotionMode::Airborne;
     airborne.velocity = { 0.0f, -30.0f, 0.0f };
-    if (SoH::Network::ClientPlayerActionPresentationPolicy::Evaluate(airborne)
+    if (Game::Multiplayer::ClientPlayerActionPresentationPolicy::Evaluate(airborne)
             .baseAnimation !=
-        SoH::Network::ClientPlayerBaseAnimation::Falling) {
+        Game::Multiplayer::ClientPlayerBaseAnimation::Falling) {
         return false;
     }
     airborne.actionState = Game::Simulation::PlayerActionState::JumpSlashing;
-    if (SoH::Network::ClientPlayerActionPresentationPolicy::Evaluate(airborne)
+    if (Game::Multiplayer::ClientPlayerActionPresentationPolicy::Evaluate(airborne)
             .baseAnimation !=
-        SoH::Network::ClientPlayerBaseAnimation::JumpSlash) {
+        Game::Multiplayer::ClientPlayerBaseAnimation::JumpSlash) {
         return false;
     }
 
@@ -1564,14 +1564,14 @@ bool TestLocalPlayerCommandStream() {
     if (!lastTick || !wrappedTick || wrappedTick->sequence != 2) return false;
 
     NetworkPlayerCommandPacket packet =
-        SoH::Network::PlayerSimulationNetworkAdapter::ToPacket(*first);
+        Game::Multiplayer::PlayerSimulationNetworkAdapter::ToPacket(*first);
     packet.lifeEpoch = 2;
-    if (!SoH::Network::PlayerSimulationNetworkAdapter::IsSane(packet) ||
+    if (!Game::Multiplayer::PlayerSimulationNetworkAdapter::IsSane(packet) ||
         packet.moveX != 85 || packet.moveY != -85) {
         return false;
     }
     const auto roundTrip =
-        SoH::Network::PlayerSimulationNetworkAdapter::ToCommand(packet);
+        Game::Multiplayer::PlayerSimulationNetworkAdapter::ToCommand(packet);
     LocalPlayerCommandStream lifetimeStream;
     LocalPlayerInputSample lifetimeSample{};
     lifetimeSample.clientTick = 7;
@@ -1645,7 +1645,7 @@ bool TestLocalPlayerCommandStream() {
 }
 
 bool TestClientReplicationInbox() {
-    SoH::Network::ClientReplicationInbox inbox;
+    Game::Multiplayer::ClientReplicationInbox inbox;
     const NetworkPlayerLifecyclePacket lifetime{ 7, 10, 1, 118, 1 };
     if (!inbox.AcceptPlayerLifecycle(lifetime)) return false;
 
@@ -1656,9 +1656,9 @@ bool TestClientReplicationInbox() {
     player.serverTick = 20;
     player.health = 48;
     const NetworkPlayerSnapshotPacket snapshot =
-        SoH::Network::PlayerSimulationNetworkAdapter::ToPacket(player);
+        Game::Multiplayer::PlayerSimulationNetworkAdapter::ToPacket(player);
     const auto decodedSnapshot =
-        SoH::Network::PlayerSimulationNetworkAdapter::ToSnapshot(snapshot);
+        Game::Multiplayer::PlayerSimulationNetworkAdapter::ToSnapshot(snapshot);
     if (decodedSnapshot.entity != player.entity ||
         decodedSnapshot.ownerPlayerId != player.ownerPlayerId ||
         decodedSnapshot.sceneId != player.sceneId ||
@@ -1743,7 +1743,7 @@ bool TestClientReplicationInbox() {
     // admitted against the same generation, but the respawn retains its own
     // complete placement baseline and advances the epoch floor so an old-life
     // snapshot arriving afterward cannot resurrect dead presentation state.
-    SoH::Network::ClientReplicationInbox reorderedRespawnInbox;
+    Game::Multiplayer::ClientReplicationInbox reorderedRespawnInbox;
     const NetworkPlayerLifecyclePacket reorderedLifetime{ 9, 50, 2, 118, 1 };
     if (!reorderedRespawnInbox.AcceptPlayerLifecycle(reorderedLifetime)) {
         return false;
@@ -1947,9 +1947,9 @@ bool TestClientReplicationInbox() {
     combatEvent.attackKind = Game::Simulation::CombatAttackKind::Arrow;
     combatEvent.result = Game::Simulation::CombatResultKind::Blocked;
     combatEvent.impactPosition = { 1.0f, 2.0f, 3.0f };
-    NetworkCombatResultPacket combat = SoH::Network::CombatNetworkAdapter::ToPacket(combatEvent);
+    NetworkCombatResultPacket combat = Game::Multiplayer::CombatNetworkAdapter::ToPacket(combatEvent);
     const Game::Simulation::CombatResultEvent decodedCombat =
-        SoH::Network::CombatNetworkAdapter::ToEvent(combat);
+        Game::Multiplayer::CombatNetworkAdapter::ToEvent(combat);
     if (decodedCombat.eventId != combatEvent.eventId ||
         decodedCombat.sourceEntity != combatEvent.sourceEntity ||
         decodedCombat.targetEntity != combatEvent.targetEntity ||
@@ -1964,22 +1964,22 @@ bool TestClientReplicationInbox() {
     damagedCombatEvent.damage = 8;
     damagedCombatEvent.hitRegion = Game::Simulation::PlayerHitRegion::Torso;
     const NetworkCombatResultPacket damagedCombat =
-        SoH::Network::CombatNetworkAdapter::ToPacket(damagedCombatEvent);
+        Game::Multiplayer::CombatNetworkAdapter::ToPacket(damagedCombatEvent);
     const Game::Simulation::CombatResultEvent decodedDamagedCombat =
-        SoH::Network::CombatNetworkAdapter::ToEvent(damagedCombat);
-    if (!SoH::Network::CombatNetworkAdapter::IsSane(damagedCombat) ||
+        Game::Multiplayer::CombatNetworkAdapter::ToEvent(damagedCombat);
+    if (!Game::Multiplayer::CombatNetworkAdapter::IsSane(damagedCombat) ||
         decodedDamagedCombat.hitRegion != Game::Simulation::PlayerHitRegion::Torso) {
         return false;
     }
     NetworkCombatResultPacket invalidHitRegion = damagedCombat;
     invalidHitRegion.hitRegion = Game::Simulation::kPlayerHitRegionCount;
-    if (SoH::Network::CombatNetworkAdapter::IsSane(invalidHitRegion)) return false;
+    if (Game::Multiplayer::CombatNetworkAdapter::IsSane(invalidHitRegion)) return false;
     invalidHitRegion = damagedCombat;
     invalidHitRegion.hitRegion = static_cast<unsigned char>(Game::Simulation::PlayerHitRegion::None);
-    if (SoH::Network::CombatNetworkAdapter::IsSane(invalidHitRegion)) return false;
+    if (Game::Multiplayer::CombatNetworkAdapter::IsSane(invalidHitRegion)) return false;
     invalidHitRegion = combat;
     invalidHitRegion.hitRegion = static_cast<unsigned char>(Game::Simulation::PlayerHitRegion::Head);
-    if (SoH::Network::CombatNetworkAdapter::IsSane(invalidHitRegion)) return false;
+    if (Game::Multiplayer::CombatNetworkAdapter::IsSane(invalidHitRegion)) return false;
     if (!inbox.AcceptCombatResult(combat) || inbox.AcceptCombatResult(combat)) return false;
     combat.eventId = 49;
     if (inbox.AcceptCombatResult(combat)) return false;
@@ -2000,15 +2000,15 @@ bool TestClientReplicationInbox() {
     };
     fish.position = { 1.0f, 2.0f, 3.0f };
     NetworkFishStatePacket fishState =
-        SoH::Network::FishingNetworkAdapter::ToPacket(fish, 30, true);
+        Game::Multiplayer::FishingNetworkAdapter::ToPacket(fish, 30, true);
     NetworkFishStatePacket invalidFishOwner = fishState;
     invalidFishOwner.ownerPlayerId = -1;
     NetworkFishStatePacket invalidFishSequence = fishState;
     invalidFishSequence.sequence = 0;
     NetworkFishStatePacket wrongSceneFish = fishState;
     wrongSceneFish.sceneId = 119;
-    if (SoH::Network::FishingNetworkAdapter::IsSane(invalidFishOwner) ||
-        SoH::Network::FishingNetworkAdapter::IsSane(invalidFishSequence) ||
+    if (Game::Multiplayer::FishingNetworkAdapter::IsSane(invalidFishOwner) ||
+        Game::Multiplayer::FishingNetworkAdapter::IsSane(invalidFishSequence) ||
         inbox.AcceptFishState(wrongSceneFish)) {
         return false;
     }
@@ -2085,7 +2085,7 @@ bool TestClientReplicationInbox() {
 
     // Owner visibility leaving after a reliable release must not erase the
     // terminal state that removes the already-presented fish or lure.
-    SoH::Network::ClientReplicationInbox terminalInbox;
+    Game::Multiplayer::ClientReplicationInbox terminalInbox;
     if (!terminalInbox.AcceptPlayerLifecycle({ 9, 90, 1, 118, 1 })) return false;
     NetworkFishStatePacket terminalFish = fishState;
     terminalFish.ownerPlayerId = 9;
@@ -2118,7 +2118,7 @@ bool TestClientReplicationInbox() {
     // presentation boundary. Pending active old-scene state must disappear,
     // delayed old-scene activity must be rejected, and a new exact entity in
     // the admitted scene may establish normally.
-    SoH::Network::ClientReplicationInbox fishingSceneInbox;
+    Game::Multiplayer::ClientReplicationInbox fishingSceneInbox;
     if (!fishingSceneInbox.AcceptPlayerLifecycle({ 12, 120, 1, 118, 1 })) {
         return false;
     }
@@ -2168,7 +2168,7 @@ bool TestClientReplicationInbox() {
         return false;
     }
 
-    SoH::Network::ClientReplicationInbox sceneInbox;
+    Game::Multiplayer::ClientReplicationInbox sceneInbox;
     NetworkSceneEntryStatePacket sceneReply{};
     sceneReply.playerId = 7;
     sceneReply.entityIndex = 70;
@@ -2257,7 +2257,7 @@ bool TestClientReplicationInbox() {
     if (inbox.AcceptObjectiveState(staleObjective)) return false;
     if (inbox.ObjectiveStateCount() != 300) return false;
 
-    namespace WorldAdapter = SoH::Network::WorldPvpNetworkAdapter;
+    namespace WorldAdapter = Game::Multiplayer::WorldPvpNetworkAdapter;
     const std::vector<Game::Simulation::StrategicSiteDefinition> topologySites{
         { 1000, Game::Simulation::StrategicSiteKind::Keep, 1 },
         { 1001, Game::Simulation::StrategicSiteKind::Camp, 2 },
@@ -2556,7 +2556,7 @@ bool TestClientReplicationInbox() {
            inbox.PlayerRespawnCount() == 0 && inbox.CombatResultCount() == 0;
 }
 
-class ClientDispatchCapture final : public SoH::Network::ClientProtocolSink {
+class ClientDispatchCapture final : public Game::Multiplayer::ClientProtocolSink {
   public:
     void OnClientPlayerSnapshot(const NetworkPlayerSnapshotPacket& packet) override {
         ++snapshotCount;
@@ -2590,7 +2590,7 @@ class ClientDispatchCapture final : public SoH::Network::ClientProtocolSink {
     std::string chat;
 };
 
-class ServerDispatchCapture final : public SoH::Network::ServerProtocolSink {
+class ServerDispatchCapture final : public Game::Multiplayer::ServerProtocolSink {
   public:
     void OnServerKeyHello(int32_t player, const std::string& value) override {
         ++keyCount;
@@ -2647,8 +2647,8 @@ class ServerDispatchCapture final : public SoH::Network::ServerProtocolSink {
 };
 
 bool TestProtocolDispatcher() {
-    using SoH::Network::ProtocolDispatchResult;
-    using SoH::Network::ProtocolDispatcher;
+    using Game::Multiplayer::ProtocolDispatchResult;
+    using Game::Multiplayer::ProtocolDispatcher;
 
     ClientDispatchCapture client;
     NetworkPlayerSnapshotPacket snapshot{};
@@ -2894,13 +2894,13 @@ bool TestProtocolDispatcher() {
 }
 
 bool TestNetworkProtocolIngress() {
-    using SoH::Network::NetworkProtocolIngress;
-    using SoH::Network::ProtocolDispatchResult;
+    using Game::Multiplayer::NetworkProtocolIngress;
+    using Game::Multiplayer::ProtocolDispatchResult;
 
     cCryptoSession clientCrypto;
-    SoH::Network::ServerSessionManager sessions;
+    Game::Multiplayer::ServerSessionManager sessions;
     Game::Replication::ServerReplicationCoordinator replication;
-    SoH::Network::SecureTransportChannel channel(clientCrypto, sessions,
+    Game::Multiplayer::SecureTransportChannel channel(clientCrypto, sessions,
                                                   replication);
     ClientDispatchCapture client;
     ServerDispatchCapture server;
@@ -2959,11 +2959,11 @@ bool TestNetworkProtocolIngress() {
 }
 
 bool TestLocalTextCommunicationService() {
-    using SoH::Network::LocalTextCommunicationRole;
+    using Game::Multiplayer::LocalTextCommunicationRole;
 
-    SoH::Network::PrivateChatService alice;
-    SoH::Network::PrivateChatService bob;
-    SoH::Network::CommunicationInbox inbox;
+    Game::Multiplayer::PrivateChatService alice;
+    Game::Multiplayer::PrivateChatService bob;
+    Game::Multiplayer::CommunicationInbox inbox;
     if (!alice.Initialize() || !bob.Initialize() ||
         !alice.SetPeer(2, "Bob", bob.PublicKey())) {
         return false;
@@ -2982,7 +2982,7 @@ bool TestLocalTextCommunicationService() {
     std::string hostText;
     int32_t hostTarget = -1;
 
-    SoH::Network::LocalTextCommunicationService service(
+    Game::Multiplayer::LocalTextCommunicationService service(
         alice, inbox,
         {
             [&role]() { return role; },
@@ -3057,7 +3057,7 @@ bool TestLocalTextCommunicationService() {
 }
 
 bool TestCommunicationServices() {
-    SoH::Network::CommunicationInbox inbox;
+    Game::Multiplayer::CommunicationInbox inbox;
     for (int32_t index = 0; index < 510; ++index) {
         inbox.QueueChat("line " + std::to_string(index));
     }
@@ -3090,7 +3090,7 @@ bool TestCommunicationServices() {
                                 decodedVoiceIntent) ||
         decodedVoiceIntent.sequence != voiceIntent.sequence ||
         decodedVoiceIntent.data != voiceIntent.data ||
-        !SoH::Network::CommunicationInbox::IsSaneVoice(decodedVoiceIntent)) {
+        !Game::Multiplayer::CommunicationInbox::IsSaneVoice(decodedVoiceIntent)) {
         return false;
     }
     for (uint32_t sequence = 1; sequence <= 70; ++sequence) {
@@ -3141,8 +3141,8 @@ bool TestCommunicationServices() {
         inbox.AdmitVoiceIntent(7, 1)) return false;
     inbox.ResetVoiceSession();
 
-    SoH::Network::PrivateChatService alice;
-    SoH::Network::PrivateChatService bob;
+    Game::Multiplayer::PrivateChatService alice;
+    Game::Multiplayer::PrivateChatService bob;
     if (!alice.Initialize() || !bob.Initialize() ||
         !alice.SetPeer(2, "Bob", bob.PublicKey())) {
         return false;
@@ -3160,7 +3160,7 @@ bool TestCommunicationServices() {
         return false;
     }
 
-    SoH::Network::ModerationRegistry moderation("", "");
+    Game::Multiplayer::ModerationRegistry moderation("", "");
     moderation.Load();
     if (!moderation.Ban("Disk-ABC") || !moderation.IsBanned("disk-abc") ||
         moderation.Ban("DISK-ABC")) {
@@ -3181,7 +3181,7 @@ bool TestCommunicationServices() {
 }
 
 bool TestServerCommandParser() {
-    using namespace SoH::Network;
+    using namespace Game::Multiplayer;
 
     const ParsedServerCommand team = ServerCommandParser::Parse("  /TEAM   Blue  ");
     if (!team.Valid() || team.kind != ServerCommandKind::Team ||
@@ -3220,7 +3220,7 @@ bool TestServerCommandParser() {
 }
 
 bool TestServerAdministrationService() {
-    using namespace SoH::Network;
+    using namespace Game::Multiplayer;
     using Game::Simulation::TeamId;
 
     ServerAdministrationService administration("", "");
@@ -3294,7 +3294,7 @@ bool TestServerAdministrationService() {
 }
 
 bool TestServerReplicationInterestPublisher() {
-    using namespace SoH::Network;
+    using namespace Game::Multiplayer;
 
     Game::Simulation::ServerWorld world;
     Game::Replication::ServerReplicationCoordinator replication;
@@ -3438,7 +3438,7 @@ bool TestServerAuthorityScheduler() {
 }
 
 bool TestServerGameplayCommandService() {
-    using namespace SoH::Network;
+    using namespace Game::Multiplayer;
 
     Game::Simulation::ServerWorld world;
     Game::Replication::ServerReplicationCoordinator replication;
@@ -3544,7 +3544,7 @@ bool TestServerGameplayCommandService() {
 }
 
 bool TestServerPlayerSessionService() {
-    using namespace SoH::Network;
+    using namespace Game::Multiplayer;
 
     ServerSessionManager sessions;
     ServerAdministrationService administration("", "");
@@ -3639,7 +3639,7 @@ bool TestServerPlayerSessionService() {
 }
 
 bool TestSecureTransportChannel() {
-    using namespace SoH::Network;
+    using namespace Game::Multiplayer;
 
     cCryptoSession clientCrypto;
     ServerSessionManager sessions;
@@ -3727,7 +3727,7 @@ bool TestSecureTransportChannel() {
 }
 
 bool TestServerCommunicationService() {
-    using namespace SoH::Network;
+    using namespace Game::Multiplayer;
 
     ServerSessionManager sessions;
     ServerAdministrationService administration("", "");
@@ -3854,7 +3854,7 @@ bool TestServerCommunicationService() {
 }
 
 bool TestClientSessionIngress() {
-    using namespace SoH::Network;
+    using namespace Game::Multiplayer;
 
     ClientReplicationInbox replication;
     CommunicationInbox communication;

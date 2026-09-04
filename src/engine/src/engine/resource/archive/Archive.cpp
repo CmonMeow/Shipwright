@@ -1,15 +1,9 @@
 #include <runtime/log/Log.hpp>
 #include "engine/resource/archive/Archive.h"
-#include "engine/Context.h"
 #include "engine/resource/File.h"
-#include "engine/resource/ResourceLoader.h"
-#include "engine/resource/ResourceManager.h"
-#include "engine/resource/ResourceType.h"
 #include "engine/utils/binarytools/MemoryStream.h"
 #include "engine/utils/glob.h"
 #include "engine/utils/StrHash64.h"
-#include "engine/window/Window.h"
-#include <nlohmann/json.hpp>
 
 namespace Engine {
 Archive::Archive(const std::string& path)
@@ -29,7 +23,6 @@ void Archive::Load() {
     bool opened = Open();
 
     auto t = LoadFile("version");
-    bool isGameVersionValid = false;
     if (t != nullptr && t->IsLoaded) {
         mHasGameVersion = true;
         auto stream = std::make_shared<MemoryStream>(t->Buffer->data(), t->Buffer->size());
@@ -37,15 +30,9 @@ void Archive::Load() {
         Endianness endianness = (Endianness)reader->ReadUByte();
         reader->SetEndianness(endianness);
         SetGameVersion(reader->ReadUInt32());
-        isGameVersionValid =
-            Context::GetInstance()->GetResourceManager()->GetArchiveManager()->IsGameVersionValid(GetGameVersion());
-
-        if (!isGameVersionValid) {
-            WriteLog("Attempting to load Archive \"{}\" with invalid version {}", GetPath(), GetGameVersion());
-        }
     }
 
-    SetLoaded(opened && (!mHasGameVersion || isGameVersionValid));
+    SetLoaded(opened);
 
     if (!IsLoaded()) {
         Unload();
@@ -114,9 +101,8 @@ void Archive::IndexFile(const std::string& filePath) {
 }
 
 std::shared_ptr<File> Archive::LoadFile(uint64_t hash) {
-    const std::string& filePath =
-        *Context::GetInstance()->GetResourceManager()->GetArchiveManager()->HashToString(hash);
-    return LoadFile(filePath);
+    const auto file = mHashes->find(hash);
+    return file != mHashes->end() ? LoadFile(file->second) : nullptr;
 }
 
 } // namespace Engine

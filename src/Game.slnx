@@ -18,7 +18,7 @@
   </Project>
   <Project Path="msvc/Network.vcxproj" Type="8bc9ceb8-8b4a-11d0-8d11-00a0c91bc942" Id="cc8974d8-759d-3cfa-8cf0-b4f8b3d546cf"/>
   <Folder Name="/tests/">
-    <Project Path="msvc/InputActionTests.vcxproj" Type="8bc9ceb8-8b4a-11d0-8d11-00a0c91bc942" Id="c418922d-bb5c-46fc-8918-d2868d92e272"/>
+    <Project Path="msvc/InputTests.vcxproj" Type="8bc9ceb8-8b4a-11d0-8d11-00a0c91bc942" Id="c418922d-bb5c-46fc-8918-d2868d92e272"/>
     <Project Path="msvc/MultiplayerInteractionTests.vcxproj" Type="8bc9ceb8-8b4a-11d0-8d11-00a0c91bc942" Id="ead6a92c-40a7-4f09-bd07-35b94c3b77a2"/>
     <Project Path="msvc/SimulationTests.vcxproj" Type="8bc9ceb8-8b4a-11d0-8d11-00a0c91bc942" Id="5fcff460-66d9-4424-ae1f-964dc33d330d"/>
     <Project Path="msvc/NetworkRuntimeTests.vcxproj" Type="8bc9ceb8-8b4a-11d0-8d11-00a0c91bc942" Id="407fef62-ec00-4492-b660-3d3351e2914e">

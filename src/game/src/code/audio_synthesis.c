@@ -1,6 +1,6 @@
 #include <runtime/libultra.h>
 #include "global.h"
-#include "port/mixer.h"
+#include "audio/AudioCommandMixer.h"
 
 #define DEFAULT_LEN_1CH 0x1A0
 #define DEFAULT_LEN_2CH 0x340

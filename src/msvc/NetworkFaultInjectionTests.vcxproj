@@ -19,7 +19,7 @@
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>$(RepoRoot)src\game\port;$(RepoRoot)src\game\include;$(RepoRoot)src\engine\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(RepoRoot)src\game;$(RepoRoot)src\game\include;$(RepoRoot)src\engine\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalOptions>%(AdditionalOptions) /external:I "$(RepoRoot)third_party/libsodium/include" /external:I "$(RepoRoot)third_party" /external:I "$(RepoRoot)third_party/include" /utf-8</AdditionalOptions>
       <ExceptionHandling>Sync</ExceptionHandling><ExternalWarningLevel>TurnOffAllWarnings</ExternalWarningLevel>
       <LanguageStandard>stdcpp20</LanguageStandard><MultiProcessorCompilation>true</MultiProcessorCompilation>

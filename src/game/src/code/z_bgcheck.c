@@ -1,8 +1,7 @@
 #include "global.h"
 #include "vt.h"
 
-#include "port/OTRGlobals.h"
-#include "port/ResourceManagerHelpers.h"
+#include "resources/ResourceManagerHelpers.h"
 #include <assert.h>
 
 #define SS_NULL 0xFFFF
@@ -1554,16 +1553,8 @@ void BgCheck_Allocate(CollisionContext* colCtx, PlayState* play, CollisionHeader
     BgCheck_SetSubdivisionDimension(colCtx->minBounds.z, colCtx->subdivAmount.z, &colCtx->maxBounds.z,
                                     &colCtx->subdivLength.z, &colCtx->subdivLengthInv.z);
 
-    // OTRTODO: Re-enable when the below DynaPoly workaround is removed.
-    // #ifdef _SOH64 // BGCheck needs more memory on 64 bits because it crashes on some areas
-    //     colCtx->memSize *= 2;
-    // #endif
-
     // BGCheck needs a higher polygon and vertex count due to removed object dependencies.
     // Otherwise Forest Temple checkered room will crash due to the hallway actor being killed a frame late.
-    //
-    // OTRTODO: This is a workaround. The proper solution to fix this crash is to manage object loading / unloading
-    // the same as N64.
     colCtx->memSize *= 2;
     colCtx->dyna.polyListMax *= 2;
     colCtx->dyna.vtxListMax *= 2;
@@ -3673,7 +3664,7 @@ int32_t BgCheck_SphVsFirstDynaPoly(CollisionContext* colCtx, uint16_t xpFlags, C
  * SEGMENTED_TO_VIRTUAL CollisionHeader members
  */
 void CollisionHeader_SegmentedToVirtual(CollisionHeader* colHeader) {
-    if (ResourceMgr_OTRSigCheck(colHeader))
+    if (ResourceMgr_HasResourceSignature(colHeader))
         colHeader = ResourceMgr_LoadColByName(colHeader);
 
     colHeader->vtxList = SEGMENTED_TO_VIRTUAL(colHeader->vtxList);
@@ -3687,7 +3678,7 @@ void CollisionHeader_SegmentedToVirtual(CollisionHeader* colHeader) {
  * Convert CollisionHeader Segmented to Virtual addressing
  */
 void CollisionHeader_GetVirtual(void* colHeader, CollisionHeader** dest) {
-    if (ResourceMgr_OTRSigCheck(colHeader))
+    if (ResourceMgr_HasResourceSignature(colHeader))
         colHeader = ResourceMgr_LoadColByName(colHeader);
 
     *dest = SEGMENTED_TO_VIRTUAL(colHeader);

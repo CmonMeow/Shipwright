@@ -5,21 +5,16 @@
             "CursorVisibility": 1,
             "InterpolationFPS": 240,
             "MatchRefreshRate": 0,
-            "MultiplayerAction": 0,
             "MultiplayerAddress": "127.0.0.1",
             "MultiplayerPort": 777,
-            "MultiplayerStatus": "Hosting (secure) - 1 player(s)",
             "MultiplayerVoicePushToTalk": 1,
             "VsyncEnabled": 0
         }
     },
     "Window": {
-        "Fullscreen": {
-            "Enabled": false
-        },
         "Height": 897,
-        "PositionX": 0,
-        "PositionY": 23,
+        "PositionX": -9,
+        "PositionY": 0,
         "Width": 1536
     }
 }

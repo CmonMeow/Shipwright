@@ -1,4 +1,4 @@
-#include "runtime/runtime.h"
+#include "runtime/libultra/types.h"
 
 extern "C" {
 

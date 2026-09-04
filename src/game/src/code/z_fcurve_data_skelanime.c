@@ -1,6 +1,6 @@
 #include "global.h"
 #include <assert.h>
-#include "port/ResourceManagerHelpers.h"
+#include "resources/ResourceManagerHelpers.h"
 
 void SkelCurve_Clear(SkelAnimeCurve* skelCurve) {
     skelCurve->limbCount = 0;
@@ -16,8 +16,8 @@ void SkelCurve_Clear(SkelAnimeCurve* skelCurve) {
 int32_t SkelCurve_Init(PlayState* play, SkelAnimeCurve* skelCurve, SkelCurveLimbList* limbListSeg,
                    TransformUpdateIndex* transUpdIdx) {
 
-    if (ResourceMgr_OTRSigCheck(limbListSeg))
-        limbListSeg = ResourceMgr_LoadSkeletonByName(limbListSeg, NULL);
+    if (ResourceMgr_HasResourceSignature(limbListSeg))
+        limbListSeg = ResourceMgr_LoadSkeletonByName(limbListSeg);
 
     SkelCurveLimbList* limbList = SEGMENTED_TO_VIRTUAL(limbListSeg);
 
@@ -58,7 +58,7 @@ int32_t SkelCurve_Update(PlayState* play, SkelAnimeCurve* skelCurve) {
 
     TransformUpdateIndex* transformIndex = SEGMENTED_TO_VIRTUAL(skelCurve->transUpdIdx);
 
-    if (ResourceMgr_OTRSigCheck(transformIndex))
+    if (ResourceMgr_HasResourceSignature(transformIndex))
         transformIndex = ResourceMgr_LoadAnimByName(transformIndex);
 
     transformRefIdx = SEGMENTED_TO_VIRTUAL(transformIndex->refIndex);

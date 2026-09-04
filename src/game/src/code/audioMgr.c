@@ -1,6 +1,5 @@
 #include "global.h"
 #include <string.h>
-#include "port/OTRGlobals.h"
 
 void func_800C3C80(AudioMgr* audioMgr) {
 

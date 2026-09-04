@@ -1,7 +1,6 @@
 #include <runtime/log/Log.hpp>
 #include "engine/debug/Console.h"
 #include "engine/utils/StringHelper.h"
-#include "engine/Context.h"
 namespace Engine {
 Console::Console() {
 }
@@ -39,7 +38,7 @@ int32_t Console::Run(const std::string& command, std::string* output) {
     }
 
     const CommandEntry entry = mCommands[commandName];
-    int32_t commandResult = entry.Handler(Context::GetInstance()->GetConsole(), cmdArgs, output);
+    int32_t commandResult = entry.Handler(this, cmdArgs, output);
     if (output) {
         WriteLog("Command \"{}\" returned {} with output: {}", command, commandResult, *output);
     } else {

@@ -7,7 +7,7 @@
 #include "z_en_fish.h"
 #include "objects/gameplay_keep/gameplay_keep.h"
 #include "vt.h"
-#include "port/ResourceManagerHelpers.h"
+#include "resources/ResourceManagerHelpers.h"
 
 #define FLAGS 0
 
@@ -158,7 +158,6 @@ void EnFish_Destroy(Actor* thisx, PlayState* play2) {
 
     Collider_DestroyJntSph(play, &this->collider);
 
-    ResourceMgr_UnregisterSkeleton(&this->skelAnime);
 }
 
 void EnFish_SetYOffset(EnFish* this) {

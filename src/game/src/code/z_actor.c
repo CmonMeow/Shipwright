@@ -5,11 +5,11 @@
 #include "objects/gameplay_keep/gameplay_keep.h"
 #include "objects/gameplay_dangeon_keep/gameplay_dangeon_keep.h"
 #include "objects/object_bdoor/object_bdoor.h"
-#include "port/ObjectExtension/ObjectExtension.h"
-#include "port/ObjectExtension/ActorListIndex.h"
-#include "port/frame_interpolation.h"
-#include "port/ActorDB.h"
-#include "port/OTRGlobals.h"
+#include "runtime/actors/ObjectExtension.h"
+#include "runtime/actors/ActorListIndex.h"
+#include "rendering/FrameInterpolation.h"
+#include "runtime/actors/ActorDB.h"
+#include "platform/client/RetainedGameBridge.h"
 
 #include <string.h>
 #include <stdlib.h>
@@ -2232,8 +2232,8 @@ void Actor_DrawLensOverlay(GraphicsContext* gfxCtx) {
                         LENS_MASK_HEIGHT, 0, G_TX_MIRROR | G_TX_CLAMP, G_TX_MIRROR | G_TX_CLAMP, 6, 6, G_TX_NOLOD,
                         G_TX_NOLOD);
 
-    int32_t x = OTRGetRectDimensionFromLeftEdge(0) << 2;
-    int32_t w = OTRGetRectDimensionFromRightEdge(SCREEN_WIDTH) << 2;
+    int32_t x = RetainedGame_GetRectDimensionFromLeftEdge(0) << 2;
+    int32_t w = RetainedGame_GetRectDimensionFromRightEdge(SCREEN_WIDTH) << 2;
 
     gDPSetTileSize(POLY_XLU_DISP++, G_TX_RENDERTILE, (SCREEN_WIDTH / 2 - LENS_MASK_WIDTH) << 2,
                    (SCREEN_HEIGHT / 2 - LENS_MASK_HEIGHT) << 2, (SCREEN_WIDTH / 2 + LENS_MASK_WIDTH - 1) << 2,
@@ -2373,7 +2373,7 @@ int32_t Actor_CalcShouldDrawAndUpdate(PlayState* play, Actor* actor, Vec3f* proj
         float ratioAdjusted = 1.0f;
 
         float originalAspectRatio = 4.0f / 3.0f;
-        float currentAspectRatio = OTRGetAspectRatio();
+        float currentAspectRatio = RetainedGame_GetAspectRatio();
         ratioAdjusted = MAX(currentAspectRatio / originalAspectRatio, 1.0f);
 
         if ((((fabsf(projectedPos->x) - actor->uncullZoneScale) * (clampedProjectedW / ratioAdjusted)) < 1.0f) &&

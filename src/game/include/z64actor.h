@@ -6,7 +6,7 @@
 #include "z64math.h"
 #include "z64collision_check.h"
 #include "z64bgcheck.h"
-#include "port/ItemTableTypes.h"
+#include "runtime/items/GetItemTypes.h"
 #include "z64actor_enum.h"
 
 #define ACTOR_NUMBER_MAX 2000
@@ -336,9 +336,9 @@ typedef enum {
     /* 0x18 */ ITEM00_TUNIC_GORON,
     /* 0x19 */ ITEM00_UNUSED_19,
     /* 0x1A */ ITEM00_UNUSED_1A,
-    /* 0x1B */ ITEM00_SOH_DUMMY,
-    /* 0x1C */ ITEM00_SOH_GIVE_ITEM_ENTRY,
-    /* 0x1D */ ITEM00_SOH_GIVE_ITEM_ENTRY_GI,
+    /* 0x1B */ ITEM00_DUMMY,
+    /* 0x1C */ ITEM00_GIVE_ITEM_ENTRY,
+    /* 0x1D */ ITEM00_GIVE_ITEM_ENTRY_GI,
     /* 0x1E */ ITEM00_MAX,
     /* 0xFF */ ITEM00_NONE = 0xFF
 } Item00Type;

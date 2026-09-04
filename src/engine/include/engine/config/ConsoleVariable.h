@@ -8,6 +8,7 @@
 #include <string>
 
 namespace Engine {
+class Config;
 typedef enum class ConsoleVariableType { Integer, Float, String, Color, Color24 } ConsoleVariableType;
 
 typedef struct CVar {
@@ -28,7 +29,7 @@ typedef struct CVar {
 
 class ConsoleVariable {
   public:
-    ConsoleVariable();
+    explicit ConsoleVariable(Config& config);
     ~ConsoleVariable();
 
     std::shared_ptr<CVar> Get(const char* name);
@@ -61,9 +62,9 @@ class ConsoleVariable {
   protected:
     void LoadFromPath(std::string path,
                       nlohmann::detail::iteration_proxy<nlohmann::detail::iter_impl<nlohmann::json>> items);
-    void LoadLegacy();
 
   private:
+    Config& mConfig;
     std::unordered_map<std::string, std::shared_ptr<CVar>> mVariables;
 };
 } // namespace Engine

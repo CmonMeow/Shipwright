@@ -1,6 +1,0 @@
-#include "resource.h"
-
-LANGUAGE 9, 1
-
-IDI_GAME_CLIENT ICON "assets\\Icon.ico"
-IDC_GAME_POINTER CURSOR "assets\\Cursor_cyan.cur"

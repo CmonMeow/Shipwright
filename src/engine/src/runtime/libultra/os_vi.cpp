@@ -1,4 +1,6 @@
-#include "runtime/runtime.h"
+#include "runtime/libultra/internal.h"
+#include "runtime/libultra/message.h"
+#include "runtime/libultra/os.h"
 
 #ifdef _WIN32
 #include <windows.h>

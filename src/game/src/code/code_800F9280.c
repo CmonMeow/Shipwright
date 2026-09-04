@@ -1,6 +1,6 @@
 #include <runtime/libultra.h>
 #include "global.h"
-#include "port/mixer.h"
+#include "audio/AudioCommandMixer.h"
 
 
 typedef struct {

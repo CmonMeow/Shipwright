@@ -6,6 +6,7 @@
 #include <variant>
 #include <sstream>
 #include <optional>
+#include <functional>
 #include <unordered_map>
 #include <cstdlib>
 
@@ -165,7 +166,7 @@ struct RuntimeContext {
     bool skipUntilEnd = false;
 };
 
-typedef std::optional<std::string> (*IncludeFunc)(const std::string&);
+using IncludeFunc = std::function<std::optional<std::string>(const std::string&)>;
 
 class Processor {
   public:

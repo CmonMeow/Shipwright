@@ -1,5 +1,5 @@
-#include "Network/NetworkRuntime.h"
-#include "Network/VoiceChat.h"
+#include "multiplayer/NetworkRuntime.h"
+#include "multiplayer/VoiceChat.h"
 #include "runtime/log/Log.h"
 
 #include <algorithm>
@@ -40,7 +40,7 @@ struct ChatClient {
     HFONT font = nullptr;
     bool quit = false;
     std::string lastStatus;
-    SoH::Network::NetworkRuntime network;
+    Game::Multiplayer::NetworkRuntime network;
     std::unique_ptr<cVoiceChat> voiceChat;
 };
 

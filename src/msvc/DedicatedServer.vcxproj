@@ -48,7 +48,7 @@
   
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>$(RepoRoot)src\game\port;$(RepoRoot)src\game\include;$(RepoRoot)src\game\..\engine\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(RepoRoot)src\game;$(RepoRoot)src\game\include;$(RepoRoot)src\game\..\engine\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalOptions>%(AdditionalOptions) /external:I "$(RepoRoot)third_party/libsodium/include" /external:I "$(RepoRoot)third_party/opus/include" /external:I "$(RepoRoot)third_party" /external:I "$(RepoRoot)third_party/include" /utf-8</AdditionalOptions>
       <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
@@ -76,10 +76,10 @@
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;_CRT_SECURE_NO_WARNINGS;NOMINMAX;CVAR_PREFIX_SETTING=\"gSettings\";CVAR_PREFIX_WINDOW=\"gOpenWindows\";CVAR_PREFIX_GENERAL=\"gGeneral\";CVAR_VSYNC_ENABLED=\"gSettings.VsyncEnabled\";CVAR_Z_FIGHTING_MODE=\"gSettings.ZFightingMode\";CVAR_INTERNAL_RESOLUTION=\"gSettings.InternalResolution\";CVAR_MSAA_VALUE=\"gSettings.MSAAValue\";CVAR_TEXTURE_FILTER=\"gSettings.TextureFilter\";CVAR_AUDIO_CHANNELS_SETTING=\"gAudioChannelsSetting\";CONTROLLERBUTTONS_T=uint32_t</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(RepoRoot)src\game\port;$(RepoRoot)src\game\include;$(RepoRoot)src\game\..\engine\include;$(RepoRoot)third_party\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(RepoRoot)src\game;$(RepoRoot)src\game\include;$(RepoRoot)src\game\..\engine\include;$(RepoRoot)third_party\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
     <Midl>
-      <AdditionalIncludeDirectories>$(RepoRoot)src\game\port;$(RepoRoot)src\game\include;$(RepoRoot)src\game\..\engine\include;$(RepoRoot)third_party\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(RepoRoot)src\game;$(RepoRoot)src\game\include;$(RepoRoot)src\game\..\engine\include;$(RepoRoot)third_party\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
       <HeaderFileName>%(Filename).h</HeaderFileName>
       <TypeLibraryName>%(Filename).tlb</TypeLibraryName>

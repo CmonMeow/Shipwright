@@ -11,7 +11,7 @@ extern "C"
 #endif
 
 #include <runtime/log/Log.h>
-#include <port/ItemTableTypes.h>
+#include <runtime/items/GetItemTypes.h>
 
 #define osSyncPrintf(...) Error(__VA_ARGS__)
 
@@ -833,7 +833,7 @@ int32_t Math_StepUntilS(int16_t* pValue, int16_t limit, int16_t step);
 int32_t Math_StepToAngleS(int16_t* pValue, int16_t target, int16_t step);
 int32_t Math_StepUntilF(float* pValue, float limit, float step);
 int32_t Math_AsymStepToF(float* pValue, float target, float incrStep, float decrStep);
-void func_80077D10(float* arg0, int16_t* arg1, Input* input);
+void func_80077D10(float* arg0, int16_t* arg1, ControllerInput* input);
 int16_t Rand_S16Offset(int16_t base, int16_t range);
 void Math_Vec3f_Copy(Vec3f* dest, Vec3f* src);
 void Math_Vec3s_ToVec3f(Vec3f* dest, Vec3s* src);
@@ -928,7 +928,7 @@ int32_t Health_ChangeBy(PlayState* play, int16_t healthChange);
 void Rupees_ChangeBy(int64_t rupeeChange);
 void Interface_Update(PlayState* play);
 void FrameAdvance_Init(FrameAdvanceContext* frameAdvCtx);
-int32_t FrameAdvance_Update(FrameAdvanceContext* frameAdvCtx, Input* input);
+int32_t FrameAdvance_Update(FrameAdvanceContext* frameAdvCtx, ControllerInput* input);
 uint8_t PlayerGrounded(Player* player);
 void Player_ApplyMovementTuning(PlayState* play);
 void Player_StartAnimMovement(PlayState* play, Player* player, int32_t flags);
@@ -1339,7 +1339,9 @@ void Graph_Init(GraphicsContext* gfxCtx);
 void Graph_Destroy(GraphicsContext* gfxCtx);
 void Graph_TaskSet00(GraphicsContext* gfxCtx);
 void Graph_Update(GraphicsContext* gfxCtx, GameState* gameState);
-void Graph_ThreadEntry(void*);
+void Graph_RunFrame(void);
+void Game_Initialize(void);
+void Game_Shutdown(void);
 void* Graph_Alloc(GraphicsContext* gfxCtx, size_t size);
 void* Graph_Alloc2(GraphicsContext* gfxCtx, size_t size);
 void Graph_OpenDisps(Gfx** dispRefs, GraphicsContext* gfxCtx, const char* file, int32_t line);
@@ -1364,7 +1366,7 @@ void PadMgr_HandleRetraceMsg(PadMgr* padmgr);
 void PadMgr_HandlePreNMI(PadMgr* padmgr);
 // This function must remain commented out, because it is called incorrectly in
 // fault.c (actual bug in game), and the compiler notices and won't compile it
-void PadMgr_RequestPadData(PadMgr* padmgr, Input* inputs, int32_t mode);
+void PadMgr_RequestPadData(PadMgr* padmgr, ControllerInput* inputs, int32_t mode);
 void PadMgr_Init(PadMgr* padmgr, OSMesgQueue* siIntMsgQ, IrqMgr* irqMgr, OSId id, OSPri priority, void* stack);
 void Sched_SwapFrameBuffer(CfbInfo* cfbInfo);
 void func_800C84E4(SchedContext* sc, CfbInfo* cfbInfo);
@@ -1800,31 +1802,31 @@ void* Overlay_AllocateAndLoad(uintptr_t vRomStart, uintptr_t vRomEnd, void* vRam
 void MtxConv_F2L(Mtx* m1, MtxF* m2);
 void MtxConv_L2F(MtxF* m1, Mtx* m2);
 void Overlay_Relocate(void* allocatedVRamAddress, OverlayRelocationSection* overlayInfo, void* vRamAddress);
-void PadUtils_Init(Input* input);
+void PadUtils_Init(ControllerInput* input);
 void func_800FCB70(void);
-void PadUtils_ResetPressRel(Input* input);
-uint32_t PadUtils_CheckCurExact(Input* input, uint16_t value);
-uint32_t PadUtils_CheckCur(Input* input, uint16_t key);
-uint32_t PadUtils_CheckPressed(Input* input, uint16_t key);
-uint32_t PadUtils_CheckReleased(Input* input, uint16_t key);
-uint16_t PadUtils_GetCurButton(Input* input);
-uint16_t PadUtils_GetPressButton(Input* input);
-int8_t PadUtils_GetCurX(Input* input);
-int8_t PadUtils_GetCurY(Input* input);
-void PadUtils_SetRelXY(Input* input, int32_t x, int32_t y);
-int8_t PadUtils_GetRelXImpl(Input* input);
-int8_t PadUtils_GetRelYImpl(Input* input);
-int8_t PadUtils_GetRelX(Input* input);
-int8_t PadUtils_GetRelY(Input* input);
-void PadUtils_UpdateRelXY(Input* input);
-int8_t PadUtils_GetCurRX(Input* input);
-int8_t PadUtils_GetCurRY(Input* input);
-void PadUtils_SetRelRXY(Input* input, int32_t x, int32_t y);
-int8_t PadUtils_GetRelRXImpl(Input* input);
-int8_t PadUtils_GetRelRYImpl(Input* input);
-int8_t PadUtils_GetRelRX(Input* input);
-int8_t PadUtils_GetRelRY(Input* input);
-void PadUtils_UpdateRelRXY(Input* input);
+void PadUtils_ResetPressRel(ControllerInput* input);
+uint32_t PadUtils_CheckCurExact(ControllerInput* input, uint16_t value);
+uint32_t PadUtils_CheckCur(ControllerInput* input, uint16_t key);
+uint32_t PadUtils_CheckPressed(ControllerInput* input, uint16_t key);
+uint32_t PadUtils_CheckReleased(ControllerInput* input, uint16_t key);
+uint16_t PadUtils_GetCurButton(ControllerInput* input);
+uint16_t PadUtils_GetPressButton(ControllerInput* input);
+int8_t PadUtils_GetCurX(ControllerInput* input);
+int8_t PadUtils_GetCurY(ControllerInput* input);
+void PadUtils_SetRelXY(ControllerInput* input, int32_t x, int32_t y);
+int8_t PadUtils_GetRelXImpl(ControllerInput* input);
+int8_t PadUtils_GetRelYImpl(ControllerInput* input);
+int8_t PadUtils_GetRelX(ControllerInput* input);
+int8_t PadUtils_GetRelY(ControllerInput* input);
+void PadUtils_UpdateRelXY(ControllerInput* input);
+int8_t PadUtils_GetCurRX(ControllerInput* input);
+int8_t PadUtils_GetCurRY(ControllerInput* input);
+void PadUtils_SetRelRXY(ControllerInput* input, int32_t x, int32_t y);
+int8_t PadUtils_GetRelRXImpl(ControllerInput* input);
+int8_t PadUtils_GetRelRYImpl(ControllerInput* input);
+int8_t PadUtils_GetRelRX(ControllerInput* input);
+int8_t PadUtils_GetRelRY(ControllerInput* input);
+void PadUtils_UpdateRelRXY(ControllerInput* input);
 int32_t PadSetup_Init(OSMesgQueue* mq, uint8_t* outMask, OSContStatus* status);
 void SystemArena_CheckPointer(void* ptr, size_t size, const char* name, const char* action);
 void* SystemArena_Malloc(size_t size);

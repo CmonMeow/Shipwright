@@ -1,12 +1,9 @@
 #include "global.h"
 #include "vt.h"
 #include <string.h>
-#include "port/OTRGlobals.h"
-#include "port/ResourceManagerHelpers.h"
+#include "resources/ResourceManagerHelpers.h"
 
 int32_t D_8012D280 = 1;
-
-void OTRControllerCallback(uint8_t rumble);
 
 OSMesgQueue* PadMgr_LockSerialMesgQueue(PadMgr* padMgr) {
     OSMesgQueue* ctrlrQ = NULL;
@@ -201,7 +198,7 @@ void PadMgr_ProcessInputs(PadMgr* padMgr) {
 
     PadMgr_LockPadData(padMgr);
 
-    Input* input = &padMgr->inputs[0];
+    ControllerInput* input = &padMgr->inputs[0];
     OSContPad* padnow1 = &padMgr->pads[0];
 
     for (i = 0; i < padMgr->nControllers; i++, input++, padnow1++) {
@@ -258,9 +255,6 @@ void PadMgr_ProcessInputs(PadMgr* padMgr) {
         input->press.right_stick_y += (int8_t)(input->cur.right_stick_y - input->prev.right_stick_y);
     }
 
-    uint8_t rumble = (padMgr->rumbleEnable[0] > 0);
-    OTRControllerCallback(rumble);
-
     PadMgr_UnlockPadData(padMgr);
 }
 
@@ -278,7 +272,7 @@ void PadMgr_HandleRetraceMsg(PadMgr* padMgr) {
 
 
     for (i = 0; i < __osMaxControllers; i++) {
-        padMgr->padStatus[i].status = Controller_ShouldRumble(i);
+        padMgr->padStatus[i].status = 0;
     }
 
     if (padMgr->preNMIShutdown) {
@@ -321,13 +315,13 @@ void PadMgr_HandlePreNMI(PadMgr* padMgr) {
     PadMgr_RumbleReset(padMgr);
 }
 
-void PadMgr_RequestPadData(PadMgr* padMgr, Input* inputs, int32_t mode) {
+void PadMgr_RequestPadData(PadMgr* padMgr, ControllerInput* inputs, int32_t mode) {
     int32_t i;
 
     PadMgr_LockPadData(padMgr);
 
-    Input* ogInput = &padMgr->inputs[0];
-    Input* newInput = &inputs[0];
+    ControllerInput* ogInput = &padMgr->inputs[0];
+    ControllerInput* newInput = &inputs[0];
     for (i = 0; i < 4; i++) {
         if (mode != 0) {
             *newInput = *ogInput;

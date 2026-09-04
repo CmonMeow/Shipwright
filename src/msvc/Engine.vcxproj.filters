@@ -1,218 +1,548 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="18.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClCompile Include="$(RepoRoot)src\engine\src\fast\Fast3dWindow.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="$(RepoRoot)src\engine\src\rendering\GameRenderer.cpp">
+      <Filter>Rendering</Filter>
     </ClCompile>
-    <ClCompile Include="$(RepoRoot)src\engine\src\fast\interpreter.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="$(RepoRoot)src\engine\src\rendering\interpreter.cpp">
+      <Filter>Rendering</Filter>
     </ClCompile>
-    <ClCompile Include="$(RepoRoot)src\engine\src\fast\debug\GfxDebugger.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="$(RepoRoot)src\engine\src\rendering\debug\GfxDebugger.cpp">
+      <Filter>Rendering\Debug</Filter>
     </ClCompile>
-    <ClCompile Include="$(RepoRoot)src\engine\src\fast\resource\type\DisplayList.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="$(RepoRoot)src\engine\src\rendering\resource\type\DisplayList.cpp">
+      <Filter>Rendering\Resources\Types</Filter>
     </ClCompile>
-    <ClCompile Include="$(RepoRoot)src\engine\src\fast\resource\type\Light.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="$(RepoRoot)src\engine\src\rendering\resource\type\Light.cpp">
+      <Filter>Rendering\Resources\Types</Filter>
     </ClCompile>
-    <ClCompile Include="$(RepoRoot)src\engine\src\fast\resource\type\Matrix.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="$(RepoRoot)src\engine\src\rendering\resource\type\Matrix.cpp">
+      <Filter>Rendering\Resources\Types</Filter>
     </ClCompile>
-    <ClCompile Include="$(RepoRoot)src\engine\src\fast\resource\type\Texture.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="$(RepoRoot)src\engine\src\rendering\resource\type\Texture.cpp">
+      <Filter>Rendering\Resources\Types</Filter>
     </ClCompile>
-    <ClCompile Include="$(RepoRoot)src\engine\src\fast\resource\type\Vertex.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="$(RepoRoot)src\engine\src\rendering\resource\type\Vertex.cpp">
+      <Filter>Rendering\Resources\Types</Filter>
     </ClCompile>
-    <ClCompile Include="$(RepoRoot)src\engine\src\fast\resource\factory\DisplayListFactory.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="$(RepoRoot)src\engine\src\rendering\resource\factory\DisplayListFactory.cpp">
+      <Filter>Rendering\Resources\Factories</Filter>
     </ClCompile>
-    <ClCompile Include="$(RepoRoot)src\engine\src\fast\resource\factory\LightFactory.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="$(RepoRoot)src\engine\src\rendering\resource\factory\LightFactory.cpp">
+      <Filter>Rendering\Resources\Factories</Filter>
     </ClCompile>
-    <ClCompile Include="$(RepoRoot)src\engine\src\fast\resource\factory\MatrixFactory.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="$(RepoRoot)src\engine\src\rendering\resource\factory\MatrixFactory.cpp">
+      <Filter>Rendering\Resources\Factories</Filter>
     </ClCompile>
-    <ClCompile Include="$(RepoRoot)src\engine\src\fast\resource\factory\TextureFactory.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="$(RepoRoot)src\engine\src\rendering\resource\factory\TextureFactory.cpp">
+      <Filter>Rendering\Resources\Factories</Filter>
     </ClCompile>
-    <ClCompile Include="$(RepoRoot)src\engine\src\fast\resource\factory\VertexFactory.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="$(RepoRoot)src\engine\src\rendering\resource\factory\VertexFactory.cpp">
+      <Filter>Rendering\Resources\Factories</Filter>
     </ClCompile>
-    <ClCompile Include="$(RepoRoot)src\engine\src\fast\backends\OpenGLExtensions.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="$(RepoRoot)src\engine\src\rendering\backends\OpenGLExtensions.cpp">
+      <Filter>Rendering\OpenGL</Filter>
     </ClCompile>
-    <ClCompile Include="$(RepoRoot)src\engine\src\fast\backends\gfx_opengl.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="$(RepoRoot)src\engine\src\rendering\backends\gfx_opengl.cpp">
+      <Filter>Rendering\OpenGL</Filter>
     </ClCompile>
-    <ClCompile Include="$(RepoRoot)src\engine\src\platform\win32\Win32OpenGLWindow.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="$(RepoRoot)src\engine\src\runtime\bridge\audiobridge.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="$(RepoRoot)src\engine\src\runtime\bridge\consolevariablebridge.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="$(RepoRoot)src\engine\src\runtime\bridge\gfxbridge.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="$(RepoRoot)src\engine\src\runtime\bridge\gfxdebuggerbridge.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="$(RepoRoot)src\engine\src\runtime\bridge\resourcebridge.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="$(RepoRoot)src\engine\src\runtime\bridge\windowbridge.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="$(RepoRoot)src\engine\src\platform\win32\OpenGLPresentation.cpp">
+      <Filter>Platform\Win32</Filter>
     </ClCompile>
     <ClCompile Include="$(RepoRoot)src\engine\src\runtime\libultra\os.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Runtime\Libultra</Filter>
     </ClCompile>
     <ClCompile Include="$(RepoRoot)src\engine\src\runtime\libultra\os_cache.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Runtime\Libultra</Filter>
     </ClCompile>
     <ClCompile Include="$(RepoRoot)src\engine\src\runtime\libultra\os_eeprom.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Runtime\Libultra</Filter>
     </ClCompile>
     <ClCompile Include="$(RepoRoot)src\engine\src\runtime\libultra\os_mesg.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Runtime\Libultra</Filter>
     </ClCompile>
     <ClCompile Include="$(RepoRoot)src\engine\src\runtime\libultra\os_pi.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Runtime\Libultra</Filter>
     </ClCompile>
     <ClCompile Include="$(RepoRoot)src\engine\src\runtime\libultra\os_time.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Runtime\Libultra</Filter>
     </ClCompile>
     <ClCompile Include="$(RepoRoot)src\engine\src\runtime\libultra\os_vi.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Runtime\Libultra</Filter>
     </ClCompile>
     <ClCompile Include="$(RepoRoot)src\engine\src\runtime\libultra\os_vm.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="$(RepoRoot)src\engine\src\engine\Context.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Runtime\Libultra</Filter>
     </ClCompile>
     <ClCompile Include="$(RepoRoot)src\engine\src\engine\audio\Audio.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Engine\Audio</Filter>
     </ClCompile>
     <ClCompile Include="$(RepoRoot)src\engine\src\engine\audio\AudioPlayer.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Engine\Audio</Filter>
     </ClCompile>
     <ClCompile Include="$(RepoRoot)src\engine\src\engine\audio\NullAudioPlayer.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Engine\Audio</Filter>
     </ClCompile>
     <ClCompile Include="$(RepoRoot)src\engine\src\engine\audio\SoundMatrixDecoder.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Engine\Audio</Filter>
     </ClCompile>
     <ClCompile Include="$(RepoRoot)src\engine\src\engine\audio\WasapiAudioPlayer.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Engine\Audio</Filter>
     </ClCompile>
-    <ClCompile Include="$(RepoRoot)src\engine\src\engine\input\Win32Input.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="$(RepoRoot)src\engine\src\platform\win32\Input.cpp">
+      <Filter>Platform\Win32</Filter>
     </ClCompile>
     <ClCompile Include="$(RepoRoot)src\engine\src\engine\config\Config.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Engine\Configuration</Filter>
     </ClCompile>
     <ClCompile Include="$(RepoRoot)src\engine\src\engine\config\ConsoleVariable.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Engine\Configuration</Filter>
     </ClCompile>
     <ClCompile Include="$(RepoRoot)src\engine\src\engine\debug\Console.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Engine\Debug</Filter>
     </ClCompile>
     <ClCompile Include="$(RepoRoot)src\engine\src\engine\debug\CrashHandler.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Engine\Debug</Filter>
     </ClCompile>
-    <ClCompile Include="$(RepoRoot)src\engine\src\engine\window\FileDropMgr.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="$(RepoRoot)src\engine\src\engine\window\Overlay.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="$(RepoRoot)src\engine\src\engine\window\Window.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="$(RepoRoot)src\engine\src\rendering\Overlay.cpp">
+      <Filter>Rendering</Filter>
     </ClCompile>
     <ClCompile Include="$(RepoRoot)src\engine\src\engine\utils\StrHash64.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Engine</Filter>
     </ClCompile>
     <ClCompile Include="$(RepoRoot)src\engine\src\engine\utils\StringHelper.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Engine</Filter>
     </ClCompile>
     <ClCompile Include="$(RepoRoot)src\engine\src\engine\utils\Utils.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Engine</Filter>
     </ClCompile>
     <ClCompile Include="$(RepoRoot)src\engine\src\engine\utils\binarytools\BinaryReader.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Engine</Filter>
     </ClCompile>
     <ClCompile Include="$(RepoRoot)src\engine\src\engine\utils\binarytools\BinaryWriter.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Engine</Filter>
     </ClCompile>
     <ClCompile Include="$(RepoRoot)src\engine\src\engine\utils\binarytools\MemoryStream.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Engine</Filter>
     </ClCompile>
     <ClCompile Include="$(RepoRoot)src\engine\src\engine\utils\binarytools\Stream.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Engine</Filter>
     </ClCompile>
     <ClCompile Include="$(RepoRoot)src\engine\src\engine\utils\glob.c">
-      <Filter>Source Files</Filter>
+      <Filter>Engine</Filter>
     </ClCompile>
     <ClCompile Include="$(RepoRoot)src\engine\src\engine\utils\stox.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Engine</Filter>
     </ClCompile>
     <ClCompile Include="$(RepoRoot)src\engine\src\engine\resource\Resource.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Engine\Resources</Filter>
     </ClCompile>
     <ClCompile Include="$(RepoRoot)src\engine\src\engine\resource\ResourceFactoryBinary.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Engine\Resources</Filter>
     </ClCompile>
     <ClCompile Include="$(RepoRoot)src\engine\src\engine\resource\ResourceLoader.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Engine\Resources</Filter>
     </ClCompile>
     <ClCompile Include="$(RepoRoot)src\engine\src\engine\resource\ResourceManager.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Engine\Resources</Filter>
     </ClCompile>
     <ClCompile Include="$(RepoRoot)src\engine\src\engine\resource\type\Blob.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Engine\Resources</Filter>
     </ClCompile>
     <ClCompile Include="$(RepoRoot)src\engine\src\engine\resource\type\Json.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Engine\Resources</Filter>
     </ClCompile>
     <ClCompile Include="$(RepoRoot)src\engine\src\engine\resource\type\Shader.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Engine\Resources</Filter>
     </ClCompile>
     <ClCompile Include="$(RepoRoot)src\engine\src\engine\resource\factory\BlobFactory.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Engine\Resources</Filter>
     </ClCompile>
     <ClCompile Include="$(RepoRoot)src\engine\src\engine\resource\factory\JsonFactory.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Engine\Resources</Filter>
     </ClCompile>
     <ClCompile Include="$(RepoRoot)src\engine\src\engine\resource\factory\ShaderFactory.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Engine\Resources</Filter>
     </ClCompile>
     <ClCompile Include="$(RepoRoot)src\engine\src\engine\resource\archive\Archive.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Engine\Resources\Archives</Filter>
     </ClCompile>
     <ClCompile Include="$(RepoRoot)src\engine\src\engine\resource\archive\ArchiveManager.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Engine\Resources\Archives</Filter>
     </ClCompile>
     <ClCompile Include="$(RepoRoot)src\engine\src\engine\resource\archive\O2rArchive.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Engine\Resources\Archives</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="$(RepoRoot)src\engine\include\fast\backends\OpenGLExtensions.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="$(RepoRoot)src\engine\include\engine\audio\Audio.h">
+      <Filter>Engine\Audio</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\engine\include\engine\audio\AudioChannelsSetting.h">
+      <Filter>Engine\Audio</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\engine\include\engine\audio\AudioPlayer.h">
+      <Filter>Engine\Audio</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\engine\include\engine\audio\AudioSettings.h">
+      <Filter>Engine\Audio</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\engine\include\engine\audio\NullAudioPlayer.h">
+      <Filter>Engine\Audio</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\engine\include\engine\audio\SoundMatrixDecoder.h">
+      <Filter>Engine\Audio</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\engine\include\engine\audio\WasapiAudioPlayer.h">
+      <Filter>Engine\Audio</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\engine\include\engine\config\Config.h">
+      <Filter>Engine\Configuration</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\engine\include\engine\config\ConsoleVariable.h">
+      <Filter>Engine\Configuration</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\engine\include\engine\debug\Console.h">
+      <Filter>Engine\Debug</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\engine\include\engine\debug\CrashHandler.h">
+      <Filter>Engine\Debug</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\engine\include\platform\win32\Input.h">
+      <Filter>Platform\Win32</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\engine\include\engine\resource\archive\Archive.h">
+      <Filter>Engine\Resources\Archives</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\engine\include\engine\resource\archive\ArchiveManager.h">
+      <Filter>Engine\Resources\Archives</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\engine\include\engine\resource\archive\O2rArchive.h">
+      <Filter>Engine\Resources\Archives</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\engine\include\engine\resource\factory\BlobFactory.h">
+      <Filter>Engine\Resources\Factories</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\engine\include\engine\resource\factory\JsonFactory.h">
+      <Filter>Engine\Resources\Factories</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\engine\include\engine\resource\factory\ShaderFactory.h">
+      <Filter>Engine\Resources\Factories</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\engine\include\engine\resource\File.h">
+      <Filter>Engine\Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\engine\include\engine\resource\Resource.h">
+      <Filter>Engine\Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\engine\include\engine\resource\ResourceFactory.h">
+      <Filter>Engine\Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\engine\include\engine\resource\ResourceFactoryBinary.h">
+      <Filter>Engine\Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\engine\include\engine\resource\ResourceLoader.h">
+      <Filter>Engine\Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\engine\include\engine\resource\ResourceManager.h">
+      <Filter>Engine\Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\engine\include\engine\resource\ResourceType.h">
+      <Filter>Engine\Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\engine\include\engine\resource\type\Blob.h">
+      <Filter>Engine\Resources\Types</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\engine\include\engine\resource\type\Json.h">
+      <Filter>Engine\Resources\Types</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\engine\include\engine\resource\type\Shader.h">
+      <Filter>Engine\Resources\Types</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\engine\include\engine\utils\binarytools\BinaryReader.h">
+      <Filter>Engine\Utilities\Binary</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\engine\include\engine\utils\binarytools\BinaryWriter.h">
+      <Filter>Engine\Utilities\Binary</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\engine\include\engine\utils\binarytools\endianness.h">
+      <Filter>Engine\Utilities\Binary</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\engine\include\engine\utils\binarytools\MemoryStream.h">
+      <Filter>Engine\Utilities\Binary</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\engine\include\engine\utils\binarytools\Stream.h">
+      <Filter>Engine\Utilities\Binary</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\engine\include\engine\utils\color.h">
+      <Filter>Engine\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\engine\include\engine\utils\filesystemtools\Directory.h">
+      <Filter>Engine\Utilities\Filesystem</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\engine\include\engine\utils\filesystemtools\DiskFile.h">
+      <Filter>Engine\Utilities\Filesystem</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\engine\include\engine\utils\filesystemtools\Path.h">
+      <Filter>Engine\Utilities\Filesystem</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\engine\include\engine\utils\filesystemtools\PathHelper.h">
+      <Filter>Engine\Utilities\Filesystem</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\engine\include\engine\utils\glob.h">
+      <Filter>Engine\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\engine\include\engine\utils\stox.h">
+      <Filter>Engine\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\engine\include\engine\utils\StrHash64.h">
+      <Filter>Engine\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\engine\include\engine\utils\StringHelper.h">
+      <Filter>Engine\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\engine\include\engine\utils\Utils.h">
+      <Filter>Engine\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\engine\include\rendering\GameRenderer.h">
+      <Filter>Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\engine\include\rendering\Overlay.h">
+      <Filter>Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\engine\include\rendering\OverlayFontData.h">
+      <Filter>Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\engine\include\platform\win32\OpenGLPresentation.h">
+      <Filter>Platform\Win32</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\engine\include\rendering\backends\gfx_opengl.h">
+      <Filter>Rendering\OpenGL</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\engine\include\rendering\backends\gfx_rendering_api.h">
+      <Filter>Rendering\OpenGL</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\engine\include\rendering\backends\OpenGLExtensions.h">
+      <Filter>Rendering\OpenGL</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\engine\include\rendering\debug\GfxDebugger.h">
+      <Filter>Rendering\Debug</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\engine\include\rendering\f3dex.h">
+      <Filter>Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\engine\include\rendering\f3dex2.h">
+      <Filter>Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\engine\include\rendering\interpreter.h">
+      <Filter>Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\engine\include\rendering\resource\factory\DisplayListFactory.h">
+      <Filter>Rendering\Resources\Factories</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\engine\include\rendering\resource\factory\LightFactory.h">
+      <Filter>Rendering\Resources\Factories</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\engine\include\rendering\resource\factory\MatrixFactory.h">
+      <Filter>Rendering\Resources\Factories</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\engine\include\rendering\resource\factory\TextureFactory.h">
+      <Filter>Rendering\Resources\Factories</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\engine\include\rendering\resource\factory\VertexFactory.h">
+      <Filter>Rendering\Resources\Factories</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\engine\include\rendering\resource\ResourceType.h">
+      <Filter>Rendering\Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\engine\include\rendering\resource\type\DisplayList.h">
+      <Filter>Rendering\Resources\Types</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\engine\include\rendering\resource\type\Light.h">
+      <Filter>Rendering\Resources\Types</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\engine\include\rendering\resource\type\Matrix.h">
+      <Filter>Rendering\Resources\Types</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\engine\include\rendering\resource\type\Texture.h">
+      <Filter>Rendering\Resources\Types</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\engine\include\rendering\resource\type\Vertex.h">
+      <Filter>Rendering\Resources\Types</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\engine\include\rendering\ResourceGbi.h">
+      <Filter>Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\engine\include\rendering\types.h">
+      <Filter>Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\engine\include\rendering\ucodehandlers.h">
+      <Filter>Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\engine\include\rendering\water_renderer.h">
+      <Filter>Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\engine\include\runtime\color.h">
+      <Filter>Runtime</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\engine\include\runtime\libultra.h">
+      <Filter>Runtime</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\engine\include\runtime\libultra\abi.h">
+      <Filter>Runtime\Libultra</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\engine\include\runtime\libultra\controller.h">
+      <Filter>Runtime\Libultra</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\engine\include\runtime\libultra\convert.h">
+      <Filter>Runtime\Libultra</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\engine\include\runtime\libultra\eeprom.h">
+      <Filter>Runtime\Libultra</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\engine\include\runtime\libultra\exception.h">
+      <Filter>Runtime\Libultra</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\engine\include\runtime\libultra\gbi.h">
+      <Filter>Runtime\Libultra</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\engine\include\runtime\libultra\gs2dex.h">
+      <Filter>Runtime\Libultra</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\engine\include\runtime\libultra\gu.h">
+      <Filter>Runtime\Libultra</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\engine\include\runtime\libultra\internal.h">
+      <Filter>Runtime\Libultra</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\engine\include\runtime\libultra\interrupt.h">
+      <Filter>Runtime\Libultra</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\engine\include\runtime\libultra\mbi.h">
+      <Filter>Runtime\Libultra</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\engine\include\runtime\libultra\message.h">
+      <Filter>Runtime\Libultra</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\engine\include\runtime\libultra\motor.h">
+      <Filter>Runtime\Libultra</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\engine\include\runtime\libultra\os.h">
+      <Filter>Runtime\Libultra</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\engine\include\runtime\libultra\pfs.h">
+      <Filter>Runtime\Libultra</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\engine\include\runtime\libultra\pi.h">
+      <Filter>Runtime\Libultra</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\engine\include\runtime\libultra\printf.h">
+      <Filter>Runtime\Libultra</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\engine\include\runtime\libultra\r4300.h">
+      <Filter>Runtime\Libultra</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\engine\include\runtime\libultra\rcp.h">
+      <Filter>Runtime\Libultra</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\engine\include\runtime\libultra\rdp.h">
+      <Filter>Runtime\Libultra</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\engine\include\runtime\libultra\sptask.h">
+      <Filter>Runtime\Libultra</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\engine\include\runtime\libultra\thread.h">
+      <Filter>Runtime\Libultra</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\engine\include\runtime\libultra\time.h">
+      <Filter>Runtime\Libultra</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\engine\include\runtime\libultra\types.h">
+      <Filter>Runtime\Libultra</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\engine\include\runtime\libultra\vi.h">
+      <Filter>Runtime\Libultra</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\engine\include\runtime\log\Log.h">
+      <Filter>Runtime\Log</Filter>
+    </ClInclude>
+    <ClInclude Include="$(RepoRoot)src\engine\include\runtime\log\Log.hpp">
+      <Filter>Runtime\Log</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
   </ItemGroup>
   <ItemGroup>
-    <Filter Include="Source Files">
-      <UniqueIdentifier>{FBBA4402-F9B9-396F-A5B0-D4EE37A28A02}</UniqueIdentifier>
+    <Filter Include="Engine">
+      <UniqueIdentifier>{3CF8467C-A66A-400E-8E46-A44990BA0B35}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files">
-      <UniqueIdentifier>{3A2F261D-C99D-492A-A121-3B6493BD876D}</UniqueIdentifier>
+    <Filter Include="Engine\Window">
+      <UniqueIdentifier>{6893BA9A-FC73-475E-B3A1-3425D0C2151C}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Audio">
+      <UniqueIdentifier>{0F67E163-FB03-4B35-9957-393C2C226937}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Configuration">
+      <UniqueIdentifier>{1405B900-921C-4386-8FAA-0BFFF8FBAD3E}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Debug">
+      <UniqueIdentifier>{84436F4B-7059-4C41-A5F5-C50BC00F8B6B}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Resources">
+      <UniqueIdentifier>{1A424252-4F39-40F9-9751-16A71175E7D6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Resources\Archives">
+      <UniqueIdentifier>{9AFEB68B-C7DF-4989-BE21-25312DE9E30B}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Rendering">
+      <UniqueIdentifier>{CBDC9EFB-48B2-4C86-BE20-5B6C3B8A4135}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Rendering\OpenGL">
+      <UniqueIdentifier>{483BC061-2045-4AB4-BA58-6B61FFA3807C}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Rendering\Debug">
+      <UniqueIdentifier>{021DC2D1-F0CF-4D95-B826-2BA107FC8700}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Rendering\Resources">
+      <UniqueIdentifier>{3C3BE3C7-713C-48C9-A976-3943827E271A}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Rendering\Resources\Factories">
+      <UniqueIdentifier>{7BD2DCA5-08BA-456C-A45E-E5B0F5F0FEA0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Rendering\Resources\Types">
+      <UniqueIdentifier>{3627B27E-B4AA-4772-A3A5-955E24C088AC}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Platform">
+      <UniqueIdentifier>{00E6E4C5-F723-4BF1-8879-1F717853D9D4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Platform\Win32">
+      <UniqueIdentifier>{8DC0E968-470C-4725-BA39-6B71123A21A0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Runtime">
+      <UniqueIdentifier>{3E3F206E-4B42-43FB-8390-8B7E8B736FBF}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Runtime\Libultra">
+      <UniqueIdentifier>{90A810B8-7D7F-4F0B-986A-F737DFF0B0D1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Input">
+      <UniqueIdentifier>{B9AC0D2B-9E59-46C4-BBF7-4824F102D006}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Resources\Factories">
+      <UniqueIdentifier>{E42BE2F0-4806-4375-9899-43EF3056DD9C}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Resources\Types">
+      <UniqueIdentifier>{1C7FA4FF-02A9-4141-992B-32C03FCD5F77}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Utilities">
+      <UniqueIdentifier>{05998F27-7B10-45F3-82E2-8E9E38ACFA05}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Utilities\Binary">
+      <UniqueIdentifier>{25C7EE36-38CB-4DF8-A7B1-F7820291F663}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Utilities\Filesystem">
+      <UniqueIdentifier>{7526AE83-AA88-4331-9F34-A8122A50ED56}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Runtime\Log">
+      <UniqueIdentifier>{21290F61-07AA-4D87-8A55-84E6E81D203D}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

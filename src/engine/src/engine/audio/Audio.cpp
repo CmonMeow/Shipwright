@@ -1,11 +1,8 @@
 #include <runtime/log/Log.hpp>
 #include "engine/audio/Audio.h"
-#include "engine/config/Config.h"
-#ifdef __APPLE__
-#include "engine/audio/CoreAudioAudioPlayer.h"
-#endif
-
-#include "engine/Context.h"
+#include "engine/audio/AudioPlayer.h"
+#include "engine/audio/NullAudioPlayer.h"
+#include "engine/audio/WasapiAudioPlayer.h"
 
 namespace Engine {
 
@@ -14,21 +11,7 @@ Audio::~Audio() {
 }
 
 void Audio::InitAudioPlayer() {
-    switch (mAudioBackend) {
-#ifdef _WIN32
-        case AudioBackend::WASAPI:
-            mAudioPlayer = std::make_shared<WasapiAudioPlayer>(this->mAudioSettings);
-            break;
-#endif
-#ifdef __APPLE__
-        case AudioBackend::COREAUDIO:
-            mAudioPlayer = std::make_shared<CoreAudioAudioPlayer>(this->mAudioSettings);
-            break;
-#endif
-        default:
-            mAudioPlayer = std::make_shared<NullAudioPlayer>(this->mAudioSettings);
-            break;
-    }
+    mAudioPlayer = std::make_shared<WasapiAudioPlayer>(mAudioSettings);
 
     if (mAudioPlayer && !mAudioPlayer->Init()) {
         // Keep the requested native backend in configuration so a later launch can retry after a device change.
@@ -39,13 +22,6 @@ void Audio::InitAudioPlayer() {
 }
 
 void Audio::Init() {
-#ifdef _WIN32
-    mAudioBackend = AudioBackend::WASAPI;
-#elif defined(__APPLE__)
-    mAudioBackend = AudioBackend::COREAUDIO;
-#else
-    mAudioBackend = AudioBackend::NUL;
-#endif
     InitAudioPlayer();
 }
 

@@ -1,11 +1,11 @@
 #include <runtime/libultra.h>
-#include "engine/input/PCInput.h"
+#include "platform/win32/PCInput.h"
 #include "global.h"
 #include "vt.h"
 
 #include <string.h>
 
-#include "port/frame_interpolation.h"
+#include "rendering/FrameInterpolation.h"
 
 int16_t Camera_ChangeSettingFlags(Camera* camera, int16_t setting, int16_t flags);
 int32_t Camera_ChangeModeFlags(Camera* camera, int16_t mode, uint8_t flags);
@@ -3245,7 +3245,7 @@ int32_t Camera_KeepOn3(Camera* camera) {
             CHECK_BTN_ALL(D_8015BD7C->state.input[0].press.button, BTN_CDOWN) ||
             CHECK_BTN_ALL(D_8015BD7C->state.input[0].press.button, BTN_CUP) ||
             CHECK_BTN_ALL(D_8015BD7C->state.input[0].press.button, BTN_CRIGHT) ||
-            CHECK_BTN_ALL(D_8015BD7C->state.input[0].press.button, BTN_R) ||
+            PCInput_IsBlockPressed() ||
             CHECK_BTN_ALL(D_8015BD7C->state.input[0].press.button, BTN_Z)) {
             camera->unk_14C |= 4;
             camera->unk_14C &= ~8;
@@ -4485,7 +4485,7 @@ int32_t Camera_Unique3(Camera* camera) {
                 CHECK_BTN_ALL(D_8015BD7C->state.input[0].press.button, BTN_CDOWN) ||
                 CHECK_BTN_ALL(D_8015BD7C->state.input[0].press.button, BTN_CUP) ||
                 CHECK_BTN_ALL(D_8015BD7C->state.input[0].press.button, BTN_CRIGHT) ||
-                CHECK_BTN_ALL(D_8015BD7C->state.input[0].press.button, BTN_R) ||
+                PCInput_IsBlockPressed() ||
                 CHECK_BTN_ALL(D_8015BD7C->state.input[0].press.button, BTN_Z)) {
                 camera->animState++;
             } else {
@@ -4587,7 +4587,7 @@ int32_t Camera_Unique0(Camera* camera) {
                     CHECK_BTN_ALL(D_8015BD7C->state.input[0].press.button, BTN_CDOWN) ||
                     CHECK_BTN_ALL(D_8015BD7C->state.input[0].press.button, BTN_CUP) ||
                     CHECK_BTN_ALL(D_8015BD7C->state.input[0].press.button, BTN_CRIGHT) ||
-                    CHECK_BTN_ALL(D_8015BD7C->state.input[0].press.button, BTN_R) ||
+                    PCInput_IsBlockPressed() ||
                     CHECK_BTN_ALL(D_8015BD7C->state.input[0].press.button, BTN_Z))) {
             camera->dist = OLib_Vec3fDist(&camera->at, eye);
             camera->posOffset.x = camera->at.x - playerPosRot->pos.x;
@@ -4613,7 +4613,7 @@ int32_t Camera_Unique0(Camera* camera) {
              CHECK_BTN_ALL(D_8015BD7C->state.input[0].press.button, BTN_CDOWN) ||
              CHECK_BTN_ALL(D_8015BD7C->state.input[0].press.button, BTN_CUP) ||
              CHECK_BTN_ALL(D_8015BD7C->state.input[0].press.button, BTN_CRIGHT) ||
-             CHECK_BTN_ALL(D_8015BD7C->state.input[0].press.button, BTN_R) ||
+             PCInput_IsBlockPressed() ||
              CHECK_BTN_ALL(D_8015BD7C->state.input[0].press.button, BTN_Z))) {
             camera->dist = OLib_Vec3fDist(&camera->at, &camera->eye);
             camera->posOffset.x = camera->at.x - playerPosRot->pos.x;
@@ -5483,7 +5483,7 @@ int32_t Camera_Demo3(Camera* camera) {
                    CHECK_BTN_ALL(D_8015BD7C->state.input[0].press.button, BTN_CDOWN) ||
                    CHECK_BTN_ALL(D_8015BD7C->state.input[0].press.button, BTN_CUP) ||
                    CHECK_BTN_ALL(D_8015BD7C->state.input[0].press.button, BTN_CRIGHT) ||
-                   CHECK_BTN_ALL(D_8015BD7C->state.input[0].press.button, BTN_R) ||
+                   PCInput_IsBlockPressed() ||
                    CHECK_BTN_ALL(D_8015BD7C->state.input[0].press.button, BTN_Z)) &&
                   camera->unk_14C & 8)) {
                 goto skipeyeUpdate;
@@ -6431,7 +6431,7 @@ int32_t Camera_Special9(Camera* camera) {
                 CHECK_BTN_ALL(D_8015BD7C->state.input[0].press.button, BTN_CDOWN) ||
                 CHECK_BTN_ALL(D_8015BD7C->state.input[0].press.button, BTN_CUP) ||
                 CHECK_BTN_ALL(D_8015BD7C->state.input[0].press.button, BTN_CRIGHT) ||
-                CHECK_BTN_ALL(D_8015BD7C->state.input[0].press.button, BTN_R) ||
+                PCInput_IsBlockPressed() ||
                 CHECK_BTN_ALL(D_8015BD7C->state.input[0].press.button, BTN_Z) || params->interfaceFlags & 0x8) {
 
                 Camera_ChangeSettingFlags(camera, camera->prevSetting, 2);

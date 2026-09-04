@@ -1,14 +1,14 @@
-#include "Network/ServerCollisionWorld.h"
-#include "Network/ServerWorldBootstrap.h"
+#include "multiplayer/ServerCollisionWorld.h"
+#include "multiplayer/ServerWorldBootstrap.h"
 
-#include <sysdef.h>
+#include "multiplayer/Win32NetworkPlatform.h"
 
 namespace {
 constexpr int32_t kTest01SceneId = 0x65;
 }
 
 int main() {
-    SoH::Network::ServerCollisionWorld collision;
+    Game::Multiplayer::ServerCollisionWorld collision;
     if (!collision.LoadDefaultArchive()) {
         Error("Dedicated collision self-test: oot.o2r could not be loaded");
         return 1;
@@ -26,7 +26,7 @@ int main() {
           collision.SceneCount(), collision.TriangleCount(), collision.SpatialCellCount(),
           collision.UnindexedTriangleCount(), collision.WildFishCount());
 
-    SoH::Network::ServerWorldBootstrap bootstrap;
+    Game::Multiplayer::ServerWorldBootstrap bootstrap;
     Game::Simulation::ServerWorld world;
     constexpr size_t canonicalPondFish = 17;
     if (!bootstrap.Initialize(world) ||

@@ -7,8 +7,6 @@ class ResourceManager;
 
 class IResource {
   public:
-    inline static const std::string gAltAssetPrefix = "alt/";
-
     IResource(std::shared_ptr<ResourceInitData> initData);
     virtual ~IResource();
 

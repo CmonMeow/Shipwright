@@ -1,52 +1,52 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="18.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClCompile Include="$(RepoRoot)src\game\port\Network\Network\netapi.cpp">
+    <ClCompile Include="$(RepoRoot)src\game\multiplayer\Network\netapi.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="$(RepoRoot)src\game\port\Network\Network\netchannel.cpp">
+    <ClCompile Include="$(RepoRoot)src\game\multiplayer\Network\netchannel.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="$(RepoRoot)src\game\port\Network\Network\netmessage.cpp">
+    <ClCompile Include="$(RepoRoot)src\game\multiplayer\Network\netmessage.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="$(RepoRoot)src\game\port\Network\Network\netpeer.cpp">
+    <ClCompile Include="$(RepoRoot)src\game\multiplayer\Network\netpeer.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="$(RepoRoot)src\game\port\Network\NetworkConnectionTransport.cpp">
+    <ClCompile Include="$(RepoRoot)src\game\multiplayer\NetworkConnectionTransport.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="$(RepoRoot)src\game\port\Network\NetworkProtocolIngress.cpp">
+    <ClCompile Include="$(RepoRoot)src\game\multiplayer\NetworkProtocolIngress.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="$(RepoRoot)src\game\port\Network\NetworkSessionLifecycleService.cpp">
+    <ClCompile Include="$(RepoRoot)src\game\multiplayer\NetworkSessionLifecycleService.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="$(RepoRoot)src\game\port\Network\ServerCollisionWorld.cpp">
+    <ClCompile Include="$(RepoRoot)src\game\multiplayer\ServerCollisionWorld.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="$(RepoRoot)src\game\port\Network\NetworkRuntime.cpp">
+    <ClCompile Include="$(RepoRoot)src\game\multiplayer\NetworkRuntime.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="$(RepoRoot)src\game\port\Network\ClientProtocolEndpoint.cpp">
+    <ClCompile Include="$(RepoRoot)src\game\multiplayer\ClientProtocolEndpoint.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="$(RepoRoot)src\game\port\Network\LocalVoiceSubmissionService.cpp">
+    <ClCompile Include="$(RepoRoot)src\game\multiplayer\LocalVoiceSubmissionService.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="$(RepoRoot)src\game\port\Network\LocalClientAdmissionService.cpp">
+    <ClCompile Include="$(RepoRoot)src\game\multiplayer\LocalClientAdmissionService.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="$(RepoRoot)src\game\port\Network\LocalTextCommunicationService.cpp">
+    <ClCompile Include="$(RepoRoot)src\game\multiplayer\LocalTextCommunicationService.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="$(RepoRoot)src\game\port\Network\ServerProtocolEndpoint.cpp">
+    <ClCompile Include="$(RepoRoot)src\game\multiplayer\ServerProtocolEndpoint.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="$(RepoRoot)src\game\port\Network\bitmask.cpp">
+    <ClCompile Include="$(RepoRoot)src\game\multiplayer\bitmask.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="$(RepoRoot)src\game\port\Network\netTransportNet.cpp">
+    <ClCompile Include="$(RepoRoot)src\game\multiplayer\netTransportNet.cpp">
       <Filter>src</Filter>
     </ClCompile>
     <ClCompile Include="$(RepoRoot)src\game\platform\client\LocalStructureActionStream.cpp">
@@ -63,73 +63,73 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="$(RepoRoot)src\game\port\Network\Network\netapi.hpp">
+    <ClInclude Include="$(RepoRoot)src\game\multiplayer\Network\netapi.hpp">
       <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="$(RepoRoot)src\game\port\Network\Network\netchannel.hpp">
+    <ClInclude Include="$(RepoRoot)src\game\multiplayer\Network\netchannel.hpp">
       <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="$(RepoRoot)src\game\port\Network\Network\netglobal.hpp">
+    <ClInclude Include="$(RepoRoot)src\game\multiplayer\Network\netglobal.hpp">
       <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="$(RepoRoot)src\game\port\Network\Network\netmessage.hpp">
+    <ClInclude Include="$(RepoRoot)src\game\multiplayer\Network\netmessage.hpp">
       <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="$(RepoRoot)src\game\port\Network\Network\netpch.hpp">
+    <ClInclude Include="$(RepoRoot)src\game\multiplayer\Network\netpch.hpp">
       <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="$(RepoRoot)src\game\port\Network\Network\netpeer.hpp">
+    <ClInclude Include="$(RepoRoot)src\game\multiplayer\Network\netpeer.hpp">
       <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="$(RepoRoot)src\game\port\Network\NetworkProtocol.h">
+    <ClInclude Include="$(RepoRoot)src\game\multiplayer\NetworkProtocol.h">
       <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="$(RepoRoot)src\game\port\Network\NetworkConnectionTransport.h">
+    <ClInclude Include="$(RepoRoot)src\game\multiplayer\NetworkConnectionTransport.h">
       <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="$(RepoRoot)src\game\port\Network\NetworkProtocolIngress.h">
+    <ClInclude Include="$(RepoRoot)src\game\multiplayer\NetworkProtocolIngress.h">
       <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="$(RepoRoot)src\game\port\Network\NetworkSessionLifecycleService.h">
+    <ClInclude Include="$(RepoRoot)src\game\multiplayer\NetworkSessionLifecycleService.h">
       <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="$(RepoRoot)src\game\port\Network\ServerCollisionWorld.h">
+    <ClInclude Include="$(RepoRoot)src\game\multiplayer\ServerCollisionWorld.h">
       <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="$(RepoRoot)src\game\port\Network\NetworkRuntime.h">
+    <ClInclude Include="$(RepoRoot)src\game\multiplayer\NetworkRuntime.h">
       <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="$(RepoRoot)src\game\port\Network\ClientProtocolEndpoint.h">
+    <ClInclude Include="$(RepoRoot)src\game\multiplayer\ClientProtocolEndpoint.h">
       <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="$(RepoRoot)src\game\port\Network\LocalVoiceSubmissionService.h">
+    <ClInclude Include="$(RepoRoot)src\game\multiplayer\LocalVoiceSubmissionService.h">
       <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="$(RepoRoot)src\game\port\Network\LocalClientAdmissionService.h">
+    <ClInclude Include="$(RepoRoot)src\game\multiplayer\LocalClientAdmissionService.h">
       <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="$(RepoRoot)src\game\port\Network\LocalTextCommunicationService.h">
+    <ClInclude Include="$(RepoRoot)src\game\multiplayer\LocalTextCommunicationService.h">
       <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="$(RepoRoot)src\game\port\Network\ServerProtocolEndpoint.h">
+    <ClInclude Include="$(RepoRoot)src\game\multiplayer\ServerProtocolEndpoint.h">
       <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="$(RepoRoot)src\game\port\Network\VoiceChat.h">
+    <ClInclude Include="$(RepoRoot)src\game\multiplayer\VoiceChat.h">
       <Filter>src</Filter>
     </ClInclude>
     <ClInclude Include="$(RepoRoot)src\game\platform\client\ClientSessionGenerationTracker.h">
       <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="$(RepoRoot)src\game\port\Network\bitmask.hpp">
+    <ClInclude Include="$(RepoRoot)src\game\multiplayer\bitmask.hpp">
       <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="$(RepoRoot)src\game\port\Network\netTransport.hpp">
+    <ClInclude Include="$(RepoRoot)src\game\multiplayer\netTransport.hpp">
       <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="$(RepoRoot)src\game\port\Network\netTransportCommon.hpp">
+    <ClInclude Include="$(RepoRoot)src\game\multiplayer\netTransportCommon.hpp">
       <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="$(RepoRoot)src\game\port\Network\pointers.h">
+    <ClInclude Include="$(RepoRoot)src\game\multiplayer\pointers.h">
       <Filter>src</Filter>
     </ClInclude>
     <ClInclude Include="$(RepoRoot)src\game\platform\client\LocalStructureActionStream.h">

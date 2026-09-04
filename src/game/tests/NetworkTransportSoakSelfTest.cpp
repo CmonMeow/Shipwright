@@ -1,7 +1,7 @@
-#include <sysdef.h>
+#include "multiplayer/Win32NetworkPlatform.h"
 
-#include "Network/NetworkRuntime.h"
-#include "Network/netTransport.hpp"
+#include "multiplayer/NetworkRuntime.h"
+#include "multiplayer/netTransport.hpp"
 
 #include <Windows.h>
 
@@ -15,7 +15,7 @@
 
 namespace {
 
-using SoH::Network::NetworkRuntime;
+using Game::Multiplayer::NetworkRuntime;
 
 constexpr unsigned short kPort = 47779;
 constexpr int kClientCount = 4;

@@ -1,6 +1,5 @@
 #include "global.h"
-#include "port/ResourceManagerHelpers.h"
-#include <runtime/bridge.h>
+#include "resources/ResourceManagerHelpers.h"
 
 extern bool gUseLegacySD;
 

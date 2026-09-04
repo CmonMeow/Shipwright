@@ -10,10 +10,12 @@
 
 namespace Engine {
 class Archive;
+class ResourceManager;
 
 #define RESOURCE_FORMAT_BINARY 0
 
 struct ResourceInitData {
+    ResourceManager* Manager = nullptr;
     std::shared_ptr<Archive> Parent;
     std::string Path;
     Endianness ByteOrder;

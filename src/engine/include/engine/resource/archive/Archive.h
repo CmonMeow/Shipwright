@@ -7,7 +7,7 @@
 #include "engine/utils/binarytools/BinaryReader.h"
 
 namespace Engine {
-#define OTR_HEADER_SIZE ((size_t)64)
+constexpr size_t RESOURCE_HEADER_SIZE = 64;
 
 struct File;
 struct ResourceInitData;
@@ -25,7 +25,7 @@ class Archive : public std::enable_shared_from_this<Archive> {
     void Unload();
 
     virtual std::shared_ptr<File> LoadFile(const std::string& filePath) = 0;
-    virtual std::shared_ptr<File> LoadFile(uint64_t hash) = 0;
+    std::shared_ptr<File> LoadFile(uint64_t hash);
     std::shared_ptr<std::unordered_map<uint64_t, std::string>> ListFiles();
     std::shared_ptr<std::unordered_map<uint64_t, std::string>> ListFiles(const std::string& filter);
     bool HasFile(const std::string& filePath);

@@ -3,7 +3,7 @@
 #include <runtime/libultra.h>
 #include "global.h"
 
-#include "port/ResourceManagerHelpers.h"
+#include "resources/ResourceManagerHelpers.h"
 
 extern char** sequenceMap;
 

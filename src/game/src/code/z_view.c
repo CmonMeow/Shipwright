@@ -5,7 +5,7 @@
 #include <math.h>
 #include <assert.h>
 
-#include "port/frame_interpolation.h"
+#include "rendering/FrameInterpolation.h"
 
 volatile uint32_t D_8012ABF0 = true;
 

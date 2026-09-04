@@ -1,6 +1,5 @@
 #include "global.h"
-
-#include <runtime/bridge/gfxbridge.h>
+#include "rendering/ucodehandlers.h"
 
 UcodeHandlers sDefaultGSPUCodeText = ucode_f3dex2;
 // uint64_t* sDefaultGSPUCodeData = gspF3DZEX2_NoN_PosLight_fifoDataStart;

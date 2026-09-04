@@ -3,9 +3,9 @@
 #include "vt.h"
 #include "objects/gameplay_keep/gameplay_keep.h"
 #include "objects/gameplay_field_keep/gameplay_field_keep.h"
-#include "port/frame_interpolation.h"
-#include "port/OTRGlobals.h"
-#include "port/ResourceManagerHelpers.h"
+#include "rendering/FrameInterpolation.h"
+#include "platform/client/RetainedGameBridge.h"
+#include "resources/ResourceManagerHelpers.h"
 typedef enum {
     /* 0 */ LENS_FLARE_CIRCLE0,
     /* 1 */ LENS_FLARE_CIRCLE1,
@@ -227,13 +227,13 @@ int32_t func_8006F0A0(int32_t a0) {
 }
 
 uint16_t Environment_GetPixelDepth(int32_t x, int32_t y) {
-    return OTRGetPixelDepth(x, y);
+    return RetainedGame_GetPixelDepth(x, y);
 }
 
 void Environment_GraphCallback(GraphicsContext* gfxCtx, void* param) {
     PlayState* play = (PlayState*)param;
 
-    OTRGetPixelDepthPrepare(D_8015FD7E, D_8015FD80);
+    RetainedGame_PreparePixelDepth(D_8015FD7E, D_8015FD80);
     Lights_GlowCheckPrepare(play);
 
     D_8011FB44 = Environment_GetPixelDepth(D_8015FD7E, D_8015FD80);
@@ -2135,13 +2135,15 @@ uint16_t previousPatchedSandstormScreenSize = 0;
 
 void Environment_PatchSandstorm(PlayState* play) {
     if (previousPatchedSandstormScreenSize ==
-        ABS(OTRGetRectDimensionFromLeftEdge(0)) + ABS(OTRGetRectDimensionFromRightEdge(SCREEN_WIDTH))) {
+        ABS(RetainedGame_GetRectDimensionFromLeftEdge(0)) +
+            ABS(RetainedGame_GetRectDimensionFromRightEdge(SCREEN_WIDTH))) {
         return;
     }
 
     Gfx gfxPatchSandstormRect[] = {
-        gsSPWideTextureRectangle(OTRGetRectDimensionFromLeftEdge(0) << 2, 0,
-                                 OTRGetRectDimensionFromRightEdge(SCREEN_WIDTH) << 2, 0x03C0, G_TX_RENDERTILE, 0, 0,
+        gsSPWideTextureRectangle(RetainedGame_GetRectDimensionFromLeftEdge(0) << 2, 0,
+                                 RetainedGame_GetRectDimensionFromRightEdge(SCREEN_WIDTH) << 2, 0x03C0,
+                                 G_TX_RENDERTILE, 0, 0,
                                  0x008C, -0x008C),
     };
     ResourceMgr_PatchGfxByName(gFieldSandstormDL, "gfxPatchSandstormRect0", 24, gfxPatchSandstormRect[0]);
@@ -2149,7 +2151,8 @@ void Environment_PatchSandstorm(PlayState* play) {
     ResourceMgr_PatchGfxByName(gFieldSandstormDL, "gfxPatchSandstormRect2", 26, gfxPatchSandstormRect[2]);
 
     previousPatchedSandstormScreenSize =
-        ABS(OTRGetRectDimensionFromLeftEdge(0)) + ABS(OTRGetRectDimensionFromRightEdge(SCREEN_WIDTH));
+        ABS(RetainedGame_GetRectDimensionFromLeftEdge(0)) +
+        ABS(RetainedGame_GetRectDimensionFromRightEdge(SCREEN_WIDTH));
 }
 
 void Environment_DrawSandstorm(PlayState* play, uint8_t sandstormState) {

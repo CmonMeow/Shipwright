@@ -1,6 +1,6 @@
 #include "global.h"
 #include <assert.h>
-#include "port/ResourceManagerHelpers.h"
+#include "resources/ResourceManagerHelpers.h"
 
 void func_80110990(PlayState* play) {
 }

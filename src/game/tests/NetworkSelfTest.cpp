@@ -1,6 +1,6 @@
-#include <sysdef.h>
+#include "multiplayer/Win32NetworkPlatform.h"
 
-#include "Network/netTransport.hpp"
+#include "multiplayer/netTransport.hpp"
 
 #include <Windows.h>
 

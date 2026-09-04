@@ -2,7 +2,6 @@
 
 #undef _DLL
 
-#include <string>
 #include <mutex>
 #include <stdint.h>
 #include <string>
@@ -25,7 +24,6 @@ class O2rArchive final : virtual public Archive {
     bool Close();
 
     std::shared_ptr<File> LoadFile(const std::string& filePath);
-    std::shared_ptr<File> LoadFile(uint64_t hash);
 
   private:
     zip_t* mZipArchive = nullptr;

@@ -1,0 +1,17 @@
+#include "rendering/resource/factory/LightFactory.h"
+#include "rendering/resource/type/Light.h"
+
+std::shared_ptr<Engine::IResource>
+Engine::Rendering::ResourceFactoryBinaryLightV0::ReadResource(std::shared_ptr<Engine::File> file,
+                                                 std::shared_ptr<Engine::ResourceInitData> initData) {
+    if (!FileHasValidFormatAndReader(file, initData)) {
+        return nullptr;
+    }
+
+    std::shared_ptr<Light> light = std::make_shared<Light>(initData);
+    auto reader = std::get<std::shared_ptr<Engine::BinaryReader>>(file->Reader);
+
+    reader->Read((char*)light->GetPointer(), sizeof(LightEntry));
+
+    return light;
+}

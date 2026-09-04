@@ -1,6 +1,7 @@
 #pragma once
 
 #include <stddef.h>
+#include <string>
 
 #if (__linux__)
 #include <csignal>
@@ -16,15 +17,13 @@
 #endif
 
 namespace Engine {
-typedef void (*CrashHandlerCallback)(char*, size_t*);
-
 class CrashHandler {
   public:
-    CrashHandler();
+    explicit CrashHandler(std::string applicationName);
     ~CrashHandler();
-    CrashHandler(CrashHandlerCallback callback);
 
-    void RegisterCallback(CrashHandlerCallback callback);
+    static CrashHandler* GetActive();
+    const std::string& GetApplicationName() const;
     void AppendLine(const char* str);
     void AppendStr(const char* str);
     void PrintCommon();
@@ -37,7 +36,8 @@ class CrashHandler {
 #endif
 
   private:
-    CrashHandlerCallback mCallback = nullptr;
+    static CrashHandler* mActive;
+    std::string mApplicationName;
     char* mOutBuffer = nullptr;
     static constexpr size_t gMaxBufferSize = 32768;
     size_t mOutBuffersize = 0;

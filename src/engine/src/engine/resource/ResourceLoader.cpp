@@ -4,7 +4,6 @@
 #include "engine/resource/ResourceManager.h"
 #include "engine/resource/Resource.h"
 #include "engine/resource/File.h"
-#include "engine/Context.h"
 #include "engine/utils/binarytools/MemoryStream.h"
 #include "engine/utils/binarytools/BinaryReader.h"
 #include "engine/resource/factory/JsonFactory.h"
@@ -12,7 +11,7 @@
 #include "nlohmann/json.hpp"
 
 namespace Engine {
-ResourceLoader::ResourceLoader() {
+ResourceLoader::ResourceLoader(ResourceManager& resources) : mResources(resources) {
     RegisterGlobalResourceFactories();
 }
 
@@ -90,18 +89,18 @@ std::shared_ptr<ResourceInitData> ResourceLoader::ReadResourceInitDataLegacy(con
         return nullptr;
     } else {
         auto headerBuffer = std::make_shared<std::vector<char>>(fileToLoad->Buffer->begin(),
-                                                                fileToLoad->Buffer->begin() + OTR_HEADER_SIZE);
+                                                                fileToLoad->Buffer->begin() + RESOURCE_HEADER_SIZE);
 
-        if (headerBuffer->size() < OTR_HEADER_SIZE) {
+        if (headerBuffer->size() < RESOURCE_HEADER_SIZE) {
             WriteLog("Failed to parse ResourceInitData, buffer size too small. File: {}. Got {} bytes and "
                          "needed {} bytes.",
-                         filePath, headerBuffer->size(), OTR_HEADER_SIZE);
+                         filePath, headerBuffer->size(), RESOURCE_HEADER_SIZE);
             return nullptr;
         }
 
         // Factories expect the buffer to not include the header,
         // so we need to remove it from the buffer on the file
-        fileToLoad->Buffer = std::make_shared<std::vector<char>>(fileToLoad->Buffer->begin() + OTR_HEADER_SIZE,
+        fileToLoad->Buffer = std::make_shared<std::vector<char>>(fileToLoad->Buffer->begin() + RESOURCE_HEADER_SIZE,
                                                                  fileToLoad->Buffer->end());
 
         // Create a reader for the header buffer
@@ -147,7 +146,7 @@ std::shared_ptr<ResourceInitData> ResourceLoader::ReadResourceInitData(const std
         initData->Path = filePath;
     }
 
-    initData->Type = Context::GetInstance()->GetResourceManager()->GetResourceLoader()->GetResourceType(parsed["type"]);
+    initData->Type = GetResourceType(parsed["type"]);
     initData->ResourceVersion = parsed["version"];
 
     return initData;
@@ -162,11 +161,11 @@ std::shared_ptr<IResource> ResourceLoader::LoadResource(std::string filePath, st
 
     if (initData == nullptr) {
         auto metaFilePath = filePath + ".meta";
-        auto metaFileToLoad = Context::GetInstance()->GetResourceManager()->LoadFileProcess(metaFilePath);
+        auto metaFileToLoad = mResources.LoadFileProcess(metaFilePath);
 
         if (metaFileToLoad != nullptr) {
             auto initDataFromMetaFile = ReadResourceInitData(filePath, metaFileToLoad);
-            fileToLoad = Context::GetInstance()->GetResourceManager()->LoadFileProcess(initDataFromMetaFile->Path);
+            fileToLoad = mResources.LoadFileProcess(initDataFromMetaFile->Path);
             initData = initDataFromMetaFile;
         } else {
             initData = ReadResourceInitDataLegacy(filePath, fileToLoad);
@@ -178,6 +177,7 @@ std::shared_ptr<IResource> ResourceLoader::LoadResource(std::string filePath, st
         return nullptr;
     }
 
+    initData->Manager = &mResources;
     if (initData->Format != RESOURCE_FORMAT_BINARY) {
         WriteLog("Unsupported resource format {} at path {}", initData->Format, initData->Path);
         return nullptr;
@@ -205,11 +205,11 @@ ResourceLoader::ReadResourceInitDataBinary(const std::string& filePath, std::sha
     resourceInitData->Path = filePath;
 
     if (headerReader == nullptr) {
-        WriteLog("Error reading OTR header from Binary: No header buffer document for file {}", filePath);
+        WriteLog("Error reading resource header: no header document for file {}", filePath);
         return resourceInitData;
     }
 
-    // OTR HEADER BEGIN
+    // Resource header begin
     // Byte Order
     resourceInitData->ByteOrder = (Endianness)headerReader->ReadInt8();
     headerReader->SetEndianness(resourceInitData->ByteOrder);
@@ -232,8 +232,8 @@ ResourceLoader::ReadResourceInitDataBinary(const std::string& filePath, std::sha
     // ROM Enum
     // reader->ReadUInt32();
     // Reserved for future file format versions...
-    // reader->Seek(OTR_HEADER_SIZE, SeekOffsetType::Start);
-    // OTR HEADER END
+    // reader->Seek(RESOURCE_HEADER_SIZE, SeekOffsetType::Start);
+    // Resource header end
 
     headerReader->Seek(0, SeekOffsetType::Start);
     return resourceInitData;

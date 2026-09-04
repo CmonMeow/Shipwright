@@ -1,8 +1,8 @@
-#include <sysdef.h>
+#include "multiplayer/Win32NetworkPlatform.h"
 
-#include "Network/NetworkRuntime.h"
-#include "Network/LocalNetworkIdentity.h"
-#include "Network/netTransport.hpp"
+#include "multiplayer/NetworkRuntime.h"
+#include "multiplayer/LocalNetworkIdentity.h"
+#include "multiplayer/netTransport.hpp"
 
 #include <Windows.h>
 
@@ -13,11 +13,11 @@
 
 namespace {
 
-using SoH::Network::NetworkRuntime;
-using SoH::Network::GM_LIST_FILENAME;
-using SoH::Network::LoadGameMasterList;
-using SoH::Network::LocalIdentityId;
-using SoH::Network::SaveGameMasterList;
+using Game::Multiplayer::NetworkRuntime;
+using Game::Multiplayer::GM_LIST_FILENAME;
+using Game::Multiplayer::LoadGameMasterList;
+using Game::Multiplayer::LocalIdentityId;
+using Game::Multiplayer::SaveGameMasterList;
 
 constexpr unsigned short kRuntimePort = 47778;
 constexpr uint64_t kExpectedRespawnMilliseconds = 5000;

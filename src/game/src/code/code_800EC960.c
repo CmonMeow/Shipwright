@@ -1,7 +1,6 @@
 #include <runtime/libultra.h>
-#include <runtime/bridge/audiobridge.h>
+#include "platform/client/RetainedGameBridge.h"
 #include "global.h"
-#include "port/OTRGlobals.h"
 // TODO: can these macros be shared between files? code_800F9280 seems to use
 // versions without any casts...
 #define Audio_DisableSeq(playerIdx, fadeOut) Audio_QueueCmdS32(0x83000000 | ((uint8_t)playerIdx << 16), fadeOut)
@@ -1242,7 +1241,7 @@ uint32_t sDebugPadPress;
 int32_t sAudioUpdateTaskStart;
 int32_t sAudioUpdateTaskEnd;
 
-void PadMgr_RequestPadData(PadMgr* padmgr, Input* inputs, int32_t mode);
+void PadMgr_RequestPadData(PadMgr* padmgr, ControllerInput* inputs, int32_t mode);
 
 void Audio_StepFreqLerp(FreqLerp* lerp);
 void func_800F56A8(void);
@@ -1250,8 +1249,8 @@ void Audio_PlayNatureAmbienceSequence(uint8_t natureAmbienceId);
 int32_t Audio_SetGanonDistVol(uint8_t targetVol);
 
 void Audio_GetOcaInput(void) {
-    Input inputs[4];
-    Input* input = &inputs[0];
+    ControllerInput inputs[4];
+    ControllerInput* input = &inputs[0];
 
     uint32_t sp18 = sCurOcarinaBtnPress;
     PadMgr_RequestPadData(&gPadMgr, inputs, 0);
@@ -2139,7 +2138,7 @@ uint8_t sAudioNatureFailed = false;
 uint8_t sPeakNumNotes = 0;
 
 void AudioDebug_SetInput(void) {
-    Input inputs[4];
+    ControllerInput inputs[4];
 
     PadMgr_RequestPadData(&gPadMgr, inputs, 0);
     uint32_t btn = inputs[3].cur.button;
@@ -4736,25 +4735,25 @@ void func_800F6700(int8_t arg0) {
             sp1F = 0;
             D_80130604 = 0;
             // SOH [Port] Inform LUS of audio setting change
-            SetAudioChannels(audioStereo);
+            RetainedGame_SetAudioChannels(audioStereo);
             break;
         case 1:
             sp1F = 3;
             D_80130604 = 3;
             // SOH [Port] Inform LUS of audio setting change
-            SetAudioChannels(audioStereo);
+            RetainedGame_SetAudioChannels(audioStereo);
             break;
         case 2:
             sp1F = 1;
             D_80130604 = 1;
             // SOH [Port] Inform LUS of audio setting change
-            SetAudioChannels(audioStereo);
+            RetainedGame_SetAudioChannels(audioStereo);
             break;
         case 3:
             sp1F = 0;
             D_80130604 = 2;
             // SOH [Port] Inform LUS of audio setting change
-            SetAudioChannels(audioMatrix51);
+            RetainedGame_SetAudioChannels(audioMatrix51);
             break;
     }
 

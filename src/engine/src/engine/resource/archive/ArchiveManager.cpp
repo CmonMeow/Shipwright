@@ -241,6 +241,7 @@ std::shared_ptr<Archive> ArchiveManager::AddArchive(std::shared_ptr<Archive> arc
     if (!mValidGameVersions.empty() && !mValidGameVersions.contains(archive->GetGameVersion())) {
         WriteLog("Attempting to add Archive at {} with invalid Game Version {} to Archive Manager",
                     archive->GetPath(), archive->GetGameVersion());
+        archive->Unload();
         return nullptr;
     }
 

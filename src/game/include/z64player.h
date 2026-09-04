@@ -3,7 +3,7 @@
 
 #include "z64actor.h"
 #include "alignment.h"
-#include "port/ItemTableTypes.h"
+#include "runtime/items/GetItemTypes.h"
 
 struct Player;
 

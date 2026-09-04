@@ -5,16 +5,16 @@
  */
 
 #include "z_fishing.h"
-#include "engine/input/PCInput.h"
-#include "port/Gameplay/FishingGameplay.h"
-#include "port/Gameplay/FishPresentation.h"
-#include "port/Gameplay/GameplayNotification.h"
+#include "platform/win32/PCInput.h"
+#include "gameplay/FishingGameplay.h"
+#include "gameplay/FishPresentation.h"
+#include "gameplay/GameplayNotification.h"
 
 #include "objects/object_fish/object_fish.h"
 #include "message_data_fmt.h"
 #include "vt.h"
 
-#include "port/frame_interpolation.h"
+#include "rendering/FrameInterpolation.h"
 #define FLAGS ACTOR_FLAG_UPDATE_CULLING_DISABLED
 #define WATER_SURFACE_Y(play) Fishing_GetWaterSurfaceY(play)
 bool getShouldSpawnLoaches();
@@ -385,8 +385,8 @@ static void* sPreviousSpecialEffects;
 
 static void Fishing_StopCinematic(PlayState* play);
 
-static int32_t Fishing_IsReelHeld(Input* input) {
-    return CHECK_BTN_ALL(input->cur.button, BTN_A) || PCInput_IsFishingReelHeld();
+static int32_t Fishing_IsReelHeld(void) {
+    return PCInput_IsFishingReelHeld();
 }
 
 static void Fishing_StartCatchNotification(PlayState* play) {
@@ -2353,7 +2353,7 @@ static Vec3f sRodTipOffset = { 0.0f, 0.0f, 0.0f };
 void Fishing_DrawRod(PlayState* play) {
     int16_t i;
     float spC0 = { 0 };
-    Input* input = &play->state.input[0];
+    ControllerInput* input = &play->state.input[0];
     Player* player = GET_PLAYER(play);
 
     OPEN_DISPS(play->state.gfxCtx);
@@ -2497,7 +2497,7 @@ void Fishing_UpdateLure(Fishing* this, PlayState* play) {
     Vec3f spA8 = { 0 };
     Vec3f sp9C;
     Vec3f sp90;
-    Input* input = &play->state.input[0];
+    ControllerInput* input = &play->state.input[0];
     float phi_f0 = { 0 };
     Vec3f sp64;
 
@@ -2631,7 +2631,7 @@ void Fishing_UpdateLure(Fishing* this, PlayState* play) {
             sLurePosDelta.y += sLureCastDelta.y;
             sLurePosDelta.z += sLureCastDelta.z;
             // air drag by hat or reeling during cast.
-            if (Fishing_IsReelHeld(input) || sIsOwnersHatHooked) {
+            if (Fishing_IsReelHeld() || sIsOwnersHatHooked) {
                 sLurePosDelta.x *= 0.9f;
                 sLurePosDelta.z *= 0.9f;
                 if (!sIsOwnersHatHooked) {
@@ -2834,7 +2834,7 @@ void Fishing_UpdateLure(Fishing* this, PlayState* play) {
                             sReelLinePos[LINE_SEG_COUNT - 1].y += sLureLineSegPosDelta.y;
                             sLurePos.y += sLureLineSegPosDelta.y;
                         }
-                    } else if (Fishing_IsReelHeld(input)) {
+                    } else if (Fishing_IsReelHeld()) {
                         spDC = 0x500;
                         sLureWiggleRotYTarget = sReelLineRot[LINE_SEG_COUNT - 2].y + M_PI;
                         sLureRot.x = 0.0f;
@@ -2891,7 +2891,7 @@ void Fishing_UpdateLure(Fishing* this, PlayState* play) {
 
             sLure1Rotate = 0.0f;
 
-            if ((sLureEquipped == FS_LURE_UNK) && Fishing_IsReelHeld(input)) {
+            if ((sLureEquipped == FS_LURE_UNK) && Fishing_IsReelHeld()) {
                 sLureLineSegPosDelta.y = -2.0f;
 
                 if ((sLureTimer & 1) != 0) {
@@ -2935,16 +2935,10 @@ void Fishing_UpdateLure(Fishing* this, PlayState* play) {
 
             sLurePosDelta.x = sLurePosDelta.y = sLurePosDelta.z = sLureCastDelta.y = 0.0f;
 
-            if (Fishing_IsReelHeld(input)) {
-                if (CHECK_BTN_ALL(input->cur.button, BTN_R)) {
-                    sRodLineSpooled += 1.5f;
-                    Sfx_PlaySfxCentered(NA_SE_IT_FISHING_REEL_HIGH - SFX_FLAG);
-                    Math_ApproachF(&sReelLinePosStep, 1000.0f, 1.0f, 2.0f);
-                } else {
-                    sRodLineSpooled += sRodReelingSpeed;
-                    Sfx_PlaySfxCentered(NA_SE_IT_FISHING_REEL_SLOW - SFX_FLAG);
-                    Math_ApproachF(&sReelLinePosStep, 1000.0f, 1.0f, 0.2f);
-                }
+            if (Fishing_IsReelHeld()) {
+                sRodLineSpooled += sRodReelingSpeed;
+                Sfx_PlaySfxCentered(NA_SE_IT_FISHING_REEL_SLOW - SFX_FLAG);
+                Math_ApproachF(&sReelLinePosStep, 1000.0f, 1.0f, 0.2f);
 
                 if (sReelLinePos[LINE_SEG_COUNT - 1].y > (WATER_SURFACE_Y(play) + 4.0f)) {
                     Math_ApproachF(&D_80B7E148, 3.0f, 1.0f, 0.2f);
@@ -2975,7 +2969,7 @@ void Fishing_UpdateLure(Fishing* this, PlayState* play) {
             if ((sLurePos.y <= (WATER_SURFACE_Y(play) + 4.0f)) && (sLurePos.y >= (WATER_SURFACE_Y(play) - 4.0f))) {
 
                 int16_t timer = 63;
-                if (Fishing_IsReelHeld(input) || (sLureWigglePosY > 1.0f)) {
+                if (Fishing_IsReelHeld() || (sLureWigglePosY > 1.0f)) {
                     timer = 1;
                 }
 
@@ -2993,7 +2987,7 @@ void Fishing_UpdateLure(Fishing* this, PlayState* play) {
                 sRodLineSpooled += sRodReelingSpeed;
             }
 
-            if (Fishing_IsReelHeld(input)) {
+            if (Fishing_IsReelHeld()) {
                 if (!sPortableFishing && ((SQ(sLurePos.x) + SQ(sLurePos.z)) > SQ(920.0f))) {
                     sRodLineSpooled += (1.0f + (KREG(65) * 0.1f));
                 } else {
@@ -3099,7 +3093,7 @@ void Fishing_SplashBySize2(Fishing* this, PlayState* play) {
     }
 }
 
-void func_80B70ED4(Fishing* this, Input* input) {
+void func_80B70ED4(Fishing* this, ControllerInput* input) {
     Vec3f lineVec;
     Vec3f sp28;
 
@@ -3120,7 +3114,7 @@ void func_80B70ED4(Fishing* this, Input* input) {
                 this->rotationStep = 28672.0f;
                 this->speedTarget = 5.0f;
             } else {
-                if ((Fishing_IsReelHeld(input) || (sLureWigglePosY > 1.0f)) &&
+                if ((Fishing_IsReelHeld() || (sLureWigglePosY > 1.0f)) &&
                     (lineLengthSQ < SQ(this->isWild ? 500.0f : 120.0f))) {
                     this->fishState = 2;
                     this->unk_15E = 0;
@@ -3265,7 +3259,7 @@ void Fishing_UpdateFish(Actor* thisx, PlayState* play2) {
     Fishing* this = (Fishing*)thisx;
     PlayState* play = play2;
     Player* player = GET_PLAYER(play);
-    Input* input = &play->state.input[0];
+    ControllerInput* input = &play->state.input[0];
     Vec3f bubblePos;
     uint8_t phi_v0_2 = { 0 };
     float rumbleStrength = { 0 };
@@ -3751,7 +3745,7 @@ void Fishing_UpdateFish(Actor* thisx, PlayState* play2) {
             }
 
             Math_ApproachF(&this->rotationStep, 8192.0f, 1.0f, (KREG(16) * 128) + 384.0f);
-            if (CHECK_BTN_ALL(input->press.button, BTN_A)) {
+            if (PCInput_IsFishingReelPressed()) {
                 this->perception += 0.005f;
             }
 
@@ -4019,7 +4013,7 @@ void Fishing_UpdateFish(Actor* thisx, PlayState* play2) {
 
             if ((sLureBitTimer != 0) && (sLineHooked == 0)) { // pull the line to hook it
                 if (((input->rel.stick_y < -50) && (sStickAdjYPrev > -40)) ||
-                    CHECK_BTN_ALL(input->press.button, BTN_A)) {
+                    PCInput_IsFishingReelPressed()) {
                     if (input->rel.stick_y < -50) {
                         float temp_f0 = 40.0f - ((this->fishLength - 30.0f) * 1.333333f);
                         if (temp_f0 > 0.0f) {
@@ -4145,7 +4139,7 @@ void Fishing_UpdateFish(Actor* thisx, PlayState* play2) {
                         }
                     }
                 } else {
-                    if (((this->timerArray[1] & 0xF) == 0) && Fishing_IsReelHeld(input) &&
+                    if (((this->timerArray[1] & 0xF) == 0) && Fishing_IsReelHeld() &&
                         (!(this->fishLength >= 60.0f) || (sFishFightTime >= 2000))) {
                         this->unk_152 = (int16_t)Rand_ZeroFloat(30.0f) + 15;
                         this->unk_154 = this->actor.yawTowardsPlayer - this->actor.shape.rot.y;
@@ -4213,7 +4207,7 @@ void Fishing_UpdateFish(Actor* thisx, PlayState* play2) {
                                2.0f * (this->actor.speedXZ * 1.5f));
             }
 
-            if (Fishing_IsReelHeld(input) || (input->rel.stick_y < -30)) {
+            if (Fishing_IsReelHeld() || (input->rel.stick_y < -30)) {
                 if (sRodPullback < 100) {
                     sRodPullback++;
                 }
@@ -5466,7 +5460,7 @@ void Fishing_UpdateOwner(Actor* thisx, PlayState* play2) {
     float target = { 0 };
     float subCamAtMaxVelFrac = { 0 };
     Player* player = GET_PLAYER(play);
-    Input* input = &play->state.input[0];
+    ControllerInput* input = &play->state.input[0];
 
 
 
@@ -6185,7 +6179,7 @@ void Fishing_UpdatePortable(Actor* thisx, PlayState* play) {
 }
 
 void Fishing_DrawPortable(Actor* thisx, PlayState* play) {
-    Input* input = &play->state.input[0];
+    ControllerInput* input = &play->state.input[0];
     Player* player = GET_PLAYER(play);
     int16_t i;
 
@@ -6227,7 +6221,7 @@ static void* sFishingOwnerEyeTexs[] = {
 
 void Fishing_DrawOwner(Actor* thisx, PlayState* play) {
     Fishing* this = (Fishing*)thisx;
-    Input* input = &play->state.input[0];
+    ControllerInput* input = &play->state.input[0];
 
     OPEN_DISPS(play->state.gfxCtx);
 

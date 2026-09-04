@@ -10,7 +10,7 @@
 namespace Engine {
 
 class Console;
-typedef std::function<int32_t(std::shared_ptr<Console> console, std::vector<std::string> args, std::string* output)>
+typedef std::function<int32_t(Console* console, std::vector<std::string> args, std::string* output)>
     CommandHandler;
 
 enum class ArgumentType { TEXT, NUMBER };

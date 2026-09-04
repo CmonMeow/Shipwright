@@ -113,6 +113,9 @@ void WasapiAudioPlayer::DoClose() {
     mRenderClient.Reset();
     mClient.Reset();
     mDevice.Reset();
+    // Release the enumerator while COM is still initialized. Leaving this
+    // ComPtr alive until member destruction calls Release after CoUninitialize.
+    mDeviceEnumerator.Reset();
     mInitialized = false;
     mStarted = false;
 }

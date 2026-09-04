@@ -1,4 +1,6 @@
-#include "runtime/runtime.h"
+#include "runtime/libultra/pi.h"
+
+#include <cstring>
 
 extern "C" {
 

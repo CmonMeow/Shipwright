@@ -5,7 +5,7 @@
  */
 
 #include <runtime/libultra.h>
-#include "engine/input/PCInput.h"
+#include "platform/win32/PCInput.h"
 #include "global.h"
 
 #include "overlays/actors/ovl_En_Arrow/z_en_arrow.h"
@@ -13,12 +13,11 @@
 #include "overlays/actors/ovl_Fishing/z_fishing.h"
 #include "objects/gameplay_keep/gameplay_keep.h"
 #include "objects/object_link_child/object_link_child.h"
-#include "port/ItemTableTypes.h"
-#include "port/frame_interpolation.h"
-#include "port/OTRGlobals.h"
-#include "port/Gameplay/ProjectileGameplay.h"
-#include "port/Enhancements/debugger/colViewer.h"
-#include "port/ResourceManagerHelpers.h"
+#include "runtime/items/GetItemTypes.h"
+#include "rendering/FrameInterpolation.h"
+#include "gameplay/ProjectileGameplay.h"
+#include "debug/collision/colViewer.h"
+#include "resources/ResourceManagerHelpers.h"
 
 #include <string.h>
 #include <stdlib.h>
@@ -127,7 +126,7 @@ void Player_StartMode_Door(PlayState* play, Player* this);
 void Player_StartMode_Grotto(PlayState* play, Player* this);
 void Player_StartMode_KnockedOver(PlayState* play, Player* this);
 void Player_StartMode_WarpSong(PlayState* play, Player* this);
-void Player_UpdateCommon(Player* this, PlayState* play, Input* input);
+void Player_UpdateCommon(Player* this, PlayState* play, ControllerInput* input);
 void func_8084FF7C(Player* this);
 void func_80851008(PlayState* play, Player* this, void* anim);
 void func_80851030(PlayState* play, Player* this, void* anim);
@@ -324,7 +323,7 @@ void Player_SetPendingFlag(Player* this, PlayState* play) {
 // .bss part 1
 static int32_t D_80858AA0;
 static Vec3f sInteractWallCheckResult;
-static Input* sControlInput;
+static ControllerInput* sControlInput;
 
 // .data
 
@@ -1264,7 +1263,6 @@ static LinkAnimationHeader* D_80854378[] = {
 static uint8_t D_80854380[2] = { PLAYER_MWA_SPIN_ATTACK_1H, PLAYER_MWA_SPIN_ATTACK_2H };
 static uint8_t D_80854384[2] = { PLAYER_MWA_BIG_SPIN_1H, PLAYER_MWA_BIG_SPIN_2H };
 
-static uint16_t sItemButtons[] = { BTN_CLEFT, BTN_CDOWN, BTN_CRIGHT, BTN_CUP };
 static int32_t sPendingFishingItem = -1;
 
 
@@ -1974,7 +1972,7 @@ static int32_t Player_UsesPCParallelMovement(Player* this) {
     return (this->actor.category == ACTORCAT_PLAYER) &&
            !(this->stateFlags1 & (PLAYER_STATE1_IN_CUTSCENE | PLAYER_STATE1_DEAD | PLAYER_STATE1_IN_WATER)) &&
            (this->heldItemAction != PLAYER_IA_FISHING_POLE) &&
-           ((sControlStickMagnitude >= 20.0f) || CHECK_BTN_ALL(sControlInput->cur.button, BTN_R) ||
+           ((sControlStickMagnitude >= 20.0f) || PCInput_IsBlockHeld() ||
             (PCInput_IsBowAimHeld() && (this->heldItemAction == PLAYER_IA_BOW)));
 }
 
@@ -2079,7 +2077,6 @@ int32_t Player_GetItemOnButton(PlayState* play, int32_t index) {
  */
 void Player_ProcessItemButtons(Player* this, PlayState* play) {
     int32_t item = { 0 };
-    int32_t i;
     int32_t selectedSlot = PCInput_ConsumeWeaponSelection();
 
     if (selectedSlot != 0) {
@@ -2118,33 +2115,19 @@ void Player_ProcessItemButtons(Player* this, PlayState* play) {
             }
         }
 
-        for (i = 0; i < ARRAY_COUNT(sItemButtons); i++) {
-            if (CHECK_BTN_ALL(sControlInput->press.button, sItemButtons[i])) {
-                break;
-            }
-        }
+        selectedSlot = PCInput_GetSelectedWeaponSlot();
+        item = Player_GetItemOnButton(play, selectedSlot);
 
-        item = Player_GetItemOnButton(play, i + 1);
-
-        if (item == ITEM_NONE) {
-            for (i = 0; i < ARRAY_COUNT(sItemButtons); i++) {
-                if (CHECK_BTN_ALL(sControlInput->cur.button, sItemButtons[i])) {
-                    break;
-                }
-            }
-
-            item = Player_GetItemOnButton(play, i + 1);
-
-            if ((item != ITEM_NONE) && (Player_ItemToItemAction(item) == this->heldItemAction)) {
-                sHeldItemButtonIsHeldDown = true;
-            }
-        } else {
-            this->heldItemButton = i + 1;
+        if (PCInput_PrimaryPressed()) {
+            this->heldItemButton = selectedSlot;
             if ((item == ITEM_FISHING_POLE) && (Player_EnsureFishingController(play, this) == NULL)) {
                 Sfx_PlaySfxCentered(NA_SE_SY_ERROR);
                 return;
             }
             Player_UseItem(play, this, item);
+        } else if (PCInput_PrimaryHeld() && (item != ITEM_NONE) &&
+                   (Player_ItemToItemAction(item) == this->heldItemAction)) {
+            sHeldItemButtonIsHeldDown = true;
         }
     }
 }
@@ -2285,7 +2268,7 @@ int32_t func_80834758(PlayState* play, Player* this) {
     if (!(this->stateFlags1 & (PLAYER_STATE1_SHIELDING | PLAYER_STATE1_IN_CUTSCENE)) &&
         (play->shootingGalleryStatus == 0) && (this->heldItemAction == this->itemAction) &&
         (this->currentShield != PLAYER_SHIELD_NONE) &&
-        CHECK_BTN_ALL(sControlInput->cur.button, BTN_R)) {
+        PCInput_IsBlockHeld()) {
 
         LinkAnimationHeader* anim = func_808346C4(play, this);
         float frame = Animation_GetLastFrame(anim);
@@ -2383,7 +2366,7 @@ int32_t Player_UpperAction_ChangeHeldItem(Player* this, PlayState* play) {
 int32_t func_80834B5C(Player* this, PlayState* play) {
     LinkAnimation_Update(play, &this->upperSkelAnime);
 
-    if (!CHECK_BTN_ALL(sControlInput->cur.button, BTN_R)) {
+    if (!PCInput_IsBlockHeld()) {
         func_80834894(this);
         return true;
     } else {
@@ -4843,16 +4826,13 @@ void func_8083BA90(PlayState* play, Player* this, int32_t arg2, float xzVelocity
 
 int32_t func_8083BB20(Player* this) {
     if (!(this->stateFlags1 & PLAYER_STATE1_SHIELDING) && (Player_GetMeleeWeaponHeld(this) != 0)) {
-        static uint16_t meleeButtons[] = { BTN_CLEFT, BTN_CDOWN };
         int32_t selectedSlot = PCInput_GetSelectedWeaponSlot();
 
         // Native presentation and the authoritative command stream consume
         // the same sample-local click edge. A held LMB must not start an
         // unreported combo, and an edge rejected while another action is busy
         // must not execute later when that animation finishes.
-        if ((selectedSlot >= 1) && (selectedSlot <= ARRAY_COUNT(meleeButtons)) &&
-            CHECK_BTN_ALL(sControlInput->press.button,
-                          meleeButtons[selectedSlot - 1])) {
+        if ((selectedSlot >= 1) && (selectedSlot <= 2) && PCInput_PrimaryPressed()) {
             return 1;
         }
     }
@@ -5045,7 +5025,7 @@ int32_t Player_ActionHandler_11(Player* this, PlayState* play) {
 
     if ((play->shootingGalleryStatus == 0) && (this->currentShield != PLAYER_SHIELD_NONE) &&
         (!Player_UsesPCParallelMovement(this) || (sControlStickMagnitude < 20.0f)) &&
-        CHECK_BTN_ALL(sControlInput->cur.button, BTN_R) &&
+        PCInput_IsBlockHeld() &&
         !Player_FriendlyLockOnOrParallel(this) && (this->focusActor == NULL)) {
 
         func_80832318(this);
@@ -5095,17 +5075,16 @@ int32_t func_8083C484(Player* this, float* arg1, int16_t* arg2) {
 }
 
 void func_8083C50C(Player* this) {
-    if ((this->unk_844 > 0) && !CHECK_BTN_ALL(sControlInput->cur.button, BTN_CLEFT) &&
-        !CHECK_BTN_ALL(sControlInput->cur.button, BTN_CDOWN)) {
+    if ((this->unk_844 > 0) && !PCInput_PrimaryHeld()) {
         this->unk_844 = -this->unk_844;
     }
 }
 
 static bool Player_IsSwordButtonHeld(Player* this) {
-    return (CHECK_BTN_ALL(sControlInput->cur.button, BTN_CLEFT) &&
-            (this->heldItemAction == PLAYER_IA_SWORD_MASTER)) ||
-           (CHECK_BTN_ALL(sControlInput->cur.button, BTN_CDOWN) &&
-            (this->heldItemAction == PLAYER_IA_SWORD_BIGGORON));
+    int32_t selectedSlot = PCInput_GetSelectedWeaponSlot();
+    return PCInput_PrimaryHeld() &&
+           (((selectedSlot == 1) && (this->heldItemAction == PLAYER_IA_SWORD_MASTER)) ||
+            ((selectedSlot == 2) && (this->heldItemAction == PLAYER_IA_SWORD_BIGGORON)));
 }
 
 int32_t Player_ActionHandler_8(Player* this, PlayState* play) {
@@ -5117,8 +5096,7 @@ int32_t Player_ActionHandler_8(Player* this, PlayState* play) {
             func_808377DC(play, this);
             return 1;
         }
-    } else if (!CHECK_BTN_ALL(sControlInput->cur.button, BTN_CLEFT) &&
-               !CHECK_BTN_ALL(sControlInput->cur.button, BTN_CDOWN)) {
+    } else if (!PCInput_PrimaryHeld()) {
         func_8083C50C(this);
     }
 
@@ -5370,7 +5348,7 @@ void func_8083D0A8(PlayState* play, Player* this, float arg2) {
     Player_ApplyMovementTuning(play);
 }
 
-int32_t func_8083D12C(PlayState* play, Player* this, Input* arg2) {
+int32_t func_8083D12C(PlayState* play, Player* this, ControllerInput* arg2) {
     if (!(this->stateFlags1 & PLAYER_STATE1_GETTING_ITEM) && !(this->stateFlags2 & PLAYER_STATE2_UNDERWATER)) {
         if ((arg2 == NULL) || (CHECK_BTN_ALL(arg2->press.button, BTN_A) && (ABS(this->unk_6C2) < 12000))) {
 
@@ -7366,7 +7344,7 @@ void Player_Action_80843188(Player* this, PlayState* play) {
     this->stateFlags1 &= ~PLAYER_STATE1_SHIELDING;
 
     if (Player_UsesPCParallelMovement(this) && (sControlStickMagnitude >= 20.0f) &&
-        CHECK_BTN_ALL(sControlInput->cur.button, BTN_R)) {
+        PCInput_IsBlockHeld()) {
         // Leave the stationary crouch while preserving the native upper-body
         // shield posture over parallel walking animations.
         func_80839F30(this, play);
@@ -9566,7 +9544,7 @@ static Vec3f D_80854814 = { 0.0f, 0.0f, 200.0f };
 static float sWaterConveyorSpeeds[] = { 2.0f, 4.0f, 7.0f };
 static float sFloorConveyorSpeeds[] = { 0.5f, 1.0f, 3.0f };
 
-void Player_UpdateCommon(Player* this, PlayState* play, Input* input) {
+void Player_UpdateCommon(Player* this, PlayState* play, ControllerInput* input) {
     sControlInput = input;
 
     if (this->unk_A86 < 0) {
@@ -9868,7 +9846,7 @@ void Player_UpdateCommon(Player* this, PlayState* play, Input* input) {
 
 void Player_Update(Actor* thisx, PlayState* play) {
     Player* this = (Player*)thisx;
-    Input sp44;
+    ControllerInput sp44;
 
     if (this->stateFlags1 &
         (PLAYER_STATE1_HANGING_OFF_LEDGE | PLAYER_STATE1_CLIMBING_LEDGE | PLAYER_STATE1_CLIMBING_LADDER)) {
@@ -10108,8 +10086,6 @@ void Player_Destroy(Actor* thisx, PlayState* play) {
 
     gSaveContext.linkAge = play->linkAgeOnLoad;
 
-    ResourceMgr_UnregisterSkeleton(&this->skelAnime);
-    ResourceMgr_UnregisterSkeleton(&this->upperSkelAnime);
 }
 
 // first person manipulate player actor
@@ -10207,7 +10183,7 @@ void func_8084B000(Player* this) {
     this->actor.gravity = 0.0f;
 }
 
-void func_8084B158(PlayState* play, Player* this, Input* input, float arg3) {
+void func_8084B158(PlayState* play, Player* this, ControllerInput* input, float arg3) {
     float temp = { 0 };
 
     if ((input != NULL) && CHECK_BTN_ALL(input->press.button, BTN_A)) {

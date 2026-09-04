@@ -8,8 +8,7 @@
 #include "functions.h"
 #include "variables.h"
 #include "macros.h"
-#include "port/cvar_prefixes.h"
-#include <runtime/bridge.h>
+#include "platform/SettingsKeys.h"
 
 #define _AudioseqSegmentRomStart "Audioseq"
 #define _AudiobankSegmentRomStart "Audiobank"

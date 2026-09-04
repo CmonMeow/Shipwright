@@ -4,8 +4,7 @@
 
 #include <runtime/libultra.h>
 #include "global.h"
-#include "port/OTRGlobals.h"
-#include "port/ResourceManagerHelpers.h"
+#include "resources/ResourceManagerHelpers.h"
 #include <stdio.h>
 #ifdef _MSC_VER
 #define strdup _strdup

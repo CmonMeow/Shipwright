@@ -3,13 +3,11 @@
 
 #include <string.h>
 
-#include "port/Enhancements/debugger/colViewer.h"
-#include "port/frame_interpolation.h"
-#include "port/OTRGlobals.h"
-#include "port/ResourceManagerHelpers.h"
-#include "port/ClientRuntime.h"
-
-#include <runtime/runtime.h>
+#include "debug/collision/colViewer.h"
+#include "rendering/FrameInterpolation.h"
+#include "resources/ResourceManagerHelpers.h"
+#include "resources/SceneLoader.h"
+#include "platform/client/RetainedGameBridge.h"
 
 #include <time.h>
 #include <assert.h>
@@ -18,7 +16,7 @@ FaultClient D_801614B8;
 
 UNK_TYPE D_8012D1F4 = 0; // unused
 
-Input* D_8012D1F8 = NULL;
+ControllerInput* D_8012D1F8 = NULL;
 
 PlayState* gPlayState;
 int16_t firstInit = 0;
@@ -33,8 +31,6 @@ void Play_SpawnScene(PlayState* play, int32_t sceneId, int32_t spawn);
             LOG_NUM("1", 1 /*, "../z_play.c", line */); \
         }                                               \
     } while (0)
-
-void OTRPlay_SpawnScene(PlayState* play, int32_t sceneId, int32_t spawn);
 
 void Play_RequestViewpointBgCam(PlayState* play) {
     Camera_ChangeDataIdx(GET_ACTIVE_CAM(play), play->unk_1242B - 1);
@@ -294,7 +290,7 @@ void Play_Init(GameState* thisx) {
 }
 
 void Play_Update(PlayState* play) {
-    Input* input = play->state.input;
+    ControllerInput* input = play->state.input;
     int32_t isPaused = { 0 };
 
     if ((SREG(1) < 0) || (DREG(0) != 0)) {
@@ -429,7 +425,7 @@ void Play_Update(PlayState* play) {
                         Actor_UpdateAll(play, &play->actorCtx);
                     }
 
-                    ClientRuntime_UpdateGameplay(play);
+                    RetainedGame_UpdateGameplay(play);
 
                     PLAY_LOG(3643);
                     PlayerAction_Reset(play);
@@ -873,7 +869,7 @@ void Play_InitEnvironment(PlayState* play, int16_t skyboxId) {
 
 
 void Play_SpawnScene(PlayState* play, int32_t sceneId, int32_t spawn) {
-    OTRPlay_SpawnScene(play, sceneId, spawn);
+    SceneLoader_SpawnScene(play, sceneId, spawn);
 }
 
 void func_800C016C(PlayState* play, Vec3f* src, Vec3f* dest) {

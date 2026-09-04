@@ -1,6 +1,6 @@
 #include "global.h"
 
-#include "port/frame_interpolation.h"
+#include "rendering/FrameInterpolation.h"
 
 void guOrthoF(float mf[4][4], float left, float right, float bottom, float top, float near, float far, float scale) {
     int32_t i, j;

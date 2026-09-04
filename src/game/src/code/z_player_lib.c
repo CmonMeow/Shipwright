@@ -1,13 +1,13 @@
 #include "global.h"
-#include "engine/input/PCInput.h"
+#include "platform/win32/PCInput.h"
 #include "objects/gameplay_keep/gameplay_keep.h"
 #include "objects/gameplay_field_keep/gameplay_field_keep.h"
 #include "objects/object_link_boy/object_link_boy.h"
 #include "objects/object_link_child/object_link_child.h"
 #include "objects/object_triforce_spot/object_triforce_spot.h"
 #include "objects/object_fish/object_fish.h"
-#include "port/ResourceManagerHelpers.h"
-#include "port/Enhancements/debugger/colViewer.h"
+#include "resources/ResourceManagerHelpers.h"
+#include "debug/collision/colViewer.h"
 
 #include <stdlib.h>
 

@@ -1,11 +1,8 @@
 #include <runtime/log/Log.hpp>
 #include "engine/config/ConsoleVariable.h"
 
-#include <functional>
-#include "engine/utils/filesystemtools/DiskFile.h"
-#include "engine/utils/Utils.h"
 #include "engine/config/Config.h"
-#include "engine/Context.h"
+#include "engine/utils/StringHelper.h"
 
 #ifdef _MSC_VER
 #define strdup _strdup
@@ -13,7 +10,7 @@
 
 namespace Engine {
 
-ConsoleVariable::ConsoleVariable() {
+ConsoleVariable::ConsoleVariable(Config& config) : mConfig(config) {
     Load();
 }
 
@@ -173,7 +170,6 @@ void ConsoleVariable::RegisterColor24(const char* name, Color_RGB8 defaultValue)
 }
 
 void ConsoleVariable::ClearVariable(const char* name) {
-    std::shared_ptr<Config> conf = Context::GetInstance()->GetConfig();
     auto var = Get(name);
     if (var != nullptr) {
         bool color = var->Type == ConsoleVariableType::Color || var->Type == ConsoleVariableType::Color24;
@@ -188,23 +184,22 @@ void ConsoleVariable::ClearVariable(const char* name) {
             mVariables.erase(g);
             mVariables.erase(r);
             mVariables.erase(t);
-            conf->Erase(std::string("CVars.") + a);
-            conf->Erase(std::string("CVars.") + b);
-            conf->Erase(std::string("CVars.") + g);
-            conf->Erase(std::string("CVars.") + r);
-            conf->Erase(std::string("CVars.") + t);
+            mConfig.Erase(std::string("CVars.") + a);
+            mConfig.Erase(std::string("CVars.") + b);
+            mConfig.Erase(std::string("CVars.") + g);
+            mConfig.Erase(std::string("CVars.") + r);
+            mConfig.Erase(std::string("CVars.") + t);
         } else if (var->Type == ConsoleVariableType::String) {
             free(var->String);
             var->String = nullptr;
         }
     }
     mVariables.erase(name);
-    conf->Erase(StringHelper::Sprintf("CVars.%s", name));
+    mConfig.Erase(StringHelper::Sprintf("CVars.%s", name));
 }
 
 void ConsoleVariable::ClearBlock(const char* name) {
-    std::shared_ptr<Config> conf = Context::GetInstance()->GetConfig();
-    conf->EraseBlock(StringHelper::Sprintf("CVars.%s", name));
+    mConfig.EraseBlock(StringHelper::Sprintf("CVars.%s", name));
     Load();
 }
 
@@ -242,51 +237,50 @@ void ConsoleVariable::CopyVariable(const char* from, const char* to) {
 }
 
 void ConsoleVariable::Save() {
-    std::shared_ptr<Config> conf = Context::GetInstance()->GetConfig();
-
     for (const auto& variable : mVariables) {
+        if (variable.second == nullptr) {
+            continue;
+        }
         const std::string key = StringHelper::Sprintf("CVars.%s", variable.first.c_str());
 
-        if (variable.second->Type == ConsoleVariableType::String && variable.second != nullptr) {
-            conf->SetString(key, variable.second->String);
+        if (variable.second->Type == ConsoleVariableType::String) {
+            mConfig.SetString(key, variable.second->String);
         } else if (variable.second->Type == ConsoleVariableType::Integer) {
-            conf->SetInt(key, variable.second->Integer);
+            mConfig.SetInt(key, variable.second->Integer);
         } else if (variable.second->Type == ConsoleVariableType::Float) {
-            conf->SetFloat(key, variable.second->Float);
+            mConfig.SetFloat(key, variable.second->Float);
         } else if (variable.second->Type == ConsoleVariableType::Color ||
                    variable.second->Type == ConsoleVariableType::Color24) {
             auto keyStr = key.c_str();
-            conf->SetUInt(StringHelper::Sprintf("%s.R", keyStr), variable.second->Type == ConsoleVariableType::Color
+            mConfig.SetUInt(StringHelper::Sprintf("%s.R", keyStr), variable.second->Type == ConsoleVariableType::Color
                                                                      ? variable.second->Color.r
                                                                      : variable.second->Color24.r);
-            conf->SetUInt(StringHelper::Sprintf("%s.G", keyStr), variable.second->Type == ConsoleVariableType::Color
+            mConfig.SetUInt(StringHelper::Sprintf("%s.G", keyStr), variable.second->Type == ConsoleVariableType::Color
                                                                      ? variable.second->Color.g
                                                                      : variable.second->Color24.g);
-            conf->SetUInt(StringHelper::Sprintf("%s.B", keyStr), variable.second->Type == ConsoleVariableType::Color
+            mConfig.SetUInt(StringHelper::Sprintf("%s.B", keyStr), variable.second->Type == ConsoleVariableType::Color
                                                                      ? variable.second->Color.b
                                                                      : variable.second->Color24.b);
             if (variable.second->Type == ConsoleVariableType::Color) {
-                conf->SetUInt(StringHelper::Sprintf("%s.A", keyStr), variable.second->Color.a);
-                conf->SetString(StringHelper::Sprintf("%s.Type", keyStr), "RGBA");
+                mConfig.SetUInt(StringHelper::Sprintf("%s.A", keyStr), variable.second->Color.a);
+                mConfig.SetString(StringHelper::Sprintf("%s.Type", keyStr), "RGBA");
             } else {
-                conf->SetString(StringHelper::Sprintf("%s.Type", keyStr), "RGB");
+                mConfig.SetString(StringHelper::Sprintf("%s.Type", keyStr), "RGB");
             }
         }
     }
 
-    conf->Save();
+    mConfig.Save();
 }
 
 void ConsoleVariable::Load() {
-    std::shared_ptr<Config> conf = Context::GetInstance()->GetConfig();
-    conf->Reload();
+    mConfig.Reload();
     if (!mVariables.empty()) {
         mVariables.clear();
     }
 
-    LoadFromPath("", conf->GetNestedJson()["CVars"].items());
+    LoadFromPath("", mConfig.GetNestedJson()["CVars"].items());
 
-    LoadLegacy();
 }
 
 void ConsoleVariable::LoadFromPath(
@@ -335,50 +329,6 @@ void ConsoleVariable::LoadFromPath(
                 break;
             default:;
         }
-    }
-}
-void ConsoleVariable::LoadLegacy() {
-    auto conf = Context::GetPathRelativeToAppDirectory("cvars.cfg");
-    if (DiskFile::Exists(conf)) {
-        const auto lines = DiskFile::ReadAllLines(conf);
-
-        for (const std::string& line : lines) {
-            std::vector<std::string> cfg = StringHelper::Split(line, " = ");
-            if (line.empty()) {
-                continue;
-            }
-            if (cfg.size() < 2) {
-                continue;
-            }
-
-            if (cfg[1].find("\"") == std::string::npos && (cfg[1].find("#") != std::string::npos)) {
-                std::string value(cfg[1]);
-                value.erase(std::remove_if(value.begin(), value.end(), [](char c) { return c == '#'; }), value.end());
-                auto splitTest = StringHelper::Split(value, "\r")[0];
-
-                uint32_t val = std::stoul(splitTest, nullptr, 16);
-                Color_RGBA8 clr;
-                clr.r = val >> 24;
-                clr.g = val >> 16;
-                clr.b = val >> 8;
-                clr.a = val & 0xFF;
-                SetColor(cfg[0].c_str(), clr);
-            }
-
-            if (cfg[1].find("\"") != std::string::npos) {
-                std::string value(cfg[1]);
-                value.erase(std::remove(value.begin(), value.end(), '\"'), value.end());
-                SetString(cfg[0].c_str(), strdup(value.c_str()));
-            }
-            if (Math::IsNumber<float>(cfg[1])) {
-                SetFloat(cfg[0].c_str(), std::stof(cfg[1]));
-            }
-            if (Math::IsNumber<int>(cfg[1])) {
-                SetInteger(cfg[0].c_str(), std::stoi(cfg[1]));
-            }
-        }
-
-        fs::remove(conf);
     }
 }
 } // namespace Engine

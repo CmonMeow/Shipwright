@@ -1,7 +1,7 @@
 #include "global.h"
 #include "vt.h"
 
-#include "port/frame_interpolation.h"
+#include "rendering/FrameInterpolation.h"
 
 // clang-format off
 MtxF sMtxFClear = {

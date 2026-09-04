@@ -16,6 +16,7 @@ class FakeInteraction final : public Game::Client::MultiplayerInteractionPort {
     bool chatResult = true;
     bool privateResult = true;
     uint16_t hostedPort = 0;
+    uint16_t connectedPort = 0;
     std::string connectedAddress;
     std::string chat;
     int32_t privateTarget = -1;
@@ -27,8 +28,9 @@ class FakeInteraction final : public Game::Client::MultiplayerInteractionPort {
         hostedPort = port;
         return hostResult;
     }
-    bool Connect(const std::string& address) override {
+    bool Connect(const std::string& address, uint16_t port) override {
         connectedAddress = address;
+        connectedPort = port;
         return connectResult;
     }
     void Disconnect() override {
@@ -110,6 +112,7 @@ int main() {
 
     result = commands.Execute("/connect");
     passed &= Expect(interaction.connectedAddress == kDefaultMultiplayerAddress &&
+                         interaction.connectedPort == kDefaultMultiplayerPort &&
                          result.notice.find(kDefaultMultiplayerAddress) !=
                              std::string::npos,
                      "connect command uses the default address");

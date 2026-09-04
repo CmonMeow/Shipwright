@@ -1,0 +1,26 @@
+#include "rendering/resource/factory/MatrixFactory.h"
+#include "rendering/resource/type/Matrix.h"
+namespace Engine::Rendering {
+std::shared_ptr<Engine::IResource>
+ResourceFactoryBinaryMatrixV0::ReadResource(std::shared_ptr<Engine::File> file,
+                                            std::shared_ptr<Engine::ResourceInitData> initData) {
+    if (!FileHasValidFormatAndReader(file, initData)) {
+        return nullptr;
+    }
+
+    auto matrix = std::make_shared<Matrix>(initData);
+    auto reader = std::get<std::shared_ptr<Engine::BinaryReader>>(file->Reader);
+
+    for (size_t i = 0; i < 4; i++) {
+        for (size_t j = 0; j < 4; j++) {
+#ifdef GBI_FLOATS
+            matrix->Matrx.mf[i][j] = reader->ReadFloat();
+#else
+            matrix->Matrx.m[i][j] = reader->ReadInt32();
+#endif
+        }
+    }
+
+    return matrix;
+}
+} // namespace Engine::Rendering

@@ -1,4 +1,4 @@
-#include "Network/NetworkRuntime.h"
+#include "multiplayer/NetworkRuntime.h"
 
 #include <runtime/log/Log.h>
 
@@ -24,7 +24,7 @@ BOOL WINAPI ConsoleHandler(DWORD event) {
     return FALSE;
 }
 
-void DrainRelayQueues(SoH::Network::NetworkRuntime& network) {
+void DrainRelayQueues(Game::Multiplayer::NetworkRuntime& network) {
     NetworkChatLine chat;
     while (network.PollChat(chat)) {
         std::printf("%s\n", chat.text.c_str());
@@ -71,7 +71,7 @@ bool PollConsoleLine(std::string& line) {
     return false;
 }
 
-void RunConsoleCommand(const std::string& input, SoH::Network::NetworkRuntime& network) {
+void RunConsoleCommand(const std::string& input, Game::Multiplayer::NetworkRuntime& network) {
     const std::string line = TrimWhitespace(input);
     if (line.empty()) {
         return;
@@ -92,7 +92,7 @@ int main(int argc, char** argv) {
     uint16_t port = DEFAULT_NETWORK_PORT;
     
 
-    SoH::Network::NetworkRuntime network;
+    Game::Multiplayer::NetworkRuntime network;
     if (!network.Host(port, "Game Dedicated Server")) {
         Error("Dedicated server failed to host on port %u", static_cast<unsigned>(port));
         std::fprintf(stderr, "Unable to host on UDP port %u.\n", static_cast<unsigned>(port));

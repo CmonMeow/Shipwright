@@ -13,7 +13,7 @@ void FrameAdvance_Init(FrameAdvanceContext* frameAdvCtx) {
  *
  * This function returns true when frame advance is not active (game will run normally)
  */
-int32_t FrameAdvance_Update(FrameAdvanceContext* frameAdvCtx, Input* input) {
+int32_t FrameAdvance_Update(FrameAdvanceContext* frameAdvCtx, ControllerInput* input) {
     if (CHECK_BTN_ALL(input->cur.button, BTN_R) && CHECK_BTN_ALL(input->press.button, BTN_DDOWN)) {
         frameAdvCtx->enabled = !frameAdvCtx->enabled;
     }

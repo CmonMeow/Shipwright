@@ -4,8 +4,8 @@
 
 #include "objects/gameplay_keep/gameplay_keep.h"
 
-#include "port/frame_interpolation.h"
-#include "port/OTRGlobals.h"
+#include "rendering/FrameInterpolation.h"
+#include "platform/client/RetainedGameBridge.h"
 
 #define LIGHTS_BUFFER_SIZE 32
 //#define LIGHTS_BUFFER_SIZE 1024 // Kill me
@@ -335,7 +335,7 @@ void Lights_GlowCheckPrepare(PlayState* play) {
             uint32_t shrink = ShrinkWindow_GetCurrentVal();
 
             if ((multDest.z > 1.0f) && y >= shrink && y <= SCREEN_HEIGHT - shrink) {
-                OTRGetPixelDepthPrepare(x, y);
+                RetainedGame_PreparePixelDepth(x, y);
             }
         }
         node = node->next;
@@ -369,7 +369,7 @@ void Lights_GlowCheck(PlayState* play) {
 
             if ((multDest.z > 1.0f) && y >= shrink && y <= SCREEN_HEIGHT - shrink) {
                 int32_t wZ = (int32_t)((multDest.z * wDest) * 16352.0f) + 16352;
-                int32_t zBuf = OTRGetPixelDepth(x, y) * 4;
+                int32_t zBuf = RetainedGame_GetPixelDepth(x, y) * 4;
 
                 if (wZ < (zBuf >> 3)) {
                     params->drawGlow = true;

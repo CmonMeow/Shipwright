@@ -1,9 +1,6 @@
 #include <runtime/log/Log.hpp>
 #include "engine/resource/archive/O2rArchive.h"
 
-#include "engine/Context.h"
-#include "engine/resource/ResourceManager.h"
-#include "engine/window/Window.h"
 namespace Engine {
 O2rArchive::O2rArchive(const std::string& archivePath) : Archive(archivePath) {
 }
@@ -11,12 +8,6 @@ O2rArchive::O2rArchive(const std::string& archivePath) : Archive(archivePath) {
 O2rArchive::~O2rArchive() {
     WriteLog("destruct o2rarchive: {}", GetPath());
     Close();
-}
-
-std::shared_ptr<File> O2rArchive::LoadFile(uint64_t hash) {
-    const std::string& filePath =
-        *Context::GetInstance()->GetResourceManager()->GetArchiveManager()->HashToString(hash);
-    return LoadFile(filePath);
 }
 
 std::shared_ptr<File> O2rArchive::LoadFile(const std::string& filePath) {

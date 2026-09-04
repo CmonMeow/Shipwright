@@ -1,4 +1,5 @@
-#include "runtime/runtime.h"
+#include "runtime/libultra/internal.h"
+#include "runtime/libultra/message.h"
 
 extern "C" {
 

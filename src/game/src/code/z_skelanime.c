@@ -3,7 +3,7 @@
 #include <string.h>
 #include <stdio.h>
 #include <assert.h>
-#include "port/ResourceManagerHelpers.h"
+#include "resources/ResourceManagerHelpers.h"
 #define ANIM_INTERP 1
 
 int32_t LinkAnimation_Loop(PlayState* play, SkelAnime* skelAnime);
@@ -482,7 +482,7 @@ void SkelAnime_DrawFlexOpa(PlayState* play, void** skeleton, Vec3s* jointTable, 
  * Indices above limit are offsets to a frame data array indexed by the frame.
  */
 void SkelAnime_GetFrameData(AnimationHeader* animation, int32_t frame, int32_t limbCount, Vec3s* frameTable) {
-    if (ResourceMgr_OTRSigCheck(animation) != 0)
+    if (ResourceMgr_HasResourceSignature(animation) != 0)
         animation = ResourceMgr_LoadAnimByName(animation);
 
     AnimationHeader* animHeader = SEGMENTED_TO_VIRTUAL(animation);
@@ -511,7 +511,7 @@ void SkelAnime_GetFrameData(AnimationHeader* animation, int32_t frame, int32_t l
 }
 
 int16_t Animation_GetLength(void* animation) {
-    if (ResourceMgr_OTRSigCheck(animation) != 0)
+    if (ResourceMgr_HasResourceSignature(animation) != 0)
         animation = ResourceMgr_LoadAnimByName(animation);
 
     AnimationHeaderCommon* common = SEGMENTED_TO_VIRTUAL(animation);
@@ -520,7 +520,7 @@ int16_t Animation_GetLength(void* animation) {
 }
 
 int16_t Animation_GetLastFrame(void* animation) {
-    if (ResourceMgr_OTRSigCheck(animation) != 0)
+    if (ResourceMgr_HasResourceSignature(animation) != 0)
         animation = ResourceMgr_LoadAnimByName(animation);
     AnimationHeaderCommon* common = SEGMENTED_TO_VIRTUAL(animation);
     // Loads an unsigned half for some reason.
@@ -858,7 +858,7 @@ void AnimationContext_SetLoadFrame(PlayState* play, LinkAnimationHeader* animati
     AnimationEntry* entry = AnimationContext_AddEntry(&play->animationCtx, ANIMENTRY_LOADFRAME);
 
     if ((entry != NULL)) {
-        if (ResourceMgr_OTRSigCheck(animation) != 0)
+        if (ResourceMgr_HasResourceSignature(animation) != 0)
             animation = ResourceMgr_LoadAnimByName(animation);
 
         Vec3s* ram = frameTable;
@@ -1061,8 +1061,8 @@ void AnimationContext_Update(PlayState* play, AnimationContext* animationCtx) {
 void SkelAnime_InitLink(PlayState* play, SkelAnime* skelAnime, FlexSkeletonHeader* skeletonHeaderSeg,
                         LinkAnimationHeader* animation, int32_t flags, Vec3s* jointTable, Vec3s* morphTable,
                         int32_t limbBufCount) {
-    if (ResourceMgr_OTRSigCheck(skeletonHeaderSeg) != 0)
-        skeletonHeaderSeg = ResourceMgr_LoadSkeletonByName(skeletonHeaderSeg, skelAnime);
+    if (ResourceMgr_HasResourceSignature(skeletonHeaderSeg) != 0)
+        skeletonHeaderSeg = ResourceMgr_LoadSkeletonByName(skeletonHeaderSeg);
 
     FlexSkeletonHeader* skeletonHeader = SEGMENTED_TO_VIRTUAL(skeletonHeaderSeg);
     int32_t headerJointCount = skeletonHeader->sh.limbCount;
@@ -1224,11 +1224,11 @@ void LinkAnimation_Change(PlayState* play, SkelAnime* skelAnime, LinkAnimationHe
                           float startFrame, float endFrame, uint8_t mode, float morphFrames) {
     LinkAnimationHeader* ogAnim = animation;
 
-    if (ResourceMgr_OTRSigCheck(animation) != 0)
+    if (ResourceMgr_HasResourceSignature(animation) != 0)
         animation = ResourceMgr_LoadAnimByName(animation);
 
     AnimationHeader* currentAnimation = (AnimationHeader*)skelAnime->animation;
-    if (ResourceMgr_OTRSigCheck(currentAnimation) != 0)
+    if (ResourceMgr_HasResourceSignature(currentAnimation) != 0)
         currentAnimation = ResourceMgr_LoadAnimByName(currentAnimation);
 
     skelAnime->mode = mode;
@@ -1406,8 +1406,8 @@ int32_t LinkAnimation_OnFrame(SkelAnime* skelAnime, float frame) {
  */
 void SkelAnime_Init(PlayState* play, SkelAnime* skelAnime, SkeletonHeader* skeletonHeaderSeg, AnimationHeader* animation,
                    Vec3s* jointTable, Vec3s* morphTable, int32_t limbCount) {
-    if (ResourceMgr_OTRSigCheck(skeletonHeaderSeg))
-        skeletonHeaderSeg = ResourceMgr_LoadSkeletonByName(skeletonHeaderSeg, skelAnime);
+    if (ResourceMgr_HasResourceSignature(skeletonHeaderSeg))
+        skeletonHeaderSeg = ResourceMgr_LoadSkeletonByName(skeletonHeaderSeg);
 
     SkeletonHeader* skeletonHeader = SEGMENTED_TO_VIRTUAL(skeletonHeaderSeg);
 
@@ -1438,8 +1438,8 @@ void SkelAnime_Init(PlayState* play, SkelAnime* skelAnime, SkeletonHeader* skele
  */
 void SkelAnime_InitFlex(PlayState* play, SkelAnime* skelAnime, FlexSkeletonHeader* skeletonHeaderSeg,
                        AnimationHeader* animation, Vec3s* jointTable, Vec3s* morphTable, int32_t limbCount) {
-    if (ResourceMgr_OTRSigCheck(skeletonHeaderSeg) != 0)
-        skeletonHeaderSeg = ResourceMgr_LoadSkeletonByName(skeletonHeaderSeg, skelAnime);
+    if (ResourceMgr_HasResourceSignature(skeletonHeaderSeg) != 0)
+        skeletonHeaderSeg = ResourceMgr_LoadSkeletonByName(skeletonHeaderSeg);
 
     FlexSkeletonHeader* skeletonHeader = SEGMENTED_TO_VIRTUAL(skeletonHeaderSeg);
 
@@ -1474,7 +1474,7 @@ void SkelAnime_InitFlex(PlayState* play, SkelAnime* skelAnime, FlexSkeletonHeade
  */
 int32_t SkelAnime_InitSkin(PlayState* play, SkelAnime* skelAnime, SkeletonHeader* skeletonHeaderSeg,
                        AnimationHeader* animation) {
-    if (ResourceMgr_OTRSigCheck(skeletonHeaderSeg) != 0)
+    if (ResourceMgr_HasResourceSignature(skeletonHeaderSeg) != 0)
         animation = ResourceMgr_LoadAnimByName(skeletonHeaderSeg);
 
     SkeletonHeader* skeletonHeader = SEGMENTED_TO_VIRTUAL(skeletonHeaderSeg);
@@ -1668,11 +1668,11 @@ void Animation_ChangeImpl(SkelAnime* skelAnime, AnimationHeader* animation, floa
                           uint8_t mode, float morphFrames, int8_t taper) {
     LinkAnimationHeader* ogAnim = animation;
 
-    if (ResourceMgr_OTRSigCheck(animation) != 0)
+    if (ResourceMgr_HasResourceSignature(animation) != 0)
         animation = ResourceMgr_LoadAnimByName(animation);
 
     AnimationHeader* currentAnimation = (AnimationHeader*)skelAnime->animation;
-    if (ResourceMgr_OTRSigCheck(currentAnimation) != 0)
+    if (ResourceMgr_HasResourceSignature(currentAnimation) != 0)
         currentAnimation = ResourceMgr_LoadAnimByName(currentAnimation);
 
     skelAnime->mode = mode;
@@ -1723,7 +1723,7 @@ void Animation_Change(SkelAnime* skelAnime, AnimationHeader* animation, float pl
                       uint8_t mode, float morphFrames) {
     AnimationHeader* ogAnim = animation;
 
-    if (ResourceMgr_OTRSigCheck(animation) != 0)
+    if (ResourceMgr_HasResourceSignature(animation) != 0)
         animation = ResourceMgr_LoadAnimByName(animation);
 
     Animation_ChangeImpl(skelAnime, animation, playSpeed, startFrame, endFrame, mode, morphFrames, ANIMTAPER_NONE);
@@ -1895,7 +1895,6 @@ void SkelAnime_Free(SkelAnime* skelAnime, PlayState* play) {
         osSyncPrintf("morf_joint あきまへん！！\n"); // "morf_joint is freed !!"
     }
 
-    ResourceMgr_UnregisterSkeleton(skelAnime);
 }
 
 /**

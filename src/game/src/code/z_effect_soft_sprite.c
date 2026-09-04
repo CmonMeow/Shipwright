@@ -1,7 +1,7 @@
 #include "global.h"
 #include "vt.h"
 
-#include "port/frame_interpolation.h"
+#include "rendering/FrameInterpolation.h"
 #include <assert.h>
 
 EffectSsInfo sEffectSsInfo = { 0 }; // "EffectSS2Info"

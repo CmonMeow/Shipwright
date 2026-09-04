@@ -1,6 +1,6 @@
-#include <sysdef.h>
+#include "multiplayer/Win32NetworkPlatform.h"
 
-#include "Network/VoiceChat.h"
+#include "multiplayer/VoiceChat.h"
 
 #include <cmath>
 #include <vector>

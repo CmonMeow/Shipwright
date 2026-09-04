@@ -65,6 +65,20 @@ struct MultiplayerConnectionStatus {
     }
 };
 
+inline std::string FormatMultiplayerConnectionStatus(const MultiplayerConnectionStatus& status) {
+    switch (status.phase) {
+        case MultiplayerConnectionPhase::Hosting:
+            return "Hosting (secure) - " + std::to_string(status.playerCount) + " player(s)";
+        case MultiplayerConnectionPhase::Connected:
+            return "Connected (secure) - " + std::to_string(status.latencyMilliseconds) + " ms";
+        case MultiplayerConnectionPhase::Connecting:
+            return "Connecting...";
+        case MultiplayerConnectionPhase::Offline:
+        default:
+            return "Offline";
+    }
+}
+
 // Application-facing multiplayer interaction port. HUD/input code consumes
 // semantic state and requests; transport, packets, crypto and audio devices
 // remain behind the native adapter.
@@ -73,7 +87,7 @@ class MultiplayerInteractionPort {
     virtual ~MultiplayerInteractionPort() = default;
 
     virtual bool Host(uint16_t port) = 0;
-    virtual bool Connect(const std::string& address) = 0;
+    virtual bool Connect(const std::string& address, uint16_t port = kDefaultMultiplayerPort) = 0;
     virtual void Disconnect() = 0;
     virtual bool SendChat(const std::string& message) = 0;
     virtual bool SendPrivateChat(int32_t targetPlayer,

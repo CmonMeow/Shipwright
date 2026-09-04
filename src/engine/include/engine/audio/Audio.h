@@ -2,10 +2,10 @@
 
 #include <string>
 #include <memory>
-#include "engine/audio/AudioPlayer.h"
+#include "engine/audio/AudioSettings.h"
 
 namespace Engine {
-enum class AudioBackend { WASAPI, COREAUDIO, NUL };
+class AudioPlayer;
 
 class Audio {
   public:
@@ -25,7 +25,6 @@ class Audio {
 
   private:
     std::shared_ptr<AudioPlayer> mAudioPlayer;
-    AudioBackend mAudioBackend;
     AudioSettings mAudioSettings;
 };
 } // namespace Engine
