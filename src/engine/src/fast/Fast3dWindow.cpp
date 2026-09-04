@@ -6,14 +6,16 @@
 #include "engine/config/ConsoleVariable.h"
 #include "fast/interpreter.h"
 #include "fast/backends/gfx_opengl.h"
-#include "fast/backends/gfx_win32_opengl.h"
+#include "platform/win32/Win32OpenGLWindow.h"
 #include "fast/backends/gfx_window_manager_api.h"
 
 namespace Fast {
 
 extern void GfxSetInstance(std::shared_ptr<Interpreter> gfx);
 
-Fast3dWindow::Fast3dWindow() : Engine::Window() {
+Fast3dWindow::Fast3dWindow(void* applicationInstance, int showCommand)
+    : Engine::Window(), mApplicationInstance(applicationInstance),
+      mShowCommand(showCommand) {
     mWindowManagerApi = nullptr;
     mRenderingApi = nullptr;
     mInterpreter = std::make_shared<Interpreter>();
@@ -45,8 +47,12 @@ void Fast3dWindow::Init() {
         height = Engine::Context::GetInstance()->GetConfig()->GetInt("Window.Height", 480);
     }
     InitWindowManager();
-    mInterpreter->Init(mWindowManagerApi, mRenderingApi, Engine::Context::GetInstance()->GetName().c_str(), isFullscreen,
-                       width, height, posX, posY);
+    mWindowManagerApi->Init(Engine::Context::GetInstance()->GetName().c_str(),
+                            mRenderingApi->GetName(), isFullscreen, width,
+                            height, posX, posY);
+    mRenderingApi->Init();
+    mInterpreter->InitializeRenderer(mWindowManagerApi, mRenderingApi, width,
+                                     height);
     mWindowManagerApi->SetFullscreenChangedCallback(OnFullscreenChanged);
 
     SetTextureFilter((FilteringMode)Engine::Context::GetInstance()->GetConsoleVariables()->GetInteger(
@@ -76,7 +82,8 @@ uint16_t Fast3dWindow::GetPixelDepth(float x, float y) {
 void Fast3dWindow::InitWindowManager() {
 #ifdef _WIN32
     mRenderingApi = new GfxRenderingAPIOGL();
-    mWindowManagerApi = new GfxWindowBackendWin32OpenGL();
+    mWindowManagerApi = new Win32OpenGLWindow(
+        static_cast<HINSTANCE>(mApplicationInstance), mShowCommand);
 #else
     WriteLog("No supported rendering backend for this platform");
 #endif

@@ -7,7 +7,7 @@ union Gfx;
 namespace Fast {
 class Fast3dWindow : public Engine::Window {
   public:
-    Fast3dWindow();
+    Fast3dWindow(void* applicationInstance, int showCommand);
     ~Fast3dWindow();
 
     void Init() override;
@@ -60,5 +60,7 @@ class Fast3dWindow : public Engine::Window {
     GfxRenderingAPI* mRenderingApi;
     GfxWindowBackend* mWindowManagerApi;
     std::shared_ptr<Interpreter> mInterpreter = nullptr;
+    void* mApplicationInstance = nullptr;
+    int mShowCommand = 0;
 };
 } // namespace Fast

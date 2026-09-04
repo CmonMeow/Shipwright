@@ -22,7 +22,7 @@ class OTRGlobals {
 
     std::shared_ptr<Engine::Context> context;
 
-    OTRGlobals();
+    OTRGlobals(void* applicationInstance, int showCommand);
     ~OTRGlobals();
 
     void Initialize();
@@ -34,7 +34,7 @@ class OTRGlobals {
 #endif
 
 #ifndef __cplusplus
-void InitOTR();
+void InitOTR(void* applicationInstance, int showCommand);
 void DeinitOTR(void);
 void OTRAudio_Init();
 void InitAudio();

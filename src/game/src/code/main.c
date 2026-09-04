@@ -39,7 +39,7 @@ void* gAudioHeap;
 int PASCAL WinMain(HINSTANCE hInstance, HINSTANCE previousInstance, LPSTR commandLine, int showCommand) {
    
     ClearLog();
-    InitOTR();
+    InitOTR(hInstance, showCommand);
     
     gAudioHeap = (uint8_t*)_aligned_malloc(AUDIO_HEAP_SIZE, 0x10);
     void* gSystemHeap = (uint8_t*)_aligned_malloc(SYSTEM_HEAP_SIZE, 0x10);

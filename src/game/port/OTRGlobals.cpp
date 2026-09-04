@@ -99,11 +99,11 @@ typedef struct {
     uint16_t patch;
 } OTRVersion;
 
-std::shared_ptr<Fast::Fast3dWindow> sohFast3dWindow;
+std::shared_ptr<Fast::Fast3dWindow> gameWindow;
 std::string gameArchivePath = "";
 static bool gameArchiveVersionMatch = false;
 
-OTRGlobals::OTRGlobals() {
+OTRGlobals::OTRGlobals(void* applicationInstance, int showCommand) {
     const std::string windowTitle = "v" + std::to_string(APP_PROTOCOL_VERSION);
     context = Engine::Context::CreateUninitializedInstance(windowTitle, appShortName, "settings.json");
 
@@ -115,8 +115,9 @@ OTRGlobals::OTRGlobals() {
     context->InitResourceManager({ gameArchivePath }, {}, 3, true);
     context->InitConsole();
 
-    sohFast3dWindow = std::make_shared<Fast::Fast3dWindow>();
-    context->InitWindow(sohFast3dWindow);
+    gameWindow = std::make_shared<Fast::Fast3dWindow>(applicationInstance,
+                                                      showCommand);
+    context->InitWindow(gameWindow);
 }
 
 void OTRGlobals::RunExtract() {
@@ -322,8 +323,8 @@ extern "C" void Messagebox_ShowErrorBox(char* title, char* body) {
 #endif
 }
 
-extern "C" void InitOTR() {
-    OTRGlobals::Instance = new OTRGlobals();
+extern "C" void InitOTR(void* applicationInstance, int showCommand) {
+    OTRGlobals::Instance = new OTRGlobals(applicationInstance, showCommand);
     OTRGlobals::Instance->RunExtract();
 
     OTRGlobals::Instance->Initialize();
@@ -343,7 +344,7 @@ extern "C" void DeinitOTR() {
     ClientRuntime_Shutdown();
     OTRAudio_Exit();
 
-    sohFast3dWindow = nullptr;
+    gameWindow = nullptr;
 
     OTRGlobals::Instance->context = nullptr;
 }

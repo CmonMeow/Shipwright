@@ -46,7 +46,7 @@
     <ClCompile Include="$(RepoRoot)src\engine\src\fast\backends\gfx_opengl.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(RepoRoot)src\engine\src\fast\backends\gfx_win32_opengl.cpp">
+    <ClCompile Include="$(RepoRoot)src\engine\src\platform\win32\Win32OpenGLWindow.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="$(RepoRoot)src\engine\src\runtime\bridge\audiobridge.cpp">

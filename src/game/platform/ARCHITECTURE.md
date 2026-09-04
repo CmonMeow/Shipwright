@@ -3,6 +3,23 @@
 The original actor system remains a useful renderer, animation library, collision world, and source of movement
 mechanics. It is not the authority for multiplayer game state. New gameplay code must follow the boundaries below.
 
+## Win32 application lifetime
+
+`WinMain` owns process startup and supplies its real application instance and
+Windows show state to the engine. `platform/win32/Win32OpenGLWindow` is the one
+native window owner: it registers the class, creates and shows the game window,
+acquires its device context, selects the pixel format, creates and activates the
+WGL context, processes messages and raw input, and destroys those resources in
+reverse order. It must not recover an ignored application instance later with
+`GetModuleHandle` or create a hidden console.
+
+Fast3D remains the N64 display-list interpreter and OpenGL renderer; it does not
+own the process entry point. The generic window interface remains temporarily
+as the narrow adapter used by the interpreter, but alternative SDL, DirectX,
+and non-Windows window factories have been removed. Further pruning should
+collapse that adapter without moving native window ownership back into game or
+network code.
+
 ## Runtime boundaries
 
 1. **Input** samples raw keys and mouse state once, producing numbered player commands. A movement command contains

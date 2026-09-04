@@ -357,8 +357,9 @@ class Interpreter {
     Interpreter();
     ~Interpreter();
 
-    void Init(GfxWindowBackend* wapi, class GfxRenderingAPI* rapi, const char* game_name, bool start_in_fullscreen,
-              uint32_t width, uint32_t height, uint32_t posX, uint32_t posY);
+    void InitializeRenderer(GfxWindowBackend* window,
+                            class GfxRenderingAPI* renderer,
+                            uint32_t width, uint32_t height);
     void Destroy();
     void GetDimensions(uint32_t* width, uint32_t* height, int32_t* posX, int32_t* posY);
     GfxRenderingAPI* GetCurrentRenderingAPI();

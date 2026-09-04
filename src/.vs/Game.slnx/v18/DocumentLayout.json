@@ -11,14 +11,6 @@
       "RelativeMoniker": "D:0:0:{9BE9808F-4839-3804-9BD4-6AB6BED0CCA7}|msvc\\Game.vcxproj|solutionrelative:game\\port\\Network\\NativeClientNetworkSession.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{9BE9808F-4839-3804-9BD4-6AB6BED0CCA7}|msvc\\Game.vcxproj|C:\\Users\\CmonMeow\\Desktop\\Shipwright\\src\\game\\port\\ClientRuntime.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
-      "RelativeMoniker": "D:0:0:{9BE9808F-4839-3804-9BD4-6AB6BED0CCA7}|msvc\\Game.vcxproj|solutionrelative:game\\port\\ClientRuntime.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{9BE9808F-4839-3804-9BD4-6AB6BED0CCA7}|msvc\\Game.vcxproj|C:\\Users\\CmonMeow\\Desktop\\Shipwright\\src\\game\\port\\OTRGlobals.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
-      "RelativeMoniker": "D:0:0:{9BE9808F-4839-3804-9BD4-6AB6BED0CCA7}|msvc\\Game.vcxproj|solutionrelative:game\\port\\OTRGlobals.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{9BE9808F-4839-3804-9BD4-6AB6BED0CCA7}|msvc\\Game.vcxproj|C:\\Users\\CmonMeow\\Desktop\\Shipwright\\src\\game\\include\\variables.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
       "RelativeMoniker": "D:0:0:{9BE9808F-4839-3804-9BD4-6AB6BED0CCA7}|msvc\\Game.vcxproj|solutionrelative:game\\include\\variables.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
     },
@@ -80,7 +72,7 @@
               "RelativeDocumentMoniker": "game\\src\\code\\main.c",
               "ToolTip": "C:\\Users\\CmonMeow\\Desktop\\Shipwright\\src\\game\\src\\code\\main.c",
               "RelativeToolTip": "game\\src\\code\\main.c",
-              "ViewState": "AgIAACcAAAAAAAAAAAAAAFUAAAASAAAAAAAAAA==",
+              "ViewState": "AgIAABwAAAAAAAAAAAAAACYAAAASAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000423|",
               "WhenOpened": "2026-09-01T20:09:33.077Z",
               "IsPinned": true,
@@ -89,32 +81,6 @@
             {
               "$type": "Document",
               "DocumentIndex": 2,
-              "Title": "ClientRuntime.cpp",
-              "DocumentMoniker": "C:\\Users\\CmonMeow\\Desktop\\Shipwright\\src\\game\\port\\ClientRuntime.cpp",
-              "RelativeDocumentMoniker": "game\\port\\ClientRuntime.cpp",
-              "ToolTip": "C:\\Users\\CmonMeow\\Desktop\\Shipwright\\src\\game\\port\\ClientRuntime.cpp",
-              "RelativeToolTip": "game\\port\\ClientRuntime.cpp",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAA0AAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
-              "WhenOpened": "2026-09-03T01:15:31.367Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "OTRGlobals.cpp",
-              "DocumentMoniker": "C:\\Users\\CmonMeow\\Desktop\\Shipwright\\src\\game\\port\\OTRGlobals.cpp",
-              "RelativeDocumentMoniker": "game\\port\\OTRGlobals.cpp",
-              "ToolTip": "C:\\Users\\CmonMeow\\Desktop\\Shipwright\\src\\game\\port\\OTRGlobals.cpp",
-              "RelativeToolTip": "game\\port\\OTRGlobals.cpp",
-              "ViewState": "AgIAACUBAAAAAAAAAAAUwE0BAAATAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
-              "WhenOpened": "2026-09-03T01:14:49.807Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 4,
               "Title": "variables.h",
               "DocumentMoniker": "C:\\Users\\CmonMeow\\Desktop\\Shipwright\\src\\game\\include\\variables.h",
               "RelativeDocumentMoniker": "game\\include\\variables.h",
@@ -126,7 +92,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
+              "DocumentIndex": 3,
               "Title": "ClientRuntime.h",
               "DocumentMoniker": "C:\\Users\\CmonMeow\\Desktop\\Shipwright\\src\\game\\port\\ClientRuntime.h",
               "RelativeDocumentMoniker": "game\\port\\ClientRuntime.h",
@@ -146,12 +112,11 @@
               "RelativeToolTip": "game\\port\\Network\\NativeClientNetworkSession.cpp",
               "ViewState": "AgIAAKIAAAAAAAAAAAAAAOMAAAAYAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
-              "WhenOpened": "2026-09-03T01:10:20.797Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-09-03T01:10:20.797Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 6,
+              "DocumentIndex": 4,
               "Title": "OTRGlobals.h",
               "DocumentMoniker": "C:\\Users\\CmonMeow\\Desktop\\Shipwright\\src\\game\\port\\OTRGlobals.h",
               "RelativeDocumentMoniker": "game\\port\\OTRGlobals.h",
@@ -163,7 +128,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 7,
+              "DocumentIndex": 5,
               "Title": "GbiWrap.cpp",
               "DocumentMoniker": "C:\\Users\\CmonMeow\\Desktop\\Shipwright\\src\\game\\port\\GbiWrap.cpp",
               "RelativeDocumentMoniker": "game\\port\\GbiWrap.cpp",
@@ -175,7 +140,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 8,
+              "DocumentIndex": 6,
               "Title": "DedicatedServer.cpp",
               "DocumentMoniker": "C:\\Users\\CmonMeow\\Desktop\\Shipwright\\src\\game\\clients\\DedicatedServer.cpp",
               "RelativeDocumentMoniker": "game\\clients\\DedicatedServer.cpp",
@@ -187,7 +152,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 10,
+              "DocumentIndex": 8,
               "Title": "heaps.c",
               "DocumentMoniker": "C:\\Users\\CmonMeow\\Desktop\\Shipwright\\src\\game\\src\\buffers\\heaps.c",
               "RelativeDocumentMoniker": "game\\src\\buffers\\heaps.c",
@@ -199,7 +164,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 11,
+              "DocumentIndex": 9,
               "Title": "system_malloc.c",
               "DocumentMoniker": "C:\\Users\\CmonMeow\\Desktop\\Shipwright\\src\\game\\src\\code\\system_malloc.c",
               "RelativeDocumentMoniker": "game\\src\\code\\system_malloc.c",
@@ -211,7 +176,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 9,
+              "DocumentIndex": 7,
               "Title": "functions.h",
               "DocumentMoniker": "C:\\Users\\CmonMeow\\Desktop\\Shipwright\\src\\game\\include\\functions.h",
               "RelativeDocumentMoniker": "game\\include\\functions.h",
@@ -223,7 +188,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 12,
+              "DocumentIndex": 10,
               "Title": "loadfragment2.c",
               "DocumentMoniker": "C:\\Users\\CmonMeow\\Desktop\\Shipwright\\src\\game\\src\\code\\loadfragment2.c",
               "RelativeDocumentMoniker": "game\\src\\code\\loadfragment2.c",
@@ -235,7 +200,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 13,
+              "DocumentIndex": 11,
               "Title": "z_effect_soft_sprite.c",
               "DocumentMoniker": "C:\\Users\\CmonMeow\\Desktop\\Shipwright\\src\\game\\src\\code\\z_effect_soft_sprite.c",
               "RelativeDocumentMoniker": "game\\src\\code\\z_effect_soft_sprite.c",
@@ -247,7 +212,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 14,
+              "DocumentIndex": 12,
               "Title": "sched.c",
               "DocumentMoniker": "C:\\Users\\CmonMeow\\Desktop\\Shipwright\\src\\game\\src\\code\\sched.c",
               "RelativeDocumentMoniker": "game\\src\\code\\sched.c",

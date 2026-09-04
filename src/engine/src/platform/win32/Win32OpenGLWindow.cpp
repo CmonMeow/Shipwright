@@ -7,7 +7,7 @@
 #include <shellapi.h>
 #include <GL/gl.h>
 
-#include "fast/backends/gfx_win32_opengl.h"
+#include "platform/win32/Win32OpenGLWindow.h"
 #include "engine/Context.h"
 #include "engine/config/ConsoleVariable.h"
 #include "engine/input/Win32Input.h"
@@ -40,10 +40,10 @@ static constexpr UINT_PTR MoveLoopTimer = 0x534F48;
 static constexpr int FpsValues[] = { 20, 30, 60, 120, 144, 240 };
 
 static LRESULT CALLBACK Win32OpenGLWindowProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) {
-    auto* self = reinterpret_cast<GfxWindowBackendWin32OpenGL*>(GetWindowLongPtrA(hwnd, GWLP_USERDATA));
+    auto* self = reinterpret_cast<Win32OpenGLWindow*>(GetWindowLongPtrA(hwnd, GWLP_USERDATA));
     if (message == WM_NCCREATE) {
         auto* create = reinterpret_cast<CREATESTRUCTA*>(lParam);
-        self = static_cast<GfxWindowBackendWin32OpenGL*>(create->lpCreateParams);
+        self = static_cast<Win32OpenGLWindow*>(create->lpCreateParams);
         SetWindowLongPtrA(hwnd, GWLP_USERDATA, reinterpret_cast<LONG_PTR>(self));
     }
     return self != nullptr ? self->WindowProc(hwnd, message, wParam, lParam)
@@ -51,18 +51,22 @@ static LRESULT CALLBACK Win32OpenGLWindowProc(HWND hwnd, UINT message, WPARAM wP
 }
 
 static LRESULT CALLBACK Win32SettingsWindowProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) {
-    auto* self = reinterpret_cast<GfxWindowBackendWin32OpenGL*>(GetWindowLongPtrA(hwnd, GWLP_USERDATA));
+    auto* self = reinterpret_cast<Win32OpenGLWindow*>(GetWindowLongPtrA(hwnd, GWLP_USERDATA));
     if (message == WM_NCCREATE) {
         auto* create = reinterpret_cast<CREATESTRUCTA*>(lParam);
-        self = static_cast<GfxWindowBackendWin32OpenGL*>(create->lpCreateParams);
+        self = static_cast<Win32OpenGLWindow*>(create->lpCreateParams);
         SetWindowLongPtrA(hwnd, GWLP_USERDATA, reinterpret_cast<LONG_PTR>(self));
     }
     return self != nullptr ? self->SettingsWindowProc(hwnd, message, wParam, lParam)
                            : DefWindowProcA(hwnd, message, wParam, lParam);
 }
 
-void GfxWindowBackendWin32OpenGL::Init(const char* gameName, const char*, bool startFullScreen,
-                                       uint32_t width, uint32_t height, int32_t posX, int32_t posY) {
+Win32OpenGLWindow::Win32OpenGLWindow(HINSTANCE instance, int showCommand)
+    : mInstance(instance), mShowCommand(showCommand) {
+}
+
+void Win32OpenGLWindow::Init(const char* gameName, const char*, bool startFullScreen,
+                             uint32_t width, uint32_t height, int32_t posX, int32_t posY) {
     mWidth = width;
     mHeight = height;
     mPosX = posX;
@@ -73,7 +77,6 @@ void GfxWindowBackendWin32OpenGL::Init(const char* gameName, const char*, bool s
     mLastPresent = mClockStart;
     mTitleSampleTime = mClockStart;
 
-    mInstance = GetModuleHandleA(nullptr);
     WNDCLASSEXA windowClass{};
     windowClass.cbSize = sizeof(windowClass);
     windowClass.style = CS_OWNDC | CS_DBLCLKS;
@@ -97,7 +100,8 @@ void GfxWindowBackendWin32OpenGL::Init(const char* gameName, const char*, bool s
     if (mWindow == nullptr) {
         return;
     }
-    ShowWindow(mWindow, SW_SHOWNORMAL);
+    ShowWindow(mWindow, mShowCommand == SW_SHOWMAXIMIZED ? SW_SHOWMAXIMIZED
+                                                         : SW_SHOWNORMAL);
 
     mDeviceContext = GetDC(mWindow);
     PIXELFORMATDESCRIPTOR pixelFormat{};
@@ -143,7 +147,7 @@ void GfxWindowBackendWin32OpenGL::Init(const char* gameName, const char*, bool s
     UpdateClientSize();
 }
 
-LRESULT GfxWindowBackendWin32OpenGL::WindowProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) {
+LRESULT Win32OpenGLWindow::WindowProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) {
     switch (message) {
         case WM_CLOSE:
         case WM_DESTROY:
@@ -299,7 +303,7 @@ LRESULT GfxWindowBackendWin32OpenGL::WindowProc(HWND hwnd, UINT message, WPARAM 
     }
 }
 
-void GfxWindowBackendWin32OpenGL::CreateSettingsWindow() {
+void Win32OpenGLWindow::CreateSettingsWindow() {
     WNDCLASSEXA settingsClass{};
     settingsClass.cbSize = sizeof(settingsClass);
     settingsClass.lpfnWndProc = Win32SettingsWindowProc;
@@ -375,7 +379,7 @@ void GfxWindowBackendWin32OpenGL::CreateSettingsWindow() {
     SyncSettingsControls();
 }
 
-void GfxWindowBackendWin32OpenGL::SyncSettingsControls() {
+void Win32OpenGLWindow::SyncSettingsControls() {
     if (mSettingsWindow == nullptr) {
         return;
     }
@@ -408,7 +412,7 @@ void GfxWindowBackendWin32OpenGL::SyncSettingsControls() {
     SyncNetworkStatus();
 }
 
-void GfxWindowBackendWin32OpenGL::SyncNetworkStatus() {
+void Win32OpenGLWindow::SyncNetworkStatus() {
     if (mNetworkStatusLabel == nullptr) {
         return;
     }
@@ -417,7 +421,7 @@ void GfxWindowBackendWin32OpenGL::SyncNetworkStatus() {
     SetWindowTextA(mNetworkStatusLabel, status.c_str());
 }
 
-void GfxWindowBackendWin32OpenGL::ToggleSettingsWindow() {
+void Win32OpenGLWindow::ToggleSettingsWindow() {
     if (mSettingsWindow == nullptr) {
         return;
     }
@@ -433,7 +437,7 @@ void GfxWindowBackendWin32OpenGL::ToggleSettingsWindow() {
     }
 }
 
-LRESULT GfxWindowBackendWin32OpenGL::SettingsWindowProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) {
+LRESULT Win32OpenGLWindow::SettingsWindowProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) {
     switch (message) {
         case WM_CLOSE:
             ToggleSettingsWindow();
@@ -501,67 +505,67 @@ LRESULT GfxWindowBackendWin32OpenGL::SettingsWindowProc(HWND hwnd, UINT message,
     return DefWindowProcA(hwnd, message, wParam, lParam);
 }
 
-void GfxWindowBackendWin32OpenGL::KeyDown(LPARAM lParam) {
+void Win32OpenGLWindow::KeyDown(LPARAM lParam) {
     if (mOnKeyDown != nullptr) mOnKeyDown(static_cast<int>((lParam >> 16) & 0x1ff));
 }
-void GfxWindowBackendWin32OpenGL::KeyUp(LPARAM lParam) {
+void Win32OpenGLWindow::KeyUp(LPARAM lParam) {
     if (mOnKeyUp != nullptr) mOnKeyUp(static_cast<int>((lParam >> 16) & 0x1ff));
 }
-void GfxWindowBackendWin32OpenGL::MouseDown(int button) {
+void Win32OpenGLWindow::MouseDown(int button) {
     if (button < 0 || button >= static_cast<int>(mMouseButtons.size())) return;
     mMouseButtons[button] = true;
     if (mOnMouseButtonDown != nullptr) mOnMouseButtonDown(button);
 }
-void GfxWindowBackendWin32OpenGL::MouseUp(int button) {
+void Win32OpenGLWindow::MouseUp(int button) {
     if (button < 0 || button >= static_cast<int>(mMouseButtons.size())) return;
     mMouseButtons[button] = false;
     if (mOnMouseButtonUp != nullptr) mOnMouseButtonUp(button);
 }
 
-void GfxWindowBackendWin32OpenGL::Close() { mIsRunning = false; }
-void GfxWindowBackendWin32OpenGL::SetKeyboardCallbacks(bool (*down)(int), bool (*up)(int), void (*allUp)()) {
+void Win32OpenGLWindow::Close() { mIsRunning = false; }
+void Win32OpenGLWindow::SetKeyboardCallbacks(bool (*down)(int), bool (*up)(int), void (*allUp)()) {
     mOnKeyDown = down; mOnKeyUp = up; mOnAllKeysUp = allUp;
 }
-void GfxWindowBackendWin32OpenGL::SetMouseCallbacks(bool (*down)(int), bool (*up)(int)) {
+void Win32OpenGLWindow::SetMouseCallbacks(bool (*down)(int), bool (*up)(int)) {
     mOnMouseButtonDown = down; mOnMouseButtonUp = up;
 }
-void GfxWindowBackendWin32OpenGL::SetFullscreenChangedCallback(void (*changed)(bool)) { mOnFullscreenChanged = changed; }
-void GfxWindowBackendWin32OpenGL::SetFullscreen(bool fullscreen) {
+void Win32OpenGLWindow::SetFullscreenChangedCallback(void (*changed)(bool)) { mOnFullscreenChanged = changed; }
+void Win32OpenGLWindow::SetFullscreen(bool fullscreen) {
     if (mWindow == nullptr || fullscreen == mFullScreen) return;
     ShowWindow(mWindow, fullscreen ? SW_MAXIMIZE : SW_NORMAL);
     mFullScreen = fullscreen;
     if (mOnFullscreenChanged != nullptr) mOnFullscreenChanged(fullscreen);
 }
-void GfxWindowBackendWin32OpenGL::GetActiveWindowRefreshRate(uint32_t* refreshRate) {
+void Win32OpenGLWindow::GetActiveWindowRefreshRate(uint32_t* refreshRate) {
     DEVMODEA mode{}; mode.dmSize = sizeof(mode);
     *refreshRate = EnumDisplaySettingsA(nullptr, ENUM_CURRENT_SETTINGS, &mode) && mode.dmDisplayFrequency > 1
                        ? mode.dmDisplayFrequency : 60;
 }
-void GfxWindowBackendWin32OpenGL::SetCursorVisibility(bool visible) {
+void Win32OpenGLWindow::SetCursorVisibility(bool visible) {
     int value;
     int attempts = 0;
     if (visible) do { value = ShowCursor(TRUE); } while (value < 0 && ++attempts < 15);
     else do { value = ShowCursor(FALSE); } while (value >= 0 && ++attempts < 15);
 }
-void GfxWindowBackendWin32OpenGL::SetMousePos(int32_t x, int32_t y) {
+void Win32OpenGLWindow::SetMousePos(int32_t x, int32_t y) {
     POINT point{ x, y }; ClientToScreen(mWindow, &point); SetCursorPos(point.x, point.y);
 }
-void GfxWindowBackendWin32OpenGL::GetMousePos(int32_t* x, int32_t* y) {
+void Win32OpenGLWindow::GetMousePos(int32_t* x, int32_t* y) {
     POINT point{}; GetCursorPos(&point); ScreenToClient(mWindow, &point); *x = point.x; *y = point.y;
 }
-void GfxWindowBackendWin32OpenGL::GetMouseDelta(int32_t* x, int32_t* y) {
+void Win32OpenGLWindow::GetMouseDelta(int32_t* x, int32_t* y) {
     POINT point{}; GetCursorPos(&point); ScreenToClient(mWindow, &point);
     *x = mHavePreviousMouse ? point.x - mPreviousMouse.x : 0;
     *y = mHavePreviousMouse ? point.y - mPreviousMouse.y : 0;
     mPreviousMouse = point; mHavePreviousMouse = true;
 }
-void GfxWindowBackendWin32OpenGL::GetMouseWheel(float* x, float* y) {
+void Win32OpenGLWindow::GetMouseWheel(float* x, float* y) {
     *x = mMouseWheelX; *y = mMouseWheelY; mMouseWheelX = 0.0f; mMouseWheelY = 0.0f;
 }
-bool GfxWindowBackendWin32OpenGL::GetMouseState(uint32_t btn) {
+bool Win32OpenGLWindow::GetMouseState(uint32_t btn) {
     return btn < mMouseButtons.size() && mMouseButtons[btn];
 }
-void GfxWindowBackendWin32OpenGL::SetMouseCapture(bool capture) {
+void Win32OpenGLWindow::SetMouseCapture(bool capture) {
     mMouseCaptured = capture;
     if (capture) {
         RECT rect{}; GetClientRect(mWindow, &rect);
@@ -573,14 +577,14 @@ void GfxWindowBackendWin32OpenGL::SetMouseCapture(bool capture) {
         ClipCursor(nullptr); ReleaseCapture(); SetCursorVisibility(true); mHavePreviousMouse = false;
     }
 }
-bool GfxWindowBackendWin32OpenGL::IsMouseCaptured() { return mMouseCaptured; }
-void GfxWindowBackendWin32OpenGL::UpdateClientSize() {
+bool Win32OpenGLWindow::IsMouseCaptured() { return mMouseCaptured; }
+void Win32OpenGLWindow::UpdateClientSize() {
     RECT client{}; GetClientRect(mWindow, &client); mWidth = client.right - client.left; mHeight = client.bottom - client.top;
 }
-void GfxWindowBackendWin32OpenGL::GetDimensions(uint32_t* width, uint32_t* height, int32_t* x, int32_t* y) {
+void Win32OpenGLWindow::GetDimensions(uint32_t* width, uint32_t* height, int32_t* x, int32_t* y) {
     UpdateClientSize(); *width = mWidth; *height = mHeight; *x = mPosX; *y = mPosY;
 }
-void GfxWindowBackendWin32OpenGL::HandleEvents() {
+void Win32OpenGLWindow::HandleEvents() {
     MSG message{};
     while (PeekMessageA(&message, nullptr, 0, 0, PM_REMOVE)) {
         if (message.message == WM_QUIT) { Close(); break; }
@@ -605,14 +609,14 @@ void GfxWindowBackendWin32OpenGL::HandleEvents() {
     }
     Engine::GetWin32Input().RefreshKeyboardState(gameWindowFocused);
 }
-bool GfxWindowBackendWin32OpenGL::IsFrameReady() { return true; }
-void GfxWindowBackendWin32OpenGL::ApplySwapInterval() {
+bool Win32OpenGLWindow::IsFrameReady() { return true; }
+void Win32OpenGLWindow::ApplySwapInterval() {
     using SwapIntervalProc = BOOL(WINAPI*)(int);
     auto swapInterval = reinterpret_cast<SwapIntervalProc>(wglGetProcAddress("wglSwapIntervalEXT"));
     if (swapInterval != nullptr) swapInterval(mVsyncEnabled ? 1 : 0);
     mSwapIntervalApplied = true;
 }
-void GfxWindowBackendWin32OpenGL::SwapBuffersBegin() {
+void Win32OpenGLWindow::SwapBuffersBegin() {
     const bool nextVsyncEnabled =
         Engine::Context::GetInstance()->GetConsoleVariables()->GetInteger(CVAR_VSYNC_ENABLED, 1) != 0;
     if (nextVsyncEnabled != mVsyncEnabled) {
@@ -631,7 +635,7 @@ void GfxWindowBackendWin32OpenGL::SwapBuffersBegin() {
         }
     }
 }
-void GfxWindowBackendWin32OpenGL::SwapBuffersEnd() {
+void Win32OpenGLWindow::SwapBuffersEnd() {
     // FinishRender runs between SwapBuffersBegin and SwapBuffersEnd. Draw the
     // native Game UI last so the scene cannot composite over the text.
     Engine::Overlay::Render(mWidth, mHeight);
@@ -652,22 +656,22 @@ void GfxWindowBackendWin32OpenGL::SwapBuffersEnd() {
         mTitleSampleTime = mLastPresent;
     }
 }
-double GfxWindowBackendWin32OpenGL::GetTime() {
+double Win32OpenGLWindow::GetTime() {
     LARGE_INTEGER now{}; QueryPerformanceCounter(&now);
     return mClockFrequency.QuadPart ? static_cast<double>(now.QuadPart - mClockStart.QuadPart) / mClockFrequency.QuadPart : 0.0;
 }
-int GfxWindowBackendWin32OpenGL::GetTargetFps() { return static_cast<int>(mTargetFps); }
-void GfxWindowBackendWin32OpenGL::SetTargetFps(int fps) { mTargetFps = std::max(fps, 1); }
-void GfxWindowBackendWin32OpenGL::SetMaxFrameLatency(int) {}
-const char* GfxWindowBackendWin32OpenGL::GetKeyName(int scancode) {
+int Win32OpenGLWindow::GetTargetFps() { return static_cast<int>(mTargetFps); }
+void Win32OpenGLWindow::SetTargetFps(int fps) { mTargetFps = std::max(fps, 1); }
+void Win32OpenGLWindow::SetMaxFrameLatency(int) {}
+const char* Win32OpenGLWindow::GetKeyName(int scancode) {
     char name[128]{};
     if (GetKeyNameTextA(scancode << 16, name, sizeof(name)) > 0) mKeyName = name;
     else mKeyName = "Unknown";
     return mKeyName.c_str();
 }
-bool GfxWindowBackendWin32OpenGL::CanDisableVsync() { return true; }
-bool GfxWindowBackendWin32OpenGL::IsRunning() { return mIsRunning; }
-void GfxWindowBackendWin32OpenGL::Destroy() {
+bool Win32OpenGLWindow::CanDisableVsync() { return true; }
+bool Win32OpenGLWindow::IsRunning() { return mIsRunning; }
+void Win32OpenGLWindow::Destroy() {
     Engine::GetWin32Input().SetGameInputBlocked(false);
     Engine::Overlay::Clear();
     if (mSettingsWindow != nullptr) { DestroyWindow(mSettingsWindow); mSettingsWindow = nullptr; }
@@ -678,7 +682,7 @@ void GfxWindowBackendWin32OpenGL::Destroy() {
     if (mInstance != nullptr) UnregisterClassA(SettingsWindowClassName, mInstance);
     if (mFrameTimer != nullptr) { CloseHandle(mFrameTimer); mFrameTimer = nullptr; }
 }
-bool GfxWindowBackendWin32OpenGL::IsFullscreen() { return mFullScreen; }
+bool Win32OpenGLWindow::IsFullscreen() { return mFullScreen; }
 
 } // namespace Fast
 

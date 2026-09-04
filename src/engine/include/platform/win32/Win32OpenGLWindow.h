@@ -2,7 +2,7 @@
 
 #ifdef _WIN32
 
-#include "gfx_window_manager_api.h"
+#include "fast/backends/gfx_window_manager_api.h"
 
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
@@ -12,10 +12,10 @@
 
 namespace Fast {
 
-class GfxWindowBackendWin32OpenGL final : public GfxWindowBackend {
+class Win32OpenGLWindow final : public GfxWindowBackend {
   public:
-    GfxWindowBackendWin32OpenGL() = default;
-    ~GfxWindowBackendWin32OpenGL() override = default;
+    Win32OpenGLWindow(HINSTANCE instance, int showCommand);
+    ~Win32OpenGLWindow() override = default;
 
     void Init(const char* gameName, const char* apiName, bool startFullScreen, uint32_t width, uint32_t height,
               int32_t posX, int32_t posY) override;
@@ -78,6 +78,7 @@ class GfxWindowBackendWin32OpenGL final : public GfxWindowBackend {
     HDC mDeviceContext = nullptr;
     HGLRC mRenderContext = nullptr;
     HINSTANCE mInstance = nullptr;
+    int mShowCommand = SW_SHOWNORMAL;
     HANDLE mFrameTimer = nullptr;
     LARGE_INTEGER mClockFrequency{};
     LARGE_INTEGER mClockStart{};

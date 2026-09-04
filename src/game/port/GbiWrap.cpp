@@ -3,7 +3,6 @@
 // OTRTODO - this is awful
 
 extern "C" {
-void InitOTR();
 void Graph_ProcessFrame(void (*run_one_game_iter)(void));
 void Graph_StartFrame();
 void Graph_ProcessGfxCommands(Gfx* commands);
