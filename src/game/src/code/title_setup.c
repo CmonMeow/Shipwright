@@ -9,19 +9,15 @@ void TitleSetup_InitImpl(GameState* gameState) {
     gSaveContext.linkAge = LINK_AGE_ADULT;
     gSaveContext.healthCapacity = STARTING_HEALTH;
     gSaveContext.health = STARTING_HEALTH;
-    gSaveContext.inventory.equipment = 0x1100;
-    gSaveContext.equips.equipment = 0x1100;
+    gSaveContext.inventory.equipment =
+        OWNED_EQUIP_FLAG(EQUIP_TYPE_SWORD, EQUIP_INV_SWORD_MASTER) |
+        OWNED_EQUIP_FLAG(EQUIP_TYPE_SWORD, EQUIP_INV_SWORD_BIGGORON) |
+        OWNED_EQUIP_FLAG(EQUIP_TYPE_SHIELD, EQUIP_INV_SHIELD_MIRROR);
+    gSaveContext.equips.equipment =
+        (EQUIP_VALUE_SWORD_MASTER << (EQUIP_TYPE_SWORD * 4)) |
+        (EQUIP_VALUE_SHIELD_MIRROR << (EQUIP_TYPE_SHIELD * 4));
     for (buttonIndex = 0; buttonIndex < ARRAY_COUNT(gSaveContext.equips.buttonItems); ++buttonIndex) {
         gSaveContext.equips.buttonItems[buttonIndex] = ITEM_NONE;
-    }
-    for (buttonIndex = 0; buttonIndex < ARRAY_COUNT(gSaveContext.equips.cButtonSlots); ++buttonIndex) {
-        gSaveContext.equips.cButtonSlots[buttonIndex] = SLOT_NONE;
-    }
-    for (buttonIndex = 0; buttonIndex < ARRAY_COUNT(gSaveContext.inventory.items); ++buttonIndex) {
-        gSaveContext.inventory.items[buttonIndex] = ITEM_NONE;
-    }
-    for (buttonIndex = 0; buttonIndex < ARRAY_COUNT(gSaveContext.inventory.dungeonKeys); ++buttonIndex) {
-        gSaveContext.inventory.dungeonKeys[buttonIndex] = 0xFF;
     }
     gSaveContext.equips.buttonItems[0] = ITEM_NONE;
     for (buttonIndex = 0; buttonIndex < ARRAY_COUNT(gSaveContext.buttonStatus); ++buttonIndex) {

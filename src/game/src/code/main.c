@@ -62,23 +62,23 @@ int PASCAL WinMain(HINSTANCE hInstance, HINSTANCE previousInstance, LPSTR comman
         osSetEventMesg(5, &sSiIntMsgQ, OS_MESG_PTR(NULL));
 
         osCreateMesgQueue(&irqMgrMsgQ, irqMgrMsgBuf, 0x3C);
-        StackCheck_Init(&sIrqMgrStackInfo, sIrqMgrStack, sIrqMgrStack + sizeof(sIrqMgrStack), 0, 0x100, "irqmgr");
+        StackCheck_Init(&sIrqMgrStackInfo, sIrqMgrStack, sIrqMgrStack + sizeof(sIrqMgrStack), 0, 256, "irqmgr");
         IrqMgr_Init(&gIrqMgr, &sGraphStackInfo, Z_PRIORITY_IRQMGR, 1);
 
-        StackCheck_Init(&sSchedStackInfo, sSchedStack, sSchedStack + sizeof(sSchedStack), 0, 0x100, "sched");
+        StackCheck_Init(&sSchedStackInfo, sSchedStack, sSchedStack + sizeof(sSchedStack), 0, 256, "sched");
         Sched_Init(&gSchedContext, &sAudioStack, Z_PRIORITY_SCHED, NULL, 1, &gIrqMgr);
 
         IrqMgr_AddClient(&gIrqMgr, &irqClient, &irqMgrMsgQ);
 
-        StackCheck_Init(&sAudioStackInfo, sAudioStack, sAudioStack + sizeof(sAudioStack), 0, 0x100, "audio");
+        StackCheck_Init(&sAudioStackInfo, sAudioStack, sAudioStack + sizeof(sAudioStack), 0, 256, "audio");
         AudioMgr_Init(&gAudioMgr, sAudioStack + sizeof(sAudioStack), Z_PRIORITY_AUDIOMGR, 0xA, &gSchedContext, &gIrqMgr);
 
-        StackCheck_Init(&sPadMgrStackInfo, sPadMgrStack, sPadMgrStack + sizeof(sPadMgrStack), 0, 0x100, "padmgr");
+        StackCheck_Init(&sPadMgrStackInfo, sPadMgrStack, sPadMgrStack + sizeof(sPadMgrStack), 0, 256, "padmgr");
         PadMgr_Init(&gPadMgr, &sSiIntMsgQ, &gIrqMgr, 7, Z_PRIORITY_PADMGR, &sIrqMgrStack);
 
         AudioMgr_Unlock(&gAudioMgr);
 
-        StackCheck_Init(&sGraphStackInfo, sGraphStack, sGraphStack + sizeof(sGraphStack), 0, 0x100, "graph");
+        StackCheck_Init(&sGraphStackInfo, sGraphStack, sGraphStack + sizeof(sGraphStack), 0, 256, "graph");
         osCreateThread(&sGraphThread, 4, Graph_ThreadEntry, 0, sGraphStack + sizeof(sGraphStack), Z_PRIORITY_GRAPH);
         osStartThread(&sGraphThread);
         osSetThreadPri(0, Z_PRIORITY_SCHED);

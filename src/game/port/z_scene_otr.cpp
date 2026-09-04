@@ -289,7 +289,7 @@ extern "C" int32_t OTRfunc_800973FC(PlayState* play, RoomContext* roomCtx) {
 
             OTRScene_ExecuteCommands(play, (SOH::Scene*)roomCtx->roomToLoad);
 
-            Player_SetBootData(play, GET_PLAYER(play));
+            Player_ApplyMovementTuning(play);
             return 1;
 
 

@@ -27,11 +27,11 @@ void NativePlayerPresentationComposer::ApplyEquipment(
             state.itemAction = PLAYER_IA_SWORD_BIGGORON;
             break;
         case ClientEquipmentPresentation::Bow:
-            state.modelGroup = PLAYER_MODELGROUP_BOW_SLINGSHOT;
+            state.modelGroup = PLAYER_MODELGROUP_BOW;
             state.itemAction = PLAYER_IA_BOW;
             break;
         case ClientEquipmentPresentation::FishingPole:
-            state.modelGroup = PLAYER_MODELGROUP_10;
+            state.modelGroup = PLAYER_MODELGROUP_FISHING;
             state.itemAction = PLAYER_IA_FISHING_POLE;
             break;
         default:

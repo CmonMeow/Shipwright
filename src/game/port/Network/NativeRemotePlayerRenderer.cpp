@@ -720,8 +720,7 @@ void NativeRemotePlayerRenderer::ActorDraw(Actor* actor, PlayState* play) {
     gSPClearGeometryMode(POLY_OPA_DISP++, G_CULL_BOTH);
     BeginRenderedPlayerCollision(remote->playerId);
     Player_DrawImpl(play, remote->skelAnime.skeleton, remote->jointTable,
-                    remote->skelAnime.dListCount, 0, PLAYER_TUNIC_KOKIRI,
-                    PLAYER_BOOTS_KOKIRI, 0, Player_OverrideLimbDrawPresentation,
+                    remote->skelAnime.dListCount, 0, 0, Player_OverrideLimbDrawPresentation,
                     Player_PostLimbDrawPresentation, &drawData);
     for (int32_t limb = PLAYER_LIMB_ROOT; limb < PLAYER_LIMB_MAX; ++limb) {
         const Vec3f& origin = drawData.limbOrigins[limb];

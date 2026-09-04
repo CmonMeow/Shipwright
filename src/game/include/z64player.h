@@ -30,60 +30,11 @@ typedef enum PlayerStartMode {
     /* 16 */ PLAYER_START_MODE_MAX // Note: By default, this param has 4 bits allocated. The max value is 16.
 } PlayerStartMode;
 
-typedef enum PlayerSword {
-    /* 0 */ PLAYER_SWORD_NONE,
-    /* 1 */ PLAYER_SWORD_KOKIRI,
-    /* 2 */ PLAYER_SWORD_MASTER,
-    /* 3 */ PLAYER_SWORD_BIGGORON,
-    /* 4 */ PLAYER_SWORD_MAX
-} PlayerSword;
-
 typedef enum PlayerShield {
-    /* 0x00 */ PLAYER_SHIELD_NONE,
-    /* 0x01 */ PLAYER_SHIELD_DEKU,
-    /* 0x02 */ PLAYER_SHIELD_HYLIAN,
-    /* 0x03 */ PLAYER_SHIELD_MIRROR,
-    /* 0x04 */ PLAYER_SHIELD_MAX
+    PLAYER_SHIELD_NONE,
+    PLAYER_SHIELD_MIRROR,
+    PLAYER_SHIELD_MAX
 } PlayerShield;
-
-typedef enum PlayerTunic {
-    /* 0x00 */ PLAYER_TUNIC_KOKIRI,
-    /* 0x01 */ PLAYER_TUNIC_GORON,
-    /* 0x02 */ PLAYER_TUNIC_ZORA,
-    /* 0x03 */ PLAYER_TUNIC_MAX
-} PlayerTunic;
-
-typedef enum PlayerBoots {
-    /* 0x00 */ PLAYER_BOOTS_KOKIRI,
-    /* 0x01 */ PLAYER_BOOTS_IRON,
-    /* 0x02 */ PLAYER_BOOTS_HOVER,
-    /* Values below are only relevant when setting regs in Player_SetBootData */
-    /* 0x03 */ PLAYER_BOOTS_INDOOR,
-    /* 0x04 */ PLAYER_BOOTS_IRON_UNDERWATER,
-    /* 0x05 */ PLAYER_BOOTS_KOKIRI_CHILD,
-    /* 0x06 */ PLAYER_BOOTS_MAX
-} PlayerBoots;
-
-typedef enum PlayerStrength {
-    /* 0x00 */ PLAYER_STR_NONE,
-    /* 0x01 */ PLAYER_STR_BRACELET,
-    /* 0x02 */ PLAYER_STR_SILVER_G,
-    /* 0x03 */ PLAYER_STR_GOLD_G,
-    /* 0x04 */ PLAYER_STR_MAX
-} PlayerStrength;
-
-typedef enum PlayerMask {
-    /* 0x00 */ PLAYER_MASK_NONE,
-    /* 0x01 */ PLAYER_MASK_KEATON,
-    /* 0x02 */ PLAYER_MASK_SKULL,
-    /* 0x03 */ PLAYER_MASK_SPOOKY,
-    /* 0x04 */ PLAYER_MASK_BUNNY,
-    /* 0x05 */ PLAYER_MASK_GORON,
-    /* 0x06 */ PLAYER_MASK_ZORA,
-    /* 0x07 */ PLAYER_MASK_GERUDO,
-    /* 0x08 */ PLAYER_MASK_TRUTH,
-    /* 0x09 */ PLAYER_MASK_MAX
-} PlayerMask;
 
 typedef enum PlayerEnvHazard {
     /* 0x0 */ PLAYER_ENV_HAZARD_NONE,
@@ -100,74 +51,12 @@ typedef enum PlayerIdleType {
 } PlayerIdleType;
 
 typedef enum PlayerItemAction {
-    /* 0x00 */ PLAYER_IA_NONE,
-    /* 0x01 */ PLAYER_IA_SWORD_CS, // Hold sword without shield in hand. The sword is not usable.
-    /* 0x02 */ PLAYER_IA_FISHING_POLE,
-    /* 0x03 */ PLAYER_IA_SWORD_MASTER,
-    /* 0x04 */ PLAYER_IA_SWORD_KOKIRI,
-    /* 0x05 */ PLAYER_IA_SWORD_BIGGORON,
-    /* 0x06 */ PLAYER_IA_DEKU_STICK,
-    /* 0x07 */ PLAYER_IA_HAMMER,
-    /* 0x08 */ PLAYER_IA_BOW,
-    /* 0x09 */ PLAYER_IA_BOW_FIRE,
-    /* 0x0A */ PLAYER_IA_BOW_ICE,
-    /* 0x0B */ PLAYER_IA_BOW_LIGHT,
-    /* 0x0C */ PLAYER_IA_BOW_0C,
-    /* 0x0D */ PLAYER_IA_BOW_0D,
-    /* 0x0E */ PLAYER_IA_BOW_0E,
-    /* 0x0F */ PLAYER_IA_SLINGSHOT,
-    /* 0x10 */ PLAYER_IA_HOOKSHOT,
-    /* 0x11 */ PLAYER_IA_LONGSHOT,
-    /* 0x12 */ PLAYER_IA_REMOVED_12,
-    /* 0x13 */ PLAYER_IA_REMOVED_13,
-    /* 0x14 */ PLAYER_IA_BOOMERANG,
-    /* 0x15 */ PLAYER_IA_UNUSED_15,
-    /* 0x16 */ PLAYER_IA_UNUSED_16,
-    /* 0x17 */ PLAYER_IA_UNUSED_17,
-    /* 0x18 */ PLAYER_IA_UNUSED_18,
-    /* 0x19 */ PLAYER_IA_UNUSED_19,
-    /* 0x1A */ PLAYER_IA_UNUSED_1A,
-    /* 0x1B */ PLAYER_IA_DEKU_NUT,
-    /* 0x1C */ PLAYER_IA_OCARINA_FAIRY,
-    /* 0x1D */ PLAYER_IA_OCARINA_OF_TIME,
-    /* 0x1E */ PLAYER_IA_BOTTLE,
-    /* 0x1F */ PLAYER_IA_BOTTLE_FISH,
-    /* 0x20 */ PLAYER_IA_BOTTLE_FIRE,
-    /* 0x21 */ PLAYER_IA_BOTTLE_BUG,
-    /* 0x22 */ PLAYER_IA_BOTTLE_POE,
-    /* 0x23 */ PLAYER_IA_BOTTLE_BIG_POE,
-    /* 0x24 */ PLAYER_IA_BOTTLE_RUTOS_LETTER,
-    /* 0x25 */ PLAYER_IA_BOTTLE_POTION_RED,
-    /* 0x26 */ PLAYER_IA_BOTTLE_POTION_BLUE,
-    /* 0x27 */ PLAYER_IA_BOTTLE_POTION_GREEN,
-    /* 0x28 */ PLAYER_IA_BOTTLE_MILK_FULL,
-    /* 0x29 */ PLAYER_IA_BOTTLE_MILK_HALF,
-    /* 0x2A */ PLAYER_IA_BOTTLE_FAIRY,
-    /* 0x2B */ PLAYER_IA_ZELDAS_LETTER,
-    /* 0x2C */ PLAYER_IA_WEIRD_EGG,
-    /* 0x2D */ PLAYER_IA_CHICKEN,
-    /* 0x2E */ PLAYER_IA_MAGIC_BEAN,
-    /* 0x2F */ PLAYER_IA_POCKET_EGG,
-    /* 0x30 */ PLAYER_IA_POCKET_CUCCO,
-    /* 0x31 */ PLAYER_IA_COJIRO,
-    /* 0x32 */ PLAYER_IA_ODD_MUSHROOM,
-    /* 0x33 */ PLAYER_IA_ODD_POTION,
-    /* 0x34 */ PLAYER_IA_POACHERS_SAW,
-    /* 0x35 */ PLAYER_IA_BROKEN_GORONS_SWORD,
-    /* 0x36 */ PLAYER_IA_PRESCRIPTION,
-    /* 0x37 */ PLAYER_IA_FROG,
-    /* 0x38 */ PLAYER_IA_EYEDROPS,
-    /* 0x39 */ PLAYER_IA_CLAIM_CHECK,
-    /* 0x3A */ PLAYER_IA_MASK_KEATON,
-    /* 0x3B */ PLAYER_IA_MASK_SKULL,
-    /* 0x3C */ PLAYER_IA_MASK_SPOOKY,
-    /* 0x3D */ PLAYER_IA_MASK_BUNNY_HOOD,
-    /* 0x3E */ PLAYER_IA_MASK_GORON,
-    /* 0x3F */ PLAYER_IA_MASK_ZORA,
-    /* 0x40 */ PLAYER_IA_MASK_GERUDO,
-    /* 0x41 */ PLAYER_IA_MASK_TRUTH,
-    /* 0x42 */ PLAYER_IA_LENS_OF_TRUTH,
-    /* 0x43 */ PLAYER_IA_MAX
+    PLAYER_IA_NONE,
+    PLAYER_IA_FISHING_POLE,
+    PLAYER_IA_SWORD_MASTER,
+    PLAYER_IA_SWORD_BIGGORON,
+    PLAYER_IA_BOW,
+    PLAYER_IA_MAX
 } PlayerItemAction;
 
 typedef enum PlayerLimb {
@@ -241,13 +130,11 @@ typedef enum PlayerMeleeWeaponAnimation {
     /* 19 */ PLAYER_MWA_JUMPSLASH_FINISH,
     /* 20 */ PLAYER_MWA_BACKSLASH_RIGHT,
     /* 21 */ PLAYER_MWA_BACKSLASH_LEFT,
-    /* 22 */ PLAYER_MWA_HAMMER_FORWARD,
-    /* 23 */ PLAYER_MWA_HAMMER_SIDE,
-    /* 24 */ PLAYER_MWA_SPIN_ATTACK_1H,
-    /* 25 */ PLAYER_MWA_SPIN_ATTACK_2H,
-    /* 26 */ PLAYER_MWA_BIG_SPIN_1H,
-    /* 27 */ PLAYER_MWA_BIG_SPIN_2H,
-    /* 28 */ PLAYER_MWA_MAX
+    /* 22 */ PLAYER_MWA_SPIN_ATTACK_1H,
+    /* 23 */ PLAYER_MWA_SPIN_ATTACK_2H,
+    /* 24 */ PLAYER_MWA_BIG_SPIN_1H,
+    /* 25 */ PLAYER_MWA_BIG_SPIN_2H,
+    /* 26 */ PLAYER_MWA_MAX
 } PlayerMeleeWeaponAnimation;
 
 typedef enum PlayerDoorType {
@@ -259,23 +146,12 @@ typedef enum PlayerDoorType {
 } PlayerDoorType;
 
 typedef enum PlayerModelGroup {
-    /* 0x00 */ PLAYER_MODELGROUP_0,
-    /* 0x01 */ PLAYER_MODELGROUP_CHILD_HYLIAN_SHIELD,  //hold sword only. used for holding sword only as child link with hylian shield equipped
-    /* 0x02 */ PLAYER_MODELGROUP_SWORD_AND_SHIELD, // hold sword and shield or just sword if no shield is equipped
-    /* 0x03 */ PLAYER_MODELGROUP_DEFAULT, // non-specific models, for items that don't have particular link models
-    /* 0x04 */ PLAYER_MODELGROUP_4, // unused, same as PLAYER_MODELGROUP_DEFAULT
-    /* 0x05 */ PLAYER_MODELGROUP_BGS, // biggoron sword
-    /* 0x06 */ PLAYER_MODELGROUP_BOW_SLINGSHOT, // bow/slingshot
-    /* 0x07 */ PLAYER_MODELGROUP_REMOVED_7,
-    /* 0x08 */ PLAYER_MODELGROUP_BOOMERANG,
-    /* 0x09 */ PLAYER_MODELGROUP_HOOKSHOT,
-    /* 0x0A */ PLAYER_MODELGROUP_10, // stick/fishing pole (which are drawn separately)
-    /* 0x0B */ PLAYER_MODELGROUP_HAMMER,
-    /* 0x0C */ PLAYER_MODELGROUP_OCARINA, // ocarina
-    /* 0x0D */ PLAYER_MODELGROUP_OOT, // ocarina of time
-    /* 0x0E */ PLAYER_MODELGROUP_BOTTLE, // bottles (drawn separately)
-    /* 0x0F */ PLAYER_MODELGROUP_SWORD, // hold sword and no shield, even if one is equipped
-    /* 0x10 */ PLAYER_MODELGROUP_MAX
+    PLAYER_MODELGROUP_SWORD_AND_SHIELD,
+    PLAYER_MODELGROUP_DEFAULT,
+    PLAYER_MODELGROUP_BGS,
+    PLAYER_MODELGROUP_BOW,
+    PLAYER_MODELGROUP_FISHING,
+    PLAYER_MODELGROUP_MAX
 } PlayerModelGroup;
 
 typedef enum PlayerModelGroupEntry {
@@ -288,33 +164,20 @@ typedef enum PlayerModelGroupEntry {
 } PlayerModelGroupEntry;
 
 typedef enum PlayerModelType {
-    // left hand
-    /* 0x00 */ PLAYER_MODELTYPE_LH_OPEN, // empty open hand
-    /* 0x01 */ PLAYER_MODELTYPE_LH_CLOSED, // empty closed hand
-    /* 0x02 */ PLAYER_MODELTYPE_LH_SWORD, // holding kokiri/master sword
-    /* 0x03 */ PLAYER_MODELTYPE_LH_SWORD_2, // unused, same as PLAYER_MODELTYPE_LH_SWORD
-    /* 0x04 */ PLAYER_MODELTYPE_LH_BGS, // holding bgs/broken giant knife (child: master sword)
-    /* 0x05 */ PLAYER_MODELTYPE_LH_HAMMER, // holding hammer (child: empty hand)
-    /* 0x06 */ PLAYER_MODELTYPE_LH_BOOMERANG, // holding boomerang (adult: empty hand)
-    /* 0x07 */ PLAYER_MODELTYPE_LH_BOTTLE, // holding bottle (bottle drawn separately)
-    // right hand
-    /* 0x08 */ PLAYER_MODELTYPE_RH_OPEN, // empty open hand
-    /* 0x09 */ PLAYER_MODELTYPE_RH_CLOSED, // empty closed hand
-    /* 0x0A */ PLAYER_MODELTYPE_RH_SHIELD, // holding a shield (including no shield)
-    /* 0x0B */ PLAYER_MODELTYPE_RH_BOW_SLINGSHOT, // holding bow/slingshot
-    /* 0x0C */ PLAYER_MODELTYPE_RH_BOW_SLINGSHOT_2, // unused, same as PLAYER_MODELTYPE_RH_BOW_SLINGSHOT
-    /* 0x0D */ PLAYER_MODELTYPE_RH_OCARINA, // holding ocarina (child: fairy ocarina, adult: OoT)
-    /* 0x0E */ PLAYER_MODELTYPE_RH_OOT, // holding OoT
-    /* 0x0F */ PLAYER_MODELTYPE_RH_HOOKSHOT, // holding hookshot (child: empty hand)
-    // sheath
-    /* 0x10 */ PLAYER_MODELTYPE_SHEATH_16, // sheathed kokiri/master sword?
-    /* 0x11 */ PLAYER_MODELTYPE_SHEATH_17, // empty sheath?
-    /* 0x12 */ PLAYER_MODELTYPE_SHEATH_18, // sword sheathed and shield on back?
-    /* 0x13 */ PLAYER_MODELTYPE_SHEATH_19, // empty sheath and shield on back?
-    // waist
-    /* 0x14 */ PLAYER_MODELTYPE_WAIST,
-    /* 0x15 */ PLAYER_MODELTYPE_MAX,
-    /* 0xFF */ PLAYER_MODELTYPE_RH_FF = 0xFF // disable shield collider, cutscene-specific
+    PLAYER_MODELTYPE_LH_OPEN,
+    PLAYER_MODELTYPE_LH_CLOSED,
+    PLAYER_MODELTYPE_LH_SWORD,
+    PLAYER_MODELTYPE_LH_BGS,
+    PLAYER_MODELTYPE_RH_OPEN,
+    PLAYER_MODELTYPE_RH_CLOSED,
+    PLAYER_MODELTYPE_RH_SHIELD,
+    PLAYER_MODELTYPE_RH_BOW,
+    PLAYER_MODELTYPE_SHEATH_SWORD,
+    PLAYER_MODELTYPE_SHEATH_EMPTY,
+    PLAYER_MODELTYPE_SHEATH_SWORD_AND_SHIELD,
+    PLAYER_MODELTYPE_SHEATH_EMPTY_AND_SHIELD,
+    PLAYER_MODELTYPE_WAIST,
+    PLAYER_MODELTYPE_MAX
 } PlayerModelType;
 
 typedef enum PlayerAnimType {
@@ -667,8 +530,6 @@ typedef struct PendingFlag {
 // #endregion
 
 #define PLAYER_STATE1_LOADING (1 << 0) //Transitioning to a new scene
-#define PLAYER_STATE1_SWINGING_BOTTLE (1 << 1) // Bottle is swung; Bottle is active and can catch things
-#define PLAYER_STATE1_HOOKSHOT_FALLING (1 << 2)
 #define PLAYER_STATE1_ITEM_IN_HAND (1 << 3)
 #define PLAYER_STATE1_HOSTILE_LOCK_ON (1 << 4) // Currently locked onto a hostile actor. Triggers a "battle" variant of many actions.
 #define PLAYER_STATE1_INPUT_DISABLED (1 << 5)
@@ -689,8 +550,6 @@ typedef struct PendingFlag {
 #define PLAYER_STATE1_FIRST_PERSON (1 << 20)
 #define PLAYER_STATE1_CLIMBING_LADDER (1 << 21)
 #define PLAYER_STATE1_SHIELDING (1 << 22)
-#define PLAYER_STATE1_USING_BOOMERANG (1 << 24) // Currently using the boomerang. This includes all phases (aiming, throwing, and catching).
-#define PLAYER_STATE1_BOOMERANG_THROWN (1 << 25) // Boomerang has been thrown and is flying in the air
 #define PLAYER_STATE1_DAMAGED (1 << 26)
 #define PLAYER_STATE1_IN_WATER (1 << 27)
 #define PLAYER_STATE1_IN_ITEM_CS (1 << 28)
@@ -720,11 +579,7 @@ typedef struct PendingFlag {
 #define PLAYER_STATE2_NAVI_ACTIVE (1 << 20) // Navi is visible and active. Could be hovering idle near Link or hovering over other actors.
 #define PLAYER_STATE2_NAVI_ALERT (1 << 21)
 #define PLAYER_STATE2_DO_ACTION_DOWN (1 << 22)
-#define PLAYER_STATE2_NEAR_OCARINA_ACTOR (1 << 23)
-#define PLAYER_STATE2_ATTEMPT_PLAY_FOR_ACTOR (1 << 24)
-#define PLAYER_STATE2_PLAY_FOR_ACTOR (1 << 25)
 #define PLAYER_STATE2_REFLECTION (1 << 26) //Handles Dark Link's Reflection
-#define PLAYER_STATE2_OCARINA_PLAYING (1 << 27)
 #define PLAYER_STATE2_IDLE_FIDGET (1 << 28) // Playing a fidget idle animation (under typical circumstances, see `Player_ChooseNextIdleAnim` for more info)
 #define PLAYER_STATE2_DISABLE_DRAW (1 << 29)
 #define PLAYER_STATE2_SWORD_LUNGE (1 << 30)
@@ -734,9 +589,7 @@ typedef struct PendingFlag {
 #define PLAYER_STATE3_MIDAIR (1 << 1)
 #define PLAYER_STATE3_FINISHED_ATTACKING (1 << 3)
 #define PLAYER_STATE3_CHECK_FLOOR_WATER_COLLISION (1 << 4)
-#define PLAYER_STATE3_FORCE_PULL_OCARINA (1 << 5)
 #define PLAYER_STATE3_UNUSED_6 (1 << 6)
-#define PLAYER_STATE3_FLYING_WITH_HOOKSHOT (1 << 7) // Flying in the air with the hookshot as it pulls Player toward its destination
 
 typedef void (*PlayerActionFunc)(struct Player*, struct PlayState*);
 typedef int32_t (*UpperActionFunc)(struct Player*, struct PlayState*);
@@ -778,14 +631,11 @@ typedef enum PlayerPrimaryActionPresentation {
 
 typedef struct Player {
     /* 0x0000 */ Actor actor;
-    /* 0x014C */ int8_t currentTunic; // current tunic from `PlayerTunic`
     /* 0x014D */ int8_t currentSwordItemId;
     /* 0x014E */ int8_t currentShield; // current shield from `PlayerShield`
-    /* 0x014F */ int8_t currentBoots; // current boots from `PlayerBoots`
     /* 0x0150 */ int8_t heldItemButton; // Button index for the item currently used
     /* 0x0151 */ int8_t heldItemAction; // Item action for the item currently used
     /* 0x0152 */ uint8_t heldItemId; // Item id for the item currently used
-    /* 0x0153 */ int8_t prevBoots; // previous boots from `PlayerBoots`
     /* 0x0154 */ int8_t itemAction; // the difference between this and heldItemAction is unclear
     /* 0x0155 */ char unk_155[0x003];
     /* 0x0158 */ uint8_t modelGroup;
@@ -795,7 +645,6 @@ typedef struct Player {
     /* 0x015C */ uint8_t leftHandType;
     /* 0x015D */ uint8_t rightHandType;
     /* 0x015E */ uint8_t sheathType;
-    /* 0x015F */ uint8_t currentMask; // current mask equipped from `PlayerMask`
     /* 0x0160 */ Gfx** rightHandDLists;
     /* 0x0164 */ Gfx** leftHandDLists;
     /* 0x0168 */ Gfx** sheathDLists;
@@ -850,16 +699,12 @@ typedef struct Player {
     /* 0x067C */ uint32_t stateFlags1;
     /* 0x0680 */ uint32_t stateFlags2;
     /* 0x0684 */ Actor* autoLockOnActor; // Actor that is locked onto automatically without player input; see `Player_SetAutoLockOnActor`
-    /* 0x0688 */ Actor* boomerangActor;
     /* 0x068C */ Actor* naviActor;
     /* 0x0690 */ int16_t naviTextId;
     /* 0x0692 */ uint8_t stateFlags3;
-    /* 0x0693 */ int8_t exchangeItemId;
     /* 0x0694 */ Actor* talkActor; // Actor offering to talk, or currently talking to, depending on context
     /* 0x0698 */ float talkActorDistance; // xz distance away from `talkActor`
     /* 0x069C */ char unk_69C[0x004];
-    /* 0x06A0 */ float unk_6A0;
-    /* 0x06A4 */ float closestSecretDistSq;
     /* 0x06A8 */ Actor* unk_6A8;
     /* 0x06AC */ int8_t idleType;
     /* 0x06AD */ uint8_t unk_6AD;
@@ -893,15 +738,12 @@ typedef struct Player {
     /* 0x084F */ union {
         int8_t actionVar1;
         int8_t facingUpSlope; // Player_Action_SlideOnSlope: facing uphill when sliding on a slope
-        int8_t bottleCatchType; // Player_Action_SwingBottle: entry type for `sBottleCatchInfo`, corresponds to actor caught in a bottle
     } av1; // "Action Variable 1": context dependent variable that has different meanings depending on what action is currently running
 
     /* 0x0850 */ union {
         int16_t actionVar2;
         int16_t fallDamageStunTimer; // Player_Action_Idle: Prevents any movement and shakes model up and down quickly to indicate fall damage stun
         int16_t bonked; // Player_Action_Roll: set to true after bonking into a wall or an actor
-        int16_t startedTextbox; // Player_Action_SwingBottle: set to true when the textbox is started
-        int16_t inWater; // Player_Action_SwingBottle: true if a bottle is swung in water. Used to determine which bottle swing animation to use.
     } av2; // "Action Variable 2": context dependent variable that has different meanings depending on what action is currently running
 
     /* 0x0854 */ float unk_854;

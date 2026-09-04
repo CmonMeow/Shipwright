@@ -17,21 +17,12 @@ typedef enum {
 
 typedef struct {
     /* 0x00 */ uint8_t buttonItems[4];
-    /* 0x04 */ uint8_t cButtonSlots[3];
-    /* 0x08 */ uint16_t equipment; // a mask where each nibble corresponds to a type of equipment `EquipmentType`, and each nibble is a piece `EquipValue*`
-} ItemEquips; // size = 0x0A
+    /* 0x04 */ uint16_t equipment; // a mask where each nibble corresponds to a type of equipment `EquipmentType`, and each nibble is a piece `EquipValue*`
+} ItemEquips;
 
 typedef struct {
-    /* 0x00 */ uint8_t items[24];
-    /* 0x18 */ int8_t ammo[16];
-    /* 0x28 */ uint16_t equipment; // a mask where each nibble corresponds to a type of equipment `EquipmentType`, and each bit to an owned piece `EquipInv*`
-    /* 0x2C */ uint32_t upgrades;
-    /* 0x30 */ uint32_t questItems;
-    /* 0x34 */ uint8_t dungeonItems[20];
-    /* 0x48 */ int8_t dungeonKeys[19];
-    /* 0x5B */ int8_t defenseHearts;
-    /* 0x5C */ int16_t gsTokens;
-} Inventory; // size = 0x5E
+    uint16_t equipment; // a mask where each nibble corresponds to a type of equipment `EquipmentType`, and each bit to an owned piece `EquipInv*`
+} Inventory;
 
 typedef enum { // Pre-existing IDs for save sections in base code
     SECTION_ID_BASE,
@@ -119,7 +110,6 @@ typedef enum TimerId {
 typedef struct SaveContextData {
     uint16_t pendingSale;
     uint16_t pendingSaleMod;
-    uint8_t maskMemory;
     uint8_t filenameLanguage;
 } SaveContextData;
 

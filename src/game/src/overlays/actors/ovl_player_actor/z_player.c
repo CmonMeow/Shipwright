@@ -28,11 +28,6 @@
 // This is called "adjusted" for now.
 #define PLAYER_ANIM_ADJUSTED_SPEED (2.0f / 3.0f)
 
-typedef struct BottleDropInfo {
-    /* 0x00 */ int16_t actorId;
-    /* 0x02 */ int16_t actorParams;
-} BottleDropInfo; // size = 0x04
-
 typedef struct FallImpactInfo {
     /* 0x00 */ int8_t damage;
     /* 0x01 */ uint8_t rumbleStrength;
@@ -122,7 +117,6 @@ void Player_UseItem(PlayState* play, Player* this, int32_t item);
 static Fishing* Player_FindFishingController(PlayState* play);
 static Fishing* Player_EnsureFishingController(PlayState* play, Player* player);
 void func_80839F90(Player* this, PlayState* play);
-int32_t func_8083C61C(PlayState* play, Player* this);
 void Player_StartMode_Idle(PlayState* play, Player* this);
 void Player_StartMode_MoveForwardSlow(PlayState* play, Player* this);
 void Player_StartMode_MoveForward(PlayState* play, Player* this);
@@ -135,7 +129,6 @@ void Player_StartMode_KnockedOver(PlayState* play, Player* this);
 void Player_StartMode_WarpSong(PlayState* play, Player* this);
 void Player_UpdateCommon(Player* this, PlayState* play, Input* input);
 void func_8084FF7C(Player* this);
-void Player_UpdateBunnyEars(Player* this);
 void func_80851008(PlayState* play, Player* this, void* anim);
 void func_80851030(PlayState* play, Player* this, void* anim);
 void func_80851050(PlayState* play, Player* this, void* anim);
@@ -209,7 +202,6 @@ void func_808528C8(PlayState* play, Player* this, CsCmdActorCue* cue);
 void func_80852944(PlayState* play, Player* this, CsCmdActorCue* cue);
 void func_808529D0(PlayState* play, Player* this, CsCmdActorCue* cue);
 void func_80852C50(PlayState* play, Player* this, CsCmdActorCue* cue);
-int Player_IsDroppingFish(PlayState* play);
 int32_t Player_StartFishing(PlayState* play);
 int32_t func_80852F38(PlayState* play, Player* this);
 int32_t Player_TryCsAction(PlayState* play, Actor* actor, int32_t csAction);
@@ -274,14 +266,7 @@ void Player_Action_8084DC48(Player* this, PlayState* play);
 void Player_Action_8084E1EC(Player* this, PlayState* play);
 void Player_Action_8084E30C(Player* this, PlayState* play);
 void Player_Action_8084E368(Player* this, PlayState* play);
-void Player_Action_8084E3C4(Player* this, PlayState* play);
-void Player_Action_8084E604(Player* this, PlayState* play);
-void Player_Action_8084E6D4(Player* this, PlayState* play);
 void Player_Action_8084E9AC(Player* this, PlayState* play);
-void Player_Action_8084EAC0(Player* this, PlayState* play);
-void Player_Action_SwingBottle(Player* this, PlayState* play);
-void Player_Action_8084EFC0(Player* this, PlayState* play);
-void Player_Action_ExchangeItem(Player* this, PlayState* play);
 void Player_Action_SlideOnSlope(Player* this, PlayState* play);
 void Player_Action_8084F608(Player* this, PlayState* play);
 void Player_Action_8084F698(Player* this, PlayState* play);
@@ -294,7 +279,6 @@ void Player_Action_8084FB10(Player* this, PlayState* play);
 void Player_Action_8084FBF4(Player* this, PlayState* play);
 void Player_Action_808502D0(Player* this, PlayState* play);
 void Player_Action_808505DC(Player* this, PlayState* play);
-void Player_Action_80850AEC(Player* this, PlayState* play);
 void Player_Action_80850C68(Player* this, PlayState* play);
 void Player_Action_80850E84(Player* this, PlayState* play);
 void Player_Action_CsAction(Player* this, PlayState* play);
@@ -339,7 +323,6 @@ void Player_SetPendingFlag(Player* this, PlayState* play) {
 
 // .bss part 1
 static int32_t D_80858AA0;
-static int32_t sSavedCurrentMask;
 static Vec3f sInteractWallCheckResult;
 static Input* sControlInput;
 
@@ -1022,7 +1005,7 @@ static AnimSfxEntry sFidgetAnimSfxShield[] = {
 };
 
 static AnimSfxEntry sFidgetAnimSfxSword[] = {
-    { NA_SE_IT_HAMMER_SWING, ANIMSFX_DATA(ANIMSFX_TYPE_GENERAL, 10) },
+    { NA_SE_IT_SWORD_SWING, ANIMSFX_DATA(ANIMSFX_TYPE_GENERAL, 10) },
     { NA_SE_VO_LI_AUTO_JUMP, ANIMSFX_DATA(ANIMSFX_TYPE_VOICE, 10) },
     { NA_SE_IT_SWORD_SWING, ANIMSFX_DATA(ANIMSFX_TYPE_GENERAL, 22) },
     { NA_SE_VO_LI_SWORD_N, -ANIMSFX_DATA(ANIMSFX_TYPE_VOICE, 22) },
@@ -1234,11 +1217,6 @@ static struct_80854190 D_80854190[PLAYER_MWA_MAX] = {
     /* PLAYER_MWA_BACKSLASH_LEFT */
     { &gPlayerAnim_link_fighter_turn_kiruL, &gPlayerAnim_link_fighter_turn_kiruL_end,
       &gPlayerAnim_link_fighter_turn_kiruL_end, 1, 4 },
-    /* PLAYER_MWA_HAMMER_FORWARD */
-    { &gPlayerAnim_link_hammer_hit, &gPlayerAnim_link_hammer_hit_end, &gPlayerAnim_link_hammer_hit_endR, 3, 10 },
-    /* PLAYER_MWA_HAMMER_SIDE */
-    { &gPlayerAnim_link_hammer_side_hit, &gPlayerAnim_link_hammer_side_hit_end, &gPlayerAnim_link_hammer_side_hit_endR,
-      2, 11 },
     /* PLAYER_MWA_SPIN_ATTACK_1H */
     { &gPlayerAnim_link_fighter_rolling_kiru, &gPlayerAnim_link_fighter_rolling_kiru_end,
       &gPlayerAnim_link_anchor_rolling_kiru_endR, 0, 12 },
@@ -1289,7 +1267,6 @@ static uint8_t D_80854384[2] = { PLAYER_MWA_BIG_SPIN_1H, PLAYER_MWA_BIG_SPIN_2H 
 static uint16_t sItemButtons[] = { BTN_CLEFT, BTN_CDOWN, BTN_CRIGHT, BTN_CUP };
 static int32_t sPendingFishingItem = -1;
 
-static uint16_t D_80854398[] = { NA_SE_IT_BOW_DRAW, NA_SE_IT_SLING_DRAW, NA_SE_IT_HOOKSHOT_READY };
 
 static LinkAnimationHeader* D_808543A4[] = {
     &gPlayerAnim_link_anchor_waitR2defense,
@@ -1316,15 +1293,6 @@ static LinkAnimationHeader* D_808543C4[] = {
     &gPlayerAnim_link_fighter_defense_long_hit,
 };
 
-static LinkAnimationHeader* D_808543CC[] = {
-    &gPlayerAnim_link_bow_walk2ready,
-    &gPlayerAnim_link_hook_walk2ready,
-};
-
-static LinkAnimationHeader* D_808543D4[] = {
-    &gPlayerAnim_link_bow_bow_wait,
-    &gPlayerAnim_link_hook_wait,
-};
 
 BAD_RETURN(int32_t) Player_ZeroSpeedXZ(Player* this) {
     this->actor.speedXZ = 0.0f;
@@ -1385,7 +1353,7 @@ void func_80832340(PlayState* play, Player* this) {
 void Player_DetachHeldActor(PlayState* play, Player* this) {
     Actor* heldActor = this->heldActor;
 
-    if ((heldActor != NULL) && !Player_HoldsHookshot(this)) {
+    if (heldActor != NULL) {
         this->actor.child = NULL;
         this->heldActor = NULL;
         this->interactRangeActor = NULL;
@@ -1785,10 +1753,6 @@ int func_808332B8(Player* this) {
     return this->stateFlags1 & PLAYER_STATE1_IN_WATER;
 }
 
-int32_t func_808332E4(Player* this) {
-    return (this->stateFlags1 & PLAYER_STATE1_USING_BOOMERANG);
-}
-
 void func_808332F4(Player* this) {
     this->unk_862 = 0;
 }
@@ -1849,24 +1813,12 @@ LinkAnimationHeader* func_80833438(Player* this) {
     }
 }
 
-int func_808334B4(Player* this) {
-    return func_808332E4(this) && (this->unk_834 != 0);
-}
-
 LinkAnimationHeader* func_808334E4(Player* this) {
-    if (func_808334B4(this)) {
-        return &gPlayerAnim_link_boom_throw_waitR;
-    } else {
-        return GET_PLAYER_ANIM(PLAYER_ANIMGROUP_waitR, this->modelAnimType);
-    }
+    return GET_PLAYER_ANIM(PLAYER_ANIMGROUP_waitR, this->modelAnimType);
 }
 
 LinkAnimationHeader* func_80833528(Player* this) {
-    if (func_808334B4(this)) {
-        return &gPlayerAnim_link_boom_throw_waitL;
-    } else {
-        return GET_PLAYER_ANIM(PLAYER_ANIMGROUP_waitL, this->modelAnimType);
-    }
+    return GET_PLAYER_ANIM(PLAYER_ANIMGROUP_waitL, this->modelAnimType);
 }
 
 LinkAnimationHeader* func_8083356C(Player* this) {
@@ -1878,19 +1830,11 @@ LinkAnimationHeader* func_8083356C(Player* this) {
 }
 
 LinkAnimationHeader* func_808335B0(Player* this) {
-    if (func_808334B4(this)) {
-        return &gPlayerAnim_link_boom_throw_side_walkR;
-    } else {
-        return GET_PLAYER_ANIM(PLAYER_ANIMGROUP_side_walkR, this->modelAnimType);
-    }
+    return GET_PLAYER_ANIM(PLAYER_ANIMGROUP_side_walkR, this->modelAnimType);
 }
 
 LinkAnimationHeader* func_808335F4(Player* this) {
-    if (func_808334B4(this)) {
-        return &gPlayerAnim_link_boom_throw_side_walkL;
-    } else {
-        return GET_PLAYER_ANIM(PLAYER_ANIMGROUP_side_walkL, this->modelAnimType);
-    }
+    return GET_PLAYER_ANIM(PLAYER_ANIMGROUP_side_walkL, this->modelAnimType);
 }
 
 void Player_SetUpperActionFunc(Player* this, UpperActionFunc upperActionFunc) {
@@ -1907,9 +1851,9 @@ void Player_InitItemActionWithAnim(PlayState* play, Player* this, int8_t itemAct
     LinkAnimationHeader** iter = &D_80853914[0][this->modelAnimType];
     uint32_t animGroup;
 
-    // This is redundant, the same two flags get unset in
+    // This is redundant, the same flag gets unset in
     // `Player_InitItemAction` called below.
-    this->stateFlags1 &= ~(PLAYER_STATE1_ITEM_IN_HAND | PLAYER_STATE1_USING_BOOMERANG);
+    this->stateFlags1 &= ~PLAYER_STATE1_ITEM_IN_HAND;
 
     for (animGroup = 0; animGroup < PLAYER_ANIMGROUP_MAX; animGroup++) {
         if (current == *iter) {
@@ -1958,7 +1902,7 @@ void Player_InitItemAction(PlayState* play, Player* this, int8_t itemAction) {
     this->heldItemAction = this->itemAction = itemAction;
     this->modelGroup = this->nextModelGroup;
 
-    this->stateFlags1 &= ~(PLAYER_STATE1_ITEM_IN_HAND | PLAYER_STATE1_USING_BOOMERANG);
+    this->stateFlags1 &= ~PLAYER_STATE1_ITEM_IN_HAND;
 
     if (itemAction == PLAYER_IA_BOW) {
         Player_InitBowIA(play, this);
@@ -1973,16 +1917,10 @@ void func_80833A20(Player* this, int32_t newMeleeWeaponState) {
     uint16_t itemSfx = { 0 };
 
     if (this->meleeWeaponState == 0) {
-        if ((this->heldItemAction == PLAYER_IA_SWORD_BIGGORON) && (gSaveContext.swordHealth > 0.0f)) {
-            itemSfx = NA_SE_IT_HAMMER_SWING;
-        } else {
-            itemSfx = NA_SE_IT_SWORD_SWING;
-        }
+        itemSfx = NA_SE_IT_SWORD_SWING;
 
         uint16_t voiceSfx = NA_SE_VO_LI_SWORD_N;
-        if (this->heldItemAction == PLAYER_IA_HAMMER) {
-            itemSfx = NA_SE_IT_HAMMER_SWING;
-        } else if (this->meleeWeaponAnimation >= PLAYER_MWA_SPIN_ATTACK_1H) {
+        if (this->meleeWeaponAnimation >= PLAYER_MWA_SPIN_ATTACK_1H) {
             itemSfx = 0;
             voiceSfx = NA_SE_VO_LI_SWORD_L;
         } else if (this->unk_845 >= 3) {
@@ -2101,7 +2039,7 @@ void func_80833C3C(Player* this) {
 }
 
 int32_t Player_ItemIsInUse(Player* this, int32_t item) {
-    if ((item < ITEM_NONE_FE) && (Player_ItemToItemAction(item) == this->itemAction)) {
+    if ((item != ITEM_NONE) && (Player_ItemToItemAction(item) == this->itemAction)) {
         return true;
     } else {
         return false;
@@ -2109,7 +2047,7 @@ int32_t Player_ItemIsInUse(Player* this, int32_t item) {
 }
 
 int32_t Player_ItemIsItemAction(int32_t item1, int32_t itemAction) {
-    if ((item1 < ITEM_NONE_FE) && (Player_ItemToItemAction(item1) == itemAction)) {
+    if ((item1 != ITEM_NONE) && (Player_ItemToItemAction(item1) == itemAction)) {
         return true;
     } else {
         return false;
@@ -2146,7 +2084,7 @@ void Player_ProcessItemButtons(Player* this, PlayState* play) {
 
     if (selectedSlot != 0) {
         item = Player_GetItemOnButton(play, selectedSlot);
-        if ((item < ITEM_NONE_FE) && (Player_ItemToItemAction(item) != this->heldItemAction)) {
+        if ((item != ITEM_NONE) && (Player_ItemToItemAction(item) != this->heldItemAction)) {
             if ((item == ITEM_FISHING_POLE) && (Player_EnsureFishingController(play, this) == NULL)) {
                 Sfx_PlaySfxCentered(NA_SE_SY_ERROR);
                 return;
@@ -2160,7 +2098,7 @@ void Player_ProcessItemButtons(Player* this, PlayState* play) {
         item = Player_GetItemOnButton(play, PCInput_GetSelectedWeaponSlot());
         if (Player_ItemToItemAction(item) == this->heldItemAction) {
             Player_UseItem(play, this, ITEM_NONE);
-        } else if (item < ITEM_NONE_FE) {
+        } else if (item != ITEM_NONE) {
             if ((item == ITEM_FISHING_POLE) && (Player_EnsureFishingController(play, this) == NULL)) {
                 Sfx_PlaySfxCentered(NA_SE_SY_ERROR);
                 return;
@@ -2170,17 +2108,7 @@ void Player_ProcessItemButtons(Player* this, PlayState* play) {
         return;
     }
 
-    if (this->currentMask != PLAYER_MASK_NONE) {
-        int32_t maskItemAction = this->currentMask - 1 + PLAYER_IA_MASK_KEATON;
-
-        if (!Player_ItemIsItemAction(C_BTN_ITEM(0), maskItemAction) &&
-            !Player_ItemIsItemAction(C_BTN_ITEM(1), maskItemAction) &&
-            !Player_ItemIsItemAction(C_BTN_ITEM(2), maskItemAction)) {
-            this->currentMask = PLAYER_MASK_NONE;
-        }
-    }
-
-    if (!(this->stateFlags1 & (PLAYER_STATE1_CARRYING_ACTOR | PLAYER_STATE1_IN_CUTSCENE)) && !func_8008F128(this)) {
+    if (!(this->stateFlags1 & (PLAYER_STATE1_CARRYING_ACTOR | PLAYER_STATE1_IN_CUTSCENE))) {
         if (this->itemAction >= PLAYER_IA_FISHING_POLE) {
             if (!Player_ItemIsInUse(this, C_BTN_ITEM(0)) && !Player_ItemIsInUse(this, C_BTN_ITEM(1)) &&
                 !Player_ItemIsInUse(this, C_BTN_ITEM(2)) &&
@@ -2198,7 +2126,7 @@ void Player_ProcessItemButtons(Player* this, PlayState* play) {
 
         item = Player_GetItemOnButton(play, i + 1);
 
-        if (item >= ITEM_NONE_FE) {
+        if (item == ITEM_NONE) {
             for (i = 0; i < ARRAY_COUNT(sItemButtons); i++) {
                 if (CHECK_BTN_ALL(sControlInput->cur.button, sItemButtons[i])) {
                     break;
@@ -2207,7 +2135,7 @@ void Player_ProcessItemButtons(Player* this, PlayState* play) {
 
             item = Player_GetItemOnButton(play, i + 1);
 
-            if ((item < ITEM_NONE_FE) && (Player_ItemToItemAction(item) == this->heldItemAction)) {
+            if ((item != ITEM_NONE) && (Player_ItemToItemAction(item) == this->heldItemAction)) {
                 sHeldItemButtonIsHeldDown = true;
             }
         } else {
@@ -2234,12 +2162,6 @@ void Player_StartChangingHeldItem(Player* this, PlayState* play) {
 
     int32_t nextAnimType = gPlayerModelTypes[this->nextModelGroup][PLAYER_MODELGROUPENTRY_ANIM];
     int32_t itemChangeType = sItemChangeTypes[gPlayerModelTypes[this->modelGroup][PLAYER_MODELGROUPENTRY_ANIM]][nextAnimType];
-
-    if ((heldItemAction == PLAYER_IA_BOTTLE) || (heldItemAction == PLAYER_IA_BOOMERANG) ||
-        ((heldItemAction == PLAYER_IA_NONE) &&
-         ((this->heldItemAction == PLAYER_IA_BOTTLE) || (this->heldItemAction == PLAYER_IA_BOOMERANG)))) {
-        itemChangeType = (heldItemAction == PLAYER_IA_NONE) ? -PLAYER_ITEM_CHG_13 : PLAYER_ITEM_CHG_13;
-    }
 
     this->itemChangeType = ABS(itemChangeType);
     anim = sItemChangeInfo[this->itemChangeType].anim;
@@ -2284,17 +2206,7 @@ void Player_UpdateItems(Player* this, PlayState* play) {
     }
 }
 
-// Determine projectile type for bow or slingshot
-int32_t func_80834380(PlayState* play, Player* this, int32_t* itemPtr, int32_t* typePtr) {
-    bool useBow = PLAYER_IS_ADULT;
-    if (useBow) {
-        *itemPtr = ITEM_BOW;
-        *typePtr = this->heldItemAction - 6;
-    } else {
-        *itemPtr = ITEM_SLINGSHOT;
-        *typePtr = ARROW_SEED;
-    }
-
+int32_t Player_BowHasShotAvailable(PlayState* play) {
     if (gSaveContext.minigameState == 1) {
         return play->interfaceCtx.hbaAmmo;
     } else if (play->shootingGalleryStatus != 0) {
@@ -2304,11 +2216,8 @@ int32_t func_80834380(PlayState* play, Player* this, int32_t* itemPtr, int32_t* 
     }
 }
 
-// The player has pressed the bow or hookshot button
+// The player has pressed the bow button.
 int32_t func_8083442C(Player* this, PlayState* play) {
-    int32_t item;
-    int32_t arrowType;
-
     Player_SetUpperActionFunc(this, func_808351D4);
     if ((this == GET_PLAYER(play)) && (this->heldItemAction == PLAYER_IA_BOW)) {
         PCInput_ConsumeBowUseIntent();
@@ -2317,14 +2226,12 @@ int32_t func_8083442C(Player* this, PlayState* play) {
     this->unk_834 = 14;
 
     if (this->unk_860 >= 0) {
-        Player_PlaySfx(this, D_80854398[ABS(this->unk_860) - 1]);
+        Player_PlaySfx(this, NA_SE_IT_BOW_DRAW);
 
-        if (!Player_HoldsHookshot(this) && (func_80834380(play, this, &item, &arrowType) > 0)) {
-            // This build only retains the normal bow.
-            arrowType = ARROW_NORMAL;
+        if (Player_BowHasShotAvailable(play) > 0) {
             this->heldActor = Actor_SpawnAsChild(
                 &play->actorCtx, &this->actor, play, ACTOR_EN_ARROW, this->actor.world.pos.x,
-                this->actor.world.pos.y, this->actor.world.pos.z, 0, this->actor.shape.rot.y, 0, arrowType);
+                this->actor.world.pos.y, this->actor.world.pos.z, 0, this->actor.shape.rot.y, 0, ARROW_NORMAL);
             ProjectileGameplay_BindPredictedArrow(this->heldActor, play->sceneNum);
         }
     }
@@ -2377,7 +2284,7 @@ int32_t func_80834758(PlayState* play, Player* this) {
 
     if (!(this->stateFlags1 & (PLAYER_STATE1_SHIELDING | PLAYER_STATE1_IN_CUTSCENE)) &&
         (play->shootingGalleryStatus == 0) && (this->heldItemAction == this->itemAction) &&
-        (this->currentShield != PLAYER_SHIELD_NONE) && !Player_IsChildWithHylianShield(this) &&
+        (this->currentShield != PLAYER_SHIELD_NONE) &&
         CHECK_BTN_ALL(sControlInput->cur.button, BTN_R)) {
 
         LinkAnimationHeader* anim = func_808346C4(play, this);
@@ -2447,7 +2354,7 @@ int32_t Player_UpperAction_Sword(Player* this, PlayState* play) {
 
 int32_t Player_UpperAction_ChangeHeldItem(Player* this, PlayState* play) {
     bool shouldUseHeldItem = (this->modelAnimType != PLAYER_ANIMTYPE_3) && (play->shootingGalleryStatus == 0);
-    if ((this->heldItemId == ITEM_SWORD_KOKIRI) || (this->heldItemId == ITEM_SWORD_MASTER)) {
+    if (this->heldItemId == ITEM_SWORD_MASTER) {
         shouldUseHeldItem = false;
     }
 
@@ -2517,23 +2424,11 @@ int32_t func_80834C74(Player* this, PlayState* play) {
 }
 
 int32_t func_80834D2C(Player* this, PlayState* play) {
-    LinkAnimationHeader* anim = { 0 };
-
     if (!func_8083442C(this, play)) {
         return 0;
     }
 
-    if (!Player_HoldsHookshot(this)) {
-        anim = &gPlayerAnim_link_bow_bow_ready;
-    } else {
-        anim = &gPlayerAnim_link_hook_shot_ready;
-    }
-    LinkAnimation_PlayOnce(play, &this->upperSkelAnime, anim);
-
-    if ((this->actor.bgCheckFlags & 1) && !Player_UpdateHostileLockOn(this) &&
-        (this->heldItemAction != PLAYER_IA_BOW)) {
-        Player_AnimPlayLoop(play, this, GET_PLAYER_ANIM(PLAYER_ANIMGROUP_wait, this->modelAnimType));
-    }
+    LinkAnimation_PlayOnce(play, &this->upperSkelAnime, &gPlayerAnim_link_bow_bow_ready);
 
     return 1;
 }
@@ -2565,7 +2460,7 @@ int32_t func_80834EB8(Player* this, PlayState* play) {
 }
 
 int32_t func_80834F2C(Player* this, PlayState* play) {
-    if ((this->doorType == PLAYER_DOORTYPE_NONE) && !(this->stateFlags1 & PLAYER_STATE1_BOOMERANG_THROWN)) {
+    if (this->doorType == PLAYER_DOORTYPE_NONE) {
         if (sUseHeldItem) {
             if (func_80834D2C(this, play)) {
                 return func_80834EB8(this, play);
@@ -2576,27 +2471,12 @@ int32_t func_80834F2C(Player* this, PlayState* play) {
     return 0;
 }
 
-int32_t func_80834FBC(Player* this) {
-    if (this->actor.child != NULL) {
-        if (this->heldActor == NULL) {
-            this->heldActor = this->actor.child;
-            Player_RequestRumble(this, 255, 10, 250, 0);
-            Player_PlaySfx(this, NA_SE_IT_HOOKSHOT_RECEIVE);
-        }
-
-        return 1;
-    }
-
-    return 0;
-}
-
 int32_t func_8083501C(Player* this, PlayState* play) {
     if (this->unk_860 >= 0) {
         this->unk_860 = -this->unk_860;
     }
 
-    if ((!Player_HoldsHookshot(this) || func_80834FBC(this)) && !func_80834758(play, this) &&
-        !func_80834F2C(this, play)) {
+    if (!func_80834758(play, this) && !func_80834F2C(this, play)) {
         return false;
     }
 
@@ -2605,32 +2485,20 @@ int32_t func_8083501C(Player* this, PlayState* play) {
 
 // Fire the projectile
 int32_t func_808350A4(PlayState* play, Player* this) {
-    int32_t item;
-    int32_t arrowType;
-
     if (this->heldActor != NULL) {
-        if (!Player_HoldsHookshot(this)) {
-            func_80834380(play, this, &item, &arrowType);
-
-            if (gSaveContext.minigameState == 1) {
-                play->interfaceCtx.hbaAmmo--;
-            } else if (play->shootingGalleryStatus != 0) {
-                play->shootingGalleryStatus--;
-            }
-
-            if (play->shootingGalleryStatus == 1) {
-                play->shootingGalleryStatus = -10;
-            }
-
-            Player_RequestRumble(this, 150, 10, 150, 0);
-        } else {
-            Player_RequestRumble(this, 255, 20, 150, 0);
+        if (gSaveContext.minigameState == 1) {
+            play->interfaceCtx.hbaAmmo--;
+        } else if (play->shootingGalleryStatus != 0) {
+            play->shootingGalleryStatus--;
         }
 
+        if (play->shootingGalleryStatus == 1) {
+            play->shootingGalleryStatus = -10;
+        }
+
+        Player_RequestRumble(this, 150, 10, 150, 0);
         this->unk_A73 = 4;
-        if (!Player_HoldsHookshot(this)) {
-            ProjectileGameplay_CommitArrowFire(this->heldActor, play->sceneNum);
-        }
+        ProjectileGameplay_CommitArrowFire(this->heldActor, play->sceneNum);
         this->heldActor->parent = NULL;
         this->actor.child = NULL;
         this->heldActor = NULL;
@@ -2641,26 +2509,16 @@ int32_t func_808350A4(PlayState* play, Player* this) {
     return 0;
 }
 
-static uint16_t D_808543DC[] = { NA_SE_IT_BOW_FLICK, NA_SE_IT_SLING_FLICK };
-
 int32_t func_808351D4(Player* this, PlayState* play) {
-    int32_t sp2C = { 0 };
-
-    if (!Player_HoldsHookshot(this)) {
-        sp2C = 0;
-    } else {
-        sp2C = 1;
-    }
-
     Math_ScaledStepToS(&this->upperLimbRot.z, 1200, 400);
     this->unk_6AE_rotFlags |= UNK6AE_ROT_UPPER_Z;
 
     if ((this->unk_836 == 0) && (Player_CheckForIdleAnim(this) == IDLE_ANIM_NONE) &&
         (this->skelAnime.animation == &gPlayerAnim_link_bow_side_walk)) {
-        LinkAnimation_PlayOnce(play, &this->upperSkelAnime, D_808543CC[sp2C]);
+        LinkAnimation_PlayOnce(play, &this->upperSkelAnime, &gPlayerAnim_link_bow_walk2ready);
         this->unk_836 = -1;
     } else if (LinkAnimation_Update(play, &this->upperSkelAnime)) {
-        LinkAnimation_PlayLoop(play, &this->upperSkelAnime, D_808543D4[sp2C]);
+        LinkAnimation_PlayLoop(play, &this->upperSkelAnime, &gPlayerAnim_link_bow_bow_wait);
         this->unk_836 = 1;
     } else if (this->unk_836 == 1) {
         this->unk_836 = 2;
@@ -2675,18 +2533,11 @@ int32_t func_808351D4(Player* this, PlayState* play) {
     if ((this->unk_836 > 0) && ((this->unk_860 < 0) || (!sHeldItemButtonIsHeldDown && !func_80834E7C(play)))) {
         Player_SetUpperActionFunc(this, func_808353D8);
         if (this->unk_860 >= 0) {
-            if (sp2C == 0) {
-                if (!func_808350A4(play, this)) {
-                    Player_PlaySfx(this, D_808543DC[ABS(this->unk_860) - 1]);
-                }
-            } else if (this->actor.bgCheckFlags & 1) {
-                func_808350A4(play, this);
+            if (!func_808350A4(play, this)) {
+                Player_PlaySfx(this, NA_SE_IT_BOW_FLICK);
             }
         }
         this->unk_834 = 10;
-        if (this->heldItemAction != PLAYER_IA_BOW) {
-            Player_ZeroSpeedXZ(this);
-        }
     } else {
         this->stateFlags1 |= PLAYER_STATE1_READY_TO_FIRE;
     }
@@ -2698,10 +2549,6 @@ int32_t func_808353D8(Player* this, PlayState* play) {
     int32_t hasBowUseIntent = (this == GET_PLAYER(play)) && PCInput_HasBowUseIntent();
 
     LinkAnimation_Update(play, &this->upperSkelAnime);
-
-    if (Player_HoldsHookshot(this) && !func_80834FBC(this)) {
-        return true;
-    }
 
     // A PC click may arrive while the native post-shot lock is still active.
     // It belongs only to the current controller sample and is discarded if
@@ -2715,11 +2562,7 @@ int32_t func_808353D8(Player* this, PlayState* play) {
         this->unk_860 = ABS(this->unk_860);
 
         if (func_8083442C(this, play)) {
-            if (Player_HoldsHookshot(this)) {
-                this->unk_836 = 1;
-            } else {
-                LinkAnimation_PlayOnce(play, &this->upperSkelAnime, &gPlayerAnim_link_bow_bow_shoot_next);
-            }
+            LinkAnimation_PlayOnce(play, &this->upperSkelAnime, &gPlayerAnim_link_bow_bow_shoot_next);
         }
     } else {
         if (this->unk_834 != 0) {
@@ -2736,12 +2579,8 @@ int32_t func_808353D8(Player* this, PlayState* play) {
             return true;
         }
 
-        if (Player_HoldsHookshot(this)) {
-            Player_SetUpperActionFunc(this, func_8083501C);
-        } else {
-            Player_SetUpperActionFunc(this, func_80835588);
-            LinkAnimation_PlayOnce(play, &this->upperSkelAnime, &gPlayerAnim_link_bow_bow_shoot_end);
-        }
+        Player_SetUpperActionFunc(this, func_80835588);
+        LinkAnimation_PlayOnce(play, &this->upperSkelAnime, &gPlayerAnim_link_bow_bow_shoot_end);
 
         this->unk_834 = 0;
     }
@@ -2813,11 +2652,6 @@ int32_t Player_SetupAction(PlayState* play, Player* this, PlayerActionFunc actio
         return 0;
     }
 
-    if (Player_Action_8084E3C4 == this->actionFunc) {
-        Audio_OcaSetInstrument(0);
-        this->stateFlags2 &= ~(PLAYER_STATE2_ATTEMPT_PLAY_FOR_ACTOR | PLAYER_STATE2_PLAY_FOR_ACTOR);
-    }
-
     this->actionFunc = actionFunc;
 
     if ((this->itemAction != this->heldItemAction) &&
@@ -2832,11 +2666,10 @@ int32_t Player_SetupAction(PlayState* play, Player* this, PlayerActionFunc actio
 
     Player_FinishAnimMovement(this);
 
-    this->stateFlags1 &= ~(PLAYER_STATE1_HOOKSHOT_FALLING | PLAYER_STATE1_TALKING | PLAYER_STATE1_DAMAGED |
-                           PLAYER_STATE1_IN_ITEM_CS | PLAYER_STATE1_IN_CUTSCENE | PLAYER_STATE1_FLOOR_DISABLED);
-    this->stateFlags2 &= ~(PLAYER_STATE2_HOPPING | PLAYER_STATE2_OCARINA_PLAYING | PLAYER_STATE2_IDLE_FIDGET);
-    this->stateFlags3 &=
-        ~(PLAYER_STATE3_MIDAIR | PLAYER_STATE3_FINISHED_ATTACKING | PLAYER_STATE3_FLYING_WITH_HOOKSHOT);
+    this->stateFlags1 &= ~(PLAYER_STATE1_TALKING | PLAYER_STATE1_DAMAGED | PLAYER_STATE1_IN_ITEM_CS |
+                           PLAYER_STATE1_IN_CUTSCENE | PLAYER_STATE1_FLOOR_DISABLED);
+    this->stateFlags2 &= ~(PLAYER_STATE2_HOPPING | PLAYER_STATE2_IDLE_FIDGET);
+    this->stateFlags3 &= ~(PLAYER_STATE3_MIDAIR | PLAYER_STATE3_FINISHED_ATTACKING);
 
     this->av1.actionVar1 = 0;
     this->av2.actionVar2 = 0;
@@ -2900,18 +2733,6 @@ void func_80835EA4(PlayState* play, int32_t arg1) {
     Camera_SetCameraData(Play_GetCamera(play, 0), 4, NULL, NULL, arg1, 0, 0);
 }
 
-void Player_DestroyHookshot(Player* this) {
-    if (Player_HoldsHookshot(this)) {
-        Actor* heldActor = this->heldActor;
-
-        if (heldActor != NULL) {
-            Actor_Kill(heldActor);
-            this->actor.child = NULL;
-            this->heldActor = NULL;
-        }
-    }
-}
-
 void Player_UseItem(PlayState* play, Player* this, int32_t item) {
 
     int8_t itemAction = Player_ItemToItemAction(item);
@@ -2921,34 +2742,9 @@ void Player_UseItem(PlayState* play, Player* this, int32_t item) {
           (itemAction == PLAYER_IA_NONE))) ||
         ((this->itemAction < 0) && ((Player_ActionToMeleeWeapon(itemAction) != 0) || (itemAction == PLAYER_IA_NONE)))) {
 
-        if ((itemAction == PLAYER_IA_NONE) || !(this->stateFlags1 & PLAYER_STATE1_IN_WATER) ||
-            ((this->actor.bgCheckFlags & 1) &&
-             ((itemAction == PLAYER_IA_HOOKSHOT) || (itemAction == PLAYER_IA_LONGSHOT)))) {
+        if ((itemAction == PLAYER_IA_NONE) || !(this->stateFlags1 & PLAYER_STATE1_IN_WATER)) {
 
-            if (itemAction == PLAYER_IA_DEKU_NUT) {
-                // Handle Deku Nuts
-                func_8083C61C(play, this);
-            } else if (itemAction >= PLAYER_IA_MASK_KEATON) {
-                // Handle wearable masks
-                if (this->currentMask != PLAYER_MASK_NONE) {
-                    this->currentMask = PLAYER_MASK_NONE;
-                } else {
-                    this->currentMask = itemAction - PLAYER_IA_MASK_KEATON + 1;
-                }
-
-                gSaveContext.game.maskMemory = this->currentMask;
-
-                func_808328EC(this, NA_SE_PL_CHANGE_ARMS);
-            } else if (((itemAction >= PLAYER_IA_OCARINA_FAIRY) && (itemAction <= PLAYER_IA_OCARINA_OF_TIME)) ||
-                       (itemAction >= PLAYER_IA_BOTTLE_FISH)) {
-                // Handle "cutscene items"
-                if (!Player_CheckHostileLockOn(this) ||
-                    ((itemAction >= PLAYER_IA_BOTTLE_POTION_RED) && (itemAction <= PLAYER_IA_BOTTLE_FAIRY))) {
-                    func_8002D53C(play, &play->actorCtx.titleCtx);
-                    this->unk_6AD = 4;
-                    this->itemAction = itemAction;
-                }
-            } else if (itemAction != this->heldItemAction) {
+            if (itemAction != this->heldItemAction) {
                 // Handle using a new held item
                 this->nextModelGroup = Player_ActionToModelGroup(itemAction);
                 int32_t nextAnimType = gPlayerModelTypes[this->nextModelGroup][PLAYER_MODELGROUPENTRY_ANIM];
@@ -2961,7 +2757,6 @@ void Player_UseItem(PlayState* play, Player* this, int32_t item) {
                     this->stateFlags1 |= PLAYER_STATE1_START_CHANGING_HELD_ITEM;
                 } else {
                     // Init new held item for use
-                    Player_DestroyHookshot(this);
                     Player_DetachHeldActor(play, this);
                     Player_InitItemActionWithAnim(play, this, itemAction);
                 }
@@ -3014,9 +2809,7 @@ int Player_CanUpdateItems(Player* this) {
  * @return true if the upper body is "busy", false otherwise.
  *
  * The upper body being "busy" can mean a few things:
- * - Hookshot has just connected with something that Player can fly to
- * - A deku nut is currently being thrown
- * - The current upper action function has indicated that it is busy
+     * - The current upper action function has indicated that it is busy
  *
  * If an upper action indicates being busy by returning true, the
  * animation playing in the upper body skeleton will be used.
@@ -3039,25 +2832,8 @@ int32_t Player_UpdateUpperBody(Player* this, PlayState* play) {
         }
     }
 
-    if ((this->actor.parent != NULL) && Player_HoldsHookshot(this)) {
-        Player_SetupAction(play, this, Player_Action_80850AEC, 1);
-        this->stateFlags3 |= PLAYER_STATE3_FLYING_WITH_HOOKSHOT;
-        Player_AnimPlayOnce(play, this, &gPlayerAnim_link_hook_fly_start);
-        Player_StartAnimMovement(play, this, 0x9B);
-        func_80832224(this);
-        this->yaw = this->actor.shape.rot.y;
-        this->actor.bgCheckFlags &= ~1;
-        this->hoverBootsTimer = 0;
-        this->unk_6AE_rotFlags |= UNK6AE_ROT_FOCUS_X | UNK6AE_ROT_FOCUS_Y | UNK6AE_ROT_UPPER_X;
-        Player_PlayVoiceSfx(this, NA_SE_VO_LI_LASH);
-        return true;
-    }
-
     if (Player_CanUpdateItems(this)) {
         Player_UpdateItems(this, play);
-        if (Player_Action_8084E604 == this->actionFunc) {
-            return true;
-        }
     }
 
     if (!this->upperActionFunc(this, play)) {
@@ -3235,8 +3011,7 @@ void Player_UpdateZTargeting(Player* this, PlayState* play) {
     }
 
     if ((play->playerActionCtx.state != CS_STATE_IDLE) || (this->csAction != 0) ||
-        (this->stateFlags1 & (PLAYER_STATE1_DEAD | PLAYER_STATE1_IN_CUTSCENE)) ||
-        (this->stateFlags3 & PLAYER_STATE3_FLYING_WITH_HOOKSHOT)) {
+        (this->stateFlags1 & (PLAYER_STATE1_DEAD | PLAYER_STATE1_IN_CUTSCENE))) {
         // Don't allow Z-Targeting in various states
         this->zTargetActiveTimer = 0;
     } else if (zButtonHeld || (this->stateFlags2 & PLAYER_STATE2_LOCK_ON_WITH_SWITCH) ||
@@ -3271,10 +3046,9 @@ void Player_UpdateZTargeting(Player* this, PlayState* play) {
     isTalking = Player_IsTalking(play);
 
     if (isTalking || (this->zTargetActiveTimer != 0) ||
-        (this->stateFlags1 & (PLAYER_STATE1_CHARGING_SPIN_ATTACK | PLAYER_STATE1_BOOMERANG_THROWN))) {
+        (this->stateFlags1 & PLAYER_STATE1_CHARGING_SPIN_ATTACK)) {
         if (!isTalking) {
-            if (!(this->stateFlags1 & PLAYER_STATE1_BOOMERANG_THROWN) &&
-                ((this->heldItemAction != PLAYER_IA_FISHING_POLE) || (this->unk_860 == 0)) &&
+            if (((this->heldItemAction != PLAYER_IA_FISHING_POLE) || (this->unk_860 == 0)) &&
                 (CHECK_BTN_ALL(sControlInput->press.button, BTN_Z))) {
 
                 if (this->actor.category == ACTORCAT_PLAYER) {
@@ -3627,14 +3401,6 @@ int32_t Player_TryActionHandlerList(PlayState* play, Player* this, int8_t* actio
         if (updateUpperBody) {
             sUpperBodyIsBusy = Player_UpdateUpperBody(this, play);
 
-            if (Player_Action_8084E604 == this->actionFunc) {
-                return true;
-            }
-        }
-
-        if (func_8008F128(this)) {
-            this->unk_6AE_rotFlags |= UNK6AE_ROT_FOCUS_X | UNK6AE_ROT_UPPER_X;
-            return true;
         }
 
         if (!(this->stateFlags1 & PLAYER_STATE1_START_CHANGING_HELD_ITEM) &&
@@ -3715,10 +3481,6 @@ int32_t Player_CanSpinAttack(Player* this) {
     int8_t temp1 = { 0 };
     int32_t i;
 
-    if ((this->heldItemAction == PLAYER_IA_DEKU_STICK) || Player_HoldsBrokenKnife(this)) {
-        return false;
-    }
-
     iter = &this->controlStickSpinAngles[0];
     iter2 = &sp3C[0];
 
@@ -3778,25 +3540,11 @@ static int8_t D_80854480[] = {
     PLAYER_MWA_LEFT_SLASH_1H,
 };
 
-static int8_t D_80854484[] = {
-    PLAYER_MWA_HAMMER_FORWARD,
-    PLAYER_MWA_HAMMER_SIDE,
-    PLAYER_MWA_HAMMER_FORWARD,
-    PLAYER_MWA_HAMMER_SIDE,
-};
-
 int32_t func_80837818(Player* this) {
     int32_t controlStickDirection = this->controlStickDirections[this->controlStickDataIndex];
     int32_t sp18 = { 0 };
 
-    if (this->heldItemAction == PLAYER_IA_HAMMER) {
-        if (controlStickDirection <= PLAYER_STICK_DIR_NONE) {
-            controlStickDirection = PLAYER_STICK_DIR_FORWARD;
-        }
-
-        sp18 = D_80854484[controlStickDirection];
-        this->unk_845 = 0;
-    } else {
+    {
         if (Player_CanSpinAttack(this)) {
             sp18 = PLAYER_MWA_SPIN_ATTACK_1H;
         } else {
@@ -3818,9 +3566,6 @@ int32_t func_80837818(Player* this) {
                 }
             }
 
-            if (this->heldItemAction == PLAYER_IA_DEKU_STICK) {
-                sp18 = PLAYER_MWA_FORWARD_SLASH_1H;
-            }
         }
 
         if (Player_HoldsTwoHandedWeapon(this)) {
@@ -4231,35 +3976,32 @@ int32_t func_808382DC(Player* this, PlayState* play) {
 
                 Player_RequestRumble(this, 180, 20, 100, 0);
 
-                if (!Player_IsChildWithHylianShield(this)) {
-                    if (this->invincibilityTimer >= 0) {
-                        LinkAnimationHeader* anim = { 0 };
-                        int32_t sp54 = Player_Action_80843188 == this->actionFunc;
+                if (this->invincibilityTimer >= 0) {
+                    LinkAnimationHeader* anim = { 0 };
+                    int32_t sp54 = Player_Action_80843188 == this->actionFunc;
 
-                        if (!func_808332B8(this)) {
-                            Player_SetupAction(play, this, Player_Action_808435C4, 0);
-                        }
+                    if (!func_808332B8(this)) {
+                        Player_SetupAction(play, this, Player_Action_808435C4, 0);
+                    }
 
-                        if (!(this->av1.actionVar1 = sp54)) {
-                            Player_SetUpperActionFunc(this, func_80834BD4);
+                    if (!(this->av1.actionVar1 = sp54)) {
+                        Player_SetUpperActionFunc(this, func_80834BD4);
 
-                            if (this->unk_870 < 0.5f) {
-                                anim = D_808543BC[Player_HoldsTwoHandedWeapon(this)];
-                            } else {
-                                anim = D_808543B4[Player_HoldsTwoHandedWeapon(this)];
-                            }
-                            LinkAnimation_PlayOnce(play, &this->upperSkelAnime, anim);
+                        if (this->unk_870 < 0.5f) {
+                            anim = D_808543BC[Player_HoldsTwoHandedWeapon(this)];
                         } else {
-                            Player_AnimPlayOnce(play, this,
-                                                D_808543C4[Player_HoldsTwoHandedWeapon(this)]);
+                            anim = D_808543B4[Player_HoldsTwoHandedWeapon(this)];
                         }
+                        LinkAnimation_PlayOnce(play, &this->upperSkelAnime, anim);
+                    } else {
+                        Player_AnimPlayOnce(play, this, D_808543C4[Player_HoldsTwoHandedWeapon(this)]);
                     }
+                }
 
-                    if (!(this->stateFlags1 & (PLAYER_STATE1_HANGING_OFF_LEDGE | PLAYER_STATE1_CLIMBING_LEDGE |
-                                               PLAYER_STATE1_CLIMBING_LADDER))) {
-                        this->linearVelocity = -18.0f;
-                        this->yaw = this->actor.shape.rot.y;
-                    }
+                if (!(this->stateFlags1 & (PLAYER_STATE1_HANGING_OFF_LEDGE | PLAYER_STATE1_CLIMBING_LEDGE |
+                                           PLAYER_STATE1_CLIMBING_LADDER))) {
+                    this->linearVelocity = -18.0f;
+                    this->yaw = this->actor.shape.rot.y;
                 }
 
                 if (shieldHitInfo != NULL && shieldHitInfo->toucher.effect == 1) {
@@ -4308,9 +4050,7 @@ int32_t func_808382DC(Player* this, PlayState* play) {
                     ((sp48 >= 0) &&
                      SurfaceType_IsWallDamage(&play->colCtx, this->actor.floorPoly, this->actor.floorBgId) &&
                      (this->floorTypeTimer >= D_808544F4[sp48])) ||
-                    ((sp48 >= 0) &&
-                     ((this->currentTunic != PLAYER_TUNIC_GORON) ||
-                      (this->floorTypeTimer >= D_808544F4[sp48])))) {
+                    (sp48 >= 0)) {
                     this->floorTypeTimer = 0;
                     this->actor.colChkInfo.damage = 4;
                     func_80837C0C(play, this, PLAYER_HIT_RESPONSE_NONE, 4.0f, 5.0f, this->actor.shape.rot.y, 20);
@@ -4739,22 +4479,6 @@ void func_8083A40C(PlayState* play, Player* this) {
     Player_SetupActionPreserveAnimMovement(play, this, Player_Action_8084C760, 0);
 }
 
-void func_8083A434(PlayState* play, Player* this) {
-    Player_SetupActionPreserveAnimMovement(play, this, Player_Action_8084E6D4, 0);
-
-    this->stateFlags1 |= PLAYER_STATE1_GETTING_ITEM | PLAYER_STATE1_IN_CUTSCENE;
-
-    if (this->getItemId == GI_HEART_CONTAINER_2) {
-        this->av2.actionVar2 = 20;
-    } else if (this->getItemId >= 0 ||
-               (this->getItemEntry.objectId != OBJECT_INVALID && this->getItemEntry.getItemId >= 0)) {
-        this->av2.actionVar2 = 1;
-    } else {
-        this->getItemId = -this->getItemId;
-        this->getItemEntry.getItemId = -this->getItemEntry.getItemId;
-    }
-}
-
 int32_t func_8083A4A8(Player* this, PlayState* play) {
     LinkAnimationHeader* anim = { 0 };
     float temp = { 0 };
@@ -4947,11 +4671,7 @@ int32_t func_8083AD4C(PlayState* play, Player* this) {
     int32_t camMode = { 0 };
 
     if (this->unk_6AD == 2) {
-        if (func_8002DD6C(this)) {
-            camMode = PLAYER_IS_ADULT ? CAM_MODE_BOWARROW : CAM_MODE_SLINGSHOT;
-        } else {
-            camMode = CAM_MODE_BOOMERANG;
-        }
+        camMode = CAM_MODE_BOWARROW;
     } else {
         camMode = CAM_MODE_FIRSTPERSON;
     }
@@ -5058,15 +4778,6 @@ int32_t Player_ActionHandler_Talk(Player* this, PlayState* play) {
                         }
                     }
 
-                    // `sSavedCurrentMask` saves the current mask just before the current action runs on this frame.
-                    // This saved mask value is then restored just before starting a conversation.
-                    //
-                    // This handles an edge case where a conversation is started on the same frame that a mask was taken
-                    // on or off. Because Player updates early before most actors, the text ID being offered comes from
-                    // the previous frame. If a mask was taken on or off the same frame this function runs, the wrong
-                    // text will be used. This is especially important to prevent unwanted behavior with regards to mask
-                    // trading.
-                    this->currentMask = sSavedCurrentMask;
                     Player_StartTalking(play, talkOfferActor);
                     return true;
                 }
@@ -5280,16 +4991,14 @@ void func_8083C0E8(Player* this, PlayState* play) {
 }
 
 void func_8083C148(Player* this, PlayState* play) {
-    if (!(this->stateFlags3 & PLAYER_STATE3_FLYING_WITH_HOOKSHOT)) {
-        func_8083B010(this);
-        if (this->stateFlags1 & PLAYER_STATE1_IN_WATER) {
-            func_80838F18(play, this);
-        } else {
-            func_80839F90(this, play);
-        }
-        if (this->unk_6AD < 4) {
-            this->unk_6AD = 0;
-        }
+    func_8083B010(this);
+    if (this->stateFlags1 & PLAYER_STATE1_IN_WATER) {
+        func_80838F18(play, this);
+    } else {
+        func_80839F90(this, play);
+    }
+    if (this->unk_6AD < 4) {
+        this->unk_6AD = 0;
     }
 
     this->stateFlags1 &= ~(PLAYER_STATE1_HANGING_OFF_LEDGE | PLAYER_STATE1_CLIMBING_LEDGE | PLAYER_STATE1_FIRST_PERSON);
@@ -5337,8 +5046,7 @@ int32_t Player_ActionHandler_11(Player* this, PlayState* play) {
     if ((play->shootingGalleryStatus == 0) && (this->currentShield != PLAYER_SHIELD_NONE) &&
         (!Player_UsesPCParallelMovement(this) || (sControlStickMagnitude < 20.0f)) &&
         CHECK_BTN_ALL(sControlInput->cur.button, BTN_R) &&
-        (Player_IsChildWithHylianShield(this) ||
-         (!Player_FriendlyLockOnOrParallel(this) && (this->focusActor == NULL)))) {
+        !Player_FriendlyLockOnOrParallel(this) && (this->focusActor == NULL)) {
 
         func_80832318(this);
         Player_DetachHeldActor(play, this);
@@ -5346,12 +5054,8 @@ int32_t Player_ActionHandler_11(Player* this, PlayState* play) {
         if (Player_SetupAction(play, this, Player_Action_80843188, 0)) {
             this->stateFlags1 |= PLAYER_STATE1_SHIELDING;
 
-            if (!Player_IsChildWithHylianShield(this)) {
-                Player_SetModelsForHoldingShield(this);
-                anim = GET_PLAYER_ANIM(PLAYER_ANIMGROUP_defense, this->modelAnimType);
-            } else {
-                anim = &gPlayerAnim_clink_normal_defense_ALL;
-            }
+            Player_SetModelsForHoldingShield(this);
+            anim = GET_PLAYER_ANIM(PLAYER_ANIMGROUP_defense, this->modelAnimType);
 
             if (anim != this->skelAnime.animation) {
                 if (Player_CheckHostileLockOn(this)) {
@@ -5365,10 +5069,6 @@ int32_t Player_ActionHandler_11(Player* this, PlayState* play) {
 
             float frame = Animation_GetLastFrame(anim);
             LinkAnimation_Change(play, &this->skelAnime, anim, 1.0f, frame, frame, ANIMMODE_ONCE, 0.0f);
-
-            if (Player_IsChildWithHylianShield(this)) {
-                Player_StartAnimMovement(play, this, 4);
-            }
 
             Player_PlaySfx(this, NA_SE_IT_SHIELD_POSTURE);
         }
@@ -5413,7 +5113,7 @@ int32_t Player_ActionHandler_8(Player* this, PlayState* play) {
 
     if (swordButtonHeld) {
         if (!(this->stateFlags1 & PLAYER_STATE1_SHIELDING) && (Player_GetMeleeWeaponHeld(this) != 0) &&
-            (this->unk_844 == 1) && (this->heldItemAction != PLAYER_IA_DEKU_STICK)) {
+            (this->unk_844 == 1)) {
             func_808377DC(play, this);
             return 1;
         }
@@ -5424,29 +5124,6 @@ int32_t Player_ActionHandler_8(Player* this, PlayState* play) {
 
     return 0;
 }
-
-int32_t func_8083C61C(PlayState* play, Player* this) {
-    if ((play->roomCtx.curRoom.behaviorType1 != ROOM_BEHAVIOR_TYPE1_2) && (this->actor.bgCheckFlags & 1)) {
-        Player_SetupAction(play, this, Player_Action_8084E604, 0);
-        Player_AnimPlayOnce(play, this, &gPlayerAnim_link_normal_light_bom);
-        this->unk_6AD = 0;
-        return 1;
-    }
-
-    return 0;
-}
-
-typedef struct BottleSwingInfo {
-    /* 0x00 */ LinkAnimationHeader* missAnimation;
-    /* 0x04 */ LinkAnimationHeader* catchAnimation;
-    /* 0x08 */ uint8_t firstActiveFrame;
-    /* 0x09 */ uint8_t numActiveFrames;
-} BottleSwingInfo; // size = 0x0C
-
-static BottleSwingInfo sBottleSwingInfo[] = {
-    { &gPlayerAnim_link_bottle_bug_miss, &gPlayerAnim_link_bottle_bug_in, 2, 3 },
-    { &gPlayerAnim_link_bottle_fish_miss, &gPlayerAnim_link_bottle_fish_in, 5, 3 },
-};
 
 static Fishing* Player_FindFishingController(PlayState* play) {
     Actor* actor = play->actorCtx.actorLists[ACTORCAT_NPC].head;
@@ -5476,20 +5153,6 @@ static Fishing* Player_EnsureFishingController(PlayState* play, Player* player) 
 
 int32_t func_8083C6B8(PlayState* play, Player* this) {
     if (sUseHeldItem) {
-        if (Player_GetBottleHeld(this) >= 0) {
-            Player_SetupAction(play, this, Player_Action_SwingBottle, 0);
-
-            if (this->actor.yDistToWater > 12.0f) {
-                this->av2.inWater = true;
-            }
-
-            Player_AnimPlayOnceAdjusted(play, this, sBottleSwingInfo[this->av2.inWater].missAnimation);
-
-            Player_PlaySfx(this, NA_SE_IT_SWORD_SWING);
-            Player_PlayVoiceSfx(this, NA_SE_VO_LI_AUTO_JUMP);
-            return 1;
-        }
-
         if (this->heldItemAction == PLAYER_IA_FISHING_POLE) {
             Vec3f rodCheckPos = this->actor.world.pos;
 
@@ -5554,7 +5217,7 @@ int32_t func_8083C910(PlayState* play, Player* this, float arg2) {
             this->stateFlags1 |= PLAYER_STATE1_IN_WATER | PLAYER_STATE1_IN_CUTSCENE;
             this->av2.actionVar2 = 20;
             this->linearVelocity = 2.0f;
-            Player_SetBootData(play, this);
+            Player_ApplyMovementTuning(play);
             return 0;
         }
     }
@@ -5704,7 +5367,7 @@ void func_8083D0A8(PlayState* play, Player* this, float arg2) {
         Player_PlaySfx(this, NA_SE_EV_JUMP_OUT_WATER);
     }
 
-    Player_SetBootData(play, this);
+    Player_ApplyMovementTuning(play);
 }
 
 int32_t func_8083D12C(PlayState* play, Player* this, Input* arg2) {
@@ -5798,7 +5461,7 @@ void func_8083D36C(PlayState* play, Player* this) {
     this->stateFlags1 &= ~(PLAYER_STATE1_JUMPING | PLAYER_STATE1_FREEFALL);
     this->unk_854 = 0.0f;
 
-    Player_SetBootData(play, this);
+    Player_ApplyMovementTuning(play);
 }
 
 void func_8083D53C(PlayState* play, Player* this) {
@@ -5944,7 +5607,7 @@ void func_8083DC54(Player* this, PlayState* play) {
     }
 
     if (this->focusActor != NULL) {
-        if (func_8002DD78(this) || func_808334B4(this)) {
+        if (func_8002DD78(this)) {
             func_8083DB98(this, true);
         } else {
             func_8083DB98(this, false);
@@ -5965,11 +5628,11 @@ void func_8083DC54(Player* this, PlayState* play) {
         Math_SmoothStepToS(&this->actor.focus.rot.x, sp46, 14, 4000, 30);
     }
 
-    func_80836AB8(this, func_8002DD78(this) || func_808334B4(this));
+    func_80836AB8(this, func_8002DD78(this));
 }
 
 void func_8083DDC8(Player* this, PlayState* play) {
-    if (!func_8002DD78(this) && !func_808334B4(this) && (this->linearVelocity > 5.0f)) {
+    if (!func_8002DD78(this) && (this->linearVelocity > 5.0f)) {
 
         int16_t targetPitch = this->linearVelocity * 200.0f;
         int16_t targetRoll = (int16_t)(this->yaw - this->actor.shape.rot.y) * this->linearVelocity * 0.1f;
@@ -6417,7 +6080,7 @@ int32_t func_8083FC68(Player* this, float arg1, int16_t arg2) {
     float temp = { 0 };
 
     if (this->focusActor != NULL) {
-        func_8083DB98(this, func_8002DD78(this) || func_808334B4(this));
+        func_8083DB98(this, func_8002DD78(this));
     }
 
     temp = fabsf(sp1C) / 32768.0f;
@@ -6470,7 +6133,7 @@ int32_t func_8083FD78(Player* this, float* arg1, int16_t* arg2, PlayState* play)
         return 0;
     }
 
-    if ((func_8002DD78(this) || func_808334B4(this)) && (this->focusActor == NULL)) {
+    if (func_8002DD78(this) && (this->focusActor == NULL)) {
         *arg1 *= Math_SinS(sp2C);
 
         if (*arg1 != 0.0f) {
@@ -7546,7 +7209,7 @@ int32_t func_8084285C(Player* this, float arg1, float arg2, float arg3) {
 }
 
 int32_t func_808428D8(Player* this, PlayState* play) {
-    if (Player_IsChildWithHylianShield(this) || !Player_GetMeleeWeaponHeld(this) || !sUseHeldItem) {
+    if (!Player_GetMeleeWeaponHeld(this) || !sUseHeldItem) {
         return 0;
     }
 
@@ -7570,30 +7233,6 @@ void Player_RequestQuake(PlayState* play, int32_t speed, int32_t y, int32_t coun
     Quake_SetCountdown(quakeIndex, countdown);
 }
 
-void func_80842A28(PlayState* play, Player* this) {
-    Player_RequestQuake(play, 27767, 7, 20);
-    play->actorCtx.unk_02 = 4;
-    Player_RequestRumble(this, 255, 20, 150, 0);
-    Player_PlaySfx(this, NA_SE_IT_HAMMER_HIT);
-}
-
-void func_80842A88(PlayState* play, Player* this) {
-    Player_UseItem(play, this, ITEM_NONE);
-}
-
-int32_t func_80842AC4(PlayState* play, Player* this) {
-    if ((this->heldItemAction == PLAYER_IA_DEKU_STICK) && (this->unk_85C > 0.5f)) {
-
-        this->unk_85C = 0.5f;
-        func_80842A88(play, this);
-        Player_PlaySfx(this, NA_SE_IT_WOODSTICK_BROKEN);
-
-        return 1;
-    }
-
-    return 0;
-}
-
 int32_t func_80842B7C(PlayState* play, Player* this) {
     if (this->heldItemAction == PLAYER_IA_SWORD_BIGGORON) {
         return 1;
@@ -7603,7 +7242,6 @@ int32_t func_80842B7C(PlayState* play, Player* this) {
 }
 
 void func_80842CF0(PlayState* play, Player* this) {
-    func_80842AC4(play, this);
     func_80842B7C(play, this);
 }
 
@@ -7665,13 +7303,6 @@ int32_t func_80842DF4(PlayState* play, Player* this) {
                         (func_80041D4C(&play->colCtx, sp78, sp74) != 6) &&
                         (func_8002F9EC(play, &this->actor, sp78, sp74, &sp5C) == 0)) {
 
-                        if (this->heldItemAction == PLAYER_IA_HAMMER) {
-                            func_80832630(play);
-                            func_80842A28(play, this);
-                            func_80842D20(play, this);
-                            return 1;
-                        }
-
                         if (this->linearVelocity >= 0.0f) {
                             int32_t sp48 = func_80041F10(&play->colCtx, sp78, sp74);
 
@@ -7709,15 +7340,13 @@ int32_t func_80842DF4(PlayState* play, Player* this) {
                 }
             }
 
-            if ((func_80842AC4(play, this) == 0) && (this->heldItemAction != PLAYER_IA_HAMMER)) {
-                func_80842B7C(play, this);
+            func_80842B7C(play, this);
 
-                if (this->actor.colChkInfo.atHitEffect == 1) {
-                    this->actor.colChkInfo.damage = 8;
-                    func_80837C0C(play, this, PLAYER_HIT_RESPONSE_ELECTRIC_SHOCK, 0.0f, 0.0f, this->actor.shape.rot.y,
-                                  20);
-                    return 1;
-                }
+            if (this->actor.colChkInfo.atHitEffect == 1) {
+                this->actor.colChkInfo.damage = 8;
+                func_80837C0C(play, this, PLAYER_HIT_RESPONSE_ELECTRIC_SHOCK, 0.0f, 0.0f, this->actor.shape.rot.y,
+                              20);
+                return 1;
             }
         }
     }
@@ -7727,18 +7356,14 @@ int32_t func_80842DF4(PlayState* play, Player* this) {
 
 void Player_Action_80843188(Player* this, PlayState* play) {
     if (LinkAnimation_Update(play, &this->skelAnime)) {
-        if (!Player_IsChildWithHylianShield(this)) {
-            Player_AnimPlayLoop(play, this, GET_PLAYER_ANIM(PLAYER_ANIMGROUP_defense_wait, this->modelAnimType));
-        }
+        Player_AnimPlayLoop(play, this, GET_PLAYER_ANIM(PLAYER_ANIMGROUP_defense_wait, this->modelAnimType));
         this->av2.actionVar2 = 1;
         this->av1.actionVar1 = 0;
     }
 
-    if (!Player_IsChildWithHylianShield(this)) {
-        this->stateFlags1 |= PLAYER_STATE1_SHIELDING;
-        Player_UpdateUpperBody(this, play);
-        this->stateFlags1 &= ~PLAYER_STATE1_SHIELDING;
-    }
+    this->stateFlags1 |= PLAYER_STATE1_SHIELDING;
+    Player_UpdateUpperBody(this, play);
+    this->stateFlags1 &= ~PLAYER_STATE1_SHIELDING;
 
     if (Player_UsesPCParallelMovement(this) && (sControlStickMagnitude >= 20.0f) &&
         CHECK_BTN_ALL(sControlInput->cur.button, BTN_R)) {
@@ -7798,18 +7423,10 @@ void Player_Action_80843188(Player* this, PlayState* play) {
                 this->stateFlags1 &= ~PLAYER_STATE1_SHIELDING;
                 func_80832318(this);
 
-                if (Player_IsChildWithHylianShield(this)) {
-                    func_8083A060(this, play);
-                    LinkAnimation_Change(play, &this->skelAnime, &gPlayerAnim_clink_normal_defense_ALL, 1.0f,
-                                         Animation_GetLastFrame(&gPlayerAnim_clink_normal_defense_ALL), 0.0f,
-                                         ANIMMODE_ONCE, 0.0f);
-                    Player_StartAnimMovement(play, this, 4);
-                } else {
-                    if (this->itemAction < 0) {
-                        func_8008EC70(this);
-                    }
-                    func_8083A098(this, GET_PLAYER_ANIM(PLAYER_ANIMGROUP_defense_end, this->modelAnimType), play);
+                if (this->itemAction < 0) {
+                    func_8008EC70(this);
                 }
+                func_8083A098(this, GET_PLAYER_ANIM(PLAYER_ANIMGROUP_defense_end, this->modelAnimType), play);
 
                 Player_PlaySfx(this, NA_SE_IT_SHIELD_REMOVE);
                 return;
@@ -7953,7 +7570,6 @@ void Player_Action_80843A38(Player* this, PlayState* play) {
 void func_80843AE8(PlayState* play, Player* this) {
     if (play->gameOverCtx.state == GAMEOVER_DEATH_WAIT_GROUND) {
         play->gameOverCtx.state = GAMEOVER_DEATH_DELAY_MENU;
-        gSaveContext.game.maskMemory = PLAYER_MASK_NONE;
     }
 }
 
@@ -7965,12 +7581,10 @@ static AnimSfxEntry D_808545F0[] = {
 };
 
 void Player_Action_80843CEC(Player* this, PlayState* play) {
-    if (this->currentTunic != PLAYER_TUNIC_GORON) {
-        if ((play->roomCtx.curRoom.behaviorType2 == ROOM_BEHAVIOR_TYPE2_3) || (sFloorType == 9) ||
-            ((func_80838144(sFloorType) >= 0) &&
-             !SurfaceType_IsWallDamage(&play->colCtx, this->actor.floorPoly, this->actor.floorBgId))) {
-            func_8083821C(this);
-        }
+    if ((play->roomCtx.curRoom.behaviorType2 == ROOM_BEHAVIOR_TYPE2_3) || (sFloorType == 9) ||
+        ((func_80838144(sFloorType) >= 0) &&
+         !SurfaceType_IsWallDamage(&play->colCtx, this->actor.floorPoly, this->actor.floorBgId))) {
+        func_8083821C(this);
     }
 
     Player_DecelerateToZero(this);
@@ -8106,9 +7720,8 @@ void Player_Action_8084411C(Player* this, PlayState* play) {
             if (this->actor.velocity.y < 0.0f) {
                 if (this->av2.actionVar2 >= 0) {
                     if ((this->actor.bgCheckFlags & 8) || (this->av2.actionVar2 == 0) || (this->fallDistance > 0)) {
-                        if ((sYDistToFloor > 800.0f) || (this->stateFlags1 & PLAYER_STATE1_HOOKSHOT_FALLING)) {
+                        if (sYDistToFloor > 800.0f) {
                             func_80843E14(this, NA_SE_VO_LI_FALL_S);
-                            this->stateFlags1 &= ~PLAYER_STATE1_HOOKSHOT_FALLING;
                         }
 
                         LinkAnimation_Change(play, &this->skelAnime, &gPlayerAnim_link_normal_landing, 1.0f, 0.0f, 0.0f,
@@ -8132,11 +7745,7 @@ void Player_Action_8084411C(Player* this, PlayState* play) {
                                    (((this->actor.world.pos.y - this->actor.floorHeight) + this->yDistToLedge) >
                                     (70.0f * this->ageProperties->unk_08))) {
                             AnimationContext_DisableQueue(play);
-                            if (this->stateFlags1 & PLAYER_STATE1_HOOKSHOT_FALLING) {
-                                Player_PlayVoiceSfx(this, NA_SE_VO_LI_HOOKSHOT_HANG);
-                            } else {
-                                Player_PlayVoiceSfx(this, NA_SE_VO_LI_HANG);
-                            }
+                            Player_PlayVoiceSfx(this, NA_SE_VO_LI_HANG);
                             this->actor.world.pos.y += this->yDistToLedge;
                             func_8083A5C4(play, this, this->actor.wallPoly, this->distToInteractWall,
                                           GET_PLAYER_ANIM(PLAYER_ANIMGROUP_jump_climb_hold, this->modelAnimType));
@@ -9022,13 +8631,10 @@ void Player_StartMode_BlueWarp(PlayState* play, Player* this) {
     this->actor.world.pos.y += 800.0f;
 }
 
-static uint8_t D_808546F0[] = { ITEM_SWORD_MASTER, ITEM_SWORD_KOKIRI };
-
 void func_80846720(PlayState* play, Player* this, int32_t arg2) {
-    int32_t item = D_808546F0[(void)0, PLAYER_AGE];
+    int32_t item = ITEM_SWORD_MASTER;
     int32_t itemAction = Player_ItemToItemAction(item);
 
-    Player_DestroyHookshot(this);
     Player_DetachHeldActor(play, this);
 
     this->heldItemId = item;
@@ -9145,7 +8751,6 @@ void Player_Init(Actor* thisx, PlayState* play2) {
 
     play->playerInit = Player_InitCommon;
     play->playerUpdate = Player_UpdateCommon;
-    play->isPlayerDroppingFish = Player_IsDroppingFish;
     play->startPlayerFishing = Player_StartFishing;
     play->grabPlayer = func_80852F38;
     play->startPlayerCutscene = Player_TryCsAction;
@@ -9164,40 +8769,23 @@ void Player_Init(Actor* thisx, PlayState* play2) {
     // equipment, so these values are reasserted whenever the player is created.
     gSaveContext.inventory.equipment |= OWNED_EQUIP_FLAG(EQUIP_TYPE_SWORD, EQUIP_INV_SWORD_MASTER) |
                                         OWNED_EQUIP_FLAG(EQUIP_TYPE_SWORD, EQUIP_INV_SWORD_BIGGORON) |
-                                        OWNED_EQUIP_FLAG(EQUIP_TYPE_SHIELD, EQUIP_INV_SHIELD_MIRROR) |
-                                        OWNED_EQUIP_FLAG(EQUIP_TYPE_TUNIC, EQUIP_INV_TUNIC_KOKIRI);
-    gSaveContext.inventory.equipment &=
-        (uint16_t)~(OWNED_EQUIP_FLAG(EQUIP_TYPE_BOOTS, EQUIP_INV_BOOTS_IRON) |
-               OWNED_EQUIP_FLAG(EQUIP_TYPE_BOOTS, EQUIP_INV_BOOTS_HOVER) |
-               OWNED_EQUIP_FLAG(EQUIP_TYPE_TUNIC, EQUIP_INV_TUNIC_GORON) |
-               OWNED_EQUIP_FLAG(EQUIP_TYPE_TUNIC, EQUIP_INV_TUNIC_ZORA));
+                                        OWNED_EQUIP_FLAG(EQUIP_TYPE_SHIELD, EQUIP_INV_SHIELD_MIRROR);
     gSaveContext.equips.equipment &=
-        (uint16_t)~((0xF << (EQUIP_TYPE_SWORD * 4)) | (0xF << (EQUIP_TYPE_SHIELD * 4)) |
-               (0xF << (EQUIP_TYPE_TUNIC * 4)) | (0xF << (EQUIP_TYPE_BOOTS * 4)));
+        (uint16_t)~((0xF << (EQUIP_TYPE_SWORD * 4)) | (0xF << (EQUIP_TYPE_SHIELD * 4)));
     gSaveContext.equips.equipment |= (EQUIP_VALUE_SWORD_MASTER << (EQUIP_TYPE_SWORD * 4)) |
-                                     (EQUIP_VALUE_SHIELD_MIRROR << (EQUIP_TYPE_SHIELD * 4)) |
-                                     (EQUIP_VALUE_TUNIC_KOKIRI << (EQUIP_TYPE_TUNIC * 4)) |
-                                     (EQUIP_VALUE_BOOTS_KOKIRI << (EQUIP_TYPE_BOOTS * 4));
-    for (int32_t item = 0; item < ARRAY_COUNT(gSaveContext.inventory.items); ++item) {
-        gSaveContext.inventory.items[item] = ITEM_NONE;
-    }
-    gSaveContext.inventory.items[SLOT_BOW] = ITEM_BOW;
+                                     (EQUIP_VALUE_SHIELD_MIRROR << (EQUIP_TYPE_SHIELD * 4));
     // This test-room build has no B-button item. The Master Sword remains on
     // C-left and uses the normal item-action path from there.
     gSaveContext.equips.buttonItems[0] = ITEM_NONE;
     gSaveContext.equips.buttonItems[1] = ITEM_SWORD_MASTER;
     gSaveContext.equips.buttonItems[2] = ITEM_SWORD_BGS;
     gSaveContext.equips.buttonItems[3] = ITEM_BOW;
-    gSaveContext.equips.cButtonSlots[0] = SLOT_NONE;
-    gSaveContext.equips.cButtonSlots[1] = SLOT_NONE;
-    gSaveContext.equips.cButtonSlots[2] = SLOT_BOW;
     gSaveContext.buttonStatus[0] = BTN_DISABLED;
     gSaveContext.buttonStatus[1] = gSaveContext.buttonStatus[2] = gSaveContext.buttonStatus[3] = BTN_ENABLED;
     gSaveContext.swordHealth = 8.0f;
     gSaveContext.bgsFlag = true;
 
     Player_SetEquipmentData(play, this);
-    this->prevBoots = this->currentBoots;
     Player_InitCommon(this, play, gPlayerSkelHeaders);
     this->primaryActionPresentation = PLAYER_PRIMARY_PRESENTATION_UNAVAILABLE;
     this->primaryActionProgress = 0.0f;
@@ -9363,7 +8951,7 @@ void Player_UpdateInterface(PlayState* play, Player* this) {
                 if (this->unk_860 == 2) {
                     doAction = DO_ACTION_REEL;
                 }
-            } else if ((Player_Action_8084E3C4 != this->actionFunc) && !(this->stateFlags2 & PLAYER_STATE2_CRAWLING)) {
+            } else if (!(this->stateFlags2 & PLAYER_STATE2_CRAWLING)) {
                 if ((this->doorType != PLAYER_DOORTYPE_NONE) &&
                     !(this->stateFlags1 & PLAYER_STATE1_CARRYING_ACTOR)) {
                     doAction = DO_ACTION_OPEN;
@@ -9412,8 +9000,7 @@ void Player_UpdateInterface(PlayState* play, Player* this) {
                     doAction = sDiveNumberDoActions[sp24];
                 } else if (sp1C && !(this->stateFlags2 & PLAYER_STATE2_UNDERWATER)) {
                     doAction = DO_ACTION_DIVE;
-                } else if (!sp1C && (!(this->stateFlags1 & PLAYER_STATE1_SHIELDING) || Player_IsZTargeting(this) ||
-                                     !Player_IsChildWithHylianShield(this))) {
+                } else if (!sp1C) {
                     if ((!(this->stateFlags1 & PLAYER_STATE1_CLIMBING_LEDGE) &&
                          (controlStickDirection <= PLAYER_STICK_DIR_FORWARD) &&
                          (Player_CheckHostileLockOn(this) ||
@@ -9769,10 +9356,7 @@ void Player_UpdateCamAndSeqModes(PlayState* play, Player* this) {
             // player action remains active for slow parallel locomotion.
             Camera_ChangeMode(Play_GetCamera(play, 0), CAM_MODE_BOWARROW);
         } else if (!(this->stateFlags1 & PLAYER_STATE1_FIRST_PERSON)) {
-            if ((this->actor.parent != NULL) && (this->stateFlags3 & PLAYER_STATE3_FLYING_WITH_HOOKSHOT)) {
-                camMode = CAM_MODE_HOOKSHOT;
-                Camera_SetParam(Play_GetCamera(play, 0), 8, this->actor.parent);
-            } else if (Player_Action_8084377C == this->actionFunc) {
+            if (Player_Action_8084377C == this->actionFunc) {
                 camMode = CAM_MODE_STILL;
             } else if (this->stateFlags2 & PLAYER_STATE2_GRABBING_DYNAPOLY) {
                 camMode = CAM_MODE_PUSHPULL;
@@ -9780,20 +9364,13 @@ void Player_UpdateCamAndSeqModes(PlayState* play, Player* this) {
                 if (CHECK_FLAG_ALL(this->actor.flags, ACTOR_FLAG_TALK)) {
                     camMode = CAM_MODE_TALK;
                 } else if (this->stateFlags1 & PLAYER_STATE1_FRIENDLY_ACTOR_FOCUS) {
-                    if (this->stateFlags1 & PLAYER_STATE1_BOOMERANG_THROWN) {
-                        camMode = CAM_MODE_FOLLOWBOOMERANG;
-                    } else {
-                        camMode = CAM_MODE_FOLLOWTARGET;
-                    }
+                    camMode = CAM_MODE_FOLLOWTARGET;
                 } else {
                     camMode = CAM_MODE_BATTLE;
                 }
                 Camera_SetParam(Play_GetCamera(play, 0), 8, focusActor);
             } else if (this->stateFlags1 & PLAYER_STATE1_CHARGING_SPIN_ATTACK) {
                 camMode = CAM_MODE_CHARGE;
-            } else if (this->stateFlags1 & PLAYER_STATE1_BOOMERANG_THROWN) {
-                camMode = CAM_MODE_FOLLOWBOOMERANG;
-                Camera_SetParam(Play_GetCamera(play, 0), 8, this->boomerangActor);
             } else if (this->stateFlags1 & (PLAYER_STATE1_HANGING_OFF_LEDGE | PLAYER_STATE1_CLIMBING_LEDGE)) {
                 if (Player_FriendlyLockOnOrParallel(this)) {
                     camMode = CAM_MODE_HANGZ;
@@ -9801,7 +9378,7 @@ void Player_UpdateCamAndSeqModes(PlayState* play, Player* this) {
                     camMode = CAM_MODE_HANG;
                 }
             } else if (this->stateFlags1 & (PLAYER_STATE1_PARALLEL | PLAYER_STATE1_LOCK_ON_FORCED_TO_RELEASE)) {
-                if (func_8002DD78(this) || func_808334B4(this)) {
+                if (func_8002DD78(this)) {
                     camMode = CAM_MODE_BOWARROWZ;
                 } else if (this->stateFlags1 & PLAYER_STATE1_CLIMBING_LADDER) {
                     camMode = CAM_MODE_CLIMBZ;
@@ -9845,37 +9422,6 @@ void Player_UpdateCamAndSeqModes(PlayState* play, Player* this) {
     }
 }
 
-static Vec3f D_808547A4 = { 0.0f, 0.5f, 0.0f };
-static Vec3f D_808547B0 = { 0.0f, 0.5f, 0.0f };
-
-static Color_RGBA8 D_808547BC = { 255, 255, 100, 255 };
-static Color_RGBA8 D_808547C0 = { 255, 50, 0, 0 };
-
-void Player_UpdateBurningDekuStick(PlayState* play, Player* this) {
-    float temp = { 0 };
-
-    if ((this->unk_85C == 0.0f)) {
-        Player_UseItem(play, this, ITEM_NONE);
-        return;
-    }
-
-    temp = 1.0f;
-    uint8_t vanillaShouldBurnOutCondition = DECR(this->unk_860) == 0;
-    if ((vanillaShouldBurnOutCondition)) {
-        this->unk_860 = 1;
-        temp = 0.0f;
-        this->unk_85C = temp;
-    } else if (this->unk_860 > 200) {
-        temp = (210 - this->unk_860) / 10.0f;
-    } else if ((this->unk_860 < 20)) {
-        temp = this->unk_860 / 20.0f;
-        this->unk_85C = temp;
-    }
-
-    func_8002836C(play, &this->meleeWeaponInfo[0].tip, &D_808547A4, &D_808547B0, &D_808547BC, &D_808547C0,
-                  temp * 200.0f, 0, 8);
-}
-
 void Player_UpdateBodyShock(PlayState* play, Player* this) {
     this->bodyShockTimer--;
     this->unk_892 += this->bodyShockTimer;
@@ -9893,11 +9439,7 @@ void Player_UpdateBodyBurn(PlayState* play, Player* this) {
     int32_t sp58 = { 0 };
     int32_t sp54 = { 0 };
 
-    if (this->currentTunic == PLAYER_TUNIC_GORON) {
-        sp54 = 20;
-    } else {
-        sp54 = (int32_t)(this->linearVelocity * 0.4f) + 1;
-    }
+    sp54 = (int32_t)(this->linearVelocity * 0.4f) + 1;
 
     if (this->stateFlags2 & PLAYER_STATE2_FOOTSTEP) {
         sp58 = 100;
@@ -9935,23 +9477,6 @@ void Player_UpdateBodyBurn(PlayState* play, Player* this) {
         }
     } else {
         this->bodyIsBurning = false;
-    }
-}
-
-void Player_DetectRumbleSecrets(Player* this) {
-    if (CHECK_QUEST_ITEM(QUEST_STONE_OF_AGONY)) {
-        float temp = 200000.0f - (this->closestSecretDistSq * 5.0f);
-
-        if (temp < 0.0f) {
-            temp = 0.0f;
-        }
-
-        this->unk_6A0 += temp;
-
-        if ((this->unk_6A0 > 4000000.0f)) {
-            this->unk_6A0 = 0.0f;
-            Player_RequestRumble(this, 120, 20, 10, 0);
-        }
     }
 }
 
@@ -10079,10 +9604,7 @@ void Player_UpdateCommon(Player* this, PlayState* play, Input* input) {
     Player_UpdateInterface(play, this);
     Player_UpdateZTargeting(this, play);
 
-    if (this->heldItemAction == PLAYER_IA_DEKU_STICK &&
-        (this->unk_860 != 0)) {
-        Player_UpdateBurningDekuStick(play, this);
-    } else if ((this->heldItemAction == PLAYER_IA_FISHING_POLE) && (this->unk_860 < 0)) {
+    if ((this->heldItemAction == PLAYER_IA_FISHING_POLE) && (this->unk_860 < 0)) {
         this->unk_860++;
     }
 
@@ -10110,10 +9632,6 @@ void Player_UpdateCommon(Player* this, PlayState* play, Input* input) {
         func_80032CB4(this->unk_3A8, 20, 80, 6);
 
         this->actor.shape.face = this->unk_3A8[0] + ((play->gameplayFrames & 32) ? 0 : 3);
-
-        if (this->currentMask == PLAYER_MASK_BUNNY) {
-            Player_UpdateBunnyEars(this);
-        }
 
         if (func_8002DD6C(this) != 0) {
             func_8084FF7C(this);
@@ -10216,7 +9734,6 @@ void Player_UpdateCommon(Player* this, PlayState* play, Input* input) {
                 } else {
                     this->fallStartHeight = this->actor.world.pos.y;
                 }
-                Player_DetectRumbleSecrets(this);
             }
         }
 
@@ -10253,8 +9770,8 @@ void Player_UpdateCommon(Player* this, PlayState* play, Input* input) {
                         this->stateFlags2 &= ~PLAYER_STATE2_CAN_ACCEPT_TALK_OFFER;
         }
 
-        this->stateFlags1 &= ~(PLAYER_STATE1_SWINGING_BOTTLE | PLAYER_STATE1_READY_TO_FIRE |
-                               PLAYER_STATE1_CHARGING_SPIN_ATTACK | PLAYER_STATE1_SHIELDING);
+        this->stateFlags1 &= ~(PLAYER_STATE1_READY_TO_FIRE | PLAYER_STATE1_CHARGING_SPIN_ATTACK |
+                               PLAYER_STATE1_SHIELDING);
         this->stateFlags2 &= ~(PLAYER_STATE2_DO_ACTION_GRAB | PLAYER_STATE2_DO_ACTION_CLIMB | PLAYER_STATE2_FOOTSTEP |
                                PLAYER_STATE2_DISABLE_ROTATION_Z_TARGET | PLAYER_STATE2_DISABLE_ROTATION_ALWAYS |
                                PLAYER_STATE2_GRABBING_DYNAPOLY | PLAYER_STATE2_FORCE_SAND_FLOOR_SOUND |
@@ -10273,8 +9790,6 @@ void Player_UpdateCommon(Player* this, PlayState* play, Input* input) {
 
         sInvWaterSpeedFactor = 1.0f / sWaterSpeedFactor;
         sUseHeldItem = sHeldItemButtonIsHeldDown = 0;
-        sSavedCurrentMask = this->currentMask;
-
         this->actionFunc(this, play);
 
         Player_UpdateCamAndSeqModes(play, this);
@@ -10291,7 +9806,6 @@ void Player_UpdateCommon(Player* this, PlayState* play, Input* input) {
         } else {
             this->talkActor = NULL;
             this->talkActorDistance = FLT_MAX;
-            this->exchangeItemId = EXCH_ITEM_NONE;
         }
 
         if (!(this->stateFlags1 & PLAYER_STATE1_CARRYING_ACTOR)) {
@@ -10299,13 +9813,7 @@ void Player_UpdateCommon(Player* this, PlayState* play, Input* input) {
             this->getItemDirection = 0x6000;
         }
 
-        if (!(this->stateFlags2 & PLAYER_STATE2_PLAY_FOR_ACTOR)) {
-            this->unk_6A8 = NULL;
-        }
-
-        this->stateFlags2 &= ~PLAYER_STATE2_NEAR_OCARINA_ACTOR;
-        this->closestSecretDistSq = FLT_MAX;
-
+        this->unk_6A8 = NULL;
         temp_f0 = this->actor.world.pos.y - this->actor.prevPos.y;
 
         this->doorType = PLAYER_DOORTYPE_NONE;
@@ -10407,18 +9915,6 @@ void Player_Update(Actor* thisx, PlayState* play) {
 
 }
 
-typedef struct BunnyEarKinematics {
-    /* 0x0 */ Vec3s rot;
-    /* 0x6 */ Vec3s angVel;
-} BunnyEarKinematics; // size = 0xC
-
-static BunnyEarKinematics sBunnyEarKinematics;
-
-static Gfx* sMaskDlists[PLAYER_MASK_MAX - 1] = {
-    gLinkChildKeatonMaskDL, gLinkChildSkullMaskDL, gLinkChildSpookyMaskDL, gLinkChildBunnyHoodDL,
-    gLinkChildGoronMaskDL,  gLinkChildZoraMaskDL,  gLinkChildGerudoMaskDL, gLinkChildMaskOfTruthDL,
-};
-
 static Vec3s D_80854864 = { 0, 0, 0 };
 
 int32_t Player_BuildPCBowJointTable(Player* this, Vec3s jointTable[PLAYER_LIMB_BUF_COUNT], int32_t freezeLowerBody) {
@@ -10492,42 +9988,9 @@ void Player_DrawGameplay(PlayState* play, Player* this, int32_t lod, Gfx* cullDL
 
     BeginLocalRenderedPlayerCollision();
     Player_DrawImpl(play, this->skelAnime.skeleton, drawJointTable, this->skelAnime.dListCount, lod,
-                    this->currentTunic, this->currentBoots, this->actor.shape.face, overrideLimbDraw,
+                    this->actor.shape.face, overrideLimbDraw,
                     Player_PostLimbDrawGameplay, this);
     EndLocalRenderedPlayerCollision();
-
-    if ((overrideLimbDraw == Player_OverrideLimbDrawGameplayDefault) && (this->currentMask != PLAYER_MASK_NONE)) {
-        // Fixes a bug in vanilla where ice traps are rendered extremely large while wearing a bunny hood
-        Matrix_Push();
-        Mtx* bunnyEarMtx = Graph_Alloc(play->state.gfxCtx, 2 * sizeof(Mtx));
-
-        if (this->currentMask == PLAYER_MASK_BUNNY) {
-            Vec3s earRot;
-
-            FrameInterpolation_RecordActorPosRotMatrix();
-            gSPSegment(POLY_OPA_DISP++, 0x0B, bunnyEarMtx);
-
-            // Right ear
-            earRot.x = sBunnyEarKinematics.rot.y + 0x3E2;
-            earRot.y = sBunnyEarKinematics.rot.z + 0xDBE;
-            earRot.z = sBunnyEarKinematics.rot.x - 0x348A;
-            Matrix_SetTranslateRotateYXZ(97.0f, -1203.0f - (0.0f),
-                                         -240.0f - (0.0f), &earRot);
-            MATRIX_TOMTX(bunnyEarMtx++);
-
-            // Left ear
-            earRot.x = sBunnyEarKinematics.rot.y - 0x3E2;
-            earRot.y = -0xDBE - sBunnyEarKinematics.rot.z;
-            earRot.z = sBunnyEarKinematics.rot.x - 0x348A;
-            Matrix_SetTranslateRotateYXZ(97.0f, -1203.0f - (0.0f),
-                                         240.0f + (0.0f), &earRot);
-            MATRIX_TOMTX(bunnyEarMtx);
-        }
-
-        gSPDisplayList(POLY_OPA_DISP++, sMaskDlists[this->currentMask - 1]);
-
-        Matrix_Pop();
-    }
 
     CLOSE_DISPS(play->state.gfxCtx);
 }
@@ -10666,7 +10129,7 @@ int16_t func_8084ABD8(PlayState* play, Player* this, int32_t arg2, int16_t arg3)
     int16_t temp2 = 0;
     int16_t temp3 = 0;
 
-    if (!func_8002DD78(this) && !func_808334B4(this) && (arg2 == 0)) { // First person without weapon
+    if (!func_8002DD78(this) && (arg2 == 0)) { // First person without weapon
         temp2 += sControlInput->rel.stick_y * 240.0f;
         Math_SmoothStepToS(&this->actor.focus.rot.x, temp2, 14, 4000, 30);
 
@@ -10690,7 +10153,7 @@ int16_t func_8084ABD8(PlayState* play, Player* this, int32_t arg2, int16_t arg3)
     }
 
     this->unk_6AE_rotFlags |= UNK6AE_ROT_FOCUS_Y;
-    return func_80836AB8(this, (play->shootingGalleryStatus != 0) || func_8002DD78(this) || func_808334B4(this)) - arg3;
+    return func_80836AB8(this, (play->shootingGalleryStatus != 0) || func_8002DD78(this)) - arg3;
 }
 
 void func_8084AEEC(Player* this, float* arg1, float arg2, int16_t arg3) {
@@ -10782,7 +10245,7 @@ void Player_Action_8084B1D8(Player* this, PlayState* play) {
         Player_DecelerateToZero(this);
     }
 
-    if ((this->unk_6AD == 2) && (func_8002DD6C(this) || func_808332E4(this))) {
+    if ((this->unk_6AD == 2) && func_8002DD6C(this)) {
         Player_UpdateUpperBody(this, play);
     }
 
@@ -10791,16 +10254,12 @@ void Player_Action_8084B1D8(Player* this, PlayState* play) {
         (this->focusActor != NULL) || !func_8083AD4C(play, this) ||
         (((this->unk_6AD == 2) &&
           (CHECK_BTN_ANY(sControlInput->press.button, BTN_A | BTN_R) || Player_FriendlyLockOnOrParallel(this) ||
-           (!func_8002DD78(this) && !func_808334B4(this)))) ||
+           !func_8002DD78(this))) ||
          ((this->unk_6AD == 1) && CHECK_BTN_ANY(sControlInput->press.button, buttonsToCheck)))) {
         func_8083C148(this, play);
         Sfx_PlaySfxCentered(NA_SE_SY_CAMERA_ZOOM_UP);
     } else if ((DECR(this->av2.actionVar2) == 0) || (this->unk_6AD != 2)) {
-        if (func_8008F128(this)) {
-            this->unk_6AE_rotFlags |= UNK6AE_ROT_FOCUS_X | UNK6AE_ROT_FOCUS_Y | UNK6AE_ROT_UPPER_X;
-        } else {
-            this->actor.shape.rot.y = func_8084ABD8(play, this, 0, 0);
-        }
+        this->actor.shape.rot.y = func_8084ABD8(play, this, 0, 0);
     }
 
     this->yaw = this->actor.shape.rot.y;
@@ -10811,7 +10270,7 @@ int32_t func_8084B3CC(PlayState* play, Player* this) {
         func_80832564(play, this);
         Player_SetupAction(play, this, Player_Action_8084FA54, 0);
 
-        if (!func_8002DD6C(this) || Player_HoldsHookshot(this)) {
+        if (!func_8002DD6C(this)) {
             Player_UseItem(play, this, ITEM_BOW);
         }
 
@@ -10826,20 +10285,7 @@ int32_t func_8084B3CC(PlayState* play, Player* this) {
 }
 
 void func_8084B498(Player* this) {
-    this->itemAction =
-        (INV_CONTENT(ITEM_OCARINA_FAIRY) == ITEM_OCARINA_FAIRY) ? PLAYER_IA_OCARINA_FAIRY : PLAYER_IA_OCARINA_OF_TIME;
-}
-
-int32_t func_8084B4D4(PlayState* play, Player* this) {
-    if (this->stateFlags3 & PLAYER_STATE3_FORCE_PULL_OCARINA) {
-        this->stateFlags3 &= ~PLAYER_STATE3_FORCE_PULL_OCARINA;
-        func_8084B498(this);
-        this->unk_6AD = 4;
-        Player_ActionHandler_13(this);
-        return 1;
-    }
-
-    return 0;
+    this->itemAction = PLAYER_IA_NONE;
 }
 
 void Player_Action_Talk(Player* this, PlayState* play) {
@@ -10856,7 +10302,7 @@ void Player_Action_Talk(Player* this, PlayState* play) {
 
         func_8005B1A4(Play_GetCamera(play, 0));
 
-        if (!func_8084B4D4(play, this) && !func_8084B3CC(play, this) && !Player_StartCsAction(play, this)) {
+        if (!func_8084B3CC(play, this) && !Player_StartCsAction(play, this)) {
             if (func_808332B8(this)) {
                 func_80838F18(play, this);
             } else {
@@ -11564,13 +11010,6 @@ void func_8084DF6C(PlayState* play, Player* this) {
     func_8005B1A4(Play_GetCamera(play, 0));
 }
 
-void func_8084DFAC(PlayState* play, Player* this) {
-    func_8084DF6C(play, this);
-    Player_ApplyYawFromAnim(this);
-    func_8083C0E8(this, play);
-    this->yaw = this->actor.shape.rot.y;
-}
-
 int32_t func_8084DFF4(PlayState* play, Player* this) {
     func_8084DF6C(play, this);
     return 1;
@@ -11620,136 +11059,6 @@ void Player_Action_8084E368(Player* this, PlayState* play) {
     func_8084AEEC(this, &this->linearVelocity, 0.0f, this->actor.shape.rot.y);
 }
 
-static int16_t sWarpSongEntrances[] = {
-    ENTR_SACRED_FOREST_MEADOW_WARP_PAD,
-    ENTR_DEATH_MOUNTAIN_CRATER_WARP_PAD,
-    ENTR_LAKE_HYLIA_WARP_PAD,
-    ENTR_DESERT_COLOSSUS_WARP_PAD,
-    ENTR_GRAVEYARD_WARP_PAD,
-    ENTR_TEMPLE_OF_TIME_WARP_PAD,
-};
-
-void Player_Action_8084E3C4(Player* this, PlayState* play) {
-    if (LinkAnimation_Update(play, &this->skelAnime)) {
-        Player_AnimPlayLoopAdjusted(play, this, &gPlayerAnim_link_normal_okarina_swing);
-        this->av2.actionVar2 = 1;
-        if (this->stateFlags2 & (PLAYER_STATE2_NEAR_OCARINA_ACTOR | PLAYER_STATE2_PLAY_FOR_ACTOR)) {
-            this->stateFlags2 |= PLAYER_STATE2_ATTEMPT_PLAY_FOR_ACTOR;
-        } else {
-            func_8010BD58(play, OCARINA_ACTION_FREE_PLAY);
-        }
-        return;
-    }
-
-    if (this->av2.actionVar2 == 0) {
-        return;
-    }
-
-    if (play->msgCtx.ocarinaMode == OCARINA_MODE_04) {
-        func_8005B1A4(Play_GetCamera(play, 0));
-
-        if ((this->talkActor != NULL) && (this->talkActor == this->unk_6A8)) {
-            Player_StartTalking(play, this->talkActor);
-        } else if (!Player_ActionHandler_13(this)) {
-            func_8083A098(this, &gPlayerAnim_link_normal_okarina_end, play);
-        }
-
-        this->stateFlags2 &=
-            ~(PLAYER_STATE2_NEAR_OCARINA_ACTOR | PLAYER_STATE2_ATTEMPT_PLAY_FOR_ACTOR | PLAYER_STATE2_PLAY_FOR_ACTOR);
-        this->unk_6A8 = NULL;
-    } else if (play->msgCtx.ocarinaMode == OCARINA_MODE_02) {
-        gSaveContext.respawn[RESPAWN_MODE_RETURN].entranceIndex = sWarpSongEntrances[play->msgCtx.lastPlayedSong];
-        gSaveContext.respawn[RESPAWN_MODE_RETURN].playerParams = 0x5FF;
-        gSaveContext.respawn[RESPAWN_MODE_RETURN].data = play->msgCtx.lastPlayedSong;
-
-        this->csAction = 0;
-        this->stateFlags1 &= ~PLAYER_STATE1_IN_CUTSCENE;
-
-        Player_TryCsAction(play, NULL, 8);
-        play->mainCamera.unk_14C &= ~8;
-
-        this->stateFlags1 |= PLAYER_STATE1_IN_ITEM_CS | PLAYER_STATE1_IN_CUTSCENE;
-        this->stateFlags2 |= PLAYER_STATE2_OCARINA_PLAYING;
-
-        Environment_WarpSongLeave(play);
-
-        gSaveContext.seqId = (uint8_t)NA_BGM_DISABLED;
-        gSaveContext.natureAmbienceId = NATURE_ID_DISABLED;
-    }
-}
-
-void Player_Action_8084E604(Player* this, PlayState* play) {
-    if (LinkAnimation_Update(play, &this->skelAnime)) {
-        func_8083A098(this, &gPlayerAnim_link_normal_light_bom_end, play);
-    } else if (LinkAnimation_OnFrame(&this->skelAnime, 3.0f)) {
-        Actor_Spawn(&play->actorCtx, play, ACTOR_EN_ARROW, this->bodyPartsPos[PLAYER_BODYPART_R_HAND].x,
-                    this->bodyPartsPos[PLAYER_BODYPART_R_HAND].y, this->bodyPartsPos[PLAYER_BODYPART_R_HAND].z, 4000,
-                    this->actor.shape.rot.y, 0, ARROW_NUT);
-        Player_PlayVoiceSfx(this, NA_SE_VO_LI_SWORD_N);
-    }
-
-    Player_DecelerateToZero(this);
-}
-
-void Player_Action_8084E6D4(Player* this, PlayState* play) {
-    int32_t cond;
-
-    if (LinkAnimation_Update(play, &this->skelAnime)) {
-        if (this->av2.actionVar2 != 0) {
-            if (this->av2.actionVar2 >= 2) {
-                this->av2.actionVar2--;
-            }
-
-            if (func_8084DFF4(play, this) && (this->av2.actionVar2 == 1)) {
-                cond = ((this->talkActor != NULL) && (this->exchangeItemId < 0)) ||
-                       (this->stateFlags3 & PLAYER_STATE3_FORCE_PULL_OCARINA);
-
-                if (cond || (gSaveContext.healthAccumulator == 0)) {
-                    if (cond) {
-                        func_8084DF6C(play, this);
-                        this->exchangeItemId = EXCH_ITEM_NONE;
-
-                        if (func_8084B4D4(play, this) == 0) {
-                            Player_StartTalking(play, this->talkActor);
-                        }
-                    } else {
-                        func_8084DFAC(play, this);
-                    }
-                }
-            }
-        } else {
-            Player_FinishAnimMovement(this);
-            if (this->getItemId == GI_ICE_TRAP) {
-                this->stateFlags1 &= ~(PLAYER_STATE1_GETTING_ITEM | PLAYER_STATE1_CARRYING_ACTOR);
-                this->actor.colChkInfo.damage = 0;
-                func_80837C0C(play, this, PLAYER_HIT_RESPONSE_ICE_TRAP, 0.0f, 0.0f, 0, 20);
-                return;
-            }
-
-            if (this->skelAnime.animation == &gPlayerAnim_link_normal_box_kick) {
-                Player_AnimPlayOnceAdjusted(play, this, &gPlayerAnim_link_demo_get_itemB);
-            } else {
-                Player_AnimPlayOnceAdjusted(play, this, &gPlayerAnim_link_demo_get_itemA);
-            }
-
-            this->av2.actionVar2 = 2;
-            func_80835EA4(play, 9);
-        }
-    } else {
-        if (this->av2.actionVar2 == 0) {
-            return;
-        }
-
-        if (this->skelAnime.animation == &gPlayerAnim_link_demo_get_itemB) {
-            Math_ScaledStepToS(&this->actor.shape.rot.y, Camera_GetCamDirYaw(GET_ACTIVE_CAM(play)) + 0x8000, 4000);
-        }
-
-        if (LinkAnimation_OnFrame(&this->skelAnime, 21.0f)) {
-            func_808332F4(this);
-        }
-    }
-}
-
 static AnimSfxEntry D_808549F0[] = {
     { NA_SE_IT_MASTER_SWORD_SWING, -ANIMSFX_DATA(ANIMSFX_TYPE_GENERAL, 60) },
 };
@@ -11777,183 +11086,9 @@ void Player_Action_8084E9AC(Player* this, PlayState* play) {
     }
 }
 
-void Player_Action_8084EAC0(Player* this, PlayState* play) {
-    if (LinkAnimation_Update(play, &this->skelAnime)) {
-        if (this->av2.actionVar2 == 0) {
-            static uint8_t D_808549FC[] = {
-                0x01, 0x03, 0x02, 0x04, 0x04,
-            };
-
-            if (this->itemAction == PLAYER_IA_BOTTLE_POE) {
-                int32_t rand = Rand_S16Offset(-1, 3);
-
-                if (rand == 0) {
-                    rand = 3;
-                }
-
-                if ((rand < 0) && (gSaveContext.health <= FULL_HEART_HEALTH)) {
-                    rand = 3;
-                }
-
-                if (rand < 0) {
-                    Health_ChangeBy(play, -FULL_HEART_HEALTH);
-                } else {
-                    gSaveContext.healthAccumulator = rand * FULL_HEART_HEALTH;
-                }
-            } else {
-                int32_t sp28 = D_808549FC[this->itemAction - PLAYER_IA_BOTTLE_POTION_RED];
-
-                if (sp28 & 1) {
-                    gSaveContext.healthAccumulator = MAX_HEALTH;
-                }
-
-                if (sp28 & 4) {
-                    gSaveContext.healthAccumulator = 0x50;
-                }
-            }
-
-            Player_AnimPlayLoopAdjusted(play, this, &gPlayerAnim_link_bottle_drink_demo_wait);
-            this->av2.actionVar2 = 1;
-        } else {
-            func_8083C0E8(this, play);
-            func_8005B1A4(Play_GetCamera(play, 0));
-        }
-    } else if (this->av2.actionVar2 == 1) {
-        if (gSaveContext.healthAccumulator == 0) {
-            Player_AnimChangeOnceMorphAdjusted(play, this, &gPlayerAnim_link_bottle_drink_demo_end);
-            this->av2.actionVar2 = 2;
-            Player_UpdateBottleHeld(play, this, ITEM_BOTTLE, PLAYER_IA_BOTTLE);
-        }
-        Player_PlayVoiceSfx(this, NA_SE_VO_LI_DRINK - SFX_FLAG);
-    } else if ((this->av2.actionVar2 == 2) && LinkAnimation_OnFrame(&this->skelAnime, 29.0f)) {
-        Player_PlayVoiceSfx(this, NA_SE_VO_LI_BREATH_DRINK);
-    }
-}
-
-typedef enum BottleCatchType {
-    BOTTLE_CATCH_NONE, // This type does not have an associated entry in `sBottleCatchInfo`
-    BOTTLE_CATCH_FISH
-} BottleCatchType;
-
-typedef struct BottleCatchInfo {
-    /* 0x00 */ int16_t actorId;
-    /* 0x02 */ uint8_t itemId;
-    /* 0x03 */ uint8_t itemAction;
-    /* 0x04 */ uint8_t textId;
-} BottleCatchInfo; // size = 0x06
-
-static BottleCatchInfo sBottleCatchInfo[] = {
-    { ACTOR_EN_FISH, ITEM_FISH, PLAYER_IA_BOTTLE_FISH, 0x47 },
-};
-
-void Player_Action_SwingBottle(Player* this, PlayState* play) {
-    // Action Variable 2 has two separate uses within the same action.
-    // After it is used as `inWater` here, it will be used for `startedTextbox` below.
-    // The two usages will never overlap, so this won't cause any issues.
-    BottleSwingInfo* swingEntry = &sBottleSwingInfo[this->av2.inWater];
-
-    Player_DecelerateToZero(this);
-
-    if (LinkAnimation_Update(play, &this->skelAnime)) {
-        if (this->av1.bottleCatchType != BOTTLE_CATCH_NONE) {
-            if (!this->av2.startedTextbox) {
-                // 1 is subtracted because `sBottleCatchInfo` does not have an entry for `BOTTLE_CATCH_NONE`
-                Message_StartTextbox(play, sBottleCatchInfo[this->av1.bottleCatchType - 1].textId, &this->actor);
-                Audio_PlayFanfare(NA_BGM_ITEM_GET | 0x900);
-                this->av2.startedTextbox = true;
-            } else if (Message_GetState(&play->msgCtx) == TEXT_STATE_CLOSING) {
-                this->av1.bottleCatchType = BOTTLE_CATCH_NONE;
-                func_8005B1A4(Play_GetCamera(play, 0));
-            }
-        } else {
-            func_8083C0E8(this, play);
-        }
-    } else if (this->av1.bottleCatchType == BOTTLE_CATCH_NONE) {
-        int32_t activeFrame = this->skelAnime.curFrame - swingEntry->firstActiveFrame;
-
-        if (activeFrame >= 0 && activeFrame <= swingEntry->numActiveFrames) {
-            if (this->av2.inWater && activeFrame == 0) {
-                // Play water scoop sound on the first active frame, if applicable
-                Player_PlaySfx(this, NA_SE_IT_SCOOP_UP_WATER);
-            }
-
-            // `interactRangeActor` will be set by the Get Item system. See `Actor_OfferGetItem`.
-            if (this->interactRangeActor != NULL) {
-                BottleCatchInfo* catchInfo = &sBottleCatchInfo[0];
-                int32_t i;
-
-                // Try to find an `interactRangeActor` with the same ID as an entry in `sBottleCatchInfo`
-                for (i = 0; i < ARRAY_COUNT(sBottleCatchInfo); i++, catchInfo++) {
-                    if (this->interactRangeActor->id == catchInfo->actorId) {
-                        break;
-                    }
-                }
-
-                if ((i < ARRAY_COUNT(sBottleCatchInfo))) {
-                    // 1 is added because `sBottleCatchInfo` does not have an entry for `BOTTLE_CATCH_NONE`
-                    this->av1.bottleCatchType = i + 1;
-
-                    this->av2.startedTextbox = false;
-                    this->stateFlags1 |= PLAYER_STATE1_IN_ITEM_CS | PLAYER_STATE1_IN_CUTSCENE;
-                    this->interactRangeActor->parent = &this->actor;
-
-                    Player_UpdateBottleHeld(play, this, catchInfo->itemId, ABS(catchInfo->itemAction));
-                    Player_AnimPlayOnceAdjusted(play, this, swingEntry->catchAnimation);
-                    func_80835EA4(play, 4);
-                }
-            }
-        }
-    }
-
-    //! @bug If the animation is changed at any point above (such as by func_8083C0E8() or
-    //! Player_AnimPlayOnceAdjusted()), it will change the curFrame to 0. This causes this flag to be set for one frame,
-    //! at a time when it does not look like Player is swinging the bottle.
-    if (this->skelAnime.curFrame <= 7.0f) {
-        this->stateFlags1 |= PLAYER_STATE1_SWINGING_BOTTLE;
-    }
-}
-
-static BottleDropInfo D_80854A28[] = {
-    { ACTOR_EN_FISH, FISH_DROPPED },
-};
-
-static AnimSfxEntry D_80854A34[] = {
-    { NA_SE_VO_LI_AUTO_JUMP, ANIMSFX_DATA(ANIMSFX_TYPE_VOICE, 38) },
-    { NA_SE_EV_BOTTLE_CAP_OPEN, -ANIMSFX_DATA(ANIMSFX_TYPE_GENERAL, 40) },
-};
-
-void Player_Action_8084EFC0(Player* this, PlayState* play) {
-    Player_DecelerateToZero(this);
-
-    if (LinkAnimation_Update(play, &this->skelAnime)) {
-        func_8083C0E8(this, play);
-        func_8005B1A4(Play_GetCamera(play, 0));
-        return;
-    }
-
-    if (LinkAnimation_OnFrame(&this->skelAnime, 76.0f)) {
-        BottleDropInfo* dropInfo = &D_80854A28[this->itemAction - PLAYER_IA_BOTTLE_FISH];
-
-        Actor_Spawn(&play->actorCtx, play, dropInfo->actorId,
-                    (Math_SinS(this->actor.shape.rot.y) * 5.0f) + this->leftHandPos.x, this->leftHandPos.y,
-                    (Math_CosS(this->actor.shape.rot.y) * 5.0f) + this->leftHandPos.z, 0x4000, this->actor.shape.rot.y,
-                    0, dropInfo->actorParams);
-
-        Player_UpdateBottleHeld(play, this, ITEM_BOTTLE, PLAYER_IA_BOTTLE);
-        return;
-    }
-
-    Player_ProcessAnimSfxList(this, D_80854A34);
-}
-
 static AnimSfxEntry D_80854A3C[] = {
     { NA_SE_PL_PUT_OUT_ITEM, -ANIMSFX_DATA(ANIMSFX_TYPE_GENERAL, 30) },
 };
-
-void Player_Action_ExchangeItem(Player* this, PlayState* play) {
-    func_8083C0E8(this, play);
-}
-
 
 void Player_Action_8084F308(Player* this, PlayState* play) {
     this->stateFlags2 |= PLAYER_STATE2_DISABLE_ROTATION_Z_TARGET | PLAYER_STATE2_DISABLE_ROTATION_ALWAYS;
@@ -12192,49 +11327,6 @@ void func_8084FF7C(Player* this) {
 /**
  * Updates the Bunny Hood's floppy ears' rotation and velocity.
  */
-void Player_UpdateBunnyEars(Player* this) {
-    Vec3s force;
-
-    // Damping: decay by 1/8 the previous value each frame
-    sBunnyEarKinematics.angVel.x -= sBunnyEarKinematics.angVel.x >> 3;
-    sBunnyEarKinematics.angVel.y -= sBunnyEarKinematics.angVel.y >> 3;
-
-    // Elastic restorative force
-    sBunnyEarKinematics.angVel.x += -sBunnyEarKinematics.rot.x >> 2;
-    sBunnyEarKinematics.angVel.y += -sBunnyEarKinematics.rot.y >> 2;
-
-    // Forcing from motion relative to shape frame
-    int16_t angle = this->actor.world.rot.y - this->actor.shape.rot.y;
-    force.x = (int32_t)(this->actor.speedXZ * -200.0f * Math_CosS(angle) * (Rand_CenteredFloat(2.0f) + 10.0f)) & 0xFFFF;
-    force.y = (int32_t)(this->actor.speedXZ * 100.0f * Math_SinS(angle) * (Rand_CenteredFloat(2.0f) + 10.0f)) & 0xFFFF;
-
-    sBunnyEarKinematics.angVel.x += force.x >> 2;
-    sBunnyEarKinematics.angVel.y += force.y >> 2;
-
-    // Clamp both angular velocities to [-6000, 6000]
-    if (sBunnyEarKinematics.angVel.x > 6000) {
-        sBunnyEarKinematics.angVel.x = 6000;
-    } else if (sBunnyEarKinematics.angVel.x < -6000) {
-        sBunnyEarKinematics.angVel.x = -6000;
-    }
-    if (sBunnyEarKinematics.angVel.y > 6000) {
-        sBunnyEarKinematics.angVel.y = 6000;
-    } else if (sBunnyEarKinematics.angVel.y < -6000) {
-        sBunnyEarKinematics.angVel.y = -6000;
-    }
-
-    // Add angular velocity to rotations
-    sBunnyEarKinematics.rot.x += sBunnyEarKinematics.angVel.x;
-    sBunnyEarKinematics.rot.y += sBunnyEarKinematics.angVel.y;
-
-    // swivel ears outwards if bending backwards
-    if (sBunnyEarKinematics.rot.x < 0) {
-        sBunnyEarKinematics.rot.z = sBunnyEarKinematics.rot.x >> 1;
-    } else {
-        sBunnyEarKinematics.rot.z = 0;
-    }
-}
-
 int32_t Player_ActionHandler_7(Player* this, PlayState* play) {
     if (func_8083C6B8(play, this) == 0) {
         if (func_8083BB20(this) != 0) {
@@ -12268,8 +11360,7 @@ void Player_Action_808502D0(Player* this, PlayState* play) {
     if (!func_80842DF4(play, this)) {
         func_8084285C(this, 0.0f, sp44->unk_0C, sp44->unk_0D);
 
-        if ((this->stateFlags2 & PLAYER_STATE2_SWORD_LUNGE) && (this->heldItemAction != PLAYER_IA_HAMMER) &&
-            LinkAnimation_OnFrame(&this->skelAnime, 0.0f)) {
+        if ((this->stateFlags2 & PLAYER_STATE2_SWORD_LUNGE) && LinkAnimation_OnFrame(&this->skelAnime, 0.0f)) {
             this->linearVelocity = 15.0f;
             this->stateFlags2 &= ~PLAYER_STATE2_SWORD_LUNGE;
         }
@@ -12320,25 +11411,6 @@ void Player_Action_808502D0(Player* this, PlayState* play) {
                 this->skelAnime.movementFlags = sp43;
                 this->stateFlags3 |= PLAYER_STATE3_FINISHED_ATTACKING;
             }
-        } else if (this->heldItemAction == PLAYER_IA_HAMMER) {
-            if ((this->meleeWeaponAnimation == PLAYER_MWA_HAMMER_FORWARD) ||
-                (this->meleeWeaponAnimation == PLAYER_MWA_JUMPSLASH_FINISH)) {
-                Vec3f shockwavePos;
-
-                shockwavePos.y = func_8083973C(play, this, &D_80854A40, &shockwavePos);
-                float sp2C = this->actor.world.pos.y - shockwavePos.y;
-
-                Math_ScaledStepToS(&this->actor.focus.rot.x, RADF_TO_BINANG(atan2f(sp2C, 45.0f)), 800);
-                func_80836AB8(this, true);
-
-                if ((((this->meleeWeaponAnimation == PLAYER_MWA_HAMMER_FORWARD) &&
-                      LinkAnimation_OnFrame(&this->skelAnime, 7.0f)) ||
-                     ((this->meleeWeaponAnimation == PLAYER_MWA_JUMPSLASH_FINISH) &&
-                      LinkAnimation_OnFrame(&this->skelAnime, 2.0f))) &&
-                    (sp2C > -40.0f) && (sp2C < 40.0f)) {
-                    func_80842A28(play, this);
-                }
-            }
         }
     }
 }
@@ -12349,43 +11421,6 @@ void Player_Action_808505DC(Player* this, PlayState* play) {
 
     if (this->skelAnime.curFrame >= 6.0f) {
         func_80839FFC(this, play);
-    }
-}
-
-void Player_Action_80850AEC(Player* this, PlayState* play) {
-
-    this->stateFlags2 |= PLAYER_STATE2_DISABLE_ROTATION_Z_TARGET;
-
-    if (LinkAnimation_Update(play, &this->skelAnime)) {
-        Player_AnimPlayLoop(play, this, &gPlayerAnim_link_hook_fly_wait);
-    }
-
-    Math_Vec3f_Sum(&this->actor.world.pos, &this->actor.velocity, &this->actor.world.pos);
-
-    if (func_80834FBC(this)) {
-        Math_Vec3f_Copy(&this->actor.prevPos, &this->actor.world.pos);
-        Player_ProcessSceneCollision(play, this);
-
-        float temp = this->actor.world.pos.y - this->actor.floorHeight;
-        if (temp > 20.0f) {
-            temp = 20.0f;
-        }
-
-        this->actor.world.rot.x = this->actor.shape.rot.x = 0;
-        this->actor.world.pos.y -= temp;
-        this->linearVelocity = 1.0f;
-        this->actor.velocity.y = 0.0f;
-        func_80837B9C(this, play);
-        this->stateFlags2 &= ~PLAYER_STATE2_UNDERWATER;
-        this->actor.bgCheckFlags |= 1;
-        this->stateFlags1 |= PLAYER_STATE1_HOOKSHOT_FALLING;
-        return;
-    }
-
-    if ((this->skelAnime.animation != &gPlayerAnim_link_hook_fly_start) || (4.0f <= this->skelAnime.curFrame)) {
-        this->actor.gravity = 0.0f;
-        Math_ScaledStepToS(&this->actor.shape.rot.x, this->actor.world.rot.x, 0x800);
-        Player_RequestRumble(this, 100, 2, 100, 0);
     }
 }
 
@@ -12889,7 +11924,7 @@ void func_808514C0(PlayState* play, Player* this, CsCmdActorCue* cue) {
 
     LinkAnimation_Update(play, &this->skelAnime);
 
-    if (func_8008F128(this) || (this->stateFlags1 & PLAYER_STATE1_CARRYING_ACTOR)) {
+    if (this->stateFlags1 & PLAYER_STATE1_CARRYING_ACTOR) {
         Player_UpdateUpperBody(this, play);
         return;
     }
@@ -12935,7 +11970,7 @@ void func_80851688(PlayState* play, Player* this, CsCmdActorCue* cue) {
 
         LinkAnimation_Update(play, &this->skelAnime);
 
-        if (func_8008F128(this) || (this->stateFlags1 & PLAYER_STATE1_CARRYING_ACTOR)) {
+        if (this->stateFlags1 & PLAYER_STATE1_CARRYING_ACTOR) {
             Player_UpdateUpperBody(this, play);
         }
     }
@@ -12952,8 +11987,6 @@ void func_80851750(PlayState* play, Player* this, CsCmdActorCue* cue) {
 }
 
 void func_80851788(PlayState* play, Player* this, CsCmdActorCue* cue) {
-    this->stateFlags1 &= ~PLAYER_STATE1_BOOMERANG_THROWN;
-
     this->yaw = this->actor.shape.rot.y = this->actor.world.rot.y =
         Math_Vec3f_Yaw(&this->actor.world.pos, &this->unk_450);
 
@@ -13264,11 +12297,6 @@ void func_80852388(PlayState* play, Player* this, CsCmdActorCue* cue) {
         this->av2.actionVar2 = 1;
     }
 
-    if ((this->av2.actionVar2 != 0) && (play->playerActionCtx.frames >= 900)) {
-        this->rightHandType = PLAYER_MODELTYPE_LH_OPEN;
-    } else {
-        this->rightHandType = PLAYER_MODELTYPE_RH_FF;
-    }
 }
 
 void func_80852414(PlayState* play, Player* this, LinkAnimationHeader* anim, AnimSfxEntry* arg3) {
@@ -13363,10 +12391,6 @@ void func_808526EC(PlayState* play, Player* this, CsCmdActorCue* cue) {
 
     func_80851294(play, this, D_80855208[age]);
 
-    if (this->rightHandType != PLAYER_MODELTYPE_RH_FF) {
-        this->rightHandType = PLAYER_MODELTYPE_RH_FF;
-        return;
-    }
 }
 
 void func_8085283C(PlayState* play, Player* this, CsCmdActorCue* cue) {
@@ -13503,12 +12527,6 @@ void Player_Action_CsAction(Player* this, PlayState* play) {
     func_80852B4C(play, this, NULL, &D_80854E50[this->csAction]);
 }
 
-int Player_IsDroppingFish(PlayState* play) {
-    Player* this = GET_PLAYER(play);
-
-    return (Player_Action_8084EFC0 == this->actionFunc) && (this->itemAction == PLAYER_IA_BOTTLE_FISH);
-}
-
 int32_t Player_StartFishing(PlayState* play) {
     Player* this = GET_PLAYER(play);
 
@@ -13518,8 +12536,7 @@ int32_t Player_StartFishing(PlayState* play) {
 }
 
 int32_t func_80852F38(PlayState* play, Player* this) {
-    if (!Player_InBlockingCsMode(play, this) && (this->invincibilityTimer >= 0) && !func_8008F128(this) &&
-        !(this->stateFlags3 & PLAYER_STATE3_FLYING_WITH_HOOKSHOT)) {
+    if (!Player_InBlockingCsMode(play, this) && (this->invincibilityTimer >= 0)) {
         func_80832564(play, this);
         Player_SetupAction(play, this, Player_Action_8084F308, 0);
         Player_AnimPlayOnce(play, this, &gPlayerAnim_link_normal_re_dead_attack);
@@ -13579,8 +12596,6 @@ int32_t Player_InflictDamageModified(PlayState* play, int32_t damage, uint8_t mo
 /**
  * Start talking to the specified actor.
  *
- * This function does not concern trading exchange items.
- * For item exchanges see relevant code in `Player_ActionHandler_13` and `Player_Action_ExchangeItem`.
  */
 void Player_StartTalking(PlayState* play, Actor* actor) {
     Player* this = GET_PLAYER(play);
@@ -13590,8 +12605,6 @@ void Player_StartTalking(PlayState* play, Actor* actor) {
     }
 
     this->talkActor = actor;
-    this->exchangeItemId = EXCH_ITEM_NONE;
-
     if (actor->textId == 0xFFFF) {
         // Player will stand and look at the actor with no text appearing.
         // This can be used to delay text from appearing, for example.

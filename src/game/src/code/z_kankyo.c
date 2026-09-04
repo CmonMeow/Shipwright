@@ -2038,11 +2038,6 @@ void func_80075B44(PlayState* play) {
                 gSaveContext.totalDays++;
                 gSaveContext.bgsDayCount++;
                 gSaveContext.dogIsLost = true;
-                Sfx_PlaySfxCentered(NA_SE_EV_CHICKEN_CRY_M);
-                if ((Inventory_ReplaceItem(play, ITEM_WEIRD_EGG, ITEM_CHICKEN) || Inventory_HatchPocketCucco(play)) &&
-                    play->playerActionCtx.state == 0 && !Player_InCsMode(play)) {
-                    Message_StartTextbox(play, 0x3066, NULL);
-                }
                 play->envCtx.unk_E0++;
             }
             break;

@@ -1775,30 +1775,20 @@ uint32_t Actor_ProcessTalkRequest(Actor* actor, PlayState* play) {
     return false;
 }
 
-int32_t func_8002F1C4(Actor* actor, PlayState* play, float arg2, float arg3, uint32_t exchangeItemId) {
+int32_t func_8002F2CC(Actor* actor, PlayState* play, float interactRange) {
     Player* player = GET_PLAYER(play);
 
-    // This is convoluted but it seems like it must be a single if statement to match
-    if ((player->actor.flags & ACTOR_FLAG_TALK) || ((exchangeItemId != EXCH_ITEM_NONE) && Player_InCsMode(play)) ||
+    if ((player->actor.flags & ACTOR_FLAG_TALK) ||
         (!actor->isTargeted &&
-         ((arg3 < fabsf(actor->yDistToPlayer)) || (player->talkActorDistance < actor->xzDistToPlayer) ||
-          (arg2 < actor->xzDistToPlayer)))) {
+         ((interactRange < fabsf(actor->yDistToPlayer)) || (player->talkActorDistance < actor->xzDistToPlayer) ||
+          (interactRange < actor->xzDistToPlayer)))) {
         return false;
     }
 
     player->talkActor = actor;
     player->talkActorDistance = actor->xzDistToPlayer;
-    player->exchangeItemId = exchangeItemId;
 
     return true;
-}
-
-int32_t func_8002F298(Actor* actor, PlayState* play, float arg2, uint32_t exchangeItemId) {
-    return func_8002F1C4(actor, play, arg2, arg2, exchangeItemId);
-}
-
-int32_t func_8002F2CC(Actor* actor, PlayState* play, float arg2) {
-    return func_8002F298(actor, play, arg2, EXCH_ITEM_NONE);
 }
 
 int32_t func_8002F2F4(Actor* actor, PlayState* play) {
@@ -1813,12 +1803,6 @@ uint32_t Actor_TextboxIsClosing(Actor* actor, PlayState* play) {
     } else {
         return false;
     }
-}
-
-int8_t func_8002F368(PlayState* play) {
-    Player* player = GET_PLAYER(play);
-
-    return player->exchangeItemId;
 }
 
 void Actor_GetScreenPos(PlayState* play, Actor* actor, int16_t* x, int16_t* y) {
@@ -1859,14 +1843,6 @@ uint32_t Actor_HasNoParent(Actor* actor, PlayState* play) {
         return true;
     } else {
         return false;
-    }
-}
-
-void func_8002F5F0(Actor* actor, PlayState* play) {
-    Player* player = GET_PLAYER(play);
-
-    if (actor->xyzDistToPlayerSq < player->closestSecretDistSq) {
-        player->closestSecretDistSq = actor->xyzDistToPlayerSq;
     }
 }
 
@@ -2044,10 +2020,6 @@ void Actor_UpdateAll(PlayState* play, ActorContext* actorCtx) {
     }
 
     sp80 = &D_80116068[0];
-
-    if (player->stateFlags2 & PLAYER_STATE2_OCARINA_PLAYING) {
-        unkFlag = ACTOR_FLAG_UPDATE_DURING_OCARINA;
-    }
 
     if ((player->stateFlags1 & PLAYER_STATE1_TALKING) && ((player->actor.textId & 0xFF00) != 0x600)) {
         sp74 = player->talkActor;

@@ -60,8 +60,6 @@ extern "C"
 	extern struct_8011FC1C D_8011FC1C[][9];
 	extern SkyboxFile gSkyboxFiles[];
 	extern int32_t gZeldaArenaLogSeverity;
-	extern int16_t gSpoilingItems[3];
-	extern int16_t gSpoilingItemReverts[3];
 	extern FlexSkeletonHeader* gPlayerSkelHeaders;
 	extern uint8_t gPlayerModelTypes[PLAYER_MODELGROUP_MAX][PLAYER_MODELGROUPENTRY_MAX];
 	extern Gfx* gPlayerLeftHandBgsDLs[];
@@ -72,16 +70,11 @@ extern "C"
 	extern Gfx gCullFrontDList[];
 	extern Gfx gEmptyDL[];
 	extern uint32_t gBitFlags[32];
-	extern uint16_t gEquipMasks[4];
-	extern uint16_t gEquipNegMasks[4];
-	extern uint32_t gUpgradeMasks[8];
-	extern uint32_t gUpgradeNegMasks[8];
-	extern uint8_t gEquipShifts[4];
-	extern uint8_t gUpgradeShifts[8];
-	extern uint16_t gUpgradeCapacities[8][4];
+	extern uint16_t gEquipMasks[2];
+	extern uint16_t gEquipNegMasks[2];
+	extern uint8_t gEquipShifts[2];
 	extern uint32_t gGsFlagsMasks[4];
 	extern uint32_t gGsFlagsShifts[4];
-	extern uint8_t gItemSlots[56];
 	extern uint32_t gObjectTableSize;
 	extern RomFile gObjectTable[OBJECT_ID_MAX];
 	extern EntranceInfo gEntranceTable[ENTR_MAX];

@@ -1011,7 +1011,6 @@ typedef struct PlayState {
     /* 0x11CBC */ RoomContext roomCtx;
     /* 0x11D3C */ void (*playerInit)(Player* player, struct PlayState* play, FlexSkeletonHeader* skelHeader);
     /* 0x11D40 */ void (*playerUpdate)(Player* player, struct PlayState* play, Input* input);
-    /* 0x11D44 */ int32_t (*isPlayerDroppingFish)(struct PlayState* play);
     /* 0x11D48 */ int32_t (*startPlayerFishing)(struct PlayState* play);
     /* 0x11D4C */ int32_t (*grabPlayer)(struct PlayState* play, Player* player);
     /* 0x11D50 */ int32_t (*startPlayerCutscene)(struct PlayState* play, Actor* actor, int32_t mode);

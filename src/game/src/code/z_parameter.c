@@ -15,9 +15,6 @@ static uint16_t sHBAScoreDigits[] = { 0, 0, 0, 0 };
 static uint16_t sCUpInvisible = 0;
 static uint16_t sCUpTimer = 0;
 
-int16_t gSpoilingItems[] = { ITEM_ODD_MUSHROOM, ITEM_FROG, ITEM_EYEDROPS };
-int16_t gSpoilingItemReverts[] = { ITEM_COJIRO, ITEM_PRESCRIPTION, ITEM_PRESCRIPTION };
-
 static int16_t sEnvHazard = PLAYER_ENV_HAZARD_NONE;
 static int16_t sEnvHazardActive = false;
 
@@ -530,7 +527,6 @@ void Interface_InitHorsebackArchery(PlayState* play) {
 
 void func_800849EC(PlayState* play) {
     gSaveContext.inventory.equipment |= OWNED_EQUIP_FLAG(EQUIP_TYPE_SWORD, EQUIP_INV_SWORD_BIGGORON);
-    gSaveContext.inventory.equipment &= ~OWNED_EQUIP_FLAG_ALT(EQUIP_TYPE_SWORD, EQUIP_INV_SWORD_BROKENGIANTKNIFE);
     gSaveContext.equips.buttonItems[0] = ITEM_NONE;
 }
 
@@ -583,22 +579,11 @@ uint8_t Item_Give(uint8_t item) {
             return ITEM_NONE;
 
         case ITEM_BOW:
-            gSaveContext.inventory.items[SLOT_BOW] = ITEM_BOW;
             return ITEM_NONE;
 
         case ITEM_SHIELD_MIRROR:
             gSaveContext.inventory.equipment |=
                 OWNED_EQUIP_FLAG(EQUIP_TYPE_SHIELD, EQUIP_INV_SHIELD_MIRROR);
-            return ITEM_NONE;
-
-        case ITEM_TUNIC_KOKIRI:
-            gSaveContext.inventory.equipment |=
-                OWNED_EQUIP_FLAG(EQUIP_TYPE_TUNIC, EQUIP_INV_TUNIC_KOKIRI);
-            return ITEM_NONE;
-
-        case ITEM_BOOTS_KOKIRI:
-            gSaveContext.inventory.equipment |=
-                OWNED_EQUIP_FLAG(EQUIP_TYPE_BOOTS, EQUIP_INV_BOOTS_KOKIRI);
             return ITEM_NONE;
 
         default:
@@ -615,127 +600,15 @@ uint8_t Item_CheckObtainability(uint8_t item) {
             return CHECK_OWNED_EQUIP(EQUIP_TYPE_SWORD, EQUIP_INV_SWORD_BIGGORON) ? item : ITEM_NONE;
 
         case ITEM_BOW:
-            return gSaveContext.inventory.items[SLOT_BOW] == ITEM_BOW ? item : ITEM_NONE;
+            return item;
 
         case ITEM_SHIELD_MIRROR:
             return CHECK_OWNED_EQUIP(EQUIP_TYPE_SHIELD, EQUIP_INV_SHIELD_MIRROR) ? item : ITEM_NONE;
-
-        case ITEM_TUNIC_KOKIRI:
-            return CHECK_OWNED_EQUIP(EQUIP_TYPE_TUNIC, EQUIP_INV_TUNIC_KOKIRI) ? item : ITEM_NONE;
-
-        case ITEM_BOOTS_KOKIRI:
-            return CHECK_OWNED_EQUIP(EQUIP_TYPE_BOOTS, EQUIP_INV_BOOTS_KOKIRI) ? item : ITEM_NONE;
 
         default:
             return ITEM_NONE;
     }
 }
-void Inventory_DeleteItem(uint16_t item, uint16_t invSlot) {
-    int16_t i;
-
-    if (item == ITEM_BEAN) {
-        BEANS_BOUGHT = 0;
-    }
-
-    gSaveContext.inventory.items[invSlot] = ITEM_NONE;
-
-    osSyncPrintf("\nItem_Register(%d)\n", invSlot, gSaveContext.inventory.items[invSlot]);
-
-    for (i = 1; i < ARRAY_COUNT(gSaveContext.equips.buttonItems); i++) {
-        if (gSaveContext.equips.buttonItems[i] == item) {
-            gSaveContext.equips.buttonItems[i] = ITEM_NONE;
-            gSaveContext.equips.cButtonSlots[i - 1] = SLOT_NONE;
-        }
-    }
-}
-
-int32_t Inventory_ReplaceItem(PlayState* play, uint16_t oldItem, uint16_t newItem) {
-    int16_t i;
-
-    for (i = 0; i < ARRAY_COUNT(gSaveContext.inventory.items); i++) {
-        if (gSaveContext.inventory.items[i] == oldItem) {
-            gSaveContext.inventory.items[i] = newItem;
-            osSyncPrintf("アイテム消去(%d)\n", i); // "Item Purge (%d)"
-            for (i = 1; i < ARRAY_COUNT(gSaveContext.equips.buttonItems); i++) {
-                if (gSaveContext.equips.buttonItems[i] == oldItem) {
-                    gSaveContext.equips.buttonItems[i] = newItem;
-                    Interface_LoadItemIcon1(play, i);
-                    break;
-                }
-            }
-            return 1;
-        }
-    }
-
-    return 0;
-}
-
-int32_t Inventory_HasEmptyBottle(void) {
-    uint8_t* items = gSaveContext.inventory.items;
-
-    if (items[SLOT_BOTTLE_1] == ITEM_BOTTLE) {
-        return 1;
-    } else if (items[SLOT_BOTTLE_2] == ITEM_BOTTLE) {
-        return 1;
-    } else if (items[SLOT_BOTTLE_3] == ITEM_BOTTLE) {
-        return 1;
-    } else if (items[SLOT_BOTTLE_4] == ITEM_BOTTLE) {
-        return 1;
-    } else {
-        return 0;
-    }
-}
-
-bool Inventory_HasEmptyBottleSlot(void) {
-    uint8_t* items = gSaveContext.inventory.items;
-
-    return (items[SLOT_BOTTLE_1] == ITEM_NONE || items[SLOT_BOTTLE_2] == ITEM_NONE ||
-            items[SLOT_BOTTLE_3] == ITEM_NONE || items[SLOT_BOTTLE_4] == ITEM_NONE);
-}
-
-int32_t Inventory_HasSpecificBottle(uint8_t bottleItem) {
-    uint8_t* items = gSaveContext.inventory.items;
-
-    if (items[SLOT_BOTTLE_1] == bottleItem) {
-        return 1;
-    } else if (items[SLOT_BOTTLE_2] == bottleItem) {
-        return 1;
-    } else if (items[SLOT_BOTTLE_3] == bottleItem) {
-        return 1;
-    } else if (items[SLOT_BOTTLE_4] == bottleItem) {
-        return 1;
-    } else {
-        return 0;
-    }
-}
-
-void Inventory_UpdateBottleItem(PlayState* play, uint8_t item, uint8_t button) {
-    osSyncPrintf("item_no=%x,  c_no=%x,  Pt=%x  Item_Register=%x\n", item, button,
-                 gSaveContext.equips.cButtonSlots[button - 1],
-                 gSaveContext.inventory.items[gSaveContext.equips.cButtonSlots[button - 1]]);
-
-    // Special case to only empty half of a Lon Lon Milk Bottle
-    if ((gSaveContext.inventory.items[gSaveContext.equips.cButtonSlots[button - 1]] == ITEM_MILK_BOTTLE) &&
-        (item == ITEM_BOTTLE)) {
-        item = ITEM_MILK_HALF;
-    }
-
-
-        gSaveContext.inventory.items[gSaveContext.equips.cButtonSlots[button - 1]] = item;
-
-
-    gSaveContext.equips.buttonItems[button] = item;
-
-    Interface_LoadItemIcon1(play, button);
-
-    gSaveContext.buttonStatus[BUTTON_STATUS_INDEX(button)] = BTN_ENABLED;
-}
-
-
-bool Inventory_HatchPocketCucco(PlayState* play) {
-    return Inventory_ReplaceItem(play, ITEM_POCKET_EGG, ITEM_POCKET_CUCCO);
-}
-
 void func_80086D5C(int32_t* buf, uint16_t size) {
     for (uint16_t i = 0; i < size; i++) {
         buf[i] = 0;
@@ -818,50 +691,6 @@ void Rupees_ChangeBy(int64_t rupeeChange) {
     // Currency changes are committed atomically so large multiplayer trades
     // never spend minutes draining through the original one-rupee counter.
     gSaveContext.rupeeAccumulator = 0;
-}
-
-void Inventory_ChangeAmmo(int16_t item, int16_t ammoChange) {
-    // "Item = (%d)    Amount = (%d + %d)"
-    osSyncPrintf("アイテム = (%d)    数 = (%d + %d)  ", item, AMMO(item), ammoChange);
-
-    if (item == ITEM_STICK) {
-        AMMO(ITEM_STICK) += ammoChange;
-
-        if (AMMO(ITEM_STICK) >= CUR_CAPACITY(UPG_STICKS)) {
-            AMMO(ITEM_STICK) = CUR_CAPACITY(UPG_STICKS);
-        } else if (AMMO(ITEM_STICK) < 0) {
-            AMMO(ITEM_STICK) = 0;
-        }
-    } else if (item == ITEM_NUT) {
-        AMMO(ITEM_NUT) += ammoChange;
-
-        if (AMMO(ITEM_NUT) >= CUR_CAPACITY(UPG_NUTS)) {
-            AMMO(ITEM_NUT) = CUR_CAPACITY(UPG_NUTS);
-        } else if (AMMO(ITEM_NUT) < 0) {
-            AMMO(ITEM_NUT) = 0;
-        }
-    } else if (item == ITEM_BOW) {
-        AMMO(ITEM_BOW) += ammoChange;
-
-        if (AMMO(ITEM_BOW) >= CUR_CAPACITY(UPG_QUIVER)) {
-            AMMO(ITEM_BOW) = CUR_CAPACITY(UPG_QUIVER);
-        } else if (AMMO(ITEM_BOW) < 0) {
-            AMMO(ITEM_BOW) = 0;
-        }
-    } else if ((item == ITEM_SLINGSHOT) || (item == ITEM_SEEDS)) {
-        AMMO(ITEM_SLINGSHOT) += ammoChange;
-
-        if (AMMO(ITEM_SLINGSHOT) >= CUR_CAPACITY(UPG_BULLET_BAG)) {
-            AMMO(ITEM_SLINGSHOT) = CUR_CAPACITY(UPG_BULLET_BAG);
-        } else if (AMMO(ITEM_SLINGSHOT) < 0) {
-            AMMO(ITEM_SLINGSHOT) = 0;
-        }
-    } else if (item == ITEM_BEAN) {
-        AMMO(ITEM_BEAN) += ammoChange;
-    }
-
-    osSyncPrintf("合計 = (%d)\n", AMMO(item)); // "Total = (%d)"
-
 }
 
 void Interface_Update(PlayState* play) {
@@ -1003,20 +832,9 @@ void Interface_Update(PlayState* play) {
     HealthMeter_HandleCriticalAlarm(play);
     sEnvHazard = Player_GetEnvironmentalHazard(play);
 
-    if (sEnvHazard == PLAYER_ENV_HAZARD_HOTROOM) {
-        if (CUR_EQUIP_VALUE(EQUIP_TYPE_TUNIC) == EQUIP_VALUE_TUNIC_GORON) {
-            sEnvHazard = PLAYER_ENV_HAZARD_NONE;
-        }
-    } else if ((Player_GetEnvironmentalHazard(play) >= 2) && (Player_GetEnvironmentalHazard(play) < 5)) {
-        if (CUR_EQUIP_VALUE(EQUIP_TYPE_TUNIC) == EQUIP_VALUE_TUNIC_ZORA) {
-            sEnvHazard = PLAYER_ENV_HAZARD_NONE;
-        }
-    }
-
     HealthMeter_Update(play);
 
     if ((gSaveContext.timerState >= TIMER_STATE_ENV_HAZARD_MOVE) && (msgCtx->msgMode == MSGMODE_NONE) &&
-        !(player->stateFlags2 & PLAYER_STATE2_ATTEMPT_PLAY_FOR_ACTOR) &&
         (play->transitionTrigger == TRANS_TRIGGER_OFF) && (play->transitionMode == TRANS_MODE_OFF) &&
         !Play_InCsMode(play)) {}
 
