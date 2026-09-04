@@ -510,8 +510,9 @@ int RunHost() {
                                    damage.sceneId == 110 &&
                                    damage.attackKind == Game::Simulation::CombatAttackKind::Arrow &&
                                    damage.result == Game::Simulation::CombatResultKind::Damaged &&
-                                   damage.damage == 8 &&
                                    damage.hitRegion != Game::Simulation::PlayerHitRegion::None &&
+                                   damage.damage == Game::Simulation::DamageForPlayerHitRegion(
+                                                        8, damage.hitRegion) &&
                                    std::isfinite(damage.impactPosition.x) &&
                                    std::isfinite(damage.impactPosition.y) &&
                                    std::isfinite(damage.impactPosition.z));
@@ -522,7 +523,8 @@ int RunHost() {
                                          damage.attackKind == Game::Simulation::CombatAttackKind::Melee &&
                                          damage.result == Game::Simulation::CombatResultKind::Damaged &&
                                          damage.hitRegion != Game::Simulation::PlayerHitRegion::None &&
-                                         damage.damage == 16);
+                                         damage.damage == Game::Simulation::DamageForPlayerHitRegion(
+                                                              16, damage.hitRegion));
         }
         if (arrowDamageReceived && !arrowDamageAcknowledged) {
             arrowDamageAcknowledged = network.SendChat("runtime-arrow-damage");
@@ -568,7 +570,10 @@ int RunHost() {
                 { 101, { 0.0f, 0.0f, -24.0f }, 0.0f });
             hostWitnessSceneEntered = hostEntryAccepted && clientSpawnRestored;
         }
-        if (deathRequested && deathAttacksSent < 2 &&
+        // Limb hits deal half damage, so allow enough authoritative attacks
+        // to complete the death/respawn portion even when every strike lands
+        // on an arm or leg.
+        if (deathRequested && deathAttacksSent < 6 &&
             (lastDeathAttackAt == 0 || GetTickCount64() - lastDeathAttackAt >= 550)) {
             if (network.SendPlayerCommand(MakeCommand(
                     hostCommandSequence++, 2, static_cast<int16_t>(0x8000), 0,
@@ -1229,7 +1234,8 @@ int RunClient() {
                                        damage.attackKind == Game::Simulation::CombatAttackKind::Melee &&
                                        damage.result == Game::Simulation::CombatResultKind::Damaged &&
                                        damage.hitRegion != Game::Simulation::PlayerHitRegion::None &&
-                                       damage.damage == 16);
+                                       damage.damage == Game::Simulation::DamageForPlayerHitRegion(
+                                                            16, damage.hitRegion));
         }
         Game::Simulation::PlayerRespawnEvent respawn{};
         while (network.PollPlayerRespawn(respawn)) {

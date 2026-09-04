@@ -35,6 +35,7 @@ struct PlayerCollisionRecord {
     bool hasRenderedRig = false;
 };
 static std::map<int32_t, PlayerCollisionRecord> playerHitRigs;
+static PlayerCollisionRecord localPlayerHitRig;
 static int32_t localCollisionPlayerId = -1;
 
 Game::Simulation::Vec3 ToSimulationVector(const Vec3f& value) {
@@ -43,12 +44,12 @@ Game::Simulation::Vec3 ToSimulationVector(const Vec3f& value) {
 
 bool BuildRenderedPlayerHitRig(PlayerCollisionRecord& record) {
     using namespace Game::Simulation;
-    constexpr std::array<int32_t, 14> requiredLimbs = {
-        PLAYER_LIMB_WAIST,       PLAYER_LIMB_R_THIGH,
+    constexpr std::array<int32_t, 12> requiredLimbs = {
+        PLAYER_LIMB_R_THIGH,
         PLAYER_LIMB_R_SHIN,      PLAYER_LIMB_R_FOOT,
         PLAYER_LIMB_L_THIGH,     PLAYER_LIMB_L_SHIN,
-        PLAYER_LIMB_L_FOOT,      PLAYER_LIMB_UPPER,
-        PLAYER_LIMB_HEAD,        PLAYER_LIMB_COLLAR,
+        PLAYER_LIMB_L_FOOT,      PLAYER_LIMB_HEAD,
+        PLAYER_LIMB_COLLAR,
         PLAYER_LIMB_L_SHOULDER,  PLAYER_LIMB_L_FOREARM,
         PLAYER_LIMB_R_SHOULDER,  PLAYER_LIMB_R_FOREARM,
     };
@@ -74,9 +75,6 @@ bool BuildRenderedPlayerHitRig(PlayerCollisionRecord& record) {
         headDirection, 13.0f / std::sqrt(headLengthSquared));
     pose[PlayerHitJoint::HeadTop] = HitRigDetail::Add(
         pose[PlayerHitJoint::HeadBase], headDirection);
-    pose[PlayerHitJoint::TorsoTop] = collar;
-    pose[PlayerHitJoint::TorsoBottom] = origin(PLAYER_LIMB_UPPER);
-    pose[PlayerHitJoint::WaistBottom] = origin(PLAYER_LIMB_WAIST);
     pose[PlayerHitJoint::LeftShoulder] = origin(PLAYER_LIMB_L_SHOULDER);
     pose[PlayerHitJoint::LeftElbow] = origin(PLAYER_LIMB_L_FOREARM);
     pose[PlayerHitJoint::LeftWrist] = origin(PLAYER_LIMB_L_HAND);
@@ -89,6 +87,26 @@ bool BuildRenderedPlayerHitRig(PlayerCollisionRecord& record) {
     pose[PlayerHitJoint::RightHip] = origin(PLAYER_LIMB_R_THIGH);
     pose[PlayerHitJoint::RightKnee] = origin(PLAYER_LIMB_R_SHIN);
     pose[PlayerHitJoint::RightAnkle] = origin(PLAYER_LIMB_R_FOOT);
+
+    // UPPER and WAIST are display-list pivots. Depending on the current Link
+    // animation their world origins can coincide, which collapses both body
+    // prisms into flat hexagons. Build the body axis from separated skeletal
+    // landmarks instead: the centers of the hips and shoulders. Splitting
+    // that axis near the hips preserves the proportions of the authoritative
+    // rig while following the rendered character's bend and rotation.
+    const auto midpoint = [](const Vec3& left, const Vec3& right) {
+        return HitRigDetail::Scale(HitRigDetail::Add(left, right), 0.5f);
+    };
+    const Vec3 hipCenter = midpoint(pose[PlayerHitJoint::LeftHip],
+                                    pose[PlayerHitJoint::RightHip]);
+    const Vec3 shoulderCenter = midpoint(pose[PlayerHitJoint::LeftShoulder],
+                                         pose[PlayerHitJoint::RightShoulder]);
+    const Vec3 bodyAxis = HitRigDetail::Subtract(shoulderCenter, hipCenter);
+    pose[PlayerHitJoint::WaistBottom] = hipCenter;
+    pose[PlayerHitJoint::TorsoBottom] = HitRigDetail::Add(
+        hipCenter, HitRigDetail::Scale(bodyAxis, 0.3f));
+    pose[PlayerHitJoint::TorsoTop] = shoulderCenter;
+
     record.renderedRig = BuildArticulatedPlayerHitRig(
         pose, kAdultLinkHitRigDimensions);
     record.renderedAt = std::chrono::steady_clock::now();
@@ -546,8 +564,17 @@ void DrawAuthoritativePlayerCollision() {
                             G_MTX_MODELVIEW | G_MTX_LOAD | G_MTX_NOPUSH));
     dl.push_back(gsDPSetPrimColor(0, 0, 255, 96, 0, 255));
 
+    if (localPlayerHitRig.hasRenderedRig &&
+        localPlayerHitRig.snapshot.sceneId == gPlayState->sceneNum) {
+        for (std::size_t index = 0;
+             index < localPlayerHitRig.renderedRig.prisms.size(); ++index) {
+            DrawHitPrism(dl, localPlayerHitRig.renderedRig.prisms[index],
+                         &localPlayerHitRig, static_cast<int32_t>(index));
+        }
+    }
+
     for (const auto& [playerId, record] : playerHitRigs) {
-        (void)playerId;
+        if (playerId == localCollisionPlayerId) continue;
         if (record.snapshot.sceneId != gPlayState->sceneNum) continue;
         // Combat remains fixed-tick and server authoritative. The diagnostic
         // advances that same semantic pose only across the short interval
@@ -824,21 +851,25 @@ extern "C" void EndRenderedPlayerCollision(int32_t playerId) {
 }
 
 extern "C" void BeginLocalRenderedPlayerCollision(void) {
-    BeginRenderedPlayerCollision(localCollisionPlayerId);
+    localPlayerHitRig.snapshot.sceneId =
+        gPlayState != nullptr ? gPlayState->sceneNum : -1;
+    localPlayerHitRig.renderedLimbs.fill(false);
 }
 
 extern "C" void RecordLocalRenderedPlayerCollisionLimb(
     int32_t limbIndex, float x, float y, float z) {
-    RecordRenderedPlayerCollisionLimb(localCollisionPlayerId, limbIndex, x, y,
-                                      z);
+    if (limbIndex <= PLAYER_LIMB_NONE || limbIndex >= PLAYER_LIMB_MAX) return;
+    localPlayerHitRig.renderedLimbOrigins[limbIndex] = { x, y, z };
+    localPlayerHitRig.renderedLimbs[limbIndex] = true;
 }
 
 extern "C" void EndLocalRenderedPlayerCollision(void) {
-    EndRenderedPlayerCollision(localCollisionPlayerId);
+    BuildRenderedPlayerHitRig(localPlayerHitRig);
 }
 
 void ClearAuthoritativePlayerCollision(void) {
     playerHitRigs.clear();
+    localPlayerHitRig = {};
 }
 
 void RemoveAuthoritativePlayerCollision(int32_t playerId) {

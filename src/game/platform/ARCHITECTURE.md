@@ -1313,8 +1313,14 @@ cylinder.
 The retained renderer's body-part positions are presentation data and are not trusted for damage. A deterministic
 headless pose sampler derives all joints from the authoritative snapshot's position, heading, velocity, action, aim
 pitch, and server tick. Both melee and arrows use the resulting articulated rig as their live narrow phase; the former
-broad body cylinder is no longer used for PvP damage. Clients retain the latest replicated copy of that exact rig so F1
+broad body cylinder is no longer used for PvP damage. The native Link cylinder has no attack or damage-receiver flags
+and is registered only for stable actor overlap; animated limbs are deliberately not used for locomotion because their
+changing footprint would snag walls and move the player when poses change. Server world sweeps and player separation use
+the corresponding fixed movement body independently of combat. Clients retain the latest replicated rig so F1
 can display real combat collision alongside legacy Zelda collision without accepting client-submitted limb positions.
+The server applies damage only after resolving that rig: head hits deal twice the weapon's base damage, torso and waist
+hits deal base damage, and arm or leg hits deal half damage. The resolved damage and server-selected region are then
+replicated together, so clients cannot promote a limb hit into a headshot.
 Protocol v102 carries the server-selected limb region on reliable damaged melee and arrow results. Blocked hits carry no
 body region, malformed region values are rejected at ingress, and clients never submit or choose the region used for
 damage.

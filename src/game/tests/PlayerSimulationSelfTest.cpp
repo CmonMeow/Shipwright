@@ -893,7 +893,10 @@ int main() {
         hitEvents.front().result != Game::Simulation::CombatResultKind::Damaged ||
         hitEvents.front().attackKind != Game::Simulation::CombatAttackKind::Melee ||
         hitEvents.front().hitRegion == Game::Simulation::PlayerHitRegion::None ||
-        !damagedTarget || damagedTarget->health != 40) {
+        hitEvents.front().damage != Game::Simulation::DamageForPlayerHitRegion(
+                                        8, hitEvents.front().hitRegion) ||
+        !damagedTarget ||
+        damagedTarget->health != 48 - hitEvents.front().damage) {
         return 11;
     }
     if (!combatSimulation.ApplyDamage(20, 21, 40, 0) || !combatSimulation.RespawnPlayer(21)) {
@@ -947,7 +950,10 @@ int main() {
         projectileDamage.front().attackKind != Game::Simulation::CombatAttackKind::Arrow ||
         projectileDamage.front().result != Game::Simulation::CombatResultKind::Damaged ||
         projectileDamage.front().hitRegion == Game::Simulation::PlayerHitRegion::None ||
-        !projectileTarget || projectileTarget->health != 40 ||
+        projectileDamage.front().damage != Game::Simulation::DamageForPlayerHitRegion(
+                                               8, projectileDamage.front().hitRegion) ||
+        !projectileTarget ||
+        projectileTarget->health != 48 - projectileDamage.front().damage ||
         projectiles.HasArrow(30, spawnedArrow->replicationId)) {
         return 15;
     }
@@ -977,7 +983,7 @@ int main() {
         shieldResults.front().hitRegion != Game::Simulation::PlayerHitRegion::None ||
         !shieldResults.front().sourceEntity.Valid() || !shieldResults.front().targetEntity.Valid() ||
         !shieldTarget ||
-        shieldTarget->health != 40) {
+        shieldTarget->health != 48 - projectileDamage.front().damage) {
         return 16;
     }
 
@@ -998,8 +1004,10 @@ int main() {
     const auto friendlyTarget = teamPlayers.SnapshotForPlayer(33);
     const auto enemyTarget = teamPlayers.SnapshotForPlayer(34);
     if (teamDamage.size() != 1 || teamDamage.front().targetPlayerId != 34 ||
+        teamDamage.front().damage != Game::Simulation::DamageForPlayerHitRegion(
+                                         8, teamDamage.front().hitRegion) ||
         !friendlyTarget || friendlyTarget->health != 48 ||
-        !enemyTarget || enemyTarget->health != 40) {
+        !enemyTarget || enemyTarget->health != 48 - teamDamage.front().damage) {
         return 127;
     }
 
@@ -5138,6 +5146,18 @@ int main() {
             articulatedHitRig, rigHit) ||
         rigHit.region != Game::Simulation::PlayerHitRegion::RightForearm) {
         return 488;
+    }
+    if (Game::Simulation::DamageForPlayerHitRegion(
+            8, Game::Simulation::PlayerHitRegion::Head) != 16 ||
+        Game::Simulation::DamageForPlayerHitRegion(
+            8, Game::Simulation::PlayerHitRegion::Torso) != 8 ||
+        Game::Simulation::DamageForPlayerHitRegion(
+            8, Game::Simulation::PlayerHitRegion::Waist) != 8 ||
+        Game::Simulation::DamageForPlayerHitRegion(
+            8, Game::Simulation::PlayerHitRegion::RightForearm) != 4 ||
+        Game::Simulation::DamageForPlayerHitRegion(
+            16, Game::Simulation::PlayerHitRegion::LeftThigh) != 8) {
+        return 539;
     }
 
     // A bent forearm follows the supplied authoritative skeleton instead of

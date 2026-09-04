@@ -291,17 +291,20 @@ bool PlayerSimulation::ApplyDamage(int32_t sourcePlayerId, int32_t targetPlayerI
                                     PlayerHitRegion hitRegion) {
     PlayerEntity* target = FindPlayer(targetPlayerId);
     const PlayerEntity* source = FindPlayer(sourcePlayerId);
-    if (!target || target->health == 0 || damage == 0 ||
+    const uint8_t resolvedDamage = DamageForPlayerHitRegion(damage, hitRegion);
+    if (!target || target->health == 0 || resolvedDamage == 0 ||
         (source && sourcePlayerId != targetPlayerId && source->team != TeamId::Neutral &&
          source->team == target->team)) {
         return false;
     }
-    target->health = damage >= target->health ? 0 : static_cast<uint8_t>(target->health - damage);
+    target->health = resolvedDamage >= target->health
+                         ? 0
+                         : static_cast<uint8_t>(target->health - resolvedDamage);
     if (target->health == 0) EnterDeadState(*target);
     mCombatResults.push_back({ NextCombatEventId(), sourcePlayerId, targetPlayerId,
                                source ? source->id : EntityId{},
                                 target->id, target->sceneId, attackKind, CombatResultKind::Damaged,
-                                damage, impactHeading, impactPosition, hitRegion });
+                                resolvedDamage, impactHeading, impactPosition, hitRegion });
     return true;
 }
 
@@ -565,25 +568,22 @@ void PlayerSimulation::EvaluateCombat(PlayerEntity& attacker) {
         const bool blocked = SegmentAuthoritativeShieldFirstHit(
                                  blade.base, blade.tip, targetSnapshot, shieldHit) &&
                              shieldHit.segmentRatio <= bodyHit.segmentRatio;
-        const uint8_t damage = attacker.selectedWeapon == 2 ? 16 : 8;
+        const uint8_t baseDamage = attacker.selectedWeapon == 2 ? 16 : 8;
         const float impactRadians = std::atan2(target->position.x - attacker.position.x,
                                                target->position.z - attacker.position.z);
         const int16_t impactHeading = static_cast<int16_t>(std::lround(impactRadians * (32768.0f / pi)));
         attacker.hitPlayers.insert(target->ownerPlayerId);
-        if (!blocked) {
-            target->health = damage >= target->health
-                                 ? 0
-                                 : static_cast<uint8_t>(target->health - damage);
-            if (target->health == 0) EnterDeadState(*target);
+        if (blocked) {
+            mCombatResults.push_back({ NextCombatEventId(), attacker.ownerPlayerId,
+                                       target->ownerPlayerId, attacker.id, target->id,
+                                       target->sceneId, CombatAttackKind::Melee,
+                                       CombatResultKind::Blocked, 0, impactHeading,
+                                       shieldHit.position, PlayerHitRegion::None });
+        } else {
+            ApplyDamage(attacker.ownerPlayerId, target->ownerPlayerId,
+                        baseDamage, impactHeading, CombatAttackKind::Melee,
+                        bodyHit.position, bodyHit.region);
         }
-        mCombatResults.push_back({ NextCombatEventId(), attacker.ownerPlayerId,
-                                   target->ownerPlayerId, attacker.id,
-                                   target->id, target->sceneId, CombatAttackKind::Melee,
-                                   blocked ? CombatResultKind::Blocked : CombatResultKind::Damaged,
-                                   blocked ? uint8_t{ 0 } : damage, impactHeading,
-                                   blocked ? shieldHit.position
-                                           : bodyHit.position,
-                                   blocked ? PlayerHitRegion::None : bodyHit.region });
     }
 }
 

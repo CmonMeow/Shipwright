@@ -8494,7 +8494,7 @@ static ColliderCylinderInit D_80854624 = {
     {
         COLTYPE_HIT5,
         AT_NONE,
-        AC_ON | AC_TYPE_ENEMY,
+        AC_NONE,
         OC1_ON | OC1_TYPE_ALL,
         OC2_TYPE_PLAYER,
         COLSHAPE_CYLINDER,
@@ -8504,7 +8504,7 @@ static ColliderCylinderInit D_80854624 = {
         { 0x00000000, 0x00, 0x00 },
         { 0xFFCFFFFF, 0x00, 0x00 },
         TOUCH_NONE,
-        BUMP_ON,
+        BUMP_NONE,
         OCELEM_ON,
     },
     { 12, 60, 0, { 0, 0, 0 } },
@@ -9845,15 +9845,6 @@ void Player_UpdateCommon(Player* this, PlayState* play, Input* input) {
                                        PLAYER_STATE1_CLIMBING_LEDGE))) {
                 CollisionCheck_SetOC(play, &play->colChkCtx, &this->cylinder.base);
             }
-
-            if (!(this->stateFlags1 & (PLAYER_STATE1_DEAD | PLAYER_STATE1_DAMAGED)) &&
-                (this->invincibilityTimer <= 0)) {
-                CollisionCheck_SetAC(play, &play->colChkCtx, &this->cylinder.base);
-
-                if (this->invincibilityTimer < 0) {
-                    CollisionCheck_SetAT(play, &play->colChkCtx, &this->cylinder.base);
-                }
-            }
         }
 
         AnimationContext_SetNextQueue(play);
@@ -9867,8 +9858,6 @@ void Player_UpdateCommon(Player* this, PlayState* play, Input* input) {
     } else {
         this->actor.colChkInfo.mass = 50;
     }
-
-    Collider_ResetCylinderAC(play, &this->cylinder.base);
 
     Collider_ResetQuadAT(play, &this->meleeWeaponQuads[0].base);
     Collider_ResetQuadAT(play, &this->meleeWeaponQuads[1].base);
