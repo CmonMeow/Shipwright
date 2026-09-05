@@ -250,12 +250,19 @@ int32_t Player_OverrideLimbDrawPresentation(PlayState* play, int32_t limbIndex, 
         dListOffset = 0;
     } else if (limbIndex == PLAYER_LIMB_R_HAND) {
         type = gPlayerModelTypes[modelGroup][PLAYER_MODELGROUPENTRY_RIGHT_HAND];
+        if (presentation->blocking && modelGroup == PLAYER_MODELGROUP_DEFAULT) {
+            type = PLAYER_MODELTYPE_RH_SHIELD;
+        }
         sRightHandType = type;
         if (type == PLAYER_MODELTYPE_RH_SHIELD) {
             dListOffset = shield * (int32_t)sizeof(uint32_t);
         }
     } else if (limbIndex == PLAYER_LIMB_SHEATH) {
         type = gPlayerModelTypes[modelGroup][PLAYER_MODELGROUPENTRY_SHEATH];
+        if (presentation->blocking && modelGroup == PLAYER_MODELGROUP_DEFAULT &&
+            type == PLAYER_MODELTYPE_SHEATH_SWORD_AND_SHIELD) {
+            type = PLAYER_MODELTYPE_SHEATH_SWORD;
+        }
         if ((type == PLAYER_MODELTYPE_SHEATH_SWORD_AND_SHIELD) ||
             (type == PLAYER_MODELTYPE_SHEATH_EMPTY_AND_SHIELD)) {
             dListOffset = shield * (int32_t)sizeof(uint32_t);
@@ -356,6 +363,7 @@ void Player_PostLimbDrawPresentation(PlayState* play, int32_t limbIndex, Gfx** d
         Matrix_Pop();
         Matrix_Translate(0.0f, 0.0f, 500.0f, MTXMODE_APPLY);
     }
+    Matrix_MultVec3f(&zero, &presentation->fishingRodTip);
     CLOSE_DISPS(play->state.gfxCtx);
 }
 

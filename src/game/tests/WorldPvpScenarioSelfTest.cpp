@@ -211,7 +211,7 @@ int main() {
     }
 
     // Restore the blue player to the arena and prove server projectile damage, friendly-fire rejection,
-    // death scheduling, and exact one-shot projectile ownership without client hit reports.
+    // death scheduling, and persistent body attachment without client hit reports.
     if (!players.ChangeScene(bluePlayer, { scene, { 0.0f, 0.0f, 80.0f }, 3.14159265f, TeamId::Blue }) ||
         players.ApplyDamage(redPlayer, redAlly, 8, 0, CombatAttackKind::Arrow)) {
         return 8;
@@ -224,7 +224,14 @@ int main() {
                                                     { 0.0f, 0.0f, 6000.0f }, 0 });
         if (!arrow || !projectiles.HasArrow(redPlayer, arrow->replicationId)) return 9;
         projectiles.StepFixed(players);
-        if (projectiles.HasArrow(redPlayer, arrow->replicationId)) return 10;
+        const auto arrowSnapshots = projectiles.Snapshots();
+        const auto stuckArrow = std::find_if(
+            arrowSnapshots.begin(), arrowSnapshots.end(), [&](const auto& snapshot) {
+                return snapshot.replicationId == arrow->replicationId;
+            });
+        if (stuckArrow == arrowSnapshots.end() ||
+            stuckArrow->phase != ArrowPhase::Stuck ||
+            stuckArrow->body.playerId != bluePlayer) return 10;
     }
     const auto deadBlue = players.SnapshotForPlayer(bluePlayer);
     const auto arrowCombat = players.DrainCombatResults();

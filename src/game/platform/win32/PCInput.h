@@ -21,6 +21,7 @@ int32_t PCInput_PrimaryHeld(void);
 int32_t PCInput_PrimaryPressed(void);
 void PCInput_ConsumeBowUseIntent(void);
 int32_t PCInput_HasBowUseIntent(void);
+void PCInput_ReadMovement(int8_t* x, int8_t* y);
 
 #ifdef __cplusplus
 }

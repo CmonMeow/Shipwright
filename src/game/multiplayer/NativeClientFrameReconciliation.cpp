@@ -8,6 +8,7 @@
 #include "NativeRemotePlayerRenderer.h"
 #include "NetworkRuntime.h"
 #include "platform/client/ClientGameplaySession.h"
+#include "platform/client/RemoteFishingEntityState.h"
 
 #include "global.h"
 
@@ -49,13 +50,32 @@ void NativeClientFrameReconciliation::ProcessTransportFrame(PlayState* play) {
     // Death intentionally freezes the native gameplay update. The transport
     // frame continues, so reliable server respawns must be consumed here.
     ProcessRespawns(play);
+
+    if (Player* player = GET_PLAYER(play)) {
+        // BeginFrame runs before Actor_UpdateAll. Apply an authoritative
+        // correction here so native floor, wall, water, and ledge collision
+        // observes the corrected position during this same gameplay update.
+        // Applying a smoothed displacement after Actor_UpdateAll made native
+        // Link react one frame late and produced a second movement system at
+        // traversal boundaries.
+        const Game::Simulation::Vec3 correction =
+            mDependencies.gameplay.Prediction().ConsumeCorrection(
+                0.0f, 0.0f);
+        player->actor.world.pos.x += correction.x;
+        player->actor.world.pos.y += correction.y;
+        player->actor.world.pos.z += correction.z;
+        player->actor.prevPos.x += correction.x;
+        player->actor.prevPos.y += correction.y;
+        player->actor.prevPos.z += correction.z;
+    }
 }
 
 void NativeClientFrameReconciliation::ReconcileGameplayFrame(
-    PlayState* play, float deltaSeconds) {
+    PlayState* play) {
     if (!play) return;
 
-    if (mDependencies.players.HasFishingPlayerInScene(play->sceneNum)) {
+    if (mDependencies.players.HasFishingPlayerInScene(play->sceneNum) ||
+        mDependencies.fishing.HasEntityInScene(play->sceneNum)) {
         Fishing_EnsurePresentedPopulation(play);
     }
 
@@ -66,28 +86,15 @@ void NativeClientFrameReconciliation::ReconcileGameplayFrame(
     }
     ProcessRespawns(play);
 
-    mDependencies.players.Reconcile(play);
+    mDependencies.players.Reconcile(
+        play, mDependencies.runtime.LocalPlayerId());
     mDependencies.projectiles.Reconcile(play);
-
-    if (Player* player = GET_PLAYER(play)) {
-        const Game::Simulation::Vec3 correction =
-            mDependencies.gameplay.Prediction().ConsumeCorrection(
-                deltaSeconds);
-        player->actor.world.pos.x += correction.x;
-        player->actor.world.pos.y += correction.y;
-        player->actor.world.pos.z += correction.z;
-        player->actor.prevPos.x += correction.x;
-        player->actor.prevPos.y += correction.y;
-        player->actor.prevPos.z += correction.z;
-    }
 
 }
 
 void NativeClientFrameReconciliation::ProjectLocalPresentation(
     PlayState* play) {
     if (!play) return;
-    mDependencies.localPresentation.Project(
-        GET_PLAYER(play), mDependencies.runtime.IsActive());
     mDependencies.localPresentation.ProjectBodyOwnership(
         GET_PLAYER(play), mDependencies.runtime.LocalPlayerId());
 }

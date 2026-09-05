@@ -4,6 +4,7 @@ struct PlayState;
 
 namespace Game::Client {
 class ClientGameplaySession;
+class RemoteFishingEntityState;
 }
 
 namespace Game::Multiplayer {
@@ -22,6 +23,7 @@ struct NativeClientFrameDependencies {
     NativeLocalRespawnController& respawn;
     NativeCombatPresentationController& combat;
     NativeRemotePlayerRenderer& players;
+    Game::Client::RemoteFishingEntityState& fishing;
     NativeProjectileRenderer& projectiles;
     NativeLocalPlayerPresentationController& localPresentation;
     NativePlayerNameplatePresenter& nameplates;
@@ -40,7 +42,7 @@ class NativeClientFrameReconciliation final {
     void ProcessTransportFrame(PlayState* play);
 
     // Runs once per gameplay update before the next local command is sampled.
-    void ReconcileGameplayFrame(PlayState* play, float deltaSeconds);
+    void ReconcileGameplayFrame(PlayState* play);
 
     // Projects the prediction state after this frame's command sample so the
     // native animation observes the same action edge that was just submitted.

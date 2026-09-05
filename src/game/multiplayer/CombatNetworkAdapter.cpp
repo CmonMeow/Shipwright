@@ -13,6 +13,9 @@ NetworkCombatResultPacket ToPacket(const Game::Simulation::CombatResultEvent& re
         result.sourceEntity.generation,
         result.targetEntity.index,
         result.targetEntity.generation,
+        result.sourceLifeEpoch,
+        result.targetLifeEpoch,
+        result.meleeAttackId,
         result.sceneId,
         static_cast<unsigned char>(result.attackKind),
         static_cast<unsigned char>(result.result),
@@ -33,6 +36,9 @@ Game::Simulation::CombatResultEvent ToEvent(
         packet.targetPlayerId,
         { packet.sourceEntityIndex, packet.sourceEntityGeneration },
         { packet.targetEntityIndex, packet.targetEntityGeneration },
+        packet.sourceLifeEpoch,
+        packet.targetLifeEpoch,
+        packet.meleeAttackId,
         packet.sceneId,
         static_cast<Game::Simulation::CombatAttackKind>(packet.attackKind),
         static_cast<Game::Simulation::CombatResultKind>(packet.result),
@@ -48,14 +54,18 @@ bool IsSane(const NetworkCombatResultPacket& packet) {
         return std::isfinite(value) && value > -1000000.0f && value < 1000000.0f;
     };
     if (packet.eventId == 0 || packet.sourcePlayerId < -1 || packet.targetPlayerId < 0 ||
-        packet.targetEntityGeneration == 0 || packet.sceneId < 0 || packet.sceneId >= 4096 ||
+        packet.targetEntityGeneration == 0 || packet.targetLifeEpoch == 0 ||
+        packet.sceneId < 0 || packet.sceneId >= 4096 ||
         packet.attackKind > NETWORK_COMBAT_ENVIRONMENT || packet.result > NETWORK_COMBAT_BLOCKED ||
         packet.hitRegion >= Game::Simulation::kPlayerHitRegionCount ||
         !saneCoordinate(packet.impactX) || !saneCoordinate(packet.impactY) ||
         !saneCoordinate(packet.impactZ)) {
         return false;
     }
-    if (packet.sourcePlayerId >= 0 && packet.sourceEntityGeneration == 0) return false;
+    if (packet.sourcePlayerId >= 0 &&
+        (packet.sourceEntityGeneration == 0 || packet.sourceLifeEpoch == 0)) return false;
+    if (packet.sourcePlayerId < 0 && packet.sourceLifeEpoch != 0) return false;
+    if ((packet.attackKind == NETWORK_COMBAT_MELEE) != (packet.meleeAttackId != 0)) return false;
     if (packet.result == NETWORK_COMBAT_BLOCKED &&
         packet.hitRegion != static_cast<unsigned char>(Game::Simulation::PlayerHitRegion::None)) {
         return false;
@@ -79,6 +89,20 @@ bool MatchesActiveLifetimes(
     if (packet.sourcePlayerId < 0) return true;
     return activePlayers.Matches(packet.sourcePlayerId,
                                  { packet.sourceEntityIndex, packet.sourceEntityGeneration });
+}
+
+bool MatchesActiveIncarnations(
+    const NetworkCombatResultPacket& packet,
+    const std::map<int32_t, uint32_t>& activeLifeEpochs) {
+    const auto target = activeLifeEpochs.find(packet.targetPlayerId);
+    if (target == activeLifeEpochs.end() ||
+        target->second != packet.targetLifeEpoch) {
+        return false;
+    }
+    if (packet.sourcePlayerId < 0) return packet.sourceLifeEpoch == 0;
+    const auto source = activeLifeEpochs.find(packet.sourcePlayerId);
+    return source != activeLifeEpochs.end() &&
+           source->second == packet.sourceLifeEpoch;
 }
 
 } // namespace Game::Multiplayer::CombatNetworkAdapter

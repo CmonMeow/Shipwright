@@ -1,4 +1,3 @@
-#include "runtime/libultra/motor.h"
 #include "runtime/libultra/os.h"
 
 #include <chrono>
@@ -53,12 +52,4 @@ int32_t osAiSetNextBuffer(void* buff, size_t len) {
     return 0;
 }
 
-int32_t __osMotorAccess(OSPfs* pfs, uint32_t vibrate) {
-    return 0;
-}
-
-int32_t osMotorInit(OSMesgQueue* ctrlrqueue, OSPfs* pfs, int32_t channel) {
-    pfs->channel = channel;
-    return 0;
-}
 }

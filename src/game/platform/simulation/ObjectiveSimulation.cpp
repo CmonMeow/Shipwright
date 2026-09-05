@@ -1,6 +1,7 @@
 #include "ObjectiveSimulation.h"
 
 #include <algorithm>
+#include <array>
 #include <cmath>
 
 namespace Game::Simulation {
@@ -11,7 +12,8 @@ EntityId ObjectiveSimulation::EnsureObjective(const ObjectiveDefinition& definit
         !std::isfinite(definition.position.y) ||
         !std::isfinite(definition.position.z) ||
         !std::isfinite(definition.captureRadius) ||
-        definition.captureRadius <= 0.0f) {
+        definition.captureRadius <= 0.0f ||
+        definition.initialOwner > TeamId::Green) {
         return {};
     }
     if (ObjectiveEntity* existing = FindObjective(definition.objectiveKey)) {
@@ -47,8 +49,7 @@ void ObjectiveSimulation::Reset() {
 void ObjectiveSimulation::Update(const PlayerSimulation& players, float deltaSeconds) {
     const float elapsed = std::clamp(deltaSeconds, 0.0f, 0.25f);
     mObjectives.ForEach([&](ObjectiveEntity& objective) {
-        uint32_t redPlayers = 0;
-        uint32_t bluePlayers = 0;
+        std::array<uint32_t, 4> teamPlayers{};
         const float radiusSquared = objective.definition.captureRadius * objective.definition.captureRadius;
         for (const PlayerSnapshot& player : players.CandidateSnapshotsNear(
                  objective.definition.sceneId, objective.definition.position,
@@ -62,20 +63,27 @@ void ObjectiveSimulation::Update(const PlayerSimulation& players, float deltaSec
             if (dx * dx + dy * dy + dz * dz > radiusSquared) {
                 continue;
             }
-            if (player.team == TeamId::Red) {
-                ++redPlayers;
-            } else if (player.team == TeamId::Blue) {
-                ++bluePlayers;
+            if (player.team <= TeamId::Green) {
+                ++teamPlayers[static_cast<size_t>(player.team)];
             }
         }
 
-        objective.contested = redPlayers != 0 && bluePlayers != 0;
-        if (objective.contested || (redPlayers == 0 && bluePlayers == 0)) {
+        TeamId activeTeam = TeamId::Neutral;
+        uint32_t activePlayers = 0;
+        uint32_t occupiedTeams = 0;
+        for (uint8_t team = static_cast<uint8_t>(TeamId::Red);
+             team <= static_cast<uint8_t>(TeamId::Green); ++team) {
+            const uint32_t count = teamPlayers[team];
+            if (count == 0) continue;
+            ++occupiedTeams;
+            activeTeam = static_cast<TeamId>(team);
+            activePlayers = count;
+        }
+        objective.contested = occupiedTeams > 1;
+        if (occupiedTeams != 1) {
             return;
         }
 
-        const TeamId activeTeam = redPlayers != 0 ? TeamId::Red : TeamId::Blue;
-        const uint32_t activePlayers = redPlayers != 0 ? redPlayers : bluePlayers;
         if (objective.owner == activeTeam) {
             objective.capturingTeam = TeamId::Neutral;
             objective.captureProgress = 0.0f;

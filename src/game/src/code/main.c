@@ -8,22 +8,17 @@ int32_t gScreenHeight = SCREEN_HEIGHT;
 
 PreNmiBuff* gAppNmiBufferPtr;
 SchedContext gSchedContext;
-PadMgr gPadMgr;
 IrqMgr gIrqMgr;
 uintptr_t gSegments[NUM_SEGMENTS];
 uint8_t sGraphStack[0x1800];
 uint8_t sSchedStack[0x600];
 uint8_t sAudioStack[0x800];
-uint8_t sPadMgrStack[0x500];
 uint8_t sIrqMgrStack[0x500];
 StackEntry sGraphStackInfo;
 StackEntry sSchedStackInfo;
 StackEntry sAudioStackInfo;
-StackEntry sPadMgrStackInfo;
 StackEntry sIrqMgrStackInfo;
 AudioMgr gAudioMgr;
-OSMesgQueue sSiIntMsgQ;
-OSMesg sSiIntMsgBuf[1];
 
 void* gAudioHeap;
 static void* sSystemHeap;
@@ -44,9 +39,6 @@ void Game_Initialize(void) {
     __osMallocInit(&gSystemArena, sSystemHeap, SYSTEM_HEAP_SIZE);
 
     DebugArena_Init(SysCfb_GetFbEnd(), 1024 * 64);
-    osCreateMesgQueue(&sSiIntMsgQ, sSiIntMsgBuf, 1);
-    osSetEventMesg(5, &sSiIntMsgQ, OS_MESG_PTR(NULL));
-
     osCreateMesgQueue(&sIrqMgrMsgQ, sIrqMgrMsgBuf, 0x3C);
     StackCheck_Init(&sIrqMgrStackInfo, sIrqMgrStack, sIrqMgrStack + sizeof(sIrqMgrStack), 0, 256, "irqmgr");
     IrqMgr_Init(&gIrqMgr, &sGraphStackInfo, Z_PRIORITY_IRQMGR, 1);
@@ -58,9 +50,6 @@ void Game_Initialize(void) {
 
     StackCheck_Init(&sAudioStackInfo, sAudioStack, sAudioStack + sizeof(sAudioStack), 0, 256, "audio");
     AudioMgr_Init(&gAudioMgr, sAudioStack + sizeof(sAudioStack), Z_PRIORITY_AUDIOMGR, 0xA, &gSchedContext, &gIrqMgr);
-
-    StackCheck_Init(&sPadMgrStackInfo, sPadMgrStack, sPadMgrStack + sizeof(sPadMgrStack), 0, 256, "padmgr");
-    PadMgr_Init(&gPadMgr, &sSiIntMsgQ, &gIrqMgr, 7, Z_PRIORITY_PADMGR, &sIrqMgrStack);
 
     AudioMgr_Unlock(&gAudioMgr);
 

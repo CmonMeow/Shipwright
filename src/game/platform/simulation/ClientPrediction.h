@@ -23,7 +23,6 @@ class ClientPrediction final {
     const Vec3& PendingCorrection() const;
     size_t PendingCommandCount() const;
     PlayerActionState PredictedActionState() const { return mPredictedActionState; }
-    float PredictedActionProgress() const;
     PlayerLocomotionMode PredictedLocomotionMode() const {
         return mPredictedLocomotionMode;
     }
@@ -56,6 +55,7 @@ class ClientPrediction final {
     PlayerActionState mPredictedActionState = PlayerActionState::Idle;
     float mPredictedActionRemainingSeconds = 0.0f;
     Vec3 mPredictedEvadeVelocity{};
+    MeleeAttackTiming mPredictedMeleeTiming{};
     PlayerLocomotionMode mPredictedLocomotionMode =
         PlayerLocomotionMode::Grounded;
 };

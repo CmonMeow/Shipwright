@@ -70,6 +70,9 @@ struct ArrowFireCommand {
     int32_t playerId = -1;
     uint32_t sequence = 0;
     uint32_t lifeEpoch = 0;
+    uint32_t clientTick = 0;
+    int16_t heading = 0;
+    int16_t aimPitch = 0;
 };
 
 struct ArrowFireDecision {
@@ -83,6 +86,8 @@ class ServerWorld final {
   public:
     using Clock = std::chrono::steady_clock;
 
+    explicit ServerWorld(int32_t defaultSceneId = 110);
+
     ServerWorldUpdate Advance(Clock::time_point now = Clock::now());
     void Reset();
 
@@ -95,6 +100,7 @@ class ServerWorld final {
     void SetPlayerCollisionQuery(SegmentCast segmentCast);
     void SetPlayerCollisionSceneQuery(CollisionSceneQuery collisionSceneQuery);
     void SetPlayerWaterSurfaceQuery(WaterSurfaceQuery waterSurfaceQuery);
+    void SetPlayerClimbSurfaceQuery(ClimbSurfaceQuery climbSurfaceQuery);
     bool SubmitPlayerCommand(const PlayerCommand& command);
     bool ExecuteWeaponSelection(const WeaponSelectionCommand& command);
     bool ConfigurePlayerLoadout(int32_t playerId, const PlayerLoadout& loadout);

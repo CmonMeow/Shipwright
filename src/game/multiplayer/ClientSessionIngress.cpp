@@ -96,7 +96,7 @@ bool ClientSessionIngress::AcceptCorpseState(
 
 bool ClientSessionIngress::AcceptFishingPresentation(
     const NetworkFishingPresentationPacket& packet) {
-    return mReplication.AcceptFishingPresentation(packet, mLocalPlayerId);
+    return mReplication.AcceptFishingPresentation(packet);
 }
 
 bool ClientSessionIngress::AcceptPlayerLifecycle(

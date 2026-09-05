@@ -12,8 +12,10 @@ namespace Game::Multiplayer {
 
 using RemoteOwnerRetirement = std::function<void(int32_t)>;
 
-// Applies admitted semantic remote-player state to client replicas and their
-// native actor presentation. It has no runtime, endpoint, or packet access.
+// Applies admitted semantic state to replica records and remote native actor
+// presentation. The owning player's replica remains available for
+// acknowledgement/reconciliation, but its visible body and fishing equipment
+// are presented by the original native actors.
 class NativeRemotePlayerPresentationController final {
   public:
     NativeRemotePlayerPresentationController(
@@ -23,7 +25,6 @@ class NativeRemotePlayerPresentationController final {
 
     void ApplyLifecycle(
         const Game::Client::RemotePlayerPresentationState& lifecycle,
-        int32_t localPlayerId,
         const RemoteOwnerRetirement& retireOwner);
     void ApplySnapshot(const Game::Simulation::PlayerSnapshot& snapshot,
                        double receivedSeconds);

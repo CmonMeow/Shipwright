@@ -6,7 +6,6 @@
 
 namespace Game::Replication {
 
-inline constexpr float kFishingRodTipOffsetLimit = 512.0f;
 inline constexpr float kFishingLureOffsetLimit = 5000.0f;
 inline constexpr float kFishingHookOffsetFromLureLimit = 64.0f;
 inline constexpr float kFishingRodBendLimit = 4.0f;
@@ -37,8 +36,6 @@ inline bool FishingPresentationPoseIsBounded(
         presentation.lineSpooled >= kFishingLinePointCount ||
         presentation.sinkingLureSegmentIndex >= 20 ||
         presentation.sinkingLureUnderwater > 1 ||
-        !insideRadius(presentation.rodTipOffset,
-                      kFishingRodTipOffsetLimit) ||
         !insideRadius(presentation.lureDrawOffset,
                       kFishingLureOffsetLimit) ||
         !finite(presentation.rodBendY) ||

@@ -50,6 +50,7 @@ struct NetworkPlayerInfo {
 class NetworkRuntime final {
   public:
     NetworkRuntime();
+    explicit NetworkRuntime(int32_t defaultGameplayScene);
     ~NetworkRuntime();
 
     NetworkRuntime(const NetworkRuntime&) = delete;
@@ -128,6 +129,7 @@ class NetworkRuntime final {
                    Game::Replication::ReplicationStreamKey streamKey = {});
 
     NetworkConnectionTransport mConnection;
+    int32_t mDefaultGameplayScene;
     ServerSessionManager mServerSessions;
     ServerAdministrationService mAdministration;
     PrivateChatService mPrivateChat;

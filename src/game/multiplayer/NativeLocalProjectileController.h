@@ -20,7 +20,8 @@ class NativeLocalProjectileController final {
 
     void ResetBindings();
     void BindPredictedArrow(Actor* actor, int32_t sceneId);
-    bool CommitArrowFire(Actor* actor, int32_t sceneId);
+    bool CommitArrowFire(Actor* actor, int32_t sceneId, uint32_t clientTick,
+                         int16_t heading, int16_t aimPitch);
     void UnbindPredictedArrow(Actor* actor);
 
     void ApplyAuthorityResult(

@@ -21,7 +21,8 @@ bool IsSaneCoordinate(float value) {
 NetworkPlayerLifecyclePacket ToPacket(
     const Game::Replication::ReplicatedPlayer& player, bool active) {
     return { player.playerId, player.entity.index, player.entity.generation,
-             player.sceneId, static_cast<unsigned char>(active ? 1 : 0) };
+             player.lifeEpoch, player.sceneId,
+             static_cast<unsigned char>(active ? 1 : 0) };
 }
 
 NetworkPlayerRespawnPacket ToRespawnPacket(
@@ -34,7 +35,8 @@ NetworkPlayerRespawnPacket ToRespawnPacket(
 }
 
 bool IsSane(const NetworkPlayerLifecyclePacket& packet) {
-    return packet.playerId >= 0 && packet.entityGeneration != 0 && packet.sceneId >= 0 &&
+    return packet.playerId >= 0 && packet.entityGeneration != 0 && packet.lifeEpoch != 0 &&
+           packet.sceneId >= 0 &&
            packet.sceneId < static_cast<int32_t>(NET_MAX_WORLD_LEVELS) && packet.active <= 1;
 }
 
@@ -58,7 +60,7 @@ bool Apply(const NetworkPlayerLifecyclePacket& packet,
 Game::Client::RemotePlayerPresentationState ToPresentationState(
     const NetworkPlayerLifecyclePacket& packet) {
     return { { packet.entityIndex, packet.entityGeneration }, packet.playerId,
-             packet.sceneId, packet.active != 0 };
+             packet.lifeEpoch, packet.sceneId, packet.active != 0 };
 }
 
 bool MatchesActiveLifetime(

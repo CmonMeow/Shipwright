@@ -43,7 +43,12 @@ class ServerIntentAdmission final {
     static constexpr uint64_t CooldownTicks(ServerIntentKind kind) {
         switch (kind) {
             case ServerIntentKind::Projectile:
-                return 9;
+                // Reliable native release edges can arrive together after
+                // transport jitter. Sequence admission rejects replayed
+                // releases; a tick cooldown would silently discard distinct
+                // arrows solely because the packets were delivered in one
+                // server frame.
+                return 0;
             case ServerIntentKind::Structure:
                 return 15;
             default:

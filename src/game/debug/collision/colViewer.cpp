@@ -563,7 +563,10 @@ void DrawAuthoritativePlayerCollision() {
                             G_MTX_MODELVIEW | G_MTX_LOAD | G_MTX_NOPUSH));
     dl.push_back(gsDPSetPrimColor(0, 0, 255, 96, 0, 255));
 
-    if (localPlayerHitRig.hasRenderedRig &&
+    const bool authoritativeLocalRig =
+        localCollisionPlayerId >= 0 &&
+        playerHitRigs.contains(localCollisionPlayerId);
+    if (!authoritativeLocalRig && localPlayerHitRig.hasRenderedRig &&
         localPlayerHitRig.snapshot.sceneId == gPlayState->sceneNum) {
         for (std::size_t index = 0;
              index < localPlayerHitRig.renderedRig.prisms.size(); ++index) {
@@ -573,7 +576,6 @@ void DrawAuthoritativePlayerCollision() {
     }
 
     for (const auto& [playerId, record] : playerHitRigs) {
-        if (playerId == localCollisionPlayerId) continue;
         if (record.snapshot.sceneId != gPlayState->sceneNum) continue;
         // Combat remains fixed-tick and server authoritative. The diagnostic
         // advances that same semantic pose only across the short interval
@@ -607,6 +609,11 @@ void DrawAuthoritativePlayerCollision() {
 void DrawColCheckList(std::vector<Gfx>& dl, Collider** objects, int32_t count) {
     for (int32_t colIndex = 0; colIndex < count; colIndex++) {
         Collider* col = objects[colIndex];
+        const Player* localPlayer = gPlayState ? GET_PLAYER(gPlayState) : nullptr;
+        if (localPlayer && localPlayer->authoritativeBodyHidden &&
+            col->actor == &localPlayer->actor) {
+            continue;
+        }
         switch (col->shape) {
             case COLSHAPE_JNTSPH: {
                 ColliderJntSph* jntSph = (ColliderJntSph*)col;
@@ -817,36 +824,44 @@ void RecordAuthoritativePlayerCollision(
         // character's current animation. Only authoritative state is replaced;
         // the most recent rendered rig remains valid until the next draw
         // refreshes it or its short lifetime expires.
-        PlayerCollisionRecord& record = playerHitRigs[playerId];
+        PlayerCollisionRecord& record = playerId == localCollisionPlayerId
+                                            ? localPlayerHitRig
+                                            : playerHitRigs[playerId];
         record.snapshot = snapshot;
         record.receivedAt = std::chrono::steady_clock::now();
     }
 }
 
 extern "C" void SetLocalCollisionPlayerId(int32_t playerId) {
+    if (localCollisionPlayerId != playerId) localPlayerHitRig = {};
     localCollisionPlayerId = playerId;
 }
 
-extern "C" void BeginRenderedPlayerCollision(int32_t playerId) {
+PlayerCollisionRecord* RenderedPlayerCollisionRecord(int32_t playerId) {
+    if (playerId == localCollisionPlayerId) return &localPlayerHitRig;
     const auto found = playerHitRigs.find(playerId);
-    if (found == playerHitRigs.end()) return;
-    found->second.renderedLimbs.fill(false);
+    return found == playerHitRigs.end() ? nullptr : &found->second;
+}
+
+extern "C" void BeginRenderedPlayerCollision(int32_t playerId) {
+    PlayerCollisionRecord* record = RenderedPlayerCollisionRecord(playerId);
+    if (record) record->renderedLimbs.fill(false);
 }
 
 extern "C" void RecordRenderedPlayerCollisionLimb(
     int32_t playerId, int32_t limbIndex, float x, float y, float z) {
-    const auto found = playerHitRigs.find(playerId);
-    if (found == playerHitRigs.end() || limbIndex <= PLAYER_LIMB_NONE ||
+    PlayerCollisionRecord* record = RenderedPlayerCollisionRecord(playerId);
+    if (!record || limbIndex <= PLAYER_LIMB_NONE ||
         limbIndex >= PLAYER_LIMB_MAX) {
         return;
     }
-    found->second.renderedLimbOrigins[limbIndex] = { x, y, z };
-    found->second.renderedLimbs[limbIndex] = true;
+    record->renderedLimbOrigins[limbIndex] = { x, y, z };
+    record->renderedLimbs[limbIndex] = true;
 }
 
 extern "C" void EndRenderedPlayerCollision(int32_t playerId) {
-    const auto found = playerHitRigs.find(playerId);
-    if (found != playerHitRigs.end()) BuildRenderedPlayerHitRig(found->second);
+    PlayerCollisionRecord* record = RenderedPlayerCollisionRecord(playerId);
+    if (record) BuildRenderedPlayerHitRig(*record);
 }
 
 extern "C" void BeginLocalRenderedPlayerCollision(void) {
@@ -871,7 +886,33 @@ void ClearAuthoritativePlayerCollision(void) {
     localPlayerHitRig = {};
 }
 
+bool ResolveRenderedBodyArrow(const Game::Simulation::ArrowBodyAttachment& attachment,
+                              Game::Simulation::Vec3& position, Game::Simulation::Vec3& direction) {
+    if (!gPlayState) return false;
+    const PlayerCollisionRecord* record = nullptr;
+    if (attachment.playerId == localCollisionPlayerId) {
+        record = &localPlayerHitRig;
+    } else {
+        const auto found = playerHitRigs.find(attachment.playerId);
+        if (found != playerHitRigs.end()) record = &found->second;
+    }
+    if (!record || record->snapshot.lifeEpoch != attachment.lifeEpoch ||
+        record->snapshot.sceneId != gPlayState->sceneNum) return false;
+
+    constexpr float renderedPoseLifetimeSeconds = 0.25f;
+    const bool renderedPoseCurrent = record->hasRenderedRig &&
+        std::chrono::duration<float>(std::chrono::steady_clock::now() -
+                                     record->renderedAt).count() <=
+            renderedPoseLifetimeSeconds;
+    const auto rig = renderedPoseCurrent
+        ? record->renderedRig
+        : Game::Simulation::BuildAuthoritativePlayerHitRig(record->snapshot);
+    return Game::Simulation::ResolveArrowOnBody(
+        attachment, rig, record->snapshot.headingRadians, position, direction);
+}
+
 void RemoveAuthoritativePlayerCollision(int32_t playerId) {
+    if (playerId == localCollisionPlayerId) localPlayerHitRig = {};
     playerHitRigs.erase(playerId);
 }
 

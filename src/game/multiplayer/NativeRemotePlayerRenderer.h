@@ -51,7 +51,7 @@ class NativeRemotePlayerRenderer final {
                       const NativePlayerPresentationState& state);
     void RetireCorpse(Game::Simulation::EntityId entity);
 
-    void Reconcile(PlayState* play);
+    void Reconcile(PlayState* play, int32_t localPlayerId);
     bool HasFishingPlayerInScene(int32_t sceneId) const;
     std::optional<NativePlayerWorldPosition> WorldPositionForPlayer(
         int32_t playerId) const;

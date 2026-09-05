@@ -7,7 +7,8 @@ namespace Game::Multiplayer::ProjectileNetworkAdapter {
 
 Game::Simulation::ArrowFireCommand ToCommand(
     const NetworkArrowFireIntentPacket& packet) {
-    return { -1, packet.sequence, packet.lifeEpoch };
+    return { -1, packet.sequence, packet.lifeEpoch, packet.clientTick,
+             packet.heading, packet.aimPitch };
 }
 
 NetworkProjectileStatePacket ToPacket(const Game::Simulation::ArrowSnapshot& arrow) {
@@ -22,7 +23,10 @@ NetworkProjectileStatePacket ToPacket(const Game::Simulation::ArrowSnapshot& arr
              static_cast<unsigned char>(arrow.active), NETWORK_PROJECTILE_ARROW, phase,
              arrow.projectileType, arrow.position.x, arrow.position.y, arrow.position.z,
              arrow.rotationX, arrow.rotationY, arrow.rotationZ,
-             arrow.velocity.x, arrow.velocity.y, arrow.velocity.z };
+             arrow.velocity.x, arrow.velocity.y, arrow.velocity.z, arrow.body.playerId,
+             arrow.body.lifeEpoch, static_cast<uint8_t>(arrow.body.region),
+             arrow.body.offset.x, arrow.body.offset.y, arrow.body.offset.z,
+             arrow.body.direction.x, arrow.body.direction.y, arrow.body.direction.z };
 }
 
 Game::Client::RemoteProjectileReplicaState ToPresentationState(
@@ -47,6 +51,9 @@ Game::Client::RemoteProjectileReplicaState ToPresentationState(
         packet.rotationX,
         packet.rotationY,
         packet.rotationZ,
+        { packet.bodyPlayerId, packet.bodyLifeEpoch, static_cast<Game::Simulation::PlayerHitRegion>(packet.bodyRegion),
+          { packet.bodyOffsetX, packet.bodyOffsetY, packet.bodyOffsetZ },
+          { packet.bodyDirectionX, packet.bodyDirectionY, packet.bodyDirectionZ } },
     };
 }
 
@@ -87,7 +94,11 @@ bool IsSane(const NetworkProjectileStatePacket& packet) {
            packet.phase <= NETWORK_ARROW_BLOCKED && packet.projectileType <= 8 &&
            saneFloat(packet.x) && saneFloat(packet.y) && saneFloat(packet.z) &&
            saneFloat(packet.velocityX) && saneFloat(packet.velocityY) &&
-           saneFloat(packet.velocityZ);
+           saneFloat(packet.velocityZ) && packet.bodyPlayerId >= -1 &&
+           packet.bodyRegion < Game::Simulation::kPlayerHitRegionCount &&
+           saneFloat(packet.bodyOffsetX) && saneFloat(packet.bodyOffsetY) && saneFloat(packet.bodyOffsetZ) &&
+           saneFloat(packet.bodyDirectionX) && saneFloat(packet.bodyDirectionY) && saneFloat(packet.bodyDirectionZ) &&
+           (packet.bodyPlayerId < 0 || (packet.bodyLifeEpoch != 0 && packet.phase == NETWORK_ARROW_STUCK && packet.bodyRegion != 0));
 }
 
 bool IsSane(const NetworkArrowFireIntentPacket& packet) {

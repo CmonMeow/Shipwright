@@ -21,6 +21,7 @@ struct ReplayActionState {
     Vec3 evadeVelocity{};
     PlayerActionState heldState = PlayerActionState::Idle;
     PlayerActionState primaryState = PlayerActionState::Idle;
+    MeleeAttackTiming meleeTiming{};
 };
 
 PlayerActionState PredictedStateFrom(const ReplayActionState& action) {
@@ -44,22 +45,24 @@ ReplayActionState ActionStateFrom(const PlayerSnapshot& snapshot) {
     const uint32_t elapsedTicks = snapshot.serverTick >= snapshot.actionStartTick
                                       ? snapshot.serverTick - snapshot.actionStartTick
                                       : 0;
+    const MeleeAttackTiming meleeTiming = MeleeAttackTimingFor(
+        snapshot.meleeAttackVariant, snapshot.selectedWeapon);
     switch (snapshot.actionState) {
         case PlayerActionState::PrimaryWindup:
             return { ReplayActionKind::PrimaryBusy,
-                     RemainingPhaseSeconds(kPrimaryWindupDurationTicks, elapsedTicks),
+                     RemainingPhaseSeconds(meleeTiming.windupTicks, elapsedTicks),
                      {}, PlayerActionState::Idle,
-                     PlayerActionState::PrimaryWindup };
+                     PlayerActionState::PrimaryWindup, meleeTiming };
         case PlayerActionState::PrimaryActive:
             return { ReplayActionKind::PrimaryBusy,
-                     RemainingPhaseSeconds(kPrimaryActiveDurationTicks, elapsedTicks),
+                     RemainingPhaseSeconds(meleeTiming.activeTicks, elapsedTicks),
                      {}, PlayerActionState::Idle,
-                     PlayerActionState::PrimaryActive };
+                     PlayerActionState::PrimaryActive, meleeTiming };
         case PlayerActionState::PrimaryRecovery:
             return { ReplayActionKind::PrimaryBusy,
-                     RemainingPhaseSeconds(kPrimaryRecoveryDurationTicks, elapsedTicks),
+                     RemainingPhaseSeconds(meleeTiming.recoveryTicks, elapsedTicks),
                      {}, PlayerActionState::Idle,
-                     PlayerActionState::PrimaryRecovery };
+                     PlayerActionState::PrimaryRecovery, meleeTiming };
         case PlayerActionState::Evading:
             return { ReplayActionKind::Evading,
                      RemainingPhaseSeconds(kEvadeDurationTicks, elapsedTicks),
@@ -76,7 +79,8 @@ ReplayActionState ActionStateFrom(const PlayerSnapshot& snapshot) {
 
 ReplayActionState ActionStateFromPrediction(PlayerActionState state,
                                             float remainingSeconds,
-                                            const Vec3& evadeVelocity) {
+                                            const Vec3& evadeVelocity,
+                                            MeleeAttackTiming meleeTiming) {
     if (state == PlayerActionState::JumpSlashing) {
         return { ReplayActionKind::JumpSlashing };
     }
@@ -91,21 +95,22 @@ ReplayActionState ActionStateFromPrediction(PlayerActionState state,
         state == PlayerActionState::PrimaryActive ||
         state == PlayerActionState::PrimaryRecovery) {
         return { ReplayActionKind::PrimaryBusy, remainingSeconds, {},
-                 PlayerActionState::Idle, state };
+                 PlayerActionState::Idle, state, meleeTiming };
     }
     return {};
 }
 
-float PrimaryPhaseDuration(PlayerActionState state) {
+float PrimaryPhaseDuration(PlayerActionState state,
+                           const MeleeAttackTiming& timing) {
     switch (state) {
         case PlayerActionState::PrimaryWindup:
-            return static_cast<float>(kPrimaryWindupDurationTicks) *
+            return static_cast<float>(timing.windupTicks) *
                    kPlayerSimulationTickSeconds;
         case PlayerActionState::PrimaryActive:
-            return static_cast<float>(kPrimaryActiveDurationTicks) *
+            return static_cast<float>(timing.activeTicks) *
                    kPlayerSimulationTickSeconds;
         case PlayerActionState::PrimaryRecovery:
-            return static_cast<float>(kPrimaryRecoveryDurationTicks) *
+            return static_cast<float>(timing.recoveryTicks) *
                    kPlayerSimulationTickSeconds;
         default:
             return 0.0f;
@@ -136,7 +141,8 @@ void AdvancePrimaryAction(ReplayActionState& action, float deltaSeconds) {
             action = {};
             return;
         }
-        action.remainingSeconds = PrimaryPhaseDuration(action.primaryState);
+        action.remainingSeconds = PrimaryPhaseDuration(
+            action.primaryState, action.meleeTiming);
         if (deltaSeconds <= 0.0f) return;
     }
 }
@@ -217,10 +223,15 @@ Vec3 ReplayCommand(const Vec3& position, const PlayerCommand& command,
     }
     if ((command.pressedActions & PLAYER_ACTION_PRIMARY) != 0 &&
         swordSelected) {
+        const MeleeAttackVariant variant = MeleeAttackVariantForCommand(command);
+        const MeleeAttackTiming timing =
+            MeleeAttackTimingFor(variant, predictionWeapon);
+        const PlayerActionState firstPhase = timing.windupTicks == 0
+            ? PlayerActionState::PrimaryActive
+            : PlayerActionState::PrimaryWindup;
         action = { ReplayActionKind::PrimaryBusy,
-                   PrimaryPhaseDuration(PlayerActionState::PrimaryWindup), {},
-                   PlayerActionState::Idle,
-                   PlayerActionState::PrimaryWindup };
+                   PrimaryPhaseDuration(firstPhase, timing), {},
+                   PlayerActionState::Idle, firstPhase, timing };
     } else if (swordSelected &&
                (command.heldActions & PLAYER_ACTION_BLOCK) != 0) {
         action = { ReplayActionKind::Held, 0.0f, {}, PlayerActionState::Blocking };
@@ -257,6 +268,7 @@ bool ClientPrediction::SeedAuthoritative(const PlayerSnapshot& authoritative) {
     mPredictedActionState = PredictedStateFrom(action);
     mPredictedActionRemainingSeconds = action.remainingSeconds;
     mPredictedEvadeVelocity = action.evadeVelocity;
+    mPredictedMeleeTiming = action.meleeTiming;
     mPredictedLocomotionMode = authoritative.locomotionMode;
     return true;
 }
@@ -276,14 +288,20 @@ void ClientPrediction::RecordCommand(const PlayerCommand& command,
     }
     ReplayActionState action = ActionStateFromPrediction(
         mPredictedActionState, mPredictedActionRemainingSeconds,
-        mPredictedEvadeVelocity);
-    mPredictedPosition = ReplayCommand(mPredictedPosition, command, deltaSeconds,
-                                       predictionWeapon,
-                                       mPredictedLocomotionMode,
-                                       action);
+        mPredictedEvadeVelocity, mPredictedMeleeTiming);
+    const Vec3 replayedPosition = ReplayCommand(
+        mPredictedPosition, command, deltaSeconds, predictionWeapon,
+        mPredictedLocomotionMode, action);
+    mPredictedPosition = command.hasReportedPose
+                             ? command.reportedPosition
+                             : replayedPosition;
+    if (command.hasReportedPose) {
+        mPredictedLocomotionMode = command.reportedLocomotionMode;
+    }
     mPredictedActionState = PredictedStateFrom(action);
     mPredictedActionRemainingSeconds = action.remainingSeconds;
     mPredictedEvadeVelocity = action.evadeVelocity;
+    mPredictedMeleeTiming = action.meleeTiming;
     mSamples.push_back({ command.sequence, command.lifeEpoch, command.sceneId,
                          mPredictedPosition,
                          command, deltaSeconds, predictionWeapon });
@@ -308,6 +326,8 @@ bool ClientPrediction::ReconcileInternal(const PlayerSnapshot& authoritative,
         !Sequence::IsNewer(sequence, mLastAcknowledgedSequence)) {
         return false;
     }
+    Vec3 acknowledgedPoseError{};
+    bool hasAcknowledgedPoseError = false;
     if (sequence != 0) {
         const auto acknowledged = std::find_if(
             mSamples.begin(), mSamples.end(), [&](const Sample& sample) {
@@ -315,6 +335,17 @@ bool ClientPrediction::ReconcileInternal(const PlayerSnapshot& authoritative,
                        sample.sceneId == sceneId;
             });
         if (acknowledged != mSamples.end()) {
+            if (acknowledged->command.hasReportedPose) {
+                acknowledgedPoseError = {
+                    authoritativePosition.x -
+                        acknowledged->command.reportedPosition.x,
+                    authoritativePosition.y -
+                        acknowledged->command.reportedPosition.y,
+                    authoritativePosition.z -
+                        acknowledged->command.reportedPosition.z
+                };
+                hasAcknowledgedPoseError = true;
+            }
             mSamples.erase(mSamples.begin(), std::next(acknowledged));
         } else {
             // A snapshot can acknowledge a command whose sample was evicted during
@@ -333,11 +364,20 @@ bool ClientPrediction::ReconcileInternal(const PlayerSnapshot& authoritative,
     ReplayActionState replayAction = ActionStateFrom(authoritative);
     for (const Sample& sample : mSamples) {
         if (sample.lifeEpoch != lifeEpoch || sample.sceneId != sceneId) continue;
-        reconciledPosition = ReplayCommand(reconciledPosition, sample.command,
-                                           sample.deltaSeconds,
-                                           sample.predictionWeapon,
-                                           authoritative.locomotionMode,
-                                           replayAction);
+        const Vec3 replayedPosition = ReplayCommand(
+            reconciledPosition, sample.command, sample.deltaSeconds,
+            sample.predictionWeapon, authoritative.locomotionMode,
+            replayAction);
+        if (sample.command.hasReportedPose) {
+            reconciledPosition = sample.command.reportedPosition;
+            if (hasAcknowledgedPoseError) {
+                reconciledPosition.x += acknowledgedPoseError.x;
+                reconciledPosition.y += acknowledgedPoseError.y;
+                reconciledPosition.z += acknowledgedPoseError.z;
+            }
+        } else {
+            reconciledPosition = replayedPosition;
+        }
     }
     mCorrection = { reconciledPosition.x - currentPredictedPosition.x,
                     reconciledPosition.y - currentPredictedPosition.y,
@@ -354,6 +394,7 @@ bool ClientPrediction::ReconcileInternal(const PlayerSnapshot& authoritative,
     mPredictedActionState = PredictedStateFrom(replayAction);
     mPredictedActionRemainingSeconds = replayAction.remainingSeconds;
     mPredictedEvadeVelocity = replayAction.evadeVelocity;
+    mPredictedMeleeTiming = replayAction.meleeTiming;
     return true;
 }
 
@@ -405,6 +446,7 @@ void ClientPrediction::Reset(uint32_t lifeEpoch) {
     mPredictedActionState = PlayerActionState::Idle;
     mPredictedActionRemainingSeconds = 0.0f;
     mPredictedEvadeVelocity = {};
+    mPredictedMeleeTiming = {};
     mPredictedLocomotionMode = PlayerLocomotionMode::Grounded;
     mLifeEpoch = lifeEpoch;
 }
@@ -415,33 +457,6 @@ const Vec3& ClientPrediction::PendingCorrection() const {
 
 size_t ClientPrediction::PendingCommandCount() const {
     return mSamples.size();
-}
-
-float ClientPrediction::PredictedActionProgress() const {
-    const auto progressWithin = [&](float duration) {
-        if (duration <= 0.0f) return 0.0f;
-        return std::clamp(1.0f - mPredictedActionRemainingSeconds / duration,
-                          0.0f, 1.0f);
-    };
-    switch (mPredictedActionState) {
-        case PlayerActionState::PrimaryWindup:
-            return 0.2f * progressWithin(
-                PrimaryPhaseDuration(PlayerActionState::PrimaryWindup));
-        case PlayerActionState::PrimaryActive:
-            return 0.2f + 0.45f * progressWithin(
-                PrimaryPhaseDuration(PlayerActionState::PrimaryActive));
-        case PlayerActionState::PrimaryRecovery:
-            return 0.65f + 0.35f * progressWithin(
-                PrimaryPhaseDuration(PlayerActionState::PrimaryRecovery));
-        case PlayerActionState::Evading:
-            return progressWithin(static_cast<float>(kEvadeDurationTicks) *
-                                  kPlayerSimulationTickSeconds);
-        case PlayerActionState::Blocking:
-        case PlayerActionState::Aiming:
-            return 1.0f;
-        default:
-            return 0.0f;
-    }
 }
 
 } // namespace Game::Simulation

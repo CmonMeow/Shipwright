@@ -20,7 +20,8 @@ inline bool SampleAuthoritativeMeleeWeaponSegment(
     const PlayerSnapshot& player, AuthoritativeMeleeWeaponSegment& segment) {
     const bool attacking =
         player.actionState == PlayerActionState::PrimaryActive ||
-        player.actionState == PlayerActionState::JumpSlashing;
+        player.actionState == PlayerActionState::JumpSlashing ||
+        player.actionState == PlayerActionState::SpinAttacking;
     if (!attacking || (player.selectedWeapon != 1 && player.selectedWeapon != 2)) {
         return false;
     }

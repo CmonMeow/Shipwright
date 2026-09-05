@@ -20,12 +20,14 @@ std::vector<CombatReplicationBatch> CombatReplicationSystem::BuildBatches(
     for (const Simulation::CombatResultEvent& result : results) {
         const auto target = playerByOwner.find(result.targetPlayerId);
         if (target == playerByOwner.end() || target->second->entity != result.targetEntity ||
+            target->second->lifeEpoch != result.targetLifeEpoch ||
             target->second->sceneId != result.sceneId) {
             continue;
         }
         if (result.sourcePlayerId >= 0) {
             const auto source = playerByOwner.find(result.sourcePlayerId);
             if (source == playerByOwner.end() || source->second->entity != result.sourceEntity ||
+                source->second->lifeEpoch != result.sourceLifeEpoch ||
                 source->second->sceneId != result.sceneId) {
                 continue;
             }

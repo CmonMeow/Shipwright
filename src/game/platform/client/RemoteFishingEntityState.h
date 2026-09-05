@@ -26,6 +26,7 @@ struct RemoteFishEntity {
     float z = 0.0f;
     float length = 0.0f;
     Simulation::FishSpecies species = Simulation::FishSpecies::HylianBass;
+    uint32_t ownerLifeEpoch = 0;
     bool active = false;
 };
 
@@ -38,6 +39,7 @@ struct RemoteLureEntity {
     float z = 0.0f;
     uint8_t phase = 0;
     uint8_t lureType = 0;
+    uint32_t ownerLifeEpoch = 0;
     bool active = false;
 };
 
@@ -68,6 +70,7 @@ class RemoteFishingEntityState final {
     std::optional<Simulation::EntityId> EntityForFish(
         const RemoteFishIdentity& identity) const;
     std::optional<int32_t> OwnerForFish(const RemoteFishIdentity& identity) const;
+    bool HasEntityInScene(int32_t sceneId) const;
 
     void RemoveOwner(int32_t ownerPlayerId);
     void Reset();

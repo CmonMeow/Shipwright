@@ -12,13 +12,21 @@ struct LocalPlayerInputSample {
     uint32_t clientTick = 0;
     uint32_t lifeEpoch = 0;
     int32_t sceneId = -1;
+    // Native OoT stick axis: positive is left, negative is right.
     float moveX = 0.0f;
     float moveY = 0.0f;
     float headingRadians = 0.0f;
     float aimPitchRadians = 0.0f;
     uint16_t heldActions = 0;
     uint16_t pressedActions = 0;
+    Simulation::MeleeAttackVariant meleeAttackVariant =
+        Simulation::MeleeAttackVariant::RightSlash;
+    bool hasMeleeAttackVariant = false;
     uint8_t selectedWeapon = 0;
+    Simulation::Vec3 position{};
+    Simulation::PlayerLocomotionMode locomotionMode =
+        Simulation::PlayerLocomotionMode::Grounded;
+    bool hasPose = false;
 };
 
 struct LocalWeaponSelectionRequest {
@@ -47,7 +55,8 @@ class LocalPlayerCommandStream final {
     LocalPlayerCommandSubmission Submit(
         const LocalPlayerInputSample& sample, float sampleDeltaSeconds,
         const LocalPlayerCommandSender& sender,
-        Simulation::ClientPrediction& prediction);
+        Simulation::ClientPrediction& prediction,
+        bool predictMovement = true);
     std::optional<LocalWeaponSelectionRequest> PrepareWeaponSelection(uint8_t selectedWeapon);
     void ResolveWeaponSelection(uint32_t sequence, bool sent);
     void ObserveAuthoritativeWeapon(uint8_t selectedWeapon, uint32_t serverTick);

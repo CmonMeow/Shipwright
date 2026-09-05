@@ -23,6 +23,9 @@ struct LocalProjectilePresentation {
 struct LocalProjectileIntent {
     LocalProjectileIntentKind kind = LocalProjectileIntentKind::FireArrow;
     uint32_t sequence = 0;
+    uint32_t clientTick = 0;
+    int16_t heading = 0;
+    int16_t aimPitch = 0;
     int32_t sceneId = -1;
 };
 
@@ -50,7 +53,8 @@ class LocalProjectileIntentStream final {
 
     bool BindPresentation(const LocalProjectilePresentation& presentation);
     bool RequestArrowFire(LocalProjectilePresentationId presentationId,
-                          int32_t sceneId);
+                          int32_t sceneId, uint32_t clientTick,
+                          int16_t heading, int16_t aimPitch);
     bool Retire(LocalProjectilePresentationId presentationId);
     std::optional<LocalProjectileIntent> NextIntent();
 
@@ -78,6 +82,9 @@ class LocalProjectileIntentStream final {
     struct Record {
         LocalProjectilePresentation presentation{};
         int32_t authoritativeProjectileId = 0;
+        uint32_t arrowFireClientTick = 0;
+        int16_t arrowFireHeading = 0;
+        int16_t arrowFireAimPitch = 0;
         bool arrowFireRequested = false;
         bool arrowFireSubmitted = false;
     };

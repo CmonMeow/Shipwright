@@ -21,13 +21,17 @@ bool LocalProjectileIntentStream::BindPresentation(
 }
 
 bool LocalProjectileIntentStream::RequestArrowFire(
-    LocalProjectilePresentationId presentationId, int32_t sceneId) {
+    LocalProjectilePresentationId presentationId, int32_t sceneId,
+    uint32_t clientTick, int16_t heading, int16_t aimPitch) {
     const auto found = mRecords.find(presentationId);
     if (found == mRecords.end() || sceneId < 0 || sceneId >= 4096 ||
         found->second.presentation.sceneId != sceneId ||
         found->second.arrowFireRequested || found->second.arrowFireSubmitted) {
         return false;
     }
+    found->second.arrowFireClientTick = clientTick;
+    found->second.arrowFireHeading = heading;
+    found->second.arrowFireAimPitch = aimPitch;
     found->second.arrowFireRequested = true;
     return true;
 }
@@ -59,6 +63,9 @@ std::optional<LocalProjectileIntent> LocalProjectileIntentStream::NextIntent() {
         intent.sceneId = record.presentation.sceneId;
         if (!record.arrowFireRequested || record.arrowFireSubmitted) continue;
         intent.kind = LocalProjectileIntentKind::FireArrow;
+        intent.clientTick = record.arrowFireClientTick;
+        intent.heading = record.arrowFireHeading;
+        intent.aimPitch = record.arrowFireAimPitch;
 
         intent.sequence = TakeSequence();
         mPending = PendingIntent{ presentationId, intent };

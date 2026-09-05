@@ -80,12 +80,12 @@
       <UseFullPaths>false</UseFullPaths>
       <UseStandardPreprocessor>true</UseStandardPreprocessor>
       <WarningLevel>Level3</WarningLevel>
-      <PreprocessorDefinitions>%(PreprocessorDefinitions);NDEBUG;INCLUDE_GAME_PRINTF;F3DEX_GBI_2;UNICODE;_UNICODE;_CRT_SECURE_NO_WARNINGS;NOMINMAX;CVAR_PREFIX_SETTING="gSettings";CVAR_PREFIX_WINDOW="gOpenWindows";CVAR_PREFIX_GENERAL="gGeneral";CVAR_VSYNC_ENABLED="gSettings.VsyncEnabled";CVAR_Z_FIGHTING_MODE="gSettings.ZFightingMode";CVAR_INTERNAL_RESOLUTION="gSettings.InternalResolution";CVAR_MSAA_VALUE="gSettings.MSAAValue";CVAR_TEXTURE_FILTER="gSettings.TextureFilter";CVAR_AUDIO_CHANNELS_SETTING="gAudioChannelsSetting";CONTROLLERBUTTONS_T=uint32_t;_FILE_OFFSET_BITS=64;SPDLOG_COMPILED_LIB;SPDLOG_FMT_EXTERNAL</PreprocessorDefinitions>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);NDEBUG;INCLUDE_GAME_PRINTF;F3DEX_GBI_2;UNICODE;_UNICODE;_CRT_SECURE_NO_WARNINGS;NOMINMAX;CVAR_PREFIX_SETTING="gSettings";CVAR_PREFIX_WINDOW="gOpenWindows";CVAR_PREFIX_GENERAL="gGeneral";CVAR_VSYNC_ENABLED="gSettings.VsyncEnabled";CVAR_Z_FIGHTING_MODE="gSettings.ZFightingMode";CVAR_INTERNAL_RESOLUTION="gSettings.InternalResolution";CVAR_MSAA_VALUE="gSettings.MSAAValue";CVAR_TEXTURE_FILTER="gSettings.TextureFilter";CVAR_AUDIO_CHANNELS_SETTING="gAudioChannelsSetting";_FILE_OFFSET_BITS=64;SPDLOG_COMPILED_LIB;SPDLOG_FMT_EXTERNAL</PreprocessorDefinitions>
       <ObjectFileName>$(IntDir)</ObjectFileName>
       <ScanSourceForModuleDependencies>false</ScanSourceForModuleDependencies>
     </ClCompile>
     <ResourceCompile>
-      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;NDEBUG;INCLUDE_GAME_PRINTF;F3DEX_GBI_2;UNICODE;_UNICODE;_CRT_SECURE_NO_WARNINGS;NOMINMAX;CVAR_PREFIX_SETTING=\"gSettings\";CVAR_PREFIX_WINDOW=\"gOpenWindows\";CVAR_PREFIX_GENERAL=\"gGeneral\";CVAR_VSYNC_ENABLED=\"gSettings.VsyncEnabled\";CVAR_Z_FIGHTING_MODE=\"gSettings.ZFightingMode\";CVAR_INTERNAL_RESOLUTION=\"gSettings.InternalResolution\";CVAR_MSAA_VALUE=\"gSettings.MSAAValue\";CVAR_TEXTURE_FILTER=\"gSettings.TextureFilter\";CVAR_AUDIO_CHANNELS_SETTING=\"gAudioChannelsSetting\";CONTROLLERBUTTONS_T=uint32_t;_FILE_OFFSET_BITS=64;SPDLOG_COMPILED_LIB;SPDLOG_FMT_EXTERNAL</PreprocessorDefinitions>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;NDEBUG;INCLUDE_GAME_PRINTF;F3DEX_GBI_2;UNICODE;_UNICODE;_CRT_SECURE_NO_WARNINGS;NOMINMAX;CVAR_PREFIX_SETTING=\"gSettings\";CVAR_PREFIX_WINDOW=\"gOpenWindows\";CVAR_PREFIX_GENERAL=\"gGeneral\";CVAR_VSYNC_ENABLED=\"gSettings.VsyncEnabled\";CVAR_Z_FIGHTING_MODE=\"gSettings.ZFightingMode\";CVAR_INTERNAL_RESOLUTION=\"gSettings.InternalResolution\";CVAR_MSAA_VALUE=\"gSettings.MSAAValue\";CVAR_TEXTURE_FILTER=\"gSettings.TextureFilter\";CVAR_AUDIO_CHANNELS_SETTING=\"gAudioChannelsSetting\";_FILE_OFFSET_BITS=64;SPDLOG_COMPILED_LIB;SPDLOG_FMT_EXTERNAL</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>$(RepoRoot)src\game\assets;$(RepoRoot)src\game\include;$(RepoRoot)src\game\src;$(RepoRoot)src\game;$(RepoRoot)src\game\..\engine\include;$(RepoRoot)src\engine\src;$(RepoRoot)src\engine\src\..\include;$(RepoRoot)third_party\stb;$(RepoRoot)third_party\threadpool\include;$(RepoRoot)third_party\prism;$(RepoRoot)third_party\prism\lib;$(RepoRoot)third_party\prism\src;$(RepoRoot)third_party\include;$(RepoRoot)third_party\include\opus;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
     <Midl>
@@ -390,9 +390,6 @@
     <ClCompile Include="$(RepoRoot)src\game\src\boot\yaz0.c">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="$(RepoRoot)src\game\src\boot\z_locale.c">
-      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
-    </ClCompile>
     <ClCompile Include="$(RepoRoot)src\game\src\boot\z_std_dma.c">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
     </ClCompile>
@@ -450,19 +447,10 @@
     <ClCompile Include="$(RepoRoot)src\game\src\code\code_8006C510.c">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="$(RepoRoot)src\game\src\code\code_800A9F30.c">
-      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
-    </ClCompile>
     <ClCompile Include="$(RepoRoot)src\game\src\code\code_800BB0A0.c">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
     </ClCompile>
     <ClCompile Include="$(RepoRoot)src\game\src\code\code_800C3C20.c">
-      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
-    </ClCompile>
-    <ClCompile Include="$(RepoRoot)src\game\src\code\code_800D2E30.c">
-      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
-    </ClCompile>
-    <ClCompile Include="$(RepoRoot)src\game\src\code\code_800D31A0.c">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
     </ClCompile>
     <ClCompile Include="$(RepoRoot)src\game\src\code\code_800E4FE0.c">
@@ -526,15 +514,6 @@
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
     </ClCompile>
     <ClCompile Include="$(RepoRoot)src\game\src\code\mtxuty-cvt.c">
-      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
-    </ClCompile>
-    <ClCompile Include="$(RepoRoot)src\game\src\code\padmgr.c">
-      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
-    </ClCompile>
-    <ClCompile Include="$(RepoRoot)src\game\src\code\padsetup.c">
-      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
-    </ClCompile>
-    <ClCompile Include="$(RepoRoot)src\game\src\code\padutils.c">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
     </ClCompile>
     <ClCompile Include="$(RepoRoot)src\game\src\code\printutils.c">
@@ -619,9 +598,6 @@
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
     </ClCompile>
     <ClCompile Include="$(RepoRoot)src\game\src\code\z_fcurve_data_skelanime.c">
-      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
-    </ClCompile>
-    <ClCompile Include="$(RepoRoot)src\game\src\code\z_frame_advance.c">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalOptions) /w</AdditionalOptions>
     </ClCompile>
     <ClCompile Include="$(RepoRoot)src\game\src\code\z_game_dlftbls.c">

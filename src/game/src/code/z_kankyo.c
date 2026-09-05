@@ -416,7 +416,6 @@ void Environment_Init(PlayState* play2, EnvironmentContext* envCtx, int32_t unus
     }
 
     gCustomLensFlareOn = false;
-    func_800AA15C();
 }
 
 uint8_t Environment_SmoothStepToU8(uint8_t* pvalue, uint8_t target, uint8_t scale, uint8_t step, uint8_t minStep) {
@@ -881,11 +880,6 @@ void Environment_Update(PlayState* play, EnvironmentContext* envCtx, LightContex
     uint16_t j;
     EnvLightSettings* lightSettingsList = play->envCtx.lightSettingsList;
 
-    if ((((void)0, gSaveContext.gameMode) != GAMEMODE_NORMAL) &&
-        (((void)0, gSaveContext.gameMode) != GAMEMODE_END_CREDITS)) {
-        Rumble_ClearRequests();
-    }
-
     {
         {
             if (play->skyboxId == SKYBOX_NORMAL_SKY) {
@@ -914,7 +908,7 @@ void Environment_Update(PlayState* play, EnvironmentContext* envCtx, LightContex
         if (gameOverCtx->state == GAMEOVER_INACTIVE) {
             if (((msgCtx->msgLength == 0) && (msgCtx->msgMode == 0)) ||
                 (((void)0, gSaveContext.gameMode) == GAMEMODE_END_CREDITS)) {
-                if ((envCtx->unk_1A == 0) && !FrameAdvance_IsEnabled(play) &&
+                if ((envCtx->unk_1A == 0) &&
                     (play->transitionMode == TRANS_MODE_OFF || ((void)0, gSaveContext.gameMode) != GAMEMODE_NORMAL)) {
 
                     if (IS_DAY || gTimeIncrement >= 0x190) {

@@ -1,5 +1,11 @@
 # Multiplayer gameplay platform
 
+This project is a multiplayer MMO platform, not a single-player game with an
+optional networking layer. The original single-player game is the behavioral
+reference for Link's mechanics, timing, collision, equipment, animation, and
+presentation. The dedicated server owns shared simulation state and outcomes;
+clients predict their own presentation and render authoritative replicas.
+
 The original actor system remains a useful renderer, animation library, collision world, and source of movement
 mechanics. It is not the authority for multiplayer game state. New gameplay code must follow the boundaries below.
 
@@ -143,15 +149,35 @@ include root or forwarding layer.
 1. **Input** samples raw keys and mouse state once, producing numbered player commands. A movement command contains
    held controls, edge-triggered actions, view direction, and the client simulation tick. Equipment selection is a
    separate reliable, server-confirmed intent. Local input edges exist for one controller sample only; a rejecting
-   animation state discards them instead of retaining them for a later action window.
+   animation state discards them instead of retaining them for a later action window. Native Link and the network
+   command stream consume the same native signed movement axes: A/left is positive, D/right is negative, and simultaneous
+   forward/strafe input remains diagonal instead of silently deleting one axis. Native PC Link gives the lateral
+   component animation priority on a digital diagonal; authoritative remote pose selection uses the same tie-break.
+   World integration follows Ocarina's `atan2(-x, y)` convention exactly, so positive/left stick input becomes negative
+   world X at zero heading instead of producing a server correction against native movement.
+   Movement constants are expressed per second but derived from native 20 Hz frame distances: normal and shielded
+   forward/lateral movement is 120 units/second, bow aim movement is 70, and pure backward parallel movement is 60.
 2. **Simulation** runs at a fixed tick independent of rendering. The server owns entity transforms, health, action
    transitions, collision results, projectiles, objectives, teams, rewards, death, and respawn. Ocarina actor
-   functions may implement mechanics, but they do not decide network authority.
+   functions are the behavioral reference for mechanics, but they do not decide network authority. Native traversal
+   observations are requests. Grounded, airborne, and swimming transforms are integrated from input by the server and
+   the corresponding client position is reconciliation data only. A reported climb may cross a wall only when the
+   dedicated server's collision geometry confirms a nearby ledge or ladder surface. Expired command samples also
+   expire their traversal observations instead of pinning durable multiplayer state.
+   Bow releases require a live input stream, consume one server-observed primary-button draw cycle, are replay-protected,
+   and pass a server-tick re-notch gate. Holding primary cannot renew the consumed permit; the server must observe a
+   release and a fresh draw before another shot. Distinct forged sequences cannot create multiple arrows in one
+   simulation instant, while duplicate delivery returns the
+   original authoritative decision.
 3. **Replication** sends entity creation/destruction reliably, transient commands/events reliably when loss changes
    gameplay, and periodic snapshots unreliably. Snapshots contain component state rather than copied C actor memory.
-4. **Presentation** maps authoritative entities to local Ocarina models and animations. The local player predicts
-   accepted movement and actions immediately, then reconciles against server acknowledgements. Remote entities are
-   interpolated from snapshots and never run local gameplay authority. Native Ocarina gameplay remains a fixed 20 Hz
+4. **Presentation** maps authoritative entities to local Ocarina models and animations. The owner renders native Link
+   as immediate client-side prediction so weapon selection, exact sword variants, bow draw/release, fishing cast,
+   rod flex, lure behavior, and animation timing remain identical to the single-player reference. That native actor
+   sends input intent and traversal observations, not authoritative transforms or hit results; admitted server
+   snapshots reconcile its position and project health, death, and respawn. The local player's delayed remote replica
+   remains in the replication store but is not spawned as a second actor. Every other player is rendered as an
+   interpolated authoritative replica and never runs local gameplay authority. Native Ocarina gameplay remains a fixed 20 Hz
    simulation; interpolation FPS controls only additional presents between native states. Interpolation sample counts
    are derived from the current native update rate rather than a second hard-coded clock. The renderer measures its
    real presentation cost and discards optional intermediate samples when they no longer fit inside the next fixed
@@ -165,6 +191,123 @@ include root or forwarding layer.
    local player's server respawn event, atomically rebases client command/projectile state to its life epoch, discards
    sampled native input edges, restores the three-heart native projection, and starts the scene transition. The former
    bridge-owned respawn suppression flag was dead state and has been removed.
+
+   Protocol v123 makes each connected player explicitly visible to itself in the player-interest graph. This establishes the same
+   generation- and life-epoch-checked state for owner reconciliation that observers receive. The owner does not spawn
+   that state as a second live actor; native Link supplies its predicted draw and local camera body until authoritative
+   death transfers presentation to the retained corpse. Native PvP hit results and ordinary actor collision remain
+   disabled for authority purposes, so prediction cannot create a second authoritative collider or projectile.
+   Each fixed server tick reconciles player visibility and emits reliable lifecycle changes before publishing
+   disposable snapshots. A respawn, scene change, or reused entity generation therefore cannot expose a new-life
+   snapshot before the client has established the exact presentation lifetime that is allowed to consume it.
+   Reliable combat outcomes carry both source and target entity generations and life epochs. Clients reject a delayed
+   hit, block, or impact when either participant has respawned, even though the persistent player entity itself is
+   intentionally reused across lives.
+
+   Protocol v128 preserves the native simulation tick on every player command and on the independently reliable arrow
+   fire intent. The reliable fire intent also carries the native binary-angle heading and pitch input from that exact
+   release frame. This is untrusted input metadata—not a client transform or authority claim—but gives the server an
+   exact causal sample timeline for command reconciliation, latency measurement, and future bounded lag-compensated
+   PvP validation instead of guessing from packet arrival. Arrow origin, direction, collision, and damage remain
+   server-owned.
+
+   Protocol v128 also gives every accepted melee action a nonzero, life-scoped server identity and derives its forward,
+   left, right, or third-strike combo variant from the causal movement sample. That identity and variant persist through
+   windup, active, and recovery snapshots. Remote animation and authoritative weapon geometry consume the same values;
+   clients cannot request an animation or invent a hit. While native fishing owns Link's body, the command stream sends
+   neutral movement so server locomotion cannot slide the actor underneath the fixed fishing pose.
+
+   Protocol v129 carries that life-scoped melee identity into every resulting damage or block event. Presentation,
+   collision, and the reliable combat outcome therefore name the same exact slash, allowing duplicate suppression and
+   later lag-compensation validation without guessing which nearby swing caused a hit.
+
+   Protocol v130 consumes an admitted native root pose once per command sequence. Ground, air, swim, and climb samples
+   cannot be advanced again merely because the dedicated server ticks faster than native gameplay. Slash collision and
+   presentation also use the original per-animation active-frame ranges for each sword and directional/combo variant.
+
+   Protocol v131 validates a climb once when its native traversal session begins, retains that authorization while the
+   root crosses the wall plane, and admits the single grounded completion sample before restoring ordinary wall sweeps.
+   Its original experiment with drawing the owner through the observer presentation actor was superseded by v140:
+   connected owners render native Link as their prediction body, while only remote players use reconstructed actors.
+
+   Protocol v132 derives lateral sword identity once in shared simulation code used by authority and prediction. OoT's
+   attack names describe blade travel: left movement produces a right slash, and right movement produces a left slash.
+   Combo identity, animation selection, weapon geometry, and combat results all retain that same server-assigned value.
+
+   Protocol v133 budgets admitted native root displacement from elapsed authoritative server ticks and
+   locomotion-specific speed envelopes. The client tick remains causal metadata and cannot mint movement budget by
+   jumping forward, while genuine packet gaps accrue only the server time that actually passed.
+
+   Protocol v134 distinguishes a consumed native pose sample from an admitted one. A rejected displacement remains
+   consumed for replay protection, but cannot advance authoritative locomotion phase or publish moving velocity while
+   that rejected command remains the latest disposable input sample.
+
+   Protocol v135 applies separate server-time speed envelopes to ordinary locomotion, swimming, evades, sword root
+   motion, airborne movement, and climbing. Ground/swim displacement that reverses both the current and immediately
+   preceding causal input direction is rejected, closing a bounded-speed reverse-motion authority bypass while retaining
+   legitimate sharp mouse turns and native collision sliding.
+
+   Protocol v136 gives zero-input native deceleration and environmental pushes a lower passive-drift envelope. Active
+   ground/swim displacement must remain inside the cone formed by the current or immediately preceding input heading;
+   a wider native wall-slide is admitted only when the dedicated collision world independently finds the intended path
+   blocked. Scalar-speed-compliant sideways drift can therefore no longer bypass movement authority in open space.
+
+   Protocol v137 turns climb permission into a server-refreshed spatial session. Only geometry adjacent to the current
+   authoritative root can begin or refresh a climb; a proposed destination cannot manufacture contact. When Link rises
+   above a ledge and contact disappears, authority permits only a short time- and distance-bounded completion corridor
+   from the last server-confirmed surface instead of retaining the 900 u/s climb envelope indefinitely.
+
+   Protocol v138 makes locomotion classification server-supported. Grounded native poses require nearby authoritative
+   floor geometry, swimming poses require the declared root to match a real deep-water surface, and ordinary airborne
+   entry requires the destination to have no floor support. Rejected positions no longer copy their client-reported
+   locomotion mode into shared state. Fallback gravity also matches native Link's -1.2/20 Hz acceleration and -20
+   terminal velocity instead of the former unrelated constants. Locomotion presentation uses native Link's measured
+   full-speed run-cycle distance, active evades cannot be reclassified as an immediate climb back onto the departed
+   ledge, and repeated attack packets no longer manufacture combo finishers that native Link did not perform. Player
+   water authority uses adult Link's native 56-unit root depth and permits the bounded one-time ledge setup displacement
+   needed to climb out of water instead of pulling a valid native swim pose back to the visible surface.
+
+   The owning client always renders native Link, exactly as offline play does. Authoritative snapshots reconcile that
+   actor's transform and vitals; the reconstructed player actor is reserved for remote players and retained corpses.
+   This keeps immediate equipment, traversal, and combat animation on the same native path while preserving server
+   authority over accepted movement and gameplay outcomes. Transform corrections are applied atomically at the start
+   of the native frame, before Actor_UpdateAll, so OoT collision processes the corrected pose in the same update; the
+   network layer never drifts Link after native floor, wall, water, and ledge collision has already run.
+
+   Protocol v140 carries the exact directional slash or combo identity selected by native Link on the causal primary
+   action edge. Authority validates the compact semantic value and still owns attack timing, hit geometry, and damage;
+   prediction, observers, and server collision now consume that same identity instead of guessing from movement axes.
+   Sword action edges are emitted when native Link actually enters a supported attack-start animation, including a
+   buffered follow-up, rather than whenever Windows reports a raw click that native gameplay may have rejected. The
+   server validates a reported combo against its preceding attacks but never promotes an ordinary slash into a combo.
+
+   Fishing follows the same authority split. The server-created lure and fish entities decide whether a cast, hook,
+   line, or caught fish exists. Disposable native telemetry only supplies bounded rod bend, lure ornament, and fish
+   animation details. Clients calculate a remote rod tip from the rod they actually render instead of transmitting
+   that world-space result, never draw a lure merely because the pole is selected, and create the native fish
+   presentation population whenever an authoritative lure or fish enters the scene. Cosmetic telemetry is reapplied
+   underneath current authoritative entities, so it cannot resurrect a removed lure or hooked state.
+
+   `PlayerSimulation` retains a bounded 64-sample input-intent history for each live player. When a reliable arrow
+   intent is overtaken by newer disposable movement, `ServerWorld` resolves heading and pitch from the exact admitted
+   client tick that produced the shot. If that disposable sample was lost, authority uses the same compact aim input
+   carried by the reliable action. It still uses the current authoritative player position and server projectile
+   simulation; packet loss or delayed delivery can no longer erase or rotate an otherwise valid shot.
+   A fire intent may look back no farther than eight native samples (400 ms), and cannot name a future or nonexistent
+   sample, so this metadata cannot select an arbitrary old aim. Scene changes, death/respawn, and player removal retire
+   the applicable history.
+
+   Reliable primary/evade edges likewise retain their complete admitted input sample when newer disposable movement
+   overtakes them. Authority uses the newest command for locomotion, but starts and holds the action using its causal
+   heading; evade direction comes from that same sample. Packet reordering therefore cannot turn a sword swing,
+   jump-slash, or backflip after the player issued it, and remote presentation consumes the same authoritative action
+   heading used by hit geometry.
+
+   Non-magic sword spin is an authoritative semantic transition rather than a client animation request. Holding
+   primary through the ordinary slash/recovery enters the native sword-charge hold; releasing a live input stream
+   starts `SpinAttacking`, locks its release heading, clears the per-action hit set, and drives the existing remote
+   spin animation and melee geometry. A timeout, scene/life transition, weapon change, swimming, or climbing cancels
+   the charge so a stale held input cannot trigger a delayed spin.
    `ClientSessionGenerationTracker` is the transport-to-client-state lifetime boundary. The first valid transport
    generation and every replacement generation require one complete reset of session-owned gameplay, replicas, and
    native bindings; repeated observations and invalid generation zero do not. Network telemetry setup and teardown
@@ -245,6 +388,9 @@ lifecycle.
 
 The current server systems divide ownership as follows:
 
+- Player admission is capped at 150 authoritative entities. Red, Blue, and Green each admit at most 50 members;
+  changing teams is checked against the same limit rather than merely changing a replicated color value.
+
 - `ServerWorld` owns all authoritative simulation systems and advances them from one capped 60 Hz accumulator.
   Projectile and fishing systems step every world tick; player movement/combat and objective capture step in fixed
   order every second tick at 30 Hz. `NetworkRuntime` submits commands and replicates the resulting snapshots/events;
@@ -290,7 +436,11 @@ The current server systems divide ownership as follows:
   through explicit `ServerWorld` operations and does not retain a projectile-system reference.
   Active arrows are indexed independently by server replication ID and by owner. Exact lookup, replay correlation,
   disconnect cleanup, replication-ID allocation, and the 99-stuck-arrow retention policy operate on those bounded
-  indexes; every destruction path removes all index entries before a registry slot can be reused.
+  indexes; every destruction path removes all index entries before a registry slot can be reused. An arrow lodged in
+  a player is bound to that exact life epoch. Death detaches it at the last authoritative impact pose using a reliable
+  semantic transition, rather than an expendable motion snapshot, so packet loss cannot leave an observer resolving
+  the arrow against a respawned body or hiding it forever. Corpse creation and all old-life arrow detachments publish
+  in the same server update as the death transition.
 - `FishingSimulation` owns generation-checked fish and lure entities, exclusive hook ownership, and server-validated
   hook and release transitions. Clients send compact deployed/reel controls rather than coordinates. The 60 Hz server
   simulation owns cast velocity, gravity, water entry, terrain collision, reeling, hook state, and removal; native
@@ -316,7 +466,9 @@ The current server systems divide ownership as follows:
   `FishingSimulation::RemoveIneligibleOwners` sweep builds an eligible-owner set and visits each fish/lure once, so
   cleanup scales with players plus entities rather than scanning all fishing entities once per player. Transport and
   life-event presentation no longer mutate this gameplay state.
-  Active fish are indexed by stable fish identity and owner, and active lures are indexed by owner. Hook admission,
+  Every fish and lure records its owner's nonzero player life epoch. Eligibility, simulation, and presentation require
+  both the numeric owner and that exact incarnation, so respawning or reusing a player slot cannot inherit delayed
+  fishing state. Active fish are indexed by stable fish identity and owner, and active lures are indexed by owner. Hook admission,
   release, owner queries, and lure controls therefore perform direct authoritative lookups rather than linear entity
   scans. Replication consumes one bulk lure snapshot, avoiding the former player-by-lure quadratic publication pass.
   Network code likewise reaches lure/fish commands, snapshots, and lifecycle drains through `ServerWorld`; disconnect
@@ -338,7 +490,8 @@ The current server systems divide ownership as follows:
   queues; it does not interpret simulation events or duplicate their observer rules.
 - `FishingPresentationRelay` keeps untrusted rod, line, and hooked-fish pose telemetry in the replication layer rather
   than authoritative `ServerWorld`. Each cosmetic sample is bound to the exact live player generation, scene, and
-  fishing loadout; reconciliation drops it on death, scene transition, weapon change, replacement, or disconnect.
+  life epoch as well as the fishing loadout; reconciliation drops it on death, respawn, scene transition, weapon
+  change, replacement, or disconnect.
   It can influence only remote rendering and cannot mutate fish, lure, player, or combat simulation. Shared
   presentation bounds reject extreme rod transforms, rotations, line values, and hook offsets at packet ingress and
   again after the server replaces the client lure offset with its authoritative lure position. A client therefore
@@ -351,9 +504,10 @@ The current server systems divide ownership as follows:
   `ReplicationCadence`, and invokes typed publication callbacks in deterministic player/combat/world-event/life order.
   Combat queues drain exactly once per host update: before projectile publication on 30 Hz player ticks, or afterward
   on odd 60 Hz projectile-only ticks. Reset clears cadence without creating transport or presentation state.
-- `PlayerReplicationSystem` owns observer-to-player visibility and the exact entity lifetime visible in each pair.
+- `PlayerReplicationSystem` owns observer-to-player visibility and the exact entity/life-epoch incarnation visible in
+  each pair.
   It uses the shared `SpatialGridIndex` for coarse candidates, deterministically emits reliable enter/leave transitions,
-  emits leave-before-enter when a player ID changes generation, and scopes high-rate player and cosmetic fishing-pose
+  emits leave-before-enter when a player ID changes generation or respawns, and scopes high-rate player and cosmetic fishing-pose
   replication. There is no parallel player-visibility map outside the coordinator.
 - `OwnedEntityReplicationSystem` extends the same observer model to player-owned entities. It owns arrow,
   hooked-fish, and lure visibility, emits deterministic reliable enter/leave transitions, and retains the exact
@@ -415,12 +569,16 @@ The current server systems divide ownership as follows:
 - `CorpseSimulation` owns generation-checked corpse entities. A death event carries the exact source player entity,
   life epoch, scene, pose, and equipment; `ServerWorld` creates the retained corpse in that same authoritative
   transaction, and spatial-interest reconciliation emits reliable enter/remove lifecycles. Respawn never creates or
-  mutates the old body. It retains at most 99 corpses per scene and removes the oldest through normal entity
-  destruction; corpse identity is never encoded as a negative player ID or sent through a mutable player-state packet.
+  mutates the old body. Creation is idempotent by exact source player entity generation and life epoch, so replaying a
+  death cannot allocate a second body or consume the scene budget twice. It retains at most 99 corpses per scene and
+  removes the oldest through normal entity destruction; corpse identity is never encoded as a negative player ID or
+  sent through a mutable player-state packet.
   On each client, `CorpsePresentationRegistry` indexes that lifetime both by corpse entity and by the exact source
   player entity/life epoch. The retained corpse exclusively owns that incarnation's body presentation: matching local
   and remote live-player meshes are suppressed without retiring their semantic player replicas, while a newer respawn
-  epoch is visible immediately and the old corpse remains independently retained.
+  epoch is visible immediately and the old corpse remains independently retained. Native Link's combined
+  death/rebirth animation is stopped at frame 84 for remote deaths and retained corpses, matching local Player behavior;
+  a respawn can never advance an old body into the rebirth portion of that asset.
 - `ServerWorldManagement` is the administrative mutation boundary for scene-spawn configuration, transition
   authorization, and objective/structure creation and removal. A successful spatial mutation publishes exactly one
   replication-interest refresh before returning; a rejected removal neither changes authoritative state nor emits a
@@ -540,6 +698,9 @@ to silence and is logged once; missing audio data must never terminate the clien
   objectives, and world changes are server decisions.
 - Reconciliation rewinds the local predicted state to the acknowledged server state and reapplies unacknowledged
   commands. Presentation smoothing hides small corrections without changing collision state.
+- Owner melee presentation consumes the same predicted semantic action timeline observers receive from authority.
+  The timeline may terminate a rejected or completed native swing, but accepted swings retain Ocarina's native
+  animation clock; network samples never seek or freeze the owner's skeleton frames.
 
 ## Migration order
 
@@ -556,8 +717,11 @@ to silence and is logged once; missing audio data must never terminate the clien
 The authority audit leaves a narrow native rendering boundary that must not be expanded with gameplay rules:
 
 - Player lifecycle establishes identity and scene, while `NetworkPlayerSnapshotPacket` supplies every movement,
-  equipment, action, aim, health, and animation semantic needed to render Link. There is no general client-authored
-  player presentation stream; native model groups and animations are selected locally at the final actor boundary.
+  equipment, action, aim, and health semantic needed to render Link. The native client also samples Link's exact
+  skeleton into the ordinary command/snapshot stream. Equipment, shield visibility, bow readiness, and death visuals
+  are derived from server-owned weapon, action, and health state; clients cannot override those semantics with native
+  renderer values. The skeleton can only affect rendering, while server movement, collision, action admission,
+  projectiles, and damage use the deterministic authoritative pose.
 - Fishing line, rod, lure, and fish pose data is presentation telemetry. Fish identity/hook ownership and lure motion
   are authoritative; hook/release no longer use generic actor events, and clients cannot submit lure coordinates.
   Wire telemetry is validated, generation-gated, ordered, and converted to protocol-independent
@@ -698,6 +862,10 @@ Holding primary fire with the bow now enters the server's aiming state even with
 remote bow-ready presentation follows the same deterministic command state as projectile admission rather than
 untrusted pose telemetry.
 
+Protocol v119 applies that rule to the consolidated player command/snapshot format: the redundant model group, item
+action, and shielding flag are absent from both directions. Exact joint telemetry remains optional visual data, while
+the final native renderer maps authoritative `selectedWeapon` and `actionState` to equipment and guard presentation.
+
 Scene admission follows the same boundary. `SceneTransitionAuthority` owns configured server spawns, default fallback,
 per-player request sequence floors, and accepted/rejected decisions. `SceneNetworkAdapter` owns intent/state sanity and
 snapshot-to-wire mapping. The runtime applies accepted decisions to `ServerWorld`, clears scene-bound fishing state, and
@@ -721,7 +889,8 @@ reconstructs `NetworkSceneEntryStatePacket`.
 Reliable player lifecycle packets are validated by `PlayerLifecycleNetworkAdapter` and applied to
 `EntityLifetimeRegistry`. The client inbox immediately converts each admitted lifecycle into a protocol-independent
 `RemotePlayerPresentationState`; runtime, the dedicated-server drain, tests, and the native gameplay bridge do not
-consume the wire packet. Semantic packets such as combat results must match that exact active generation. A stale
+consume the wire packet. The semantic state retains both entity generation and life epoch. Semantic packets such as
+combat results must match that exact active incarnation. A stale
 retirement cannot erase its successor, and malformed lifecycle packets never reach the presentation bridge.
 
 `PlayerSimulationNetworkAdapter` is the command/snapshot boundary between binary-angle, compact-input wire packets and
@@ -1149,16 +1318,18 @@ buffer. Native actor updates consume the time-derived pose directly; they no lon
 packet per frame, so render/update cadence does not alter remote movement speed or latency.
 
 `RemotePlayerPresentationRegistry` owns the final client render lifetime after inbox admission. Live render records
-are keyed by the authoritative player `EntityId`, while player ID remains ownership/name metadata. A private positive
+are keyed by the authoritative player `EntityId` and retain its life epoch, while player ID remains ownership/name
+metadata. A private positive
 `int16_t` handle is allocated only for the native Actor spawn API and is never sent over the network; therefore large
-server player IDs are neither truncated nor rejected at the renderer boundary. Replacing a player generation reuses
+server player IDs are neither truncated nor rejected at the renderer boundary. Replacing a player generation or
+advancing the life epoch reuses
 the private handle, retires the exact old Actor and its owner-scoped fishing/projectile presentation, and prevents that
 Actor's delayed destroy callback from clearing its successor. Same-slot stale generations, conflicting owners, and
 wrong-generation retirements are rejected. The bridge's duplicated `entityIndex`, `entityGeneration`,
 `hasEntityIdentity`, and player-ID-as-Actor-parameter paths are deleted.
 
 `RemotePlayerReplicaStore` composes that exact lifetime with the latest protocol-independent `PlayerSnapshot`, motion
-interpolation, and fishing-presentation interpolation. Scene changes, generation replacement, and retirement reset or
+interpolation, and fishing-presentation interpolation. Scene changes, respawn, generation replacement, and retirement reset or
 erase the complete replica atomically; stale server ticks and prior life epochs are rejected inside the store as well
 as at the wire inbox. Native Actor resources remain downstream of this store and no longer create a second
 snapshot/interpolation lifetime that can outlive or disagree with the authoritative presentation registry.
@@ -1258,10 +1429,22 @@ from an older connection cannot replace or remove its successor. `NetworkPlayerS
 only player movement/action/health authority. Protocol v67 subsequently removed the generic presentation packet;
 `NetworkFishingPresentationPacket` remains the optional high-volume rod/line/fish-pose stream.
 
+Protocol v120 makes the player life epoch part of reliable player visibility and every replicated fishing stream.
+Observers now receive a reliable leave-before-enter boundary when the same player entity respawns, while fish, lure,
+and fishing-presentation packets are admitted only for the currently established incarnation. Delayed activity from a
+dead life can retire its exact old entity but cannot establish visuals or ownership in the new life.
+
+Protocol v121 removes client-authored native joint tables from player commands and snapshots. Remote Link now selects
+the original native animations from server-authoritative weapon, locomotion, and action state. Combat and locomotion
+frames are sampled from server clocks; all phases of one swing share a stable action identity so phase transitions do
+not restart or morph the animation.
+This prevents a modified client from visually hiding an attack or block and reduces each player command from 181 to
+36 bytes.
+
 | Group | Current fields | Destination |
 | --- | --- | --- |
 | Server simulation | position, heading, aim, velocity, health, action state | `NetworkPlayerSnapshotPacket` only |
-| Native presentation | model/equipment choice, animation, bow draw pose | derived locally from `NetworkPlayerSnapshotPacket` semantics |
+| Native presentation | animation selection and phase | derived locally from authoritative equipment, locomotion, action state, and action clock |
 | Fishing presentation | rod, line, lure draw transforms, hooked-fish animation pose | `NetworkFishingPresentationPacket`; lure/fish identity and position remain simulation-owned |
 | Superseded gameplay telemetry | client life/action flags | deleted; melee state/base/tip were removed in protocol v55 |
 
@@ -1278,12 +1461,13 @@ Client prediction uses `ClientPrediction`: every accepted local command retains 
 scene, normalized input, heading, actions, and measured command-frame duration. Scene admission supplies that epoch to
 `LocalPlayerCommandStream`; the runtime rejects a send if the predicted epoch no longer equals current authority, so
 the command replayed locally is exactly the incarnation transmitted. An authoritative snapshot removes all acknowledged
-commands, then replays every newer command from the server position through the same pure horizontal locomotion function
-used by `PlayerSimulation`. The replayed present is compared with the actual native Link presentation, so Ocarina world
-collision or a server player/world collision divergence becomes an explicit correction instead of being hidden by a
-parallel predicted-position sample. The former raw-transform recording and position-only reconciliation entry points
-are removed; every pending sample is a replayable command and current-scene reconciliation always starts from a complete
-authoritative `PlayerSnapshot`. Skipped disposable command numbers and acknowledgements whose samples were evicted
+commands, then replays every newer command from the server position. Protocol v130 admits each bounded native Link pose
+exactly once as the root-motion result of its matching input sample. The server validates its displacement and static
+collision before publishing it; the 30 Hz fixed loop never integrates the same 20 Hz native sample a second time.
+Ocarina acceleration, floor following, water entry, and climbing therefore remain the prediction reference instead of
+having a second simplified walk/fall result added on top. Rejected movement and authoritative player collision remain
+explicit corrections. Every pending sample is a replayable command and current-scene reconciliation always starts from
+a complete authoritative `PlayerSnapshot`. Skipped disposable command numbers and acknowledgements whose samples were evicted
 during a long stall retain and replay only commands newer than the acknowledgement; duplicate/out-of-order commands
 cannot advance prediction. Prediction accepts commands, acknowledgements, and snapshots only for its explicitly
 established life epoch. The local-vitals admission result gates weapon projection and reconciliation together, so a
@@ -1333,13 +1517,17 @@ boundary; the public runtime polling API and gameplay bridge no longer expose `N
 The PC client has one global `Input input` source. Held keys and mouse buttons are read directly through
 `input.key[...]`; one-frame actions use `input.framePress[...]`. The game-side `Controls` snapshot derives its
 `move` vector and selected `weapon` from that source once per application frame. Modern multiplayer command construction does not
-reverse-map either form from the retained N64 pad sample. The game-side `controls.weapon` stores the weapon selected by
-keys 1-4; it is not window/application state. Ocarina's former generic `Input` structure is named `ControllerInput` so
-the remaining animation compatibility boundary is explicit and can be deleted as native actions migrate.
+reverse-map either form from a retained N64 pad sample. The game-side `controls.weapon` stores the weapon selected by
+keys 1-4; it is not window/application state.
 
 Mouse weapon actions no longer pass through synthetic N64 buttons. LMB supplies primary held/pressed state directly;
-RMB supplies shield held/pressed or fishing reel held/pressed according to `controls.weapon`. The retained controller
-reader now produces only the temporary WASD-derived analog stick needed by Ocarina's locomotion implementation.
+RMB supplies shield held/pressed or fishing reel held/pressed according to `controls.weapon`. `GameState` samples the
+WASD-derived analog movement needed by Ocarina's locomotion implementation directly; there is no retained input global,
+device manager, or synchronization layer. The N64 pad-manager thread, controller discovery/status, serial-interface
+queues, memory-pack support, rumble support, and their libultra hardware shims have been deleted. `ControllerInput`
+has been replaced by a two-axis `MovementInput`; no retained button word or fake current/pressed/released pad snapshots remain.
+`GameState` owns one movement value rather than a four-controller array. The controller-driven frame-advance and camera
+debug paths—and the collision suppression coupled to frame advance—have been removed.
 
 Local one-shot controls are frame-local edges in `input`. A weapon selection, sheath toggle, evade, or bow click
 rejected by the current native action state is cleared by `input.EndFrame`, so it cannot execute after climbing,
@@ -1474,14 +1662,18 @@ can display real combat collision alongside legacy Zelda collision without accep
 The server applies damage only after resolving that rig: head hits deal twice the weapon's base damage, torso and waist
 hits deal base damage, and arm or leg hits deal half damage. The resolved damage and server-selected region are then
 replicated together, so clients cannot promote a limb hit into a headshot.
+Stuck arrows retain the struck player life epoch while following its authoritative articulated rig. Death atomically
+detaches those arrows at their last server position before creating the retained corpse; they become ordinary static
+stuck projectiles and cannot follow the persistent player slot into its respawned life. The detach is replicated as a
+newer state on the same projectile lifetime, preserving retention and observer identity without creating a replacement.
 Protocol v102 carries the server-selected limb region on reliable damaged melee and arrow results. Blocked hits carry no
 body region, malformed region values are rejected at ingress, and clients never submit or choose the region used for
 damage.
 
 The F1 diagnostic keeps only one local rig source: the world-space matrices produced by Link's current skeleton draw.
 Local authoritative snapshots are deliberately excluded from the debug registry so their lower update cadence cannot
-overlay the animated renderer sample. Remote entries are replaced by their native skeleton sample whenever their actor
-is drawn; headless authoritative geometry remains the server's combat source and is never accepted from a client.
+overlay the animated renderer sample. Remote entries are replaced by their locally evaluated native skeleton whenever
+their actor is drawn; headless authoritative geometry remains the server's combat source and is never accepted from a client.
 Its regular hexagonal prism vertices are immutable; each animated limb supplies a dynamic model matrix. This avoids
 backend vertex caching freezing a world-space debug mesh at its first uploaded pose.
 

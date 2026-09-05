@@ -133,6 +133,9 @@ void ServerAdministrationService::Execute(
             } else if (parsed.team == ServerCommandTeam::Blue) {
                 team = Game::Simulation::TeamId::Blue;
                 teamName = "blue";
+            } else if (parsed.team == ServerCommandTeam::Green) {
+                team = Game::Simulation::TeamId::Green;
+                teamName = "green";
             }
             if (!context.setTeam || !context.setTeam(playerId, team)) {
                 Send(context, playerId, "player simulation is not ready");
@@ -142,7 +145,8 @@ void ServerAdministrationService::Execute(
             return;
         }
         case ServerCommandKind::Help:
-            Send(context, playerId, "player commands: /team red|blue|neutral");
+            Send(context, playerId,
+                 "player commands: /team red|blue|green|neutral");
             if (isAdministrator) {
                 Send(context, playerId,
                      "admin commands: /users /kick /ban /unban /admin /unadmin /admins /bans");

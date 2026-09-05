@@ -23,14 +23,24 @@ ClientPlayerActionPresentation ClientPlayerActionPresentationPolicy::Evaluate(
     const auto pose =
         Game::Simulation::SampleAuthoritativePlayerPoseState(snapshot);
     presentation.equipment = EquipmentForWeapon(snapshot.selectedWeapon);
+    if (snapshot.selectedWeapon == 1) {
+        presentation.baseAnimation = ClientPlayerBaseAnimation::IdleSword;
+    } else if (snapshot.selectedWeapon == 2) {
+        presentation.baseAnimation = ClientPlayerBaseAnimation::IdleBiggoron;
+    }
     presentation.dead = snapshot.health == 0;
     presentation.blocking = !presentation.dead &&
         snapshot.actionState == Game::Simulation::PlayerActionState::Blocking &&
-        (snapshot.selectedWeapon == 1 || snapshot.selectedWeapon == 2);
+        snapshot.selectedWeapon <= 2;
     presentation.bowReady = !presentation.dead && snapshot.selectedWeapon == 3 &&
         snapshot.actionState == Game::Simulation::PlayerActionState::Aiming;
     if (presentation.dead) {
         presentation.baseAnimation = ClientPlayerBaseAnimation::Dead;
+        return presentation;
+    }
+    if (snapshot.locomotionMode ==
+        Game::Simulation::PlayerLocomotionMode::Climbing) {
+        presentation.baseAnimation = ClientPlayerBaseAnimation::Climb;
         return presentation;
     }
     if (snapshot.locomotionMode ==
@@ -66,14 +76,36 @@ ClientPlayerActionPresentation ClientPlayerActionPresentationPolicy::Evaluate(
     }
     if (snapshot.actionState >= Game::Simulation::PlayerActionState::PrimaryWindup &&
         snapshot.actionState <= Game::Simulation::PlayerActionState::PrimaryRecovery) {
-        if (snapshot.selectedWeapon == 1) {
-            presentation.baseAnimation = ClientPlayerBaseAnimation::SwordAttack;
+        if (snapshot.selectedWeapon == 1 || snapshot.selectedWeapon == 2) {
+            switch (snapshot.meleeAttackVariant) {
+                case Game::Simulation::MeleeAttackVariant::ForwardSlash:
+                    presentation.baseAnimation = ClientPlayerBaseAnimation::MeleeForwardSlash;
+                    break;
+                case Game::Simulation::MeleeAttackVariant::ForwardCombo:
+                    presentation.baseAnimation = ClientPlayerBaseAnimation::MeleeForwardCombo;
+                    break;
+                case Game::Simulation::MeleeAttackVariant::RightSlash:
+                    presentation.baseAnimation = ClientPlayerBaseAnimation::MeleeRightSlash;
+                    break;
+                case Game::Simulation::MeleeAttackVariant::RightCombo:
+                    presentation.baseAnimation = ClientPlayerBaseAnimation::MeleeRightCombo;
+                    break;
+                case Game::Simulation::MeleeAttackVariant::LeftSlash:
+                    presentation.baseAnimation = ClientPlayerBaseAnimation::MeleeLeftSlash;
+                    break;
+                case Game::Simulation::MeleeAttackVariant::LeftCombo:
+                    presentation.baseAnimation = ClientPlayerBaseAnimation::MeleeLeftCombo;
+                    break;
+            }
             return presentation;
         }
-        if (snapshot.selectedWeapon == 2) {
-            presentation.baseAnimation = ClientPlayerBaseAnimation::BiggoronAttack;
-            return presentation;
-        }
+    }
+    if (snapshot.actionState ==
+        Game::Simulation::PlayerActionState::SpinAttacking) {
+        presentation.baseAnimation = snapshot.selectedWeapon == 2
+            ? ClientPlayerBaseAnimation::BiggoronSpinAttack
+            : ClientPlayerBaseAnimation::SwordSpinAttack;
+        return presentation;
     }
 
     if (snapshot.actionState == Game::Simulation::PlayerActionState::Evading) {
@@ -88,7 +120,27 @@ ClientPlayerActionPresentation ClientPlayerActionPresentationPolicy::Evaluate(
         return presentation;
     }
 
-    if (pose.direction != PlayerPoseDirection::None) {
+    // Holding primary after the swing leaves native Link in the charged
+    // weapon-ready pose. It is presentation-only; combat still comes solely
+    // from the authoritative attack phases above.
+    if ((snapshot.heldActions & Game::Simulation::PLAYER_ACTION_PRIMARY) != 0) {
+        if (snapshot.selectedWeapon == 1) {
+            presentation.baseAnimation = ClientPlayerBaseAnimation::SwordHeld;
+            return presentation;
+        }
+        if (snapshot.selectedWeapon == 2) {
+            presentation.baseAnimation = ClientPlayerBaseAnimation::BiggoronHeld;
+            return presentation;
+        }
+    }
+
+    if (presentation.blocking && pose.direction == PlayerPoseDirection::None) {
+        presentation.baseAnimation = snapshot.selectedWeapon == 1
+            ? ClientPlayerBaseAnimation::BlockingSword
+            : snapshot.selectedWeapon == 2
+                ? ClientPlayerBaseAnimation::BlockingBiggoron
+                : ClientPlayerBaseAnimation::BlockingFree;
+    } else if (pose.direction != PlayerPoseDirection::None) {
         if (pose.direction == PlayerPoseDirection::Left ||
             pose.direction == PlayerPoseDirection::Right) {
             presentation.baseAnimation = pose.direction == PlayerPoseDirection::Left
@@ -103,7 +155,7 @@ ClientPlayerActionPresentation ClientPlayerActionPresentationPolicy::Evaluate(
         presentation.baseAnimation = ClientPlayerBaseAnimation::Fishing;
     }
 
-    if (presentation.blocking) {
+    if (presentation.blocking && pose.direction != PlayerPoseDirection::None) {
         presentation.upperAnimation = ClientPlayerUpperAnimation::Blocking;
     } else if (presentation.bowReady) {
         presentation.upperAnimation = ClientPlayerUpperAnimation::BowAiming;

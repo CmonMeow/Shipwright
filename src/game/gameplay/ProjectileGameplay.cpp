@@ -24,9 +24,11 @@ extern "C" void ProjectileGameplay_BindPredictedArrow(
 }
 
 extern "C" int32_t ProjectileGameplay_CommitArrowFire(
-    const void* presentation, int32_t sceneId) {
+    const void* presentation, int32_t sceneId, uint32_t clientTick,
+    int16_t heading, int16_t aimPitch) {
     return sSink.commitArrowFire
-               ? sSink.commitArrowFire(presentation, sceneId, sSink.context)
+               ? sSink.commitArrowFire(presentation, sceneId, clientTick,
+                                       heading, aimPitch, sSink.context)
                : false;
 }
 

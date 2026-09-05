@@ -423,13 +423,7 @@
     <ClInclude Include="$(RepoRoot)src\engine\include\runtime\libultra\message.h">
       <Filter>Runtime\Libultra</Filter>
     </ClInclude>
-    <ClInclude Include="$(RepoRoot)src\engine\include\runtime\libultra\motor.h">
-      <Filter>Runtime\Libultra</Filter>
-    </ClInclude>
     <ClInclude Include="$(RepoRoot)src\engine\include\runtime\libultra\os.h">
-      <Filter>Runtime\Libultra</Filter>
-    </ClInclude>
-    <ClInclude Include="$(RepoRoot)src\engine\include\runtime\libultra\pfs.h">
       <Filter>Runtime\Libultra</Filter>
     </ClInclude>
     <ClInclude Include="$(RepoRoot)src\engine\include\runtime\libultra\pi.h">

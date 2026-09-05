@@ -38,10 +38,11 @@ ParsedServerCommand ServerCommandParser::Parse(const std::string& text) {
         result.kind = ServerCommandKind::Team;
         if (Equals(argument, "red")) result.team = ServerCommandTeam::Red;
         else if (Equals(argument, "blue")) result.team = ServerCommandTeam::Blue;
+        else if (Equals(argument, "green")) result.team = ServerCommandTeam::Green;
         else if (Equals(argument, "neutral")) result.team = ServerCommandTeam::Neutral;
         else {
             result.kind = ServerCommandKind::Invalid;
-            result.error = "usage: /team red|blue|neutral";
+            result.error = "usage: /team red|blue|green|neutral";
         }
         return result;
     }

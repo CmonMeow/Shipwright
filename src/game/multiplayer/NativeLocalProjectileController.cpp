@@ -21,11 +21,15 @@ void NativeLocalProjectileController::BindPredictedArrow(Actor* actor,
 }
 
 bool NativeLocalProjectileController::CommitArrowFire(Actor* actor,
-                                                       int32_t sceneId) {
+                                                       int32_t sceneId,
+                                                       uint32_t clientTick,
+                                                       int16_t heading,
+                                                       int16_t aimPitch) {
     if (!actor) return false;
     const auto presentationId = mBindings.Find(actor);
     return presentationId &&
-           mIntents.RequestArrowFire(*presentationId, sceneId);
+           mIntents.RequestArrowFire(*presentationId, sceneId, clientTick,
+                                     heading, aimPitch);
 }
 
 void NativeLocalProjectileController::UnbindPredictedArrow(Actor* actor) {

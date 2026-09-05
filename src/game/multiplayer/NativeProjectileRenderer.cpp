@@ -3,10 +3,12 @@
 #include "runtime/actors/ActorDB.h"
 #include "assets/objects/gameplay_keep/gameplay_keep.h"
 #include "global.h"
+#include "debug/collision/colViewer.h"
 #include "overlays/actors/ovl_En_Arrow/z_en_arrow.h"
 
 #include <algorithm>
 #include <chrono>
+#include <cmath>
 #include <map>
 
 namespace Game::Multiplayer {
@@ -211,7 +213,7 @@ void NativeProjectileRenderer::ActorUpdate(Actor* actor, PlayState* play) {
     const uint8_t phase = static_cast<uint8_t>(state.phase);
     if (state.phase == Game::Client::RemoteProjectilePhase::ArrowStuck &&
         projectile->lastPhase != phase) {
-        Audio_PlayActorSound2(actor, NA_SE_IT_ARROW_STICK_CRE);
+        if (state.body.playerId < 0) Audio_PlayActorSound2(actor, NA_SE_IT_ARROW_STICK_CRE);
     }
     projectile->phaseAge = projectile->lastPhase == phase
                                ? static_cast<uint8_t>(std::min<int>(projectile->phaseAge + 1, 255))
@@ -241,6 +243,15 @@ void NativeProjectileRenderer::ActorDraw(Actor* actor, PlayState* play) {
     const auto* replica = renderer->mImpl->replicas->Find(
         EntityFromKey(projectile->presentationEntityKey));
     if (!replica) return;
+    if (replica->state.body.playerId >= 0) {
+        Game::Simulation::Vec3 position{}, direction{};
+        // Player skeletons are drawn before item actors; use this frame's limbs.
+        if (!ResolveRenderedBodyArrow(replica->state.body, position, direction)) return;
+        Matrix_Translate(position.x, position.y, position.z, MTXMODE_NEW);
+        Matrix_RotateY(std::atan2(direction.x, direction.z), MTXMODE_APPLY);
+        Matrix_RotateX(std::atan2(-direction.y, std::hypot(direction.x, direction.z)), MTXMODE_APPLY);
+        Matrix_Scale(actor->scale.x, actor->scale.y, actor->scale.z, MTXMODE_APPLY);
+    }
     SkelAnime_DrawLod(play, projectile->skelAnime.skeleton,
                       projectile->skelAnime.jointTable, nullptr, nullptr,
                       projectile, 0);

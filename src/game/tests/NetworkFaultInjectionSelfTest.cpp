@@ -29,6 +29,7 @@ NetworkPlayerCommandPacket MovementPacket(uint32_t sequence) {
     NetworkPlayerCommandPacket packet{};
     packet.sequence = sequence;
     packet.lifeEpoch = 1;
+    packet.clientTick = sequence;
     packet.moveX = static_cast<int8_t>((sequence / 45) % 2 == 0 ? 50 : -50);
     packet.moveY = 85;
     packet.heading = static_cast<int16_t>(sequence * 73U);
@@ -116,7 +117,7 @@ int main() {
     uint32_t expectedActionExecutions = 0;
     uint32_t currentCommandSequence = 0;
     uint32_t previousProcessed = 0;
-    PlayerActionState previousState = PlayerActionState::Idle;
+    uint32_t previousMeleeAttackId = 0;
     constexpr uint32_t kDrainTicks = 20;
     for (uint32_t tick = 1; tick <= kSimulationTicks + kDrainTicks; ++tick) {
         while (nextPacket < network.size() && network[nextPacket].deliveryTick == tick) {
@@ -140,12 +141,12 @@ int main() {
             !std::isfinite(snapshot->position.x) || !std::isfinite(snapshot->position.z)) {
             return 3;
         }
-        if (snapshot->actionState == PlayerActionState::PrimaryWindup &&
-            previousState != PlayerActionState::PrimaryWindup) {
+        if (snapshot->meleeAttackId != 0 &&
+            snapshot->meleeAttackId != previousMeleeAttackId) {
             ++observedActions;
         }
         previousProcessed = snapshot->lastProcessedCommand;
-        previousState = snapshot->actionState;
+        previousMeleeAttackId = snapshot->meleeAttackId;
     }
 
     const auto beforeDeath = simulation.SnapshotForPlayer(42);
@@ -193,10 +194,10 @@ int main() {
 
     Game::Replication::EntityLifetimeRegistry lifetimes;
     const Game::Replication::ReplicatedPlayer firstLifetime{
-        42, { 10, 1 }, 118, {}
+        42, { 10, 1 }, 1, 118, {}
     };
     const Game::Replication::ReplicatedPlayer replacementLifetime{
-        42, { 10, 2 }, 118, {}
+        42, { 10, 2 }, 1, 118, {}
     };
     const auto establish = Game::Multiplayer::PlayerLifecycleNetworkAdapter::ToPacket(
         firstLifetime, true);
@@ -259,6 +260,7 @@ int main() {
         118, Game::Simulation::MakeFishSpawnKey(118, 3, 666, -45, 354)
     };
     firstFish.ownerPlayerId = 42;
+    firstFish.ownerLifeEpoch = 1;
     Game::Simulation::FishSnapshot replacementFish = firstFish;
     replacementFish.entity = { 30, 2 };
     const auto firstFishState = Game::Multiplayer::FishingNetworkAdapter::ToPacket(

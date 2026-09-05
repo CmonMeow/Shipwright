@@ -319,9 +319,6 @@
     <ClCompile Include="$(RepoRoot)src\game\src\boot\yaz0.c">
       <Filter>game\boot</Filter>
     </ClCompile>
-    <ClCompile Include="$(RepoRoot)src\game\src\boot\z_locale.c">
-      <Filter>game\boot</Filter>
-    </ClCompile>
     <ClCompile Include="$(RepoRoot)src\game\src\boot\z_std_dma.c">
       <Filter>game\boot</Filter>
     </ClCompile>
@@ -379,19 +376,10 @@
     <ClCompile Include="$(RepoRoot)src\game\src\code\code_8006C510.c">
       <Filter>game\code</Filter>
     </ClCompile>
-    <ClCompile Include="$(RepoRoot)src\game\src\code\code_800A9F30.c">
-      <Filter>game\code</Filter>
-    </ClCompile>
     <ClCompile Include="$(RepoRoot)src\game\src\code\code_800BB0A0.c">
       <Filter>game\code</Filter>
     </ClCompile>
     <ClCompile Include="$(RepoRoot)src\game\src\code\code_800C3C20.c">
-      <Filter>game\code</Filter>
-    </ClCompile>
-    <ClCompile Include="$(RepoRoot)src\game\src\code\code_800D2E30.c">
-      <Filter>game\code</Filter>
-    </ClCompile>
-    <ClCompile Include="$(RepoRoot)src\game\src\code\code_800D31A0.c">
       <Filter>game\code</Filter>
     </ClCompile>
     <ClCompile Include="$(RepoRoot)src\game\src\code\code_800E4FE0.c">
@@ -455,15 +443,6 @@
       <Filter>game\code</Filter>
     </ClCompile>
     <ClCompile Include="$(RepoRoot)src\game\src\code\mtxuty-cvt.c">
-      <Filter>game\code</Filter>
-    </ClCompile>
-    <ClCompile Include="$(RepoRoot)src\game\src\code\padmgr.c">
-      <Filter>game\code</Filter>
-    </ClCompile>
-    <ClCompile Include="$(RepoRoot)src\game\src\code\padsetup.c">
-      <Filter>game\code</Filter>
-    </ClCompile>
-    <ClCompile Include="$(RepoRoot)src\game\src\code\padutils.c">
       <Filter>game\code</Filter>
     </ClCompile>
     <ClCompile Include="$(RepoRoot)src\game\src\code\printutils.c">
@@ -548,9 +527,6 @@
       <Filter>game\code</Filter>
     </ClCompile>
     <ClCompile Include="$(RepoRoot)src\game\src\code\z_fcurve_data_skelanime.c">
-      <Filter>game\code</Filter>
-    </ClCompile>
-    <ClCompile Include="$(RepoRoot)src\game\src\code\z_frame_advance.c">
       <Filter>game\code</Filter>
     </ClCompile>
     <ClCompile Include="$(RepoRoot)src\game\src\code\z_game_dlftbls.c">

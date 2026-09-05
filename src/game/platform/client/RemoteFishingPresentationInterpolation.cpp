@@ -28,7 +28,7 @@ int16_t LerpBinaryAngle(int16_t from, int16_t to, float fraction) {
 bool IsFinite(const Replication::FishingPresentationState& state) {
     const auto finite = [](float value) { return std::isfinite(value); };
     for (size_t axis = 0; axis < 3; ++axis) {
-        if (!finite(state.rodTipOffset[axis]) || !finite(state.lureDrawOffset[axis]) ||
+        if (!finite(state.lureDrawOffset[axis]) ||
             !finite(state.lureRotation[axis])) return false;
     }
     for (const auto& hook : state.lureHookOffsets) {
@@ -48,7 +48,6 @@ Replication::FishingPresentationState Interpolate(
     const Replication::FishingPresentationState& to, float fraction) {
     Replication::FishingPresentationState result = to;
     for (size_t axis = 0; axis < 3; ++axis) {
-        result.rodTipOffset[axis] = Lerp(from.rodTipOffset[axis], to.rodTipOffset[axis], fraction);
         result.lureDrawOffset[axis] = Lerp(from.lureDrawOffset[axis], to.lureDrawOffset[axis], fraction);
         result.lureRotation[axis] = LerpAngle(from.lureRotation[axis], to.lureRotation[axis], fraction);
         result.fishRotation[axis] = LerpBinaryAngle(from.fishRotation[axis], to.fishRotation[axis], fraction);

@@ -14,7 +14,8 @@
 namespace {
 
 constexpr int32_t kScene = 118;
-constexpr int32_t kPlayers = 128;
+constexpr int32_t kPlayers = 150;
+constexpr int32_t kPlayersPerTeam = 50;
 constexpr int32_t kSimulationSeconds = 120;
 constexpr int32_t kServerSteps = kSimulationSeconds * 60;
 
@@ -50,7 +51,11 @@ int main() {
     std::vector<int32_t> connectedPlayers;
     connectedPlayers.reserve(kPlayers);
     for (int32_t player = 0; player < kPlayers; ++player) {
-        const TeamId team = (player & 1) == 0 ? TeamId::Red : TeamId::Blue;
+        const TeamId team = player < kPlayersPerTeam
+                                ? TeamId::Red
+                                : player < kPlayersPerTeam * 2
+                                      ? TeamId::Blue
+                                      : TeamId::Green;
         if (!players.EnsurePlayer(player, { kScene, SpawnPosition(player), 0.0f, team }).Valid() ||
             !players.SelectWeapon(player, static_cast<uint8_t>((player % 3) + 1))) {
             std::fprintf(stderr, "failed to create player %d\n", player);
@@ -58,8 +63,19 @@ int main() {
         }
         connectedPlayers.push_back(player);
     }
+    if (players.EnsurePlayer(
+                   kPlayers,
+                   { kScene, SpawnPosition(kPlayers), 0.0f, TeamId::Neutral })
+            .Valid()) {
+        std::fprintf(stderr,
+                     "authority admitted player above 150-player cap\n");
+        return 15;
+    }
     for (int32_t index = 0; index < 8; ++index) {
-        const TeamId owner = (index & 1) == 0 ? TeamId::Red : TeamId::Blue;
+        const TeamId owner = index % 3 == 0
+                                 ? TeamId::Red
+                                 : index % 3 == 1 ? TeamId::Blue
+                                                  : TeamId::Green;
         const int32_t objectiveKey = 1000 + index;
         if (!objectives.EnsureObjective({ objectiveKey, kScene,
                                           { static_cast<float>(index * 500), 0.0f, 875.0f }, 325.0f,
@@ -262,7 +278,9 @@ int main() {
                  finalArrows.size(), static_cast<long long>(elapsed.count()));
     if (finalPlayers.size() != kPlayers || players.CurrentTick() < kSimulationSeconds * 29 ||
         projectiles.CurrentTick() < kSimulationSeconds * 59 ||
-        acceptedCommands + rejectedDeadCommands != 460800 || rejectedDeadCommands == 0 ||
+        acceptedCommands + rejectedDeadCommands !=
+            static_cast<uint64_t>(kPlayers) * kSimulationSeconds * 30 ||
+        rejectedDeadCommands == 0 ||
         objectives.Snapshots().size() != 8 || structures.Snapshots().size() != 8 ||
         peakObservers == 0 || lifecycleTransitions == 0 || peakOwnedEntities == 0 || ownedLifecycleTransitions == 0 ||
         corpses.Snapshots().size() != 99 || peakSpatialEntities == 0 ||

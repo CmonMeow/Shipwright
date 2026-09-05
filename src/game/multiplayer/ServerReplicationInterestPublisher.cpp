@@ -79,7 +79,7 @@ void ServerReplicationInterestPublisher::RefreshPlayers(
             NetworkMessageRaw fishingRaw;
             EncodeFishingStateRaw(fishingRaw, packet);
             if (transition.observerPlayerId == 0) {
-                mClientInbox.AcceptFishingPresentation(packet, 0);
+                mClientInbox.AcceptFishingPresentation(packet);
             } else {
                 Deliver(transition.observerPlayerId, NAMTFishingState,
                         fishingRaw, kReliable);

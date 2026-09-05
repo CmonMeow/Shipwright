@@ -409,6 +409,14 @@ void EnArrow_Draw(Actor* thisx, PlayState* play) {
     EnArrow* this = (EnArrow*)thisx;
     float scale = { 0 };
 
+    // A hidden owner is authoritatively dead and its retained corpse owns
+    // presentation. Do not leave a native predicted/notched arrow visible on
+    // that hidden body. Living owners always draw their native arrow.
+    if (GET_PLAYER(play)->authoritativeBodyHidden &&
+        this->actor.params == ARROW_NORMAL) {
+        return;
+    }
+
     if (this->actor.params <= ARROW_0E) {
         Gfx_SetupDL_25Opa(play->state.gfxCtx);
         SkelAnime_DrawLod(play, this->skelAnime.skeleton, this->skelAnime.jointTable, NULL, NULL, this,

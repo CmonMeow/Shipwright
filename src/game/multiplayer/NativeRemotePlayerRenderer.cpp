@@ -43,7 +43,7 @@ namespace Game::Multiplayer {
 namespace {
 
 constexpr float kRadiansToBinaryAngle = 32768.0f / 3.14159265358979323846f;
-constexpr uint8_t kFishingPoleItemAction = 2;
+constexpr Vec3s kPlayerSkeletonBaseTranslation = { -57, 3377, 0 };
 
 uint64_t EntityKey(Game::Simulation::EntityId entity) {
     return (static_cast<uint64_t>(entity.generation) << 32) | entity.index;
@@ -64,10 +64,13 @@ struct NativeRemotePlayer {
     SkelAnime skelAnime;
     SkelAnime upperSkelAnime;
     SkelAnime bowArrowSkelAnime;
-    Vec3s jointTable[PLAYER_LIMB_BUF_COUNT];
-    Vec3s morphTable[PLAYER_LIMB_BUF_COUNT];
-    Vec3s upperJointTable[PLAYER_LIMB_BUF_COUNT];
-    Vec3s upperMorphTable[PLAYER_LIMB_BUF_COUNT];
+    // SkelAnime_InitLink aligns supplied frame-table pointers upward. Without
+    // explicit alignment that can move the effective start into the array and
+    // let a complete Link frame overwrite the following table.
+    alignas(16) Vec3s jointTable[PLAYER_LIMB_BUF_COUNT];
+    alignas(16) Vec3s morphTable[PLAYER_LIMB_BUF_COUNT];
+    alignas(16) Vec3s upperJointTable[PLAYER_LIMB_BUF_COUNT];
+    alignas(16) Vec3s upperMorphTable[PLAYER_LIMB_BUF_COUNT];
     int32_t playerId;
     uint64_t presentationEntityKey;
     bool isCorpse;
@@ -77,7 +80,11 @@ struct NativeRemotePlayer {
     Vec3s headLimbRot;
     ClientPlayerBaseAnimation baseAnimation;
     ClientPlayerUpperAnimation upperAnimation;
+    uint8_t baseAnimationItemAction;
+    uint8_t upperAnimationItemAction;
     bool animationInitialized;
+    uint32_t animationLifeEpoch;
+    uint32_t animationActionInstanceTick;
 };
 
 struct NativeRecord {
@@ -135,16 +142,72 @@ void CopyStateToActor(NativeRemotePlayer* remote,
     };
 }
 
-LinkAnimationHeader* BaseAnimationAsset(ClientPlayerBaseAnimation animation) {
+LinkAnimationHeader* BaseAnimationAsset(ClientPlayerBaseAnimation animation,
+                                        uint8_t itemAction) {
     using Animation = ClientPlayerBaseAnimation;
-    const char* asset = gPlayerAnim_link_normal_wait;
+    const char* asset = gPlayerAnim_link_normal_wait_free;
     switch (animation) {
-        case Animation::RunForward: asset = gPlayerAnim_link_normal_run; break;
+        case Animation::IdleSword: asset = gPlayerAnim_link_normal_wait; break;
+        case Animation::IdleBiggoron: asset = gPlayerAnim_link_fighter_wait_long; break;
+        case Animation::BlockingFree: asset = gPlayerAnim_link_normal_defense_wait_free; break;
+        case Animation::BlockingSword: asset = gPlayerAnim_link_normal_defense_wait; break;
+        case Animation::BlockingBiggoron: asset = gPlayerAnim_link_normal_defense_wait_free; break;
+        case Animation::RunForward:
+            asset = itemAction == PLAYER_IA_SWORD_MASTER
+                ? gPlayerAnim_link_fighter_run
+                : itemAction == PLAYER_IA_SWORD_BIGGORON
+                    ? gPlayerAnim_link_fighter_run_long
+                    : gPlayerAnim_link_normal_run_free;
+            break;
         case Animation::WalkBackward: asset = gPlayerAnim_link_normal_back_walk; break;
-        case Animation::StrafeLeft: asset = gPlayerAnim_link_anchor_side_walkL; break;
-        case Animation::StrafeRight: asset = gPlayerAnim_link_anchor_side_walkR; break;
-        case Animation::SwordAttack: asset = gPlayerAnim_link_fighter_normal_kiru; break;
-        case Animation::BiggoronAttack: asset = gPlayerAnim_link_fighter_Lnormal_kiru; break;
+        case Animation::StrafeLeft:
+            asset = itemAction == PLAYER_IA_SWORD_BIGGORON
+                ? gPlayerAnim_link_fighter_side_walkL_long
+                : itemAction == PLAYER_IA_SWORD_MASTER
+                    ? gPlayerAnim_link_anchor_side_walkL
+                    : gPlayerAnim_link_normal_side_walkL_free;
+            break;
+        case Animation::StrafeRight:
+            asset = itemAction == PLAYER_IA_SWORD_BIGGORON
+                ? gPlayerAnim_link_fighter_side_walkR_long
+                : itemAction == PLAYER_IA_SWORD_MASTER
+                    ? gPlayerAnim_link_anchor_side_walkR
+                    : gPlayerAnim_link_normal_side_walkR_free;
+            break;
+        case Animation::SwordHeld: asset = gPlayerAnim_link_fighter_power_kiru_wait; break;
+        case Animation::BiggoronHeld: asset = gPlayerAnim_link_fighter_Lpower_kiru_wait; break;
+        case Animation::MeleeForwardSlash:
+            asset = itemAction == PLAYER_IA_SWORD_BIGGORON
+                ? gPlayerAnim_link_fighter_Lnormal_kiru
+                : gPlayerAnim_link_fighter_normal_kiru;
+            break;
+        case Animation::MeleeForwardCombo:
+            asset = itemAction == PLAYER_IA_SWORD_BIGGORON
+                ? gPlayerAnim_link_fighter_Lnormal_kiru_finsh
+                : gPlayerAnim_link_fighter_normal_kiru_finsh;
+            break;
+        case Animation::MeleeRightSlash:
+            asset = itemAction == PLAYER_IA_SWORD_BIGGORON
+                ? gPlayerAnim_link_fighter_LLside_kiru
+                : gPlayerAnim_link_fighter_Lside_kiru;
+            break;
+        case Animation::MeleeRightCombo:
+            asset = itemAction == PLAYER_IA_SWORD_BIGGORON
+                ? gPlayerAnim_link_fighter_LLside_kiru_finsh
+                : gPlayerAnim_link_fighter_Lside_kiru_finsh;
+            break;
+        case Animation::MeleeLeftSlash:
+            asset = itemAction == PLAYER_IA_SWORD_BIGGORON
+                ? gPlayerAnim_link_fighter_LRside_kiru
+                : gPlayerAnim_link_fighter_Rside_kiru;
+            break;
+        case Animation::MeleeLeftCombo:
+            asset = itemAction == PLAYER_IA_SWORD_BIGGORON
+                ? gPlayerAnim_link_fighter_LRside_kiru_finsh
+                : gPlayerAnim_link_fighter_Rside_kiru_finsh;
+            break;
+        case Animation::SwordSpinAttack: asset = gPlayerAnim_link_fighter_rolling_kiru; break;
+        case Animation::BiggoronSpinAttack: asset = gPlayerAnim_link_fighter_Lrolling_kiru; break;
         case Animation::EvadeBackward: asset = gPlayerAnim_link_fighter_backturn_jump; break;
         case Animation::EvadeLeft: asset = gPlayerAnim_link_fighter_Lside_jump; break;
         case Animation::EvadeRight: asset = gPlayerAnim_link_fighter_Rside_jump; break;
@@ -154,19 +217,25 @@ LinkAnimationHeader* BaseAnimationAsset(ClientPlayerBaseAnimation animation) {
         case Animation::SwimBackward: asset = gPlayerAnim_link_swimer_back_swim; break;
         case Animation::SwimLeft: asset = gPlayerAnim_link_swimer_Lside_swim; break;
         case Animation::SwimRight: asset = gPlayerAnim_link_swimer_Rside_swim; break;
+        case Animation::Climb: asset = gPlayerAnim_link_normal_climb_up; break;
         case Animation::Falling: asset = gPlayerAnim_link_normal_fall; break;
         case Animation::JumpSlash: asset = gPlayerAnim_link_fighter_jump_kiru; break;
-        case Animation::Dead: asset = gPlayerAnim_link_normal_back_downA; break;
+        case Animation::Dead: asset = gPlayerAnim_link_derth_rebirth; break;
         default: break;
     }
     return reinterpret_cast<LinkAnimationHeader*>(const_cast<char*>(asset));
 }
 
-LinkAnimationHeader* UpperAnimationAsset(ClientPlayerUpperAnimation animation) {
+LinkAnimationHeader* UpperAnimationAsset(ClientPlayerUpperAnimation animation,
+                                         uint8_t itemAction) {
     using Animation = ClientPlayerUpperAnimation;
     const char* asset = gPlayerAnim_link_normal_wait;
     switch (animation) {
-        case Animation::Blocking: asset = gPlayerAnim_link_normal_defense_wait; break;
+        case Animation::Blocking:
+            asset = itemAction == PLAYER_IA_SWORD_MASTER
+                ? gPlayerAnim_link_normal_defense_wait
+                : gPlayerAnim_link_normal_defense_wait_free;
+            break;
         case Animation::BowAiming: asset = gPlayerAnim_link_bow_bow_wait; break;
         case Animation::Fishing: asset = gPlayerAnim_link_fishing_wait; break;
         default: break;
@@ -174,29 +243,59 @@ LinkAnimationHeader* UpperAnimationAsset(ClientPlayerUpperAnimation animation) {
     return reinterpret_cast<LinkAnimationHeader*>(const_cast<char*>(asset));
 }
 
+float BaseAnimationEndFrame(ClientPlayerBaseAnimation animation,
+                            LinkAnimationHeader* asset) {
+    float endFrame = Animation_GetLastFrame(asset);
+    if (animation == ClientPlayerBaseAnimation::Dead) {
+        // Native Player death uses this combined death/rebirth asset but
+        // explicitly stops at frame 84. Playing its full range makes a
+        // retained corpse stand back up when its owner respawns.
+        endFrame = std::min(endFrame, 84.0f);
+    }
+    return endFrame;
+}
+
 void UpdateAnimation(NativeRemotePlayer* remote, PlayState* play,
                      const NativePlayerPresentationState& state) {
     using Base = ClientPlayerBaseAnimation;
     using Upper = ClientPlayerUpperAnimation;
-    if (!remote->animationInitialized || remote->baseAnimation != state.baseAnimation) {
+    const bool newActionClock = state.synchronizeActionAnimation &&
+        (remote->animationLifeEpoch != state.lifeEpoch ||
+          remote->animationActionInstanceTick != state.actionInstanceId);
+    if (!remote->animationInitialized ||
+        remote->baseAnimation != state.baseAnimation ||
+        remote->baseAnimationItemAction != state.itemAction || newActionClock) {
         remote->baseAnimation = state.baseAnimation;
-        LinkAnimationHeader* animation = BaseAnimationAsset(state.baseAnimation);
-        const float lastFrame = Animation_GetLastFrame(animation);
-        const bool loop = state.baseAnimation != Base::SwordAttack &&
-                          state.baseAnimation != Base::BiggoronAttack &&
+        remote->baseAnimationItemAction = state.itemAction;
+        LinkAnimationHeader* animation = BaseAnimationAsset(
+            state.baseAnimation, state.itemAction);
+        const float lastFrame = BaseAnimationEndFrame(
+            state.baseAnimation, animation);
+        const bool loop = state.baseAnimation != Base::MeleeForwardSlash &&
+                          state.baseAnimation != Base::MeleeForwardCombo &&
+                          state.baseAnimation != Base::MeleeRightSlash &&
+                          state.baseAnimation != Base::MeleeRightCombo &&
+                          state.baseAnimation != Base::MeleeLeftSlash &&
+                          state.baseAnimation != Base::MeleeLeftCombo &&
+                          state.baseAnimation != Base::SwordSpinAttack &&
+                          state.baseAnimation != Base::BiggoronSpinAttack &&
                           state.baseAnimation != Base::EvadeBackward &&
                           state.baseAnimation != Base::EvadeLeft &&
                           state.baseAnimation != Base::EvadeRight &&
                           state.baseAnimation != Base::Dead;
-        const float startFrame = state.baseAnimation == Base::Dead ? lastFrame : 0.0f;
+        const float startFrame =
+            (state.synchronizeBaseAnimation || state.synchronizeActionAnimation)
+            ? lastFrame * std::clamp(state.baseAnimationProgress, 0.0f, 1.0f)
+            : 0.0f;
         LinkAnimation_Change(play, &remote->skelAnime, animation,
-                             state.baseAnimation == Base::Dead ? 0.0f : 1.0f,
-                             startFrame, lastFrame,
+                             1.0f, startFrame, lastFrame,
                              loop ? ANIMMODE_LOOP : ANIMMODE_ONCE, -4.0f);
     }
     if (state.synchronizeBaseAnimation) {
-        LinkAnimationHeader* animation = BaseAnimationAsset(state.baseAnimation);
-        const float lastFrame = Animation_GetLastFrame(animation);
+        LinkAnimationHeader* animation = BaseAnimationAsset(
+            state.baseAnimation, state.itemAction);
+        const float lastFrame = BaseAnimationEndFrame(
+            state.baseAnimation, animation);
         const double elapsedSeconds =
             std::max(0.0, NowSeconds() - state.baseAnimationSampleSeconds);
         const float rawProgress =
@@ -213,19 +312,25 @@ void UpdateAnimation(NativeRemotePlayer* remote, PlayState* play,
     }
     LinkAnimation_Update(play, &remote->skelAnime);
 
-    if (!remote->animationInitialized || remote->upperAnimation != state.upperAnimation) {
+    if (!remote->animationInitialized ||
+        remote->upperAnimation != state.upperAnimation ||
+        remote->upperAnimationItemAction != state.itemAction) {
         remote->upperAnimation = state.upperAnimation;
+        remote->upperAnimationItemAction = state.itemAction;
         if (state.upperAnimation != Upper::None) {
-            LinkAnimationHeader* animation = UpperAnimationAsset(state.upperAnimation);
+            LinkAnimationHeader* animation = UpperAnimationAsset(
+                state.upperAnimation, state.itemAction);
             LinkAnimation_Change(play, &remote->upperSkelAnime, animation, 1.0f,
                                  0.0f, Animation_GetLastFrame(animation),
                                  ANIMMODE_LOOP, -4.0f);
         }
     }
     remote->animationInitialized = true;
+    remote->animationLifeEpoch = state.lifeEpoch;
+    remote->animationActionInstanceTick = state.actionInstanceId;
     if (state.upperAnimation != Upper::None) {
         LinkAnimation_Update(play, &remote->upperSkelAnime);
-        AnimationContext_SetCopyTrue(play, remote->skelAnime.limbCount,
+        AnimationContext_SetCopyTrue(play, PLAYER_LIMB_MAX,
                                      remote->skelAnime.jointTable,
                                      remote->upperSkelAnime.jointTable,
                                      kUpperBodyLimbCopyMap);
@@ -240,6 +345,7 @@ struct NativeRemotePlayerRenderer::Impl {
     Game::Client::CorpsePresentationRegistry* corpses = nullptr;
     std::map<uint64_t, NativeRecord> live;
     std::map<uint64_t, CorpseRecord> dead;
+    int32_t localPlayerId = -1;
     int16_t liveActorId = -1;
     int16_t corpseActorId = -1;
 };
@@ -385,7 +491,7 @@ bool NativeRemotePlayerRenderer::HasFishingPlayerInScene(int32_t sceneId) const 
     for (const auto& [key, record] : mImpl->live) {
         (void)key;
         if (record.renderReady && record.state.sceneId == sceneId &&
-            record.state.itemAction == kFishingPoleItemAction) {
+            record.state.itemAction == PLAYER_IA_FISHING_POLE) {
             return true;
         }
     }
@@ -423,6 +529,7 @@ void NativeRemotePlayerRenderer::Reset() {
     }
     mImpl->live.clear();
     mImpl->dead.clear();
+    mImpl->localPlayerId = -1;
 }
 
 void NativeRemotePlayerRenderer::DetachAfterSceneShutdown() {
@@ -431,10 +538,13 @@ void NativeRemotePlayerRenderer::DetachAfterSceneShutdown() {
     mImpl->players = nullptr;
     mImpl->fishing = nullptr;
     mImpl->corpses = nullptr;
+    mImpl->localPlayerId = -1;
 }
 
-void NativeRemotePlayerRenderer::Reconcile(PlayState* play) {
+void NativeRemotePlayerRenderer::Reconcile(PlayState* play,
+                                            int32_t localPlayerId) {
     if (!play || !mImpl->players || !mImpl->corpses) return;
+    mImpl->localPlayerId = localPlayerId;
     for (auto it = mImpl->live.begin(); it != mImpl->live.end();) {
         NativeRecord& record = it->second;
         const auto entity = EntityFromKey(it->first);
@@ -444,6 +554,16 @@ void NativeRemotePlayerRenderer::Reconcile(PlayState* play) {
                 Actor_Kill(&record.actor->actor);
             }
             it = mImpl->live.erase(it);
+            continue;
+        }
+        if (record.state.playerId == localPlayerId) {
+            // Local prediction is the native Player actor. Keep its replica
+            // for acknowledgement/reconciliation, but never spawn a second
+            // reconstructed body over it.
+            if (record.actor && record.actor->actor.update) {
+                Actor_Kill(&record.actor->actor);
+            }
+            ++it;
             continue;
         }
         if (record.state.sceneId != play->sceneNum) {
@@ -546,11 +666,13 @@ void NativeRemotePlayerRenderer::ActorInit(Actor* actor, PlayState* play) {
         reinterpret_cast<LinkAnimationHeader*>(
             const_cast<char*>(gPlayerAnim_link_normal_wait)),
         9, remote->jointTable, remote->morphTable, PLAYER_LIMB_MAX);
+    remote->skelAnime.baseTransl = kPlayerSkeletonBaseTranslation;
     SkelAnime_InitLink(
         play, &remote->upperSkelAnime, gPlayerSkelHeaders,
         reinterpret_cast<LinkAnimationHeader*>(
             const_cast<char*>(gPlayerAnim_link_normal_wait)),
         9, remote->upperJointTable, remote->upperMorphTable, PLAYER_LIMB_MAX);
+    remote->upperSkelAnime.baseTransl = kPlayerSkeletonBaseTranslation;
     SkelAnime_Init(
         play, &remote->bowArrowSkelAnime,
         reinterpret_cast<SkeletonHeader*>(const_cast<char*>(gArrowSkel)),
@@ -627,8 +749,9 @@ void NativeRemotePlayerRenderer::ActorUpdate(Actor* actor, PlayState* play) {
     auto* replica = !remote->isCorpse && renderer->mImpl->players
                         ? renderer->mImpl->players->FindMutable(entity)
                         : nullptr;
-    const auto motion = replica ? replica->motion.Evaluate(NowSeconds())
-                                : std::nullopt;
+    const auto motion = replica
+                            ? replica->motion.Evaluate(NowSeconds())
+                            : std::nullopt;
     if (motion) {
         actor->world.pos = {
             motion->position.x, motion->position.y, motion->position.z
@@ -657,6 +780,10 @@ void NativeRemotePlayerRenderer::ActorDraw(Actor* actor, PlayState* play) {
     auto* renderer = sActive;
     auto* remote = reinterpret_cast<NativeRemotePlayer*>(actor);
     if (!renderer) return;
+    if (!remote->isCorpse &&
+        remote->playerId == renderer->mImpl->localPlayerId) {
+        return;
+    }
     NativeRecord* record = nullptr;
     if (remote->isCorpse) {
         const auto found = renderer->mImpl->dead.find(
@@ -670,6 +797,14 @@ void NativeRemotePlayerRenderer::ActorDraw(Actor* actor, PlayState* play) {
         if (found != renderer->mImpl->live.end()) record = &found->second;
     }
 
+    // Local players never own one of these presentation actors. Retain this
+    // guard as a lifecycle safety invariant so a delayed actor cannot draw if
+    // its identity becomes the local player during reconnect.
+    if (!remote->isCorpse &&
+        remote->playerId == renderer->mImpl->localPlayerId) {
+        return;
+    }
+
     NativePlayerPresentationState rendered{};
     if (record) {
         rendered = record->state;
@@ -681,6 +816,10 @@ void NativeRemotePlayerRenderer::ActorDraw(Actor* actor, PlayState* play) {
                         rendered, *fishing);
                 }
             }
+        }
+        if (!remote->isCorpse && renderer->mImpl->fishing) {
+            NativePlayerPresentationComposer::ApplyAuthoritativeFishing(
+                rendered, *renderer->mImpl->fishing);
         }
     }
     if (!remote->isCorpse && renderer->mImpl->players &&
@@ -701,7 +840,9 @@ void NativeRemotePlayerRenderer::ActorDraw(Actor* actor, PlayState* play) {
         fishingState,
         static_cast<uint8_t>(record &&
                              (rendered.stateFlags & NATIVE_PLAYER_READY_TO_FIRE)),
-        { 0, 0, 0 },
+        static_cast<uint8_t>(record &&
+                             (rendered.stateFlags & NATIVE_PLAYER_SHIELDING)),
+        { 0, 0 },
         remote->upperLimbRot,
         remote->headLimbRot,
         record ? rendered.fishingRodBendY : 0.0f,
@@ -727,32 +868,23 @@ void NativeRemotePlayerRenderer::ActorDraw(Actor* actor, PlayState* play) {
     }
     EndRenderedPlayerCollision(remote->playerId);
 
-    if (!remote->isCorpse && remote->itemAction == PLAYER_IA_FISHING_POLE &&
-        record && renderer->mImpl->fishing) {
+    const auto* authoritativeLure =
+        !remote->isCorpse && renderer->mImpl->fishing
+            ? renderer->mImpl->fishing->LureForOwner(remote->playerId)
+            : nullptr;
+    if (remote->itemAction == PLAYER_IA_FISHING_POLE && record &&
+        authoritativeLure && authoritativeLure->sceneId == play->sceneNum) {
         NativeRecord& native = *record;
         const NativePlayerPresentationState& state = rendered;
         Vec3f lure = {
-            actor->world.pos.x + state.fishingLureOffset[0],
-            actor->world.pos.y + state.fishingLureOffset[1],
-            actor->world.pos.z + state.fishingLureOffset[2],
+            authoritativeLure->x, authoritativeLure->y, authoritativeLure->z
         };
-        const auto* authoritativeLure =
-            renderer->mImpl->fishing->LureForOwner(remote->playerId);
-        if (authoritativeLure && authoritativeLure->sceneId == play->sceneNum) {
-            lure = {
-                authoritativeLure->x, authoritativeLure->y, authoritativeLure->z
-            };
-        }
         POLY_XLU_DISP = Gfx_SetupDL(POLY_XLU_DISP, 0x14);
         gDPSetCombineMode(POLY_XLU_DISP++, G_CC_PRIMITIVE, G_CC_PRIMITIVE);
         gDPSetPrimColor(POLY_XLU_DISP++, 0, 0, 255, 255, 255, 55);
         const size_t spooled = std::min<size_t>(
             state.fishingLineSpooled, NETWORK_FISHING_LINE_POINT_COUNT - 1);
-        Vec3f rodTip = {
-            actor->world.pos.x + state.fishingRodTipOffset[0],
-            actor->world.pos.y + state.fishingRodTipOffset[1],
-            actor->world.pos.z + state.fishingRodTipOffset[2],
-        };
+        Vec3f rodTip = drawData.fishingRodTip;
         const Vec3f lureDraw = {
             actor->world.pos.x + state.fishingLureDrawOffset[0],
             actor->world.pos.y + state.fishingLureDrawOffset[1],
@@ -807,7 +939,10 @@ void NativeRemotePlayerRenderer::ActorDraw(Actor* actor, PlayState* play) {
                                      MTXMODE_NEW);
                     Matrix_RotateY(std::atan2(dx, dz), MTXMODE_APPLY);
                     Matrix_RotateX(-std::atan2(dy, horizontal), MTXMODE_APPLY);
-                    Matrix_Scale(state.fishingLineScale, 1.0f,
+                    const float lineScale = state.fishingLineScale > 0.0f
+                                                ? state.fishingLineScale
+                                                : 0.0005f;
+                    Matrix_Scale(lineScale, 1.0f,
                                  distance * 0.001f, MTXMODE_APPLY);
                     gSPMatrix(POLY_XLU_DISP++,
                               MATRIX_NEWMTX(play->state.gfxCtx),
@@ -822,7 +957,10 @@ void NativeRemotePlayerRenderer::ActorDraw(Actor* actor, PlayState* play) {
                                  MTXMODE_NEW);
                 Matrix_RotateY(native.fishingLineRot[point].y, MTXMODE_APPLY);
                 Matrix_RotateX(native.fishingLineRot[point].x, MTXMODE_APPLY);
-                Matrix_Scale(state.fishingLineScale, 1.0f, 0.005f,
+                const float lineScale = state.fishingLineScale > 0.0f
+                                            ? state.fishingLineScale
+                                            : 0.0005f;
+                Matrix_Scale(lineScale, 1.0f, 0.005f,
                              MTXMODE_APPLY);
                 gSPMatrix(POLY_XLU_DISP++, MATRIX_NEWMTX(play->state.gfxCtx),
                           G_MTX_NOPUSH | G_MTX_LOAD | G_MTX_MODELVIEW);

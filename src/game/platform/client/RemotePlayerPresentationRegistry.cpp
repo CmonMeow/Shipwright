@@ -16,6 +16,7 @@ RemotePlayerPresentationApplyResult RemotePlayerPresentationRegistry::Apply(
         if (player == mEntitiesByPlayer.end() || player->second != key) return result;
         const auto current = mEntries.find(key);
         if (current == mEntries.end()) return result;
+        if (current->second.state.lifeEpoch != state.lifeEpoch) return result;
         result.update = RemotePlayerPresentationUpdate::Retired;
         result.actorHandle = current->second.actorHandle;
         mEntitiesByActorHandle.erase(current->second.actorHandle);
@@ -27,6 +28,17 @@ RemotePlayerPresentationApplyResult RemotePlayerPresentationRegistry::Apply(
     const auto exact = mEntries.find(key);
     if (exact != mEntries.end()) {
         if (exact->second.state.playerId != state.playerId) return result;
+        if (exact->second.state.lifeEpoch != state.lifeEpoch) {
+            if (!Sequence::IsNewer(state.lifeEpoch,
+                                   exact->second.state.lifeEpoch)) {
+                return result;
+            }
+            result.previousEntity = exact->second.state.entity;
+            result.actorHandle = exact->second.actorHandle;
+            exact->second.state = state;
+            result.update = RemotePlayerPresentationUpdate::Replaced;
+            return result;
+        }
         exact->second.state = state;
         result.update = RemotePlayerPresentationUpdate::Updated;
         result.actorHandle = exact->second.actorHandle;
@@ -108,7 +120,8 @@ uint64_t RemotePlayerPresentationRegistry::Key(Simulation::EntityId entity) {
 
 bool RemotePlayerPresentationRegistry::IsSane(
     const RemotePlayerPresentationState& state) {
-    return state.entity.Valid() && state.playerId >= 0 && state.sceneId >= 0 &&
+    return state.entity.Valid() && state.playerId >= 0 && state.lifeEpoch != 0 &&
+           state.sceneId >= 0 &&
            state.sceneId < 4096;
 }
 

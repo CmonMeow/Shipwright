@@ -6,7 +6,8 @@ typedef struct ProjectileGameplaySink {
     void (*bindPredictedArrow)(const void* presentation, int32_t sceneId,
                                void* context);
     int32_t (*commitArrowFire)(const void* presentation, int32_t sceneId,
-                               void* context);
+                               uint32_t clientTick, int16_t heading,
+                               int16_t aimPitch, void* context);
     void (*unbindPredictedArrow)(const void* presentation, void* context);
     void* context;
 } ProjectileGameplaySink;
@@ -20,7 +21,10 @@ void ProjectileGameplay_ClearSink(void* context);
 void ProjectileGameplay_BindPredictedArrow(const void* presentation,
                                             int32_t sceneId);
 int32_t ProjectileGameplay_CommitArrowFire(const void* presentation,
-                                           int32_t sceneId);
+                                           int32_t sceneId,
+                                           uint32_t clientTick,
+                                           int16_t heading,
+                                           int16_t aimPitch);
 void ProjectileGameplay_UnbindPredictedArrow(const void* presentation);
 
 #ifdef __cplusplus

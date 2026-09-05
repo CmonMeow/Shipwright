@@ -53,7 +53,7 @@ void NativeClientUpdateCoordinator::UpdateGameplay(PlayState* play,
     const float deltaSeconds = mFrameClock.Sample(nowSeconds);
     mDependencies.inbound.ReceiveSceneAuthority(play);
     mDependencies.inbound.EnsureSceneAuthorized(play);
-    mDependencies.frames.ReconcileGameplayFrame(play, deltaSeconds);
+    mDependencies.frames.ReconcileGameplayFrame(play);
     mDependencies.outbound.SubmitPlayerCommand(play, deltaSeconds);
     mDependencies.frames.ProjectLocalPresentation(play);
     mDependencies.outbound.SubmitPresentation(play);

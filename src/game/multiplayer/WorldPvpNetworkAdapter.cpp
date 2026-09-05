@@ -165,8 +165,8 @@ bool IsSane(const NetworkObjectiveStatePacket& packet) {
            packet.captureRadius >= 1.0f && packet.captureRadius <= 100000.0f &&
            std::isfinite(packet.captureProgress) && packet.captureProgress >= 0.0f &&
            packet.captureProgress <= 100.0f && packet.active <= 1 &&
-           packet.ownerTeam <= NETWORK_TEAM_BLUE &&
-           packet.capturingTeam <= NETWORK_TEAM_BLUE && packet.contested <= 1;
+           packet.ownerTeam <= NETWORK_TEAM_GREEN &&
+           packet.capturingTeam <= NETWORK_TEAM_GREEN && packet.contested <= 1;
 }
 
 bool IsSane(const NetworkStructureStatePacket& packet) {
@@ -178,7 +178,7 @@ bool IsSane(const NetworkStructureStatePacket& packet) {
         !SaneCoordinate(packet.z) || packet.maximumHealth == 0 ||
         packet.requiredBuild == 0 || packet.health > packet.maximumHealth ||
         packet.buildProgress > packet.requiredBuild || packet.active > 1 ||
-        packet.team > NETWORK_TEAM_BLUE ||
+        packet.team > NETWORK_TEAM_GREEN ||
         packet.phase > static_cast<unsigned char>(Game::Simulation::StructurePhase::Destroyed)) {
         return false;
     }

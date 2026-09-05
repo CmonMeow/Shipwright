@@ -80,12 +80,16 @@ bool TestMovement() {
 
     test.KeyDown('D');
     selected.Update(test);
-    if (selected.move != vec2i{ 1, 0 }) return false;
+    if (selected.move != vec2i{ 1, 1 }) return false;
 
     test.KeyUp('W');
-    test.KeyUp('D');
     selected.Update(test);
-    return selected.move == vec2i{};
+    if (selected.move != vec2i{ 1, 0 }) return false;
+
+    test.KeyUp('D');
+    test.KeyDown('A');
+    selected.Update(test);
+    return selected.move == vec2i{ -1, 0 };
 }
 
 } // namespace

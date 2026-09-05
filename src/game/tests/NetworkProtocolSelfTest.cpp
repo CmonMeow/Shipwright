@@ -189,15 +189,20 @@ bool TestPacketSerialization() {
     command.sequence = 100;
     command.actionSequence = 9;
     command.lifeEpoch = 3;
+    command.clientTick = 700;
     command.moveX = -85;
     command.moveY = 63;
     command.heading = -12000;
     command.aimPitch = 4000;
     command.heldActions = NETWORK_ACTION_AIM;
     command.pressedActions = NETWORK_ACTION_PRIMARY;
+    command.meleeAttackVariant = static_cast<uint8_t>(
+        Game::Simulation::MeleeAttackVariant::LeftCombo);
+    command.hasMeleeAttackVariant = 1;
     const std::string encodedCommand = BuildAppPacket(NAMTPlayerIntent, command);
+    constexpr size_t encodedPlayerCommandBytes = 42;
     if (encodedCommand.size() != sizeof(NetAppMessageHeader) +
-                                     sizeof(NetworkPlayerCommandPacket)) {
+                                     encodedPlayerCommandBytes) {
         return false;
     }
     NetworkPlayerCommandPacket decodedCommand{};
@@ -224,6 +229,7 @@ bool TestPacketSerialization() {
     fishingPresentation.entityIndex = 17;
     fishingPresentation.entityGeneration = 23;
     fishingPresentation.sceneId = 42;
+    fishingPresentation.lifeEpoch = 3;
     fishingPresentation.sequence = 99;
     fishingPresentation.fishingState = 4;
     fishingPresentation.fishingLineSpooled = 137;
@@ -243,7 +249,7 @@ bool TestPacketSerialization() {
     EncodeFishingStateRaw(fishingRaw, fishingPresentation);
     NetworkMessageRaw encodedFishing(fishingRaw.data(), fishingRaw.size());
     NetworkFishingPresentationPacket decodedFishing{};
-    if (fishingRaw.size() >= 160 || !DecodeFishingStateRaw(encodedFishing, decodedFishing) ||
+    if (fishingRaw.size() >= 164 || !DecodeFishingStateRaw(encodedFishing, decodedFishing) ||
         decodedFishing.playerId != fishingPresentation.playerId ||
         decodedFishing.entityIndex != fishingPresentation.entityIndex ||
         decodedFishing.entityGeneration != fishingPresentation.entityGeneration ||
@@ -267,7 +273,7 @@ bool TestPacketSerialization() {
     EncodeFishingIntentRaw(fishingIntentRaw, fishingIntent);
     NetworkMessageRaw encodedFishingIntent(fishingIntentRaw.data(), fishingIntentRaw.size());
     NetworkFishingPresentationIntentPacket decodedFishingIntent{};
-    if (fishingIntentRaw.size() + 12 != fishingRaw.size() ||
+    if (fishingIntentRaw.size() + 16 != fishingRaw.size() ||
         !DecodeFishingIntentRaw(encodedFishingIntent, decodedFishingIntent) ||
         decodedFishingIntent.sequence != fishingIntent.sequence ||
         decodedFishingIntent.fishingLureDrawOffset[2] !=
@@ -276,7 +282,7 @@ bool TestPacketSerialization() {
         return false;
     }
 
-    const NetworkPlayerLifecyclePacket lifecycleSource{ 7, 17, 23, 42, 1 };
+    const NetworkPlayerLifecyclePacket lifecycleSource{ 7, 17, 23, 3, 42, 1 };
     const std::string lifecycleEncoded = BuildAppPacket(NAMTPlayerLifecycle, lifecycleSource);
     NetworkPlayerLifecyclePacket lifecycleDecoded{};
     if (!ParseAppPacket(lifecycleEncoded.data(), static_cast<__int32>(lifecycleEncoded.size()),
@@ -293,6 +299,8 @@ bool TestPacketSerialization() {
     combatSource.sourceEntityGeneration = 23;
     combatSource.targetEntityIndex = 18;
     combatSource.targetEntityGeneration = 24;
+    combatSource.sourceLifeEpoch = 3;
+    combatSource.targetLifeEpoch = 3;
     combatSource.sceneId = 42;
     combatSource.attackKind = NETWORK_COMBAT_ARROW;
     combatSource.result = NETWORK_COMBAT_BLOCKED;
@@ -309,7 +317,7 @@ bool TestPacketSerialization() {
         return false;
     }
     Game::Replication::EntityLifetimeRegistry activeCombatPlayers;
-    const NetworkPlayerLifecyclePacket targetLifecycle{ 8, 18, 24, 42, 1 };
+    const NetworkPlayerLifecyclePacket targetLifecycle{ 8, 18, 24, 3, 42, 1 };
     if (!Game::Multiplayer::PlayerLifecycleNetworkAdapter::Apply(
             lifecycleSource, activeCombatPlayers) ||
         !Game::Multiplayer::PlayerLifecycleNetworkAdapter::Apply(
@@ -318,7 +326,13 @@ bool TestPacketSerialization() {
     }
     if (!Game::Multiplayer::CombatNetworkAdapter::IsSane(combatDecoded) ||
         !Game::Multiplayer::CombatNetworkAdapter::MatchesActiveLifetimes(
-            combatDecoded, activeCombatPlayers)) {
+            combatDecoded, activeCombatPlayers) ||
+        !Game::Multiplayer::CombatNetworkAdapter::MatchesActiveIncarnations(
+            combatDecoded, std::map<int32_t, uint32_t>{ { 7, 3 }, { 8, 3 } })) {
+        return false;
+    }
+    if (Game::Multiplayer::CombatNetworkAdapter::MatchesActiveIncarnations(
+            combatDecoded, std::map<int32_t, uint32_t>{ { 7, 3 }, { 8, 4 } })) {
         return false;
     }
     combatDecoded.targetEntityGeneration = 25;
@@ -395,6 +409,13 @@ bool TestPacketSerialization() {
     projectileSource.rotationX = 0x4000;
     projectileSource.rotationY = -1234;
     projectileSource.velocityZ = 3000.0f;
+    projectileSource.bodyPlayerId = 8;
+    projectileSource.bodyLifeEpoch = 3;
+    projectileSource.bodyRegion = 5;
+    projectileSource.bodyOffsetX = 0.5f;
+    projectileSource.bodyOffsetY = 0.25f;
+    projectileSource.bodyOffsetZ = -0.75f;
+    projectileSource.bodyDirectionZ = 1.0f;
     const std::string projectileEncoded = BuildAppPacket(NAMTProjectileState, projectileSource);
     NetworkProjectileStatePacket projectileDecoded{};
     if (!ParseAppPacket(projectileEncoded.data(), static_cast<__int32>(projectileEncoded.size()),
@@ -417,7 +438,7 @@ bool TestPacketSerialization() {
         return false;
     }
 
-    const NetworkArrowFireIntentPacket arrowIntentSource{ 77, 3 };
+    const NetworkArrowFireIntentPacket arrowIntentSource{ 77, 3, 456, 1234, -567 };
     const auto mappedArrowCommand =
         Game::Multiplayer::ProjectileNetworkAdapter::ToCommand(arrowIntentSource);
     const std::string arrowIntentEncoded = BuildAppPacket(NAMTArrowFireIntent, arrowIntentSource);
@@ -429,7 +450,10 @@ bool TestPacketSerialization() {
         return false;
     }
     if (mappedArrowCommand.playerId != -1 || mappedArrowCommand.sequence != 77 ||
-        mappedArrowCommand.lifeEpoch != 3) return false;
+        mappedArrowCommand.lifeEpoch != 3 ||
+        mappedArrowCommand.clientTick != 456 ||
+        mappedArrowCommand.heading != 1234 ||
+        mappedArrowCommand.aimPitch != -567) return false;
     std::string forgedArrowIntent = arrowIntentEncoded;
     forgedArrowIntent.push_back(static_cast<char>(8));
     if (ParseAppPacket(forgedArrowIntent.data(),
@@ -469,7 +493,7 @@ bool TestPacketSerialization() {
         return false;
     }
     const NetworkFishStatePacket fishStateSource{
-        7, 23, 4, 124, 73, 9001,
+        7, 3, 23, 4, 124, 73, 9001,
         666.0f, -45.0f, 354.0f,
         static_cast<uint8_t>(Game::Simulation::FishSpecies::HylianLoach),
         18.5f, 1
@@ -505,7 +529,7 @@ bool TestPacketSerialization() {
         return false;
     }
     const NetworkLureStatePacket lureStateSource{
-        7, 24, 5, 125, 73, 666.0f, -45.0f, 354.0f,
+        7, 3, 24, 5, 125, 73, 666.0f, -45.0f, 354.0f,
         static_cast<unsigned char>(Game::Simulation::FishingLurePhase::Hooked), 2, 1
     };
     const std::string lureStateEncoded = BuildAppPacket(NAMTLureState, lureStateSource);
@@ -632,7 +656,7 @@ bool TestProjectileNetworkAdapter() {
         return false;
     }
 
-    NetworkArrowFireIntentPacket arrowIntent{ 30, 2 };
+    NetworkArrowFireIntentPacket arrowIntent{ 30, 2, 99, 1234, -567 };
     if (!Adapter::IsSane(arrowIntent)) return false;
     arrowIntent.sequence = 0;
     NetworkProjectileIntentResultPacket intentResult{
@@ -661,26 +685,29 @@ bool TestClientProjectilePresentationPolicy() {
     packet.logicalId.projectileKind = NETWORK_PROJECTILE_ARROW;
     packet.phase = Game::Client::RemoteProjectilePhase::ArrowFlying;
     packet.active = true;
+    const auto evaluate = [&](bool presentationExists) {
+        return Policy::Evaluate(packet, localPlayerId, presentationExists);
+    };
 
-    if (Policy::Evaluate(packet, localPlayerId, false) != Action::Ignore ||
-        Policy::Evaluate(packet, localPlayerId, true) != Action::Retire) {
+    if (evaluate(false) != Action::Ignore ||
+        evaluate(true) != Action::Retire) {
         return false;
     }
 
     packet.phase = Game::Client::RemoteProjectilePhase::ArrowStuck;
-    if (Policy::Evaluate(packet, localPlayerId, false) != Action::Upsert) return false;
+    if (evaluate(false) != Action::Upsert) return false;
     packet.active = false;
-    if (Policy::Evaluate(packet, localPlayerId, true) != Action::Retire ||
-        Policy::Evaluate(packet, localPlayerId, false) != Action::Ignore) {
+    if (evaluate(true) != Action::Retire ||
+        evaluate(false) != Action::Ignore) {
         return false;
     }
 
     packet.logicalId.ownerPlayerId = 8;
     packet.active = true;
     packet.phase = Game::Client::RemoteProjectilePhase::ArrowFlying;
-    if (Policy::Evaluate(packet, localPlayerId, false) != Action::Upsert) return false;
+    if (evaluate(false) != Action::Upsert) return false;
     packet.active = false;
-    if (Policy::Evaluate(packet, localPlayerId, true) != Action::Retire) return false;
+    if (evaluate(true) != Action::Retire) return false;
 
     // Exercise far more impacts than a play session's server-side stuck-arrow cap.
     // Every exact retirement must release its presentation instead of accumulating actors.
@@ -693,7 +720,7 @@ bool TestClientProjectilePresentationPolicy() {
         packet.entity = { projectileId, 1 };
         packet.active = true;
         packet.phase = Game::Client::RemoteProjectilePhase::ArrowStuck;
-        if (Policy::Evaluate(packet, localPlayerId, false) != Action::Upsert) return false;
+        if (evaluate(false) != Action::Upsert) return false;
         presentations.insert(projectileId);
         stuckOrder.push_back(projectileId);
 
@@ -703,7 +730,7 @@ bool TestClientProjectilePresentationPolicy() {
             packet.logicalId.projectileId = retiredId;
             packet.entity = { retiredId, 1 };
             packet.active = false;
-            if (Policy::Evaluate(packet, localPlayerId, presentations.contains(retiredId)) != Action::Retire) {
+            if (evaluate(presentations.contains(retiredId)) != Action::Retire) {
                 return false;
             }
             presentations.erase(retiredId);
@@ -716,7 +743,7 @@ bool TestClientProjectilePresentationPolicy() {
         packet.logicalId.projectileId = retiredId;
         packet.entity = { retiredId, 1 };
         packet.active = false;
-        if (Policy::Evaluate(packet, localPlayerId, true) != Action::Retire) return false;
+        if (evaluate(true) != Action::Retire) return false;
         presentations.erase(retiredId);
     }
     return presentations.empty();
@@ -766,9 +793,28 @@ bool TestClientPlayerActionPresentationPolicy() {
     auto presentation = Policy::Evaluate(snapshot);
     if (presentation.equipment != Equipment::MasterSwordAndShield ||
         !presentation.blocking || presentation.bowReady || presentation.dead ||
+        presentation.baseAnimation != Base::BlockingSword ||
+        presentation.upperAnimation != Upper::None) {
+        return false;
+    }
+
+    snapshot.selectedWeapon = 0;
+    presentation = Policy::Evaluate(snapshot);
+    if (presentation.equipment != Equipment::None ||
+        !presentation.blocking ||
+        presentation.baseAnimation != Base::BlockingFree ||
+        presentation.upperAnimation != Upper::None) {
+        return false;
+    }
+
+    snapshot.selectedWeapon = 1;
+    snapshot.velocity.z = 20.0f;
+    presentation = Policy::Evaluate(snapshot);
+    if (presentation.baseAnimation != Base::RunForward ||
         presentation.upperAnimation != Upper::Blocking) {
         return false;
     }
+    snapshot.velocity = {};
 
     snapshot.selectedWeapon = 3;
     snapshot.actionState = Game::Simulation::PlayerActionState::Aiming;
@@ -787,18 +833,24 @@ bool TestClientPlayerActionPresentationPolicy() {
     snapshot.velocity.z = -2.0f;
     if (Policy::Evaluate(snapshot).baseAnimation != Base::WalkBackward) return false;
     snapshot.velocity.z = 0.0f;
-    snapshot.velocity.x = -2.0f;
+    snapshot.velocity.x = 2.0f;
     if (Policy::Evaluate(snapshot).baseAnimation != Base::StrafeLeft) return false;
     snapshot.velocity.x = 0.0f;
     snapshot.actionState = Game::Simulation::PlayerActionState::PrimaryActive;
-    if (Policy::Evaluate(snapshot).baseAnimation != Base::SwordAttack) return false;
+    snapshot.meleeAttackVariant = Game::Simulation::MeleeAttackVariant::ForwardSlash;
+    if (Policy::Evaluate(snapshot).baseAnimation != Base::MeleeForwardSlash) return false;
+    snapshot.meleeAttackVariant = Game::Simulation::MeleeAttackVariant::RightSlash;
+    if (Policy::Evaluate(snapshot).baseAnimation != Base::MeleeRightSlash) return false;
+    snapshot.meleeAttackVariant = Game::Simulation::MeleeAttackVariant::LeftCombo;
+    snapshot.meleeAttackId = 77;
+    if (Policy::Evaluate(snapshot).baseAnimation != Base::MeleeLeftCombo) return false;
 
     snapshot.actionState = Game::Simulation::PlayerActionState::Evading;
     snapshot.velocity = { 0.0f, 0.0f, -120.0f };
     if (Policy::Evaluate(snapshot).baseAnimation != Base::EvadeBackward) return false;
-    snapshot.velocity = { -170.0f, 0.0f, 0.0f };
-    if (Policy::Evaluate(snapshot).baseAnimation != Base::EvadeLeft) return false;
     snapshot.velocity = { 170.0f, 0.0f, 0.0f };
+    if (Policy::Evaluate(snapshot).baseAnimation != Base::EvadeLeft) return false;
+    snapshot.velocity = { -170.0f, 0.0f, 0.0f };
     if (Policy::Evaluate(snapshot).baseAnimation != Base::EvadeRight) return false;
 
     snapshot.selectedWeapon = 4;
@@ -824,6 +876,7 @@ bool TestFishingNetworkAdapter() {
         118, Game::Simulation::MakeFishSpawnKey(118, 3, 666, -45, 354)
     };
     fish.ownerPlayerId = 9;
+    fish.ownerLifeEpoch = 2;
     fish.position = { 660.0f, -40.0f, 350.0f };
     fish.species = Game::Simulation::FishSpecies::HylianLoach;
     fish.length = 18.5f;
@@ -882,6 +935,7 @@ bool TestFishingNetworkAdapter() {
     Game::Simulation::FishingLureSnapshot lure{};
     lure.entity = { 52, 11 };
     lure.ownerPlayerId = 9;
+    lure.ownerLifeEpoch = 2;
     lure.sceneId = 118;
     lure.position = { 10.0f, 20.0f, 30.0f };
     lure.phase = Game::Simulation::FishingLurePhase::Hooked;
@@ -911,13 +965,14 @@ bool TestFishingNetworkAdapter() {
     presentation.playerId = 9;
     presentation.entityIndex = 53;
     presentation.entityGeneration = 4;
+    presentation.lifeEpoch = 2;
     presentation.sequence = 12;
     presentation.sceneId = 118;
     if (!Adapter::IsSane(fishIntent) || !Adapter::IsSane(lureIntent) ||
         !Adapter::IsSane(presentation)) {
         return false;
     }
-    presentation.fishingRodTipOffset[1] = 25.0f;
+    presentation.fishingRodBendY = 2.5f;
     presentation.fishingFishLimbRot[3] = 456;
     const auto presentationState = Adapter::ToState(presentation);
     const auto presentationRoundTrip = Adapter::ToPacket(presentationState);
@@ -926,19 +981,19 @@ bool TestFishingNetworkAdapter() {
     presentationIntent.lifeEpoch = 2;
     const auto unboundPresentation = Adapter::ToIntent(presentationIntent);
     if (presentationState.entity != Game::Simulation::EntityId{ 53, 4 } ||
-        presentationState.rodTipOffset[1] != 25.0f ||
+        presentationState.rodBendY != 2.5f ||
         presentationState.fishLimbRotation[3] != 456 ||
         presentationRoundTrip.entityGeneration != 4 ||
-        presentationRoundTrip.fishingRodTipOffset[1] != 25.0f ||
+        presentationRoundTrip.fishingRodBendY != 2.5f ||
         presentationRoundTrip.fishingFishLimbRot[3] != 456 ||
         !Adapter::IsSane(presentationIntent) ||
-        presentationIntent.fishingRodTipOffset[1] != 25.0f ||
+        presentationIntent.fishingRodBendY != 2.5f ||
         presentationIntent.fishingFishLimbRot[3] != 456 ||
         unboundPresentation.lifeEpoch != 2 ||
         unboundPresentation.presentation.playerId != -1 ||
         unboundPresentation.presentation.entity.Valid() ||
         unboundPresentation.presentation.sceneId != -1 ||
-        unboundPresentation.presentation.rodTipOffset[1] != 25.0f) {
+        unboundPresentation.presentation.rodBendY != 2.5f) {
         return false;
     }
     NetworkFishingPresentationIntentPacket unsafePresentation = presentationIntent;
@@ -966,7 +1021,7 @@ bool TestWorldPvpNetworkAdapter() {
     objective.sceneId = 118;
     objective.position = { 100.0f, 20.0f, -50.0f };
     objective.captureRadius = 300.0f;
-    objective.owner = Game::Simulation::TeamId::Blue;
+    objective.owner = Game::Simulation::TeamId::Green;
     objective.capturingTeam = Game::Simulation::TeamId::Red;
     objective.captureProgress = 45.0f;
     objective.contested = true;
@@ -974,10 +1029,10 @@ bool TestWorldPvpNetworkAdapter() {
     const Game::Client::ReplicatedObjectiveState objectiveState =
         Adapter::ToClientState(objectivePacket);
     if (!Adapter::IsSane(objectivePacket) || objectivePacket.objectiveKey != 4 ||
-        objectivePacket.ownerTeam != NETWORK_TEAM_BLUE || objectivePacket.active != 1 ||
+        objectivePacket.ownerTeam != NETWORK_TEAM_GREEN || objectivePacket.active != 1 ||
         objectivePacket.sequence != 70 || !objectiveState.active ||
         objectiveState.snapshot.entity != objective.entity ||
-        objectiveState.snapshot.owner != Game::Simulation::TeamId::Blue ||
+        objectiveState.snapshot.owner != Game::Simulation::TeamId::Green ||
         objectiveState.snapshot.captureProgress != 45.0f) {
         return false;
     }
@@ -1298,7 +1353,7 @@ bool TestLifecycleAndCorpseAdapters() {
     player.headingRadians = 0.5f;
 
     const Game::Replication::ReplicatedPlayer replicatedPlayer{
-        9, player.entity, player.sceneId, player.position
+        9, player.entity, player.lifeEpoch, player.sceneId, player.position
     };
     const NetworkPlayerLifecyclePacket lifecycle =
         Game::Multiplayer::PlayerLifecycleNetworkAdapter::ToPacket(replicatedPlayer, true);
@@ -1346,21 +1401,56 @@ bool TestPlayerSimulationNetworkAdapter() {
     command.sequence = 600;
     command.actionSequence = 40;
     command.lifeEpoch = 3;
+    command.clientTick = 777;
     command.moveX = -85;
     command.moveY = 42;
     command.heading = 0x2000;
     command.aimPitch = -0x1000;
     command.heldActions = NETWORK_ACTION_AIM;
     command.pressedActions = NETWORK_ACTION_PRIMARY;
+    command.meleeAttackVariant = static_cast<uint8_t>(
+        Game::Simulation::MeleeAttackVariant::LeftCombo);
+    command.hasMeleeAttackVariant = 1;
+    command.x = 12.0f;
+    command.y = 34.0f;
+    command.z = 56.0f;
+    command.locomotionMode = static_cast<uint8_t>(
+        Game::Simulation::PlayerLocomotionMode::Climbing);
+    command.hasPose = 1;
     if (!Adapter::IsSane(command)) return false;
     const Game::Simulation::PlayerCommand simulationCommand = Adapter::ToCommand(command);
     if (!Adapter::IsSane(simulationCommand) ||
         simulationCommand.ownerPlayerId != -1 || simulationCommand.sequence != 600 ||
-        simulationCommand.lifeEpoch != 3 || simulationCommand.sceneId != -1 ||
+        simulationCommand.lifeEpoch != 3 || simulationCommand.clientTick != 777 ||
+        simulationCommand.sceneId != -1 ||
         simulationCommand.moveX != -1.0f ||
-        simulationCommand.pressedActions != command.pressedActions) {
+        simulationCommand.pressedActions != command.pressedActions ||
+        !simulationCommand.hasReportedMeleeAttackVariant ||
+        simulationCommand.reportedMeleeAttackVariant !=
+            Game::Simulation::MeleeAttackVariant::LeftCombo ||
+        !simulationCommand.hasReportedPose ||
+        simulationCommand.reportedPosition.y != 34.0f ||
+        simulationCommand.reportedLocomotionMode !=
+            Game::Simulation::PlayerLocomotionMode::Climbing) {
         return false;
     }
+    const NetworkPlayerCommandPacket roundTrip = Adapter::ToPacket(simulationCommand);
+    if (roundTrip.sequence != command.sequence ||
+        roundTrip.clientTick != command.clientTick ||
+        roundTrip.heldActions != command.heldActions ||
+        roundTrip.meleeAttackVariant != command.meleeAttackVariant ||
+        roundTrip.hasMeleeAttackVariant != 1 ||
+        roundTrip.z != command.z ||
+        roundTrip.locomotionMode != command.locomotionMode ||
+        roundTrip.hasPose != 1) {
+        return false;
+    }
+    NetworkPlayerCommandPacket invalidAttackIdentity = command;
+    invalidAttackIdentity.meleeAttackVariant = 0xFF;
+    if (Adapter::IsSane(invalidAttackIdentity)) return false;
+    invalidAttackIdentity = command;
+    invalidAttackIdentity.pressedActions = NETWORK_ACTION_EVADE;
+    if (Adapter::IsSane(invalidAttackIdentity)) return false;
     const NetworkWeaponSelectionIntentPacket weaponIntent{ 44, 3, 4 };
     const auto weaponCommand = Adapter::ToCommand(weaponIntent);
     if (!Adapter::IsSane(weaponIntent) || weaponCommand.playerId != -1 ||
@@ -1385,11 +1475,14 @@ bool TestPlayerSimulationNetworkAdapter() {
     snapshot.selectedWeapon = 3;
     snapshot.locomotionMode = Game::Simulation::PlayerLocomotionMode::Swimming;
     snapshot.actionState = Game::Simulation::PlayerActionState::Aiming;
+    snapshot.meleeAttackVariant = Game::Simulation::MeleeAttackVariant::LeftCombo;
+    snapshot.meleeAttackId = 77;
     snapshot.actionStartTick = 790;
     snapshot.health = 24;
     snapshot.team = Game::Simulation::TeamId::Red;
     snapshot.locomotionPhaseRadians = 1.25f;
     NetworkPlayerSnapshotPacket packet = Adapter::ToPacket(snapshot);
+    const auto decodedSnapshot = Adapter::ToSnapshot(packet);
     if (!Adapter::IsSane(packet) || packet.entityGeneration != 4 ||
         packet.lastProcessedCommand != 600 || packet.lifeEpoch != 3 ||
         packet.heading != command.heading || packet.aimPitch != command.aimPitch ||
@@ -1397,20 +1490,26 @@ bool TestPlayerSimulationNetworkAdapter() {
         packet.locomotionMode != static_cast<unsigned char>(
             Game::Simulation::PlayerLocomotionMode::Swimming) ||
         packet.locomotionPhaseRadians != 1.25f ||
-        Adapter::ToSnapshot(packet).locomotionMode !=
+        packet.meleeAttackVariant != static_cast<unsigned char>(
+            Game::Simulation::MeleeAttackVariant::LeftCombo) ||
+        packet.meleeAttackId != 77 ||
+        decodedSnapshot.locomotionMode !=
             Game::Simulation::PlayerLocomotionMode::Swimming ||
-        Adapter::ToSnapshot(packet).locomotionPhaseRadians != 1.25f) {
+        decodedSnapshot.locomotionPhaseRadians != 1.25f ||
+        decodedSnapshot.meleeAttackVariant !=
+            Game::Simulation::MeleeAttackVariant::LeftCombo ||
+        decodedSnapshot.meleeAttackId != 77) {
         return false;
     }
 
-    packet.actionState = NETWORK_PLAYER_ACTION_JUMP_SLASHING;
+    packet.actionState = NETWORK_PLAYER_ACTION_SPIN_ATTACKING;
     if (!Adapter::IsSane(packet)) return false;
-    packet.actionState = NETWORK_PLAYER_ACTION_JUMP_SLASHING + 1;
+    packet.actionState = NETWORK_PLAYER_ACTION_SPIN_ATTACKING + 1;
     if (Adapter::IsSane(packet)) return false;
     packet.actionState = NETWORK_PLAYER_ACTION_EVADING;
 
     packet.locomotionMode = static_cast<unsigned char>(
-        Game::Simulation::PlayerLocomotionMode::Swimming) + 1;
+        Game::Simulation::PlayerLocomotionMode::Climbing) + 1;
     if (Adapter::IsSane(packet)) return false;
     packet.locomotionMode = static_cast<unsigned char>(
         Game::Simulation::PlayerLocomotionMode::Swimming);
@@ -1432,6 +1531,44 @@ bool TestPlayerSimulationNetworkAdapter() {
             Game::Multiplayer::ClientPlayerBaseAnimation::SwimIdle ||
         forwardSwimPresentation.baseAnimation !=
             Game::Multiplayer::ClientPlayerBaseAnimation::SwimForward) {
+        return false;
+    }
+    Game::Simulation::PlayerSnapshot idleEquipment = snapshot;
+    idleEquipment.locomotionMode =
+        Game::Simulation::PlayerLocomotionMode::Grounded;
+    idleEquipment.actionState = Game::Simulation::PlayerActionState::Idle;
+    idleEquipment.velocity = {};
+    idleEquipment.heldActions = 0;
+    idleEquipment.selectedWeapon = 0;
+    const auto emptyIdle =
+        Game::Multiplayer::ClientPlayerActionPresentationPolicy::Evaluate(
+            idleEquipment);
+    idleEquipment.selectedWeapon = 1;
+    const auto swordIdle =
+        Game::Multiplayer::ClientPlayerActionPresentationPolicy::Evaluate(
+            idleEquipment);
+    idleEquipment.selectedWeapon = 2;
+    const auto biggoronIdle =
+        Game::Multiplayer::ClientPlayerActionPresentationPolicy::Evaluate(
+            idleEquipment);
+    idleEquipment.selectedWeapon = 3;
+    const auto bowIdle =
+        Game::Multiplayer::ClientPlayerActionPresentationPolicy::Evaluate(
+            idleEquipment);
+    if (emptyIdle.equipment !=
+            Game::Multiplayer::ClientEquipmentPresentation::None ||
+        emptyIdle.baseAnimation !=
+            Game::Multiplayer::ClientPlayerBaseAnimation::IdleFree ||
+        swordIdle.baseAnimation !=
+            Game::Multiplayer::ClientPlayerBaseAnimation::IdleSword ||
+        biggoronIdle.baseAnimation !=
+            Game::Multiplayer::ClientPlayerBaseAnimation::IdleBiggoron ||
+        bowIdle.equipment !=
+            Game::Multiplayer::ClientEquipmentPresentation::Bow ||
+        bowIdle.baseAnimation !=
+            Game::Multiplayer::ClientPlayerBaseAnimation::IdleFree ||
+        bowIdle.upperAnimation !=
+            Game::Multiplayer::ClientPlayerUpperAnimation::None) {
         return false;
     }
     Game::Simulation::PlayerSnapshot airborne = snapshot;
@@ -1491,7 +1628,8 @@ bool TestLocalPlayerCommandStream() {
 
     const auto first = stream.Build(sample);
     if (!first || first->sequence != 1 || first->actionSequence != 1 ||
-        first->lifeEpoch != 1 || first->moveX != 1.0f || first->moveY != -1.0f ||
+        first->lifeEpoch != 1 || first->clientTick != 100 ||
+        first->moveX != 1.0f || first->moveY != -1.0f ||
         first->heldActions != Game::Simulation::PLAYER_ACTION_AIM ||
         first->pressedActions != Game::Simulation::PLAYER_ACTION_PRIMARY) {
         return false;
@@ -1646,7 +1784,7 @@ bool TestLocalPlayerCommandStream() {
 
 bool TestClientReplicationInbox() {
     Game::Multiplayer::ClientReplicationInbox inbox;
-    const NetworkPlayerLifecyclePacket lifetime{ 7, 10, 1, 118, 1 };
+    const NetworkPlayerLifecyclePacket lifetime{ 7, 10, 1, 1, 118, 1 };
     if (!inbox.AcceptPlayerLifecycle(lifetime)) return false;
 
     Game::Simulation::PlayerSnapshot player{};
@@ -1705,6 +1843,7 @@ bool TestClientReplicationInbox() {
     oldLifeCombat.targetPlayerId = 7;
     oldLifeCombat.targetEntityIndex = 10;
     oldLifeCombat.targetEntityGeneration = 1;
+    oldLifeCombat.targetLifeEpoch = 1;
     oldLifeCombat.sceneId = 118;
     oldLifeCombat.attackKind = NETWORK_COMBAT_ENVIRONMENT;
     oldLifeCombat.result = NETWORK_COMBAT_DAMAGED;
@@ -1728,6 +1867,8 @@ bool TestClientReplicationInbox() {
         polledSnapshot.lifeEpoch != 2) {
         return false;
     }
+    oldLifeCombat.eventId = 2;
+    if (inbox.AcceptCombatResult(oldLifeCombat)) return false;
     Game::Simulation::PlayerRespawnEvent polledRespawn{};
     if (!inbox.Poll(polledRespawn) || polledRespawn.lifeEpoch != 2 ||
         polledRespawn.playerId != 7 ||
@@ -1744,7 +1885,7 @@ bool TestClientReplicationInbox() {
     // complete placement baseline and advances the epoch floor so an old-life
     // snapshot arriving afterward cannot resurrect dead presentation state.
     Game::Multiplayer::ClientReplicationInbox reorderedRespawnInbox;
-    const NetworkPlayerLifecyclePacket reorderedLifetime{ 9, 50, 2, 118, 1 };
+    const NetworkPlayerLifecyclePacket reorderedLifetime{ 9, 50, 2, 2, 118, 1 };
     if (!reorderedRespawnInbox.AcceptPlayerLifecycle(reorderedLifetime)) {
         return false;
     }
@@ -1785,7 +1926,7 @@ bool TestClientReplicationInbox() {
         reorderedRespawnInbox.PlayerSnapshotCount() != 1) {
         return false;
     }
-    const NetworkPlayerLifecyclePacket movedLifetime{ 9, 50, 2, 119, 1 };
+    const NetworkPlayerLifecyclePacket movedLifetime{ 9, 50, 2, 2, 119, 1 };
     if (!reorderedRespawnInbox.AcceptPlayerLifecycle(movedLifetime) ||
         reorderedRespawnInbox.PlayerSnapshotCount() != 0) {
         return false;
@@ -1894,11 +2035,15 @@ bool TestClientReplicationInbox() {
     presentation.entityIndex = 10;
     presentation.entityGeneration = 1;
     presentation.sceneId = 118;
+    presentation.lifeEpoch = 2;
     presentation.sequence = 1;
-    if (!inbox.AcceptFishingPresentation(presentation, 0) ||
-        inbox.AcceptFishingPresentation(presentation, 0)) return false;
+    NetworkFishingPresentationPacket previousLifePresentation = presentation;
+    previousLifePresentation.lifeEpoch = 1;
+    if (inbox.AcceptFishingPresentation(previousLifePresentation) ||
+        !inbox.AcceptFishingPresentation(presentation) ||
+        inbox.AcceptFishingPresentation(presentation)) return false;
     presentation.sequence = 2;
-    if (!inbox.AcceptFishingPresentation(presentation, 0) ||
+    if (!inbox.AcceptFishingPresentation(presentation) ||
         inbox.FishingPresentationCount() != 1) {
         return false;
     }
@@ -1909,15 +2054,15 @@ bool TestClientReplicationInbox() {
         return false;
     }
     presentation.sequence = 3;
-    if (!inbox.AcceptFishingPresentation(presentation, 0) ||
+    if (!inbox.AcceptFishingPresentation(presentation) ||
         inbox.FishingPresentationCount() != 1) {
         return false;
     }
     NetworkFishingPresentationPacket malformedPresentation = presentation;
     malformedPresentation.sequence = 4;
-    malformedPresentation.fishingRodTipOffset[0] =
+    malformedPresentation.fishingLureDrawOffset[0] =
         std::numeric_limits<float>::quiet_NaN();
-    if (inbox.AcceptFishingPresentation(malformedPresentation, 0) ||
+    if (inbox.AcceptFishingPresentation(malformedPresentation) ||
         inbox.FishingPresentationCount() != 1) {
         return false;
     }
@@ -1927,14 +2072,19 @@ bool TestClientReplicationInbox() {
         inbox.PlayerSnapshotCount() != 1) {
         return false;
     }
-    const NetworkPlayerLifecyclePacket replacement{ 7, 10, 2, 118, 1 };
+    const NetworkPlayerLifecyclePacket replacement{ 7, 10, 2, 2, 118, 1 };
     if (!inbox.AcceptPlayerLifecycle(replacement) ||
         inbox.PlayerSnapshotCount() != 0 ||
         inbox.FishingPresentationCount() != 0 ||
-        inbox.AcceptFishingPresentation(presentation, 0)) {
+        inbox.AcceptFishingPresentation(presentation)) {
         return false;
     }
-    const NetworkPlayerLifecyclePacket combatTargetLifetime{ 8, 11, 1, 118, 1 };
+    NetworkPlayerLifecyclePacket previousLifeLifecycle = replacement;
+    previousLifeLifecycle.lifeEpoch = 1;
+    if (inbox.AcceptPlayerLifecycle(previousLifeLifecycle)) return false;
+    previousLifeLifecycle.active = 0;
+    if (inbox.AcceptPlayerLifecycle(previousLifeLifecycle)) return false;
+    const NetworkPlayerLifecyclePacket combatTargetLifetime{ 8, 11, 1, 1, 118, 1 };
     if (!inbox.AcceptPlayerLifecycle(combatTargetLifetime)) return false;
 
     Game::Simulation::CombatResultEvent combatEvent{};
@@ -1943,6 +2093,8 @@ bool TestClientReplicationInbox() {
     combatEvent.targetPlayerId = 8;
     combatEvent.sourceEntity = { 10, 2 };
     combatEvent.targetEntity = { 11, 1 };
+    combatEvent.sourceLifeEpoch = 2;
+    combatEvent.targetLifeEpoch = 1;
     combatEvent.sceneId = 118;
     combatEvent.attackKind = Game::Simulation::CombatAttackKind::Arrow;
     combatEvent.result = Game::Simulation::CombatResultKind::Blocked;
@@ -1955,6 +2107,7 @@ bool TestClientReplicationInbox() {
         decodedCombat.targetEntity != combatEvent.targetEntity ||
         decodedCombat.attackKind != combatEvent.attackKind ||
         decodedCombat.result != combatEvent.result ||
+        decodedCombat.meleeAttackId != 0 ||
         decodedCombat.hitRegion != Game::Simulation::PlayerHitRegion::None ||
         decodedCombat.impactPosition.z != combatEvent.impactPosition.z) {
         return false;
@@ -1971,6 +2124,23 @@ bool TestClientReplicationInbox() {
         decodedDamagedCombat.hitRegion != Game::Simulation::PlayerHitRegion::Torso) {
         return false;
     }
+    Game::Simulation::CombatResultEvent meleeCombatEvent = damagedCombatEvent;
+    meleeCombatEvent.attackKind = Game::Simulation::CombatAttackKind::Melee;
+    meleeCombatEvent.meleeAttackId = 37;
+    const NetworkCombatResultPacket meleeCombat =
+        Game::Multiplayer::CombatNetworkAdapter::ToPacket(meleeCombatEvent);
+    const Game::Simulation::CombatResultEvent decodedMeleeCombat =
+        Game::Multiplayer::CombatNetworkAdapter::ToEvent(meleeCombat);
+    if (!Game::Multiplayer::CombatNetworkAdapter::IsSane(meleeCombat) ||
+        decodedMeleeCombat.meleeAttackId != 37) {
+        return false;
+    }
+    NetworkCombatResultPacket invalidMeleeIdentity = meleeCombat;
+    invalidMeleeIdentity.meleeAttackId = 0;
+    if (Game::Multiplayer::CombatNetworkAdapter::IsSane(invalidMeleeIdentity)) return false;
+    invalidMeleeIdentity = damagedCombat;
+    invalidMeleeIdentity.meleeAttackId = 37;
+    if (Game::Multiplayer::CombatNetworkAdapter::IsSane(invalidMeleeIdentity)) return false;
     NetworkCombatResultPacket invalidHitRegion = damagedCombat;
     invalidHitRegion.hitRegion = Game::Simulation::kPlayerHitRegionCount;
     if (Game::Multiplayer::CombatNetworkAdapter::IsSane(invalidHitRegion)) return false;
@@ -1995,6 +2165,7 @@ bool TestClientReplicationInbox() {
     Game::Simulation::FishSnapshot fish{};
     fish.entity = { 20, 1 };
     fish.ownerPlayerId = 7;
+    fish.ownerLifeEpoch = 2;
     fish.identity = {
         118, Game::Simulation::MakeFishSpawnKey(118, 0, 1, 2, 3)
     };
@@ -2007,9 +2178,11 @@ bool TestClientReplicationInbox() {
     invalidFishSequence.sequence = 0;
     NetworkFishStatePacket wrongSceneFish = fishState;
     wrongSceneFish.sceneId = 119;
+    NetworkFishStatePacket previousLifeFish = fishState;
+    previousLifeFish.ownerLifeEpoch = 1;
     if (Game::Multiplayer::FishingNetworkAdapter::IsSane(invalidFishOwner) ||
         Game::Multiplayer::FishingNetworkAdapter::IsSane(invalidFishSequence) ||
-        inbox.AcceptFishState(wrongSceneFish)) {
+        inbox.AcceptFishState(wrongSceneFish) || inbox.AcceptFishState(previousLifeFish)) {
         return false;
     }
     if (!inbox.AcceptFishState(fishState) || inbox.AcceptFishState(fishState)) return false;
@@ -2042,6 +2215,7 @@ bool TestClientReplicationInbox() {
     if (!inbox.AcceptFishState(fishState)) return false;
     NetworkLureStatePacket lureState{};
     lureState.ownerPlayerId = 7;
+    lureState.ownerLifeEpoch = 2;
     lureState.entityIndex = 21;
     lureState.entityGeneration = 1;
     lureState.sequence = 1;
@@ -2051,13 +2225,16 @@ bool TestClientReplicationInbox() {
     lureState.active = 1;
     NetworkLureStatePacket wrongSceneLure = lureState;
     wrongSceneLure.sceneId = 119;
-    if (inbox.AcceptLureState(wrongSceneLure)) return false;
+    NetworkLureStatePacket previousLifeLure = lureState;
+    previousLifeLure.ownerLifeEpoch = 1;
+    if (inbox.AcceptLureState(wrongSceneLure) ||
+        inbox.AcceptLureState(previousLifeLure)) return false;
     if (!inbox.AcceptLureState(lureState)) return false;
 
     // Player retirement is the aggregate client lifetime boundary. It must
     // purge already-admitted owner entities and their pending presentation so
     // an old active packet cannot recreate fishing state after the player left.
-    const NetworkPlayerLifecyclePacket playerLeave{ 7, 10, 2, 118, 0 };
+    const NetworkPlayerLifecyclePacket playerLeave{ 7, 10, 2, 2, 118, 0 };
     if (!inbox.AcceptPlayerLifecycle(playerLeave) || inbox.FishStateCount() != 0 ||
         inbox.LureStateCount() != 0 || inbox.AcceptFishState(fishState) ||
         inbox.AcceptLureState(lureState)) {
@@ -2073,7 +2250,7 @@ bool TestClientReplicationInbox() {
         !inbox.AcceptLureState(departedLureRetirement)) {
         return false;
     }
-    const NetworkPlayerLifecyclePacket playerReturn{ 7, 10, 3, 118, 1 };
+    const NetworkPlayerLifecyclePacket playerReturn{ 7, 10, 3, 2, 118, 1 };
     fishState.entityGeneration = 4;
     fishState.sequence = 35;
     lureState.entityGeneration = 2;
@@ -2086,7 +2263,7 @@ bool TestClientReplicationInbox() {
     // Owner visibility leaving after a reliable release must not erase the
     // terminal state that removes the already-presented fish or lure.
     Game::Multiplayer::ClientReplicationInbox terminalInbox;
-    if (!terminalInbox.AcceptPlayerLifecycle({ 9, 90, 1, 118, 1 })) return false;
+    if (!terminalInbox.AcceptPlayerLifecycle({ 9, 90, 1, 2, 118, 1 })) return false;
     NetworkFishStatePacket terminalFish = fishState;
     terminalFish.ownerPlayerId = 9;
     terminalFish.entityIndex = 91;
@@ -2109,7 +2286,7 @@ bool TestClientReplicationInbox() {
     terminalLure.active = 0;
     if (!terminalInbox.AcceptFishState(terminalFish) ||
         !terminalInbox.AcceptLureState(terminalLure) ||
-        !terminalInbox.AcceptPlayerLifecycle({ 9, 90, 1, 118, 0 }) ||
+        !terminalInbox.AcceptPlayerLifecycle({ 9, 90, 1, 2, 118, 0 }) ||
         terminalInbox.FishStateCount() != 1 || terminalInbox.LureStateCount() != 1) {
         return false;
     }
@@ -2119,11 +2296,12 @@ bool TestClientReplicationInbox() {
     // delayed old-scene activity must be rejected, and a new exact entity in
     // the admitted scene may establish normally.
     Game::Multiplayer::ClientReplicationInbox fishingSceneInbox;
-    if (!fishingSceneInbox.AcceptPlayerLifecycle({ 12, 120, 1, 118, 1 })) {
+    if (!fishingSceneInbox.AcceptPlayerLifecycle({ 12, 120, 1, 1, 118, 1 })) {
         return false;
     }
     NetworkFishStatePacket sceneFish = terminalFish;
     sceneFish.ownerPlayerId = 12;
+    sceneFish.ownerLifeEpoch = 1;
     sceneFish.entityIndex = 121;
     sceneFish.entityGeneration = 1;
     sceneFish.sequence = 1;
@@ -2132,6 +2310,7 @@ bool TestClientReplicationInbox() {
     sceneFish.active = 1;
     NetworkLureStatePacket sceneLure = terminalLure;
     sceneLure.ownerPlayerId = 12;
+    sceneLure.ownerLifeEpoch = 1;
     sceneLure.entityIndex = 122;
     sceneLure.entityGeneration = 1;
     sceneLure.sequence = 1;
@@ -2139,7 +2318,7 @@ bool TestClientReplicationInbox() {
     sceneLure.active = 1;
     if (!fishingSceneInbox.AcceptFishState(sceneFish) ||
         !fishingSceneInbox.AcceptLureState(sceneLure) ||
-        !fishingSceneInbox.AcceptPlayerLifecycle({ 12, 120, 1, 119, 1 }) ||
+        !fishingSceneInbox.AcceptPlayerLifecycle({ 12, 120, 1, 1, 119, 1 }) ||
         fishingSceneInbox.FishStateCount() != 0 ||
         fishingSceneInbox.LureStateCount() != 0) {
         return false;
@@ -2200,7 +2379,7 @@ bool TestClientReplicationInbox() {
     sceneReply.requestSequence = 0;
     sceneReply.lifeEpoch = 3;
     sceneReply.accepted = 1;
-    if (!sceneInbox.AcceptPlayerLifecycle({ 7, 70, 4, 118, 1 }) ||
+    if (!sceneInbox.AcceptPlayerLifecycle({ 7, 70, 4, 1, 118, 1 }) ||
         !sceneInbox.AcceptSceneEntryState(sceneReply, 7, 1)) return false;
     Game::Client::LocalSceneAuthority bootstrapScene{};
     if (!sceneInbox.Poll(bootstrapScene) || !bootstrapScene.accepted ||
@@ -2312,7 +2491,7 @@ bool TestClientReplicationInbox() {
 
     for (int32_t playerId = 1000; playerId < 1300; ++playerId) {
         const uint32_t entityIndex = static_cast<uint32_t>(playerId + 1);
-        if (!inbox.AcceptPlayerLifecycle({ playerId, entityIndex, 1, 118, 1 })) {
+        if (!inbox.AcceptPlayerLifecycle({ playerId, entityIndex, 1, 1, 118, 1 })) {
             return false;
         }
         NetworkPlayerSnapshotPacket queued{};
@@ -2333,7 +2512,8 @@ bool TestClientReplicationInbox() {
     inbox.Reset();
     for (int32_t index = 0; index < 300; ++index) {
         if (!inbox.AcceptPlayerLifecycle(
-                { index, static_cast<uint32_t>(index + 1), 1, 118, 1 })) {
+                { index, static_cast<uint32_t>(index + 1), 1,
+                  static_cast<uint32_t>(index + 1), 118, 1 })) {
             return false;
         }
     }
@@ -2342,6 +2522,7 @@ bool TestClientReplicationInbox() {
 
         NetworkFishStatePacket queuedFish{};
         queuedFish.ownerPlayerId = index;
+        queuedFish.ownerLifeEpoch = static_cast<uint32_t>(index + 1);
         queuedFish.entityIndex = static_cast<uint32_t>(index + 1);
         queuedFish.entityGeneration = 1;
         queuedFish.sequence = 1;
@@ -2353,6 +2534,7 @@ bool TestClientReplicationInbox() {
 
         NetworkLureStatePacket queuedLure{};
         queuedLure.ownerPlayerId = index;
+        queuedLure.ownerLifeEpoch = static_cast<uint32_t>(index + 1);
         queuedLure.entityIndex = static_cast<uint32_t>(index + 1);
         queuedLure.entityGeneration = 1;
         queuedLure.sequence = 1;
@@ -2415,6 +2597,7 @@ bool TestClientReplicationInbox() {
         queuedCombat.targetPlayerId = index;
         queuedCombat.targetEntityIndex = static_cast<uint32_t>(index + 1);
         queuedCombat.targetEntityGeneration = 1;
+        queuedCombat.targetLifeEpoch = static_cast<uint32_t>(index + 1);
         queuedCombat.sceneId = 118;
         queuedCombat.attackKind = NETWORK_COMBAT_ENVIRONMENT;
         queuedCombat.result = NETWORK_COMBAT_DAMAGED;
@@ -2428,9 +2611,10 @@ bool TestClientReplicationInbox() {
         return false;
     }
 
-    if (!inbox.AcceptPlayerLifecycle({ 0, 1, 2, 118, 1 })) return false;
+    if (!inbox.AcceptPlayerLifecycle({ 0, 1, 2, 1, 118, 1 })) return false;
     NetworkFishStatePacket revisedFish{};
     revisedFish.ownerPlayerId = 0;
+    revisedFish.ownerLifeEpoch = 1;
     revisedFish.entityIndex = 1;
     revisedFish.entityGeneration = 1;
     revisedFish.sequence = 2;
@@ -2441,6 +2625,7 @@ bool TestClientReplicationInbox() {
     if (!inbox.AcceptFishState(revisedFish)) return false;
     NetworkLureStatePacket revisedLure{};
     revisedLure.ownerPlayerId = 0;
+    revisedLure.ownerLifeEpoch = 1;
     revisedLure.entityIndex = 1;
     revisedLure.entityGeneration = 1;
     revisedLure.sequence = 2;
@@ -3190,9 +3375,12 @@ bool TestServerCommandParser() {
     }
     const ParsedServerCommand neutral = ServerCommandParser::Parse("/team neutral");
     if (!neutral.Valid() || neutral.team != ServerCommandTeam::Neutral) return false;
+    const ParsedServerCommand green = ServerCommandParser::Parse("/team green");
+    if (!green.Valid() || green.team != ServerCommandTeam::Green) return false;
 
     const ParsedServerCommand badTeam = ServerCommandParser::Parse("/team orange");
-    if (badTeam.Valid() || badTeam.error != "usage: /team red|blue|neutral") return false;
+    if (badTeam.Valid() ||
+        badTeam.error != "usage: /team red|blue|green|neutral") return false;
 
     const ParsedServerCommand ban = ServerCommandParser::Parse("/BAN Player Seven");
     if (!ban.Valid() || ban.kind != ServerCommandKind::Ban ||
@@ -3263,9 +3451,9 @@ bool TestServerAdministrationService() {
     }
 
     results.clear();
-    administration.Execute(7, "/team blue", context);
-    if (teamPlayer != 7 || selectedTeam != TeamId::Blue ||
-        results != std::vector<std::string>{ "7:team set to blue" }) {
+    administration.Execute(7, "/team green", context);
+    if (teamPlayer != 7 || selectedTeam != TeamId::Green ||
+        results != std::vector<std::string>{ "7:team set to green" }) {
         return false;
     }
 
@@ -3325,7 +3513,9 @@ bool TestServerReplicationInterestPublisher() {
     }
 
     events.PublishPlayerSnapshots();
+    std::vector<Game::Client::RemotePlayerPresentationState> hostViews;
     Game::Client::RemotePlayerPresentationState hostView{};
+    while (inbox.Poll(hostView)) hostViews.push_back(hostView);
     const size_t lifecycleDeliveries = static_cast<size_t>(std::count_if(
         deliveries.begin(), deliveries.end(), [](const auto& delivery) {
             return delivery.second == NAMTPlayerLifecycle;
@@ -3335,11 +3525,18 @@ bool TestServerReplicationInterestPublisher() {
             return delivery.second == NAMTPlayerSnapshot;
         }));
     if (!replication.PlayerVisible(0, 7) || !replication.PlayerVisible(7, 0) ||
-        lifecycleDeliveries != 1 || snapshotDeliveries != 2 ||
+        !replication.PlayerVisible(0, 0) || !replication.PlayerVisible(7, 7) ||
+        lifecycleDeliveries != 2 || snapshotDeliveries != 2 ||
         std::any_of(deliveries.begin(), deliveries.end(), [](const auto& delivery) {
             return delivery.first != 7;
         }) ||
-        !inbox.Poll(hostView) || hostView.playerId != 7 || !hostView.active) {
+        hostViews.size() != 2 ||
+        std::none_of(hostViews.begin(), hostViews.end(), [](const auto& view) {
+            return view.playerId == 0 && view.active;
+        }) ||
+        std::none_of(hostViews.begin(), hostViews.end(), [](const auto& view) {
+            return view.playerId == 7 && view.active;
+        })) {
         return false;
     }
 
@@ -3384,10 +3581,12 @@ bool TestServerReplicationInterestPublisher() {
     publisher.RefreshAll();
     Game::Client::RemotePlayerPresentationState retired{};
     return !replication.PlayerVisible(0, 7) &&
-           !replication.PlayerVisible(7, 0) && deliveries.size() == 1 &&
-           deliveries.back() == std::pair<int32_t, NetAppMessageType>{
-               7, NAMTPlayerLifecycle
-           } &&
+           !replication.PlayerVisible(7, 0) && deliveries.size() == 2 &&
+           std::all_of(deliveries.begin(), deliveries.end(), [](const auto& delivery) {
+               return delivery == std::pair<int32_t, NetAppMessageType>{
+                   7, NAMTPlayerLifecycle
+               };
+           }) &&
            inbox.Poll(retired) && retired.playerId == 7 && !retired.active;
 }
 
@@ -3475,8 +3674,12 @@ bool TestServerGameplayCommandService() {
     }
     interest.RefreshAll();
     Game::Client::RemotePlayerPresentationState initialLifecycle{};
-    if (!inbox.Poll(initialLifecycle) || !initialLifecycle.active ||
-        initialLifecycle.playerId != 7) {
+    bool foundInitialClientLifecycle = false;
+    while (inbox.Poll(initialLifecycle)) {
+        foundInitialClientLifecycle = foundInitialClientLifecycle ||
+            (initialLifecycle.active && initialLifecycle.playerId == 7);
+    }
+    if (!foundInitialClientLifecycle) {
         Error("Gameplay command test: initial interest missing");
         return false;
     }
@@ -3491,9 +3694,12 @@ bool TestServerGameplayCommandService() {
         return false;
     }
     packetIngress.EnterScene(7, NetworkSceneEntryIntentPacket{ 1, 1 });
-    if (deliveries != std::vector<NetAppMessageType>{
-            NAMTSceneEntryState, NAMTPlayerLifecycle
-        }) {
+    if (deliveries.size() != 4 ||
+        deliveries.front() != NAMTSceneEntryState ||
+        !std::all_of(deliveries.begin() + 1, deliveries.end(),
+                     [](NetAppMessageType type) {
+                         return type == NAMTPlayerLifecycle;
+                     })) {
         Error("Gameplay command test: delivery order count=%zu first=%u last=%u",
               deliveries.size(),
               deliveries.empty() ? 0U : static_cast<unsigned>(deliveries.front()),
@@ -3604,18 +3810,27 @@ bool TestServerPlayerSessionService() {
         return false;
     }
     if (!sessions.HasIdentity(7) || !world.PlayerFor(7) ||
-        directMessages.size() < 4 ||
+        directMessages.size() < 5 ||
         directMessages[0] != NAMTPlayerAssign ||
         directMessages[1] != NAMTPlayerLifecycle ||
-        directMessages[2] != NAMTSceneEntryState ||
-        directMessages[3] != NAMTStrategicTopology ||
+        directMessages[2] != NAMTPlayerLifecycle ||
+        directMessages[3] != NAMTSceneEntryState ||
+        directMessages[4] != NAMTStrategicTopology ||
         knownKeyRequests != 1 || !broadcasts.empty()) {
         return false;
     }
     NetworkChatLine chat{};
     Game::Client::RemotePlayerPresentationState lifecycle{};
-    if (communication.PollChat(chat) || !inbox.Poll(lifecycle) ||
-        lifecycle.playerId != 7 || !lifecycle.active) {
+    bool foundHostLifecycle = false;
+    bool foundClientLifecycle = false;
+    while (inbox.Poll(lifecycle)) {
+        foundHostLifecycle = foundHostLifecycle ||
+            (lifecycle.playerId == 0 && lifecycle.active);
+        foundClientLifecycle = foundClientLifecycle ||
+            (lifecycle.playerId == 7 && lifecycle.active);
+    }
+    if (communication.PollChat(chat) || !foundHostLifecycle ||
+        !foundClientLifecycle) {
         return false;
     }
 
@@ -3884,8 +4099,8 @@ bool TestClientSessionIngress() {
         return false;
     }
 
-    const NetworkPlayerLifecyclePacket localLifetime{ 7, 10, 1, 118, 1 };
-    const NetworkPlayerLifecyclePacket remoteLifetime{ 8, 11, 1, 118, 1 };
+    const NetworkPlayerLifecyclePacket localLifetime{ 7, 10, 1, 1, 118, 1 };
+    const NetworkPlayerLifecyclePacket remoteLifetime{ 8, 11, 1, 1, 118, 1 };
     if (!ingress.AcceptPlayerLifecycle(localLifetime) ||
         !ingress.AcceptPlayerLifecycle(remoteLifetime)) {
         return false;

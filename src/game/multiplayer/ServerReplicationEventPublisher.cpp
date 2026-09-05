@@ -240,7 +240,7 @@ bool ServerReplicationEventPublisher::PublishFishingPresentation(
     for (const int32_t observer :
          mReplication.PlayerObservers(presentation.playerId)) {
         if (observer == 0) {
-            mClientInbox.AcceptFishingPresentation(packet, 0);
+            mClientInbox.AcceptFishingPresentation(packet);
         } else {
             Deliver(observer, NAMTFishingState, raw, NMFHighPriority, streamKey);
         }
@@ -335,9 +335,11 @@ void ServerReplicationEventPublisher::PublishLifeEvents() {
     if (std::any_of(events.begin(), events.end(), [](const auto& event) {
             return event.kind == Game::Simulation::PlayerLifeEventKind::Died;
         })) {
-        // Death and retained-body creation are one authoritative transaction.
-        // Reconcile the new corpse lifetime before returning from this publish
-        // pass instead of waiting for the later respawn.
+        // Draining death creates the retained corpse and detaches every arrow
+        // bound to the old life. Publish both persistent changes in this same
+        // authoritative update instead of leaving detachment queued until the
+        // next world tick.
+        PublishProjectileEvents();
         mInterestPublisher.RefreshSpatialEntities();
     }
     for (const auto& event : events) {

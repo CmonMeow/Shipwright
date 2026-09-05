@@ -11,7 +11,8 @@ bool Eligible(const FishingPresentationState& presentation,
               const Simulation::PlayerSnapshot& player) {
     return presentation.playerId == player.ownerPlayerId &&
            presentation.entity == player.entity &&
-           presentation.sceneId == player.sceneId && presentation.sequence != 0 &&
+           presentation.sceneId == player.sceneId &&
+           presentation.lifeEpoch == player.lifeEpoch && presentation.sequence != 0 &&
            player.health != 0 &&
            player.selectedWeapon ==
                static_cast<uint8_t>(Simulation::PlayerWeaponSlot::FishingPole);

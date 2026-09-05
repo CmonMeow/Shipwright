@@ -1,7 +1,8 @@
 #include "global.h"
 
 uint8_t Message_ShouldAdvance(PlayState* play) {
-    return CHECK_BTN_ALL(play->state.input[0].press.button, BTN_A);
+    (void)play;
+    return false;
 }
 
 uint8_t Message_ShouldAdvanceSilent(PlayState* play) {

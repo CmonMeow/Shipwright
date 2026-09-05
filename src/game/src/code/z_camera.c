@@ -3240,13 +3240,7 @@ int32_t Camera_KeepOn3(Camera* camera) {
         func_80043B60(camera);
         camera->atLERPStepScale = 0.0f;
 
-        if (camera->xzSpeed > 0.001f || CHECK_BTN_ALL(D_8015BD7C->state.input[0].press.button, BTN_A) ||
-            CHECK_BTN_ALL(D_8015BD7C->state.input[0].press.button, BTN_CLEFT) ||
-            CHECK_BTN_ALL(D_8015BD7C->state.input[0].press.button, BTN_CDOWN) ||
-            CHECK_BTN_ALL(D_8015BD7C->state.input[0].press.button, BTN_CUP) ||
-            CHECK_BTN_ALL(D_8015BD7C->state.input[0].press.button, BTN_CRIGHT) ||
-            PCInput_IsBlockPressed() ||
-            CHECK_BTN_ALL(D_8015BD7C->state.input[0].press.button, BTN_Z)) {
+        if (camera->xzSpeed > 0.001f || PCInput_IsBlockPressed()) {
             camera->unk_14C |= 4;
             camera->unk_14C &= ~8;
         }
@@ -4480,13 +4474,7 @@ int32_t Camera_Unique3(Camera* camera) {
                 break;
             }
             uniq3->doorParams.timer3 = 5;
-            if (camera->xzSpeed > 0.001f || CHECK_BTN_ALL(D_8015BD7C->state.input[0].press.button, BTN_A) ||
-                CHECK_BTN_ALL(D_8015BD7C->state.input[0].press.button, BTN_CLEFT) ||
-                CHECK_BTN_ALL(D_8015BD7C->state.input[0].press.button, BTN_CDOWN) ||
-                CHECK_BTN_ALL(D_8015BD7C->state.input[0].press.button, BTN_CUP) ||
-                CHECK_BTN_ALL(D_8015BD7C->state.input[0].press.button, BTN_CRIGHT) ||
-                PCInput_IsBlockPressed() ||
-                CHECK_BTN_ALL(D_8015BD7C->state.input[0].press.button, BTN_Z)) {
+            if (camera->xzSpeed > 0.001f || PCInput_IsBlockPressed()) {
                 camera->animState++;
             } else {
                 break;
@@ -4582,13 +4570,7 @@ int32_t Camera_Unique0(Camera* camera) {
             anim->initalPos = playerPosRot->pos;
         } else if ((!(player->stateFlags1 & PLAYER_STATE1_IN_CUTSCENE)) &&
                    ((OLib_Vec3fDistXZ(&playerPosRot->pos, &anim->initalPos) >= 10.0f) ||
-                    CHECK_BTN_ALL(D_8015BD7C->state.input[0].press.button, BTN_A) ||
-                    CHECK_BTN_ALL(D_8015BD7C->state.input[0].press.button, BTN_CLEFT) ||
-                    CHECK_BTN_ALL(D_8015BD7C->state.input[0].press.button, BTN_CDOWN) ||
-                    CHECK_BTN_ALL(D_8015BD7C->state.input[0].press.button, BTN_CUP) ||
-                    CHECK_BTN_ALL(D_8015BD7C->state.input[0].press.button, BTN_CRIGHT) ||
-                    PCInput_IsBlockPressed() ||
-                    CHECK_BTN_ALL(D_8015BD7C->state.input[0].press.button, BTN_Z))) {
+                    PCInput_IsBlockPressed())) {
             camera->dist = OLib_Vec3fDist(&camera->at, eye);
             camera->posOffset.x = camera->at.x - playerPosRot->pos.x;
             camera->posOffset.y = camera->at.y - playerPosRot->pos.y;
@@ -4608,13 +4590,7 @@ int32_t Camera_Unique0(Camera* camera) {
         }
 
         if ((!(player->stateFlags1 & PLAYER_STATE1_IN_CUTSCENE)) &&
-            ((0.001f < camera->xzSpeed) || CHECK_BTN_ALL(D_8015BD7C->state.input[0].press.button, BTN_A) ||
-             CHECK_BTN_ALL(D_8015BD7C->state.input[0].press.button, BTN_CLEFT) ||
-             CHECK_BTN_ALL(D_8015BD7C->state.input[0].press.button, BTN_CDOWN) ||
-             CHECK_BTN_ALL(D_8015BD7C->state.input[0].press.button, BTN_CUP) ||
-             CHECK_BTN_ALL(D_8015BD7C->state.input[0].press.button, BTN_CRIGHT) ||
-             PCInput_IsBlockPressed() ||
-             CHECK_BTN_ALL(D_8015BD7C->state.input[0].press.button, BTN_Z))) {
+            ((0.001f < camera->xzSpeed) || PCInput_IsBlockPressed())) {
             camera->dist = OLib_Vec3fDist(&camera->at, &camera->eye);
             camera->posOffset.x = camera->at.x - playerPosRot->pos.x;
             camera->posOffset.y = camera->at.y - playerPosRot->pos.y;
@@ -5477,14 +5453,7 @@ int32_t Camera_Demo3(Camera* camera) {
             anim->unk_0C = 0.1f;
             sCameraInterfaceFlags = 0x3400;
 
-            if (!((anim->animFrame < 0 || camera->xzSpeed > 0.001f ||
-                   CHECK_BTN_ALL(D_8015BD7C->state.input[0].press.button, BTN_A) ||
-                   CHECK_BTN_ALL(D_8015BD7C->state.input[0].press.button, BTN_CLEFT) ||
-                   CHECK_BTN_ALL(D_8015BD7C->state.input[0].press.button, BTN_CDOWN) ||
-                   CHECK_BTN_ALL(D_8015BD7C->state.input[0].press.button, BTN_CUP) ||
-                   CHECK_BTN_ALL(D_8015BD7C->state.input[0].press.button, BTN_CRIGHT) ||
-                   PCInput_IsBlockPressed() ||
-                   CHECK_BTN_ALL(D_8015BD7C->state.input[0].press.button, BTN_Z)) &&
+            if (!((anim->animFrame < 0 || camera->xzSpeed > 0.001f || PCInput_IsBlockPressed()) &&
                   camera->unk_14C & 8)) {
                 goto skipeyeUpdate;
             }
@@ -6426,13 +6395,7 @@ int32_t Camera_Special9(Camera* camera) {
             camera->unk_14C |= (0x400 | 0x10);
             sCameraInterfaceFlags = 0;
 
-            if (camera->xzSpeed > 0.001f || CHECK_BTN_ALL(D_8015BD7C->state.input[0].press.button, BTN_A) ||
-                CHECK_BTN_ALL(D_8015BD7C->state.input[0].press.button, BTN_CLEFT) ||
-                CHECK_BTN_ALL(D_8015BD7C->state.input[0].press.button, BTN_CDOWN) ||
-                CHECK_BTN_ALL(D_8015BD7C->state.input[0].press.button, BTN_CUP) ||
-                CHECK_BTN_ALL(D_8015BD7C->state.input[0].press.button, BTN_CRIGHT) ||
-                PCInput_IsBlockPressed() ||
-                CHECK_BTN_ALL(D_8015BD7C->state.input[0].press.button, BTN_Z) || params->interfaceFlags & 0x8) {
+            if (camera->xzSpeed > 0.001f || PCInput_IsBlockPressed() || params->interfaceFlags & 0x8) {
 
                 Camera_ChangeSettingFlags(camera, camera->prevSetting, 2);
                 camera->unk_14C |= (0x4 | 0x2);
@@ -6796,35 +6759,6 @@ int32_t Camera_UpdateHotRoom(Camera* camera) {
     return 1;
 }
 
-int32_t Camera_DbgChangeMode(Camera* camera) {
-    int32_t changeDir = 0;
-
-    if (camera->play->activeCamera == MAIN_CAM) {
-        if (CHECK_BTN_ALL(D_8015BD7C->state.input[2].press.button, BTN_CUP)) {
-            osSyncPrintf("attention sound URGENCY\n");
-            Sfx_PlaySfxCentered(NA_SE_SY_ATTENTION_URGENCY);
-        }
-        if (CHECK_BTN_ALL(D_8015BD7C->state.input[2].press.button, BTN_CDOWN)) {
-            osSyncPrintf("attention sound NORMAL\n");
-            Sfx_PlaySfxCentered(NA_SE_SY_ATTENTION_ON);
-        }
-
-        if (CHECK_BTN_ALL(D_8015BD7C->state.input[2].press.button, BTN_CRIGHT)) {
-            changeDir = 1;
-        }
-        if (CHECK_BTN_ALL(D_8015BD7C->state.input[2].press.button, BTN_CLEFT)) {
-            changeDir = -1;
-        }
-        if (changeDir != 0) {
-            sDbgModeIdx = (sDbgModeIdx + changeDir) % 6;
-            if (Camera_ChangeSetting(camera, D_8011DAFC[sDbgModeIdx]) > 0) {
-                osSyncPrintf("camera: force change SET to %s!\n", sCameraSettingNames[D_8011DAFC[sDbgModeIdx]]);
-            }
-        }
-    }
-    return true;
-}
-
 int16_t depthPhase = 0x3F0;
 int16_t screenPlanePhase = 0x156;
 void Camera_UpdateDistortion(Camera* camera) {
@@ -6998,8 +6932,6 @@ Vec3s Camera_Update(Camera* camera) {
             }
         }
     }
-    Camera_DbgChangeMode(camera);
-
     if (camera->status == CAM_STAT_WAIT) {
         if (R_DBG_CAM_UPDATE) {
             osSyncPrintf("camera: wait out %x\n", camera);
@@ -7117,11 +7049,6 @@ Vec3s Camera_Update(Camera* camera) {
                      BINANG_TO_DEGF(camera->inputDir.x), camera->inputDir.y, BINANG_TO_DEGF(camera->inputDir.y));
         osSyncPrintf("real (%d) %d(%f) %d(%f) 0(0) \n", sUpdateCameraDirection, camera->camDir.x,
                      BINANG_TO_DEGF(camera->camDir.x), camera->camDir.y, BINANG_TO_DEGF(camera->camDir.y));
-    }
-
-    if (camera->timer != -1 && CHECK_BTN_ALL(D_8015BD7C->state.input[0].press.button, BTN_DRIGHT) &&
-        (0)) {
-        camera->timer = 0;
     }
 
     if (R_DBG_CAM_UPDATE) {

@@ -36,8 +36,7 @@ class ClientReplicationInbox final {
     bool AcceptPlayerSnapshot(const NetworkPlayerSnapshotPacket& packet);
     bool AcceptSceneEntryState(const NetworkSceneEntryStatePacket& packet,
                                int32_t localPlayerId, uint32_t localLifeEpoch);
-    bool AcceptFishingPresentation(const NetworkFishingPresentationPacket& packet,
-                                   int32_t localPlayerId);
+    bool AcceptFishingPresentation(const NetworkFishingPresentationPacket& packet);
     bool AcceptFishState(const NetworkFishStatePacket& packet);
     bool AcceptLureState(const NetworkLureStatePacket& packet);
     bool AcceptProjectileLifecycle(const NetworkProjectileLifecyclePacket& packet);

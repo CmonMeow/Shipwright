@@ -111,9 +111,14 @@ bool FishingSimulation::ApplyLureControl(int32_t playerId, int32_t sceneId, bool
         RemoveLure(playerId);
         lure = nullptr;
     }
+    if (lure != nullptr && lure->ownerLifeEpoch != owner.lifeEpoch) {
+        RemoveLure(playerId);
+        lure = nullptr;
+    }
     if (lure == nullptr) {
         LureEntity created{};
         created.ownerPlayerId = playerId;
+        created.ownerLifeEpoch = owner.lifeEpoch;
         created.sceneId = sceneId;
         created.position = { owner.position.x, owner.position.y + 42.0f, owner.position.z };
         created.velocity = { std::sin(owner.headingRadians) * kCastHorizontalSpeed, kCastVerticalSpeed,
@@ -142,7 +147,8 @@ void FishingSimulation::SimulateTick(PlayerSimulation& players) {
     std::vector<EntityId> remove;
     mLures.ForEach([&](LureEntity& lure) {
         const auto owner = players.SnapshotForPlayer(lure.ownerPlayerId);
-        if (!owner || owner->health == 0 || owner->sceneId != lure.sceneId) {
+        if (!owner || owner->health == 0 || owner->lifeEpoch != lure.ownerLifeEpoch ||
+            owner->sceneId != lure.sceneId) {
             QueueLureEvent(FishingLureEventKind::Removed, lure);
             remove.push_back(lure.id);
             return;
@@ -297,7 +303,8 @@ bool FishingSimulation::HookNearestRegistered(int32_t playerId) {
 
 bool FishingSimulation::Hook(const FishDefinition& definition, int32_t playerId, const Vec3& position) {
     const FishIdentity& identity = definition.identity;
-    if (playerId < 0 || !LureForPlayer(playerId)) return false;
+    LureEntity* lure = FindLure(playerId);
+    if (playerId < 0 || lure == nullptr) return false;
     if (const FishEntity* owned = FindFishOwnedBy(playerId);
         owned != nullptr && !(owned->identity == identity)) {
         return false;
@@ -306,6 +313,7 @@ bool FishingSimulation::Hook(const FishDefinition& definition, int32_t playerId,
     if (fish != nullptr) {
         if (fish->ownerPlayerId != -1 && fish->ownerPlayerId != playerId) return false;
         fish->ownerPlayerId = playerId;
+        fish->ownerLifeEpoch = lure->ownerLifeEpoch;
         mFishByOwner[playerId] = fish->id;
         fish->position = position;
         fish->species = definition.species;
@@ -314,6 +322,7 @@ bool FishingSimulation::Hook(const FishDefinition& definition, int32_t playerId,
         FishEntity created{};
         created.identity = identity;
         created.ownerPlayerId = playerId;
+        created.ownerLifeEpoch = lure->ownerLifeEpoch;
         created.position = position;
         created.species = definition.species;
         created.length = definition.length;
@@ -323,7 +332,6 @@ bool FishingSimulation::Hook(const FishDefinition& definition, int32_t playerId,
         mFishByIdentity[identity] = id;
         mFishByOwner[playerId] = id;
     }
-    LureEntity* lure = FindLure(playerId);
     lure->phase = FishingLurePhase::Hooked;
     lure->position = position;
     lure->velocity = {};
@@ -370,24 +378,26 @@ std::vector<FishSnapshot> FishingSimulation::ReleaseOwnedBy(int32_t playerId) {
 
 void FishingSimulation::RemoveIneligibleOwners(
     const std::vector<PlayerSnapshot>& players) {
-    std::unordered_set<int32_t> eligibleOwners;
+    std::unordered_map<int32_t, uint32_t> eligibleOwners;
     eligibleOwners.reserve(players.size());
     for (const PlayerSnapshot& player : players) {
         if (CanPerformFishingAction(player) && player.selectedWeapon == 4) {
-            eligibleOwners.insert(player.ownerPlayerId);
+            eligibleOwners.insert_or_assign(player.ownerPlayerId, player.lifeEpoch);
         }
     }
 
     std::vector<EntityId> removeFish;
     mFish.ForEach([&](const FishEntity& fish) {
-        if (eligibleOwners.contains(fish.ownerPlayerId)) return;
+        const auto owner = eligibleOwners.find(fish.ownerPlayerId);
+        if (owner != eligibleOwners.end() && owner->second == fish.ownerLifeEpoch) return;
         removeFish.push_back(fish.id);
     });
     for (const EntityId id : removeFish) DestroyFish(id);
 
     std::vector<EntityId> removeLures;
     mLures.ForEach([&](const LureEntity& lure) {
-        if (eligibleOwners.contains(lure.ownerPlayerId)) return;
+        const auto owner = eligibleOwners.find(lure.ownerPlayerId);
+        if (owner != eligibleOwners.end() && owner->second == lure.ownerLifeEpoch) return;
         QueueLureEvent(FishingLureEventKind::Removed, lure);
         removeLures.push_back(lure.id);
     });
@@ -417,11 +427,13 @@ void FishingSimulation::QueueLureEvent(FishingLureEventKind kind, const LureEnti
 }
 
 FishSnapshot FishingSimulation::BuildSnapshot(const FishEntity& fish) const {
-    return { fish.id, fish.identity, fish.ownerPlayerId, fish.position, fish.species, fish.length };
+    return { fish.id, fish.identity, fish.ownerPlayerId, fish.ownerLifeEpoch,
+             fish.position, fish.species, fish.length };
 }
 
 FishingLureSnapshot FishingSimulation::BuildLureSnapshot(const LureEntity& lure) const {
-    return { lure.id, lure.ownerPlayerId, lure.sceneId, lure.position, lure.phase, lure.lureType };
+    return { lure.id, lure.ownerPlayerId, lure.ownerLifeEpoch, lure.sceneId,
+             lure.position, lure.phase, lure.lureType };
 }
 
 FishingSimulation::FishEntity* FishingSimulation::FindFish(

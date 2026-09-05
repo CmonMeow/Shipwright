@@ -2,6 +2,7 @@
 
 #include "PlayerSimulation.h"
 
+#include <array>
 #include <cmath>
 
 namespace Game::Simulation {
@@ -83,6 +84,56 @@ inline bool SegmentOrientedVerticalRectangleFirstHit(
     const Vec3 offset{ impact.x - center.x, impact.y - center.y, impact.z - center.z };
     const float horizontal = offset.x * right.x + offset.z * right.z;
     if (std::fabs(horizontal) > halfWidth || std::fabs(offset.y) > halfHeight) return false;
+
+    hit = { ratio, impact };
+    return true;
+}
+
+template <size_t VertexCount>
+inline bool SegmentOrientedVerticalConvexPolygonFirstHit(
+    const Vec3& start, const Vec3& end, const Vec3& center,
+    float headingRadians,
+    const std::array<std::array<float, 2>, VertexCount>& vertices,
+    ShieldHit& hit) {
+    static_assert(VertexCount >= 3);
+    constexpr float epsilon = 0.00001f;
+
+    const Vec3 forward{ std::sin(headingRadians), 0.0f,
+                        std::cos(headingRadians) };
+    const Vec3 right{ std::cos(headingRadians), 0.0f,
+                     -std::sin(headingRadians) };
+    const Vec3 direction{ end.x - start.x, end.y - start.y,
+                          end.z - start.z };
+    const float denominator =
+        direction.x * forward.x + direction.z * forward.z;
+    if (std::fabs(denominator) < epsilon) return false;
+
+    const Vec3 centerOffset{ center.x - start.x, center.y - start.y,
+                             center.z - start.z };
+    const float ratio =
+        (centerOffset.x * forward.x + centerOffset.z * forward.z) /
+        denominator;
+    if (ratio < 0.0f || ratio > 1.0f) return false;
+
+    const Vec3 impact{ start.x + direction.x * ratio,
+                       start.y + direction.y * ratio,
+                       start.z + direction.z * ratio };
+    const Vec3 offset{ impact.x - center.x, impact.y - center.y,
+                       impact.z - center.z };
+    const float horizontal = offset.x * right.x + offset.z * right.z;
+    const float vertical = offset.y;
+    bool positive = false;
+    bool negative = false;
+    for (size_t index = 0; index < VertexCount; ++index) {
+        const auto& first = vertices[index];
+        const auto& second = vertices[(index + 1) % VertexCount];
+        const float cross =
+            (second[0] - first[0]) * (vertical - first[1]) -
+            (second[1] - first[1]) * (horizontal - first[0]);
+        positive = positive || cross > epsilon;
+        negative = negative || cross < -epsilon;
+        if (positive && negative) return false;
+    }
 
     hit = { ratio, impact };
     return true;

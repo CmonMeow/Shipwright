@@ -14,6 +14,7 @@ namespace Game::Replication {
 struct ReplicatedPlayer {
     int32_t playerId = -1;
     Simulation::EntityId entity{};
+    uint32_t lifeEpoch = 0;
     int32_t sceneId = -1;
     Simulation::Vec3 position{};
 };

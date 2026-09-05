@@ -36,14 +36,18 @@ struct NativePlayerPresentationState {
     int16_t upperLimbRot[3]{};
     int16_t headLimbRot[3]{};
     float bowStringScale = 0.0f;
-    ClientPlayerBaseAnimation baseAnimation = ClientPlayerBaseAnimation::Idle;
+    ClientPlayerBaseAnimation baseAnimation = ClientPlayerBaseAnimation::IdleFree;
     ClientPlayerUpperAnimation upperAnimation = ClientPlayerUpperAnimation::None;
     bool synchronizeBaseAnimation = false;
+    bool synchronizeActionAnimation = false;
     bool loopBaseAnimationProgress = false;
     float baseAnimationProgress = 0.0f;
     float baseAnimationProgressPerSecond = 0.0f;
     double baseAnimationSampleSeconds = 0.0;
-    float fishingRodTipOffset[3]{};
+    uint32_t lifeEpoch = 0;
+    uint32_t actionInstanceId = 0;
+    Game::Simulation::PlayerActionState actionState =
+        Game::Simulation::PlayerActionState::Idle;
     float fishingLureOffset[3]{};
     float fishingLureDrawOffset[3]{};
     float fishingRodBendY = 0.0f;

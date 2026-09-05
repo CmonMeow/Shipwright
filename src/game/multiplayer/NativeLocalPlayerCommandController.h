@@ -27,6 +27,10 @@ class NativeLocalPlayerCommandController final {
   private:
     Game::Client::LocalPlayerCommandStream& mCommands;
     Game::Simulation::ClientPrediction& mPrediction;
+    uint32_t mObservedLifeEpoch = 0;
+    const void* mLastNativeAnimation = nullptr;
+    float mLastNativeAnimationFrame = 0.0f;
+    bool mLastAnimationWasSwordAttack = false;
 };
 
 } // namespace Game::Multiplayer

@@ -12,6 +12,7 @@ namespace Game::Client {
 struct RemotePlayerPresentationState {
     Simulation::EntityId entity{};
     int32_t playerId = -1;
+    uint32_t lifeEpoch = 0;
     int32_t sceneId = -1;
     bool active = false;
 };

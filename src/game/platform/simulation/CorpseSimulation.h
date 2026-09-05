@@ -8,6 +8,7 @@
 #include <cstdint>
 #include <deque>
 #include <map>
+#include <tuple>
 #include <vector>
 
 namespace Game::Simulation {
@@ -36,11 +37,15 @@ class CorpseSimulation final {
 
   private:
     struct CorpseEntity { EntityId id{}; CorpsePose pose{}; };
+    using SourceKey = std::tuple<uint32_t, uint32_t, uint32_t>;
+
+    static SourceKey Source(const CorpsePose& pose);
     static CorpseSnapshot BuildSnapshot(const CorpseEntity& corpse);
 
     static constexpr size_t kMaximumPerScene = 99;
     EntityRegistry<CorpseEntity> mCorpses;
     std::map<int32_t, std::deque<EntityId>> mSceneOrder;
+    std::map<SourceKey, EntityId> mCorpseBySource;
 };
 
 } // namespace Game::Simulation

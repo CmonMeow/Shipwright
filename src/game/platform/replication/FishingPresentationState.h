@@ -17,9 +17,9 @@ struct FishingPresentationState {
     int32_t playerId = -1;
     Simulation::EntityId entity{};
     int32_t sceneId = -1;
+    uint32_t lifeEpoch = 0;
     uint32_t sequence = 0;
     uint8_t state = 0;
-    std::array<float, 3> rodTipOffset{};
     std::array<float, 3> lureDrawOffset{};
     float rodBendY = 0.0f;
     float rodBendX = 0.0f;

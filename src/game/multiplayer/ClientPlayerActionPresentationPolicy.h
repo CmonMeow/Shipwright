@@ -15,13 +15,26 @@ enum class ClientEquipmentPresentation : uint8_t {
 };
 
 enum class ClientPlayerBaseAnimation : uint8_t {
-    Idle,
+    IdleFree,
+    IdleSword,
+    IdleBiggoron,
+    BlockingFree,
+    BlockingSword,
+    BlockingBiggoron,
     RunForward,
     WalkBackward,
     StrafeLeft,
     StrafeRight,
-    SwordAttack,
-    BiggoronAttack,
+    SwordHeld,
+    BiggoronHeld,
+    MeleeForwardSlash,
+    MeleeForwardCombo,
+    MeleeRightSlash,
+    MeleeRightCombo,
+    MeleeLeftSlash,
+    MeleeLeftCombo,
+    SwordSpinAttack,
+    BiggoronSpinAttack,
     EvadeBackward,
     EvadeLeft,
     EvadeRight,
@@ -31,6 +44,7 @@ enum class ClientPlayerBaseAnimation : uint8_t {
     SwimBackward,
     SwimLeft,
     SwimRight,
+    Climb,
     Falling,
     JumpSlash,
     Dead,
@@ -48,7 +62,7 @@ struct ClientPlayerActionPresentation {
     bool dead = false;
     bool blocking = false;
     bool bowReady = false;
-    ClientPlayerBaseAnimation baseAnimation = ClientPlayerBaseAnimation::Idle;
+    ClientPlayerBaseAnimation baseAnimation = ClientPlayerBaseAnimation::IdleFree;
     ClientPlayerUpperAnimation upperAnimation = ClientPlayerUpperAnimation::None;
 };
 

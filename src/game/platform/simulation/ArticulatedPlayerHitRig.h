@@ -75,6 +75,14 @@ struct PlayerRigHit {
     Vec3 position{};
 };
 
+struct ArrowBodyAttachment {
+    int32_t playerId = -1;
+    uint32_t lifeEpoch = 0;
+    PlayerHitRegion region = PlayerHitRegion::None;
+    Vec3 offset{};
+    Vec3 direction{};
+};
+
 namespace HitRigDetail {
 
 inline float Dot(const Vec3& left, const Vec3& right) {
@@ -219,6 +227,58 @@ inline bool SegmentArticulatedPlayerHitRigFirstHit(
             { start.x + (end.x - start.x) * closest,
               start.y + (end.y - start.y) * closest,
               start.z + (end.z - start.z) * closest } };
+    return true;
+}
+
+// Coordinates are relative to the struck limb, including its length/radius.
+// This lets the rendered skeleton resolve the same attachment as the server rig.
+inline bool ArrowAttachmentFrame(const ArticulatedPlayerHitRig& rig, PlayerHitRegion region,
+                                 float heading, Vec3& origin, Vec3& x, Vec3& y, Vec3& z,
+                                 float& radius, float& length) {
+    using namespace HitRigDetail;
+    for (const auto& prism : rig.prisms) {
+        if (prism.region != region) continue;
+        origin = prism.start;
+        y = Subtract(prism.end, prism.start);
+        length = std::sqrt(Dot(y, y));
+        radius = prism.outerRadius;
+        if (length < 0.001f || radius <= 0.0f) return false;
+        y = Scale(y, 1.0f / length);
+        Vec3 right{ std::cos(heading), 0.0f, -std::sin(heading) };
+        x = Subtract(right, Scale(y, Dot(right, y)));
+        if (Dot(x, x) < 0.01f) {
+            right = { std::sin(heading), 0.0f, std::cos(heading) };
+            x = Subtract(right, Scale(y, Dot(right, y)));
+        }
+        x = Scale(x, 1.0f / std::sqrt(Dot(x, x)));
+        z = Cross(x, y);
+        return true;
+    }
+    return false;
+}
+
+inline bool BindArrowToBody(ArrowBodyAttachment& attachment, const ArticulatedPlayerHitRig& rig,
+                            float heading, const Vec3& position, const Vec3& direction) {
+    using namespace HitRigDetail;
+    Vec3 origin, x, y, z;
+    float radius, length;
+    if (!ArrowAttachmentFrame(rig, attachment.region, heading, origin, x, y, z, radius, length)) return false;
+    const Vec3 offset = Subtract(position, origin);
+    attachment.offset = { Dot(offset, x) / radius, Dot(offset, y) / length, Dot(offset, z) / radius };
+    attachment.direction = { Dot(direction, x), Dot(direction, y), Dot(direction, z) };
+    return true;
+}
+
+inline bool ResolveArrowOnBody(const ArrowBodyAttachment& attachment, const ArticulatedPlayerHitRig& rig,
+                               float heading, Vec3& position, Vec3& direction) {
+    using namespace HitRigDetail;
+    Vec3 origin, x, y, z;
+    float radius, length;
+    if (!ArrowAttachmentFrame(rig, attachment.region, heading, origin, x, y, z, radius, length)) return false;
+    position = Add(origin, Add(Scale(x, attachment.offset.x * radius),
+                               Add(Scale(y, attachment.offset.y * length), Scale(z, attachment.offset.z * radius))));
+    direction = Add(Scale(x, attachment.direction.x),
+                     Add(Scale(y, attachment.direction.y), Scale(z, attachment.direction.z)));
     return true;
 }
 

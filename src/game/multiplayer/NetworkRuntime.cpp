@@ -1,5 +1,6 @@
 #include "NetworkRuntime.h"
 #include "LocalNetworkIdentity.h"
+#include "z64scene_enum.h"
 #include <algorithm>
 #include <cmath>
 #include <cstring>
@@ -9,11 +10,20 @@ namespace Game::Multiplayer {
 
 namespace {
 
-constexpr int32_t kDefaultGameplayScene = 110;
+// test01's sole player start, read from its SetStartPositionList scene
+// command. Server admission must use the same start as the native scene or
+// the first authoritative snapshot drags a newly connected client from the
+// real entrance toward (0, 0, 0).
+constexpr Game::Simulation::PlayerSpawn kTest01PlayerSpawn{
+    SCENE_TEST01, { 2023.0f, 0.0f, 334.0f }, 0.0f
+};
 
 } // namespace
 
-NetworkRuntime::NetworkRuntime()
+NetworkRuntime::NetworkRuntime() : NetworkRuntime(SCENE_TEST01) {
+}
+
+NetworkRuntime::NetworkRuntime(int32_t defaultGameplayScene)
     : mConnection({
           [this](char* buffer, int32_t size) {
               mProtocolIngress.ReceiveClient(buffer, size);
@@ -24,7 +34,9 @@ NetworkRuntime::NetworkRuntime()
           [this](int32_t peer) { HandlePeerCreated(peer); },
           [this](int32_t peer) { HandlePeerDeleted(peer); },
       }),
+      mDefaultGameplayScene(defaultGameplayScene),
       mClientIngress(mClientInbox, mCommunication, mPrivateChat),
+      mServerWorld(defaultGameplayScene),
       mSecureTransport(mClientCrypto, mServerSessions, mReplication),
       mClientAdmission(
           mClientCrypto, mPrivateChat,
@@ -99,8 +111,12 @@ NetworkRuntime::NetworkRuntime()
                       mCommunication, mGameplayCommands, mInterestPublisher,
                       mEventPublisher),
       mAuthorityScheduler(mServerWorld, {
-          [this]() { mEventPublisher.PublishPlayerSnapshots(); },
           [this]() { mInterestPublisher.RefreshPlayers(mServerWorld.PlayerSnapshots()); },
+          // Establish or replace every scene/life-scoped player lifetime
+          // before emitting snapshots for it. Reliable lifecycle may not be
+          // overtaken by an unreliable first snapshot at respawn or scene
+          // transition.
+          [this]() { mEventPublisher.PublishPlayerSnapshots(); },
           [this]() { mEventPublisher.PublishObjectiveSnapshots(); },
           [this]() { mEventPublisher.PublishStructureSnapshots(); },
           [this]() { mEventPublisher.PublishProjectileEvents(); },
@@ -209,7 +225,9 @@ bool NetworkRuntime::Host(uint16_t port, const std::string& sessionName) {
     if (!mConnection.Host(port, sessionName)) return false;
     mAdministration.Load();
     mWorldManagement.ConfigureSceneSpawn(
-        Game::Simulation::PlayerSpawn{ kDefaultGameplayScene, {}, 0.0f });
+        mDefaultGameplayScene == SCENE_TEST01
+            ? kTest01PlayerSpawn
+            : Game::Simulation::PlayerSpawn{ mDefaultGameplayScene, {}, 0.0f });
     mWorldBootstrap.Initialize(mServerWorld);
     mAuthorityScheduler.Reset();
     return true;

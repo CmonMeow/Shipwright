@@ -31,6 +31,7 @@ struct FishSnapshot {
     EntityId entity{};
     FishIdentity identity{};
     int32_t ownerPlayerId = -1;
+    uint32_t ownerLifeEpoch = 0;
     Vec3 position{};
     FishSpecies species = FishSpecies::HylianBass;
     float length = 0.0f;
@@ -55,6 +56,7 @@ enum class FishingLurePhase : uint8_t { Flying, Settled, Hooked };
 struct FishingLureSnapshot {
     EntityId entity{};
     int32_t ownerPlayerId = -1;
+    uint32_t ownerLifeEpoch = 0;
     int32_t sceneId = -1;
     Vec3 position{};
     FishingLurePhase phase = FishingLurePhase::Flying;
@@ -102,6 +104,7 @@ class FishingSimulation final {
         EntityId id{};
         FishIdentity identity{};
         int32_t ownerPlayerId = -1;
+        uint32_t ownerLifeEpoch = 0;
         Vec3 position{};
         FishSpecies species = FishSpecies::HylianBass;
         float length = 0.0f;
@@ -110,6 +113,7 @@ class FishingSimulation final {
     struct LureEntity {
         EntityId id{};
         int32_t ownerPlayerId = -1;
+        uint32_t ownerLifeEpoch = 0;
         int32_t sceneId = -1;
         Vec3 position{};
         Vec3 velocity{};

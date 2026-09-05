@@ -1,12 +1,8 @@
 #include "NativeRemotePlayerPresentationController.h"
 
+#include "global.h"
+
 namespace Game::Multiplayer {
-
-namespace {
-
-constexpr uint8_t kFishingPoleItemAction = 2;
-
-} // namespace
 
 NativeRemotePlayerPresentationController::NativeRemotePlayerPresentationController(
     Game::Client::RemotePlayerReplicaStore& players,
@@ -17,8 +13,7 @@ NativeRemotePlayerPresentationController::NativeRemotePlayerPresentationControll
 
 void NativeRemotePlayerPresentationController::ApplyLifecycle(
     const Game::Client::RemotePlayerPresentationState& lifecycle,
-    int32_t localPlayerId, const RemoteOwnerRetirement& retireOwner) {
-    if (lifecycle.playerId == localPlayerId) return;
+    const RemoteOwnerRetirement& retireOwner) {
     const auto* previous = mPlayers.FindPlayer(lifecycle.playerId);
     const bool sceneChanged = previous && previous->lifetime.sceneId != lifecycle.sceneId;
     const auto applied = mPlayers.ApplyLifecycle(lifecycle);
@@ -57,7 +52,7 @@ void NativeRemotePlayerPresentationController::ApplySnapshot(
     if (!state) return;
 
     const bool fishingPoleWasActive =
-        state->itemAction == kFishingPoleItemAction;
+        state->itemAction == PLAYER_IA_FISHING_POLE;
     state->playerId = snapshot.ownerPlayerId;
     state->sceneId = snapshot.sceneId;
     state->roomId = -1;
@@ -66,8 +61,9 @@ void NativeRemotePlayerPresentationController::ApplySnapshot(
                                                      receivedSeconds);
     NativePlayerPresentationComposer::ApplyAuthoritativeFishing(
         *state, mFishing);
-    if (!fishingPoleWasActive ||
-        state->itemAction != kFishingPoleItemAction) {
+    const bool fishingPoleIsActive =
+        state->itemAction == PLAYER_IA_FISHING_POLE;
+    if (fishingPoleWasActive != fishingPoleIsActive) {
         mRenderer.ResetFishingVisuals(snapshot.entity);
     }
     mRenderer.MarkPlayerReady(snapshot.entity);

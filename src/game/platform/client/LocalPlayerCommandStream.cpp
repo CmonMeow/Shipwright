@@ -27,8 +27,17 @@ std::optional<Simulation::PlayerCommand> LocalPlayerCommandStream::Build(
         sample.selectedWeapon > 4 ||
         !std::isfinite(sample.moveX) || !std::isfinite(sample.moveY) ||
         !std::isfinite(sample.headingRadians) || !std::isfinite(sample.aimPitchRadians) ||
+        (sample.hasPose &&
+         (!std::isfinite(sample.position.x) ||
+          !std::isfinite(sample.position.y) ||
+          !std::isfinite(sample.position.z))) ||
         (sample.heldActions & ~kKnownActions) != 0 ||
-        (sample.pressedActions & ~kKnownActions) != 0) {
+        (sample.pressedActions & ~kKnownActions) != 0 ||
+        (sample.hasMeleeAttackVariant &&
+         ((sample.pressedActions & Simulation::PLAYER_ACTION_PRIMARY) == 0 ||
+          sample.selectedWeapon < 1 || sample.selectedWeapon > 2 ||
+          sample.meleeAttackVariant >
+              Simulation::MeleeAttackVariant::LeftCombo))) {
         return std::nullopt;
     }
     if (mHasLastSample && sample.lifeEpoch == mLastLifeEpoch &&
@@ -51,6 +60,7 @@ std::optional<Simulation::PlayerCommand> LocalPlayerCommandStream::Build(
                                  ? 0
                                  : TakeNonZeroSequence(mNextActionSequence);
     command.lifeEpoch = sample.lifeEpoch;
+    command.clientTick = sample.clientTick;
     command.sceneId = sample.sceneId;
     command.moveX = std::clamp(sample.moveX, -1.0f, 1.0f);
     command.moveY = std::clamp(sample.moveY, -1.0f, 1.0f);
@@ -58,13 +68,18 @@ std::optional<Simulation::PlayerCommand> LocalPlayerCommandStream::Build(
     command.aimPitchRadians = sample.aimPitchRadians;
     command.heldActions = sample.heldActions;
     command.pressedActions = sample.pressedActions;
+    command.reportedMeleeAttackVariant = sample.meleeAttackVariant;
+    command.hasReportedMeleeAttackVariant = sample.hasMeleeAttackVariant;
+    command.reportedPosition = sample.position;
+    command.reportedLocomotionMode = sample.locomotionMode;
+    command.hasReportedPose = sample.hasPose;
     return command;
 }
 
 LocalPlayerCommandSubmission LocalPlayerCommandStream::Submit(
     const LocalPlayerInputSample& sample, float sampleDeltaSeconds,
     const LocalPlayerCommandSender& sender,
-    Simulation::ClientPrediction& prediction) {
+    Simulation::ClientPrediction& prediction, bool predictMovement) {
     const std::optional<Simulation::PlayerCommand> command = Build(sample);
     if (!command || !sender) return LocalPlayerCommandSubmission::NoCommand;
     if (!sender(*command)) return LocalPlayerCommandSubmission::TransportRejected;
@@ -72,7 +87,16 @@ LocalPlayerCommandSubmission LocalPlayerCommandStream::Submit(
     // Prediction records exactly the sample accepted by transport. Elapsed
     // time from a rejected sample belongs to no server command and must not be
     // folded into a later command with a different sequence/action window.
-    prediction.RecordCommand(*command, sampleDeltaSeconds, sample.selectedWeapon);
+    Simulation::PlayerCommand predictionCommand = *command;
+    if (!predictMovement) {
+        // The native player actor already applies ordinary local locomotion.
+        // Prediction still needs elapsed commands for evade/action phases, but
+        // replaying WASD here would create a second local movement body.
+        predictionCommand.moveX = 0.0f;
+        predictionCommand.moveY = 0.0f;
+    }
+    prediction.RecordCommand(predictionCommand, sampleDeltaSeconds,
+                             sample.selectedWeapon);
     return LocalPlayerCommandSubmission::Submitted;
 }
 

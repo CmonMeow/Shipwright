@@ -4,6 +4,9 @@
 
 #include <runtime/log/Log.h>
 
+#include <array>
+#include <cmath>
+
 namespace Game::Multiplayer {
 namespace {
 
@@ -75,6 +78,42 @@ bool ServerWorldBootstrap::Initialize(Game::Simulation::ServerWorld& world) {
     world.SetPlayerCollisionQuery(segmentCast);
     world.SetPlayerCollisionSceneQuery(
         [this](int32_t sceneId) { return mCollisionWorld.HasScene(sceneId); });
+    world.SetPlayerClimbSurfaceQuery(
+        [this](int32_t sceneId,
+               const Game::Simulation::Vec3& currentPosition,
+               const Game::Simulation::Vec3&,
+               float headingRadians) {
+            constexpr float kProbeDistance = 36.0f;
+            constexpr std::array<float, 3> kProbeHeights{ 12.0f, 34.0f,
+                                                          56.0f };
+            const float directionX = std::sin(headingRadians);
+            const float directionZ = std::cos(headingRadians);
+            for (const float height : kProbeHeights) {
+                const ServerCollisionPoint nearSide{
+                    currentPosition.x - directionX * kProbeDistance,
+                    currentPosition.y + height,
+                    currentPosition.z - directionZ * kProbeDistance
+                };
+                const ServerCollisionPoint farSide{
+                    currentPosition.x + directionX * kProbeDistance,
+                    currentPosition.y + height,
+                    currentPosition.z + directionZ * kProbeDistance
+                };
+                ServerCollisionPoint impact{};
+                // Imported polygons retain their original winding. Probe
+                // both directions so authority does not depend on which
+                // side of a ladder or ledge its polygon faces. Only the
+                // current authoritative root can establish contact; a
+                // client-proposed destination cannot manufacture a climb.
+                if (mCollisionWorld.SegmentCast(sceneId, nearSide, farSide,
+                                                impact) ||
+                    mCollisionWorld.SegmentCast(sceneId, farSide, nearSide,
+                                                impact)) {
+                    return true;
+                }
+            }
+            return false;
+        });
     world.SetProjectileCollisionQuery(segmentCast);
     world.SetFishingCollisionQuery(segmentCast);
     const auto waterSurfaceQuery =

@@ -85,7 +85,6 @@ extern "C"
 	extern int32_t gScreenHeight;
 	extern Mtx gMtxClear;
 	extern MtxF gMtxFClear;
-	extern uint32_t gIsCtrlr2Valid;
 	extern volatile uint32_t gIrqMgrResetStatus;
 	extern volatile OSTime gIrqMgrRetraceTime;
 	extern int16_t* gWaveSamples[9];
@@ -130,8 +129,6 @@ extern "C"
 	extern AudioSpec gAudioSpecs[18];
 	extern int32_t gOverlayLogSeverity;
 	extern int32_t gSystemArenaLogSeverity;
-	extern uint8_t __osPfsInodeCacheBank;
-	extern int32_t __osPfsLastChannel;
 	extern float triforcePieceScale;
 	extern float mysteryItemScale;
 
@@ -154,7 +151,6 @@ extern "C"
 	extern float gBossMarkScale;
 	extern PreNmiBuff* gAppNmiBufferPtr;
 	extern SchedContext gSchedContext;
-	extern PadMgr gPadMgr;
 	extern uintptr_t gSegments[NUM_SEGMENTS];
 
 	extern ActiveSound gActiveSounds[7][MAX_CHANNELS_PER_BANK]; // total size = 0xA8
@@ -170,11 +166,6 @@ extern "C"
 
 	extern uint32_t __osMalloc_FreeBlockTest_Enable;
 	extern Arena gSystemArena;
-	extern OSPifRam __osPifInternalBuff;
-	extern uint8_t __osContLastPoll;
-	extern uint8_t __osMaxControllers;
-	extern __OSInode __osPfsInodeCache;
-	extern OSPifRam gPifMempakBuf;
 	extern uint16_t gZBuffer[SCREEN_HEIGHT][SCREEN_WIDTH]; // 0x25800 bytes
 	extern uint64_t gGfxSPTaskOutputBuffer[0x3000]; // 0x18000 bytes
 	extern uint8_t gGfxSPTaskYieldBuffer[OS_YIELD_DATA_SIZE]; // 0xC00 bytes

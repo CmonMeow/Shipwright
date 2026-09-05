@@ -23,6 +23,10 @@ void EndRenderedPlayerCollision(int32_t playerId);
 }
 
 #include "platform/simulation/PlayerSimulation.h"
+#include "platform/simulation/ArticulatedPlayerHitRig.h"
+
+bool ResolveRenderedBodyArrow(const Game::Simulation::ArrowBodyAttachment& attachment,
+                              Game::Simulation::Vec3& position, Game::Simulation::Vec3& direction);
 
 // Supplies the real PvP collision representation for the current frame. F1
 // remains the one collision viewer; this is not a separate skeleton overlay.

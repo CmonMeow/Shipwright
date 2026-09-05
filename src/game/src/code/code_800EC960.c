@@ -1241,23 +1241,17 @@ uint32_t sDebugPadPress;
 int32_t sAudioUpdateTaskStart;
 int32_t sAudioUpdateTaskEnd;
 
-void PadMgr_RequestPadData(PadMgr* padmgr, ControllerInput* inputs, int32_t mode);
-
 void Audio_StepFreqLerp(FreqLerp* lerp);
 void func_800F56A8(void);
 void Audio_PlayNatureAmbienceSequence(uint8_t natureAmbienceId);
 int32_t Audio_SetGanonDistVol(uint8_t targetVol);
 
 void Audio_GetOcaInput(void) {
-    ControllerInput inputs[4];
-    ControllerInput* input = &inputs[0];
-
     uint32_t sp18 = sCurOcarinaBtnPress;
-    PadMgr_RequestPadData(&gPadMgr, inputs, 0);
-    sCurOcarinaBtnPress = input->cur.button;
+    sCurOcarinaBtnPress = 0;
     sPrevOcarinaBtnPress = sp18;
-    sCurOcaStick.x = input->rel.stick_x;
-    sCurOcaStick.y = input->rel.stick_y;
+    sCurOcaStick.x = 0;
+    sCurOcaStick.y = 0;
 }
 
 float Audio_OcaAdjStick(int8_t inp) {
@@ -2138,13 +2132,9 @@ uint8_t sAudioNatureFailed = false;
 uint8_t sPeakNumNotes = 0;
 
 void AudioDebug_SetInput(void) {
-    ControllerInput inputs[4];
-
-    PadMgr_RequestPadData(&gPadMgr, inputs, 0);
-    uint32_t btn = inputs[3].cur.button;
-    sDebugPadHold = btn & 0xFFFF;
-    sDebugPadPress = (btn ^ sDebugPadBtnLast) & btn;
-    sDebugPadBtnLast = btn;
+    sDebugPadHold = 0;
+    sDebugPadPress = 0;
+    sDebugPadBtnLast = 0;
 }
 
 char* AudioDebug_ToStringBinary(uint32_t num, uint8_t bits) {

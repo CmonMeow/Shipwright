@@ -75,12 +75,12 @@
       <UseFullPaths>false</UseFullPaths>
       <UseStandardPreprocessor>true</UseStandardPreprocessor>
       <WarningLevel>TurnOffAllWarnings</WarningLevel>
-      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;F3DEX_GBI_2;_CONSOLE;_CRT_SECURE_NO_WARNINGS;ENABLE_OPENGL;NOMINMAX;GFX_DEBUG_DISASSEMBLER;CVAR_PREFIX_SETTING="gSettings";CVAR_PREFIX_WINDOW="gOpenWindows";CVAR_PREFIX_GENERAL="gGeneral";CVAR_VSYNC_ENABLED="gSettings.VsyncEnabled";CVAR_Z_FIGHTING_MODE="gSettings.ZFightingMode";CVAR_INTERNAL_RESOLUTION="gSettings.InternalResolution";CVAR_MSAA_VALUE="gSettings.MSAAValue";CVAR_TEXTURE_FILTER="gSettings.TextureFilter";CVAR_AUDIO_CHANNELS_SETTING="gAudioChannelsSetting";CONTROLLERBUTTONS_T=uint32_t;_FILE_OFFSET_BITS=64;SPDLOG_COMPILED_LIB;SPDLOG_FMT_EXTERNAL</PreprocessorDefinitions>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;F3DEX_GBI_2;_CONSOLE;_CRT_SECURE_NO_WARNINGS;ENABLE_OPENGL;NOMINMAX;GFX_DEBUG_DISASSEMBLER;CVAR_PREFIX_SETTING="gSettings";CVAR_PREFIX_WINDOW="gOpenWindows";CVAR_PREFIX_GENERAL="gGeneral";CVAR_VSYNC_ENABLED="gSettings.VsyncEnabled";CVAR_Z_FIGHTING_MODE="gSettings.ZFightingMode";CVAR_INTERNAL_RESOLUTION="gSettings.InternalResolution";CVAR_MSAA_VALUE="gSettings.MSAAValue";CVAR_TEXTURE_FILTER="gSettings.TextureFilter";CVAR_AUDIO_CHANNELS_SETTING="gAudioChannelsSetting";_FILE_OFFSET_BITS=64;SPDLOG_COMPILED_LIB;SPDLOG_FMT_EXTERNAL</PreprocessorDefinitions>
       <ObjectFileName>$(IntDir)</ObjectFileName>
       <ScanSourceForModuleDependencies>false</ScanSourceForModuleDependencies>
     </ClCompile>
     <ResourceCompile>
-      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;F3DEX_GBI_2;_CONSOLE;_CRT_SECURE_NO_WARNINGS;ENABLE_OPENGL;NOMINMAX;GFX_DEBUG_DISASSEMBLER;CVAR_PREFIX_SETTING=\"gSettings\";CVAR_PREFIX_WINDOW=\"gOpenWindows\";CVAR_PREFIX_GENERAL=\"gGeneral\";CVAR_VSYNC_ENABLED=\"gSettings.VsyncEnabled\";CVAR_Z_FIGHTING_MODE=\"gSettings.ZFightingMode\";CVAR_INTERNAL_RESOLUTION=\"gSettings.InternalResolution\";CVAR_MSAA_VALUE=\"gSettings.MSAAValue\";CVAR_TEXTURE_FILTER=\"gSettings.TextureFilter\";CVAR_AUDIO_CHANNELS_SETTING=\"gAudioChannelsSetting\";CONTROLLERBUTTONS_T=uint32_t;_FILE_OFFSET_BITS=64;SPDLOG_COMPILED_LIB;SPDLOG_FMT_EXTERNAL</PreprocessorDefinitions>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;F3DEX_GBI_2;_CONSOLE;_CRT_SECURE_NO_WARNINGS;ENABLE_OPENGL;NOMINMAX;GFX_DEBUG_DISASSEMBLER;CVAR_PREFIX_SETTING=\"gSettings\";CVAR_PREFIX_WINDOW=\"gOpenWindows\";CVAR_PREFIX_GENERAL=\"gGeneral\";CVAR_VSYNC_ENABLED=\"gSettings.VsyncEnabled\";CVAR_Z_FIGHTING_MODE=\"gSettings.ZFightingMode\";CVAR_INTERNAL_RESOLUTION=\"gSettings.InternalResolution\";CVAR_MSAA_VALUE=\"gSettings.MSAAValue\";CVAR_TEXTURE_FILTER=\"gSettings.TextureFilter\";CVAR_AUDIO_CHANNELS_SETTING=\"gAudioChannelsSetting\";_FILE_OFFSET_BITS=64;SPDLOG_COMPILED_LIB;SPDLOG_FMT_EXTERNAL</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>$(RepoRoot)src\engine\src;$(RepoRoot)src\engine\src\..\include;$(RepoRoot)third_party\stb;$(RepoRoot)third_party\threadpool\include;$(RepoRoot)third_party\libgfxd;$(RepoRoot)third_party\prism;$(RepoRoot)third_party\prism\lib;$(RepoRoot)third_party\prism\src;$(RepoRoot)third_party\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
     <Midl>
@@ -239,9 +239,7 @@
     <ClInclude Include="$(RepoRoot)src\engine\include\runtime\libultra\interrupt.h" />
     <ClInclude Include="$(RepoRoot)src\engine\include\runtime\libultra\mbi.h" />
     <ClInclude Include="$(RepoRoot)src\engine\include\runtime\libultra\message.h" />
-    <ClInclude Include="$(RepoRoot)src\engine\include\runtime\libultra\motor.h" />
     <ClInclude Include="$(RepoRoot)src\engine\include\runtime\libultra\os.h" />
-    <ClInclude Include="$(RepoRoot)src\engine\include\runtime\libultra\pfs.h" />
     <ClInclude Include="$(RepoRoot)src\engine\include\runtime\libultra\pi.h" />
     <ClInclude Include="$(RepoRoot)src\engine\include\runtime\libultra\printf.h" />
     <ClInclude Include="$(RepoRoot)src\engine\include\runtime\libultra\r4300.h" />

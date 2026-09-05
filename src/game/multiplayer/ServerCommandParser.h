@@ -29,6 +29,7 @@ enum class ServerCommandTeam : uint8_t {
     Neutral,
     Red,
     Blue,
+    Green,
 };
 
 struct ParsedServerCommand {

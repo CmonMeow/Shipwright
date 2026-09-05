@@ -59,8 +59,10 @@ bool FishingPresentationAuthority::Constrain(
     presentation.playerId = player.ownerPlayerId;
     presentation.entity = player.entity;
     presentation.sceneId = player.sceneId;
+    presentation.lifeEpoch = player.lifeEpoch;
 
     if (fish && (fish->ownerPlayerId != player.ownerPlayerId ||
+                 fish->ownerLifeEpoch != player.lifeEpoch ||
                  fish->identity.sceneId != player.sceneId || !fish->entity.Valid())) {
         return false;
     }
@@ -71,6 +73,7 @@ bool FishingPresentationAuthority::Constrain(
         return FishingPresentationPoseIsBounded(presentation);
     }
     if (lure->ownerPlayerId != player.ownerPlayerId ||
+        lure->ownerLifeEpoch != player.lifeEpoch ||
         lure->sceneId != player.sceneId || !lure->entity.Valid()) {
         return false;
     }

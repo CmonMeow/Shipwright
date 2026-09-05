@@ -16,7 +16,6 @@ FaultClient D_801614B8;
 
 UNK_TYPE D_8012D1F4 = 0; // unused
 
-ControllerInput* D_8012D1F8 = NULL;
 
 PlayState* gPlayState;
 int16_t firstInit = 0;
@@ -213,7 +212,6 @@ void Play_Init(GameState* thisx) {
 
     SREG(91) = -1;
     play->transitionMode = TRANS_MODE_OFF;
-    FrameAdvance_Init(&play->frameAdvCtx);
     Rand_Seed((uint32_t)osGetTime());
     Matrix_Init(&play->state);
     play->state.main = Play_Main;
@@ -290,7 +288,6 @@ void Play_Init(GameState* thisx) {
 }
 
 void Play_Update(PlayState* play) {
-    ControllerInput* input = play->state.input;
     int32_t isPaused = { 0 };
 
     if ((SREG(1) < 0) || (DREG(0) != 0)) {
@@ -324,7 +321,6 @@ void Play_Update(PlayState* play) {
     gSegments[5] = VIRTUAL_TO_PHYSICAL(play->objectCtx.status[play->objectCtx.subKeepIndex].segment);
     gSegments[2] = VIRTUAL_TO_PHYSICAL(play->sceneSegment);
 
-    if (FrameAdvance_Update(&play->frameAdvCtx, &input[1])) {
         if ((play->transitionMode == TRANS_MODE_OFF) && (play->transitionTrigger != TRANS_TRIGGER_OFF)) {
             play->transitionMode = TRANS_MODE_SETUP;
         }
@@ -390,8 +386,6 @@ void Play_Update(PlayState* play) {
                 PLAY_LOG(3580);
 
                 play->gameplayFrames++;
-                func_800AA178(true);
-
                 if (play->actorCtx.freezeFlashTimer && (play->actorCtx.freezeFlashTimer-- < 5)) {
                     osSyncPrintf("FINISH=%d\n", play->actorCtx.freezeFlashTimer);
 
@@ -436,27 +430,11 @@ void Play_Update(PlayState* play) {
 
                     PLAY_LOG(3662);
                 }
-            } else {
-                func_800AA178(false);
             }
 
             PLAY_LOG(3677);
 
             if (play->unk_1242B != 0) {
-                if (CHECK_BTN_ALL(input[0].press.button, BTN_CUP)) {
-                    if (Player_InCsMode(play)) {
-                        // "Changing viewpoint is prohibited during the cutscene"
-                        osSyncPrintf(VT_FGCOL(CYAN) "デモ中につき視点変更を禁止しております\n" VT_RST);
-                    } else if (YREG(15) == 0x10) {
-                        Audio_PlaySoundGeneral(NA_SE_SY_ERROR, &gSfxDefaultPos, 4, &gSfxDefaultFreqAndVolScale,
-                                               &gSfxDefaultFreqAndVolScale, &gSfxDefaultReverb);
-                    } else {
-                        // C-Up toggle for houses, move between pivot camera and fixed camera
-                        // Toggle viewpoint between VIEWPOINT_LOCKED and VIEWPOINT_PIVOT
-                        Play_SetViewpoint(play, play->unk_1242B ^ 3);
-                    }
-                }
-
                 Play_RequestViewpointBgCam(play);
             }
 
@@ -488,8 +466,6 @@ void Play_Update(PlayState* play) {
 
             PLAY_LOG(3783);
             TransitionFade_Update(&play->transitionFade, R_UPDATE_RATE);
-    }
-
     PLAY_LOG(3799);
 
     PLAY_LOG(3801);
@@ -750,7 +726,6 @@ void Play_Main(GameState* thisx) {
     // simulation and animation clock.
     R_UPDATE_RATE = 3;
 
-    D_8012D1F8 = &play->state.input[0];
 
     PLAY_LOG(4556);
 
@@ -1161,10 +1136,6 @@ void Play_TriggerRespawn(PlayState* play) {
 int32_t func_800C0CB8(PlayState* play) {
     return (play->roomCtx.curRoom.meshHeader->base.type != 1) && (YREG(15) != 0x20) && (YREG(15) != 0x30) &&
            (YREG(15) != 0x40) && (play->sceneNum != SCENE_CASTLE_COURTYARD_GUARDS_DAY);
-}
-
-int32_t FrameAdvance_IsEnabled(PlayState* play) {
-    return !!play->frameAdvCtx.enabled;
 }
 
 int32_t func_800C0DB4(PlayState* play, Vec3f* pos) {

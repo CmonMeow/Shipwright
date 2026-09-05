@@ -601,7 +601,8 @@ typedef struct PlayerPresentationDrawData {
     uint8_t itemAction;
     uint8_t fishingState;
     uint8_t bowReady;
-    uint8_t pad[3];
+    uint8_t blocking;
+    uint8_t pad[2];
     Vec3s upperLimbRot;
     Vec3s headLimbRot;
     float fishingRodBendY;
@@ -611,6 +612,7 @@ typedef struct PlayerPresentationDrawData {
     float bowStringScale;
     void* bowArrowSkelAnime;
     Vec3f limbOrigins[PLAYER_LIMB_MAX];
+    Vec3f fishingRodTip;
 } PlayerPresentationDrawData;
 
 #define UNK6AE_ROT_FOCUS_X (1 << 0)
@@ -622,12 +624,6 @@ typedef struct PlayerPresentationDrawData {
 #define UNK6AE_ROT_UPPER_X (1 << 6)
 #define UNK6AE_ROT_UPPER_Y (1 << 7)
 #define UNK6AE_ROT_UPPER_Z (1 << 8)
-
-typedef enum PlayerPrimaryActionPresentation {
-    PLAYER_PRIMARY_PRESENTATION_UNAVAILABLE = -1,
-    PLAYER_PRIMARY_PRESENTATION_IDLE = 0,
-    PLAYER_PRIMARY_PRESENTATION_ACTIVE = 1,
-} PlayerPrimaryActionPresentation;
 
 typedef struct Player {
     /* 0x0000 */ Actor actor;
@@ -806,10 +802,6 @@ typedef struct Player {
     // Upstream TODO: Rename these to be more obviously SoH specific
     /*        */ PendingFlag pendingFlag;
     /*        */ GetItemEntry getItemEntry;
-    // PC presentation projection written after client prediction advances.
-    // These fields never grant gameplay authority to the native actor.
-    /*        */ int8_t primaryActionPresentation;
-    /*        */ float primaryActionProgress;
     // True only while an authoritative retained corpse owns this exact local
     // player incarnation's body presentation.
     /*        */ uint8_t authoritativeBodyHidden;

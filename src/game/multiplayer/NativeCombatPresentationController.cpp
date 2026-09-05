@@ -30,6 +30,12 @@ void NativeCombatPresentationController::Apply(
     Player* player = GET_PLAYER(play);
     if (!player) return;
 
+    // The authoritative health snapshot is consumed before combat events.
+    // Once dead, let Player_Update enter its normal grounded death action;
+    // applying another knockback here can incorrectly select the long-fall
+    // animation and scream based on a stale airborne/bg-check flag.
+    if (gSaveContext.health == 0) return;
+
     // PlayerSimulation has already decided health and replicated it through
     // ordered snapshots. Native hit handling contributes reaction, voice,
     // knockback, and flicker only.

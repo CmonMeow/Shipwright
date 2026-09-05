@@ -113,7 +113,8 @@ bool ServerGameplayCommandService::ExecuteSceneEntry(
     if (!outcome->player) return false;
     if (player == 0 && outcome->admitted) {
         const Game::Replication::ReplicatedPlayer localPlayer{
-            0, outcome->player->entity, outcome->player->sceneId,
+            0, outcome->player->entity, outcome->player->lifeEpoch,
+            outcome->player->sceneId,
             outcome->player->position
         };
         mClientInbox.AcceptPlayerLifecycle(

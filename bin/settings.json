@@ -1,7 +1,7 @@
 {
     "CVars": {
         "gSettings": {
-            "CameraInvertY": 1,
+            "CameraInvertY": 0,
             "CursorVisibility": 1,
             "InterpolationFPS": 240,
             "MatchRefreshRate": 0,
@@ -12,9 +12,9 @@
         }
     },
     "Window": {
-        "Height": 897,
-        "PositionX": -9,
-        "PositionY": 0,
-        "Width": 1536
+        "Height": 492,
+        "PositionX": 759,
+        "PositionY": 361,
+        "Width": 702
     }
 }

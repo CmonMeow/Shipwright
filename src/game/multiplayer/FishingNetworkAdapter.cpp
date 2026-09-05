@@ -67,7 +67,6 @@ Game::Replication::FishingPresentationState PresentationStateFrom(const Packet& 
     state.sinkingLureSegmentIndex = packet.fishingSinkingLureSegmentIndex;
     state.sinkingLureUnderwater = packet.fishingSinkingLureUnderwater;
     for (size_t axis = 0; axis < 3; ++axis) {
-        state.rodTipOffset[axis] = packet.fishingRodTipOffset[axis];
         state.lureDrawOffset[axis] = packet.fishingLureDrawOffset[axis];
         state.lureRotation[axis] = packet.fishingLureRot[axis];
         state.fishRotation[axis] = packet.fishingFishRot[axis];
@@ -105,7 +104,8 @@ bool IsSanePresentationBody(const Packet& packet) {
 NetworkFishStatePacket ToPacket(const Game::Simulation::FishSnapshot& fish,
                                 uint32_t sequence, bool active) {
     const auto& identity = fish.identity;
-    return { fish.ownerPlayerId, fish.entity.index, fish.entity.generation, sequence,
+    return { fish.ownerPlayerId, fish.ownerLifeEpoch, fish.entity.index,
+             fish.entity.generation, sequence,
              identity.sceneId, identity.spawnKey,
              fish.position.x, fish.position.y, fish.position.z,
              static_cast<unsigned char>(fish.species), fish.length,
@@ -114,7 +114,8 @@ NetworkFishStatePacket ToPacket(const Game::Simulation::FishSnapshot& fish,
 
 NetworkLureStatePacket ToPacket(const Game::Simulation::FishingLureSnapshot& lure,
                                 uint32_t sequence, bool active) {
-    return { lure.ownerPlayerId, lure.entity.index, lure.entity.generation, sequence,
+    return { lure.ownerPlayerId, lure.ownerLifeEpoch, lure.entity.index,
+             lure.entity.generation, sequence,
              lure.sceneId, lure.position.x, lure.position.y, lure.position.z,
              static_cast<unsigned char>(lure.phase), lure.lureType,
              static_cast<unsigned char>(active) };
@@ -131,6 +132,7 @@ Game::Client::RemoteFishEntity ToRemoteEntity(
         packet.z,
         packet.length,
         static_cast<Game::Simulation::FishSpecies>(packet.species),
+        packet.ownerLifeEpoch,
         packet.active != 0,
     };
 }
@@ -146,6 +148,7 @@ Game::Client::RemoteLureEntity ToRemoteEntity(
         packet.z,
         packet.phase,
         packet.lureType,
+        packet.ownerLifeEpoch,
         packet.active != 0,
     };
 }
@@ -156,6 +159,7 @@ Game::Replication::FishingPresentationState ToState(
     state.playerId = packet.playerId;
     state.entity = { packet.entityIndex, packet.entityGeneration };
     state.sceneId = packet.sceneId;
+    state.lifeEpoch = packet.lifeEpoch;
     return state;
 }
 
@@ -171,6 +175,7 @@ NetworkFishingPresentationPacket ToPacket(
     packet.entityIndex = state.entity.index;
     packet.entityGeneration = state.entity.generation;
     packet.sceneId = state.sceneId;
+    packet.lifeEpoch = state.lifeEpoch;
     packet.sequence = state.sequence;
     packet.fishingState = state.state;
     packet.fishingRodBendY = state.rodBendY;
@@ -185,7 +190,6 @@ NetworkFishingPresentationPacket ToPacket(
     packet.fishingSinkingLureSegmentIndex = state.sinkingLureSegmentIndex;
     packet.fishingSinkingLureUnderwater = state.sinkingLureUnderwater;
     for (size_t axis = 0; axis < 3; ++axis) {
-        packet.fishingRodTipOffset[axis] = state.rodTipOffset[axis];
         packet.fishingLureDrawOffset[axis] = state.lureDrawOffset[axis];
         packet.fishingLureRot[axis] = state.lureRotation[axis];
         packet.fishingFishRot[axis] = state.fishRotation[axis];
@@ -221,7 +225,6 @@ NetworkFishingPresentationIntentPacket ToIntentPacket(
     packet.fishingSinkingLureSegmentIndex = state.sinkingLureSegmentIndex;
     packet.fishingSinkingLureUnderwater = state.sinkingLureUnderwater;
     for (size_t axis = 0; axis < 3; ++axis) {
-        packet.fishingRodTipOffset[axis] = state.rodTipOffset[axis];
         packet.fishingLureDrawOffset[axis] = state.lureDrawOffset[axis];
         packet.fishingLureRot[axis] = state.lureRotation[axis];
         packet.fishingFishRot[axis] = state.fishRotation[axis];
@@ -241,7 +244,8 @@ NetworkFishingPresentationIntentPacket ToIntentPacket(
 }
 
 bool IsSane(const NetworkFishingPresentationPacket& packet) {
-    return packet.playerId >= 0 && packet.entityGeneration != 0 && packet.sceneId >= 0 &&
+    return packet.playerId >= 0 && packet.entityGeneration != 0 && packet.lifeEpoch != 0 &&
+           packet.sceneId >= 0 &&
            packet.sceneId < static_cast<int32_t>(NET_MAX_WORLD_LEVELS) &&
            IsSanePresentationBody(packet);
 }
@@ -257,7 +261,8 @@ bool IsSane(const NetworkFishIntentPacket& packet) {
 }
 
 bool IsSane(const NetworkFishStatePacket& packet) {
-    return packet.ownerPlayerId >= 0 && packet.entityGeneration != 0 &&
+    return packet.ownerPlayerId >= 0 && packet.ownerLifeEpoch != 0 &&
+           packet.entityGeneration != 0 &&
            packet.sequence != 0 && packet.active <= 1 &&
            packet.species <= static_cast<unsigned char>(
                                  Game::Simulation::FishSpecies::HylianLoach) &&
@@ -273,7 +278,8 @@ bool IsSane(const NetworkLureControlIntentPacket& packet) {
 }
 
 bool IsSane(const NetworkLureStatePacket& packet) {
-    return packet.ownerPlayerId >= 0 && packet.entityGeneration != 0 &&
+    return packet.ownerPlayerId >= 0 && packet.ownerLifeEpoch != 0 &&
+           packet.entityGeneration != 0 &&
            packet.sequence != 0 && packet.sceneId >= 0 &&
            packet.sceneId < static_cast<int32_t>(NET_MAX_WORLD_LEVELS) &&
            packet.phase <= static_cast<unsigned char>(Game::Simulation::FishingLurePhase::Hooked) &&

@@ -32,7 +32,7 @@ inline AuthoritativePlayerSkeletonPose SampleAuthoritativePlayerSkeletonPose(
             kTau);
         state.actionProgress = std::clamp(
             state.actionProgress +
-                PlayerActionProgressPerSecond(player.actionState) *
+                PlayerActionProgressPerSecond(player) *
                     poseAdvanceSeconds,
             0.0f, 1.0f);
     }
@@ -94,32 +94,80 @@ inline AuthoritativePlayerSkeletonPose SampleAuthoritativePlayerSkeletonPose(
         leftWristX = -8.0f; leftWristY = 47.0f + vertical * 16.0f; leftWristZ = forward * 23.0f;
         rightElbowX = 10.0f; rightElbowY = 47.0f + vertical * 5.0f; rightElbowZ = forward * 7.0f;
         rightWristX = 1.0f; rightWristY = 47.0f + vertical * 15.0f; rightWristZ = forward * 20.0f;
+    } else if (player.actionState == PlayerActionState::SpinAttacking) {
+        constexpr float tau = 6.28318530717958647692f;
+        const float angle = state.actionProgress * tau;
+        const float swingX = std::sin(angle);
+        const float swingZ = std::cos(angle);
+        rightElbowX = 7.0f + swingX * 12.0f;
+        rightElbowY = 43.0f;
+        rightElbowZ = swingZ * 12.0f;
+        rightWristX = swingX * 24.0f;
+        rightWristY = 39.0f;
+        rightWristZ = swingZ * 24.0f;
+        if (player.selectedWeapon == 2) {
+            leftElbowX = -7.0f + swingX * 11.0f;
+            leftElbowY = 44.0f;
+            leftElbowZ = swingZ * 11.0f;
+            leftWristX = swingX * 22.0f;
+            leftWristY = 40.0f;
+            leftWristZ = swingZ * 22.0f;
+        }
     } else if (player.actionState == PlayerActionState::PrimaryWindup ||
                player.actionState == PlayerActionState::PrimaryActive ||
                player.actionState == PlayerActionState::PrimaryRecovery) {
-        const float swingAngle = -1.25f + state.actionProgress * 2.5f;
-        const float swingX = std::sin(swingAngle);
-        const float swingZ = std::cos(swingAngle);
+        float swingAngle = -1.25f + state.actionProgress * 2.5f;
+        float swingX = std::sin(swingAngle);
+        float swingZ = std::cos(swingAngle);
+        const bool forward =
+            player.meleeAttackVariant == MeleeAttackVariant::ForwardSlash ||
+            player.meleeAttackVariant == MeleeAttackVariant::ForwardCombo;
+        const bool left =
+            player.meleeAttackVariant == MeleeAttackVariant::LeftSlash ||
+            player.meleeAttackVariant == MeleeAttackVariant::LeftCombo;
+        const bool combo =
+            player.meleeAttackVariant == MeleeAttackVariant::ForwardCombo ||
+            player.meleeAttackVariant == MeleeAttackVariant::RightCombo ||
+            player.meleeAttackVariant == MeleeAttackVariant::LeftCombo;
+        if (left) swingX = -swingX;
+        if (combo) {
+            swingX *= 1.15f;
+            swingZ *= 1.15f;
+        }
         if (player.selectedWeapon == 2) {
-            leftElbowX = -5.0f + swingX * 8.0f;
-            leftElbowY = 47.0f;
-            leftElbowZ = swingZ * 10.0f;
-            leftWristX = swingX * 15.0f;
-            leftWristY = 43.0f;
-            leftWristZ = swingZ * 20.0f;
-            rightElbowX = 5.0f + swingX * 8.0f;
-            rightElbowY = 46.0f;
-            rightElbowZ = swingZ * 9.0f;
-            rightWristX = swingX * 14.0f;
-            rightWristY = 42.0f;
-            rightWristZ = swingZ * 19.0f;
+            if (forward) {
+                const float downward = 1.0f - 2.0f * state.actionProgress;
+                leftElbowX = -5.0f; leftElbowY = 47.0f + downward * 8.0f; leftElbowZ = 9.0f;
+                leftWristX = -2.0f; leftWristY = 43.0f + downward * 18.0f; leftWristZ = 20.0f;
+                rightElbowX = 5.0f; rightElbowY = 46.0f + downward * 8.0f; rightElbowZ = 9.0f;
+                rightWristX = 2.0f; rightWristY = 42.0f + downward * 18.0f; rightWristZ = 20.0f;
+            } else {
+                leftElbowX = -5.0f + swingX * 8.0f;
+                leftElbowY = 47.0f;
+                leftElbowZ = swingZ * 10.0f;
+                leftWristX = swingX * 15.0f;
+                leftWristY = 43.0f;
+                leftWristZ = swingZ * 20.0f;
+                rightElbowX = 5.0f + swingX * 8.0f;
+                rightElbowY = 46.0f;
+                rightElbowZ = swingZ * 9.0f;
+                rightWristX = swingX * 14.0f;
+                rightWristY = 42.0f;
+                rightWristZ = swingZ * 19.0f;
+            }
         } else {
-            rightElbowX = 8.0f + swingX * 8.0f;
-            rightElbowY = 45.0f;
-            rightElbowZ = swingZ * 11.0f;
-            rightWristX = 5.0f + swingX * 18.0f;
-            rightWristY = 39.0f;
-            rightWristZ = swingZ * 22.0f;
+            if (forward) {
+                const float downward = 1.0f - 2.0f * state.actionProgress;
+                rightElbowX = 8.0f; rightElbowY = 45.0f + downward * 9.0f; rightElbowZ = 10.0f;
+                rightWristX = 4.0f; rightWristY = 39.0f + downward * 20.0f; rightWristZ = 23.0f;
+            } else {
+                rightElbowX = 8.0f + swingX * 8.0f;
+                rightElbowY = 45.0f;
+                rightElbowZ = swingZ * 11.0f;
+                rightWristX = 5.0f + swingX * 18.0f;
+                rightWristY = 39.0f;
+                rightWristZ = swingZ * 22.0f;
+            }
         }
     } else if (player.actionState == PlayerActionState::JumpSlashing) {
         const float drop = state.actionProgress * 12.0f;
@@ -195,8 +243,20 @@ inline bool SegmentAuthoritativeShieldFirstHit(
     const Vec3 center{ (leftWrist.x + rightWrist.x) * 0.5f,
                        (leftWrist.y + rightWrist.y) * 0.5f,
                        (leftWrist.z + rightWrist.z) * 0.5f };
-    return SegmentOrientedVerticalRectangleFirstHit(
-        start, end, center, player.headingRadians, 14.0f, 18.0f, hit);
+    // World-space silhouette derived from the six boundary vertices of
+    // gLinkAdultRightHandHoldingMirrorShieldNearVtx1 at Link's 0.01 model
+    // scale. Keeping the recessed hexagonal outline avoids both rectangular
+    // corner blocks and misses along the shield's wider middle.
+    static constexpr std::array<std::array<float, 2>, 6> silhouette{
+        std::array<float, 2>{ -17.89f, 0.0f },
+        std::array<float, 2>{ -3.70f, 12.53f },
+        std::array<float, 2>{ 13.39f, 10.00f },
+        std::array<float, 2>{ 16.11f, 0.0f },
+        std::array<float, 2>{ 13.39f, -10.00f },
+        std::array<float, 2>{ -3.70f, -12.53f },
+    };
+    return SegmentOrientedVerticalConvexPolygonFirstHit(
+        start, end, center, player.headingRadians, silhouette, hit);
 }
 
 } // namespace Game::Simulation

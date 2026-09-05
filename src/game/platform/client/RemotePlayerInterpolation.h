@@ -43,8 +43,11 @@ class RemotePlayerInterpolation final {
     };
 
     static constexpr double kServerTicksPerSecond = 30.0;
-    static constexpr double kInterpolationDelayTicks = 2.0;
-    static constexpr double kMaximumExtrapolationTicks = 3.0;
+    // PvP presentation must not intentionally show a historical body while
+    // authoritative melee/projectiles use the newest server body. Render the
+    // latest sample and permit only a short bounded extrapolation for jitter.
+    static constexpr double kInterpolationDelayTicks = 0.0;
+    static constexpr double kMaximumExtrapolationTicks = 2.0;
     static constexpr size_t kMaximumSamples = 16;
 
     std::deque<BufferedSample> mSamples;

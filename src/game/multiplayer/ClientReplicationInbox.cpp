@@ -63,10 +63,20 @@ void ClientReplicationInbox::Reset() {
 bool ClientReplicationInbox::AcceptPlayerLifecycle(
     const NetworkPlayerLifecyclePacket& packet) {
     const auto previous = mPlayerLifetimes.ActiveEntity(packet.playerId);
+    const auto previousLife = mLatestPlayerLifeEpochs.find(packet.playerId);
     const auto previousScene = mActivePlayerScenes.find(packet.playerId);
+    if (previousLife != mLatestPlayerLifeEpochs.end() &&
+        packet.lifeEpoch != previousLife->second &&
+        (!packet.active ||
+         !Game::Sequence::IsNewer(packet.lifeEpoch, previousLife->second))) {
+        return false;
+    }
     if (!PlayerLifecycleNetworkAdapter::Apply(packet, mPlayerLifetimes)) return false;
     const Game::Simulation::EntityId entity{ packet.entityIndex, packet.entityGeneration };
-    const bool replaced = previous && *previous != entity;
+    const bool replaced = previous &&
+        (*previous != entity ||
+         (previousLife != mLatestPlayerLifeEpochs.end() &&
+          previousLife->second != packet.lifeEpoch));
     const bool sceneChanged = packet.active &&
         previousScene != mActivePlayerScenes.end() &&
         previousScene->second != packet.sceneId;
@@ -80,6 +90,8 @@ bool ClientReplicationInbox::AcceptPlayerLifecycle(
         mLatestPlayerLifeEpochs.erase(packet.playerId);
         mLatestPlayerRespawnEpochs.erase(packet.playerId);
         mLatestFishingPresentationSequences.erase(packet.playerId);
+        mLatestFishStateSequences.erase(packet.playerId);
+        mLatestLureStateSequences.erase(packet.playerId);
         mPlayerSnapshots.Erase(packet.playerId);
         mFishingPresentations.Erase(packet.playerId);
         // Aggregate owner retirement invalidates pending active presentation,
@@ -108,6 +120,7 @@ bool ClientReplicationInbox::AcceptPlayerLifecycle(
                                 return state.active;
                             });
     }
+    if (packet.active) mLatestPlayerLifeEpochs[packet.playerId] = packet.lifeEpoch;
     QueuePlayerLifecycle(
         PlayerLifecycleNetworkAdapter::ToPresentationState(packet));
     return true;
@@ -154,9 +167,9 @@ bool ClientReplicationInbox::AcceptSceneEntryState(
             mPlayerSnapshots.Erase(localPlayerId);
             mFishingPresentations.Erase(localPlayerId);
         }
-        // For an owner, the correlated scene-admission reply is the reliable
-        // scope transition. Interest replication intentionally excludes self,
-        // so no separate self lifecycle enter is required on remote clients.
+        // The correlated scene-admission reply updates the owner's scope
+        // immediately. The reliable self lifecycle follows on the same stream
+        // and updates the presentation registry for the new scene.
         mActivePlayerScenes[localPlayerId] = packet.sceneId;
     }
     QueueSceneEntryState(SceneNetworkAdapter::ToAuthority(packet));
@@ -164,12 +177,14 @@ bool ClientReplicationInbox::AcceptSceneEntryState(
 }
 
 bool ClientReplicationInbox::AcceptFishingPresentation(
-    const NetworkFishingPresentationPacket& packet, int32_t localPlayerId) {
+    const NetworkFishingPresentationPacket& packet) {
     const auto activeScene = mActivePlayerScenes.find(packet.playerId);
-    if (packet.playerId == localPlayerId || !FishingNetworkAdapter::IsSane(packet) ||
+    if (!FishingNetworkAdapter::IsSane(packet) ||
         !mPlayerLifetimes.Matches(packet.playerId, PlayerEntity(packet)) ||
         activeScene == mActivePlayerScenes.end() ||
         activeScene->second != packet.sceneId) return false;
+    const auto life = mLatestPlayerLifeEpochs.find(packet.playerId);
+    if (life == mLatestPlayerLifeEpochs.end() || life->second != packet.lifeEpoch) return false;
     const auto previous = mLatestFishingPresentationSequences.find(packet.playerId);
     if (previous != mLatestFishingPresentationSequences.end() &&
         !Game::Sequence::IsNewer(static_cast<uint32_t>(packet.sequence), previous->second)) return false;
@@ -181,9 +196,12 @@ bool ClientReplicationInbox::AcceptFishingPresentation(
 
 bool ClientReplicationInbox::AcceptFishState(const NetworkFishStatePacket& packet) {
     const auto activeScene = mActivePlayerScenes.find(packet.ownerPlayerId);
+    const auto activeLife = mLatestPlayerLifeEpochs.find(packet.ownerPlayerId);
     if (!FishingNetworkAdapter::IsSane(packet) ||
         (packet.active &&
          (!mPlayerLifetimes.ActiveEntity(packet.ownerPlayerId) ||
+          activeLife == mLatestPlayerLifeEpochs.end() ||
+          activeLife->second != packet.ownerLifeEpoch ||
           activeScene == mActivePlayerScenes.end() ||
           activeScene->second != packet.sceneId))) {
         return false;
@@ -199,9 +217,12 @@ bool ClientReplicationInbox::AcceptFishState(const NetworkFishStatePacket& packe
 
 bool ClientReplicationInbox::AcceptLureState(const NetworkLureStatePacket& packet) {
     const auto activeScene = mActivePlayerScenes.find(packet.ownerPlayerId);
+    const auto activeLife = mLatestPlayerLifeEpochs.find(packet.ownerPlayerId);
     if (!FishingNetworkAdapter::IsSane(packet) ||
         (packet.active &&
          (!mPlayerLifetimes.ActiveEntity(packet.ownerPlayerId) ||
+          activeLife == mLatestPlayerLifeEpochs.end() ||
+          activeLife->second != packet.ownerLifeEpoch ||
           activeScene == mActivePlayerScenes.end() ||
           activeScene->second != packet.sceneId))) {
         return false;
@@ -271,7 +292,9 @@ bool ClientReplicationInbox::AcceptProjectileState(
 
 bool ClientReplicationInbox::AcceptCombatResult(const NetworkCombatResultPacket& packet) {
     if (!CombatNetworkAdapter::IsSane(packet) ||
-        !CombatNetworkAdapter::MatchesActiveLifetimes(packet, mPlayerLifetimes)) return false;
+        !CombatNetworkAdapter::MatchesActiveLifetimes(packet, mPlayerLifetimes) ||
+        !CombatNetworkAdapter::MatchesActiveIncarnations(
+            packet, mLatestPlayerLifeEpochs)) return false;
     if (mLatestCombatEventId != 0 &&
         !Game::Sequence::IsNewer(packet.eventId, mLatestCombatEventId)) {
         return false;
@@ -302,6 +325,12 @@ bool ClientReplicationInbox::AcceptPlayerRespawn(
     if (life == mLatestPlayerLifeEpochs.end() || packet.lifeEpoch != life->second) {
         mLatestPlayerSnapshotTicks.erase(packet.playerId);
         mPlayerSnapshots.Erase(packet.playerId);
+        mLatestFishingPresentationSequences.erase(packet.playerId);
+        mLatestFishStateSequences.erase(packet.playerId);
+        mLatestLureStateSequences.erase(packet.playerId);
+        mFishingPresentations.Erase(packet.playerId);
+        mFishStates.Erase(packet.playerId);
+        mLureStates.Erase(packet.playerId);
 
         // A respawn starts a new local incarnation. Projectile decisions do
         // not retain a life epoch after wire admission, so none may cross this

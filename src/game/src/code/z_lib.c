@@ -207,9 +207,9 @@ int32_t Math_AsymStepToF(float* pValue, float target, float incrStep, float decr
     return 0;
 }
 
-void func_80077D10(float* arg0, int16_t* arg1, ControllerInput* input) {
-    float relX = input->rel.stick_x;
-    float relY = input->rel.stick_y;
+void func_80077D10(float* arg0, int16_t* arg1, MovementInput* input) {
+    float relX = input->x;
+    float relY = input->y;
 
     *arg0 = sqrtf(SQ(relX) + SQ(relY));
     *arg0 = (60.0f < *arg0) ? 60.0f : *arg0;

@@ -87,18 +87,14 @@ bool ServerPlayerSessionService::AdmitIdentity(
     EncodeAppPacketRaw(assignmentRaw, NetworkPlayerAssignPacket{ peer });
     Send(peer, NAMTPlayerAssign, assignmentRaw, kReliable);
 
-    const NetworkPlayerLifecyclePacket lifecycle{
-        peer, initial->entity.index, initial->entity.generation,
-        initial->sceneId, 1
-    };
-    NetworkMessageRaw lifecycleRaw;
-    EncodeAppPacketRaw(lifecycleRaw, lifecycle);
-    Send(peer, NAMTPlayerLifecycle, lifecycleRaw, kReliable);
+    // Establish host, owner, and nearby player lifetimes before the scene
+    // admission baseline. The owner is a normal member of the visibility graph
+    // so this is the sole lifecycle source rather than a special duplicate.
+    mInterestPublisher.RefreshAll();
     mGameplayCommands.SendSceneEntryState(peer, 0, true);
     mEventPublisher.PublishStrategicTopologyTo(peer);
     if (mTransport.sendKnownChatKeys) mTransport.sendKnownChatKeys(peer);
 
-    mInterestPublisher.RefreshAll();
     return true;
 }
 

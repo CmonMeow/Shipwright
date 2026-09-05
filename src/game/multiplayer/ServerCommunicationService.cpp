@@ -146,6 +146,7 @@ void ServerCommunicationService::HandleVoice(
     const std::string payload = BuildVoicePayload(state);
     bool hostVisible = false;
     for (const int32_t observer : mReplication.PlayerObservers(sender)) {
+        if (observer == sender) continue;
         if (observer == 0) {
             hostVisible = true;
         } else if (observer > 0 && mDelivery.sendEncryptedPayload) {

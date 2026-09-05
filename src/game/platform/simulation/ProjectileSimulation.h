@@ -3,6 +3,7 @@
 #include "EntityRegistry.h"
 #include "PlayerSimulation.h"
 #include "StructureSimulation.h"
+#include "ArticulatedPlayerHitRig.h"
 
 #include <cstdint>
 #include <functional>
@@ -21,6 +22,7 @@ enum class ArrowPhase : uint8_t {
 enum class ArrowEventKind : uint8_t {
     Created,
     Snapshot,
+    BodyDetached,
     Stuck,
     Blocked,
     HitPlayer,
@@ -51,6 +53,7 @@ struct ArrowSnapshot {
     int16_t rotationX = 0;
     int16_t rotationY = 0;
     int16_t rotationZ = 0;
+    ArrowBodyAttachment body{};
 };
 
 struct ArrowEvent {
@@ -67,6 +70,7 @@ class ProjectileSimulation final {
     bool HasArrow(int32_t ownerPlayerId, int32_t replicationId) const;
     bool RemoveArrow(int32_t ownerPlayerId, int32_t replicationId);
     void RemoveOwnedBy(int32_t ownerPlayerId);
+    void DetachFromPlayerLife(int32_t playerId, uint32_t lifeEpoch);
     void Reset();
     void StepFixed(PlayerSimulation& players);
     void StepFixed(PlayerSimulation& players, StructureSimulation& structures);
@@ -93,6 +97,7 @@ class ProjectileSimulation final {
         uint32_t impactTick = 0;
         uint32_t lastSnapshotTick = 0;
         int32_t attachedStructureKey = -1;
+        ArrowBodyAttachment body{};
     };
 
     void SimulateTick(PlayerSimulation& players, StructureSimulation* structures);

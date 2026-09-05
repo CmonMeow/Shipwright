@@ -2,6 +2,7 @@
 
 #include "RemoteProjectileInterpolation.h"
 #include "RemoteProjectilePresentationRegistry.h"
+#include "../simulation/ArticulatedPlayerHitRig.h"
 
 #include <cstddef>
 #include <cstdint>
@@ -30,9 +31,10 @@ struct RemoteProjectileReplicaState {
     int16_t rotationX = 0;
     int16_t rotationY = 0;
     int16_t rotationZ = 0;
+    Simulation::ArrowBodyAttachment body{};
 
     bool Terminal() const {
-        return phase == RemoteProjectilePhase::ArrowStuck ||
+        return (phase == RemoteProjectilePhase::ArrowStuck && body.playerId < 0) ||
                phase == RemoteProjectilePhase::ArrowBlocked;
     }
 };

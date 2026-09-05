@@ -1172,9 +1172,6 @@ static ColChkResetFunc sATResetFuncs[] = {
 int32_t CollisionCheck_SetAT(PlayState* play, CollisionCheckContext* colChkCtx, Collider* collider) {
     int32_t index = { 0 };
 
-    if (FrameAdvance_IsEnabled(play) == true) {
-        return -1;
-    }
     assert(collider->shape <= COLSHAPE_QUAD);
     sATResetFuncs[collider->shape](play, collider);
     if (collider->actor != NULL && collider->actor->update == NULL) {
@@ -1200,10 +1197,6 @@ int32_t CollisionCheck_SetAT(PlayState* play, CollisionCheckContext* colChkCtx, 
  */
 int32_t CollisionCheck_SetAT_SAC(PlayState* play, CollisionCheckContext* colChkCtx, Collider* collider, int32_t index) {
     assert(collider->shape <= COLSHAPE_QUAD);
-
-    if (FrameAdvance_IsEnabled(play) == true) {
-        return -1;
-    }
 
     sATResetFuncs[collider->shape](play, collider);
     if (collider->actor != NULL && collider->actor->update == NULL) {
@@ -1242,9 +1235,6 @@ static ColChkResetFunc sACResetFuncs[] = {
 int32_t CollisionCheck_SetAC(PlayState* play, CollisionCheckContext* colChkCtx, Collider* collider) {
     int32_t index = { 0 };
 
-    if (FrameAdvance_IsEnabled(play) == true) {
-        return -1;
-    }
     assert(collider->shape <= COLSHAPE_QUAD);
     sACResetFuncs[collider->shape](play, collider);
     if (collider->actor != NULL && collider->actor->update == NULL) {
@@ -1270,10 +1260,6 @@ int32_t CollisionCheck_SetAC(PlayState* play, CollisionCheckContext* colChkCtx, 
  */
 int32_t CollisionCheck_SetAC_SAC(PlayState* play, CollisionCheckContext* colChkCtx, Collider* collider, int32_t index) {
     assert(collider->shape <= COLSHAPE_QUAD);
-
-    if (FrameAdvance_IsEnabled(play) == true) {
-        return -1;
-    }
 
     sACResetFuncs[collider->shape](play, collider);
     if (collider->actor != NULL && collider->actor->update == NULL) {
@@ -1312,10 +1298,6 @@ static ColChkResetFunc sOCResetFuncs[] = {
 int32_t CollisionCheck_SetOC(PlayState* play, CollisionCheckContext* colChkCtx, Collider* collider) {
     int32_t index = { 0 };
 
-    if (FrameAdvance_IsEnabled(play) == true) {
-        return -1;
-    }
-
     assert(collider->shape <= COLSHAPE_QUAD);
 
     sOCResetFuncs[collider->shape](play, collider);
@@ -1341,10 +1323,6 @@ int32_t CollisionCheck_SetOC(PlayState* play, CollisionCheckContext* colChkCtx, 
  * will be inserted into the next slot
  */
 int32_t CollisionCheck_SetOC_SAC(PlayState* play, CollisionCheckContext* colChkCtx, Collider* collider, int32_t index) {
-
-    if (FrameAdvance_IsEnabled(play) == true) {
-        return -1;
-    }
 
     assert(collider->shape <= COLSHAPE_QUAD);
     sOCResetFuncs[collider->shape](play, collider);
@@ -1378,9 +1356,6 @@ int32_t CollisionCheck_SetOC_SAC(PlayState* play, CollisionCheckContext* colChkC
 int32_t CollisionCheck_SetOCLine(PlayState* play, CollisionCheckContext* colChkCtx, OcLine* collider) {
     int32_t index = { 0 };
 
-    if (FrameAdvance_IsEnabled(play) == true) {
-        return -1;
-    }
     Collider_ResetLineOC(play, collider);
     if (!(colChkCtx->colLineCount < COLLISION_CHECK_OC_LINE_MAX)) {
         // "Index exceeded and cannot add more"

@@ -158,6 +158,18 @@ std::optional<int32_t> RemoteFishingEntityState::OwnerForFish(
     return fish ? std::optional<int32_t>(fish->ownerPlayerId) : std::nullopt;
 }
 
+bool RemoteFishingEntityState::HasEntityInScene(int32_t sceneId) const {
+    for (const auto& [key, fish] : mFish) {
+        (void)key;
+        if (fish.active && fish.identity.sceneId == sceneId) return true;
+    }
+    for (const auto& [key, lure] : mLures) {
+        (void)key;
+        if (lure.active && lure.sceneId == sceneId) return true;
+    }
+    return false;
+}
+
 void RemoteFishingEntityState::RemoveOwner(int32_t ownerPlayerId) {
     const auto fishOwner = mFishByOwner.find(ownerPlayerId);
     if (fishOwner != mFishByOwner.end()) {
@@ -190,7 +202,7 @@ RemoteFishingEntityState::EntityKey RemoteFishingEntityState::Key(
 
 bool RemoteFishingEntityState::IsSane(const RemoteFishEntity& state) {
     const RemoteFishIdentity& identity = state.identity;
-    return state.ownerPlayerId >= 0 && state.entity.Valid() &&
+    return state.ownerPlayerId >= 0 && state.ownerLifeEpoch != 0 && state.entity.Valid() &&
            identity.sceneId >= 0 && identity.sceneId < 4096 &&
            identity.spawnKey != 0 &&
            state.species <= Simulation::FishSpecies::HylianLoach &&
@@ -199,7 +211,7 @@ bool RemoteFishingEntityState::IsSane(const RemoteFishEntity& state) {
 }
 
 bool RemoteFishingEntityState::IsSane(const RemoteLureEntity& state) {
-    return state.ownerPlayerId >= 0 && state.entity.Valid() &&
+    return state.ownerPlayerId >= 0 && state.ownerLifeEpoch != 0 && state.entity.Valid() &&
            state.sceneId >= 0 && state.sceneId < 4096 && state.phase <= 2 &&
            state.lureType <= 2 && SaneCoordinate(state.x) &&
            SaneCoordinate(state.y) && SaneCoordinate(state.z);

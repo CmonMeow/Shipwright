@@ -44,43 +44,7 @@ void osSetThreadPri(OSThread* thread, OSPri pri) {
 void osCreatePiManager(OSPri pri, OSMesgQueue* cmdQ, OSMesg* cmdBuf, int32_t cmdMsgCnt) {
 }
 
-int32_t osPfsFreeBlocks(OSPfs* pfs, int32_t* leftoverBytes) {
-    return 0;
-}
-
 int32_t osEPiWriteIo(OSPiHandle* handle, uint32_t devAddr, uint32_t data) {
-    return 0;
-}
-
-int32_t osPfsReadWriteFile(OSPfs* pfs, int32_t fileNo, uint8_t flag, int32_t offset, ptrdiff_t size, uint8_t* data) {
-    return 0;
-}
-
-int32_t osPfsDeleteFile(OSPfs* pfs, uint16_t companyCode, uint32_t gameCode, uint8_t* gameName, uint8_t* extName) {
-    return 0;
-}
-
-int32_t osPfsFileState(OSPfs* pfs, int32_t fileNo, OSPfsState* state) {
-    return 0;
-}
-
-int32_t osPfsInitPak(OSMesgQueue* mq, OSPfs* pfs, int32_t channel) {
-    return 0;
-}
-
-int32_t __osPfsCheckRamArea(OSPfs* pfs) {
-    return 0;
-}
-
-int32_t osPfsChecker(OSPfs* pfs) {
-    return 0;
-}
-
-int32_t osPfsFindFile(OSPfs* pfs, uint16_t companyCode, uint32_t gameCode, uint8_t* gameName, uint8_t* extName, int32_t* fileNo) {
-    return 0;
-}
-
-int32_t osPfsAllocateFile(OSPfs* pfs, uint16_t companyCode, uint32_t gameCode, uint8_t* gameName, uint8_t* extName, int32_t length, int32_t* fileNo) {
     return 0;
 }
 
@@ -108,13 +72,6 @@ void osWritebackDCache(void* vaddr, int32_t nbytes) {
 }
 
 void osInvalICache(void* vaddr, int32_t nbytes) {
-}
-
-int32_t osContStartQuery(OSMesgQueue* mq) {
-    return 0;
-}
-
-void osContGetQuery(OSContStatus* data) {
 }
 
 uint32_t __osGetFpcCsr() {
@@ -189,10 +146,6 @@ void osInvalDCache(void* vaddr, int32_t nbytes) {
 }
 
 void osWritebackDCacheAll(void) {
-}
-
-int32_t osContSetCh(uint8_t ch) {
-    return 0;
 }
 
 uint32_t osDpGetStatus(void) {

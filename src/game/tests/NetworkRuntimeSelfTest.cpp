@@ -20,6 +20,10 @@ using Game::Multiplayer::LocalIdentityId;
 using Game::Multiplayer::SaveGameMasterList;
 
 constexpr unsigned short kRuntimePort = 47778;
+constexpr unsigned short kDedicatedVisibilityPort = 47779;
+// The broad authority test deliberately uses a synthetic scene without native
+// geometry. The dedicated visibility test below exercises the real test01 ID.
+constexpr int32_t kGameplayScene = 110;
 constexpr uint64_t kExpectedRespawnMilliseconds = 5000;
 constexpr unsigned kDropEveryNthDisposableDatagram = 13;
 
@@ -39,7 +43,6 @@ struct TestPlayerState {
     float speed{};
     uint8_t selectedWeapon{};
     uint8_t fishingState{};
-    float fishingRodTipOffset[3]{};
     float fishingLureDrawOffset[3]{};
     float fishingRodBendY{};
     float fishingRodBendX{};
@@ -64,8 +67,6 @@ Game::Replication::FishingPresentationState TestFishingPresentation(
     Game::Replication::FishingPresentationState presentation{};
     presentation.sequence = state.sequence;
     presentation.state = state.fishingState;
-    memcpy(presentation.rodTipOffset.data(), state.fishingRodTipOffset,
-           sizeof(state.fishingRodTipOffset));
     memcpy(presentation.lureDrawOffset.data(), state.fishingLureDrawOffset,
            sizeof(state.fishingLureDrawOffset));
     presentation.rodBendY = state.fishingRodBendY;
@@ -116,7 +117,7 @@ TestPlayerState MakeState(int value) {
     TestPlayerState packet{};
     // Keep the authority test outside a real scene so static world geometry
     // cannot accidentally mask the explicit projectile/player geometry below.
-    packet.sceneId = 110;
+    packet.sceneId = kGameplayScene;
     packet.roomId = 3;
     packet.sequence = value;
     packet.x = static_cast<float>(value);
@@ -184,7 +185,7 @@ int RunHost() {
     std::vector<std::string> testGameMasters = originalGameMasters;
     AddUniqueString(testGameMasters, LocalIdentityId());
     SaveGameMasterList(testGameMasters);
-    NetworkRuntime network;
+    NetworkRuntime network(kGameplayScene);
     if (!network.Host(kRuntimePort, "Game secure runtime test")) {
         if (gameMasterListExisted) {
             SaveGameMasterList(originalGameMasters);
@@ -195,7 +196,7 @@ int RunHost() {
     }
     if (!network.ConfigureSceneSpawn({ 0x49, { 666.0f, -87.0f, 354.0f }, 0.0f }) ||
         !network.ConfigureSceneSpawn({ 101, {}, 0.0f }) ||
-        !network.ConfigureSceneSpawn({ 110, {}, 0.0f })) {
+        !network.ConfigureSceneSpawn({ kGameplayScene, {}, 0.0f })) {
         network.Disconnect();
         return 14;
     }
@@ -209,15 +210,15 @@ int RunHost() {
     // The host owns the origin. Subsequent clients enter one Link body
     // diameter behind it so scripted arrows/melee exercise collision and
     // damage on a deterministic centerline rather than spawning overlapped.
-    if (!network.ConfigureSceneSpawn({ 110, { 0.0f, 0.0f, -24.0f }, 0.0f })) {
+    if (!network.ConfigureSceneSpawn({ kGameplayScene, { 0.0f, 0.0f, -24.0f }, 0.0f })) {
         network.Disconnect();
         return 16;
     }
     if (!network.EnsureStrategicSite(
-            { 7001, 110, {}, 2000.0f, Game::Simulation::TeamId::Neutral },
+            { 7001, kGameplayScene, {}, 2000.0f, Game::Simulation::TeamId::Neutral },
             Game::Simulation::StrategicSiteKind::Keep, 1).Valid() ||
         !network.EnsureStrategicSite(
-            { 7000, 110, { 3000.0f, 0.0f, 3000.0f }, 200.0f,
+            { 7000, kGameplayScene, { 3000.0f, 0.0f, 3000.0f }, 200.0f,
               Game::Simulation::TeamId::Red },
              Game::Simulation::StrategicSiteKind::Camp, 2).Valid() ||
         !network.EnsureSupplyRoute({ 9000, 7000, 7001 }) ||
@@ -230,7 +231,7 @@ int RunHost() {
         }
         return 12;
     }
-    if (!network.EnsureStructure({ 8001, 7001, 110, {}, 500, 50 }).Valid()) {
+    if (!network.EnsureStructure({ 8001, 7001, kGameplayScene, {}, 500, 50 }).Valid()) {
         network.Disconnect();
         if (gameMasterListExisted) {
             SaveGameMasterList(originalGameMasters);
@@ -355,12 +356,12 @@ int RunHost() {
             interestOutboundGranted = network.SendChat("runtime-interest-outbound-granted");
         }
         if (combatTransitionRequested && !combatTransitionGranted &&
-            authorizeRemoteTransition(110)) {
+            authorizeRemoteTransition(kGameplayScene)) {
             combatTransitionGranted =
                 network.SendChat("runtime-combat-transition-granted");
         }
         if (interestReturnRequestedByClient && !interestReturnGranted &&
-            authorizeRemoteTransition(110)) {
+            authorizeRemoteTransition(kGameplayScene)) {
             interestReturnGranted = network.SendChat("runtime-interest-return-granted");
         }
         if (clientComplete && !clientCompleteAcknowledged) {
@@ -379,7 +380,7 @@ int RunHost() {
                                                   (hostCombatSceneEntered && state.ownerPlayerId > 0 &&
                                                    state.sceneId == 0x49);
             stateReceived = stateReceived || (state.ownerPlayerId > 0 && state.entity.Valid() &&
-                                              state.sceneId == 110);
+                                              state.sceneId == kGameplayScene);
             bowStringScaleReceived = bowStringScaleReceived || state.ownerPlayerId > 0;
             poseEquipmentReceived = poseEquipmentReceived ||
                                     (state.ownerPlayerId > 0 && state.entity.Valid());
@@ -388,7 +389,7 @@ int RunHost() {
         while (network.PollObjectiveState(hostObjective)) {
             hostObjectiveStateReceived = hostObjectiveStateReceived ||
                                          (hostObjective.snapshot.objectiveKey == 7001 &&
-                                          hostObjective.snapshot.sceneId == 110 &&
+                                          hostObjective.snapshot.sceneId == kGameplayScene &&
                                           hostObjective.snapshot.entity.Valid() &&
                                           hostObjective.active);
         }
@@ -403,7 +404,7 @@ int RunHost() {
         while (network.PollStructureState(hostStructure)) {
             hostStructureStateReceived = hostStructureStateReceived ||
                                          (hostStructure.snapshot.structureKey == 8001 &&
-                                          hostStructure.snapshot.sceneId == 110 &&
+                                          hostStructure.snapshot.sceneId == kGameplayScene &&
                                           hostStructure.snapshot.entity.Valid() &&
                                           hostStructure.active);
         }
@@ -429,7 +430,6 @@ int RunHost() {
                                      serverOwnedLureEndpoint &&
                                      fishingState.lureSpin == 0.375f &&
                                      fishingState.lureZOffset == -725.0f &&
-                                     fishingState.rodTipOffset[0] == 300.0f &&
                                      fishingState.sinkingLureUnderwater == 1 &&
                                      fishingState.lineGravity == 2.25f);
             fishTelemetryCouldNotHook = fishTelemetryCouldNotHook ||
@@ -485,6 +485,7 @@ int RunHost() {
                                               projectile.rotationY == 0x4000);
             if (projectile.logicalId.ownerPlayerId > 0 &&
                 projectile.logicalId.projectileKind == NETWORK_PROJECTILE_ARROW &&
+                projectile.body.playerId < 0 &&
                 projectile.phase == Game::Client::RemoteProjectilePhase::ArrowStuck) {
                 projectileImpactWitnessed = true;
                 arrowStuckDisplayPitchReceived = arrowStuckDisplayPitchReceived ||
@@ -497,6 +498,7 @@ int RunHost() {
             }
             if (projectile.logicalId.ownerPlayerId > 0 &&
                 projectile.logicalId.projectileKind == NETWORK_PROJECTILE_ARROW &&
+                projectile.body.playerId < 0 &&
                 !projectile.active && projectileStuckAt != 0 && !clientComplete &&
                 !hostReturnedFromWitnessScene) {
                 projectileRetiredUnexpectedly = true;
@@ -507,7 +509,7 @@ int RunHost() {
             arrowDamageReceived = arrowDamageReceived ||
                                   (damage.sourcePlayerId > 0 && damage.targetPlayerId == 0 &&
                                    damage.sourceEntity.Valid() && damage.targetEntity.Valid() &&
-                                   damage.sceneId == 110 &&
+                                   damage.sceneId == kGameplayScene &&
                                    damage.attackKind == Game::Simulation::CombatAttackKind::Arrow &&
                                    damage.result == Game::Simulation::CombatResultKind::Damaged &&
                                    damage.hitRegion != Game::Simulation::PlayerHitRegion::None &&
@@ -519,7 +521,7 @@ int RunHost() {
             clientMeleeDamageReceived = clientMeleeDamageReceived ||
                                         (damage.sourcePlayerId > 0 && damage.targetPlayerId == 0 &&
                                          damage.sourceEntity.Valid() && damage.targetEntity.Valid() &&
-                                         damage.sceneId == 110 &&
+                                         damage.sceneId == kGameplayScene &&
                                          damage.attackKind == Game::Simulation::CombatAttackKind::Melee &&
                                          damage.result == Game::Simulation::CombatResultKind::Damaged &&
                                          damage.hitRegion != Game::Simulation::PlayerHitRegion::None &&
@@ -583,33 +585,33 @@ int RunHost() {
             }
         }
         if (projectileImpactWitnessed && !projectileImpactAcknowledged) {
-            projectileImpactAcknowledged = authorizeRemoteTransition(110) &&
+            projectileImpactAcknowledged = authorizeRemoteTransition(kGameplayScene) &&
                                              network.SendChat("runtime-impact-complete");
         }
         if (projectileImpactAcknowledged && !hostReturnedFromWitnessScene) {
             const bool hostSpawnConfigured =
-                network.ConfigureSceneSpawn({ 110, {}, 0.0f });
+                network.ConfigureSceneSpawn({ kGameplayScene, {}, 0.0f });
             Game::Client::LocalSceneEntryRequest combatEntry{};
             combatEntry.sequence = 5;
-            combatEntry.sceneId = 110;
+            combatEntry.sceneId = kGameplayScene;
             const bool hostEntryAccepted = hostSpawnConfigured &&
-                                           network.AuthorizeSceneTransition(0, 110) &&
+                                           network.AuthorizeSceneTransition(0, kGameplayScene) &&
                                            network.SendSceneEntryIntent(combatEntry);
             const bool clientSpawnRestored = network.ConfigureSceneSpawn(
-                { 110, { 0.0f, 0.0f, -24.0f }, 0.0f });
+                { kGameplayScene, { 0.0f, 0.0f, -24.0f }, 0.0f });
             hostReturnedFromWitnessScene = hostEntryAccepted && clientSpawnRestored;
         }
         if (fishReleaseReceived && !hostCombatSceneEntered) {
             const bool hostSpawnConfigured =
-                network.ConfigureSceneSpawn({ 110, {}, 0.0f });
+                network.ConfigureSceneSpawn({ kGameplayScene, {}, 0.0f });
             Game::Client::LocalSceneEntryRequest combatEntry{};
             combatEntry.sequence = 3;
-            combatEntry.sceneId = 110;
+            combatEntry.sceneId = kGameplayScene;
             const bool hostEntryAccepted = hostSpawnConfigured &&
-                                           network.AuthorizeSceneTransition(0, 110) &&
+                                           network.AuthorizeSceneTransition(0, kGameplayScene) &&
                                            network.SendSceneEntryIntent(combatEntry);
             const bool clientSpawnRestored = network.ConfigureSceneSpawn(
-                { 110, { 0.0f, 0.0f, -24.0f }, 0.0f });
+                { kGameplayScene, { 0.0f, 0.0f, -24.0f }, 0.0f });
             hostCombatSceneEntered = hostEntryAccepted && clientSpawnRestored;
         }
 
@@ -843,9 +845,9 @@ int RunClient() {
             authorizedScene = sceneEntry.sceneId;
             unauthorizedSceneRejected = unauthorizedSceneRejected ||
                                         (sceneEntry.requestSequence == unauthorizedSceneRequestSequence &&
-                                         !sceneEntry.accepted && sceneEntry.sceneId == 110);
+                                         !sceneEntry.accepted && sceneEntry.sceneId == kGameplayScene);
         }
-        if (!unauthorizedSceneRequested && authorizedScene == 110 && network.IsSecure() &&
+        if (!unauthorizedSceneRequested && authorizedScene == kGameplayScene && network.IsSecure() &&
             network.LocalPlayerId() > 0) {
             Game::Client::LocalSceneEntryRequest intent{};
             unauthorizedSceneRequestSequence = sceneEntrySequence++;
@@ -853,11 +855,11 @@ int RunClient() {
             intent.sceneId = 200;
             unauthorizedSceneRequested = network.SendSceneEntryIntent(intent);
         }
-        if (!pondTransitionRequestSent && unauthorizedSceneRejected && authorizedScene == 110) {
+        if (!pondTransitionRequestSent && unauthorizedSceneRejected && authorizedScene == kGameplayScene) {
             pondTransitionRequestSent =
                 network.SendChat("runtime-request-pond-transition");
         }
-        if (!scene73Requested && pondTransitionGranted && authorizedScene == 110) {
+        if (!scene73Requested && pondTransitionGranted && authorizedScene == kGameplayScene) {
             Game::Client::LocalSceneEntryRequest intent{};
             intent.sequence = sceneEntrySequence++;
             intent.sceneId = 0x49;
@@ -902,7 +904,6 @@ int RunClient() {
             initialState.fishingLineScale = 0.0005f;
             initialState.fishingLineGravity = 2.25f;
             initialState.fishingState = 4;
-            initialState.fishingRodTipOffset[0] = 300.0f;
             initialState.fishingLureDrawOffset[0] = 17.25f;
             initialState.fishingLureSpin = 0.375f;
             initialState.fishingLureZOffset = -725.0f;
@@ -963,7 +964,7 @@ int RunClient() {
                 ((ownerProjectile.logicalId.projectileId == acceptedProjectileId ||
                   ownerProjectile.logicalId.projectileId == witnessProjectileId) &&
                  ownerProjectile.logicalId.projectileKind == NETWORK_PROJECTILE_ARROW &&
-                 (!ownerProjectile.active || ownerProjectile.Terminal()));
+                 (!ownerProjectile.active || ownerProjectile.phase != Game::Client::RemoteProjectilePhase::ArrowFlying));
         }
         if (lureStateReceived && !staleLureControlSent) {
             staleLureControlSent = network.SendLureControlIntent(MakeLureIntent(1, 0));
@@ -981,7 +982,6 @@ int RunClient() {
             lurePresentation.fishingLureDrawOffset[0] = 17.25f;
             lurePresentation.fishingLureSpin = 0.375f;
             lurePresentation.fishingLureZOffset = -725.0f;
-            lurePresentation.fishingRodTipOffset[0] = 300.0f;
             lurePresentation.fishingSinkingLureUnderwater = 1;
             lurePresentationSent = SendPresentation(network, lurePresentation);
         }
@@ -1038,7 +1038,7 @@ int RunClient() {
                     snapshot.actionState ==
                         Game::Simulation::PlayerActionState::Aiming &&
                     (snapshot.heldActions & NETWORK_ACTION_AIM) != 0) {
-                    if (snapshot.sceneId == 110 && bowAimStartedTick == 0) {
+                    if (snapshot.sceneId == kGameplayScene && bowAimStartedTick == 0) {
                         bowAimStartedTick = snapshot.actionStartTick;
                     } else if (snapshot.sceneId == 0x65 &&
                                witnessAimStartedTick == 0) {
@@ -1060,7 +1060,7 @@ int RunClient() {
                 stateReceived = true;
                 interestReentryReceived = interestReentryReceived ||
                                           (interestLeaveReceived && interestReturnRequested &&
-                                           snapshot.sceneId == 110);
+                                           snapshot.sceneId == kGameplayScene);
             }
         }
         Game::Client::ReplicatedObjectiveState objective{};
@@ -1072,7 +1072,7 @@ int RunClient() {
             if (objective.snapshot.objectiveKey == 7001 && objective.active) {
                 objectiveBaselineReceived = true;
                 objectiveInterestReentryReceived = objectiveInterestReentryReceived ||
-                    (objectiveInterestLeaveReceived && authorizedScene == 110);
+                    (objectiveInterestLeaveReceived && authorizedScene == kGameplayScene);
                 objectiveCapturedReceived = objectiveCapturedReceived ||
                     objective.snapshot.owner == Game::Simulation::TeamId::Red;
             }
@@ -1133,7 +1133,7 @@ int RunClient() {
                                     (interestOutsideRequested && generationCheckedRemovalReceived);
             interestReentryReceived = interestReentryReceived ||
                                       (interestLeaveReceived && interestReturnRequested && lifecycle.active &&
-                                       lifecycle.playerId == 0 && lifecycle.sceneId == 110);
+                                       lifecycle.playerId == 0 && lifecycle.sceneId == kGameplayScene);
         }
         NetworkVoicePacket voice;
         while (network.PollVoice(voice)) {
@@ -1163,10 +1163,10 @@ int RunClient() {
         if (fishReleaseSent && combatTransitionGranted && !scene110Requested) {
             Game::Client::LocalSceneEntryRequest intent{};
             intent.sequence = sceneEntrySequence++;
-            intent.sceneId = 110;
+            intent.sceneId = kGameplayScene;
             scene110Requested = network.SendSceneEntryIntent(intent);
         }
-        if (fishReleaseSent && authorizedScene == 110 && !bowStateSent) {
+        if (fishReleaseSent && authorizedScene == kGameplayScene && !bowStateSent) {
             TestPlayerState bowState = MakeState(113);
             bowState.x = 0.0f;
             bowState.y = 0.0f;
@@ -1193,7 +1193,7 @@ int RunClient() {
                  GetTickCount64() - lastBowCommandAt >= 20)) {
                 const bool sent = network.SendPlayerCommand(
                     MakeCommand(commandSequence++, 3, 0,
-                                NETWORK_ACTION_AIM));
+                                NETWORK_ACTION_AIM | NETWORK_ACTION_PRIMARY));
                 bowCommandSent = bowCommandSent || sent;
                 if (sent) lastBowCommandAt = GetTickCount64();
             }
@@ -1209,7 +1209,7 @@ int RunClient() {
         if (bowPresentationConfirmed && !projectileSent &&
             bowAimStartedTick != 0 &&
             latestAuthoritativeServerTick - bowAimStartedTick >=
-                Game::Simulation::kBowMinimumDrawDurationTicks) {
+                Game::Simulation::kBowRefireDurationTicks) {
             Game::Client::LocalProjectileIntent arrow{};
             acceptedProjectileSequence = projectileIntentSequence++;
             arrow.sequence = acceptedProjectileSequence;
@@ -1230,7 +1230,7 @@ int RunClient() {
             hostMeleeDamageReceived = hostMeleeDamageReceived ||
                                       (damage.sourcePlayerId == 0 && damage.targetPlayerId == network.LocalPlayerId() &&
                                        damage.sourceEntity.Valid() && damage.targetEntity.Valid() &&
-                                       damage.sceneId == 110 &&
+                                       damage.sceneId == kGameplayScene &&
                                        damage.attackKind == Game::Simulation::CombatAttackKind::Melee &&
                                        damage.result == Game::Simulation::CombatResultKind::Damaged &&
                                        damage.hitRegion != Game::Simulation::PlayerHitRegion::None &&
@@ -1301,7 +1301,7 @@ int RunClient() {
                  GetTickCount64() - lastWitnessBowCommandAt >= 20)) {
                 Game::Simulation::PlayerCommand witnessCommand =
                     MakeCommand(commandSequence++, 3, 0x4000,
-                                NETWORK_ACTION_AIM);
+                                NETWORK_ACTION_AIM | NETWORK_ACTION_PRIMARY);
                 witnessCommand.aimPitchRadians =
                     0x1000 * (3.14159265358979323846f / 32768.0f);
                 const bool sent = network.SendPlayerCommand(witnessCommand);
@@ -1324,7 +1324,7 @@ int RunClient() {
         if (witnessBowPresentationConfirmed && witnessAimConfirmed &&
             !witnessProjectileSent && witnessAimStartedTick != 0 &&
             latestAuthoritativeServerTick - witnessAimStartedTick >=
-                Game::Simulation::kBowMinimumDrawDurationTicks) {
+                Game::Simulation::kBowRefireDurationTicks) {
             Game::Client::LocalProjectileIntent witnessArrow{};
             witnessProjectileSequence = projectileIntentSequence++;
             witnessArrow.sequence = witnessProjectileSequence;
@@ -1333,7 +1333,7 @@ int RunClient() {
         if (projectileImpactAcknowledged && !returnSceneRequested) {
             Game::Client::LocalSceneEntryRequest intent{};
             intent.sequence = sceneEntrySequence++;
-            intent.sceneId = 110;
+            intent.sceneId = kGameplayScene;
             returnSceneRequested = network.SendSceneEntryIntent(intent);
         }
 
@@ -1357,7 +1357,7 @@ int RunClient() {
             arrowDamageAcknowledged && clientMeleeNearMissSent && clientMeleeSent && clientMeleeDamageAcknowledged &&
             hostMeleeDamageReceived && hostMeleeDamageAcknowledged &&
             witnessProjectileSent && witnessProjectileAccepted &&
-            projectileImpactAcknowledged && returnSceneRequested && authorizedScene == 110;
+            projectileImpactAcknowledged && returnSceneRequested && authorizedScene == kGameplayScene;
         if (gameplayChecksComplete && !deathSent) {
             TestPlayerState finalPose = MakeState(118);
             deathSent = SendPresentation(network, finalPose) && network.SendChat("runtime-request-death");
@@ -1392,15 +1392,15 @@ int RunClient() {
             interestReturnGrantRequestSent =
                 network.SendChat("runtime-request-interest-return");
         }
-        if (interestReturnSequence != 0 && interestReturnGranted && authorizedScene != 110 &&
+        if (interestReturnSequence != 0 && interestReturnGranted && authorizedScene != kGameplayScene &&
             (lastInterestReturnAt == 0 || GetTickCount64() - lastInterestReturnAt >= 250)) {
             Game::Client::LocalSceneEntryRequest intent{};
             intent.sequence = interestReturnSequence;
-            intent.sceneId = 110;
+            intent.sceneId = kGameplayScene;
             interestReturnRequested = network.SendSceneEntryIntent(intent) || interestReturnRequested;
             lastInterestReturnAt = GetTickCount64();
         }
-        if (interestLeaveReceived && authorizedScene == 110 && !interestReentrySent) {
+        if (interestLeaveReceived && authorizedScene == kGameplayScene && !interestReentrySent) {
             TestPlayerState returnState = MakeState(122);
             Game::Simulation::PlayerCommand returnCommand = MakeCommand(commandSequence++, 1, 0);
             interestReentrySent = SendPresentation(network, returnState) &&
@@ -1511,6 +1511,113 @@ bool StartChild(const std::string& executable, const char* argument, PROCESS_INF
                            &process) != FALSE;
 }
 
+int RunDedicatedVisibilityHost() {
+    NetworkRuntime network;
+    if (!network.Host(kDedicatedVisibilityPort, "Dedicated visibility test")) return 40;
+
+    const unsigned __int64 timeout = GetTickCount64() + 12000;
+    unsigned __int64 twoPlayersAt = 0;
+    while (GetTickCount64() < timeout) {
+        network.Update();
+        if (network.Players().size() >= 3) {
+            if (twoPlayersAt == 0) twoPlayersAt = GetTickCount64();
+            if (GetTickCount64() - twoPlayersAt >= 250) {
+                network.Disconnect();
+                return 0;
+            }
+        }
+        Sleep(5);
+    }
+    network.Disconnect();
+    return 41;
+}
+
+int RunDedicatedVisibilityClient() {
+    NetworkRuntime network;
+    if (!network.Connect("127.0.0.1:47779")) return 42;
+
+    bool remoteLifecycle = false;
+    bool remoteSnapshot = false;
+    bool localLifecycle = false;
+    bool localSnapshot = false;
+    const unsigned __int64 timeout = GetTickCount64() + 10000;
+    while (GetTickCount64() < timeout) {
+        network.Update();
+        const int32_t localPlayer = network.LocalPlayerId();
+
+        Game::Client::RemotePlayerPresentationState lifecycle;
+        while (network.PollPlayerLifecycle(lifecycle)) {
+            if (localPlayer > 0 && lifecycle.playerId == localPlayer &&
+                lifecycle.active) {
+                localLifecycle = true;
+            }
+            if (localPlayer > 0 && lifecycle.playerId != localPlayer &&
+                lifecycle.active) {
+                remoteLifecycle = true;
+            }
+        }
+
+        Game::Simulation::PlayerSnapshot snapshot;
+        while (network.PollPlayerSnapshot(snapshot)) {
+            if (localPlayer > 0 && snapshot.ownerPlayerId == localPlayer) {
+                localSnapshot = true;
+            }
+            if (localPlayer > 0 && snapshot.ownerPlayerId != localPlayer) {
+                remoteSnapshot = true;
+            }
+        }
+        if (localLifecycle && localSnapshot && remoteLifecycle && remoteSnapshot) {
+            const unsigned __int64 observedUntil = GetTickCount64() + 500;
+            while (GetTickCount64() < observedUntil) {
+                network.Update();
+                Sleep(5);
+            }
+            network.Disconnect();
+            return 0;
+        }
+        Sleep(5);
+    }
+    network.Disconnect();
+    return 43;
+}
+
+int RunDedicatedVisibilityParent() {
+    char executable[MAX_PATH]{};
+    if (!GetModuleFileNameA(nullptr, executable, sizeof(executable))) return 44;
+
+    PROCESS_INFORMATION host{};
+    PROCESS_INFORMATION clients[2]{};
+    if (!StartChild(executable, "--dedicated-visibility-host", host)) return 45;
+    Sleep(200);
+    if (!StartChild(executable, "--dedicated-visibility-client", clients[0]) ||
+        !StartChild(executable, "--dedicated-visibility-client", clients[1])) {
+        TerminateProcess(host.hProcess, 46);
+        return 46;
+    }
+
+    HANDLE processes[] = { host.hProcess, clients[0].hProcess, clients[1].hProcess };
+    const DWORD wait = WaitForMultipleObjects(3, processes, TRUE, 14000);
+    if (wait == WAIT_TIMEOUT) {
+        for (HANDLE process : processes) TerminateProcess(process, 47);
+    }
+
+    DWORD exitCodes[3]{};
+    for (size_t i = 0; i < 3; ++i) GetExitCodeProcess(processes[i], &exitCodes[i]);
+    CloseHandle(host.hThread);
+    CloseHandle(host.hProcess);
+    for (PROCESS_INFORMATION& client : clients) {
+        CloseHandle(client.hThread);
+        CloseHandle(client.hProcess);
+    }
+    if (wait == WAIT_TIMEOUT || exitCodes[0] != 0 || exitCodes[1] != 0 ||
+        exitCodes[2] != 0) {
+        Error("Dedicated visibility test failed: wait=%lu host=%lu clients=%lu,%lu",
+              wait, exitCodes[0], exitCodes[1], exitCodes[2]);
+        return 48;
+    }
+    return 0;
+}
+
 int RunParent() {
     char executable[MAX_PATH]{};
     if (!GetModuleFileNameA(nullptr, executable, sizeof(executable))) {
@@ -1564,6 +1671,15 @@ int main(int argc, char** argv) {
     }
     if (argc == 2 && std::strcmp(argv[1], "--client") == 0) {
         return RunClient();
+    }
+    if (argc == 2 && std::strcmp(argv[1], "--dedicated-visibility-host") == 0) {
+        return RunDedicatedVisibilityHost();
+    }
+    if (argc == 2 && std::strcmp(argv[1], "--dedicated-visibility-client") == 0) {
+        return RunDedicatedVisibilityClient();
+    }
+    if (argc == 2 && std::strcmp(argv[1], "--dedicated-visibility") == 0) {
+        return RunDedicatedVisibilityParent();
     }
     ClearLog();
     return RunParent();

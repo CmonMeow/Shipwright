@@ -9,11 +9,17 @@ namespace Game::Replication {
 namespace {
 
 ReplicatedPlayer ToReplicatedPlayer(const Simulation::PlayerSnapshot& snapshot) {
-    return { snapshot.ownerPlayerId, snapshot.entity, snapshot.sceneId, snapshot.position };
+    return { snapshot.ownerPlayerId, snapshot.entity, snapshot.lifeEpoch,
+             snapshot.sceneId, snapshot.position };
 }
 
 bool SameLifetime(const ReplicatedPlayer& left, const ReplicatedPlayer& right) {
-    return left.entity == right.entity;
+    return left.entity == right.entity && left.lifeEpoch == right.lifeEpoch;
+}
+
+bool SamePresentationScope(const ReplicatedPlayer& left,
+                           const ReplicatedPlayer& right) {
+    return SameLifetime(left, right) && left.sceneId == right.sceneId;
 }
 
 float HorizontalDistanceSquared(const Simulation::Vec3& left,
@@ -59,14 +65,14 @@ std::vector<PlayerVisibilityTransition> PlayerReplicationSystem::Reconcile(
             for (const Simulation::SpatialIndexId candidateId : mSpatialIndex.CandidatesNear(
                      observer->second.sceneId, observer->second.position, radii.leave)) {
                 const int32_t subjectId = static_cast<int32_t>(candidateId);
-                if (subjectId == observerId) continue;
                 const auto subject = currentPlayers.find(subjectId);
                 bool alreadyVisible = false;
                 if (subject != currentPlayers.end() &&
                     previousVisible != mVisibleByObserver.end()) {
                     const auto previous = previousVisible->second.find(subjectId);
                     alreadyVisible = previous != previousVisible->second.end() &&
-                                     SameLifetime(previous->second, subject->second);
+                                     SamePresentationScope(previous->second,
+                                                           subject->second);
                 }
                 if (subject != currentPlayers.end() && WithinInterest(
                         HorizontalDistanceSquared(subject->second.position,
@@ -80,14 +86,16 @@ std::vector<PlayerVisibilityTransition> PlayerReplicationSystem::Reconcile(
         VisiblePlayerMap& visible = mVisibleByObserver[observerId];
         for (const auto& [subjectId, previous] : visible) {
             const auto next = desired.find(subjectId);
-            if (next == desired.end() || !SameLifetime(previous, next->second)) {
+            if (next == desired.end() ||
+                !SamePresentationScope(previous, next->second)) {
                 transitions.push_back({ observerId, previous, PlayerVisibilityAction::Leave });
                 mObserversBySubject.Remove(observerId, subjectId);
             }
         }
         for (const auto& [subjectId, next] : desired) {
             const auto previous = visible.find(subjectId);
-            if (previous == visible.end() || !SameLifetime(previous->second, next)) {
+            if (previous == visible.end() ||
+                !SamePresentationScope(previous->second, next)) {
                 transitions.push_back({ observerId, next, PlayerVisibilityAction::Enter });
                 mObserversBySubject.Add(observerId, subjectId);
             }

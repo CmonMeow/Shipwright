@@ -2,6 +2,7 @@
 #include "global.h"
 #include "vt.h"
 #include "resources/ResourceManagerHelpers.h"
+#include "platform/win32/PCInput.h"
 
 // #region SOH [General] Making gGameState available
 GameState* gGameState;
@@ -55,10 +56,24 @@ void func_800C49F4(GraphicsContext* gfxCtx) {
     CLOSE_DISPS(gfxCtx);
 }
 
-void PadMgr_RequestPadData(PadMgr*, ControllerInput*, int32_t);
+static int8_t ApplyMovementDeadZone(int8_t value) {
+    if (value > 7) {
+        return value < 0x43 ? value - 7 : 0x43 - 7;
+    }
+    if (value < -7) {
+        return value > -0x43 ? value + 7 : -0x43 + 7;
+    }
+    return 0;
+}
 
-void GameState_ReqPadData(GameState* gameState) {
-    PadMgr_RequestPadData(&gPadMgr, &gameState->input[0], 1);
+void GameState_UpdateInput(GameState* gameState) {
+    MovementInput* input = &gameState->input;
+    int8_t rawX;
+    int8_t rawY;
+
+    PCInput_ReadMovement(&rawX, &rawY);
+    input->x = ApplyMovementDeadZone(rawX);
+    input->y = ApplyMovementDeadZone(rawY);
 }
 
 void GameState_Update(GameState* gameState) {
@@ -157,7 +172,6 @@ void GameState_Init(GameState* gameState, GameStateFunc init, GraphicsContext* g
 
     startTime = endTime;
     LOG_CHECK_NULL_POINTER("this->cleanup", gameState->destroy);
-    func_800AA0B4();
     osSendMesgPtr(&gameState->gfxCtx->queue, NULL, OS_MESG_BLOCK);
 
     endTime = osGetTime();
@@ -176,7 +190,6 @@ void GameState_Destroy(GameState* gameState) {
     if (gameState->destroy != NULL) {
         gameState->destroy(gameState);
     }
-    func_800AA0F0();
     THA_Dt(&gameState->tha);
     GameAlloc_Cleanup(&gameState->alloc);
     SystemArena_Display();

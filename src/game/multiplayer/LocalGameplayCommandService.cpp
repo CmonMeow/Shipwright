@@ -162,6 +162,9 @@ bool LocalGameplayCommandService::FireProjectile(
     NetworkArrowFireIntentPacket packet{};
     packet.sequence = intent.sequence;
     packet.lifeEpoch = CurrentLifeEpoch();
+    packet.clientTick = intent.clientTick;
+    packet.heading = intent.heading;
+    packet.aimPitch = intent.aimPitch;
     if (!ProjectileNetworkAdapter::IsSane(packet)) return false;
     if (IsRemoteClient()) {
         NetworkMessageRaw raw;

@@ -24,8 +24,6 @@ CfbInfo sGraphCfbInfos[3];
 FaultClient sGraphUcodeFaultClient;
 
 void Skybox_Setup(PlayState* play, SkyboxContext* skyboxCtx, int16_t skyboxId);
-void PadMgr_ThreadEntry(PadMgr* padMgr);
-
 // clang-format off
 UCodeInfo D_8012D230[3] = {
     //{ UCODE_F3DZEX, D_80155F50 },
@@ -98,11 +96,6 @@ void Graph_Init(GraphicsContext* gfxCtx) {
     gfxCtx->xScale = 1.f;
     gfxCtx->yScale = 1.f;
     osCreateMesgQueue(&gfxCtx->queue, gfxCtx->msgBuff, ARRAY_COUNT(gfxCtx->msgBuff));
-    func_800D31F0();
-}
-
-void Graph_Destroy(GraphicsContext* gfxCtx) {
-    func_800D3210();
 }
 
 void Graph_TaskSet00(GraphicsContext* gfxCtx) {
@@ -219,7 +212,7 @@ void Graph_Update(GraphicsContext* gfxCtx, GameState* gameState) {
 
     CLOSE_DISPS(gfxCtx);
 
-    GameState_ReqPadData(gameState);
+    GameState_UpdateInput(gameState);
     GameState_Update(gameState);
 
     OPEN_DISPS(gfxCtx);
@@ -310,12 +303,6 @@ void Graph_Update(GraphicsContext* gfxCtx, GameState* gameState) {
 
     func_800F3054();
 
-    if (gIsCtrlr2Valid && PreNmiBuff_IsResetting(gAppNmiBufferPtr) && !gameState->unk_A0) {
-        // "To reset mode"
-        osSyncPrintf(VT_COL(YELLOW, BLACK) "PRE-NMIによりリセットモードに移行します\n" VT_RST);
-        SET_NEXT_GAMESTATE(gameState, PreNMI_Init, PreNMIContext);
-        gameState->running = false;
-    }
 }
 
 extern AudioMgr gAudioMgr;
@@ -364,8 +351,6 @@ static void RunFrame() {
         while (GameState_IsRunning(gGameState)) {
             RetainedGame_BeginFrame();
 
-            PadMgr_ThreadEntry(&gPadMgr);
-
             Graph_Update(&runFrameContext.gfxCtx, gGameState);
             if (RetainedGame_IsGraphicsDebuggingRequested()) {
                 RetainedGame_DebugDisplayList(runFrameContext.gfxCtx.workBuffer);
@@ -383,7 +368,6 @@ static void RunFrame() {
         SYSTEM_ARENA_FREE_DEBUG(gGameState);
         Overlay_FreeGameState(runFrameContext.ovl);
     }
-    Graph_Destroy(&runFrameContext.gfxCtx);
     osSyncPrintf("グラフィックスレッド実行終了\n"); // "End of graphic thread execution"
 
     // Graph_Update(gfxCtxTest, gameStateTest);

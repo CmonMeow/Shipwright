@@ -39,7 +39,7 @@ void NativeClientInboundReplication::ReceivePlayers(PlayState* play) {
             RemoveAuthoritativePlayerCollision(lifecycle.playerId);
         }
         mDependencies.remotePlayers.ApplyLifecycle(
-            lifecycle, localPlayerId,
+            lifecycle,
             [this](int32_t playerId) {
                 mDependencies.remoteProjectiles.RetireOwner(playerId);
             });
@@ -79,23 +79,33 @@ void NativeClientInboundReplication::ReceivePlayers(PlayState* play) {
                 mDependencies.gameplay.Prediction().Reconcile(
                     snapshot, snapshot.position);
             }
-            continue;
         }
         mDependencies.remotePlayers.ApplySnapshot(snapshot, NowSeconds());
     }
 
     Game::Replication::FishingPresentationState fishing{};
     while (mDependencies.runtime.PollFishingPresentation(fishing)) {
-        mDependencies.remotePlayers.ApplyFishingPresentation(
-            fishing, NowSeconds());
+        // The owner presents its native fishing actor, rod, line, lure, and
+        // hooked fish exactly as offline play does. Feeding the owner's
+        // delayed server echo into the remote presentation stores lets that
+        // echo seize the native fish actor through FishPresentation_Read and
+        // creates two competing fishing timelines on the owning client.
+        if (fishing.playerId != localPlayerId) {
+            mDependencies.remotePlayers.ApplyFishingPresentation(
+                fishing, NowSeconds());
+        }
     }
     Game::Client::RemoteLureEntity lure{};
     while (mDependencies.runtime.PollLureState(lure)) {
-        mDependencies.remotePlayers.ApplyLure(lure);
+        if (lure.ownerPlayerId != localPlayerId) {
+            mDependencies.remotePlayers.ApplyLure(lure);
+        }
     }
     Game::Client::RemoteFishEntity fish{};
     while (mDependencies.runtime.PollFishState(fish)) {
-        mDependencies.remotePlayers.ApplyFish(fish);
+        if (fish.ownerPlayerId != localPlayerId) {
+            mDependencies.remotePlayers.ApplyFish(fish);
+        }
     }
     Game::Client::LocalProjectileIntentDecision projectileResult{};
     while (mDependencies.runtime.PollProjectileIntentResult(projectileResult)) {

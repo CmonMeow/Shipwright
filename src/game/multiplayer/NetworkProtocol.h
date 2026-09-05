@@ -36,6 +36,7 @@ inline constexpr unsigned __int64 NET_PLAYER_SYNC_MS = 50;
 inline constexpr unsigned char NETWORK_TEAM_NEUTRAL = 0;
 inline constexpr unsigned char NETWORK_TEAM_RED = 1;
 inline constexpr unsigned char NETWORK_TEAM_BLUE = 2;
+inline constexpr unsigned char NETWORK_TEAM_GREEN = 3;
 inline constexpr unsigned char NETWORK_STRUCTURE_ACTION_BUILD = 1;
 inline constexpr unsigned char NETWORK_STRUCTURE_ACTION_REPAIR = 2;
 
@@ -199,6 +200,7 @@ public:
 
     void putUInt8(unsigned char value) { put(&value, sizeof(value)); }
     void putUInt16(unsigned short value) { put(&value, sizeof(value)); }
+    void putInt16(short value) { put(&value, sizeof(value)); }
     void putUInt32(unsigned __int32 value) { put(&value, sizeof(value)); }
     void putInt32(__int32 value) { put(&value, sizeof(value)); }
     void putFloat(float value) { put(&value, sizeof(value)); }
@@ -242,6 +244,7 @@ public:
     }
     bool getUInt8(unsigned char& value) { return get(&value, sizeof(value)); }
     bool getUInt16(unsigned short& value) { return get(&value, sizeof(value)); }
+    bool getInt16(short& value) { return get(&value, sizeof(value)); }
     bool getUInt32(unsigned __int32& value) { return get(&value, sizeof(value)); }
     bool getInt32(__int32& value) { return get(&value, sizeof(value)); }
     bool getFloat(float& value) { return get(&value, sizeof(value)); }
@@ -526,9 +529,9 @@ struct NetworkFishingPresentationPacket
     unsigned __int32 entityIndex;
     unsigned __int32 entityGeneration;
     __int32 sceneId;
+    unsigned __int32 lifeEpoch;
     __int32 sequence;
     unsigned char fishingState;
-    float fishingRodTipOffset[3];
     float fishingLureDrawOffset[3];
     float fishingRodBendY;
     float fishingRodBendX;
@@ -555,7 +558,6 @@ struct NetworkFishingPresentationIntentPacket
     __int32 sequence;
     unsigned __int32 lifeEpoch;
     unsigned char fishingState;
-    float fishingRodTipOffset[3];
     float fishingLureDrawOffset[3];
     float fishingRodBendY;
     float fishingRodBendX;
@@ -600,6 +602,7 @@ static_assert(sizeof(NetworkFishIntentPacket) == 9);
 struct NetworkFishStatePacket
 {
     __int32 ownerPlayerId;
+    unsigned __int32 ownerLifeEpoch;
     unsigned __int32 entityIndex;
     unsigned __int32 entityGeneration;
     unsigned __int32 sequence;
@@ -625,6 +628,7 @@ static_assert(sizeof(NetworkLureControlIntentPacket) == 9);
 struct NetworkLureStatePacket
 {
     __int32 ownerPlayerId;
+    unsigned __int32 ownerLifeEpoch;
     unsigned __int32 entityIndex;
     unsigned __int32 entityGeneration;
     unsigned __int32 sequence;
@@ -658,6 +662,15 @@ struct NetworkProjectileStatePacket
     float velocityX;
     float velocityY;
     float velocityZ;
+    int32_t bodyPlayerId = -1;
+    uint32_t bodyLifeEpoch = 0;
+    uint8_t bodyRegion = 0;
+    float bodyOffsetX = 0.0f;
+    float bodyOffsetY = 0.0f;
+    float bodyOffsetZ = 0.0f;
+    float bodyDirectionX = 0.0f;
+    float bodyDirectionY = 0.0f;
+    float bodyDirectionZ = 0.0f;
 };
 
 struct NetworkProjectileLifecyclePacket
@@ -675,9 +688,12 @@ struct NetworkArrowFireIntentPacket
 {
     unsigned __int32 sequence;
     unsigned __int32 lifeEpoch;
+    unsigned __int32 clientTick;
+    short heading;
+    short aimPitch;
 };
 
-static_assert(sizeof(NetworkArrowFireIntentPacket) == 8);
+static_assert(sizeof(NetworkArrowFireIntentPacket) == 16);
 
 enum
 {
@@ -708,15 +724,23 @@ struct NetworkPlayerCommandPacket
     unsigned __int32 sequence;
     unsigned __int32 actionSequence;
     unsigned __int32 lifeEpoch;
+    unsigned __int32 clientTick;
     signed char moveX;
     signed char moveY;
     short heading;
     short aimPitch;
     unsigned short heldActions;
     unsigned short pressedActions;
+    unsigned char meleeAttackVariant;
+    unsigned char hasMeleeAttackVariant;
+    float x;
+    float y;
+    float z;
+    unsigned char locomotionMode;
+    unsigned char hasPose;
 };
 
-static_assert(sizeof(NetworkPlayerCommandPacket) == 22);
+static_assert(sizeof(NetworkPlayerCommandPacket) == 42);
 
 struct NetworkWeaponSelectionIntentPacket
 {
@@ -770,6 +794,8 @@ struct NetworkPlayerSnapshotPacket
     unsigned short heldActions;
     unsigned char selectedWeapon;
     unsigned char actionState;
+    unsigned char meleeAttackVariant;
+    unsigned __int32 meleeAttackId;
     unsigned __int32 actionStartTick;
     unsigned char health;
     unsigned char team;
@@ -861,7 +887,8 @@ enum
     NETWORK_PLAYER_ACTION_BLOCKING = 4,
     NETWORK_PLAYER_ACTION_AIMING = 5,
     NETWORK_PLAYER_ACTION_EVADING = 6,
-    NETWORK_PLAYER_ACTION_JUMP_SLASHING = 7
+    NETWORK_PLAYER_ACTION_JUMP_SLASHING = 7,
+    NETWORK_PLAYER_ACTION_SPIN_ATTACKING = 8
 };
 
 struct NetworkPlayerLifecyclePacket
@@ -869,6 +896,7 @@ struct NetworkPlayerLifecyclePacket
     __int32 playerId;
     unsigned __int32 entityIndex;
     unsigned __int32 entityGeneration;
+    unsigned __int32 lifeEpoch;
     __int32 sceneId;
     unsigned char active;
 };
@@ -892,6 +920,9 @@ struct NetworkCombatResultPacket
     unsigned __int32 sourceEntityGeneration;
     unsigned __int32 targetEntityIndex;
     unsigned __int32 targetEntityGeneration;
+    unsigned __int32 sourceLifeEpoch;
+    unsigned __int32 targetLifeEpoch;
+    unsigned __int32 meleeAttackId;
     __int32 sceneId;
     unsigned char attackKind;
     unsigned char result;
@@ -992,7 +1023,6 @@ inline void EncodeFishingPresentationBody(NetworkMessageRaw& raw, const Packet& 
     raw.putUInt8(packet.fishingState);
     for (unsigned char axis = 0; axis < 3; ++axis)
     {
-        raw.putFloat(packet.fishingRodTipOffset[axis]);
         raw.putFloat(packet.fishingLureDrawOffset[axis]);
     }
     raw.putFloat(packet.fishingRodBendY);
@@ -1028,6 +1058,7 @@ inline void EncodeFishingStateRaw(NetworkMessageRaw& raw,
     raw.putUInt32(packet.entityIndex);
     raw.putUInt32(packet.entityGeneration);
     raw.putInt32(packet.sceneId);
+    raw.putUInt32(packet.lifeEpoch);
     raw.putInt32(packet.sequence);
     EncodeFishingPresentationBody(raw, packet);
 }
@@ -1046,8 +1077,7 @@ inline bool DecodeFishingPresentationBody(NetworkMessageRaw& raw, Packet& packet
     if (!raw.getUInt8(packet.fishingState))
         return false;
     for (unsigned char axis = 0; axis < 3; ++axis)
-        if (!raw.getFloat(packet.fishingRodTipOffset[axis]) ||
-            !raw.getFloat(packet.fishingLureDrawOffset[axis]))
+        if (!raw.getFloat(packet.fishingLureDrawOffset[axis]))
             return false;
     if (!raw.getFloat(packet.fishingRodBendY) || !raw.getFloat(packet.fishingRodBendX) ||
         !raw.getFloat(packet.fishingRodTwist) || !raw.getFloat(packet.fishingRodCastX))
@@ -1094,7 +1124,8 @@ inline bool DecodeFishingStateRaw(NetworkMessageRaw& raw,
     memset(&packet, 0, sizeof(packet));
     return raw.getInt32(packet.playerId) && raw.getUInt32(packet.entityIndex) &&
            raw.getUInt32(packet.entityGeneration) && raw.getInt32(packet.sceneId) &&
-           raw.getInt32(packet.sequence) && DecodeFishingPresentationBody(raw, packet);
+           raw.getUInt32(packet.lifeEpoch) && raw.getInt32(packet.sequence) &&
+           DecodeFishingPresentationBody(raw, packet);
 }
 
 inline bool DecodeFishingIntentRaw(NetworkMessageRaw& raw,
@@ -1121,6 +1152,7 @@ inline bool DecodeAppPacketRaw(NetworkMessageRaw& raw, NetworkFishIntentPacket& 
 inline void EncodeAppPacketRaw(NetworkMessageRaw& raw, const NetworkFishStatePacket& packet)
 {
     raw.putInt32(packet.ownerPlayerId);
+    raw.putUInt32(packet.ownerLifeEpoch);
     raw.putUInt32(packet.entityIndex);
     raw.putUInt32(packet.entityGeneration);
     raw.putUInt32(packet.sequence);
@@ -1136,7 +1168,8 @@ inline void EncodeAppPacketRaw(NetworkMessageRaw& raw, const NetworkFishStatePac
 
 inline bool DecodeAppPacketRaw(NetworkMessageRaw& raw, NetworkFishStatePacket& packet)
 {
-    return raw.getInt32(packet.ownerPlayerId) && raw.getUInt32(packet.entityIndex) &&
+    return raw.getInt32(packet.ownerPlayerId) && raw.getUInt32(packet.ownerLifeEpoch) &&
+           raw.getUInt32(packet.entityIndex) &&
            raw.getUInt32(packet.entityGeneration) && raw.getUInt32(packet.sequence) &&
            raw.getInt32(packet.sceneId) && raw.getUInt32(packet.spawnKey) &&
            raw.getFloat(packet.x) && raw.getFloat(packet.y) &&
@@ -1160,6 +1193,7 @@ inline bool DecodeAppPacketRaw(NetworkMessageRaw& raw, NetworkLureControlIntentP
 inline void EncodeAppPacketRaw(NetworkMessageRaw& raw, const NetworkLureStatePacket& packet)
 {
     raw.putInt32(packet.ownerPlayerId);
+    raw.putUInt32(packet.ownerLifeEpoch);
     raw.putUInt32(packet.entityIndex);
     raw.putUInt32(packet.entityGeneration);
     raw.putUInt32(packet.sequence);
@@ -1174,7 +1208,8 @@ inline void EncodeAppPacketRaw(NetworkMessageRaw& raw, const NetworkLureStatePac
 
 inline bool DecodeAppPacketRaw(NetworkMessageRaw& raw, NetworkLureStatePacket& packet)
 {
-    return raw.getInt32(packet.ownerPlayerId) && raw.getUInt32(packet.entityIndex) &&
+    return raw.getInt32(packet.ownerPlayerId) && raw.getUInt32(packet.ownerLifeEpoch) &&
+           raw.getUInt32(packet.entityIndex) &&
            raw.getUInt32(packet.entityGeneration) && raw.getUInt32(packet.sequence) &&
            raw.getInt32(packet.sceneId) && raw.getFloat(packet.x) && raw.getFloat(packet.y) &&
            raw.getFloat(packet.z) && raw.getUInt8(packet.phase) && raw.getUInt8(packet.lureType) &&
@@ -1202,6 +1237,15 @@ inline void EncodeAppPacketRaw(NetworkMessageRaw& raw, const NetworkProjectileSt
     raw.putFloat(packet.velocityX);
     raw.putFloat(packet.velocityY);
     raw.putFloat(packet.velocityZ);
+    raw.putInt32(packet.bodyPlayerId);
+    raw.putUInt32(packet.bodyLifeEpoch);
+    raw.putUInt8(packet.bodyRegion);
+    raw.putFloat(packet.bodyOffsetX);
+    raw.putFloat(packet.bodyOffsetY);
+    raw.putFloat(packet.bodyOffsetZ);
+    raw.putFloat(packet.bodyDirectionX);
+    raw.putFloat(packet.bodyDirectionY);
+    raw.putFloat(packet.bodyDirectionZ);
 }
 
 inline bool DecodeAppPacketRaw(NetworkMessageRaw& raw, NetworkProjectileStatePacket& packet)
@@ -1216,7 +1260,12 @@ inline bool DecodeAppPacketRaw(NetworkMessageRaw& raw, NetworkProjectileStatePac
         !raw.getUInt8(packet.projectileType) || !raw.getFloat(packet.x) ||
         !raw.getFloat(packet.y) || !raw.getFloat(packet.z) || !raw.getUInt16(rotationX) ||
         !raw.getUInt16(rotationY) || !raw.getUInt16(rotationZ) || !raw.getFloat(packet.velocityX) ||
-        !raw.getFloat(packet.velocityY) || !raw.getFloat(packet.velocityZ) || !raw.fullyRead())
+        !raw.getFloat(packet.velocityY) || !raw.getFloat(packet.velocityZ) ||
+        !raw.getInt32(packet.bodyPlayerId) || !raw.getUInt32(packet.bodyLifeEpoch) ||
+        !raw.getUInt8(packet.bodyRegion) || !raw.getFloat(packet.bodyOffsetX) ||
+        !raw.getFloat(packet.bodyOffsetY) || !raw.getFloat(packet.bodyOffsetZ) ||
+        !raw.getFloat(packet.bodyDirectionX) || !raw.getFloat(packet.bodyDirectionY) ||
+        !raw.getFloat(packet.bodyDirectionZ) || !raw.fullyRead())
     {
         return false;
     }
@@ -1249,12 +1298,17 @@ inline void EncodeAppPacketRaw(NetworkMessageRaw& raw, const NetworkArrowFireInt
 {
     raw.putUInt32(packet.sequence);
     raw.putUInt32(packet.lifeEpoch);
+    raw.putUInt32(packet.clientTick);
+    raw.putInt16(packet.heading);
+    raw.putInt16(packet.aimPitch);
 }
 
 inline bool DecodeAppPacketRaw(NetworkMessageRaw& raw, NetworkArrowFireIntentPacket& packet)
 {
     memset(&packet, 0, sizeof(packet));
     return raw.getUInt32(packet.sequence) && raw.getUInt32(packet.lifeEpoch) &&
+           raw.getUInt32(packet.clientTick) &&
+           raw.getInt16(packet.heading) && raw.getInt16(packet.aimPitch) &&
            raw.fullyRead();
 }
 
@@ -1286,6 +1340,9 @@ inline void EncodeAppPacketRaw(NetworkMessageRaw& raw, const NetworkCombatResult
     raw.putUInt32(packet.sourceEntityGeneration);
     raw.putUInt32(packet.targetEntityIndex);
     raw.putUInt32(packet.targetEntityGeneration);
+    raw.putUInt32(packet.sourceLifeEpoch);
+    raw.putUInt32(packet.targetLifeEpoch);
+    raw.putUInt32(packet.meleeAttackId);
     raw.putInt32(packet.sceneId);
     raw.putUInt8(packet.attackKind);
     raw.putUInt8(packet.result);
@@ -1304,7 +1361,9 @@ inline bool DecodeAppPacketRaw(NetworkMessageRaw& raw, NetworkCombatResultPacket
         !raw.getInt32(packet.targetPlayerId) ||
         !raw.getUInt32(packet.sourceEntityIndex) || !raw.getUInt32(packet.sourceEntityGeneration) ||
         !raw.getUInt32(packet.targetEntityIndex) || !raw.getUInt32(packet.targetEntityGeneration) ||
-        !raw.getInt32(packet.sceneId) || !raw.getUInt8(packet.attackKind) ||
+        !raw.getUInt32(packet.sourceLifeEpoch) || !raw.getUInt32(packet.targetLifeEpoch) ||
+        !raw.getUInt32(packet.meleeAttackId) || !raw.getInt32(packet.sceneId) ||
+        !raw.getUInt8(packet.attackKind) ||
         !raw.getUInt8(packet.result) || !raw.getUInt8(packet.damage) ||
         !raw.getUInt8(packet.hitRegion) ||
         !raw.getUInt16(impactYaw) || !raw.getFloat(packet.impactX) ||
@@ -1351,12 +1410,20 @@ inline void EncodeAppPacketRaw(NetworkMessageRaw& raw, const NetworkPlayerComman
     raw.putUInt32(packet.sequence);
     raw.putUInt32(packet.actionSequence);
     raw.putUInt32(packet.lifeEpoch);
+    raw.putUInt32(packet.clientTick);
     raw.putUInt8(static_cast<unsigned char>(packet.moveX));
     raw.putUInt8(static_cast<unsigned char>(packet.moveY));
     raw.putUInt16(static_cast<unsigned short>(packet.heading));
     raw.putUInt16(static_cast<unsigned short>(packet.aimPitch));
     raw.putUInt16(packet.heldActions);
     raw.putUInt16(packet.pressedActions);
+    raw.putUInt8(packet.meleeAttackVariant);
+    raw.putUInt8(packet.hasMeleeAttackVariant);
+    raw.putFloat(packet.x);
+    raw.putFloat(packet.y);
+    raw.putFloat(packet.z);
+    raw.putUInt8(packet.locomotionMode);
+    raw.putUInt8(packet.hasPose);
 }
 
 inline bool DecodeAppPacketRaw(NetworkMessageRaw& raw, NetworkPlayerCommandPacket& packet)
@@ -1369,16 +1436,24 @@ inline bool DecodeAppPacketRaw(NetworkMessageRaw& raw, NetworkPlayerCommandPacke
     if (!raw.getUInt32(packet.sequence) ||
         !raw.getUInt32(packet.actionSequence) ||
         !raw.getUInt32(packet.lifeEpoch) ||
+        !raw.getUInt32(packet.clientTick) ||
         !raw.getUInt8(moveX) ||
         !raw.getUInt8(moveY) ||
         !raw.getUInt16(heading) ||
         !raw.getUInt16(aimPitch) ||
         !raw.getUInt16(packet.heldActions) ||
         !raw.getUInt16(packet.pressedActions) ||
-        !raw.fullyRead())
+        !raw.getUInt8(packet.meleeAttackVariant) ||
+        !raw.getUInt8(packet.hasMeleeAttackVariant) ||
+        !raw.getFloat(packet.x) ||
+        !raw.getFloat(packet.y) ||
+        !raw.getFloat(packet.z) ||
+        !raw.getUInt8(packet.locomotionMode) ||
+        !raw.getUInt8(packet.hasPose))
     {
         return false;
     }
+    if (!raw.fullyRead()) return false;
     packet.moveX = static_cast<signed char>(moveX);
     packet.moveY = static_cast<signed char>(moveY);
     packet.heading = static_cast<short>(heading);
@@ -1466,6 +1541,8 @@ inline void EncodeAppPacketRaw(NetworkMessageRaw& raw, const NetworkPlayerSnapsh
     raw.putUInt16(packet.heldActions);
     raw.putUInt8(packet.selectedWeapon);
     raw.putUInt8(packet.actionState);
+    raw.putUInt8(packet.meleeAttackVariant);
+    raw.putUInt32(packet.meleeAttackId);
     raw.putUInt32(packet.actionStartTick);
     raw.putUInt8(packet.health);
     raw.putUInt8(packet.team);
@@ -1496,15 +1573,17 @@ inline bool DecodeAppPacketRaw(NetworkMessageRaw& raw, NetworkPlayerSnapshotPack
         !raw.getUInt16(packet.heldActions) ||
         !raw.getUInt8(packet.selectedWeapon) ||
         !raw.getUInt8(packet.actionState) ||
+        !raw.getUInt8(packet.meleeAttackVariant) ||
+        !raw.getUInt32(packet.meleeAttackId) ||
         !raw.getUInt32(packet.actionStartTick) ||
         !raw.getUInt8(packet.health) ||
         !raw.getUInt8(packet.team) ||
         !raw.getUInt8(packet.locomotionMode) ||
-        !raw.getFloat(packet.locomotionPhaseRadians) ||
-        !raw.fullyRead())
+        !raw.getFloat(packet.locomotionPhaseRadians))
     {
         return false;
     }
+    if (!raw.fullyRead()) return false;
     packet.heading = static_cast<short>(heading);
     packet.aimPitch = static_cast<short>(aimPitch);
     return true;
@@ -1728,6 +1807,7 @@ inline void EncodeAppPacketRaw(NetworkMessageRaw& raw, const NetworkPlayerLifecy
     raw.putInt32(packet.playerId);
     raw.putUInt32(packet.entityIndex);
     raw.putUInt32(packet.entityGeneration);
+    raw.putUInt32(packet.lifeEpoch);
     raw.putInt32(packet.sceneId);
     raw.putUInt8(packet.active);
 }
@@ -1737,6 +1817,7 @@ inline bool DecodeAppPacketRaw(NetworkMessageRaw& raw, NetworkPlayerLifecyclePac
     return raw.getInt32(packet.playerId) &&
            raw.getUInt32(packet.entityIndex) &&
            raw.getUInt32(packet.entityGeneration) &&
+           raw.getUInt32(packet.lifeEpoch) &&
            raw.getInt32(packet.sceneId) &&
            raw.getUInt8(packet.active) &&
            raw.fullyRead();

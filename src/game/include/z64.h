@@ -44,21 +44,12 @@ namespace Engine::Rendering {
 #define SCREEN_WIDTH  320
 #define SCREEN_HEIGHT 240
 
-#define REGION_NULL 0
-#define REGION_US 1
-#define REGION_JP 2
-#define REGION_EU 3
-
 #define Z_PRIORITY_MAIN        10
 #define Z_PRIORITY_GRAPH       11
 #define Z_PRIORITY_AUDIOMGR    12
-#define Z_PRIORITY_PADMGR      14
 #define Z_PRIORITY_SCHED       15
 #define Z_PRIORITY_DMAMGR      16
 #define Z_PRIORITY_IRQMGR      17
-
-// NOTE: Once we start supporting other builds, this can be changed with an ifdef
-#define REGION_NATIVE REGION_EU
 
 #ifdef __cplusplus
 extern "C"
@@ -162,11 +153,9 @@ typedef struct GraphicsContext {
 } GraphicsContext; // size = 0x300
 
 typedef struct {
-    /* 0x00 */ OSContPad cur;
-    /* 0x06 */ OSContPad prev;
-    /* 0x0C */ OSContPad press; // X/Y store delta from last frame
-    /* 0x12 */ OSContPad rel; // X/Y store adjusted
-} ControllerInput; // size = 0x18
+    int8_t x;
+    int8_t y;
+} MovementInput;
 
 typedef struct {
    /* 0x0000 */ int32_t topY;    // uly (upper left y)
@@ -281,11 +270,6 @@ typedef struct {
     /* 0x00 */ uint8_t   seqId;
     /* 0x01 */ uint8_t   natureAmbienceId;
 } SequenceContext; // size = 0x2
-
-typedef struct {
-    /* 0x00 */ int32_t enabled;
-    /* 0x04 */ int32_t timer;
-} FrameAdvanceContext; // size = 0x8
 
 typedef struct {
     /* 0x00 */ Vec3f    pos;
@@ -962,7 +946,7 @@ typedef struct GameState {
     /* 0x08 */ GameStateFunc destroy; // "cleanup"
     /* 0x0C */ GameStateFunc init;
     /* 0x10 */ size_t size;
-    /* 0x14 */ ControllerInput input[4];
+    /* 0x14 */ MovementInput input;
     /* 0x74 */ TwoHeadArena tha;
     /* 0x84 */ GameAlloc alloc;
     /* 0x98 */ uint32_t running;
@@ -986,7 +970,6 @@ typedef struct PlayState {
     /* 0x007A2 */ int16_t nextCamera;
     /* 0x007A4 */ SequenceContext sequenceCtx;
     /* 0x007A8 */ LightContext lightCtx;
-    /* 0x007B8 */ FrameAdvanceContext frameAdvCtx;
     /* 0x007C0 */ CollisionContext colCtx;
     /* 0x01C24 */ ActorContext actorCtx;
     /* 0x01D64 */ PlayerActionContext playerActionCtx;
@@ -1000,7 +983,7 @@ typedef struct PlayState {
     /* 0x117A4 */ ObjectContext objectCtx;
     /* 0x11CBC */ RoomContext roomCtx;
     /* 0x11D3C */ void (*playerInit)(Player* player, struct PlayState* play, FlexSkeletonHeader* skelHeader);
-    /* 0x11D40 */ void (*playerUpdate)(Player* player, struct PlayState* play, ControllerInput* input);
+    /* 0x11D40 */ void (*playerUpdate)(Player* player, struct PlayState* play, MovementInput* input);
     /* 0x11D48 */ int32_t (*startPlayerFishing)(struct PlayState* play);
     /* 0x11D4C */ int32_t (*grabPlayer)(struct PlayState* play, Player* player);
     /* 0x11D50 */ int32_t (*startPlayerCutscene)(struct PlayState* play, Actor* actor, int32_t mode);
@@ -1143,36 +1126,6 @@ typedef struct FaultAddrConvClient {
 
 
 typedef struct {
-    /* 0x00 */ uint32_t (*callback)(uint32_t, uint32_t);
-    /* 0x04 */ uint32_t param0;
-    /* 0x08 */ uint32_t param1;
-    /* 0x0C */ uint32_t ret;
-    /* 0x10 */ OSMesgQueue* queue;
-    /* 0x14 */ OSMesg msg;
-} FaultClientContext; // size = 0x18
-
-typedef struct FaultThreadStruct {
-    /* 0x000 */ OSThread thread;
-    /* 0x1B0 */ uint8_t unk_1B0[0x600];
-    /* 0x7B0 */ OSMesgQueue queue;
-    /* 0x7C8 */ OSMesg msg;
-    /* 0x7CC */ uint8_t exitDebugger;
-    /* 0x7CD */ uint8_t msgId;
-    /* 0x7CE */ uint8_t faultHandlerEnabled;
-    /* 0x7CF */ uint8_t faultActive;
-    /* 0x7D0 */ OSThread* faultedThread;
-    /* 0x7D4 */ void(*padCallback)(ControllerInput*);
-    /* 0x7D8 */ FaultClient* clients;
-    /* 0x7DC */ FaultAddrConvClient* addrConvClients;
-    /* 0x7E0 */ uint8_t unk_7E0[4];
-    /* 0x7E4 */ ControllerInput padInput;
-    /* 0x7FC */ uint16_t colors[36];
-    /* 0x844 */ void* fb;
-    /* 0x848 */ uint32_t currClientThreadSp;
-    /* 0x84C */ uint8_t unk_84C[4];
-} FaultThreadStruct; // size = 0x850
-
-typedef struct {
     /* 0x00 */ uint16_t* fb;
     /* 0x04 */ uint16_t w;
     /* 0x08 */ uint16_t h;
@@ -1237,19 +1190,6 @@ typedef struct {
 } ISVDbg;
 
 typedef struct {
-    /* 0x00 */ char name[0x18];
-    /* 0x18 */ uint32_t mediaFormat;
-    /* 0x1C */ union {
-        struct {
-            uint16_t cartId;
-            uint8_t countryCode;
-            uint8_t version;
-        };
-        uint32_t regionInfo;
-    };
-} LocaleCartInfo; // size = 0x20
-
-typedef struct {
     /* 0x00 */ char magic[4]; // Yaz0
     /* 0x04 */ uint32_t decSize;
     /* 0x08 */ uint32_t compInfoOffset; // only used in mio0
@@ -1280,33 +1220,6 @@ typedef struct {
     /* 0x258 */ OSTimer timer;
     /* 0x278 */ OSTime retraceTime;
 } IrqMgr; // size = 0x280
-
-typedef struct PadMgr {
-    /* 0x0000 */ OSContStatus padStatus[4];
-    /* 0x0010 */ OSMesg serialMsgBuf[1];
-    /* 0x0014 */ OSMesg lockMsgBuf[1];
-    /* 0x0018 */ OSMesg interruptMsgBuf[4];
-    /* 0x0028 */ OSMesgQueue serialMsgQ;
-    /* 0x0040 */ OSMesgQueue lockMsgQ;
-    /* 0x0058 */ OSMesgQueue interruptMsgQ;
-    /* 0x0070 */ IrqMgrClient irqClient;
-    /* 0x0078 */ IrqMgr* irqMgr;
-    /* 0x0080 */ OSThread thread;
-    /* 0x0230 */ ControllerInput inputs[4];
-    /* 0x0290 */ OSContPad pads[4];
-    /* 0x02A8 */ volatile uint8_t validCtrlrsMask;
-    /* 0x02A9 */ uint8_t nControllers;
-    /* 0x02AA */ uint8_t ctrlrIsConnected[4]; // "Key_switch" originally
-    /* 0x02AE */ uint8_t pakType[4]; // 1 if rumble pack, 2 if mempak?
-    /* 0x02B2 */ volatile uint8_t rumbleEnable[4];
-    /* 0x02B6 */ uint8_t rumbleCounter[4]; // not clear exact meaning
-    /* 0x02BC */ OSPfs pfs[4];
-    /* 0x045C */ volatile uint8_t rumbleOffFrames;
-    /* 0x045D */ volatile uint8_t rumbleOnFrames;
-    /* 0x045E */ uint8_t preNMIShutdown;
-    /* 0x0460 */ void (*retraceCallback)(struct PadMgr* padmgr, int32_t unk464);
-    /* 0x0464 */ uint32_t retraceCallbackValue;
-} PadMgr; // size = 0x468
 
 // == Previously sched.h
 
@@ -1491,22 +1404,6 @@ typedef struct {
     /* 0xD0 */ uint32_t modeL;
     /* 0xD4 */ uint32_t geometryMode;
 } UCodeDisas; // size = 0xD8
-
-typedef struct {
-    /* 0x000 */ uint8_t rumbleEnable[4];
-    /* 0x004 */ uint8_t unk_04[0x40];
-    /* 0x044 */ uint8_t unk_44[0x40];
-    /* 0x084 */ uint8_t unk_84[0x40];
-    /* 0x0C4 */ uint8_t unk_C4[0x40];
-    /* 0x104 */ uint8_t unk_104;
-    /* 0x105 */ uint8_t unk_105;
-    /* 0x106 */ uint16_t unk_106;
-    /* 0x108 */ uint16_t unk_108;
-    /* 0x10A */ uint8_t unk_10A;
-    /* 0x10B */ uint8_t unk_10B;
-    /* 0x10C */ uint8_t unk_10C;
-    /* 0x10D */ uint8_t unk_10D;
-} UnkRumbleStruct; // size = 0x10E
 
 typedef struct {
     /* 0x00 */ uint32_t value;

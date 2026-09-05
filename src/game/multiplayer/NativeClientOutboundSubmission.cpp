@@ -34,8 +34,8 @@ bool NativeClientOutboundSubmission::SubmitFishingAction(
         });
 }
 
-void NativeClientOutboundSubmission::SubmitPlayerCommand(
-    PlayState* play, float deltaSeconds) {
+void NativeClientOutboundSubmission::SubmitPlayerCommand(PlayState* play,
+                                                          float deltaSeconds) {
     if (!play || !mDependencies.runtime.IsActive() ||
         !mDependencies.gameplay.Scene().IsAuthorized(play->sceneNum)) {
         return;

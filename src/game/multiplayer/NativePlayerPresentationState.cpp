@@ -13,6 +13,23 @@ namespace {
 constexpr float kRadiansToBinaryAngle = 32768.0f / 3.14159265358979323846f;
 constexpr float kTau = 6.28318530717958647692f;
 
+uint32_t ActionInstanceTick(
+    const Game::Simulation::PlayerSnapshot& snapshot) {
+    using Game::Simulation::PlayerActionState;
+    uint32_t elapsedBeforePhase = 0;
+    const Game::Simulation::MeleeAttackTiming meleeTiming =
+        Game::Simulation::MeleeAttackTimingFor(snapshot.meleeAttackVariant,
+                                                snapshot.selectedWeapon);
+    if (snapshot.actionState == PlayerActionState::PrimaryActive) {
+        elapsedBeforePhase = meleeTiming.windupTicks;
+    } else if (snapshot.actionState == PlayerActionState::PrimaryRecovery) {
+        elapsedBeforePhase = meleeTiming.windupTicks + meleeTiming.activeTicks;
+    }
+    return snapshot.actionStartTick >= elapsedBeforePhase
+        ? snapshot.actionStartTick - elapsedBeforePhase
+        : 0;
+}
+
 } // namespace
 
 void NativePlayerPresentationComposer::ApplyEquipment(
@@ -59,7 +76,9 @@ void NativePlayerPresentationComposer::ApplySnapshot(
     const auto action = ClientPlayerActionPresentationPolicy::Evaluate(snapshot);
     ApplyEquipment(state, action.equipment);
     if (action.dead) state.stateFlags |= NATIVE_PLAYER_DEAD;
-    if (action.blocking) state.stateFlags |= NATIVE_PLAYER_SHIELDING;
+    if (action.blocking) {
+        state.stateFlags |= NATIVE_PLAYER_SHIELDING;
+    }
     if (action.bowReady) state.stateFlags |= NATIVE_PLAYER_READY_TO_FIRE;
     std::memset(state.upperLimbRot, 0, sizeof(state.upperLimbRot));
     std::memset(state.headLimbRot, 0, sizeof(state.headLimbRot));
@@ -74,15 +93,20 @@ void NativePlayerPresentationComposer::ApplySnapshot(
     const auto pose =
         Game::Simulation::SampleAuthoritativePlayerPoseState(snapshot);
     const bool synchronizeAction =
-        snapshot.health == 0 ||
         snapshot.actionState == Game::Simulation::PlayerActionState::PrimaryWindup ||
         snapshot.actionState == Game::Simulation::PlayerActionState::PrimaryActive ||
         snapshot.actionState == Game::Simulation::PlayerActionState::PrimaryRecovery ||
         snapshot.actionState == Game::Simulation::PlayerActionState::Evading ||
-        snapshot.actionState == Game::Simulation::PlayerActionState::JumpSlashing;
-    const bool synchronizeLocomotion = !synchronizeAction &&
+        snapshot.actionState == Game::Simulation::PlayerActionState::JumpSlashing ||
+        snapshot.actionState == Game::Simulation::PlayerActionState::SpinAttacking;
+    const bool locomotionAnimation =
+        snapshot.actionState == Game::Simulation::PlayerActionState::Idle ||
+        snapshot.actionState == Game::Simulation::PlayerActionState::Blocking ||
+        snapshot.actionState == Game::Simulation::PlayerActionState::Aiming;
+    const bool synchronizeLocomotion = locomotionAnimation &&
         pose.direction != Game::Simulation::PlayerPoseDirection::None;
     state.synchronizeBaseAnimation = synchronizeAction || synchronizeLocomotion;
+    state.synchronizeActionAnimation = synchronizeAction;
     state.loopBaseAnimationProgress = synchronizeLocomotion;
     if (synchronizeLocomotion) {
         state.baseAnimationProgress = snapshot.locomotionPhaseRadians / kTau;
@@ -92,17 +116,26 @@ void NativePlayerPresentationComposer::ApplySnapshot(
         state.baseAnimationProgress = snapshot.health == 0 ? 1.0f
                                                            : pose.actionProgress;
         state.baseAnimationProgressPerSecond =
-            Game::Simulation::PlayerActionProgressPerSecond(snapshot.actionState);
+            Game::Simulation::PlayerActionProgressPerSecond(snapshot);
     }
     state.baseAnimationSampleSeconds = receivedSeconds;
+    state.lifeEpoch = snapshot.lifeEpoch;
+    const bool meleeAction =
+        snapshot.actionState == Game::Simulation::PlayerActionState::PrimaryWindup ||
+        snapshot.actionState == Game::Simulation::PlayerActionState::PrimaryActive ||
+        snapshot.actionState == Game::Simulation::PlayerActionState::PrimaryRecovery ||
+        snapshot.actionState == Game::Simulation::PlayerActionState::JumpSlashing ||
+        snapshot.actionState == Game::Simulation::PlayerActionState::SpinAttacking;
+    state.actionInstanceId = meleeAction
+        ? snapshot.meleeAttackId
+        : ActionInstanceTick(snapshot);
+    state.actionState = snapshot.actionState;
 }
 
 void NativePlayerPresentationComposer::ApplyFishingPresentation(
     NativePlayerPresentationState& state,
     const Game::Replication::FishingPresentationState& presentation) {
     state.fishingState = presentation.state;
-    std::memcpy(state.fishingRodTipOffset, presentation.rodTipOffset.data(),
-                sizeof(state.fishingRodTipOffset));
     std::memcpy(state.fishingLureDrawOffset, presentation.lureDrawOffset.data(),
                 sizeof(state.fishingLureDrawOffset));
     state.fishingRodBendY = presentation.rodBendY;
@@ -131,23 +164,34 @@ void NativePlayerPresentationComposer::ApplyFishingPresentation(
 void NativePlayerPresentationComposer::ApplyAuthoritativeFishing(
     NativePlayerPresentationState& state,
     const Game::Client::RemoteFishingEntityState& entities) {
+    const auto* fish = entities.FishForOwner(state.playerId);
+    const bool hasFish = fish && fish->identity.sceneId == state.sceneId;
     const auto* lure = entities.LureForOwner(state.playerId);
     if (lure && lure->sceneId == state.sceneId) {
         state.fishingLureOffset[0] = lure->x - state.x;
         state.fishingLureOffset[1] = lure->y - state.y;
         state.fishingLureOffset[2] = lure->z - state.z;
         state.fishingLureType = lure->lureType;
-        state.fishingLineHooked =
+        state.fishingLineHooked = hasFish &&
             lure->phase == static_cast<uint8_t>(
                                Game::Simulation::FishingLurePhase::Hooked);
+        state.fishingState =
+            lure->phase == static_cast<uint8_t>(
+                               Game::Simulation::FishingLurePhase::Flying)
+                ? 1
+                : (state.fishingLineHooked ? 4 : 3);
+        std::memcpy(state.fishingLureDrawOffset, state.fishingLureOffset,
+                    sizeof(state.fishingLureDrawOffset));
     } else {
         std::memset(state.fishingLureOffset, 0, sizeof(state.fishingLureOffset));
+        std::memset(state.fishingLureDrawOffset, 0,
+                    sizeof(state.fishingLureDrawOffset));
         state.fishingLureType = 0;
         state.fishingLineHooked = 0;
+        state.fishingState = 0;
     }
 
-    const auto* fish = entities.FishForOwner(state.playerId);
-    if (fish && fish->identity.sceneId == state.sceneId) {
+    if (hasFish) {
         state.fishingFishActive = 1;
         state.fishingFishIsLoach =
             fish->species == Game::Simulation::FishSpecies::HylianLoach;

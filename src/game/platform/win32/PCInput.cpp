@@ -1,10 +1,7 @@
 #define WIN32_LEAN_AND_MEAN
 #include <Windows.h>
 
-#include <cstring>
-
 #include <platform/win32/Input.h>
-#include <runtime/libultra/os.h>
 
 #include "gameplay/Controls.h"
 #include "platform/win32/App.h"
@@ -24,20 +21,6 @@ void DiscardPress(uint8_t code) {
 } // namespace
 
 extern "C" {
-
-uint8_t __osMaxControllers = MAXCONTROLLERS;
-
-int32_t osContInit(OSMesgQueue*, uint8_t* controllerBits, OSContStatus* status) {
-    std::memset(status, 0, sizeof(OSContStatus) * __osMaxControllers);
-    *controllerBits = 1;
-    status[0].type = CONT_TYPE_NORMAL;
-    status[0].status = CONT_CARD_ON;
-    return 0;
-}
-
-int32_t osContStartReadData(OSMesgQueue*) {
-    return 0;
-}
 
 int32_t PCInput_ConsumeMouseAimDelta(int32_t* deltaX, int32_t* deltaY) {
     *deltaX = 0;
@@ -120,16 +103,16 @@ int32_t PCInput_HasBowUseIntent(void) {
     return InputAvailable() && controls.weapon == 3 && input.keyPress[VK_LBUTTON];
 }
 
-void osContGetReadData(OSContPad* pad) {
-    std::memset(pad, 0, sizeof(OSContPad) * __osMaxControllers);
-
+void PCInput_ReadMovement(int8_t* x, int8_t* y) {
+    *x = 0;
+    *y = 0;
     if (!InputAvailable()) {
         PCInput_DiscardActionIntents();
         return;
     }
 
-    pad[0].stick_x = static_cast<int8_t>(controls.move.x * 85);
-    pad[0].stick_y = static_cast<int8_t>(controls.move.y * 85);
+    *x = static_cast<int8_t>(controls.move.x * 85);
+    *y = static_cast<int8_t>(controls.move.y * 85);
 }
 
 } // extern "C"

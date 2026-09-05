@@ -13,8 +13,6 @@
 #include "libultra/interrupt.h"
 #include "libultra/mbi.h"
 #include "libultra/message.h"
-#include "libultra/motor.h"
-#include "libultra/pfs.h"
 #include "libultra/pi.h"
 #include "libultra/printf.h"
 #include "libultra/r4300.h"

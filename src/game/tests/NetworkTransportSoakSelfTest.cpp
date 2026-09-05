@@ -38,7 +38,7 @@ Game::Simulation::PlayerCommand MakeCommand(uint32_t sequence, int clientIndex) 
 }
 
 int RunHost() {
-    NetworkRuntime network;
+    NetworkRuntime network(110);
     if (!network.Host(kPort, "Encrypted multi-client transport soak") ||
         !network.ConfigureSceneSpawn({ 110, {}, 0.0f })) {
         return 10;

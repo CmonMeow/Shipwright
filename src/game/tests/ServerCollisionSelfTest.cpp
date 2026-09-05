@@ -22,6 +22,15 @@ int main() {
               collision.UnindexedTriangleCount(), collision.WildFishCount());
         return 1;
     }
+    float spawnWaterSurface = 0.0f;
+    if (collision.FindWaterSurface(kTest01SceneId,
+                                   { 2023.0f, 0.0f, 334.0f },
+                                   spawnWaterSurface) &&
+        0.0f <= spawnWaterSurface + 2.0f) {
+        Error("Dedicated collision self-test failed: test01 water reaches land spawn at y=%.2f",
+              spawnWaterSurface);
+        return 4;
+    }
     Error("Dedicated collision self-test passed: scenes=%zu triangles=%zu cells=%zu unindexed=%zu wildFish=%zu",
           collision.SceneCount(), collision.TriangleCount(), collision.SpatialCellCount(),
           collision.UnindexedTriangleCount(), collision.WildFishCount());

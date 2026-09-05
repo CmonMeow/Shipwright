@@ -158,11 +158,9 @@ int32_t EffectSs_FindSlot(int32_t priority, int32_t* pIndex) {
 void EffectSs_Insert(PlayState* play, EffectSs* effectSs) {
     int32_t index;
 
-    if (FrameAdvance_IsEnabled(play) != true) {
-        if (EffectSs_FindSlot(effectSs->priority, &index) == 0) {
-            sEffectSsInfo.searchStartIndex = index + 1;
-            sEffectSsInfo.table[index] = *effectSs;
-        }
+    if (EffectSs_FindSlot(effectSs->priority, &index) == 0) {
+        sEffectSsInfo.searchStartIndex = index + 1;
+        sEffectSsInfo.table[index] = *effectSs;
     }
 }
 

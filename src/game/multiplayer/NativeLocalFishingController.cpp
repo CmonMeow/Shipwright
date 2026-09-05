@@ -29,8 +29,6 @@ NativeLocalFishingSubmission NativeLocalFishingController::Sample(
     Game::Replication::FishingPresentationState presentation{};
     if (visualActive) {
         presentation.state = visual.state;
-        presentation.rodTipOffset = { visual.rodTipOffset[0], visual.rodTipOffset[1],
-                                      visual.rodTipOffset[2] };
         presentation.lureDrawOffset = {
             visual.lureDrawOffset[0], visual.lureDrawOffset[1],
             visual.lureDrawOffset[2]

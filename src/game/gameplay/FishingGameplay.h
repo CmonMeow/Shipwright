@@ -5,7 +5,6 @@
 struct PlayState;
 
 typedef struct FishingLocalVisual {
-    float rodTipOffset[3];
     float lureDrawOffset[3];
     float rodBendY;
     float rodBendX;

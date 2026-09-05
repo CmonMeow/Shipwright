@@ -30,6 +30,7 @@ bool RemotePlayerReplicaStore::ApplySnapshot(
     if (!SnapshotIsSane(snapshot)) return false;
     const auto* lifetime = mLifetimes.FindPlayer(snapshot.ownerPlayerId);
     if (!lifetime || lifetime->entity != snapshot.entity ||
+        lifetime->lifeEpoch != snapshot.lifeEpoch ||
         lifetime->sceneId != snapshot.sceneId) {
         return false;
     }
@@ -61,6 +62,7 @@ bool RemotePlayerReplicaStore::ApplyFishing(
     const Replication::FishingPresentationState& state, double receivedSeconds) {
     const auto* lifetime = mLifetimes.FindPlayer(state.playerId);
     if (!lifetime || lifetime->entity != state.entity ||
+        lifetime->lifeEpoch != state.lifeEpoch ||
         lifetime->sceneId != state.sceneId) {
         return false;
     }
@@ -134,10 +136,10 @@ bool RemotePlayerReplicaStore::SnapshotIsSane(
            bounded(snapshot.headingRadians) && bounded(snapshot.aimPitchRadians) &&
            (snapshot.heldActions & ~knownActions) == 0 &&
            snapshot.selectedWeapon <= 4 && snapshot.health <= 48 &&
-           snapshot.actionState <= Simulation::PlayerActionState::JumpSlashing &&
+           snapshot.actionState <= Simulation::PlayerActionState::SpinAttacking &&
            snapshot.actionStartTick <= snapshot.serverTick &&
-           snapshot.team <= Simulation::TeamId::Blue &&
-           snapshot.locomotionMode <= Simulation::PlayerLocomotionMode::Swimming;
+           snapshot.team <= Simulation::TeamId::Green &&
+           snapshot.locomotionMode <= Simulation::PlayerLocomotionMode::Climbing;
 }
 
 } // namespace Game::Client

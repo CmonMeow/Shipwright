@@ -74,6 +74,28 @@ void ProjectileSimulation::RemoveOwnedBy(int32_t ownerPlayerId) {
     }
 }
 
+void ProjectileSimulation::DetachFromPlayerLife(int32_t playerId,
+                                                uint32_t lifeEpoch) {
+    if (playerId < 0 || lifeEpoch == 0) return;
+    mArrows.ForEach([&](ArrowEntity& arrow) {
+        if (!arrow.active || arrow.phase != ArrowPhase::Stuck ||
+            arrow.body.playerId != playerId ||
+            arrow.body.lifeEpoch != lifeEpoch) {
+            return;
+        }
+        // The retained corpse is a distinct entity. Keep the arrow at the
+        // authoritative impact location instead of allowing the persistent
+        // live-player slot to carry it into the next life epoch.
+        arrow.body = {};
+        arrow.lastSnapshotTick = mCurrentTick;
+        ++arrow.sequence;
+        // This is a persistent semantic state change, not an expendable
+        // movement sample. Observers must learn that the old player life no
+        // longer owns the attachment even if subsequent UDP snapshots drop.
+        QueueEvent(ArrowEventKind::BodyDetached, arrow);
+    });
+}
+
 void ProjectileSimulation::Reset() {
     mArrows.Clear();
     mArrowByReplicationId.clear();
@@ -109,6 +131,32 @@ void ProjectileSimulation::SimulateArrow(ArrowEntity& arrow, PlayerSimulation& p
         return;
     }
     if (arrow.phase == ArrowPhase::Stuck) {
+        if (arrow.body.playerId >= 0) {
+            const auto player = players.SnapshotForPlayer(arrow.body.playerId);
+            if (!player || player->sceneId != arrow.sceneId || player->lifeEpoch != arrow.body.lifeEpoch) {
+                arrow.active = false;
+                ++arrow.sequence;
+                QueueEvent(ArrowEventKind::Removed, arrow);
+                remove.push_back(arrow.id);
+                return;
+            }
+            if (player->health == 0) {
+                // DrainPlayerLifeEvents transfers this attachment to static
+                // retained-world presentation. Do not first snap it from the
+                // impact pose onto the standing semantic fallback skeleton.
+                return;
+            }
+            Vec3 direction{};
+            ResolveArrowOnBody(arrow.body, BuildAuthoritativePlayerHitRig(*player),
+                               player->headingRadians, arrow.position, direction);
+            arrow.rotationX = static_cast<int16_t>(std::atan2(-direction.y, std::hypot(direction.x, direction.z)) * (32768.0f / kPi));
+            arrow.rotationY = static_cast<int16_t>(std::atan2(direction.x, direction.z) * (32768.0f / kPi));
+            if (mCurrentTick - arrow.lastSnapshotTick >= kBroadcastIntervalTicks) {
+                arrow.lastSnapshotTick = mCurrentTick;
+                ++arrow.sequence;
+                QueueEvent(ArrowEventKind::Snapshot, arrow);
+            }
+        }
         if (structures && arrow.attachedStructureKey >= 0) {
             const auto attached = structures->SnapshotForStructure(arrow.attachedStructureKey);
             if (!attached || attached->phase != StructurePhase::Active) {
@@ -221,12 +269,25 @@ void ProjectileSimulation::SimulateArrow(ArrowEntity& arrow, PlayerSimulation& p
                            previous.z + segment.z * bodyRatio };
         const int16_t impactHeading = static_cast<int16_t>(
             std::atan2(arrow.velocity.x, arrow.velocity.z) * (32768.0f / kPi));
+        const auto target = players.SnapshotForPlayer(bodyPlayer);
+        arrow.body.playerId = bodyPlayer;
+        arrow.body.lifeEpoch = target->lifeEpoch;
+        arrow.body.region = bodyRegion;
+        const float speed = std::sqrt(lengthSquared);
+        const Vec3 direction = speed > 0.00001f
+            ? Vec3{ segment.x / speed, segment.y / speed, segment.z / speed }
+            : Vec3{ std::sin(arrow.rotationY * (kPi / 32768.0f)), 0.0f,
+                    std::cos(arrow.rotationY * (kPi / 32768.0f)) };
+        BindArrowToBody(arrow.body, BuildAuthoritativePlayerHitRig(*target), target->headingRadians,
+                        arrow.position, direction);
         players.ApplyDamage(arrow.ownerPlayerId, bodyPlayer, 8, impactHeading,
                             CombatAttackKind::Arrow, arrow.position, bodyRegion);
-        arrow.active = false;
+        arrow.phase = ArrowPhase::Stuck;
+        arrow.velocity = {};
+        arrow.impactTick = mCurrentTick;
         ++arrow.sequence;
         QueueEvent(ArrowEventKind::HitPlayer, arrow, bodyPlayer);
-        remove.push_back(arrow.id);
+        RetainStuckArrows(arrow, remove);
         return;
     }
     if (hitStructure && structureRatio < staticRatio && structureRatio < shieldRatio &&
@@ -338,7 +399,7 @@ ArrowSnapshot ProjectileSimulation::BuildSnapshot(const ArrowEntity& arrow) cons
     return { arrow.id,          arrow.replicationId, arrow.ownerPlayerId,
              arrow.sceneId,     arrow.sequence,      arrow.active,        arrow.phase,
              arrow.projectileType, arrow.position,  arrow.velocity,      arrow.rotationX,
-             arrow.rotationY,   arrow.rotationZ };
+             arrow.rotationY,   arrow.rotationZ, arrow.body };
 }
 
 int32_t ProjectileSimulation::TakeReplicationId() {

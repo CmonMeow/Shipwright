@@ -1,7 +1,9 @@
 #include "ServerWorld.h"
+#include "../SequenceNumber.h"
 
 #include <algorithm>
 #include <cmath>
+#include <limits>
 #include <utility>
 
 namespace Game::Simulation {
@@ -9,9 +11,14 @@ namespace Game::Simulation {
 namespace {
 
 constexpr float kRadiansToBinaryAngle = 32768.0f / 3.14159265358979323846f;
+constexpr float kBinaryAngleToRadians = 3.14159265358979323846f / 32768.0f;
 constexpr float kArrowSpeed = 3000.0f;
 constexpr uint8_t kNormalArrowType = 2;
 constexpr uint8_t kSinkingLureType = 2;
+// A client may identify a previously admitted aim sample, but cannot select
+// an arbitrary old direction. Eight native 20 Hz samples bound this metadata
+// to the most recent 400 ms while leaving room for ordinary packet reordering.
+constexpr uint32_t kMaximumArrowFireSampleAge = 8;
 
 CorpsePose BuildCorpsePose(const PlayerLifeEvent& death) {
     constexpr float radiansToBinaryAngle = 32768.0f / 3.14159265358979323846f;
@@ -32,6 +39,10 @@ CorpsePose BuildCorpsePose(const PlayerLifeEvent& death) {
 }
 
 } // namespace
+
+ServerWorld::ServerWorld(int32_t defaultSceneId)
+    : mSceneTransitions(4096, defaultSceneId) {
+}
 
 ServerWorldUpdate ServerWorld::Advance(Clock::time_point now) {
     ServerWorldUpdate result{};
@@ -219,6 +230,11 @@ void ServerWorld::SetPlayerWaterSurfaceQuery(
     mPlayers.SetWaterSurfaceQuery(std::move(waterSurfaceQuery));
 }
 
+void ServerWorld::SetPlayerClimbSurfaceQuery(
+    ClimbSurfaceQuery climbSurfaceQuery) {
+    mPlayers.SetClimbSurfaceQuery(std::move(climbSurfaceQuery));
+}
+
 bool ServerWorld::SubmitPlayerCommand(const PlayerCommand& command) {
     const auto player = mPlayers.SnapshotForPlayer(command.ownerPlayerId);
     if (!player) return false;
@@ -285,6 +301,8 @@ std::vector<PlayerLifeEvent> ServerWorld::DrainPlayerLifeEvents() {
     std::vector<PlayerLifeEvent> events = mPlayers.DrainLifeEvents();
     for (const PlayerLifeEvent& event : events) {
         if (event.kind == PlayerLifeEventKind::Died) {
+            mProjectiles.DetachFromPlayerLife(event.playerId,
+                                              event.lifeEpoch);
             mCorpses.Create(BuildCorpsePose(event));
         }
     }
@@ -338,16 +356,46 @@ ArrowFireDecision ServerWorld::ExecuteArrowFire(const ArrowFireCommand& command)
         mLastArrowFireDecisions.insert_or_assign(command.playerId, decision);
         return decision;
     }
-    const float horizontal = std::cos(shooter->aimPitchRadians) * kArrowSpeed;
+    // A reliable fire intent may arrive after newer disposable movement.
+    // Resolve aim from the exact admitted native input sample that fired it,
+    // rather than from whichever orientation is current at packet arrival.
+    // Origin, collision, and damage remain server-owned.
+    const auto fireSample =
+        mPlayers.SubmittedCommandForPlayerAtClientTick(command.playerId,
+                                                       command.clientTick);
+    const auto latestSample =
+        mPlayers.SubmittedCommandForPlayer(command.playerId);
+    const bool fireNewerThanLatest = latestSample &&
+        Sequence::IsNewer(command.clientTick, latestSample->clientTick);
+    const uint32_t sampleDistance = !latestSample
+        ? std::numeric_limits<uint32_t>::max()
+        : fireNewerThanLatest
+            ? command.clientTick - latestSample->clientTick
+            : latestSample->clientTick - command.clientTick;
+    if (!latestSample || sampleDistance > kMaximumArrowFireSampleAge) {
+        mLastArrowFireDecisions.insert_or_assign(command.playerId, decision);
+        return decision;
+    }
+    // Prefer the server-admitted command. If that disposable movement packet
+    // was lost, the reliable action's compact aim input preserves the shot.
+    // Its timestamp is still bounded against the latest admitted input and it
+    // cannot provide an origin, target, collision, or damage result.
+    const float fireHeading = fireSample
+        ? fireSample->headingRadians
+        : static_cast<float>(command.heading) * kBinaryAngleToRadians;
+    const float firePitch = fireSample
+        ? fireSample->aimPitchRadians
+        : static_cast<float>(command.aimPitch) * kBinaryAngleToRadians;
+    const float horizontal = std::cos(firePitch) * kArrowSpeed;
     const ArrowSpawn spawn{
         command.playerId, shooter->sceneId, kNormalArrowType,
-        { shooter->position.x + std::sin(shooter->headingRadians) * 14.0f,
+        { shooter->position.x + std::sin(fireHeading) * 14.0f,
           shooter->position.y + 42.0f,
-          shooter->position.z + std::cos(shooter->headingRadians) * 14.0f },
-        { std::sin(shooter->headingRadians) * horizontal,
-          -std::sin(shooter->aimPitchRadians) * kArrowSpeed,
-          std::cos(shooter->headingRadians) * horizontal },
-        static_cast<int16_t>(std::lround(shooter->headingRadians * kRadiansToBinaryAngle))
+          shooter->position.z + std::cos(fireHeading) * 14.0f },
+        { std::sin(fireHeading) * horizontal,
+          -std::sin(firePitch) * kArrowSpeed,
+          std::cos(fireHeading) * horizontal },
+        static_cast<int16_t>(std::lround(fireHeading * kRadiansToBinaryAngle))
     };
     const auto spawned = mProjectiles.SpawnArrow(spawn);
     if (!spawned) {

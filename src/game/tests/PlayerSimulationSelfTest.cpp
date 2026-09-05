@@ -10,7 +10,6 @@
 #include "../platform/simulation/CorpseSimulation.h"
 #include "../platform/simulation/ClientPrediction.h"
 #include "../platform/client/LocalFishIntentStream.h"
-#include "../platform/client/LocalPrimaryActionPresentation.h"
 #include "../platform/client/ClientWorldState.h"
 #include "../platform/client/ClientGameplaySession.h"
 #include "../platform/client/ClientSessionGenerationTracker.h"
@@ -309,7 +308,7 @@ int main() {
     if (!firstFishIntent || firstFishIntent->sequence != 1) return 431;
 
     if (!clientSession.Projectiles().BindPresentation({ 100, 118 }) ||
-        !clientSession.Projectiles().RequestArrowFire(100, 118)) {
+        !clientSession.Projectiles().RequestArrowFire(100, 118, 41, 1200, -300)) {
         return 432;
     }
     const auto firstProjectile = clientSession.Projectiles().NextIntent();
@@ -328,7 +327,7 @@ int main() {
     if (clientSession.Projectiles().TrackedCount() != 0 ||
         clientSession.Projectiles().AwaitingResultCount() != 0 ||
         !clientSession.Projectiles().BindPresentation({ 101, 119 }) ||
-        !clientSession.Projectiles().RequestArrowFire(101, 119)) {
+        !clientSession.Projectiles().RequestArrowFire(101, 119, 42, 1300, -400)) {
         return 435;
     }
     const auto sceneProjectile = clientSession.Projectiles().NextIntent();
@@ -443,7 +442,7 @@ int main() {
     const auto otherIngressStill = ingressWorld.PlayerFor(42);
     if (!ingressMoved || ingressMoved->sceneId != 118 ||
         ingressMoved->lastProcessedCommand != 1 ||
-        !NearlyEqual(ingressMoved->position.z, 6.0f) ||
+        !NearlyEqual(ingressMoved->position.z, 4.0f) ||
         !otherIngressStill || otherIngressStill->lastProcessedCommand != 0 ||
         ingress.SubmitPlayerCommand(-1, spoofedIngressCommand)) {
         return 401;
@@ -462,7 +461,7 @@ int main() {
 
     simulation.StepFixed();
     const auto moved = simulation.SnapshotForPlayer(7);
-    if (!moved || moved->lastProcessedCommand != 1 || !NearlyEqual(moved->position.z, 6.0f)) {
+    if (!moved || moved->lastProcessedCommand != 1 || !NearlyEqual(moved->position.z, 4.0f)) {
         return 3;
     }
 
@@ -474,8 +473,27 @@ int main() {
     }
     simulation.StepFixed();
     const auto strafed = simulation.SnapshotForPlayer(7);
-    if (!strafed || strafed->lastProcessedCommand != 2 || !NearlyEqual(strafed->position.x, 6.0f)) {
+    if (!strafed || strafed->lastProcessedCommand != 2 || !NearlyEqual(strafed->position.x, -4.0f)) {
         return 5;
+    }
+
+    command.sequence = 3;
+    command.moveY = 1.0f;
+    command.moveX = 1.0f;
+    if (!simulation.SubmitCommand(command)) return 608;
+    simulation.StepFixed();
+    const auto diagonal = simulation.SnapshotForPlayer(7);
+    const float diagonalStep = 4.0f / std::sqrt(2.0f);
+    if (!diagonal ||
+        !NearlyEqual(diagonal->position.x, -4.0f - diagonalStep) ||
+        !NearlyEqual(diagonal->position.z, 4.0f + diagonalStep)) {
+        return 608;
+    }
+    const auto diagonalPose =
+        Game::Simulation::SampleAuthoritativePlayerPoseState(*diagonal);
+    if (diagonalPose.direction !=
+        Game::Simulation::PlayerPoseDirection::Right) {
+        return 609;
     }
 
     simulation.RemovePlayer(7);
@@ -556,8 +574,8 @@ int main() {
                 impact = { to.x, 0.0f, to.z };
                 return true;
             }
-            if (from.x < 17.0f && to.x >= 17.0f) {
-                impact = { 17.0f, to.y, to.z };
+            if (from.x < 15.0f && to.x >= 15.0f) {
+                impact = { 15.0f, to.y, to.z };
                 return true;
             }
             return false;
@@ -567,7 +585,7 @@ int main() {
     radiusMove.ownerPlayerId = 10;
     radiusMove.sequence = 1;
     radiusMove.sceneId = 118;
-    radiusMove.moveX = 1.0f;
+    radiusMove.moveX = -1.0f;
     if (!bodyRadiusCollision.SubmitCommand(radiusMove)) return 392;
     bodyRadiusCollision.StepFixed();
     const auto radiusBlocked = bodyRadiusCollision.SnapshotForPlayer(10);
@@ -587,7 +605,7 @@ int main() {
     waterLocomotion.SetWaterSurfaceQuery(
         [](int32_t sceneId, const Game::Simulation::Vec3& position,
            float& surfaceY) {
-            if (sceneId != 118 || position.x < 3.0f || position.x > 9.0f) {
+            if (sceneId != 118 || position.x < 3.0f || position.x > 7.0f) {
                 return false;
             }
             surfaceY = 80.0f;
@@ -599,7 +617,7 @@ int main() {
     enterWater.ownerPlayerId = 32;
     enterWater.sequence = 1;
     enterWater.sceneId = 118;
-    enterWater.moveX = 1.0f;
+    enterWater.moveX = -1.0f;
     if (!initiallyGrounded || initiallyGrounded->locomotionMode !=
                                   Game::Simulation::PlayerLocomotionMode::Grounded ||
         !waterLocomotion.SubmitCommand(enterWater)) {
@@ -609,8 +627,8 @@ int main() {
     const auto swimming = waterLocomotion.SnapshotForPlayer(32);
     if (!swimming || swimming->locomotionMode !=
                          Game::Simulation::PlayerLocomotionMode::Swimming ||
-        !NearlyEqual(swimming->position.x, 6.0f) ||
-        !NearlyEqual(swimming->position.y, 80.0f)) {
+        !NearlyEqual(swimming->position.x, 4.0f) ||
+        !NearlyEqual(swimming->position.y, 24.0f)) {
         return 427;
     }
     ClientPrediction waterPrediction;
@@ -618,7 +636,7 @@ int main() {
     waterPrediction.RecordCommand(
         enterWater, Game::Simulation::kPlayerSimulationTickSeconds);
     if (!waterPrediction.Reconcile(*swimming, { 6.0f, 0.0f, 0.0f }) ||
-        !NearlyEqual(waterPrediction.PendingCorrection().y, 80.0f)) {
+        !NearlyEqual(waterPrediction.PendingCorrection().y, 24.0f)) {
         return 428;
     }
     enterWater.sequence = 2;
@@ -630,7 +648,7 @@ int main() {
     const auto returnedToGround = waterLocomotion.SnapshotForPlayer(32);
     if (!returnedToGround || returnedToGround->locomotionMode !=
                                  Game::Simulation::PlayerLocomotionMode::Grounded ||
-        !NearlyEqual(returnedToGround->position.x, 12.0f) ||
+        !NearlyEqual(returnedToGround->position.x, 8.0f) ||
         !NearlyEqual(returnedToGround->position.y, 0.0f) ||
         returnedToGround->actionState != PlayerActionState::Idle) {
         return 442;
@@ -659,7 +677,7 @@ int main() {
     leaveLedge.ownerPlayerId = 33;
     leaveLedge.sequence = 1;
     leaveLedge.sceneId = 118;
-    leaveLedge.moveX = 1.0f;
+    leaveLedge.moveX = -1.0f;
     leaveLedge.actionSequence = 1;
     leaveLedge.pressedActions = Game::Simulation::PLAYER_ACTION_PRIMARY;
     if (!ledgeLocomotion.SubmitCommand(leaveLedge)) return 460;
@@ -667,7 +685,7 @@ int main() {
     const auto falling = ledgeLocomotion.SnapshotForPlayer(33);
     if (!falling || falling->locomotionMode !=
                         Game::Simulation::PlayerLocomotionMode::Airborne ||
-        !NearlyEqual(falling->position.x, 6.0f) ||
+        !NearlyEqual(falling->position.x, 4.0f) ||
         !(falling->position.y < 0.0f) || !(falling->velocity.y < 0.0f) ||
         falling->actionState != PlayerActionState::Idle) {
         return 461;
@@ -712,10 +730,10 @@ int main() {
         left.ownerPlayerId = 20;
         left.sequence = 1;
         left.sceneId = 118;
-        left.moveX = 1.0f;
+        left.moveX = -1.0f;
         PlayerCommand right = left;
         right.ownerPlayerId = 21;
-        right.moveX = -1.0f;
+        right.moveX = 1.0f;
         return target.SubmitCommand(left) && target.SubmitCommand(right);
     };
     if (!configureBodyCollision(bodyCollisionForward, false) ||
@@ -811,13 +829,156 @@ int main() {
     actionSimulation.SubmitCommand(command);
     actionSimulation.StepFixed();
     const auto windup = actionSimulation.SnapshotForPlayer(11);
-    if (!windup || windup->actionState != PlayerActionState::PrimaryWindup) {
+    if (!windup || windup->actionState != PlayerActionState::PrimaryWindup ||
+        windup->meleeAttackVariant !=
+            Game::Simulation::MeleeAttackVariant::RightSlash ||
+        windup->meleeAttackId != 1) {
         return 8;
     }
     for (int tick = 2; tick <= 15; ++tick) actionSimulation.StepFixed();
     const auto recovered = actionSimulation.SnapshotForPlayer(11);
     if (!recovered || recovered->actionState != PlayerActionState::Idle) {
         return 9;
+    }
+
+    const auto selectedDirectionalSlash = [](float moveX, float moveY) {
+        PlayerSimulation directional;
+        directional.EnsurePlayer(111, PlayerSpawn{ 118, {}, 0.0f });
+        directional.SelectWeapon(111, 1);
+        PlayerCommand attack{};
+        attack.ownerPlayerId = 111;
+        attack.sequence = 1;
+        attack.actionSequence = 1;
+        attack.sceneId = 118;
+        attack.moveX = moveX;
+        attack.moveY = moveY;
+        attack.pressedActions = Game::Simulation::PLAYER_ACTION_PRIMARY;
+        directional.SubmitCommand(attack);
+        directional.StepFixed();
+        return directional.SnapshotForPlayer(111)->meleeAttackVariant;
+    };
+    if (selectedDirectionalSlash(0.0f, 1.0f) !=
+            Game::Simulation::MeleeAttackVariant::ForwardSlash ||
+        selectedDirectionalSlash(-1.0f, 0.0f) !=
+            Game::Simulation::MeleeAttackVariant::RightSlash ||
+        selectedDirectionalSlash(1.0f, 0.0f) !=
+            Game::Simulation::MeleeAttackVariant::LeftSlash) {
+        return 630;
+    }
+
+    PlayerSimulation comboSimulation;
+    comboSimulation.EnsurePlayer(112, PlayerSpawn{ 118, {}, 0.0f });
+    comboSimulation.SelectWeapon(112, 1);
+    PlayerCommand repeatedAttack{};
+    repeatedAttack.ownerPlayerId = 112;
+    repeatedAttack.sceneId = 118;
+    repeatedAttack.moveX = 1.0f;
+    for (uint32_t attackIndex = 1; attackIndex <= 3; ++attackIndex) {
+        repeatedAttack.sequence = attackIndex;
+        repeatedAttack.actionSequence = attackIndex;
+        repeatedAttack.pressedActions = Game::Simulation::PLAYER_ACTION_PRIMARY;
+        repeatedAttack.reportedMeleeAttackVariant = attackIndex == 3
+            ? Game::Simulation::MeleeAttackVariant::LeftCombo
+            : Game::Simulation::MeleeAttackVariant::LeftSlash;
+        repeatedAttack.hasReportedMeleeAttackVariant = true;
+        if (!comboSimulation.SubmitCommand(repeatedAttack)) return 631;
+        comboSimulation.StepFixed();
+        const auto attackSnapshot = comboSimulation.SnapshotForPlayer(112);
+        const auto expected = repeatedAttack.reportedMeleeAttackVariant;
+        if (!attackSnapshot || attackSnapshot->meleeAttackVariant != expected) {
+            return 632;
+        }
+        if (attackSnapshot->meleeAttackId != attackIndex) return 633;
+        repeatedAttack.pressedActions = 0;
+        for (int tick = 0; tick < 12; ++tick) comboSimulation.StepFixed();
+    }
+
+    PlayerSimulation prematureComboSimulation;
+    prematureComboSimulation.EnsurePlayer(
+        113, PlayerSpawn{ 118, {}, 0.0f });
+    prematureComboSimulation.SelectWeapon(113, 1);
+    PlayerCommand prematureCombo{};
+    prematureCombo.ownerPlayerId = 113;
+    prematureCombo.sceneId = 118;
+    prematureCombo.sequence = 1;
+    prematureCombo.actionSequence = 1;
+    prematureCombo.pressedActions =
+        Game::Simulation::PLAYER_ACTION_PRIMARY;
+    prematureCombo.reportedMeleeAttackVariant =
+        Game::Simulation::MeleeAttackVariant::LeftCombo;
+    prematureCombo.hasReportedMeleeAttackVariant = true;
+    if (!prematureComboSimulation.SubmitCommand(prematureCombo)) return 634;
+    prematureComboSimulation.StepFixed();
+    const auto deniedPrematureCombo =
+        prematureComboSimulation.SnapshotForPlayer(113);
+    if (!deniedPrematureCombo ||
+        deniedPrematureCombo->meleeAttackVariant !=
+            Game::Simulation::MeleeAttackVariant::LeftSlash) return 634;
+
+    PlayerSimulation ordinaryThirdSlashSimulation;
+    ordinaryThirdSlashSimulation.EnsurePlayer(
+        114, PlayerSpawn{ 118, {}, 0.0f });
+    ordinaryThirdSlashSimulation.SelectWeapon(114, 1);
+    PlayerCommand ordinaryThirdSlash{};
+    ordinaryThirdSlash.ownerPlayerId = 114;
+    ordinaryThirdSlash.sceneId = 118;
+    ordinaryThirdSlash.reportedMeleeAttackVariant =
+        Game::Simulation::MeleeAttackVariant::LeftSlash;
+    ordinaryThirdSlash.hasReportedMeleeAttackVariant = true;
+    for (uint32_t attackIndex = 1; attackIndex <= 3; ++attackIndex) {
+        ordinaryThirdSlash.sequence = attackIndex;
+        ordinaryThirdSlash.actionSequence = attackIndex;
+        ordinaryThirdSlash.pressedActions =
+            Game::Simulation::PLAYER_ACTION_PRIMARY;
+        if (!ordinaryThirdSlashSimulation.SubmitCommand(ordinaryThirdSlash)) {
+            return 635;
+        }
+        ordinaryThirdSlashSimulation.StepFixed();
+        const auto attack =
+            ordinaryThirdSlashSimulation.SnapshotForPlayer(114);
+        if (!attack || attack->meleeAttackVariant !=
+                           Game::Simulation::MeleeAttackVariant::LeftSlash) {
+            return 635;
+        }
+        ordinaryThirdSlash.pressedActions = 0;
+        for (int tick = 0; tick < 12; ++tick) {
+            ordinaryThirdSlashSimulation.StepFixed();
+        }
+    }
+
+    PlayerSimulation spinActionSimulation;
+    spinActionSimulation.EnsurePlayer(15, PlayerSpawn{ 118, {}, 0.0f });
+    if (!spinActionSimulation.SelectWeapon(15, 1)) return 620;
+    PlayerCommand chargedSword{};
+    chargedSword.ownerPlayerId = 15;
+    chargedSword.sequence = 1;
+    chargedSword.actionSequence = 1;
+    chargedSword.sceneId = 118;
+    chargedSword.heldActions = Game::Simulation::PLAYER_ACTION_PRIMARY;
+    chargedSword.pressedActions = Game::Simulation::PLAYER_ACTION_PRIMARY;
+    if (!spinActionSimulation.SubmitCommand(chargedSword)) return 620;
+    spinActionSimulation.StepFixed();
+    chargedSword.actionSequence = 0;
+    chargedSword.pressedActions = 0;
+    for (uint32_t sequence = 2; sequence <= 13; ++sequence) {
+        chargedSword.sequence = sequence;
+        if (!spinActionSimulation.SubmitCommand(chargedSword)) return 620;
+        spinActionSimulation.StepFixed();
+    }
+    const auto chargedSpin = spinActionSimulation.SnapshotForPlayer(15);
+    if (!chargedSpin || chargedSpin->actionState != PlayerActionState::Idle ||
+        (chargedSpin->heldActions & Game::Simulation::PLAYER_ACTION_PRIMARY) == 0) {
+        return 621;
+    }
+    chargedSword.sequence = 14;
+    chargedSword.heldActions = 0;
+    chargedSword.headingRadians = 1.57079632679f;
+    if (!spinActionSimulation.SubmitCommand(chargedSword)) return 622;
+    spinActionSimulation.StepFixed();
+    const auto spinning = spinActionSimulation.SnapshotForPlayer(15);
+    if (!spinning || spinning->actionState != PlayerActionState::SpinAttacking ||
+        !NearlyEqual(spinning->headingRadians, 1.57079632679f)) {
+        return 623;
     }
 
     PlayerSimulation bowActionSimulation;
@@ -843,6 +1004,46 @@ int main() {
         return 129;
     }
 
+    PlayerSimulation emptyHandedBlockSimulation;
+    emptyHandedBlockSimulation.EnsurePlayer(
+        13, PlayerSpawn{ 118, {}, 0.0f });
+    PlayerCommand emptyHandedBlock{};
+    emptyHandedBlock.ownerPlayerId = 13;
+    emptyHandedBlock.sequence = 1;
+    emptyHandedBlock.sceneId = 118;
+    emptyHandedBlock.heldActions =
+        Game::Simulation::PLAYER_ACTION_BLOCK;
+    emptyHandedBlockSimulation.SubmitCommand(emptyHandedBlock);
+    emptyHandedBlockSimulation.StepFixed();
+    const auto emptyHandedBlocking =
+        emptyHandedBlockSimulation.SnapshotForPlayer(13);
+    if (!emptyHandedBlocking || emptyHandedBlocking->selectedWeapon != 0 ||
+        emptyHandedBlocking->actionState != PlayerActionState::Blocking) {
+        return 604;
+    }
+
+    PlayerSimulation reportedMovementAnimationSimulation;
+    reportedMovementAnimationSimulation.EnsurePlayer(
+        14, PlayerSpawn{ 118, {}, 0.0f });
+    PlayerCommand repeatedNativePose{};
+    repeatedNativePose.ownerPlayerId = 14;
+    repeatedNativePose.sequence = 1;
+    repeatedNativePose.sceneId = 118;
+    repeatedNativePose.moveY = 1.0f;
+    repeatedNativePose.hasReportedPose = true;
+    repeatedNativePose.reportedPosition = {};
+    repeatedNativePose.reportedLocomotionMode =
+        Game::Simulation::PlayerLocomotionMode::Grounded;
+    reportedMovementAnimationSimulation.SubmitCommand(repeatedNativePose);
+    reportedMovementAnimationSimulation.StepFixed();
+    const auto repeatedPosePresentation =
+        reportedMovementAnimationSimulation.SnapshotForPlayer(14);
+    if (!repeatedPosePresentation ||
+        repeatedPosePresentation->velocity.z <= 0.0f ||
+        repeatedPosePresentation->locomotionPhaseRadians <= 0.0f) {
+        return 605;
+    }
+
     PlayerSimulation combatSimulation;
     combatSimulation.EnsurePlayer(20, PlayerSpawn{ 118, {}, 0.0f });
     combatSimulation.EnsurePlayer(21, PlayerSpawn{ 118, { 0.0f, 0.0f, 40.0f }, 3.14159265358979323846f });
@@ -866,6 +1067,7 @@ int main() {
         blockedEvents.front().eventId != 1 ||
         blockedEvents.front().result != Game::Simulation::CombatResultKind::Blocked ||
         blockedEvents.front().attackKind != Game::Simulation::CombatAttackKind::Melee ||
+        blockedEvents.front().meleeAttackId != 1 ||
         blockedEvents.front().hitRegion != Game::Simulation::PlayerHitRegion::None ||
         !blockedEvents.front().sourceEntity.Valid() || !blockedEvents.front().targetEntity.Valid() ||
         !blockingTarget ||
@@ -892,6 +1094,7 @@ int main() {
         hitEvents.front().eventId != 2 ||
         hitEvents.front().result != Game::Simulation::CombatResultKind::Damaged ||
         hitEvents.front().attackKind != Game::Simulation::CombatAttackKind::Melee ||
+        hitEvents.front().meleeAttackId != 2 ||
         hitEvents.front().hitRegion == Game::Simulation::PlayerHitRegion::None ||
         hitEvents.front().damage != Game::Simulation::DamageForPlayerHitRegion(
                                         8, hitEvents.front().hitRegion) ||
@@ -905,6 +1108,39 @@ int main() {
     const auto respawned = combatSimulation.SnapshotForPlayer(21);
     if (!respawned || respawned->health != 48 || !NearlyEqual(respawned->position.z, 40.0f)) {
         return 13;
+    }
+
+    PlayerSimulation wallCombatSimulation;
+    wallCombatSimulation.SetCollisionQuery(
+        [](int32_t, const Game::Simulation::Vec3& start,
+           const Game::Simulation::Vec3& end,
+           Game::Simulation::Vec3& impact) {
+            constexpr float wallZ = 20.0f;
+            const float deltaZ = end.z - start.z;
+            if (std::fabs(deltaZ) <= 0.00001f) return false;
+            const float ratio = (wallZ - start.z) / deltaZ;
+            if (ratio < 0.0f || ratio > 1.0f) return false;
+            impact = { start.x + (end.x - start.x) * ratio,
+                       start.y + (end.y - start.y) * ratio, wallZ };
+            return true;
+        });
+    wallCombatSimulation.EnsurePlayer(22, PlayerSpawn{ 118, {}, 0.0f });
+    wallCombatSimulation.EnsurePlayer(
+        23, PlayerSpawn{ 118, { 0.0f, 0.0f, 40.0f },
+                         3.14159265358979323846f });
+    wallCombatSimulation.SelectWeapon(22, 1);
+    PlayerCommand wallAttack{};
+    wallAttack.ownerPlayerId = 22;
+    wallAttack.sequence = 1;
+    wallAttack.actionSequence = 1;
+    wallAttack.sceneId = 118;
+    wallAttack.pressedActions = Game::Simulation::PLAYER_ACTION_PRIMARY;
+    wallCombatSimulation.SubmitCommand(wallAttack);
+    for (int tick = 0; tick < 9; ++tick) wallCombatSimulation.StepFixed();
+    const auto targetBehindWall = wallCombatSimulation.SnapshotForPlayer(23);
+    if (!wallCombatSimulation.DrainCombatResults().empty() ||
+        !targetBehindWall || targetBehindWall->health != 48) {
+        return 624;
     }
 
     PlayerSimulation projectilePlayers;
@@ -954,11 +1190,64 @@ int main() {
                                                8, projectileDamage.front().hitRegion) ||
         !projectileTarget ||
         projectileTarget->health != 48 - projectileDamage.front().damage ||
-        projectiles.HasArrow(30, spawnedArrow->replicationId)) {
+        !projectiles.HasArrow(30, spawnedArrow->replicationId) ||
+        !projectileEvents.back().arrow.active ||
+        projectileEvents.back().arrow.phase != Game::Simulation::ArrowPhase::Stuck ||
+        projectileEvents.back().arrow.body.playerId != 31 ||
+        projectileEvents.back().arrow.body.region != projectileDamage.front().hitRegion) {
         return 15;
     }
 
     PlayerCommand projectileBlock{};
+    {
+        PlayerSimulation targets;
+        targets.EnsurePlayer(30, PlayerSpawn{ 118, {}, 0.0f });
+        targets.EnsurePlayer(31, PlayerSpawn{ 118, { 0.0f, 0.0f, 80.0f }, 0.0f });
+        ProjectileSimulation arrows;
+        arrows.SpawnArrow({ 30, 118, 0, { 0.0f, 42.0f, 14.0f }, { 0.0f, 0.0f, 3000.0f }, 0 });
+        arrows.StepFixed(targets);
+        arrows.StepFixed(targets);
+        const auto lodged = arrows.Snapshots();
+        if (lodged.size() != 1 || lodged[0].body.playerId != 31) return 600;
+        PlayerCommand move{};
+        move.ownerPlayerId = 31;
+        move.sceneId = 118;
+        move.sequence = 1;
+        move.headingRadians = 1.0f;
+        move.moveY = 1.0f;
+        targets.SubmitCommand(move);
+        for (int tick = 0; tick < 20; ++tick) {
+            targets.StepFixed();
+            arrows.StepFixed(targets);
+        }
+        const auto followed = arrows.Snapshots();
+        if (followed.size() != 1 ||
+            (NearlyEqual(followed[0].position.x, lodged[0].position.x) &&
+             NearlyEqual(followed[0].position.z, lodged[0].position.z))) return 601;
+        (void)arrows.DrainEvents();
+        const auto health = targets.SnapshotForPlayer(31)->health;
+        if (health != 40) return 602;
+        targets.ApplyDamage(30, 31, 255, 0);
+        arrows.DetachFromPlayerLife(31, 1);
+        const auto detachEvents = arrows.DrainEvents();
+        const auto detached = arrows.Snapshots();
+        if (detachEvents.size() != 1 ||
+            detachEvents.front().kind !=
+                Game::Simulation::ArrowEventKind::BodyDetached ||
+            detachEvents.front().arrow.body.playerId >= 0 ||
+            detached.size() != 1 || detached[0].body.playerId >= 0) {
+            return 603;
+        }
+        targets.RespawnPlayer(31);
+        arrows.StepFixed(targets);
+        const auto retained = arrows.Snapshots();
+        if (retained.size() != 1 || retained[0].body.playerId >= 0 ||
+            !NearlyEqual(retained[0].position.x, detached[0].position.x) ||
+            !NearlyEqual(retained[0].position.y, detached[0].position.y) ||
+            !NearlyEqual(retained[0].position.z, detached[0].position.z)) {
+            return 603;
+        }
+    }
     projectileBlock.ownerPlayerId = 31;
     projectileBlock.sequence = 1;
     projectileBlock.sceneId = 118;
@@ -985,6 +1274,80 @@ int main() {
         !shieldTarget ||
         shieldTarget->health != 48 - projectileDamage.front().damage) {
         return 16;
+    }
+    {
+        const auto shieldPose =
+            Game::Simulation::SampleAuthoritativePlayerSkeletonPose(
+                *shieldTarget);
+        const auto& leftWrist =
+            shieldPose[Game::Simulation::PlayerHitJoint::LeftWrist];
+        const auto& rightWrist =
+            shieldPose[Game::Simulation::PlayerHitJoint::RightWrist];
+        const Game::Simulation::Vec3 center{
+            (leftWrist.x + rightWrist.x) * 0.5f,
+            (leftWrist.y + rightWrist.y) * 0.5f,
+            (leftWrist.z + rightWrist.z) * 0.5f
+        };
+        const Game::Simulation::Vec3 forward{
+            std::sin(shieldTarget->headingRadians), 0.0f,
+            std::cos(shieldTarget->headingRadians)
+        };
+        const Game::Simulation::Vec3 right{
+            std::cos(shieldTarget->headingRadians), 0.0f,
+            -std::sin(shieldTarget->headingRadians)
+        };
+        const auto shieldRay = [&](float horizontal, float vertical,
+                                   Game::Simulation::ShieldHit& hit) {
+            const Game::Simulation::Vec3 point{
+                center.x + right.x * horizontal,
+                center.y + vertical,
+                center.z + right.z * horizontal
+            };
+            const Game::Simulation::Vec3 start{
+                point.x - forward.x * 30.0f, point.y,
+                point.z - forward.z * 30.0f
+            };
+            const Game::Simulation::Vec3 end{
+                point.x + forward.x * 30.0f, point.y,
+                point.z + forward.z * 30.0f
+            };
+            return Game::Simulation::SegmentAuthoritativeShieldFirstHit(
+                start, end, *shieldTarget, hit);
+        };
+        Game::Simulation::ShieldHit centerHit{};
+        Game::Simulation::ShieldHit cornerHit{};
+        if (!shieldRay(0.0f, 0.0f, centerHit)) return 606;
+        if (shieldRay(14.0f, 12.0f, cornerHit)) return 607;
+
+        const auto bodyRig =
+            Game::Simulation::BuildAuthoritativePlayerHitRig(*shieldTarget);
+        bool shieldExtendsPastBody = false;
+        for (float horizontal = -16.0f; horizontal <= 16.0f;
+             horizontal += 0.5f) {
+            const Game::Simulation::Vec3 point{
+                center.x + right.x * horizontal,
+                center.y,
+                center.z + right.z * horizontal
+            };
+            const Game::Simulation::Vec3 start{
+                point.x - forward.x * 30.0f, point.y,
+                point.z - forward.z * 30.0f
+            };
+            const Game::Simulation::Vec3 end{
+                point.x + forward.x * 30.0f, point.y,
+                point.z + forward.z * 30.0f
+            };
+            Game::Simulation::ShieldHit shieldEdge{};
+            Game::Simulation::PlayerRigHit bodyEdge{};
+            if (Game::Simulation::SegmentAuthoritativeShieldFirstHit(
+                    start, end, *shieldTarget, shieldEdge) &&
+                !Game::Simulation::SegmentArticulatedPlayerHitRigFirstHit(
+                    start, end, bodyRig, bodyEdge)) {
+                shieldExtendsPastBody = true;
+                break;
+            }
+        }
+        if (!shieldExtendsPastBody) return 625;
     }
 
     PlayerSimulation teamPlayers;
@@ -1270,8 +1633,10 @@ int main() {
     const auto authoritativeLure = fishingAuthority.LureForPlayer(72);
     const auto authoritativeFish = fishingAuthority.FishOwnedBy(72);
     if (!authoritativeFish || authoritativeFish->identity != boundedFish ||
+        authoritativeFish->ownerLifeEpoch != equippedFishingPlayer->lifeEpoch ||
         !NearlyEqual(authoritativeFish->length, 18.0f) ||
         !authoritativeLure || authoritativeLure->lureType != 2 ||
+        authoritativeLure->ownerLifeEpoch != equippedFishingPlayer->lifeEpoch ||
         !NearlyEqual(authoritativeFish->position.x, authoritativeLure->position.x) ||
         !NearlyEqual(authoritativeFish->position.y, authoritativeLure->position.y) ||
         !NearlyEqual(authoritativeFish->position.z, authoritativeLure->position.z) ||
@@ -1283,6 +1648,13 @@ int main() {
               Game::Simulation::FishActionKind::Release }) ||
         fishingAuthority.FishOwnedBy(72)) {
         return 317;
+    }
+    Game::Simulation::PlayerSnapshot nextFishingLife = *equippedFishingPlayer;
+    ++nextFishingLife.lifeEpoch;
+    ServerWorldTestAccess::Fishing(fishingAuthority).RemoveIneligibleOwners(
+        { nextFishingLife });
+    if (fishingAuthority.LureForPlayer(72) || fishingAuthority.FishOwnedBy(72)) {
+        return 534;
     }
 
     ServerWorld groundedInteractionAuthority;
@@ -1321,7 +1693,7 @@ int main() {
     enterInteractionWater.sequence = 1;
     enterInteractionWater.lifeEpoch = interactionPlayer->lifeEpoch;
     enterInteractionWater.sceneId = 118;
-    enterInteractionWater.moveX = 1.0f;
+    enterInteractionWater.moveX = -1.0f;
     if (!groundedInteractionAuthority.SubmitPlayerCommand(
             enterInteractionWater)) {
         return 468;
@@ -1414,14 +1786,15 @@ int main() {
     airborneItemCommand.sequence = 1;
     airborneItemCommand.lifeEpoch = airborneItemPlayer->lifeEpoch;
     airborneItemCommand.sceneId = 118;
-    airborneItemCommand.moveX = 1.0f;
+    airborneItemCommand.moveX = -1.0f;
     if (!airborneItemAuthority.SubmitPlayerCommand(airborneItemCommand)) return 475;
     ServerWorldTestAccess::Players(airborneItemAuthority).StepFixed();
     airborneItemCommand.sequence = 2;
     airborneItemCommand.moveX = 0.0f;
-    airborneItemCommand.heldActions = Game::Simulation::PLAYER_ACTION_AIM;
+    airborneItemCommand.heldActions = Game::Simulation::PLAYER_ACTION_AIM |
+                                      Game::Simulation::PLAYER_ACTION_PRIMARY;
     if (!airborneItemAuthority.SubmitPlayerCommand(airborneItemCommand)) return 475;
-    for (uint32_t tick = 0; tick <= Game::Simulation::kBowMinimumDrawDurationTicks;
+    for (uint32_t tick = 0; tick <= Game::Simulation::kBowRefireDurationTicks;
          ++tick) {
         if (tick != 0) {
             ++airborneItemCommand.sequence;
@@ -1527,51 +1900,673 @@ int main() {
     Game::Simulation::PlayerCommand bowCommand{};
     bowCommand.ownerPlayerId = 73;
     bowCommand.sequence = 1;
+    bowCommand.clientTick = 100;
     bowCommand.sceneId = 118;
     bowCommand.headingRadians = 1.57079632679f;
     bowCommand.aimPitchRadians = 0.25f;
-    bowCommand.heldActions = Game::Simulation::PLAYER_ACTION_AIM;
+    bowCommand.heldActions = Game::Simulation::PLAYER_ACTION_AIM |
+                             Game::Simulation::PLAYER_ACTION_PRIMARY;
     if (!arrowAuthority.ExecuteWeaponSelection(
             { 73, 1, arrowAuthority.PlayerFor(73)->lifeEpoch, 3 }) ||
         !arrowAuthority.SubmitPlayerCommand(bowCommand)) return 319;
     ServerWorldTestAccess::Players(arrowAuthority).StepFixed();
     const uint32_t arrowLifeEpoch = arrowAuthority.PlayerFor(73)->lifeEpoch;
     const auto staleArrowDecision =
-        arrowAuthority.ExecuteArrowFire({ 73, 2, arrowLifeEpoch + 1 });
-    const auto prematureArrowDecision =
-        arrowAuthority.ExecuteArrowFire({ 73, 2, arrowLifeEpoch });
-    const auto duplicatePrematureArrowDecision =
-        arrowAuthority.ExecuteArrowFire({ 73, 2, arrowLifeEpoch });
+        arrowAuthority.ExecuteArrowFire({ 73, 2, arrowLifeEpoch + 1, 100 });
+    const auto immediateArrowDecision =
+        arrowAuthority.ExecuteArrowFire({ 73, 2, arrowLifeEpoch, 100 });
+    const auto duplicateImmediateArrowDecision =
+        arrowAuthority.ExecuteArrowFire({ 73, 2, arrowLifeEpoch, 100 });
     for (uint32_t tick = 0;
-         tick < Game::Simulation::kBowMinimumDrawDurationTicks; ++tick) {
+        tick < Game::Simulation::kBowRefireDurationTicks; ++tick) {
         bowCommand.sequence = 2 + tick;
+        bowCommand.clientTick = 101 + tick;
         if (!arrowAuthority.SubmitPlayerCommand(bowCommand)) return 320;
         ServerWorldTestAccess::Players(arrowAuthority).StepFixed();
     }
+    // The reliable shot for client tick 102 is deliberately delivered after
+    // a newer movement sample has turned the player. It must retain the aim
+    // from the causal fire sample, not packet-arrival orientation.
+    bowCommand.sequence = 4;
+    bowCommand.clientTick = 103;
+    bowCommand.headingRadians = 0.0f;
+    bowCommand.aimPitchRadians = -0.5f;
+    if (!arrowAuthority.SubmitPlayerCommand(bowCommand)) return 320;
+    ServerWorldTestAccess::Players(arrowAuthority).StepFixed();
     const auto acceptedArrowDecision =
-        arrowAuthority.ExecuteArrowFire({ 73, 3, arrowLifeEpoch });
+        arrowAuthority.ExecuteArrowFire({ 73, 3, arrowLifeEpoch, 102 });
     const auto duplicateArrowDecision =
-        arrowAuthority.ExecuteArrowFire({ 73, 3, arrowLifeEpoch });
-    const auto consumedDrawDecision =
-        arrowAuthority.ExecuteArrowFire({ 73, 4, arrowLifeEpoch });
-    if (staleArrowDecision.accepted || prematureArrowDecision.accepted ||
-        duplicatePrematureArrowDecision.accepted || !acceptedArrowDecision.accepted ||
-        acceptedArrowDecision.projectileId <= 0 ||
-        !duplicateArrowDecision.accepted ||
-        duplicateArrowDecision.projectileId != acceptedArrowDecision.projectileId ||
-        consumedDrawDecision.accepted || consumedDrawDecision.projectileId != 0 ||
-        ServerWorldTestAccess::Players(arrowAuthority).BowShotReady(73)) {
-        return 320;
-    }
+        arrowAuthority.ExecuteArrowFire({ 73, 3, arrowLifeEpoch, 102 });
+    const auto sameTickArrowDecision =
+        arrowAuthority.ExecuteArrowFire({ 73, 4, arrowLifeEpoch, 102 });
+    if (staleArrowDecision.accepted) return 490;
+    if (immediateArrowDecision.accepted || immediateArrowDecision.projectileId != 0) return 491;
+    if (duplicateImmediateArrowDecision.accepted ||
+        duplicateImmediateArrowDecision.projectileId != 0) return 492;
+    if (!acceptedArrowDecision.accepted || acceptedArrowDecision.projectileId <= 0) return 493;
+    if (!duplicateArrowDecision.accepted ||
+        duplicateArrowDecision.projectileId != acceptedArrowDecision.projectileId) return 494;
+    if (sameTickArrowDecision.accepted || sameTickArrowDecision.projectileId != 0) return 495;
+    if (ServerWorldTestAccess::Players(arrowAuthority).BowShotReady(73)) return 496;
     const auto authoritativeArrows = arrowAuthority.ArrowSnapshots();
-    if (authoritativeArrows.size() != 1 || !NearlyEqual(authoritativeArrows.front().position.x, 114.0f) ||
-        authoritativeArrows.front().projectileType != 2 ||
-        !NearlyEqual(authoritativeArrows.front().position.y, 52.0f) ||
-        !NearlyEqual(authoritativeArrows.front().position.z, 200.0f) ||
-        !NearlyEqual(authoritativeArrows.front().velocity.x, std::cos(0.25f) * 3000.0f) ||
-        !NearlyEqual(authoritativeArrows.front().velocity.y, -std::sin(0.25f) * 3000.0f)) {
+    if (authoritativeArrows.size() != 1 || !NearlyEqual(authoritativeArrows.back().position.x, 114.0f) ||
+        authoritativeArrows.back().projectileType != 2 ||
+        !NearlyEqual(authoritativeArrows.back().position.y, 52.0f) ||
+        !NearlyEqual(authoritativeArrows.back().position.z, 200.0f) ||
+        !NearlyEqual(authoritativeArrows.back().velocity.x, std::cos(0.25f) * 3000.0f) ||
+        !NearlyEqual(authoritativeArrows.back().velocity.y, -std::sin(0.25f) * 3000.0f)) {
         return 321;
     }
+
+    bowCommand.heldActions = Game::Simulation::PLAYER_ACTION_AIM;
+    bowCommand.sequence = 5;
+    bowCommand.clientTick = 104;
+    if (!arrowAuthority.SubmitPlayerCommand(bowCommand)) return 544;
+    ServerWorldTestAccess::Players(arrowAuthority).StepFixed();
+    bowCommand.heldActions |= Game::Simulation::PLAYER_ACTION_PRIMARY;
+    for (uint32_t tick = 0;
+        tick <= Game::Simulation::kBowRefireDurationTicks; ++tick) {
+        bowCommand.sequence = 6 + tick;
+        // Leave client tick 108 absent, representing one dropped disposable
+        // movement sample while the reliable fire action still arrives.
+        bowCommand.clientTick = 105 + tick * 2;
+        if (!arrowAuthority.SubmitPlayerCommand(bowCommand)) return 544;
+        ServerWorldTestAccess::Players(arrowAuthority).StepFixed();
+    }
+    if (!arrowAuthority.ExecuteArrowFire(
+            { 73, 5, arrowLifeEpoch, 108, 8192, 4096 }).accepted ||
+        arrowAuthority.ArrowSnapshots().size() != 2 ||
+        !NearlyEqual(arrowAuthority.ArrowSnapshots().back().velocity.x,
+                     std::cos(3.14159265358979323846f / 8.0f) *
+                         std::sin(3.14159265358979323846f / 4.0f) * 3000.0f) ||
+        !NearlyEqual(arrowAuthority.ArrowSnapshots().back().velocity.z,
+                     std::cos(3.14159265358979323846f / 8.0f) *
+                         std::cos(3.14159265358979323846f / 4.0f) * 3000.0f)) {
+        return 544;
+    }
+    // Continued hold is not another draw cycle. A second projectile requires
+    // an observed release and fresh press, regardless of forged intent IDs.
+    for (uint32_t tick = 0;
+        tick <= Game::Simulation::kBowRefireDurationTicks; ++tick) {
+        bowCommand.sequence = 9 + tick;
+        bowCommand.clientTick = 111 + tick;
+        if (!arrowAuthority.SubmitPlayerCommand(bowCommand)) return 545;
+        ServerWorldTestAccess::Players(arrowAuthority).StepFixed();
+    }
+    if (arrowAuthority.ExecuteArrowFire({ 73, 6, arrowLifeEpoch, 113 }).accepted) {
+        return 545;
+    }
+    for (int tick = 0; tick < 7; ++tick) {
+        ServerWorldTestAccess::Players(arrowAuthority).StepFixed();
+    }
+    if (arrowAuthority.ExecuteArrowFire({ 73, 7, arrowLifeEpoch, 113 }).accepted) {
+        return 543;
+    }
+
+    PlayerSimulation reportedPoseSimulation;
+    reportedPoseSimulation.SetWaterSurfaceQuery(
+        [](int32_t, const Game::Simulation::Vec3&, float& surfaceY) {
+            surfaceY = 51.0f;
+            return true;
+        });
+    reportedPoseSimulation.SetClimbSurfaceQuery(
+        [](int32_t, const Game::Simulation::Vec3&,
+           const Game::Simulation::Vec3&, float) { return true; });
+    const auto reportedPosePlayer = reportedPoseSimulation.EnsurePlayer(
+        77, PlayerSpawn{ 118, {}, 0.0f });
+    const auto reportedPoseInitial = reportedPoseSimulation.SnapshotForPlayer(77);
+    if (!reportedPosePlayer.Valid() || !reportedPoseInitial) return 497;
+    PlayerCommand reportedPose{};
+    reportedPose.ownerPlayerId = 77;
+    reportedPose.sequence = 1;
+    reportedPose.lifeEpoch = reportedPoseInitial->lifeEpoch;
+    reportedPose.sceneId = 118;
+    reportedPose.reportedPosition = { 10.0f, 8.0f, 0.0f };
+    reportedPose.reportedLocomotionMode =
+        Game::Simulation::PlayerLocomotionMode::Climbing;
+    reportedPose.hasReportedPose = true;
+    if (!reportedPoseSimulation.SubmitCommand(reportedPose)) return 497;
+    reportedPoseSimulation.StepFixed();
+    const auto climbingPose = reportedPoseSimulation.SnapshotForPlayer(77);
+    if (!climbingPose || !NearlyEqual(climbingPose->position.x, 10.0f) ||
+        !NearlyEqual(climbingPose->position.y, 8.0f) ||
+        climbingPose->locomotionMode !=
+            Game::Simulation::PlayerLocomotionMode::Climbing) return 498;
+    reportedPoseSimulation.StepFixed();
+    const auto heldClimbingPose =
+        reportedPoseSimulation.SnapshotForPlayer(77);
+    if (!heldClimbingPose ||
+        !NearlyEqual(heldClimbingPose->position.x, 10.0f) ||
+        !NearlyEqual(heldClimbingPose->position.y, 8.0f)) return 546;
+    reportedPose.sequence = 2;
+    reportedPose.clientTick = 2;
+    reportedPose.reportedPosition = { 12.0f, -5.0f, 0.0f };
+    reportedPose.reportedLocomotionMode =
+        Game::Simulation::PlayerLocomotionMode::Swimming;
+    if (!reportedPoseSimulation.SubmitCommand(reportedPose)) return 547;
+    reportedPoseSimulation.StepFixed();
+    reportedPoseSimulation.StepFixed();
+    const auto heldSwimmingPose =
+        reportedPoseSimulation.SnapshotForPlayer(77);
+    if (!heldSwimmingPose ||
+        !NearlyEqual(heldSwimmingPose->position.x, 12.0f) ||
+        !NearlyEqual(heldSwimmingPose->position.y, -5.0f) ||
+        heldSwimmingPose->locomotionMode !=
+            Game::Simulation::PlayerLocomotionMode::Swimming) return 547;
+
+    reportedPose.sequence = 3;
+    reportedPose.clientTick = 3;
+    reportedPose.reportedPosition = { 1000.0f, 8.0f, 0.0f };
+    reportedPose.reportedLocomotionMode =
+        Game::Simulation::PlayerLocomotionMode::Grounded;
+    if (!reportedPoseSimulation.SubmitCommand(reportedPose)) return 499;
+    reportedPoseSimulation.StepFixed();
+    const auto boundedPose = reportedPoseSimulation.SnapshotForPlayer(77);
+    if (!boundedPose || !NearlyEqual(boundedPose->position.x, 12.0f) ||
+        !NearlyEqual(boundedPose->position.y, -5.0f) ||
+        boundedPose->locomotionMode !=
+            Game::Simulation::PlayerLocomotionMode::Swimming ||
+        reportedPoseSimulation.SubmitCommand(reportedPose)) return 500;
+
+    PlayerSimulation rejectedClimbSimulation;
+    const auto rejectedClimbPlayer = rejectedClimbSimulation.EnsurePlayer(
+        79, PlayerSpawn{ 118, {}, 0.0f });
+    const auto rejectedClimbInitial =
+        rejectedClimbSimulation.SnapshotForPlayer(79);
+    if (!rejectedClimbPlayer.Valid() || !rejectedClimbInitial) return 538;
+    PlayerCommand rejectedClimb{};
+    rejectedClimb.ownerPlayerId = 79;
+    rejectedClimb.sequence = 1;
+    rejectedClimb.lifeEpoch = rejectedClimbInitial->lifeEpoch;
+    rejectedClimb.sceneId = 118;
+    rejectedClimb.hasReportedPose = true;
+    rejectedClimb.reportedLocomotionMode =
+        Game::Simulation::PlayerLocomotionMode::Climbing;
+    rejectedClimb.reportedPosition = { 0.0f, 30.0f, 0.0f };
+    if (!rejectedClimbSimulation.SubmitCommand(rejectedClimb)) return 539;
+    rejectedClimbSimulation.StepFixed();
+    const auto rejectedClimbSnapshot =
+        rejectedClimbSimulation.SnapshotForPlayer(79);
+    if (!rejectedClimbSnapshot ||
+        !NearlyEqual(rejectedClimbSnapshot->position.y, 0.0f) ||
+        rejectedClimbSnapshot->locomotionMode ==
+            Game::Simulation::PlayerLocomotionMode::Climbing) {
+        return 540;
+    }
+
+    PlayerSimulation climbingWallSimulation;
+    int climbSurfaceQueries = 0;
+    climbingWallSimulation.SetClimbSurfaceQuery(
+        [&climbSurfaceQueries](int32_t, const Game::Simulation::Vec3&,
+                              const Game::Simulation::Vec3&, float) {
+            ++climbSurfaceQueries;
+            return true;
+        });
+    climbingWallSimulation.SetCollisionQuery(
+        [](int32_t, const Game::Simulation::Vec3& from,
+           const Game::Simulation::Vec3& to, Game::Simulation::Vec3& impact) {
+            if (NearlyEqual(from.x, to.x) && NearlyEqual(from.z, to.z)) return false;
+            impact = to;
+            return true;
+        });
+    const auto climbingWallPlayer = climbingWallSimulation.EnsurePlayer(
+        78, PlayerSpawn{ 118, {}, 0.0f });
+    const auto climbingWallInitial = climbingWallSimulation.SnapshotForPlayer(78);
+    if (!climbingWallPlayer.Valid() || !climbingWallInitial) return 504;
+    PlayerCommand climbingWallCommand{};
+    climbingWallCommand.ownerPlayerId = 78;
+    climbingWallCommand.sequence = 1;
+    climbingWallCommand.lifeEpoch = climbingWallInitial->lifeEpoch;
+    climbingWallCommand.sceneId = 118;
+    climbingWallCommand.reportedPosition = { 10.0f, 8.0f, 0.0f };
+    climbingWallCommand.reportedLocomotionMode =
+        Game::Simulation::PlayerLocomotionMode::Climbing;
+    climbingWallCommand.hasReportedPose = true;
+    if (!climbingWallSimulation.SubmitCommand(climbingWallCommand)) return 504;
+    climbingWallSimulation.StepFixed();
+    const auto acceptedClimb = climbingWallSimulation.SnapshotForPlayer(78);
+    if (!acceptedClimb || !NearlyEqual(acceptedClimb->position.x, 10.0f) ||
+        !NearlyEqual(acceptedClimb->position.y, 8.0f)) return 505;
+    climbingWallCommand.sequence = 2;
+    climbingWallCommand.clientTick = 2;
+    climbingWallCommand.reportedPosition = { 20.0f, 16.0f, 0.0f };
+    if (!climbingWallSimulation.SubmitCommand(climbingWallCommand)) return 506;
+    climbingWallSimulation.StepFixed();
+    const auto continuedClimb = climbingWallSimulation.SnapshotForPlayer(78);
+    if (!continuedClimb || !NearlyEqual(continuedClimb->position.x, 20.0f) ||
+        !NearlyEqual(continuedClimb->position.y, 16.0f) ||
+        climbSurfaceQueries != 2) return 506;
+
+    climbingWallCommand.sequence = 3;
+    climbingWallCommand.clientTick = 3;
+    climbingWallCommand.reportedPosition = { 30.0f, 24.0f, 0.0f };
+    climbingWallCommand.reportedLocomotionMode =
+        Game::Simulation::PlayerLocomotionMode::Grounded;
+    if (!climbingWallSimulation.SubmitCommand(climbingWallCommand)) return 506;
+    climbingWallSimulation.StepFixed();
+    const auto completedClimb = climbingWallSimulation.SnapshotForPlayer(78);
+    if (!completedClimb ||
+        !NearlyEqual(completedClimb->position.x, 30.0f) ||
+        !NearlyEqual(completedClimb->position.y, 24.0f) ||
+        completedClimb->locomotionMode !=
+            Game::Simulation::PlayerLocomotionMode::Grounded) return 506;
+
+    climbingWallCommand.sequence = 4;
+    climbingWallCommand.clientTick = 4;
+    climbingWallCommand.reportedPosition = { 31.0f, 25.0f, 0.0f };
+    climbingWallCommand.reportedLocomotionMode =
+        Game::Simulation::PlayerLocomotionMode::Climbing;
+    if (!climbingWallSimulation.SubmitCommand(climbingWallCommand)) return 636;
+    climbingWallSimulation.StepFixed();
+    const auto staleClimb = climbingWallSimulation.SnapshotForPlayer(78);
+    if (!staleClimb || !NearlyEqual(staleClimb->position.x, 30.0f) ||
+        staleClimb->locomotionMode !=
+            Game::Simulation::PlayerLocomotionMode::Grounded) return 636;
+
+    climbingWallCommand.sequence = 5;
+    climbingWallCommand.clientTick = 5;
+    climbingWallCommand.reportedPosition = { 40.0f, 24.0f, 0.0f };
+    climbingWallCommand.reportedLocomotionMode =
+        Game::Simulation::PlayerLocomotionMode::Grounded;
+    if (!climbingWallSimulation.SubmitCommand(climbingWallCommand)) return 507;
+    climbingWallSimulation.StepFixed();
+    const auto blockedGroundMove = climbingWallSimulation.SnapshotForPlayer(78);
+    if (!blockedGroundMove ||
+        !NearlyEqual(blockedGroundMove->position.x, 30.0f)) return 507;
+
+    PlayerSimulation boundedClimbSimulation;
+    int boundedClimbQueries = 0;
+    boundedClimbSimulation.SetClimbSurfaceQuery(
+        [&boundedClimbQueries](int32_t, const Game::Simulation::Vec3&,
+                               const Game::Simulation::Vec3&, float) {
+            return boundedClimbQueries++ == 0;
+        });
+    const auto boundedClimbPlayer = boundedClimbSimulation.EnsurePlayer(
+        82, PlayerSpawn{ 118, {}, 0.0f });
+    const auto boundedClimbInitial =
+        boundedClimbSimulation.SnapshotForPlayer(82);
+    if (!boundedClimbPlayer.Valid() || !boundedClimbInitial) return 555;
+    PlayerCommand boundedClimb{};
+    boundedClimb.ownerPlayerId = 82;
+    boundedClimb.sequence = 1;
+    boundedClimb.clientTick = 1;
+    boundedClimb.lifeEpoch = boundedClimbInitial->lifeEpoch;
+    boundedClimb.sceneId = 118;
+    boundedClimb.hasReportedPose = true;
+    boundedClimb.reportedLocomotionMode =
+        Game::Simulation::PlayerLocomotionMode::Climbing;
+    boundedClimb.reportedPosition = { 10.0f, 8.0f, 0.0f };
+    if (!boundedClimbSimulation.SubmitCommand(boundedClimb)) return 555;
+    boundedClimbSimulation.StepFixed();
+    boundedClimb.sequence = 2;
+    boundedClimb.clientTick = 2;
+    boundedClimb.reportedPosition = { 20.0f, 16.0f, 0.0f };
+    if (!boundedClimbSimulation.SubmitCommand(boundedClimb)) return 555;
+    boundedClimbSimulation.StepFixed();
+    boundedClimb.sequence = 3;
+    boundedClimb.clientTick = 3;
+    boundedClimb.reportedPosition = { 40.0f, 32.0f, 0.0f };
+    if (!boundedClimbSimulation.SubmitCommand(boundedClimb)) return 555;
+    boundedClimbSimulation.StepFixed();
+    boundedClimb.sequence = 4;
+    boundedClimb.clientTick = 4;
+    boundedClimb.reportedPosition = { 70.0f, 56.0f, 0.0f };
+    if (!boundedClimbSimulation.SubmitCommand(boundedClimb)) return 555;
+    boundedClimbSimulation.StepFixed();
+    const auto escapedClimb = boundedClimbSimulation.SnapshotForPlayer(82);
+    if (!escapedClimb || !NearlyEqual(escapedClimb->position.x, 40.0f) ||
+        !NearlyEqual(escapedClimb->position.y, 32.0f) ||
+        boundedClimbQueries != 4) return 555;
+
+    // A client tick is causal metadata, not elapsed authoritative time. A
+    // forged jump in that counter must not mint enough movement budget to
+    // teleport, while the same bounded displacement is admissible after the
+    // server has actually observed enough fixed ticks.
+    PlayerSimulation serverTimedPoseSimulation;
+    const auto serverTimedPosePlayer = serverTimedPoseSimulation.EnsurePlayer(
+        80, PlayerSpawn{ 118, {}, 0.0f });
+    const auto serverTimedPoseInitial =
+        serverTimedPoseSimulation.SnapshotForPlayer(80);
+    if (!serverTimedPosePlayer.Valid() || !serverTimedPoseInitial) return 548;
+    PlayerCommand serverTimedPose{};
+    serverTimedPose.ownerPlayerId = 80;
+    serverTimedPose.sequence = 1;
+    serverTimedPose.clientTick = 1;
+    serverTimedPose.lifeEpoch = serverTimedPoseInitial->lifeEpoch;
+    serverTimedPose.sceneId = 118;
+    serverTimedPose.hasReportedPose = true;
+    serverTimedPose.reportedLocomotionMode =
+        Game::Simulation::PlayerLocomotionMode::Grounded;
+    serverTimedPose.moveX = -1.0f;
+    serverTimedPose.reportedPosition = { 10.0f, 0.0f, 0.0f };
+    if (!serverTimedPoseSimulation.SubmitCommand(serverTimedPose)) return 548;
+    serverTimedPoseSimulation.StepFixed();
+    const auto admittedServerTimedPose =
+        serverTimedPoseSimulation.SnapshotForPlayer(80);
+    if (!admittedServerTimedPose) return 549;
+    const float admittedLocomotionPhase =
+        admittedServerTimedPose->locomotionPhaseRadians;
+
+    serverTimedPose.sequence = 2;
+    serverTimedPose.clientTick = 1000000;
+    serverTimedPose.reportedPosition = { 40.0f, 0.0f, 0.0f };
+    if (!serverTimedPoseSimulation.SubmitCommand(serverTimedPose)) return 548;
+    serverTimedPoseSimulation.StepFixed();
+    auto serverTimedPoseSnapshot =
+        serverTimedPoseSimulation.SnapshotForPlayer(80);
+    if (!serverTimedPoseSnapshot ||
+        !NearlyEqual(serverTimedPoseSnapshot->position.x, 10.0f) ||
+        !NearlyEqual(serverTimedPoseSnapshot->locomotionPhaseRadians,
+                     admittedLocomotionPhase)) return 549;
+
+    for (int tick = 0; tick < 4; ++tick) {
+        serverTimedPoseSimulation.StepFixed();
+    }
+    serverTimedPoseSnapshot = serverTimedPoseSimulation.SnapshotForPlayer(80);
+    if (!serverTimedPoseSnapshot ||
+        !NearlyEqual(serverTimedPoseSnapshot->locomotionPhaseRadians,
+                     admittedLocomotionPhase)) return 549;
+    serverTimedPose.sequence = 3;
+    serverTimedPose.clientTick = 1000001;
+    if (!serverTimedPoseSimulation.SubmitCommand(serverTimedPose)) return 548;
+    serverTimedPoseSimulation.StepFixed();
+    serverTimedPoseSnapshot = serverTimedPoseSimulation.SnapshotForPlayer(80);
+    if (!serverTimedPoseSnapshot ||
+        !NearlyEqual(serverTimedPoseSnapshot->position.x, 40.0f)) return 548;
+
+    const float directionAdmittedPhase =
+        serverTimedPoseSnapshot->locomotionPhaseRadians;
+    serverTimedPose.sequence = 4;
+    serverTimedPose.clientTick = 1000002;
+    // moveX=-1 means player-left / positive world X at heading zero. This
+    // six-unit negative-X displacement is below the ordinary speed cap but
+    // contradicts both the current and previous causal movement direction.
+    serverTimedPose.reportedPosition = { 34.0f, 0.0f, 0.0f };
+    if (!serverTimedPoseSimulation.SubmitCommand(serverTimedPose)) return 550;
+    serverTimedPoseSimulation.StepFixed();
+    serverTimedPoseSnapshot = serverTimedPoseSimulation.SnapshotForPlayer(80);
+    if (!serverTimedPoseSnapshot ||
+        !NearlyEqual(serverTimedPoseSnapshot->position.x, 40.0f) ||
+        !NearlyEqual(serverTimedPoseSnapshot->locomotionPhaseRadians,
+                     directionAdmittedPhase)) return 550;
+
+    serverTimedPose.sequence = 5;
+    serverTimedPose.clientTick = 1000003;
+    // Perpendicular cross-axis movement is also below the scalar speed cap,
+    // but no authoritative wall exists that could have redirected it.
+    serverTimedPose.reportedPosition = { 40.0f, 0.0f, 6.0f };
+    if (!serverTimedPoseSimulation.SubmitCommand(serverTimedPose)) return 551;
+    serverTimedPoseSimulation.StepFixed();
+    serverTimedPoseSnapshot = serverTimedPoseSimulation.SnapshotForPlayer(80);
+    if (!serverTimedPoseSnapshot ||
+        !NearlyEqual(serverTimedPoseSnapshot->position.x, 40.0f) ||
+        !NearlyEqual(serverTimedPoseSnapshot->position.z, 0.0f)) return 551;
+
+    serverTimedPose.sequence = 6;
+    serverTimedPose.clientTick = 1000004;
+    serverTimedPose.moveX = 0.0f;
+    serverTimedPose.reportedPosition = { 48.0f, 0.0f, 0.0f };
+    if (!serverTimedPoseSimulation.SubmitCommand(serverTimedPose)) return 552;
+    serverTimedPoseSimulation.StepFixed();
+    serverTimedPoseSnapshot = serverTimedPoseSimulation.SnapshotForPlayer(80);
+    if (!serverTimedPoseSnapshot ||
+        !NearlyEqual(serverTimedPoseSnapshot->position.x, 40.0f)) return 552;
+
+    serverTimedPose.sequence = 7;
+    serverTimedPose.clientTick = 1000005;
+    // Six units remains available for native key-release deceleration and
+    // bounded environmental push movement during one server tick.
+    serverTimedPose.reportedPosition = { 46.0f, 0.0f, 0.0f };
+    if (!serverTimedPoseSimulation.SubmitCommand(serverTimedPose)) return 553;
+    serverTimedPoseSimulation.StepFixed();
+    serverTimedPoseSnapshot = serverTimedPoseSimulation.SnapshotForPlayer(80);
+    if (!serverTimedPoseSnapshot ||
+        !NearlyEqual(serverTimedPoseSnapshot->position.x, 46.0f)) return 553;
+
+    PlayerSimulation authoritativeWallSlide;
+    authoritativeWallSlide.SetCollisionQuery(
+        [](int32_t, const Game::Simulation::Vec3& from,
+           const Game::Simulation::Vec3& to,
+           Game::Simulation::Vec3& impact) {
+            if (to.x - from.x <= 0.001f) return false;
+            impact = to;
+            return true;
+        });
+    const auto wallSlidePlayer = authoritativeWallSlide.EnsurePlayer(
+        81, PlayerSpawn{ 118, {}, 0.0f });
+    const auto wallSlideInitial =
+        authoritativeWallSlide.SnapshotForPlayer(81);
+    if (!wallSlidePlayer.Valid() || !wallSlideInitial) return 554;
+    PlayerCommand wallSlideCommand{};
+    wallSlideCommand.ownerPlayerId = 81;
+    wallSlideCommand.sequence = 1;
+    wallSlideCommand.clientTick = 1;
+    wallSlideCommand.lifeEpoch = wallSlideInitial->lifeEpoch;
+    wallSlideCommand.sceneId = 118;
+    wallSlideCommand.moveX = -1.0f;
+    wallSlideCommand.hasReportedPose = true;
+    wallSlideCommand.reportedLocomotionMode =
+        Game::Simulation::PlayerLocomotionMode::Grounded;
+    wallSlideCommand.reportedPosition = { 0.0f, 0.0f, 6.0f };
+    if (!authoritativeWallSlide.SubmitCommand(wallSlideCommand)) return 554;
+    authoritativeWallSlide.StepFixed();
+    const auto admittedWallSlide =
+        authoritativeWallSlide.SnapshotForPlayer(81);
+    if (!admittedWallSlide ||
+        !NearlyEqual(admittedWallSlide->position.x, 0.0f) ||
+        !NearlyEqual(admittedWallSlide->position.z, 6.0f)) return 554;
+
+    PlayerSimulation locomotionProofSimulation;
+    locomotionProofSimulation.SetCollisionSceneQuery(
+        [](int32_t sceneId) { return sceneId == 118; });
+    locomotionProofSimulation.SetCollisionQuery(
+        [](int32_t, const Game::Simulation::Vec3& from,
+           const Game::Simulation::Vec3& to,
+           Game::Simulation::Vec3& impact) {
+            if (!NearlyEqual(from.x, to.x) || !NearlyEqual(from.z, to.z) ||
+                from.y <= to.y) {
+                return false;
+            }
+            if (from.x >= 10.0f && from.x < 100.0f) return false;
+            const float floorY = from.x >= 100.0f ? -100.0f : 0.0f;
+            if (from.y < floorY || to.y > floorY) return false;
+            impact = { from.x, floorY, from.z };
+            return true;
+        });
+    locomotionProofSimulation.SetWaterSurfaceQuery(
+        [](int32_t, const Game::Simulation::Vec3& position,
+           float& surfaceY) {
+            if (position.x < 100.0f) return false;
+            surfaceY = 10.0f;
+            return true;
+        });
+    const auto locomotionProofPlayer = locomotionProofSimulation.EnsurePlayer(
+        83, PlayerSpawn{ 118, {}, 0.0f });
+    const auto locomotionProofInitial =
+        locomotionProofSimulation.SnapshotForPlayer(83);
+    if (!locomotionProofPlayer.Valid() || !locomotionProofInitial) return 556;
+    PlayerCommand spoofedLocomotion{};
+    spoofedLocomotion.ownerPlayerId = 83;
+    spoofedLocomotion.sceneId = 118;
+    spoofedLocomotion.lifeEpoch = locomotionProofInitial->lifeEpoch;
+    spoofedLocomotion.hasReportedPose = true;
+    spoofedLocomotion.sequence = 1;
+    spoofedLocomotion.clientTick = 1;
+    spoofedLocomotion.reportedPosition = { 0.0f, 10.0f, 0.0f };
+    spoofedLocomotion.reportedLocomotionMode =
+        Game::Simulation::PlayerLocomotionMode::Grounded;
+    if (!locomotionProofSimulation.SubmitCommand(spoofedLocomotion)) return 556;
+    locomotionProofSimulation.StepFixed();
+    auto locomotionProofSnapshot =
+        locomotionProofSimulation.SnapshotForPlayer(83);
+    if (!locomotionProofSnapshot ||
+        !NearlyEqual(locomotionProofSnapshot->position.y, 0.0f) ||
+        locomotionProofSnapshot->locomotionMode !=
+            Game::Simulation::PlayerLocomotionMode::Grounded) return 556;
+
+    spoofedLocomotion.sequence = 2;
+    spoofedLocomotion.clientTick = 2;
+    spoofedLocomotion.reportedPosition = { 0.0f, 4.0f, 0.0f };
+    spoofedLocomotion.reportedLocomotionMode =
+        Game::Simulation::PlayerLocomotionMode::Airborne;
+    if (!locomotionProofSimulation.SubmitCommand(spoofedLocomotion)) return 557;
+    locomotionProofSimulation.StepFixed();
+    locomotionProofSnapshot = locomotionProofSimulation.SnapshotForPlayer(83);
+    if (!locomotionProofSnapshot ||
+        !NearlyEqual(locomotionProofSnapshot->position.y, 0.0f) ||
+        locomotionProofSnapshot->locomotionMode !=
+            Game::Simulation::PlayerLocomotionMode::Grounded) return 557;
+
+    spoofedLocomotion.sequence = 3;
+    spoofedLocomotion.clientTick = 3;
+    spoofedLocomotion.reportedPosition = {};
+    spoofedLocomotion.reportedLocomotionMode =
+        Game::Simulation::PlayerLocomotionMode::Swimming;
+    if (!locomotionProofSimulation.SubmitCommand(spoofedLocomotion)) return 558;
+    locomotionProofSimulation.StepFixed();
+    locomotionProofSnapshot = locomotionProofSimulation.SnapshotForPlayer(83);
+    if (!locomotionProofSnapshot ||
+        locomotionProofSnapshot->locomotionMode !=
+            Game::Simulation::PlayerLocomotionMode::Grounded) return 558;
+
+    PlayerSimulation ledgeProofSimulation;
+    ledgeProofSimulation.SetCollisionSceneQuery(
+        [](int32_t sceneId) { return sceneId == 118; });
+    ledgeProofSimulation.SetCollisionQuery(
+        [](int32_t, const Game::Simulation::Vec3& from,
+           const Game::Simulation::Vec3& to,
+           Game::Simulation::Vec3& impact) {
+            if (!NearlyEqual(from.x, to.x) || !NearlyEqual(from.z, to.z) ||
+                from.y <= to.y || from.x >= 10.0f || from.y < 0.0f ||
+                to.y > 0.0f) {
+                return false;
+            }
+            impact = { from.x, 0.0f, from.z };
+            return true;
+        });
+    const auto ledgeProofPlayer = ledgeProofSimulation.EnsurePlayer(
+        84, PlayerSpawn{ 118, { 9.0f, 0.0f, 0.0f }, 0.0f });
+    const auto ledgeProofInitial = ledgeProofSimulation.SnapshotForPlayer(84);
+    if (!ledgeProofPlayer.Valid() || !ledgeProofInitial) return 559;
+    PlayerCommand leaveFloor{};
+    leaveFloor.ownerPlayerId = 84;
+    leaveFloor.sceneId = 118;
+    leaveFloor.lifeEpoch = ledgeProofInitial->lifeEpoch;
+    leaveFloor.sequence = 1;
+    leaveFloor.clientTick = 1;
+    leaveFloor.moveX = -1.0f;
+    leaveFloor.hasReportedPose = true;
+    leaveFloor.reportedPosition = { 11.0f, 0.0f, 0.0f };
+    leaveFloor.reportedLocomotionMode =
+        Game::Simulation::PlayerLocomotionMode::Airborne;
+    if (!ledgeProofSimulation.SubmitCommand(leaveFloor)) return 559;
+    ledgeProofSimulation.StepFixed();
+    const auto leftFloor = ledgeProofSimulation.SnapshotForPlayer(84);
+    if (!leftFloor || !NearlyEqual(leftFloor->position.x, 11.0f) ||
+        leftFloor->locomotionMode !=
+            Game::Simulation::PlayerLocomotionMode::Airborne) return 559;
+
+    PlayerSimulation swimmingProofSimulation;
+    swimmingProofSimulation.SetCollisionSceneQuery(
+        [](int32_t sceneId) { return sceneId == 118; });
+    swimmingProofSimulation.SetCollisionQuery(
+        [](int32_t, const Game::Simulation::Vec3& from,
+           const Game::Simulation::Vec3& to,
+           Game::Simulation::Vec3& impact) {
+            if (!NearlyEqual(from.x, to.x) || !NearlyEqual(from.z, to.z) ||
+                from.y <= to.y || from.y < -100.0f || to.y > -100.0f) {
+                return false;
+            }
+            impact = { from.x, -100.0f, from.z };
+            return true;
+        });
+    swimmingProofSimulation.SetWaterSurfaceQuery(
+        [](int32_t, const Game::Simulation::Vec3&, float& surfaceY) {
+            surfaceY = 10.0f;
+            return true;
+        });
+    const auto swimmingProofPlayer = swimmingProofSimulation.EnsurePlayer(
+        85, PlayerSpawn{ 118, { 100.0f, -46.0f, 0.0f }, 0.0f });
+    const auto swimmingProofInitial =
+        swimmingProofSimulation.SnapshotForPlayer(85);
+    if (!swimmingProofPlayer.Valid() || !swimmingProofInitial ||
+        swimmingProofInitial->locomotionMode !=
+            Game::Simulation::PlayerLocomotionMode::Swimming) return 560;
+    PlayerCommand validSwimming{};
+    validSwimming.ownerPlayerId = 85;
+    validSwimming.sceneId = 118;
+    validSwimming.lifeEpoch = swimmingProofInitial->lifeEpoch;
+    validSwimming.sequence = 1;
+    validSwimming.clientTick = 1;
+    validSwimming.hasReportedPose = true;
+    validSwimming.reportedPosition = { 100.0f, -46.0f, 0.0f };
+    validSwimming.reportedLocomotionMode =
+        Game::Simulation::PlayerLocomotionMode::Swimming;
+    if (!swimmingProofSimulation.SubmitCommand(validSwimming)) return 560;
+    swimmingProofSimulation.StepFixed();
+    const auto validSwimmingPose =
+        swimmingProofSimulation.SnapshotForPlayer(85);
+    if (!validSwimmingPose ||
+        validSwimmingPose->locomotionMode !=
+            Game::Simulation::PlayerLocomotionMode::Swimming) return 560;
+
+    // Native uses the same in-water mode while its root moves away from the
+    // ordinary surface-swim datum during water entry, diving, and shore
+    // transitions. Those poses must remain authoritative-client admissible or
+    // reconciliation will fight the owning Link at every water boundary.
+    validSwimming.sequence = 2;
+    validSwimming.clientTick = 2;
+    validSwimming.reportedPosition.y = -36.0f;
+    if (!swimmingProofSimulation.SubmitCommand(validSwimming)) return 637;
+    swimmingProofSimulation.StepFixed();
+    auto transitionalSwimmingPose =
+        swimmingProofSimulation.SnapshotForPlayer(85);
+    if (!transitionalSwimmingPose ||
+        !NearlyEqual(transitionalSwimmingPose->position.y, -36.0f) ||
+        transitionalSwimmingPose->locomotionMode !=
+            Game::Simulation::PlayerLocomotionMode::Swimming) return 637;
+
+    validSwimming.sequence = 3;
+    validSwimming.clientTick = 3;
+    validSwimming.reportedPosition.y = -50.0f;
+    if (!swimmingProofSimulation.SubmitCommand(validSwimming)) return 638;
+    swimmingProofSimulation.StepFixed();
+    validSwimming.sequence = 4;
+    validSwimming.clientTick = 4;
+    validSwimming.reportedPosition.y = -64.0f;
+    if (!swimmingProofSimulation.SubmitCommand(validSwimming)) return 638;
+    swimmingProofSimulation.StepFixed();
+    validSwimming.sequence = 5;
+    validSwimming.clientTick = 5;
+    validSwimming.reportedPosition.y = -78.0f;
+    if (!swimmingProofSimulation.SubmitCommand(validSwimming)) return 638;
+    swimmingProofSimulation.StepFixed();
+    const auto divingSwimmingPose =
+        swimmingProofSimulation.SnapshotForPlayer(85);
+    if (!divingSwimmingPose ||
+        !NearlyEqual(divingSwimmingPose->position.y, -78.0f) ||
+        divingSwimmingPose->locomotionMode !=
+            Game::Simulation::PlayerLocomotionMode::Swimming) return 638;
+
+    // A water flag still cannot authorize a pose above the surface. Let enough
+    // authority ticks elapse that the vertical speed envelope is not what
+    // rejects this sample, proving the water-column check itself is active.
+    for (int32_t tick = 0; tick < 12; ++tick) {
+        swimmingProofSimulation.StepFixed();
+    }
+    const auto swimmingPoseBeforeSpoof =
+        swimmingProofSimulation.SnapshotForPlayer(85);
+    if (!swimmingPoseBeforeSpoof) return 639;
+    validSwimming.sequence = 6;
+    validSwimming.clientTick = 18;
+    validSwimming.reportedPosition.y = 20.0f;
+    if (!swimmingProofSimulation.SubmitCommand(validSwimming)) return 639;
+    swimmingProofSimulation.StepFixed();
+    const auto spoofedSwimmingPose =
+        swimmingProofSimulation.SnapshotForPlayer(85);
+    if (!spoofedSwimmingPose ||
+        !NearlyEqual(spoofedSwimmingPose->position.y,
+                     swimmingPoseBeforeSpoof->position.y)) return 640;
 
     SpatialGridIndex interest;
     interest.Update(1, 118, {});
@@ -1596,6 +2591,7 @@ int main() {
     teams.EnsurePlayer(90, PlayerSpawn{ 118, {}, 0.0f, Game::Simulation::TeamId::Red });
     teams.EnsurePlayer(91, PlayerSpawn{ 118, {}, 0.0f, Game::Simulation::TeamId::Red });
     teams.EnsurePlayer(92, PlayerSpawn{ 118, {}, 0.0f, Game::Simulation::TeamId::Blue });
+    teams.EnsurePlayer(93, PlayerSpawn{ 118, {}, 0.0f, Game::Simulation::TeamId::Green });
     if (teams.ApplyDamage(90, 91, 8, 0) || !teams.ApplyDamage(90, 92, 8, 0)) {
         return 35;
     }
@@ -1603,12 +2599,45 @@ int main() {
     const auto enemy = teams.SnapshotForPlayer(92);
     if (!ally || !enemy || ally->health != 48 || enemy->health != 40 ||
         ally->team != Game::Simulation::TeamId::Red || enemy->team != Game::Simulation::TeamId::Blue ||
+        !teams.ApplyDamage(90, 93, 8, 0) ||
         !teams.SetPlayerTeam(91, Game::Simulation::TeamId::Blue) ||
         teams.TeamForPlayer(91) != Game::Simulation::TeamId::Blue) {
         return 36;
     }
     if (!teams.ApplyDamage(90, 91, 8, 0)) {
         return 37;
+    }
+    if (teams.SetPlayerTeam(
+            91, static_cast<Game::Simulation::TeamId>(4))) {
+        return 529;
+    }
+
+    PlayerSimulation teamCapacity;
+    for (int32_t playerId = 0;
+         playerId < static_cast<int32_t>(
+                        PlayerSimulation::kMaximumPlayersPerTeam);
+         ++playerId) {
+        if (!teamCapacity
+                 .EnsurePlayer(1000 + playerId,
+                               { 118, {}, 0.0f,
+                                 Game::Simulation::TeamId::Red })
+                 .Valid()) {
+            return 541;
+        }
+    }
+    if (teamCapacity
+            .EnsurePlayer(1100, { 118, {}, 0.0f,
+                                  Game::Simulation::TeamId::Red })
+            .Valid() ||
+        !teamCapacity
+             .EnsurePlayer(1101, { 118, {}, 0.0f,
+                                   Game::Simulation::TeamId::Neutral })
+             .Valid() ||
+        teamCapacity.SetPlayerTeam(1101,
+                                   Game::Simulation::TeamId::Red) ||
+        !teamCapacity.SetPlayerTeam(1101,
+                                    Game::Simulation::TeamId::Green)) {
+        return 542;
     }
 
     ObjectiveSimulation objectives;
@@ -1642,6 +2671,24 @@ int main() {
         captureEvents.front().previousOwner != Game::Simulation::TeamId::Neutral ||
         captureEvents.front().newOwner != Game::Simulation::TeamId::Red) {
         return 40;
+    }
+    const auto greenObjective = objectives.EnsureObjective(
+        { 101, 118, { 1000.0f, 0.0f, 0.0f }, 300.0f,
+          Game::Simulation::TeamId::Neutral });
+    objectivePlayers.EnsurePlayer(
+        204, PlayerSpawn{ 118, { 1000.0f, 0.0f, 0.0f }, 0.0f,
+                          Game::Simulation::TeamId::Green });
+    for (int i = 0; i < 20; ++i) {
+        objectives.Update(objectivePlayers, 0.25f);
+    }
+    const auto capturedGreenObjective = objectives.SnapshotForObjective(101);
+    const auto greenCaptureEvents = objectives.DrainCapturedEvents();
+    if (!greenObjective.Valid() || !capturedGreenObjective ||
+        capturedGreenObjective->owner != Game::Simulation::TeamId::Green ||
+        greenCaptureEvents.size() != 1 ||
+        greenCaptureEvents.front().newOwner !=
+            Game::Simulation::TeamId::Green) {
+        return 530;
     }
     if (!objectivePlayers.ApplyDamage(-1, 200, 48, 0)) return 526;
     objectives.Update(objectivePlayers, 0.25f);
@@ -1783,6 +2830,17 @@ int main() {
                     })) {
         return 60;
     }
+    const auto retainedSource = std::find_if(
+        retainedCorpseSnapshots.begin(), retainedCorpseSnapshots.end(),
+        [](const auto& corpse) { return corpse.pose.sourcePlayerId == 1; });
+    if (retainedSource == retainedCorpseSnapshots.end()) return 60;
+    Game::Simulation::CorpsePose duplicatePose = retainedSource->pose;
+    duplicatePose.position.x = 9999.0f;
+    const auto duplicateId = corpses.Create(duplicatePose);
+    if (duplicateId != retainedSource->entity ||
+        corpses.Snapshots().size() != 99) {
+        return 60;
+    }
     Game::Simulation::CorpsePose replacementPose{};
     replacementPose.sourcePlayerId = 101;
     replacementPose.sourcePlayerEntity = { 101, 1 };
@@ -1824,8 +2882,8 @@ int main() {
     if (!seedPrediction(prediction, 1, 118, { 10.0f, 0.0f, 0.0f })) return 61;
     prediction.RecordCommand(correctionCommand);
     correctionCommand.sequence = 2;
-    correctionCommand.moveX = 1.0f;
-    prediction.RecordCommand(correctionCommand, 1.0f / 90.0f);
+    correctionCommand.moveX = -1.0f;
+    prediction.RecordCommand(correctionCommand, 1.0f / 60.0f);
     if (!reconcilePosition(prediction, 1, 1, 118, { 8.0f, 0.0f, 0.0f },
                            { 12.0f, 0.0f, 0.0f }) ||
         prediction.PendingCommandCount() != 1 ||
@@ -1894,11 +2952,43 @@ int main() {
         !NearlyEqual(prediction.PendingCorrection().z, 0.0f)) {
         return 113;
     }
+    ClientPrediction nativePosePrediction;
+    if (!seedPrediction(nativePosePrediction, 1, 118)) return 501;
+    PlayerCommand nativePoseCommand{};
+    nativePoseCommand.lifeEpoch = 1;
+    nativePoseCommand.sceneId = 118;
+    nativePoseCommand.hasReportedPose = true;
+    nativePoseCommand.sequence = 1;
+    nativePoseCommand.reportedPosition = { 10.0f, 0.0f, 0.0f };
+    nativePosePrediction.RecordCommand(nativePoseCommand);
+    nativePoseCommand.sequence = 2;
+    nativePoseCommand.reportedPosition = { 20.0f, 0.0f, 0.0f };
+    nativePosePrediction.RecordCommand(nativePoseCommand);
+    if (!reconcilePosition(nativePosePrediction, 1, 1, 118,
+                           { 10.0f, 0.0f, 0.0f },
+                           { 20.0f, 0.0f, 0.0f }) ||
+        !NearlyEqual(nativePosePrediction.PendingCorrection().x, 0.0f)) return 502;
+    nativePoseCommand.sequence = 3;
+    nativePoseCommand.reportedPosition = { 50.0f, 0.0f, 0.0f };
+    nativePosePrediction.RecordCommand(nativePoseCommand);
+    if (!reconcilePosition(nativePosePrediction, 2, 1, 118,
+                           { 18.0f, 0.0f, 0.0f },
+                           { 50.0f, 0.0f, 0.0f }) ||
+        !NearlyEqual(nativePosePrediction.PendingCorrection().x, -2.0f)) return 503;
     predictedMove.heldActions = Game::Simulation::PLAYER_ACTION_BLOCK;
     const auto guardVelocity = Game::Simulation::CalculatePlayerVelocity(predictedMove);
-    if (!NearlyEqual(guardVelocity.x, 0.0f) || !NearlyEqual(guardVelocity.z, 80.0f)) {
+    if (!NearlyEqual(guardVelocity.x, 0.0f) || !NearlyEqual(guardVelocity.z, 120.0f)) {
         return 114;
     }
+    predictedMove.moveY = -1.0f;
+    const auto backwardGuardVelocity =
+        Game::Simulation::CalculatePlayerVelocity(predictedMove);
+    if (!NearlyEqual(backwardGuardVelocity.z, -60.0f)) return 610;
+    predictedMove.heldActions = Game::Simulation::PLAYER_ACTION_AIM;
+    predictedMove.moveY = 1.0f;
+    const auto aimedVelocity =
+        Game::Simulation::CalculatePlayerVelocity(predictedMove);
+    if (!NearlyEqual(aimedVelocity.z, 70.0f)) return 611;
 
     const auto correctionAfterOneSecond = [&reconcilePosition](int updatesPerSecond) {
         ClientPrediction cadencePrediction;
@@ -1976,8 +3066,8 @@ int main() {
         }
         if (!reconcilePosition(cadencePrediction,
                                static_cast<uint32_t>(updatesPerSecond), 1, 118,
-                               { 0.0f, 0.0f, 180.0f },
-                               { 0.0f, 0.0f, 180.0f })) {
+                               { 0.0f, 0.0f, 120.0f },
+                               { 0.0f, 0.0f, 120.0f })) {
             return std::numeric_limits<float>::quiet_NaN();
         }
         return cadencePrediction.PendingCorrection().z;
@@ -2017,23 +3107,23 @@ int main() {
     };
     ClientPrediction replayPrediction;
     if (!recordForwardCommands(replayPrediction, 3)) return 283;
-    if (!replayPrediction.Reconcile(movementAuthority(1, 6.0f),
-                                    { 0.0f, 0.0f, 18.0f }) ||
+    if (!replayPrediction.Reconcile(movementAuthority(1, 4.0f),
+                                    { 0.0f, 0.0f, 12.0f }) ||
         replayPrediction.PendingCommandCount() != 2 ||
         !NearlyEqual(replayPrediction.PendingCorrection().z, 0.0f)) {
         return 284;
     }
     ClientPrediction collisionDivergence;
     if (!recordForwardCommands(collisionDivergence, 3)) return 283;
-    if (!collisionDivergence.Reconcile(movementAuthority(1, 6.0f),
+    if (!collisionDivergence.Reconcile(movementAuthority(1, 4.0f),
                                        { 0.0f, 0.0f, 10.0f }) ||
-        !NearlyEqual(collisionDivergence.PendingCorrection().z, 8.0f)) {
+        !NearlyEqual(collisionDivergence.PendingCorrection().z, 2.0f)) {
         return 285;
     }
     ClientPrediction skippedMovement;
     if (!recordForwardCommands(skippedMovement, 3)) return 283;
-    if (!skippedMovement.Reconcile(movementAuthority(2, 12.0f),
-                                   { 0.0f, 0.0f, 18.0f }) ||
+    if (!skippedMovement.Reconcile(movementAuthority(2, 8.0f),
+                                   { 0.0f, 0.0f, 12.0f }) ||
         skippedMovement.PendingCommandCount() != 1 ||
         !NearlyEqual(skippedMovement.PendingCorrection().z, 0.0f)) {
         return 286;
@@ -2041,8 +3131,8 @@ int main() {
     ClientPrediction evictedAcknowledgement;
     if (!recordForwardCommands(evictedAcknowledgement, 257)) return 283;
     if (evictedAcknowledgement.PendingCommandCount() != 256 ||
-        !evictedAcknowledgement.Reconcile(movementAuthority(1, 6.0f),
-                                          { 0.0f, 0.0f, 1542.0f }) ||
+        !evictedAcknowledgement.Reconcile(movementAuthority(1, 4.0f),
+                                          { 0.0f, 0.0f, 1028.0f }) ||
         evictedAcknowledgement.PendingCommandCount() != 256 ||
         !NearlyEqual(evictedAcknowledgement.PendingCorrection().z, 0.0f)) {
         return 287;
@@ -2058,8 +3148,8 @@ int main() {
     duplicateCommand.RecordCommand(duplicateMove, 0.25f);
     duplicateMove.sequence = 2;
     duplicateCommand.RecordCommand(duplicateMove, 1.0f / 30.0f);
-    if (!duplicateCommand.Reconcile(movementAuthority(2, 12.0f),
-                                    { 0.0f, 0.0f, 12.0f }) ||
+    if (!duplicateCommand.Reconcile(movementAuthority(2, 8.0f),
+                                    { 0.0f, 0.0f, 8.0f }) ||
         !NearlyEqual(duplicateCommand.PendingCorrection().z, 0.0f)) {
         return 288;
     }
@@ -2116,10 +3206,10 @@ int main() {
     PlayerSnapshot airborneAuthority = idleAuthority;
     airborneAuthority.locomotionMode =
         Game::Simulation::PlayerLocomotionMode::Airborne;
-    // An airborne evade edge replays as ordinary forward movement (6 units),
+    // An airborne evade edge replays as ordinary forward movement (4 units),
     // not the grounded backflip displacement (-4 units).
     if (!airborneReplay.Reconcile(airborneAuthority,
-                                  { 0.0f, 0.0f, 6.0f }) ||
+                                  { 0.0f, 0.0f, 4.0f }) ||
         !NearlyEqual(airborneReplay.PendingCorrection().z, 0.0f) ||
         airborneReplay.PredictedActionState() != PlayerActionState::Idle) {
         return 466;
@@ -2213,72 +3303,42 @@ int main() {
     // Prediction exposes the same windup/active/recovery phases as authority;
     // it must not report an entire sword action as windup.
     ClientPrediction exactPrimaryPrediction;
-    if (Game::Client::EvaluateLocalPrimaryActionPresentation(
-            exactPrimaryPrediction, true).state !=
-        Game::Client::LocalPrimaryActionPresentationState::Unavailable) {
-        return 506;
-    }
     PlayerCommand predictedPrimary = replayBaseline;
     predictedPrimary.pressedActions = Game::Simulation::PLAYER_ACTION_PRIMARY;
     recordPredictionCommand(exactPrimaryPrediction, predictedPrimary);
-    const auto activePrimaryPresentation =
-        Game::Client::EvaluateLocalPrimaryActionPresentation(
-            exactPrimaryPrediction, true);
-    if (activePrimaryPresentation.state !=
-            Game::Client::LocalPrimaryActionPresentationState::Active ||
-        !NearlyEqual(activePrimaryPresentation.progress, 0.0f)) {
-        return 507;
-    }
     if (exactPrimaryPrediction.PredictedActionState() !=
-            PlayerActionState::PrimaryWindup ||
-        !NearlyEqual(exactPrimaryPrediction.PredictedActionProgress(), 0.0f)) {
+            PlayerActionState::PrimaryWindup) {
         return 500;
     }
     PlayerCommand predictedHeld = replayBaseline;
     predictedHeld.pressedActions = 0;
-    predictedHeld.sequence = 2;
-    recordPredictionCommand(exactPrimaryPrediction, predictedHeld);
-    const float advancingWindupProgress =
-        exactPrimaryPrediction.PredictedActionProgress();
-    if (advancingWindupProgress <= 0.0f || advancingWindupProgress >= 0.2f) {
-        return 505;
+    const auto predictedTiming = Game::Simulation::MeleeAttackTimingFor(
+        Game::Simulation::MeleeAttackVariant::RightSlash, 1);
+    uint32_t predictedSequence = 1;
+    for (uint32_t tick = 0; tick < predictedTiming.windupTicks; ++tick) {
+        predictedHeld.sequence = ++predictedSequence;
+        recordPredictionCommand(exactPrimaryPrediction, predictedHeld);
     }
-    predictedHeld.sequence = 3;
-    recordPredictionCommand(exactPrimaryPrediction, predictedHeld);
     if (exactPrimaryPrediction.PredictedActionState() !=
-            PlayerActionState::PrimaryActive ||
-        exactPrimaryPrediction.PredictedActionProgress() < 0.2f ||
-        exactPrimaryPrediction.PredictedActionProgress() >= 0.65f) {
+            PlayerActionState::PrimaryActive) {
         return 501;
     }
-    for (uint32_t sequence = 4; sequence <= 8; ++sequence) {
-        predictedHeld.sequence = sequence;
+    for (uint32_t tick = 0; tick < predictedTiming.activeTicks; ++tick) {
+        predictedHeld.sequence = ++predictedSequence;
         recordPredictionCommand(exactPrimaryPrediction, predictedHeld);
     }
     if (exactPrimaryPrediction.PredictedActionState() !=
-            PlayerActionState::PrimaryRecovery ||
-        exactPrimaryPrediction.PredictedActionProgress() < 0.65f ||
-        exactPrimaryPrediction.PredictedActionProgress() > 1.0f) {
+            PlayerActionState::PrimaryRecovery) {
         return 502;
     }
-    for (uint32_t sequence = 9; sequence <= 13; ++sequence) {
-        predictedHeld.sequence = sequence;
+    for (uint32_t tick = 0; tick < predictedTiming.recoveryTicks; ++tick) {
+        predictedHeld.sequence = ++predictedSequence;
         recordPredictionCommand(exactPrimaryPrediction, predictedHeld);
     }
     if (exactPrimaryPrediction.PredictedActionState() !=
-            PlayerActionState::Idle ||
-        !NearlyEqual(exactPrimaryPrediction.PredictedActionProgress(), 0.0f)) {
+            PlayerActionState::Idle) {
         return 503;
     }
-    if (Game::Client::EvaluateLocalPrimaryActionPresentation(
-            exactPrimaryPrediction, true).state !=
-            Game::Client::LocalPrimaryActionPresentationState::Idle ||
-        Game::Client::EvaluateLocalPrimaryActionPresentation(
-            exactPrimaryPrediction, false).state !=
-            Game::Client::LocalPrimaryActionPresentationState::Unavailable) {
-        return 508;
-    }
-
     ClientPrediction longFramePrimaryPrediction;
     predictedPrimary.sequence = 1;
     if (!seedPrediction(longFramePrimaryPrediction, 1, 118)) return 503;
@@ -2287,9 +3347,7 @@ int main() {
     predictedHeld.sequence = 2;
     longFramePrimaryPrediction.RecordCommand(predictedHeld, 0.25f, 1);
     if (longFramePrimaryPrediction.PredictedActionState() !=
-            PlayerActionState::PrimaryRecovery ||
-        longFramePrimaryPrediction.PredictedActionProgress() < 0.65f ||
-        longFramePrimaryPrediction.PredictedActionProgress() > 1.0f) {
+            PlayerActionState::PrimaryActive) {
         return 504;
     }
 
@@ -2376,8 +3434,9 @@ int main() {
         return 163;
     }
     const auto midpoint = interpolation.Evaluate(2.5 / 30.0);
-    if (!midpoint || std::abs(midpoint->position.x - 5.0f) > 0.001f ||
-        std::abs(std::abs(midpoint->headingRadians) - pi) > 0.001f || midpoint->extrapolated) {
+    if (!midpoint || std::abs(midpoint->position.x - 25.0f) > 0.001f ||
+        std::abs(midpoint->headingRadians - (-pi * 177.0f / 180.0f)) > 0.001f ||
+        !midpoint->extrapolated) {
         return 164;
     }
 
@@ -2397,7 +3456,7 @@ int main() {
     if (!densePose || !sparsePose ||
         std::abs(densePose->position.x - sparsePose->position.x) > 0.001f ||
         !extrapolated || !extrapolated->extrapolated ||
-        std::abs(extrapolated->position.x - 50.0f) > 0.001f) {
+        std::abs(extrapolated->position.x - 40.0f) > 0.001f) {
         return 166;
     }
     if (!interpolation.Push(motionSample(1, 119, 2, 999.0f, 0.0f), 8.0 / 30.0) ||
@@ -2596,7 +3655,6 @@ int main() {
         sample.sceneId = 118;
         sample.sequence = sequence;
         sample.state = state;
-        sample.rodTipOffset[0] = value;
         sample.rodBendY = value;
         sample.rodTwist = value > 0.0f ? -3.13f : 3.13f;
         sample.lineScale = 0.004f;
@@ -2646,14 +3704,16 @@ int main() {
         return 194;
     }
 
-    if (!localProjectiles.RequestArrowFire(arrowPresentation.presentationId, 118) ||
-        localProjectiles.RequestArrowFire(arrowPresentation.presentationId, 118) ||
-        localProjectiles.RequestArrowFire(arrowPresentation.presentationId, 119)) return 408;
+    if (!localProjectiles.RequestArrowFire(arrowPresentation.presentationId, 118, 100, 1234, -567) ||
+        localProjectiles.RequestArrowFire(arrowPresentation.presentationId, 118, 101, 0, 0) ||
+        localProjectiles.RequestArrowFire(arrowPresentation.presentationId, 119, 101, 0, 0)) return 408;
     const auto arrowIntent = localProjectiles.NextIntent();
     const auto duplicateArrowIntent = localProjectiles.NextIntent();
     if (!arrowIntent || !duplicateArrowIntent ||
         arrowIntent->kind != LocalProjectileIntentKind::FireArrow ||
         arrowIntent->sequence != 1 ||
+        arrowIntent->clientTick != 100 ||
+        arrowIntent->heading != 1234 || arrowIntent->aimPitch != -567 ||
         duplicateArrowIntent->sequence != arrowIntent->sequence ||
         localProjectiles.Resolve(999, true) ||
         !localProjectiles.Resolve(arrowIntent->sequence, true) ||
@@ -2670,7 +3730,7 @@ int main() {
         return 195;
     }
     if (!localProjectiles.BindPresentation(arrowPresentation) ||
-        localProjectiles.RequestArrowFire(arrowPresentation.presentationId, 118) ||
+        localProjectiles.RequestArrowFire(arrowPresentation.presentationId, 118, 101, 0, 0) ||
         localProjectiles.NextIntent() || localProjectiles.TrackedCount() != 1) {
         return 196;
     }
@@ -2684,9 +3744,10 @@ int main() {
         return 197;
     }
     if (!localProjectiles.BindPresentation(arrowPresentation) ||
-        !localProjectiles.RequestArrowFire(arrowPresentation.presentationId, 118)) return 410;
+        !localProjectiles.RequestArrowFire(arrowPresentation.presentationId, 118, 102, 0, 0)) return 410;
     const auto failedArrowIntent = localProjectiles.NextIntent();
     if (!failedArrowIntent || failedArrowIntent->sequence != 2 ||
+        failedArrowIntent->clientTick != 102 ||
         !localProjectiles.Resolve(failedArrowIntent->sequence, false) ||
         localProjectiles.AwaitingResultCount() != 0) {
         return 198;
@@ -2706,7 +3767,7 @@ int main() {
     if (!localProjectiles.Retire(arrowPresentation.presentationId)) return 412;
     arrowPresentation.presentationId = 0x102;
     if (!localProjectiles.BindPresentation(arrowPresentation) ||
-        !localProjectiles.RequestArrowFire(arrowPresentation.presentationId, 118)) return 413;
+        !localProjectiles.RequestArrowFire(arrowPresentation.presentationId, 118, 103, 0, 0)) return 413;
     const auto departingSceneArrow = localProjectiles.NextIntent();
     if (!departingSceneArrow || departingSceneArrow->sequence != 4 ||
         !localProjectiles.Resolve(departingSceneArrow->sequence, true) ||
@@ -2724,7 +3785,7 @@ int main() {
     arrowPresentation.presentationId = 0x103;
     arrowPresentation.sceneId = 119;
     if (!localProjectiles.BindPresentation(arrowPresentation) ||
-        !localProjectiles.RequestArrowFire(arrowPresentation.presentationId, 119)) return 414;
+        !localProjectiles.RequestArrowFire(arrowPresentation.presentationId, 119, 104, 0, 0)) return 414;
     const auto destinationArrow = localProjectiles.NextIntent();
     if (!destinationArrow || destinationArrow->sequence != 5) return 396;
 
@@ -2739,7 +3800,7 @@ int main() {
 
     LocalProjectileIntentStream wrappingProjectiles(std::numeric_limits<uint32_t>::max());
     if (!wrappingProjectiles.BindPresentation(arrowPresentation) ||
-        !wrappingProjectiles.RequestArrowFire(arrowPresentation.presentationId, 119)) return 416;
+        !wrappingProjectiles.RequestArrowFire(arrowPresentation.presentationId, 119, 105, 0, 0)) return 416;
     const auto lastSequenceIntent = wrappingProjectiles.NextIntent();
     if (!lastSequenceIntent || lastSequenceIntent->sequence != std::numeric_limits<uint32_t>::max() ||
         !wrappingProjectiles.Resolve(lastSequenceIntent->sequence, true)) {
@@ -2748,7 +3809,7 @@ int main() {
     if (!wrappingProjectiles.Retire(arrowPresentation.presentationId)) return 417;
     arrowPresentation.presentationId = 0x101;
     if (!wrappingProjectiles.BindPresentation(arrowPresentation) ||
-        !wrappingProjectiles.RequestArrowFire(arrowPresentation.presentationId, 119)) return 418;
+        !wrappingProjectiles.RequestArrowFire(arrowPresentation.presentationId, 119, 106, 0, 0)) return 418;
     const auto wrappedSequenceIntent = wrappingProjectiles.NextIntent();
     if (!wrappedSequenceIntent || wrappedSequenceIntent->sequence != 1) return 205;
 
@@ -2922,13 +3983,16 @@ int main() {
     remoteFish.y = 220.0f;
     remoteFish.z = 330.0f;
     remoteFish.length = 42.0f;
+    remoteFish.ownerLifeEpoch = 1;
     remoteFish.active = true;
     if (remoteFishingEntities.ApplyFish(remoteFish) != RemoteFishingEntityUpdate::Established ||
         remoteFishingEntities.FishCount() != 1 ||
         remoteFishingEntities.OwnerForFish(remoteFish.identity) != 7 ||
         remoteFishingEntities.EntityForFish(remoteFish.identity) != remoteFish.entity ||
         remoteFishingEntities.FishEntityForOwner(7) != remoteFish.entity ||
-        remoteFishingEntities.FindFish(remoteFish.entity) == nullptr) {
+        remoteFishingEntities.FindFish(remoteFish.entity) == nullptr ||
+        !remoteFishingEntities.HasEntityInScene(118) ||
+        remoteFishingEntities.HasEntityInScene(119)) {
         return 221;
     }
     remoteFish.x = 120.0f;
@@ -2963,7 +4027,8 @@ int main() {
     }
     replacementFish.active = false;
     if (remoteFishingEntities.ApplyFish(replacementFish) != RemoteFishingEntityUpdate::Retired ||
-        remoteFishingEntities.FishForOwner(7) || remoteFishingEntities.FishCount() != 0) {
+        remoteFishingEntities.FishForOwner(7) || remoteFishingEntities.FishCount() != 0 ||
+        remoteFishingEntities.HasEntityInScene(118)) {
         return 226;
     }
     RemoteLureEntity remoteLure{};
@@ -2975,11 +4040,13 @@ int main() {
     remoteLure.z = 3.0f;
     remoteLure.phase = 1;
     remoteLure.lureType = 2;
+    remoteLure.ownerLifeEpoch = 1;
     remoteLure.active = true;
     if (remoteFishingEntities.ApplyLure(remoteLure) != RemoteFishingEntityUpdate::Established ||
         !remoteFishingEntities.LureForOwner(7) || remoteFishingEntities.LureCount() != 1 ||
         remoteFishingEntities.LureEntityForOwner(7) != remoteLure.entity ||
-        remoteFishingEntities.FindLure(remoteLure.entity) == nullptr) {
+        remoteFishingEntities.FindLure(remoteLure.entity) == nullptr ||
+        !remoteFishingEntities.HasEntityInScene(118)) {
         return 228;
     }
     remoteLure.phase = 2;
@@ -3225,6 +4292,7 @@ int main() {
     RemotePlayerPresentationState remotePlayer{};
     remotePlayer.entity = { 50, 2 };
     remotePlayer.playerId = 100000;
+    remotePlayer.lifeEpoch = 1;
     remotePlayer.sceneId = 118;
     remotePlayer.active = true;
     const auto establishedRemote = remotePlayers.Apply(remotePlayer);
@@ -3277,6 +4345,7 @@ int main() {
         RemotePlayerPresentationState retainedRemote{};
         retainedRemote.entity = { static_cast<uint32_t>(1000 + playerId), 1 };
         retainedRemote.playerId = 1000000 + playerId;
+        retainedRemote.lifeEpoch = 1;
         retainedRemote.sceneId = 118;
         retainedRemote.active = true;
         const auto retained = remotePlayers.Apply(retainedRemote);
@@ -3287,12 +4356,13 @@ int main() {
     }
     if (remotePlayers.Size() != 1024) return 264;
     remotePlayers.Reset();
-    if (remotePlayers.Size() != 0 || remotePlayers.Apply({ { 9, 0 }, 1, 118, true }).Applied()) {
+    if (remotePlayers.Size() != 0 ||
+        remotePlayers.Apply({ { 9, 0 }, 1, 1, 118, true }).Applied()) {
         return 265;
     }
 
     RemotePlayerReplicaStore replicas;
-    RemotePlayerPresentationState replicaLifetime{ { 80, 1 }, 700, 118, true };
+    RemotePlayerPresentationState replicaLifetime{ { 80, 1 }, 700, 1, 118, true };
     const auto replicaEstablished = replicas.ApplyLifecycle(replicaLifetime);
     if (replicaEstablished.update != RemotePlayerPresentationUpdate::Established ||
         replicaEstablished.actorHandle != 1 || replicas.Size() != 1 ||
@@ -3316,7 +4386,18 @@ int main() {
     PlayerSnapshot staleLifeReplica = replicaSnapshot;
     staleLifeReplica.serverTick = 11;
     staleLifeReplica.lifeEpoch = 2;
-    if (!replicas.ApplySnapshot(staleLifeReplica, 1.1)) return 297;
+    if (replicas.ApplySnapshot(staleLifeReplica, 1.1)) return 297;
+    RemotePlayerPresentationState replicaRespawn = replicaLifetime;
+    replicaRespawn.lifeEpoch = 2;
+    const auto respawnedReplica = replicas.ApplyLifecycle(replicaRespawn);
+    if (respawnedReplica.update != RemotePlayerPresentationUpdate::Replaced ||
+        respawnedReplica.previousEntity != replicaLifetime.entity ||
+        respawnedReplica.actorHandle != 1 ||
+        replicas.FindPlayer(700)->hasSnapshot ||
+        !replicas.ApplySnapshot(staleLifeReplica, 1.1)) {
+        return 297;
+    }
+    replicaLifetime = replicaRespawn;
     staleLifeReplica.serverTick = 12;
     staleLifeReplica.lifeEpoch = 1;
     if (replicas.ApplySnapshot(staleLifeReplica, 1.2)) return 298;
@@ -3324,6 +4405,7 @@ int main() {
     replicaFishing.playerId = 700;
     replicaFishing.entity = replicaLifetime.entity;
     replicaFishing.sceneId = 118;
+    replicaFishing.lifeEpoch = replicaLifetime.lifeEpoch;
     replicaFishing.sequence = 1;
     if (!replicas.ApplyFishing(replicaFishing, 1.0) ||
         replicas.FindPlayer(700)->fishing.SampleCount() != 1) {
@@ -3615,31 +4697,47 @@ int main() {
     distantObserver.ownerPlayerId = 3;
     distantObserver.position = { 7000.0f, 0.0f, 0.0f };
     std::vector<PlayerSnapshot> replicatedPlayers{ observerOne, observerTwo, distantObserver };
+    const auto hasPlayerTransition = [](
+        const std::vector<Game::Replication::PlayerVisibilityTransition>& transitions,
+        int32_t observer, int32_t subject,
+        Game::Replication::PlayerVisibilityAction action) {
+        return std::any_of(transitions.begin(), transitions.end(),
+                           [=](const auto& transition) {
+                               return transition.observerPlayerId == observer &&
+                                      transition.subject.playerId == subject &&
+                                      transition.action == action;
+                           });
+    };
     auto visibility = replication.Reconcile(replicatedPlayers, { 1, 2, 3 }, 1000.0f);
-    if (visibility.size() != 2 ||
-        visibility[0].observerPlayerId != 1 || visibility[0].subject.playerId != 2 ||
-        visibility[0].action != PlayerVisibilityAction::Enter ||
-        visibility[1].observerPlayerId != 2 || visibility[1].subject.playerId != 1 ||
-        visibility[1].action != PlayerVisibilityAction::Enter ||
+    if (visibility.size() != 5 ||
+        !hasPlayerTransition(visibility, 1, 1, PlayerVisibilityAction::Enter) ||
+        !hasPlayerTransition(visibility, 1, 2, PlayerVisibilityAction::Enter) ||
+        !hasPlayerTransition(visibility, 2, 1, PlayerVisibilityAction::Enter) ||
+        !hasPlayerTransition(visibility, 2, 2, PlayerVisibilityAction::Enter) ||
+        !hasPlayerTransition(visibility, 3, 3, PlayerVisibilityAction::Enter) ||
+        !replication.IsVisible(1, 1) || !replication.IsVisible(2, 2) ||
+        !replication.IsVisible(3, 3) ||
         !replication.IsVisible(1, 2) || !replication.IsVisible(2, 1) ||
         replication.IsVisible(1, 3)) {
         return 74;
     }
     if (!replication.Reconcile(replicatedPlayers, { 1, 2, 3 }, 1000.0f).empty()) return 75;
-    if (replication.ObserversForPlayer(1) != std::vector<int32_t>{ 2 } ||
-        replication.ObserversForPlayer(2) != std::vector<int32_t>{ 1 }) {
+    if (replication.ObserversForPlayer(1) != std::vector<int32_t>({ 1, 2 }) ||
+        replication.ObserversForPlayer(2) != std::vector<int32_t>({ 1, 2 }) ||
+        replication.ObserversForPlayer(3) != std::vector<int32_t>({ 3 })) {
         return 506;
     }
     if (!replication.Reconcile(replicatedPlayers, { 1, 3 }, 1000.0f).empty() ||
-        !replication.ObserversForPlayer(1).empty() ||
-        replication.ObserversForPlayer(2) != std::vector<int32_t>{ 1 }) {
+        replication.ObserversForPlayer(1) != std::vector<int32_t>({ 1 }) ||
+        replication.ObserversForPlayer(2) != std::vector<int32_t>({ 1 }) ||
+        replication.ObserversForPlayer(3) != std::vector<int32_t>({ 3 })) {
         return 507;
     }
     visibility = replication.Reconcile(replicatedPlayers, { 1, 2, 3 }, 1000.0f);
-    if (visibility.size() != 1 || visibility[0].observerPlayerId != 2 ||
-        visibility[0].subject.playerId != 1 ||
-        visibility[0].action != PlayerVisibilityAction::Enter ||
-        replication.ObserversForPlayer(1) != std::vector<int32_t>{ 2 }) {
+    if (visibility.size() != 2 ||
+        !hasPlayerTransition(visibility, 2, 1, PlayerVisibilityAction::Enter) ||
+        !hasPlayerTransition(visibility, 2, 2, PlayerVisibilityAction::Enter) ||
+        replication.ObserversForPlayer(1) != std::vector<int32_t>({ 1, 2 })) {
         return 508;
     }
 
@@ -3699,21 +4797,43 @@ int main() {
         return 77;
     }
 
+    const uint32_t oldLifeEpoch = replicatedPlayers[1].lifeEpoch;
+    ++replicatedPlayers[1].lifeEpoch;
+    visibility = replication.Reconcile(replicatedPlayers, { 1, 2, 3 }, 1000.0f);
+    if (visibility.size() != 4 ||
+        !hasPlayerTransition(visibility, 1, 2, PlayerVisibilityAction::Leave) ||
+        !hasPlayerTransition(visibility, 1, 2, PlayerVisibilityAction::Enter) ||
+        !hasPlayerTransition(visibility, 2, 2, PlayerVisibilityAction::Leave) ||
+        !hasPlayerTransition(visibility, 2, 2, PlayerVisibilityAction::Enter) ||
+        std::count_if(visibility.begin(), visibility.end(),
+                      [oldLifeEpoch](const auto& transition) {
+                          return transition.action == PlayerVisibilityAction::Leave &&
+                                 transition.subject.lifeEpoch == oldLifeEpoch;
+                      }) != 2) {
+        return 533;
+    }
+
     const auto oldLifetime = replicatedPlayers[1].entity;
     replicatedPlayers[1].entity.generation = 2;
     visibility = replication.Reconcile(replicatedPlayers, { 1, 2, 3 }, 1000.0f);
-    if (visibility.size() != 2 || visibility[0].action != PlayerVisibilityAction::Leave ||
-        visibility[0].subject.entity != oldLifetime ||
-        visibility[1].action != PlayerVisibilityAction::Enter ||
-        visibility[1].subject.entity != replicatedPlayers[1].entity ||
-        replication.ObserversForPlayer(2) != std::vector<int32_t>{ 1 }) {
+    if (visibility.size() != 4 ||
+        !hasPlayerTransition(visibility, 1, 2, PlayerVisibilityAction::Leave) ||
+        !hasPlayerTransition(visibility, 1, 2, PlayerVisibilityAction::Enter) ||
+        !hasPlayerTransition(visibility, 2, 2, PlayerVisibilityAction::Leave) ||
+        !hasPlayerTransition(visibility, 2, 2, PlayerVisibilityAction::Enter) ||
+        std::count_if(visibility.begin(), visibility.end(),
+                      [oldLifetime](const auto& transition) {
+                          return transition.action == PlayerVisibilityAction::Leave &&
+                                 transition.subject.entity == oldLifetime;
+                      }) != 2 ||
+        replication.ObserversForPlayer(2) != std::vector<int32_t>({ 1, 2 })) {
         return 78;
     }
     const auto removal = replication.RemovePlayer(2);
     if (removal.size() != 1 || removal[0].observerPlayerId != 1 ||
         removal[0].subject.entity != replicatedPlayers[1].entity ||
         removal[0].action != PlayerVisibilityAction::Leave || replication.IsVisible(1, 2) ||
-        !replication.ObserversForPlayer(1).empty() ||
+        replication.ObserversForPlayer(1) != std::vector<int32_t>({ 1 }) ||
         !replication.ObserversForPlayer(2).empty()) {
         return 79;
     }
@@ -3806,10 +4926,11 @@ int main() {
     // only replicated to observers of that owner.
     const Game::Simulation::FishSnapshot fishPayload{
         { 31, 1 }, { 118, Game::Simulation::MakeFishSpawnKey(118, 2, 500, 0, 0) }, 2,
+        1,
         { 500.0f, 0.0f, 0.0f }, Game::Simulation::FishSpecies::HylianLoach, 19.5f
     };
     const Game::Simulation::FishingLureSnapshot lurePayload{
-        { 32, 1 }, 2, 118, { 510.0f, 0.0f, 0.0f },
+        { 32, 1 }, 2, 1, 118, { 510.0f, 0.0f, 0.0f },
         Game::Simulation::FishingLurePhase::Hooked, 2
     };
     const ReplicatedOwnedEntity fishEntity{
@@ -4174,20 +5295,24 @@ int main() {
     pressed.sequence = 1;
     pressed.sceneId = 118;
     pressed.moveY = 1.0f;
+    pressed.headingRadians = 1.57079632679f;
     pressed.actionSequence = 1;
     pressed.pressedActions = Game::Simulation::PLAYER_ACTION_PRIMARY;
     PlayerCommand newest = pressed;
     newest.sequence = 2;
+    newest.headingRadians = 0.0f;
     newest.actionSequence = 0;
     newest.pressedActions = 0;
     // The reliable action-bearing packet deliberately arrives second with an
-    // older movement sequence. It executes once against the newer pose.
+    // older movement sequence. Movement uses the newer command, while the
+    // attack keeps the heading of the causal reliable action sample.
     if (!commandIngestion.SubmitCommand(newest) || !commandIngestion.SubmitCommand(pressed)) return 104;
     commandIngestion.StepFixed();
     auto ingestionSnapshot = commandIngestion.SnapshotForPlayer(70);
     if (!ingestionSnapshot || ingestionSnapshot->lastProcessedCommand != 2 ||
         ingestionSnapshot->actionState != PlayerActionState::PrimaryWindup ||
-        ingestionSnapshot->position.z <= 0.0f) {
+        ingestionSnapshot->position.z <= 0.0f ||
+        !NearlyEqual(ingestionSnapshot->headingRadians, 1.57079632679f)) {
         return 105;
     }
     PlayerCommand currentPressed = newest;
@@ -4211,6 +5336,39 @@ int main() {
     }
     for (int tick = 0; tick < 8; ++tick) commandIngestion.StepFixed();
     if (commandIngestion.SnapshotForPlayer(70)->actionState != PlayerActionState::Idle) return 107;
+
+    // Native traversal observations expire with the movement sample that
+    // carried them. A stalled client must not leave an authoritative player
+    // climbing forever.
+    PlayerSimulation expiringNativePose;
+    expiringNativePose.SetClimbSurfaceQuery(
+        [](int32_t, const Game::Simulation::Vec3&,
+           const Game::Simulation::Vec3&, float) { return true; });
+    expiringNativePose.EnsurePlayer(
+        71, { 118, {}, 0.0f, Game::Simulation::TeamId::Neutral });
+    PlayerCommand nativePose{};
+    nativePose.ownerPlayerId = 71;
+    nativePose.sequence = 1;
+    nativePose.sceneId = 118;
+    nativePose.hasReportedPose = true;
+    nativePose.reportedLocomotionMode =
+        Game::Simulation::PlayerLocomotionMode::Climbing;
+    nativePose.reportedPosition = { 0.0f, 8.0f, 0.0f };
+    if (!expiringNativePose.SubmitCommand(nativePose)) return 535;
+    expiringNativePose.StepFixed();
+    auto expiringPoseSnapshot = expiringNativePose.SnapshotForPlayer(71);
+    if (!expiringPoseSnapshot ||
+        expiringPoseSnapshot->locomotionMode !=
+            Game::Simulation::PlayerLocomotionMode::Climbing) {
+        return 536;
+    }
+    for (int tick = 0; tick < 7; ++tick) expiringNativePose.StepFixed();
+    expiringPoseSnapshot = expiringNativePose.SnapshotForPlayer(71);
+    if (!expiringPoseSnapshot ||
+        expiringPoseSnapshot->locomotionMode ==
+            Game::Simulation::PlayerLocomotionMode::Climbing) {
+        return 537;
+    }
 
     // A reliable edge for the latest sequence is still too old once that
     // movement window has timed out. Consume its action sequence, but never
@@ -4272,6 +5430,7 @@ int main() {
     pendingPrimary.ownerPlayerId = 71;
     pendingPrimary.sequence = 1;
     pendingPrimary.actionSequence = 1;
+    pendingPrimary.headingRadians = 0.0f;
     PlayerCommand pendingEvade = pendingPrimary;
     pendingEvade.sequence = 2;
     pendingEvade.actionSequence = 2;
@@ -4285,8 +5444,8 @@ int main() {
     if (!orderedActionSnapshot || orderedActionSnapshot->lastProcessedCommand != 2 ||
         orderedActionSnapshot->actionState != PlayerActionState::PrimaryWindup ||
         !NearlyEqual(orderedActionSnapshot->velocity.x, 0.0f) ||
-        !NearlyEqual(orderedActionSnapshot->velocity.z, 180.0f) ||
-        !NearlyEqual(orderedActionSnapshot->position.z, 6.0f)) {
+        !NearlyEqual(orderedActionSnapshot->velocity.z, 120.0f) ||
+        !NearlyEqual(orderedActionSnapshot->position.z, 4.0f)) {
         return 351;
     }
     // Another attack pressed while primary owns the action state is consumed
@@ -4313,8 +5472,8 @@ int main() {
     sideEvade.StepFixed();
     const auto sideSnapshot = sideEvade.SnapshotForPlayer(72);
     if (!sideSnapshot || sideSnapshot->actionState != PlayerActionState::Evading ||
-        !NearlyEqual(sideSnapshot->velocity.x, -170.0f) ||
-        !NearlyEqual(sideSnapshot->velocity.z, 0.0f) || sideSnapshot->position.x >= 0.0f) {
+        !NearlyEqual(sideSnapshot->velocity.x, 170.0f) ||
+        !NearlyEqual(sideSnapshot->velocity.z, 0.0f) || sideSnapshot->position.x <= 0.0f) {
         return 355;
     }
 
@@ -4374,7 +5533,8 @@ int main() {
     combatWitness.ownerPlayerId = 94;
     combatWitness.position.z = 60.0f;
     Game::Simulation::CombatResultEvent replicatedBlock{
-        1, 90, 91, combatSource.entity, combatTarget.entity, 118,
+        1, 90, 91, combatSource.entity, combatTarget.entity,
+        combatSource.lifeEpoch, combatTarget.lifeEpoch, 0, 118,
         Game::Simulation::CombatAttackKind::Arrow,
         Game::Simulation::CombatResultKind::Blocked, 0, 0,
         { 0.0f, 30.0f, 20.0f }
@@ -4567,11 +5727,13 @@ int main() {
     const std::vector<PlayerSnapshot> coordinatorPlayers{ coordinatorOne, coordinatorTwo };
     const auto coordinatorPlayerTransitions =
         coordinator.ReconcilePlayers(coordinatorPlayers, { 201, 202 }, 1000.0f);
-    if (coordinatorPlayerTransitions.size() != 2 ||
+    if (coordinatorPlayerTransitions.size() != 4 ||
+        !coordinator.PlayerVisible(201, 201) ||
         !coordinator.PlayerVisible(201, 202) || !coordinator.PlayerVisible(202, 201) ||
-        coordinator.PlayerObservers(201) != std::vector<int32_t>{ 202 } ||
-        coordinator.PlayerObservers(202) != std::vector<int32_t>{ 201 } ||
-        coordinator.TotalPlayerVisibilityCount() != 2) {
+        !coordinator.PlayerVisible(202, 202) ||
+        coordinator.PlayerObservers(201) != std::vector<int32_t>({ 201, 202 }) ||
+        coordinator.PlayerObservers(202) != std::vector<int32_t>({ 201, 202 }) ||
+        coordinator.TotalPlayerVisibilityCount() != 4) {
         return 129;
     }
 
@@ -4613,13 +5775,18 @@ int main() {
         { coordinatorArrow }, movedCoordinatorPlayers, { 201, 202 }, 1000.0f);
     const auto sceneSpatialLeaves = coordinator.ReconcileSpatialEntities(
         { coordinatorCorpse }, movedCoordinatorPlayers, { 201, 202 }, 1000.0f);
-    if (scenePlayerLeaves.size() != 2 || sceneOwnedLeaves.size() != 1 ||
+    if (scenePlayerLeaves.size() != 4 ||
+        !hasPlayerTransition(scenePlayerLeaves, 201, 201,
+                             PlayerVisibilityAction::Leave) ||
+        !hasPlayerTransition(scenePlayerLeaves, 201, 201,
+                             PlayerVisibilityAction::Enter) ||
+        sceneOwnedLeaves.size() != 1 ||
         sceneOwnedLeaves.front().action != OwnedEntityVisibilityAction::Leave ||
         sceneSpatialLeaves.size() != 1 ||
         sceneSpatialLeaves.front().action != SpatialEntityVisibilityAction::Leave ||
         coordinator.PlayerVisible(201, 202) || coordinator.PlayerVisible(202, 201) ||
-        !coordinator.PlayerObservers(201).empty() ||
-        !coordinator.PlayerObservers(202).empty() ||
+        coordinator.PlayerObservers(201) != std::vector<int32_t>({ 201 }) ||
+        coordinator.PlayerObservers(202) != std::vector<int32_t>({ 202 }) ||
         coordinator.OwnedEntityVisible(201, coordinatorArrow.key) ||
         coordinator.SpatialEntityVisible(201, coordinatorCorpse.key) ||
         coordinator.SpatialEntityObservers(coordinatorCorpse.key) !=
@@ -4632,13 +5799,18 @@ int main() {
         { coordinatorArrow }, coordinatorPlayers, { 201, 202 }, 1000.0f);
     const auto sceneSpatialEnters = coordinator.ReconcileSpatialEntities(
         { coordinatorCorpse }, coordinatorPlayers, { 201, 202 }, 1000.0f);
-    if (scenePlayerEnters.size() != 2 || sceneOwnedEnters.size() != 1 ||
+    if (scenePlayerEnters.size() != 4 ||
+        !hasPlayerTransition(scenePlayerEnters, 201, 201,
+                             PlayerVisibilityAction::Leave) ||
+        !hasPlayerTransition(scenePlayerEnters, 201, 201,
+                             PlayerVisibilityAction::Enter) ||
+        sceneOwnedEnters.size() != 1 ||
         sceneOwnedEnters.front().action != OwnedEntityVisibilityAction::Enter ||
         sceneSpatialEnters.size() != 1 ||
         sceneSpatialEnters.front().action != SpatialEntityVisibilityAction::Enter ||
         !coordinator.PlayerVisible(201, 202) || !coordinator.PlayerVisible(202, 201) ||
-        coordinator.PlayerObservers(201) != std::vector<int32_t>{ 202 } ||
-        coordinator.PlayerObservers(202) != std::vector<int32_t>{ 201 } ||
+        coordinator.PlayerObservers(201) != std::vector<int32_t>({ 201, 202 }) ||
+        coordinator.PlayerObservers(202) != std::vector<int32_t>({ 201, 202 }) ||
         !coordinator.OwnedEntityVisible(201, coordinatorArrow.key) ||
         !coordinator.SpatialEntityVisible(201, coordinatorCorpse.key) ||
         coordinator.SpatialEntityObservers(coordinatorCorpse.key) !=
@@ -4677,7 +5849,7 @@ int main() {
         coordinator.PendingCount(201) != 0 || coordinator.ObserverCount() != 1 ||
         coordinator.PlayerVisible(202, 201) ||
         !coordinator.PlayerObservers(201).empty() ||
-        !coordinator.PlayerObservers(202).empty() ||
+        coordinator.PlayerObservers(202) != std::vector<int32_t>({ 202 }) ||
         coordinator.OwnedEntityVisible(201, coordinatorArrow.key) ||
         coordinator.SpatialEntityVisible(201, coordinatorCorpse.key) ||
         coordinator.SpatialEntityObservers(coordinatorCorpse.key) !=
@@ -4716,14 +5888,15 @@ int main() {
     reverseFanout.ReconcilePlayers(fanoutPlayers, { 300, 301, 302, 303 },
                                    1000.0f);
     if (reverseFanout.PlayerObservers(300) !=
-            std::vector<int32_t>({ 301, 302 }) ||
-        !reverseFanout.PlayerObservers(303).empty()) {
+            std::vector<int32_t>({ 300, 301, 302 }) ||
+        reverseFanout.PlayerObservers(303) != std::vector<int32_t>({ 303 })) {
         return 389;
     }
     fanoutPlayers[2].sceneId = 119;
     reverseFanout.ReconcilePlayers(fanoutPlayers, { 300, 301, 302, 303 },
                                    1000.0f);
-    if (reverseFanout.PlayerObservers(300) != std::vector<int32_t>({ 301 })) {
+    if (reverseFanout.PlayerObservers(300) !=
+        std::vector<int32_t>({ 300, 301 })) {
         return 390;
     }
     reverseFanout.RemovePlayer(300);
@@ -4753,8 +5926,8 @@ int main() {
         return 136;
     }
     intentAdmission.RecordAccepted(301, ServerIntentKind::Projectile, 100);
-    if (intentAdmission.CooldownReady(301, ServerIntentKind::Projectile, 108) ||
-        !intentAdmission.CooldownReady(301, ServerIntentKind::Projectile, 109) ||
+    if (!intentAdmission.CooldownReady(301, ServerIntentKind::Projectile, 100) ||
+        !intentAdmission.CooldownReady(301, ServerIntentKind::Projectile, 108) ||
         !intentAdmission.CooldownReady(301, ServerIntentKind::Structure, 100)) {
         return 137;
     }
@@ -4801,16 +5974,34 @@ int main() {
             { 401, 1, presentedPlayer->lifeEpoch, 2 }) ||
         !deathWorld.SubmitPlayerCommand(presentedWeapon)) return 143;
     ServerWorldTestAccess::Players(deathWorld).StepFixed();
-    if (!ServerWorldTestAccess::Players(deathWorld).ApplyDamage(-1, 401, 48, 0)) return 143;
+    if (!deathWorld.AdmitPlayer(
+            402, { 118, { 10.0f, 20.0f, -100.0f }, 0.0f }) ||
+        !ServerWorldTestAccess::Projectiles(deathWorld).SpawnArrow(
+            { 402, 118, 2, { 10.0f, 62.0f, -20.0f },
+              { 0.0f, 0.0f, 3000.0f }, 0 })) {
+        return 143;
+    }
+    ServerWorldTestAccess::Projectiles(deathWorld).StepFixed(
+        ServerWorldTestAccess::Players(deathWorld));
+    const auto attachedBeforeDeath = deathWorld.ArrowSnapshots();
+    if (attachedBeforeDeath.size() != 1 ||
+        attachedBeforeDeath.front().body.playerId != 401 ||
+        !ServerWorldTestAccess::Players(deathWorld).ApplyDamage(
+            -1, 401, 255, 0)) {
+        return 143;
+    }
     const auto presentedDeath = deathWorld.DrainPlayerLifeEvents();
     const auto deathCorpses = deathWorld.CorpseSnapshots();
+    const auto detachedAtDeath = deathWorld.ArrowSnapshots();
     if (presentedDeath.size() != 1 ||
         presentedDeath.front().kind != Game::Simulation::PlayerLifeEventKind::Died ||
         presentedDeath.front().entity != presentedPlayer->entity ||
         presentedDeath.front().lifeEpoch != presentedPlayer->lifeEpoch ||
         deathCorpses.size() != 1 ||
         deathCorpses.front().pose.sourcePlayerEntity != presentedPlayer->entity ||
-        deathCorpses.front().pose.sourceLifeEpoch != presentedPlayer->lifeEpoch) {
+        deathCorpses.front().pose.sourceLifeEpoch != presentedPlayer->lifeEpoch ||
+        detachedAtDeath.size() != 1 ||
+        detachedAtDeath.front().body.playerId >= 0) {
         return 144;
     }
     for (int tick = 0; tick < 150; ++tick) {
@@ -4824,7 +6015,8 @@ int main() {
         presentationCorpses.size() != 1 ||
         presentationCorpses.front().pose.sourcePlayerId != 401 ||
         presentationCorpses.front().pose.roomId != -1 ||
-        presentationCorpses.front().pose.selectedWeapon != 2) {
+        presentationCorpses.front().pose.selectedWeapon != 2 ||
+        deathWorld.ArrowSnapshots().size() != 1) {
         return 146;
     }
     deathWorld.RemovePlayer(401);
@@ -4868,20 +6060,21 @@ int main() {
     fishingPose.playerId = 501;
     fishingPose.entity = fishingPlayer->entity;
     fishingPose.sceneId = 118;
+    fishingPose.lifeEpoch = fishingPlayer->lifeEpoch;
     fishingPose.sequence = 10;
     fishingPose.state = 2;
-    fishingPose.rodTipOffset = { 1.0f, 2.0f, 3.0f };
+    fishingPose.rodBendY = 1.0f;
     if (fishingPresentationRelay.UpdateFishingPresentation(
             fishingPose, *fishingPresentationWorld.PlayerFor(501)) !=
             Game::Replication::FishingPresentationUpdateResult::Accepted ||
         !fishingPresentationRelay.FishingPresentationFor(501)) {
         return 150;
     }
-    fishingPose.rodTipOffset[0] = 4.0f;
+    fishingPose.rodBendY = 2.0f;
     if (fishingPresentationRelay.UpdateFishingPresentation(
             fishingPose, *fishingPresentationWorld.PlayerFor(501)) !=
             Game::Replication::FishingPresentationUpdateResult::Accepted ||
-        fishingPresentationRelay.FishingPresentationFor(501)->rodTipOffset[0] != 4.0f) {
+        fishingPresentationRelay.FishingPresentationFor(501)->rodBendY != 2.0f) {
         return 151;
     }
     fishingPose.sequence = 9;
@@ -5030,6 +6223,7 @@ int main() {
     Game::Simulation::FishingLureSnapshot authorityLure{};
     authorityLure.entity = { 701, 1 };
     authorityLure.ownerPlayerId = 77;
+    authorityLure.ownerLifeEpoch = authorityPlayer.lifeEpoch;
     authorityLure.sceneId = 118;
     authorityLure.position = { 13.0f, 26.0f, 39.0f };
     authorityLure.phase = Game::Simulation::FishingLurePhase::Flying;
@@ -5053,6 +6247,7 @@ int main() {
     Game::Simulation::FishSnapshot authorityFish{};
     authorityFish.entity = { 702, 1 };
     authorityFish.ownerPlayerId = 77;
+    authorityFish.ownerLifeEpoch = authorityPlayer.lifeEpoch;
     authorityFish.identity.sceneId = 118;
     authorityLure.phase = Game::Simulation::FishingLurePhase::Hooked;
     if (!Game::Replication::FishingPresentationAuthority::Constrain(
@@ -5212,10 +6407,10 @@ int main() {
     authoritativePoseState.actionState = Game::Simulation::PlayerActionState::Idle;
     authoritativePoseState.serverTick = 30;
     authoritativePoseState.locomotionPhaseRadians = 1.5707963267948966f;
-    authoritativePoseState.velocity = { 180.0f, 0.0f, 0.0f };
+    authoritativePoseState.velocity = { 120.0f, 0.0f, 0.0f };
     const auto strafeState =
         Game::Simulation::SampleAuthoritativePlayerPoseState(authoritativePoseState);
-    if (strafeState.direction != Game::Simulation::PlayerPoseDirection::Right ||
+    if (strafeState.direction != Game::Simulation::PlayerPoseDirection::Left ||
         strafeState.locomotionAmount != 1.0f) {
         return 493;
     }
@@ -5232,7 +6427,7 @@ int main() {
     // Render frames between authoritative snapshots advance the same semantic
     // locomotion pose. The server collision call remains deterministic because
     // its default advance is zero.
-    authoritativePoseState.velocity = { 0.0f, 0.0f, 180.0f };
+    authoritativePoseState.velocity = { 0.0f, 0.0f, 120.0f };
     authoritativePoseState.locomotionPhaseRadians = 0.0f;
     const auto snapshotPose =
         Game::Simulation::SampleAuthoritativePlayerSkeletonPose(

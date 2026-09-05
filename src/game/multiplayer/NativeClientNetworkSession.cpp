@@ -81,7 +81,7 @@ struct NativeClientNetworkSession::State {
     NativeLocalPlayerCommandController localPlayerCommands{
         gameplay.Commands(), gameplay.Prediction() };
     NativeLocalPlayerPresentationController localPlayerPresentation{
-        gameplay.Prediction(), gameplay.Vitals(), corpseRegistry };
+        gameplay.Vitals() };
     NativeLocalProjectileController localProjectiles{
         gameplay.Projectiles() };
     NativeLocalRespawnController localRespawn{
@@ -116,11 +116,13 @@ void BindNativePredictedArrow(const void* presentation, int32_t sceneId,
 }
 
 int32_t CommitNativeArrowFire(const void* presentation, int32_t sceneId,
-                              void* context) {
+                              uint32_t clientTick, int16_t heading,
+                              int16_t aimPitch, void* context) {
     auto* controller =
         static_cast<Game::Multiplayer::NativeLocalProjectileController*>(context);
     return controller && controller->CommitArrowFire(
-        const_cast<Actor*>(static_cast<const Actor*>(presentation)), sceneId);
+        const_cast<Actor*>(static_cast<const Actor*>(presentation)), sceneId,
+        clientTick, heading, aimPitch);
 }
 
 void UnbindNativePredictedArrow(const void* presentation, void* context) {
@@ -223,7 +225,8 @@ void NativeClientNetworkSession::Initialize() {
             NativeClientFrameDependencies{
                 *state.runtime, state.gameplay,
                 state.localRespawn, state.combatPresentation,
-                state.playerRenderer, state.projectileRenderer,
+                state.playerRenderer, state.fishingEntities,
+                state.projectileRenderer,
                 state.localPlayerPresentation,
                 state.nameplates });
     FishingGameplay_SetActionSink(SubmitNativeFishingAction,
